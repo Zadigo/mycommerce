@@ -8,6 +8,9 @@ djangorestframework = "*"
 django-extensions = "*"
 django-cors-headers = "*"
 django = "*"
+stripe = "*"
+django-imagekit = "*"
+pillow = "*"
 
 [dev-packages]
 
