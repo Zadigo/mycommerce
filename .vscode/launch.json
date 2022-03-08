@@ -18,14 +18,14 @@
             "name": "Vue: Fashion E-commerce",
             "request": "launch",
             "cwd": "${workspaceFolder}/front",
-            // "runtimeArgs": [
-            //     "run",
-            //     "serve"
-            // ],
-            "args": [
+            "runtimeArgs": [
                 "run",
                 "serve"
             ],
+            // "args": [
+            //     "run",
+            //     "serve"
+            // ],
             "runtimeExecutable": "npm",
             "skipFiles": [
                 "<node_internals>/**"
