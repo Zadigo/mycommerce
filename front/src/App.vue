@@ -7,7 +7,7 @@
       <base-navbar />
     
       <!-- Messages -->
-      <!-- <base-messages /> -->
+      <base-messages />
 
       <transition name="general-transition" mode="out-in">
         <router-view :key="$route.name"/>
@@ -53,5 +53,13 @@ export default {
 
   .text-decoration-none {
     text-decoration: none;
+  }
+
+  main {
+    position: relative
+  }
+
+  nav {
+    z-index: 1000;
   }
 </style>

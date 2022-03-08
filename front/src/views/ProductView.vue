@@ -180,19 +180,8 @@ export default {
     this.$store.commit('setCurrentProduct', product)
   },
 
-  beforeRouteEnter (to, from, next) {
-    console.log(2)
-    next(vm => {
-      // TODO: When relaoding (or maybe even accessing the page)
-      // this tries to access products/product that is not yet
-      // defined. We have to define these to prevent
-      // sending undefined to the recentlyViewed
-      vm.$store.commit('setRecentlyViewed', to.params.id)
-      vm.$session.set('recentlyViewedProducts', vm.$store.state.shopModule.recentlyViewed)
-    })
-  },
-
   mounted () {
+    console.log(3)
     // Get thee products with the same name but
     // with a different color variant
     this.$api.shop.products.variants(this.currentProduct)

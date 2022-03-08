@@ -153,7 +153,7 @@ export default {
         this.$session.set('products', products)
       })
       .catch((error) => {
-        error
+        this.$store.dispatch('addErrorMessage', error.response.statusText)
       })
     } else {
       this.$store.commit('setProducts', products)
