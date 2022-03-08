@@ -3,35 +3,42 @@
     Vue and implements some simple functionnalities
 */
 
-import _ from "lodash"
+// import _ from "lodash"
 
-const DEFAULT_SETTINGS_NAME = 's'
+const DEFAULT_KEY_NAME = 'vue_local'
 
 class VueLocalStorage {
     constructor () {
-        this._localStorage = localStorage
+        this.storage = localStorage
     }
 
-    get settings() {
-        return JSON.parse(this._localStorage.getItem(DEFAULT_SETTINGS_NAME))
+    get data () {
+        var result = JSON.parse(this.storage.getItem(DEFAULT_KEY_NAME))
+
+        if (! result) {
+            this._save({})
+            return {}
+        } else {
+            return result
+        }
     }
 
-    hasSettings() {
-        return !_.isNull(this._localStorage.getItem(DEFAULT_SETTINGS_NAME))
+    _save (data) {
+        this.storage.setItem(DEFAULT_KEY_NAME, JSON.stringify(data))
     }
 
-    get(key) {
-        return this.settings[key]
+    retrieve (key) {
+        return this.data[key]
     }
 
-    save(key, value) {
-        var settings = this.settings
-        settings[key] = value
-        this._localStorage.setItem(JSON.stringify(settings))
+    create (key, value) {
+        var storedData = this.data
+        storedData[key] = value
+        this._save(storedData)
     }
 
-    clear() {
-        this._localStorage.removeItem(DEFAULT_SETTINGS_NAME)
+    clear () {
+        this.storage.removeItem(DEFAULT_KEY_NAME)
     }
 }
 
