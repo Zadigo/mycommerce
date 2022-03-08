@@ -155,6 +155,18 @@ export default {
     }
   },
 
+  beforeRouteEnter (to, from, next) {
+    console.log(2)
+    next(vm => {
+      // TODO: When relaoding (or maybe even accessing the page)
+      // this tries to access products/product that is not yet
+      // defined. We have to define these to prevent
+      // sending undefined to the recentlyViewed
+      vm.$store.commit('setRecentlyViewed', to.params.id)
+      vm.$session.set('recentlyViewedProducts', vm.$store.state.shopModule.recentlyViewed)
+    })
+  },
+
   created () {
     console.log(1)
     // In order to get the currentProduct set,
