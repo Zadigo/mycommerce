@@ -1,0 +1,12 @@
+npm intall --save @vue/devtools-api
+
+npm install @mdi/font -D
+
+# To be able to use process.env
+npm install dotenv-webpack --save-dev
+
+# Optional
+npm i vue-sessionstorage
+
+# To be able to use flags
+npm install vue-country-flag

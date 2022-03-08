@@ -1,0 +1,31 @@
+<div v-else class="row">
+
+    <div class="col-12 p-1 mb-4">
+      <div class="row">
+        <!-- Images -->
+        <div id="images" class="col-2">
+          <b-img v-for="(image, index) in images" :key="image.id" :alt="image.name" :src="image.mid_size|mediaUrl" class="mb-2 hover-shadow" fluid @click="changeImage(index)" />
+          
+          <b-btn v-if="hasVideo" variant="light" block @click="playVideo = !playVideo">
+            <font-awesome-icon icon="play" />
+          </b-btn>
+
+          <b-btn variant="light" block>
+            <font-awesome-icon icon="share" />
+          </b-btn>
+        </div>
+
+        <!-- Image detail -->
+        <div class="col-10">
+          <!-- Video -->
+          <b-embed v-if="playVideo & hasVideo" :poster="mainImage.original|mediaUrl" type="video" aspect="4by3" controls>
+            <source :src="productVideo.content|mediaUrl" type="video/mp4">
+          </b-embed>
+          
+          <!-- Image -->
+          <b-img v-else :src="displayImage.mid_size|mediaUrl" :alt="displayImage.name" fluid />
+        </div>
+      </div>
+    </div>
+    
+  </div>
