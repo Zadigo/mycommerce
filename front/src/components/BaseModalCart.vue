@@ -44,14 +44,16 @@ export default {
     }
   },
   
-  beforeMount () {
-    this.$api.shop.cart.all()
-    .then((response) => {
-      this.$store.commit('updateCart', response.data)
-    })
-    .catch((error) => {
-      error
-    })
-  }
+  // TODO: This makes excessive calls to the
+  // th backend for the cart items
+  // beforeMount () {
+  //   this.$api.shop.cart.all()
+  //   .then((response) => {
+  //     this.$store.commit('updateCart', response.data)
+  //   })
+  //   .catch((error) => {
+  //     error
+  //   })
+  // }
 }
 </script>
