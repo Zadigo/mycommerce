@@ -4,9 +4,6 @@
 */
 
 export default {
-    data: () => ({
-        gaga: 1
-    }),
     mounted() {
         this.updateLanguageInHtml()
     },
