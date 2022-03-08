@@ -127,7 +127,11 @@ var shopModule = {
         },
 
         totalCount(state) {
-            return state.cachedResponse.infos.total_count
+            try {
+                return state.cachedResponse.infos.total_count
+            } catch {
+                return 0
+            }
         },
 
         nextUrl(state) {
