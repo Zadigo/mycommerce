@@ -14,7 +14,26 @@
 
           <!-- Products -->
           <div :class="{ 'col-10': !hideFilters, 'col-12': hideFilters }">
-            <transition-group name="card-transition" tag="div" class="row">
+            <div v-if="sortedProducts.length == 0" class="row">
+              <div class="col-md-12">
+                <b-card>
+                  <b-card-text class="text-center">
+                    <h2 class="p-1 mb-5">{{ $t('No products found') }}</h2>
+
+                    <v-row>
+                      <v-col cols="12">
+                        <button-load-products>
+                          <v-icon class="mr-2">mdi-refresh</v-icon>
+                          {{ $t('Refresh page') }}
+                        </button-load-products>
+                      </v-col>
+                    </v-row>
+                  </b-card-text>
+                </b-card>
+              </div>
+            </div>
+
+            <transition-group v-else name="card-transition" tag="div" class="row">
               <div v-for="product in sortedProducts" :key="product.id" :class="{ 'col-lg-4': !multipleGridDisplay, 'col-lg-3': multipleGridDisplay }">
                 <card :product="product" :multiple-grid-display="multipleGridDisplay" :is-loading="isLoading" />
               </div>
@@ -28,18 +47,6 @@
                 </template>
               </transition-group>
             </div> -->
-
-            <div v-if="sortedProducts.length == 0" class="row">
-              <div class="col-md-12">
-                <b-card>
-                  <b-card-text class="text-center">
-                    <h2>
-                      {{ $t('No products') }}
-                    </h2>
-                  </b-card-text>
-                </b-card>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -71,6 +78,7 @@ var _ = require('lodash')
 
 import { mapGetters, mapState } from 'vuex'
 
+import ButtonLoadProducts from '../components/products/ButtonLoadProducts.vue'
 import Card from "../components/products/Card.vue"
 import PageHeader from "../components/products/PageHeader.vue"
 import Pagination from "../components/products/Pagination.vue"
@@ -81,6 +89,7 @@ export default {
   name: 'CollectionView',
   
   components: {
+    ButtonLoadProducts,
     Card,
     PageHeader,
     Pagination,
@@ -133,8 +142,9 @@ export default {
   },
   
   beforeMount () {
-    this.multipleGridDisplay = this.$localstorage.get('grid')
-    this.hideFilters = this.$localstorage.get('filters')
+    this.multipleGridDisplay = this.$localstorage.retrieve('grid')
+    this.hideFilters = this.$localstorage.retrieve('filters')
+
     // var settings = this.getLocalStorageSettings()
     // this.multipleGridDisplay = settings['grid']
     // this.hideFilters = settings['filters']
@@ -142,26 +152,48 @@ export default {
     // To prevent excess backend querying
     //  store the produts in the session
     // on the client side
-    var products = this.$session.get('products')
+    if (!this.$session.contains('products')) {
 
-    if (_.isUndefined(products)) {
-      this.isLoading = true
       this.$api.shop.products.all()
       .then((response) => {
-        products = response.data
+
+        var products = response.data
+
         this.$store.commit('setProducts', products)
         this.$session.set('products', products)
+
+        setTimeout(() => {
+          this.isLoading = false
+        }, 1000)
+
       })
       .catch((error) => {
         this.$store.dispatch('addErrorMessage', error.response.statusText)
       })
+
     } else {
-      this.$store.commit('setProducts', products)
+
+      this.$store.commit('setProducts', this.$session.retrieve('products'))
+
     }
 
-    setTimeout(() => {
-      this.isLoading = false
-    }, 1000);
+
+    // var products = this.$session.retrieve('products')
+
+    // if (_.isUndefined(products)) {
+    //   this.isLoading = true
+    //   this.$api.shop.products.all()
+    //   .then((response) => {
+    //     products = response.data
+    //     this.$store.commit('setProducts', products)
+    //     this.$session.set('products', products)
+    //   })
+    //   .catch((error) => {
+    //     this.$store.dispatch('addErrorMessage', error.response.statusText)
+    //   })
+    // } else {
+    //   this.$store.commit('setProducts', products)
+    // }
   },
 
   methods: {
@@ -171,19 +203,13 @@ export default {
     // getting and the setting at once when passing
     // a key and a value
     changeGrid () {
-      this.multipleGridDisplay =! this.multipleGridDisplay
-
-      var settings = this.getLocalStorageSettings()
-      settings['grid'] = this.multipleGridDisplay
-      this.setLocalStorageSettings(settings)
+      this.multipleGridDisplay = !this.multipleGridDisplay
+      this.$localstorage.create('grid', this.multipleGridDisplay)
     },
 
     toggleFilters () {
-      this.hideFilters =! this.hideFilters
-
-      var settings = this.getLocalStorageSettings()
-      settings['filters'] = this.hideFilters
-      this.setLocalStorageSettings(settings)
+      this.hideFilters = !this.hideFilters
+      this.$localstorage.create('filters', this.hideFilters)
     },
 
     doSort(method) {

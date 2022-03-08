@@ -60,8 +60,8 @@ export default {
           
           this.$router.push({ name: 'home', params: { lang: this.$i18n.locale } })
       })
-      .catch((error) => {
-          console.log(error)
+      .catch(() => {
+        this.$store.dispatch('addErrorMessage', "Either the username/password is not correct")
       })
     }
   }
