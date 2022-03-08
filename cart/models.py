@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.utils.crypto import get_random_string
 
 from cart.managers import CartManager
 from cart.utils import calculate_vat, get_product_model

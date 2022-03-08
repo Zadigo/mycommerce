@@ -53,7 +53,7 @@
 
         <!-- Images -->
         <div class="col-md-7">
-          <images :is-new="currentProduct.mark_as_new" :images="productImages" :product-video="currentProduct.video" />
+          <images :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" />
         </div>
 
         <!-- Information -->

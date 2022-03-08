@@ -90,9 +90,3 @@ def calculate_sale(price, percentage):
     price = float(price)
     result = price * (1 - (percentage / 100))
     return Value(result)
-
-
-
-def swatches_path(instance, filename):
-    name, ext = filename.split('.')
-    return f"swatches/{name}.{ext}"

@@ -51,7 +51,7 @@ class ProductSerializer(Serializer):
     video = VideoSerializer(required=False)
     
     active = fields.BooleanField(required=False)
-    mark_as_new = fields.BooleanField()
+    display_new = fields.BooleanField()
     slug = fields.SlugField(required=False)
     modified_on = fields.DateField(required=False)
     created_on = fields.DateField(required=False)

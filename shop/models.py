@@ -1,4 +1,3 @@
-from enum import unique
 import os
 
 from django.conf import settings
@@ -12,16 +11,17 @@ from django.utils.crypto import get_random_string
 from imagekit.models import ImageSpecField, ProcessedImageField
 from imagekit.processors import ResizeToFill
 
-from shop.choices import ColorChoices, VariantChoices, VariantSubcategoryChoices
+from shop.choices import (ColorChoices, VariantChoices,
+                          VariantSubcategoryChoices)
 from shop.utils import (calculate_sale, create_image_slug, create_product_slug,
-                        image_path, swatches_path, video_path)
+                        image_path, video_path)
 from shop.validators import price_validator, validate_video_file_extension
 
 USER_MODEL = get_user_model()
 
 
 class Image(models.Model):
-    """Images for a given product"""
+    """Images showcasing the product"""
     name = models.CharField(
         max_length=100,
         unique=True,
@@ -59,7 +59,7 @@ class Image(models.Model):
     
     
 class Video(models.Model):
-    """Video presenting the product"""
+    """Video showcasing the product"""
     name = models.CharField(
         max_length=100,
         unique=True,
@@ -76,7 +76,7 @@ class Video(models.Model):
     
     
 class AdditionalVariant(models.Model):
-    """Product variants such as size"""
+    """Variants for size..."""
     reference = models.CharField(
         max_length=100,
         default=get_random_string(12),
@@ -97,14 +97,6 @@ class AdditionalVariant(models.Model):
         blank=True,
         null=True
     )
-    
-    # unit_price = models.DecimalField(
-    #     max_digits=5,
-    #     decimal_places=2,
-    #     default=1,
-    #     help_text="Cost price of the product's variant",
-    #     validators=[price_validator]
-    # )
     
     in_stock = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
@@ -149,13 +141,10 @@ class AbstractProduct(models.Model):
         validators=[price_validator]
     )
     
-    # reduce_price_by = models.PositiveIntegerField(
-    #     default=0,
-    #     help_text='Indicates by how much a product is on sale'
-    # )
-    # on_sale = models.BooleanField(default=False)
+    sale_value = models.PositiveIntegerField(default=0)
+    on_sale = models.BooleanField(default=False)
     
-    mark_as_new = models.BooleanField(
+    display_new = models.BooleanField(
         default=False,
         help_text='Explicitly mark a product as being new'
     )
@@ -195,17 +184,15 @@ class AbstractProduct(models.Model):
         self.slug = create_product_slug(' '.join(tokens))
 
 
-class Product(AbstractProduct):
-    """Products sold by the marketplace"""    
-    # def clean(self):
-    #     super().clean()
-    #     if self.on_sale:
-    #         self.unit_price = calculate_sale(self.unit_price, self.reduce_price_by)
+class Product(AbstractProduct):    
+    def clean(self):
+        super().clean()
+        if self.on_sale:
+            self.unit_price = calculate_sale(self.unit_price, self.reduce_price_by)
     
 
 class AbstractUserList(models.Model):
-    """Base model for model that lists product's
-    liked or saved by users"""
+    """Base model for user lists"""
     products = models.ManyToManyField(
         Product,
         blank=True
@@ -224,7 +211,7 @@ class AbstractUserList(models.Model):
 
 
 class Like(AbstractUserList):
-    """Products liked by the user"""
+    """Products liked"""
     class Meta:
         constraints = [
             UniqueConstraint(fields=['user'], name='one_list_per_user')
@@ -232,8 +219,7 @@ class Like(AbstractUserList):
     
     
 class Wishlist(AbstractUserList):
-    """Products the user would want to buy
-    in the future"""
+    """User's wishlists of products"""
     name = models.CharField(max_length=100)
     
     class Meta:
