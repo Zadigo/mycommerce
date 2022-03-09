@@ -99,12 +99,11 @@ class ValidateAddToList(Serializer):
         # wishlist.products.add(product)
 
 
-
 class SimpleProductVariantSerializer(Serializer):
     id = fields.IntegerField()
     reference = fields.CharField()
     color = fields.CharField()
-    mark_as_new = fields.BooleanField()
+    display_new = fields.BooleanField()
     slug = fields.SlugField()
     modified_on = fields.DateField()
     created_on = fields.DateField()
