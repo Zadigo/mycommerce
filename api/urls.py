@@ -8,6 +8,15 @@ app_name = 'api'
 router = DefaultRouter()
 # router.register('wishlist', products.WishlistView)
 
+
+dashboard_patterns = [
+    re_path(r'products/(?P<pk>\d+)/update', dashboard.update_product_view),
+    re_path(r'products/(?P<pk>\d+)/associate', dashboard.associate_images_to_product),
+    re_path(r'products/rename', dashboard.rename_products_view),
+    re_path(r'products/generic', dashboard.generic_product_details_view),
+    re_path(r'products', dashboard.products_view)
+]
+
 urlpatterns = [    
     re_path(r'^profile', auth.profile_view),
     re_path(r'^login', auth.login_view),
