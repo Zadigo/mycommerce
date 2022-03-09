@@ -22,6 +22,11 @@ def get_product_model():
 class CustomPagination(LimitOffsetPagination):
     default_limit = 100
     max_limit = 100
+
+
+class CustomProductPagination(CustomPagination):
+    default_limit = 100
+    max_limit = 100
     
     def get_paginated_response(self, data, **kwargs):
         return Response(OrderedDict([

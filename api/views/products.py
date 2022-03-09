@@ -2,7 +2,7 @@ from urllib import response
 from api.serializers.products import (LikeSerializer, ProductSerializer, SimpleProductVariantSerializer, ValidateAddToList, ValidateWishList,
                                       WishlistSerializer)
 from api.serializers.reviews import ReviewSerializer
-from api.utils import CustomImageProcessor, CustomPagination, get_product_model
+from api.utils import CustomImageProcessor, CustomProductPagination, get_product_model
 from api.views.responses import success_response
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -45,7 +45,7 @@ def products_view(request, **kwargs):
     queryset = PRODUCT_MODEL.objects.prefetch_related('additional_variants').filter(active=True)
     queryset = filter_products(request, queryset)
     
-    pagination_instance = CustomPagination()
+    pagination_instance = CustomProductPagination()
     result = pagination_instance.paginate_queryset(queryset, request)
     
     serializer = ProductSerializer(data=result, many=True)
