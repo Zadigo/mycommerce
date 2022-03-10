@@ -22,7 +22,7 @@ export default ({
             // Returns the full url of a media 
             // to the Django media folder
             if (_.isNull(path)) {
-                return null
+                return 'http://via.placeholder.com/689x1100'
             } else {
                 var url = new URL(path, process.env.rootURL)
                 return url.href
