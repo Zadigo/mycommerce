@@ -175,3 +175,10 @@ def product_variants_view(request, pk, **kwargs):
     products = PRODUCT_MODEL.objects.filter(name__exact=product.name)
     serializer = SimpleProductVariantSerializer(instance=products, many=True)
     return Response(data=serializer.data)
+
+
+@api_view(['get'])
+def product_by_collection(request, pk, **kwargs):
+    products = Product.objects.filter(collection__name__eq='Some name')
+    serializer = ProductSerializer(instance=products, many=True)
+    return responses.success_response(serializer=serializer)

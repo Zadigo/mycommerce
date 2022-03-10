@@ -38,31 +38,42 @@ export default (client) => ({
     },
 
     cart: {
-        all() {
+        all () {
             return client({
                 method: 'get',
                 url: `/cart`
             })
         },
 
-        add(product, params) {
+        add (product, options) {
+            var data = Object.assign({ product: product.id }, options)
+            
             return client({
                 method: 'post',
                 url: `/cart/add`,
-                data: Object.assign({ product: product.id }, params)
+                data: data
+            })
+        },
+        
+        remove (item, sessionId) {
+            console.log(item, sessionId)
+            return client({
+                method: 'post',
+                url: `/cart/${ item.id }/remove`,
+                data: { session_id: sessionId }
             })
         }
     },
     
     lists: {
-        all() {
+        all () {
             return client({
                 method: 'get',
                 url: `/wishlists`
             })
         },
         
-        add(product, wishlist) {
+        add (product, wishlist) {
             return client({
                 method: 'post',
                 url: `/wishlists/${ wishlist.id }/add`,
@@ -70,7 +81,7 @@ export default (client) => ({
             })
         },
 
-        like(product) {
+        like (product) {
             return client({
                 method: 'post',
                 url: `/products/${ product.id }/like`

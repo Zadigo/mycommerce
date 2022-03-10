@@ -27,9 +27,7 @@ class ImageSerializer(Serializer):
     
     mid_size = fields.ImageField()
     thumbnail = fields.ImageField()
-    # original = fields.ImageField()
-    # thumbnail = fields.ImageField()
-    
+
     is_main_image = fields.BooleanField()
     
     
@@ -49,6 +47,10 @@ class ProductSerializer(Serializer):
     additional_variants = AdditionalVariantSerializer(many=True, required=False)
     images = ImageSerializer(many=True, required=False)
     video = VideoSerializer(required=False)
+    
+    sale_value = fields.IntegerField()
+    sale_price = fields.DecimalField(5, 2)
+    on_sale = fields.BooleanField()
     
     active = fields.BooleanField(required=False)
     display_new = fields.BooleanField()

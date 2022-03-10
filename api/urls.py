@@ -1,11 +1,13 @@
+from django.conf.urls import include
 from django.urls import re_path
 from rest_framework.routers import DefaultRouter
 
-from api.views import carts, orders, products, auth
+from api.views import auth, carts, dashboard, orders, products
 
 app_name = 'api'
 
 router = DefaultRouter()
+router.register('images', dashboard.ProductImagesView, basename='dashboard_images')
 # router.register('wishlist', products.WishlistView)
 
 
@@ -17,13 +19,17 @@ dashboard_patterns = [
     re_path(r'products', dashboard.products_view)
 ]
 
-urlpatterns = [    
+urlpatterns = [
+    re_path(r'^dashboard/', include((dashboard_patterns, app_name), namespace='dashboard')),
+    
     re_path(r'^profile', auth.profile_view),
     re_path(r'^login', auth.login_view),
     
     re_path(r'^wishlists/(?P<pk>\d+)/add', products.add_to_wishlist_view),
     re_path(r'^wishlists/create', products.create_whishlist_view),
     re_path(r'^wishlists', products.whishlists_view),
+    
+    re_path(r'^collections/(?P<collection>[a-z\-]+)', products.product_by_collection),
     
     re_path(r'^products/(?P<pk>\d+)/variants', products.product_variants_view),
     re_path(r'^products/(?P<pk>\d+)/like', products.add_liked_view),
@@ -34,7 +40,7 @@ urlpatterns = [
     re_path(r'^orders', orders.my_orders_view),
     re_path(r'^payment', orders.create_order),
     
-    re_path(r'^cart/delete', carts.delete_from_cart_view),
+    re_path(r'^cart/(?P<pk>\d+)/remove', carts.delete_from_cart_view),
     re_path(r'^cart/update', carts.update_in_cart_view),
     re_path(r'^cart/add', carts.add_to_cart_view),
     re_path(r'^cart', carts.cart_view)
