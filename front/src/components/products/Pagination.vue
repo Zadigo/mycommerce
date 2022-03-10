@@ -4,7 +4,7 @@
       <!-- TODO: Translate with "AFFICHAGE ACTUEL 1-48 DE 386 STYLES" -->
       <p>Showing <span class="font-weight-bold">{{ productCount }}</span> of <span class="font-weight-bold">{{ totalCount }}</span> products</p>
       
-      <button-load-products>
+      <button-load-products @start-load="$emit('start-pagination')" @end-load="$emit('end-pagination')">
         <v-icon class="mr-2">mdi-arrow-down</v-icon>
         {{ $t('Load more') }}
       </button-load-products>

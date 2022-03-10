@@ -3,6 +3,7 @@
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
     <b-collapse id="nav-collapse" is-nav>
+      <!-- Filter -->
       <b-navbar-nav>        
         <b-nav-item>
           <v-btn icon @click="$emit('toggle-filters')">
@@ -10,12 +11,14 @@
           </v-btn>
         </b-nav-item>
 
+        <!-- Grid -->
         <b-nav-item>
           <v-btn icon @click="$emit('change-grid')">
             <v-icon>mdi-grid</v-icon>
           </v-btn>
         </b-nav-item>
 
+        <!-- Sort -->
         <b-nav-item>
           <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="expand-transition">
             <template v-slot:activator="{ on, attrs }">
@@ -87,6 +90,8 @@ export default {
     searchedValue (value) {
       if (value && value != null) {
         setTimeout(() => {
+          // FIXME: This sends an undefined to the store
+          // on initialization of the page
           console.log('search')
         }, 8000);
       }

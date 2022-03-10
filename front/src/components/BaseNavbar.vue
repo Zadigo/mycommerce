@@ -10,8 +10,16 @@
       <b-collapse id="nav-collapse" is-nav>
 
         <b-navbar-nav>
-          <b-nav-item :to="{ name: 'collection_all', params: { lang: $i18n.locale } }" class="text-uppercase">
+          <b-nav-item :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale } }" class="text-uppercase">
             {{ $t('Shop') }}
+          </b-nav-item>
+
+          <b-nav-item :to="{ name: 'collection_details', params: { collection: 'skirts', lang: $i18n.locale } }" class="text-uppercase">
+            {{ $t('Skirts') }}
+          </b-nav-item>
+
+          <b-nav-item :to="{ name: 'dashboard_index' }" class="text-uppercase">
+            Admin
           </b-nav-item>
         </b-navbar-nav>
         

@@ -8,7 +8,7 @@
       </p>
 
       <div v-if="sizes.length > 0" class="sizes">
-        <b-btn v-for="(size, i) in sizes" id="btn-select-size" :key="size.key" :class="{ 'ml-2': i > 0 }" class="shadow-none border" variant="light">
+        <b-btn v-for="(size, i) in sizes" id="btn-select-size" :key="size.key" :class="{ 'ml-2': i > 0 }" class="shadow-none border" variant="light" @click="setSize(size)">
           {{ size.name }}
         </b-btn>
       </div>
@@ -37,12 +37,12 @@
     <!-- Actions -->
     <div class="d-flex justify-content-left">
       <!-- TODO: Most shopping websites don't have a quantity input. So use this optionnally -->
-      <!-- <b-form-input v-model="cartOptions.quantity" :min="1" :max="99" :step="1" type="number" aria-label="Quantity" style="width: 100px"></b-form-input> -->
+      <!-- <b-form-input v-model="productOptions.quantity" :min="1" :max="99" :step="1" type="number" aria-label="Quantity" style="width: 100px"></b-form-input> -->
       
       <!-- Add to cart -->
       <b-btn id="btn-add-cart" class="mr-2" variant="dark" @click="addToCart">
-        <v-icon class="mr-2">mdi-cart</v-icon>
-        <!-- <font-awesome-icon icon="shopping-cart"></font-awesome-icon> -->
+        <v-progress-circular v-if="addingToCart" :size="25" class="mr-2" color="white" indeterminate></v-progress-circular>
+        <v-icon v-else class="mr-2">mdi-cart</v-icon>
         {{ $t('Add to cart') }}
       </b-btn>
 
@@ -51,6 +51,10 @@
         <!-- <font-awesome-icon icon="heart" /> -->
         <v-icon>mdi-heart</v-icon>
       </b-btn>
+    </div>
+
+    <div class="other">
+      <v-checkbox v-model="productOptions.is_gift" label="Cet achat sera un cadeau" hide-details></v-checkbox>
     </div>
   </div>
 </template>
@@ -65,10 +69,6 @@ export default {
     product: {
       type: Object
     },
-    quantity: {
-      type: Number,
-      default: 0
-    },
     productVariants: {
       type: Array,
       default: () => []
@@ -80,10 +80,12 @@ export default {
   },
 
   data: () => ({
-    cartOptions: {
-      quantity: 1,
-      color: null,
-      is_gift: false
+    productOptions: {
+      variants: {
+        size: 'Unique',
+      },
+      is_gift: false,
+      addingToCart: false
     }
   }),
 
@@ -93,13 +95,31 @@ export default {
 
   methods: {
     addToCart () {
-      // Add product to cart
-      this.$api.shop.cart.add(this.product, this.cartOptions)
+      this.addingToCart = true
+
+      var options = this.productOptions
+      var cart = this.$session.retrieve('cart')
+      options['session_id'] = cart ? cart['session_id'] : null
+
+      this.$api.shop.cart.add(this.product, options)
       .then((response) => {
+        var data = response.data
+
+        if (cart) {
+          cart['results'] = data.results
+          this.$session.set('cart', cart)
+        } else {
+          this.$session.set('cart', data)
+        }
+       
         this.$store.commit('updateCart', response.data)
+
+        setTimeout(() => {
+          this.addingToCart = false
+        }, 2000);
       })
       .catch((error) => {
-        this.$store.dispatch('addErrorMessage', error.error)
+        this.$store.dispatch('addErrorMessage', error.response.statusText)
       })
     },
 
@@ -127,6 +147,10 @@ export default {
 
     matchesWithRoute (variant) {
       return variant.id == this.$route.params.id
+    },
+
+    setSize (size) {
+      this.productOptions.variants.size = size
     }
   }
 }

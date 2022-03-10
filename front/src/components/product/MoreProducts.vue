@@ -6,7 +6,8 @@
           {{ $t('You may also like') }}
         </h4>
         
-        <router-link id="link-recommendations" :to="{ name: 'collection_all', params: { lang: $i18n.locale } }">
+        <!-- TODO: Put a recommended collection in the backend -->
+        <router-link id="link-recommendations" :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale } }">
           {{ $t('View all') }}
         </router-link>
       </div>

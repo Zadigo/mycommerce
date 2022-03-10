@@ -1,59 +1,63 @@
 <template>
-  <b-card v-if="isLoading">
-    <b-skeleton-img height="300px" />
-    <b-skeleton width="65%" class="mt-3" />
-    <b-skeleton width="25%" class="mt-3" />
-  </b-card>
-
-  <!-- <router-link v-else :to="{ name: 'product', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-17">
-    <b-card id="product" class="border-0 hover-shadow" body-class="p-1 normalize-link " img-top>
-      <b-card-img :src="mainImage.mid_size|mediaUrl" :alt="mainImage.name"></b-card-img>
-      
-      <b-card-body class="p-1 mt-3">
-        <p v-if="multipleGridDisplay" class="mb-0">
-          {{ product.name|truncate }}
-        </p>
-
-        <span class="font-weight-bold">
-          <strong>{{ $n(product.unit_price, 'currency', $i18n.locale) }}</strong>
-        </span>
-      </b-card-body>
+  <transition name="general-transition" mode="out-in">
+    <b-card v-if="isLoading">
+      <b-skeleton-img height="400px" />
+      <b-skeleton width="65%" class="mt-3" />
+      <b-skeleton width="25%" class="mt-3" />
     </b-card>
-  </router-link> -->
 
-  <router-link v-else :to="{ name: 'product', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-17">
-    <div id="link-product-card" class="product" @mouseenter="isHovered = true" @mouseleave="isHovered=false" @click="$emit('product-card-click')">
-      <!-- TODO: Show when a product is marked as new -->
-      <!-- <div class="product-badge">Nouveau</div> -->
-      
-      <div id="image">
-        <v-img :lazy-src="mainImage.mid_size|mediaUrl" :src="mainImage.mid_size|mediaUrl" :alt="mainImage.name" :class="{ 'zoom': isHovered && hasEffect }" />
+    <router-link v-else :to="{ name: 'product', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-17">
+      <div id="link-product-card" class="product" @mouseenter="isHovered = true" @mouseleave="isHovered=false" @click="$emit('product-card-click')">
+        <!-- TODO: Show when a product is marked as new -->
+        <!-- <div class="product-badge">Nouveau</div> -->
+        
+        <div id="image">
+          <!-- FIXME: When a product has not image, the single component does not mount
+          maybe force products to have images on the backend so that this does not happen
+          or use a placeholder image -->
+          <v-img :lazy-src="'http://via.placeholder.com/600x1100'" :src="mainImage.mid_size|mediaUrl" :alt="mainImage.name" :class="{ 'zoom': isHovered && hasEffect }" />
+        </div>
+
+        <div id="details" class="normalize-link">
+          <p class="mb-0">
+            {{ product.name|capitalizeLetters|truncate }}
+          </p>
+
+          <span class="font-weight-bold">
+            {{ $n(product.unit_price, 'currency', $i18n.locale) }}
+          </span>
+        </div>
+
+        <!-- <transition name="button-transition">
+          <b-btn v-if="isHovered && showQuickButton" id="add-to-cart" variant="primary">
+            {{ $t('Add to cart') }}
+          </b-btn>
+        </transition> -->
+        
+        <!-- TODO: The tags are colliding when there are multiple -->
+        <base-tag v-if="product.on_sale" :is-absolute="true" :padding="1" :width="30" background-color="red" class="m-3">
+          {{ $t('Sale') }}
+        </base-tag>
+
+        <base-tag v-if="product.display_new && !product.on_sale" :is-absolute="true" :padding="1" :width="30" class="m-3">
+          {{ $t('Nouveau') }}
+        </base-tag>
       </div>
-
-      <div id="details" class="normalize-link">
-        <p class="mb-0">
-          {{ product.name|capitalizeLetters|truncate }}
-        </p>
-
-        <span class="font-weight-bold">
-          {{ $n(product.unit_price, 'currency', $i18n.locale) }}
-        </span>
-      </div>
-
-      <transition name="button-transition">
-        <b-btn v-if="isHovered && showQuickButton" id="add-to-cart" variant="primary">
-          {{ $t('Add to cart') }}
-        </b-btn>
-      </transition>
-    </div>
-  </router-link>
+    </router-link>
+  </transition>
 </template>
 
 <script>
 var _ = require('lodash') 
 
+import BaseTag from '../BaseTag.vue'
+
 export default {
   name: 'Card',
+
+  components: {
+    BaseTag
+  },
 
   filters: {
     truncate(value) {
@@ -102,27 +106,8 @@ export default {
 </script>
 
 <style scoped>
-  /* .view, body, html {
-      height: 100%;
-  }
-
-  .view {
-      position: relative;
-      overflow: hidden;
-      cursor: default;
-  }
-  .overlay .mask {
-    opacity: 0;
-    transition: all 0.4s ease-in-out;
-  } */
-
   .product {
     position: relative;
-
-    /* max-width: 25%;
-    flex: 0 0 25%;
-    padding: .5rem;
-    margin-bottom: 2rem; */
   }
 
   .product #add-to-cart {
@@ -168,4 +153,20 @@ export default {
     font-weight: 600;
     z-index: 1;
   }
+
+  .scale-transition-enter-active,
+  .scale-transition-leave-active {
+    transition: all .8s ease-in-out;
+  }
+  .scale-transition-enter,
+  .scale-transition-leave-to {
+    opacity: 0;
+    transform: scale(.8, .8);
+  }
+  .scale-transition-enter-to,
+  .scale-transition-leave {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
+  
 </style>

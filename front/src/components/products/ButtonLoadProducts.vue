@@ -9,7 +9,7 @@ export default {
   name: 'ButtonLoadProducts',
   methods: {
     loadMoreProducts() {
-      this.$emit('is-loading', true)
+      this.$emit('start-load')
 
       this.$api.shop.products.filter(this.nextUrl)
       .then((response) => {
@@ -19,7 +19,7 @@ export default {
         this.$session.set('products', products)
         
         setTimeout(() => {
-          this.$emit('end-loading', false)
+          this.$emit('end-load')
         }, 1000)
       })
       .catch((error) => {
