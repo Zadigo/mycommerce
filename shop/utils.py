@@ -1,6 +1,7 @@
-from django.forms import ValidationError
+from django.forms import DecimalField, ValidationError
 from django.utils.crypto import get_random_string
 from django.db.models import Value
+import re
 
 
 def create_image_slug(name: str, reverse: bool=False):
@@ -71,6 +72,13 @@ def name_to_snake_case(value: str):
     return value.lower().strip()
 
 
+def remove_special_characters(value):
+    result = re.sub(r'[\(\_\-\)\#\!\*\.]', '', value)
+    tokens = result.split(' ')
+    name = ' '.join([token for token in tokens if token != ''])
+    return name.lower()
+
+
 def process_file_name(value: str):
     basename, ext = value.split('.')
     return basename, ext, get_random_string(12)
@@ -83,7 +91,8 @@ def video_path(instance, filename):
 
 def image_path(instance, filename):
     basename, ext, new_name = process_file_name(filename)
-    return f"images/{new_name}.{ext}"
+    clean_file_name = name_to_snake_case(remove_special_characters(basename))
+    return f"images/{clean_file_name}_{new_name}.{ext}"
 
 
 def calculate_sale(price, percentage):

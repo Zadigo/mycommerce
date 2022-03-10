@@ -1,12 +1,23 @@
 from django.contrib import admin
 
-from shop.models import AdditionalVariant, Image, Like, Product, Video, Wishlist
+from shop.models import (AdditionalVariant, Image, Like, Product, Video,
+                         Wishlist)
+
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'unit_price', 'active']
+    filter_horizontal = ['images', 'additional_variants']
+    list_filter = ['active']
     date_hiearchy = 'created_on'
     search_fields = ['name', 'reference']
+    fieldsets = [
+        ['General', {'fields': ['name', 'reference']}],
+        ['Variant', {'fields': ['color', 'additional_variants']}],
+        ['Media', {'fields': ['images', 'video']}],
+        ['Pricing', {'fields': ['unit_price', 'sale_value', 'sale_price', 'on_sale']}],
+        ['Other', {'fields': ['display_new', 'active', 'slug']}]
+    ]
     actions = ['activate', 'deactivate', 'download_csv']
     
     def activate(self, request, queryset):
@@ -21,9 +32,9 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ['name', 'original', 'is_main_image']
+    list_display = ['name', 'original', 'created_on', 'is_main_image']
     date_hiearchy = 'created_on'
-    search_fields = ['name']
+    search_fields = ['name', 'original']
     list_filter = ['is_main_image']
     
 

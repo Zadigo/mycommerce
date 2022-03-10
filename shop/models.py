@@ -49,7 +49,7 @@ class Image(models.Model):
     created_on = models.DateField(auto_now_add=True)
 
     class Meta:
-        ordering = ['name']
+        ordering = ['-created_on', 'name']
         indexes = [
             models.Index(fields=['original'])
         ]
@@ -106,6 +106,7 @@ class AdditionalVariant(models.Model):
     
     
 class AbstractProduct(models.Model):
+    # TODO: Delete reference, think it's useless
     reference = models.CharField(
         max_length=100,
         default=get_random_string(10),
@@ -142,6 +143,11 @@ class AbstractProduct(models.Model):
     )
     
     sale_value = models.PositiveIntegerField(default=0)
+    sale_price = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0
+    )
     on_sale = models.BooleanField(default=False)
     
     display_new = models.BooleanField(
@@ -188,7 +194,7 @@ class Product(AbstractProduct):
     def clean(self):
         super().clean()
         if self.on_sale:
-            self.unit_price = calculate_sale(self.unit_price, self.reduce_price_by)
+            self.sale_price = calculate_sale(self.unit_price, self.sale_value)
     
 
 class AbstractUserList(models.Model):

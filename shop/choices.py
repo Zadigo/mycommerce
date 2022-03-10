@@ -3,6 +3,7 @@ from django.db.models import Choices
 
 class ClotheSizes:
     sizes = [
+        ('Unique', 'Unique'),
         ('XXS', 'XXS'),
         ('XS', 'XS'),
         ('S', 'S'),
@@ -17,7 +18,7 @@ class ClotheSizes:
     
     @classmethod
     def default(cls, size) -> str:
-        candidates = filter(lambda x: size in x, cls.sizes)
+        candidates = list(filter(lambda x: size in x, cls.sizes))
         return candidates[-1]
 
 
@@ -32,7 +33,7 @@ class ShoeSizes:
 
     @classmethod
     def default(cls, size) -> str:
-        candidates = filter(lambda x: size in x, cls.sizes)
+        candidates = list(filter(lambda x: size in x, cls.sizes))
         return candidates[-1]
 
 
@@ -59,4 +60,4 @@ class ColorChoices(Choices):
     RED = 'Red'
     TAUPE = 'Taupe'
     WHITE = 'White'
-    YELLOW = 'Yellos'
+    YELLOW = 'Yellow'
