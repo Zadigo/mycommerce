@@ -22,11 +22,11 @@ import myAnalytics from './plugins/my-analytics'
 // Components
 import BaseSubscriptionModal from './components/BaseSubscriptionModal.vue'
 import BaseTopBanner from './components/BaseTopBanner.vue'
-import BaseModalCart from './components/BaseModalCart.vue'
 import BaseMessages from './components/BaseMessages.vue'
 import BaseTag from './components/BaseTag.vue'
-import LoginModal from './components/auth/LoginModal.vue'
 import CountryFlag from 'vue-country-flag'
+import LoginModal from './components/auth/LoginModal.vue'
+import ModalCart from './components/ModalCart.vue'
 
 import '@fontsource/montserrat'
 import '@fontsource/roboto'
@@ -45,7 +45,7 @@ Vue.use(session)
 // Vue.mixin(globalMixin)
 
 // Components
-Vue.component('base-modal-cart', BaseModalCart)
+Vue.component('modal-cart', ModalCart)
 Vue.component('base-messages', BaseMessages)
 Vue.component('base-top-banner', BaseTopBanner)
 Vue.component('base-subscription-modal', BaseSubscriptionModal)

@@ -40,7 +40,7 @@
 
     <form class="form-inline">
       <div class="md-form my-0">
-        <v-autocomplete v-model="select" :loading="loading" :items="items" :search-input.sync="searchedValue" cache-items flat hide-no-data hide-details solo clearable label="Search for clothes"></v-autocomplete>
+        <v-autocomplete v-model="select" :loading="loading" :items="items" :search-input.sync="searchedValue" cache-items flat hide-no-data hide-details outlined placeholder="Search for clothes"></v-autocomplete>
       </div>
     </form>
   </b-navbar>
@@ -66,7 +66,13 @@ export default {
     loading: false,
     items: [],
     sortMethod: 'Latest',
-    sortMethods: ['Latest', 'Price high to low', 'Price low to high']
+    sortMethods: [
+      'Latest',
+      'Alphabetically A-Z',
+      'Alphabetically Z-A',
+      'Price high to low', 
+      'Price low to high'
+    ]
   }),
   
   computed: {

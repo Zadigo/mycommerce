@@ -6,7 +6,7 @@ export default (client) => ({
         all () {
             return client({
                 method: 'get',
-                url: '/products'
+                url: '/shop/products'
             })
         },
     
@@ -37,6 +37,22 @@ export default (client) => ({
         }
     },
 
+    collection: {
+        all () {
+            return client({
+                method: 'get',
+                url: '/collection/all'
+            })
+        },
+
+        get (name) {
+            return client({
+                method: 'get',
+                url: `/collection/${ name }`
+            })
+        }
+    },
+
     cart: {
         all () {
             return client({
@@ -56,7 +72,6 @@ export default (client) => ({
         },
         
         remove (item, sessionId) {
-            console.log(item, sessionId)
             return client({
                 method: 'post',
                 url: `/cart/${ item.id }/remove`,

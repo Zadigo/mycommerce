@@ -6,6 +6,10 @@ from django.conf.urls.static import static
 from mycommerce.views import index_view
 
 urlpatterns = [
+    path('api/v1/shop/', include('shop.urls')),
+    path('api/v1/cart/', include('cart.urls')),
+    path('api/v1/collection/', include('collection.urls')),
+    
     path('api/v1/', include('api.urls')),
     path('admin/', admin.site.urls),
     

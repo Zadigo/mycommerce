@@ -7,7 +7,7 @@
     </b-card>
 
     <router-link v-else :to="{ name: 'product', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-17">
-      <div id="link-product-card" class="product" @mouseenter="isHovered = true" @mouseleave="isHovered=false" @click="$emit('product-card-click')">
+      <div id="link-product-card" class="product" @mouseenter="isHovered=true" @mouseleave="isHovered=false" @click="$emit('product-card-click')">
         <!-- TODO: Show when a product is marked as new -->
         <!-- <div class="product-badge">Nouveau</div> -->
         
@@ -23,17 +23,23 @@
             {{ product.name|capitalizeLetters|truncate }}
           </p>
 
-          <span class="font-weight-bold">
+          <span v-if="product.on_sale" class="font-weight-bold">
+            {{ $n(product.sale_price, 'currency', $i18n.locale) }}
+          </span>
+          <span v-else class="font-weight-bold">
             {{ $n(product.unit_price, 'currency', $i18n.locale) }}
+          </span>
+          <span v-if="product.on_sale" class="ml-3 text-red">
+            <del>{{ $n(product.unit_price, 'currency', $i18n.locale) }}</del>
           </span>
         </div>
 
         <!-- <transition name="button-transition">
-          <b-btn v-if="isHovered && showQuickButton" id="add-to-cart" variant="primary">
+          <v-btn v-if="isHovered && showCartButton" id="add-to-cart" variant="primary" @click="addToCart(product)">
             {{ $t('Add to cart') }}
-          </b-btn>
-        </transition> -->
-        
+          </v-btn>
+        </transition>
+         -->
         <!-- TODO: The tags are colliding when there are multiple -->
         <base-tag v-if="product.on_sale" :is-absolute="true" :padding="1" :width="30" background-color="red" class="m-3">
           {{ $t('Sale') }}
@@ -50,21 +56,21 @@
 <script>
 var _ = require('lodash') 
 
+import cartMixin from '../cartMixin'
 import BaseTag from '../BaseTag.vue'
 
 export default {
   name: 'Card',
-
-  components: {
-    BaseTag
-  },
-
   filters: {
     truncate(value) {
       return `${value.slice(0, 20)}...`
     }
   },
-  
+  components: {
+    BaseTag
+  },
+  mixins: [cartMixin],
+
   props: {
     product: {
       type: Object,
@@ -78,7 +84,7 @@ export default {
       type: Boolean,
       default: false
     },
-    showQuickButton: {
+    showCartButton: {
       type: Boolean
     },
     hasEffect: {
@@ -96,12 +102,6 @@ export default {
       return _.isUndefined(mainImage) ? this.product.images[0] : mainImage
     }
   }
-
-  // methods: {
-  //   animateImage (el) {
-  //     el
-  //   }
-  // }
 }
 </script>
 
@@ -119,6 +119,10 @@ export default {
   .product #image {
     transition: all .2s ease;
     overflow: hidden;
+  }
+
+  btn#add-to-cart {
+    z-index: 8000;
   }
 
   .button-transition-enter-active,
@@ -168,5 +172,4 @@ export default {
     opacity: 1;
     transform: scale(1, 1);
   }
-  
 </style>

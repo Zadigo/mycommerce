@@ -8,7 +8,7 @@
             <h1 v-font-size="54" class="mb-3">Assouvis tes ardents désir</h1>
             <h5 class="mb-4">Craquez pour nos nouveautés signées Lounge</h5>
 
-            <router-link :to="{ name: 'collection_all' }" class="btn btn-outline-light btn-lg m-2" role="button">
+            <router-link :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale  } }" class="btn btn-outline-light btn-lg m-2" role="button">
               Découvrir
             </router-link>
           </div>
@@ -33,33 +33,33 @@
     </div> -->
 
     <!-- Hottest products -->
-    <section id="products" class="my-6">
+    <!-- <section id="products" class="my-6">
       <v-container>
         <v-row>
           <v-col cols="12">
             <p class="font-weight-bold fs-22">Faire des achats</p>
+
+            <product-slider />
           </v-col>
         </v-row>
       </v-container>
-    </section>
+    </section> -->
 
     <!-- Banner - 1 -->
     <section class="banner">
-      <div class="d-flex justify-content-between">
-        <div id="left">
-          <v-img :src="require('@/assets/side2.jpg')" class="mr-2"></v-img>
-          <div id="title">
-            <p>Beaux bas</p>
-            <v-btn>Découvrir</v-btn>
-          </div>
+      <div id="left">
+        <v-img :src="require('@/assets/side1.jpg')" height="500"></v-img>
+        <div id="title">
+          <p>Beaux bas</p>
+          <v-btn>Découvrir</v-btn>
         </div>
-        
-        <div id="right">
-          <v-img :src="require('@/assets/side2.jpg')"></v-img>
-          <div id="title">
-            <p>Un style basique. Mais en mieux</p>
-            <v-btn>Découvrir</v-btn>
-          </div>
+      </div>
+      
+      <div id="right">
+        <v-img :src="require('@/assets/side2.jpg')" height="500"></v-img>
+        <div id="title">
+          <p>Un style basique. Mais en mieux</p>
+          <v-btn>Découvrir</v-btn>
         </div>
       </div>
     </section>
@@ -73,12 +73,27 @@
     </section> -->
 
     <!-- Banner - 2 -->
-    <section class="banner-absolute">
+    <!-- <section class="banner-absolute">
       <v-img :src="require('@/assets/side1.jpg')"></v-img>
-
       <div class="title">
-        <p>Renouvellez votre garde-robe</p>
+        <p style="font-size: 35px;">Renouvellez votre garde-robe</p>
         <v-btn>Découvrir</v-btn>
+      </div>
+    </section> -->
+
+    <section class="banner">
+      <v-img :src="require('@/assets/side3.jpg')" height="500"></v-img>
+      <div id="title" class="w-100 text-center">
+        <p>Birthday mode: activating</p>
+        <p>Our Birthday Sale is coming soon. Sign up for early access</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="box">
+        <div v-for="i in 10" :key="i" class="content-wrapper">
+          <img src="http://via.placeholder.com/200x200" />
+        </div>
       </div>
     </section>
   </section>
@@ -86,10 +101,14 @@
 
 
 <script>
+// import ProductSlider from '../components/home/ProductSlider.vue'
+
 export default {
   name: 'HomeView',
-  
-  title: () => 'Chic lingerie'
+  title: () => 'Chic lingerie',
+  components: {
+    // ProductSlider
+  }
 }
 </script>
 
@@ -99,7 +118,7 @@ export default {
   }
    #intro {
       /* background-image: url("https://mdbootstrap.com/img/new/fluid/city/018.jpg"); */
-      height: 100vh;
+      /* height: 100vh; */
     }
 
     /* Height for devices larger than 576px */
@@ -114,9 +133,13 @@ export default {
     } */
     .banner {
       position: relative;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: nowrap;
       width: 100%;
       max-width: 100%;
-      height: 600px;
+      height: auto;
       min-height: 400px;
       overflow: hidden;
     }
@@ -130,20 +153,20 @@ export default {
     }
     .banner-absolute img {
       width: 100%;
-      /* height: 100%; */
       max-width: 100%;
       object-fit: cover;
       object-position: center;
     }
-    .banner #left, #something1 #right {
+    .banner #left, .banner #right {
       position: relative;
       width: 50%;
-      height: 600px;
       overflow: hidden;
     }
-    .banner .title, .banner-absolute .title {
+    .banner #title, .banner-absolute #title {
       position: absolute;
-      bottom: 0;
+      left: 0;
+      bottom: 10%;
+      /* bottom: 0; */
       font-size: 28px;
       font-weight: 600;
       color: white;
@@ -153,5 +176,23 @@ export default {
     .banner.banner-img {
       background-position: center;
       background-repeat: no-repeat;
+    }
+
+    .box {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      gap: 3px;
+      min-height: 600px;
+      width: 100%;
+      height: auto;
+      padding: 2rem;
+      overflow-x: scroll;
+    }
+
+    .box .content-wrapper {
+      /* padding: .15rem; */
+      /* width: 30%; */
+      height: auto;
     }
 </style>

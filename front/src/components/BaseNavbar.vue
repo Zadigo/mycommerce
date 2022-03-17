@@ -7,6 +7,7 @@
         </span>
       </b-navbar-brand>
 
+
       <b-collapse id="nav-collapse" is-nav>
 
         <b-navbar-nav>
@@ -14,7 +15,7 @@
             {{ $t('Shop') }}
           </b-nav-item>
 
-          <b-nav-item :to="{ name: 'collection_details', params: { collection: 'skirts', lang: $i18n.locale } }" class="text-uppercase">
+          <b-nav-item :to="{ name: 'collection_details', params: { collection: 'lingerie', lang: $i18n.locale } }" class="text-uppercase">
             {{ $t('Skirts') }}
           </b-nav-item>
 
@@ -22,6 +23,10 @@
             Admin
           </b-nav-item>
         </b-navbar-nav>
+
+        <form class="form-inline">
+          <v-text-field type="search" outlined hide-details></v-text-field>
+        </form>
         
         <b-navbar-nav class="ml-auto">
           <!-- <b-nav-form>
@@ -61,7 +66,7 @@
             <base-menu />
           </b-nav-item> -->
 
-          <b-nav-item>
+          <b-nav-item :to="{ name: 'wishlist', params: { lang: $i18n.locale } }">
             <v-icon size="28" class="mr-2">mdi-heart</v-icon>
           </b-nav-item>
           

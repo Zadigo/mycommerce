@@ -46,7 +46,7 @@ def collecion_view(request, name, **kwargs):
     serializer = CollectionSerializer(instance=collection)
     
     collection_data = serializer.data
-    products = Product.objects.filter(collection__name__iexact=name)
+    products = Product.objects.filter(collection__name__iexact=name, active=True)
     instance, serializer_instance, _ = paginate_data(request, products, ProductSerializer, has_many=True)
     paginated_products = instance.get_response_dict(serializer_instance.data)
     data_to_return = {**paginated_products, **collection_data}
@@ -54,3 +54,10 @@ def collecion_view(request, name, **kwargs):
         'total_count': products.count()
     }
     return Response(data=data_to_return)
+
+
+# @api_view(['get'])
+# def product_by_collection(request, collection, **kwargs):
+#     products = Product.objects.filter(collection__name__eq='Some name')
+#     serializer = ProductSerializer(instance=products, many=True)
+#     return responses.success_response(serializer=serializer)

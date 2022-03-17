@@ -151,6 +151,9 @@ export default {
     $route (n, o) {
       if (n.params.id != o.params.id) {
         this.$store.commit('setCurrentProduct', n.params.id)
+        this.$store.commit('setRecentlyViewed', n.params.id)
+        this.$localstorage.create('recentlyViewedProducts', this.$store.getters['recentlyViewedProducts'])
+        this.requestProductVariants()
       }
     }
   },
@@ -163,7 +166,8 @@ export default {
       // defined. We have to define these to prevent
       // sending undefined to the recentlyViewed
       vm.$store.commit('setRecentlyViewed', to.params.id)
-      vm.$session.set('recentlyViewedProducts', vm.$store.state.shopModule.recentlyViewed)
+      // vm.$session.set('recentlyViewedProducts', vm.$store.state.shopModule.recentlyViewed)
+      vm.$localstorage.create('recentlyViewedProducts', vm.$store.getters['recentlyViewedProducts'])
     })
   },
 
@@ -173,7 +177,7 @@ export default {
     // reload the current list of products
     // from the session
     if (!this.$store.getters['hasProducts']) {
-      this.$store.commit('setProducts', this.$session.get('products'))
+      this.$store.commit('setProducts', this.$session.retrieve('products'))
     }
 
     var product = this.$store.getters['getProduct'](this.$route.params.id)
@@ -182,19 +186,30 @@ export default {
 
   mounted () {
     console.log(3)
-    // Get thee products with the same name but
+    // Get the products with the same name but
     // with a different color variant
-    this.$api.shop.products.variants(this.currentProduct)
-    .then((response) => {
-      this.productVariants = response.data
-      setTimeout(() => {
-        this.isLoading = false
-      }, 500);
-    })
-    .catch((error) => {
-      error
-    })
+    this.requestProductVariants()
   },
+
+  methods: {
+    requestProductVariants () {
+      // TODO: Maybe if we preload all the products from
+      // the database, we might not need to request
+      // the variants because this relies on the front
+      // knowing all similar products that exis in the
+      // database in order to show the color variants
+      this.$api.shop.products.variants(this.currentProduct)
+      .then((response) => {
+        this.productVariants = response.data
+        setTimeout(() => {
+          this.isLoading = false
+        }, 1000);
+      })
+      .catch((error) => {
+        this.$store.dispatch('addErrorMessage', error.response.statusText)
+      })
+    }
+  }
   
   // FIXME: Use mapmutations to
   // set the recently viewed product

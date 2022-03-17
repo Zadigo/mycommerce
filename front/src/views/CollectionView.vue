@@ -9,35 +9,38 @@
 
       <section id="products" class="mb-4">
         <div class="row">
+          <!-- TODO: Implement transition for all of this section especially between the filters and the products section -->
           <!-- Side Filters -->
           <side-filters :hide-filters="hideFilters" @selection-start="isLoading=true" @selection-end="isLoading=false" />
 
-          <!-- Products -->
           <div :class="{ 'col-10': !hideFilters, 'col-12': hideFilters }">
-            <div v-if="sortedProducts.length == 0" class="row">
-              <div class="col-md-12">
-                <b-card>
-                  <b-card-text class="text-center">
-                    <h2 class="p-1 mb-5">{{ $t('No products found') }}</h2>
+            <transition name="general-transition" mode="out-in">
+              <div v-if="sortedProducts.length == 0" class="row">
+                <div class="col-md-12">
+                  <b-card>
+                    <b-card-text class="text-center">
+                      <h2 class="p-1 mb-5">{{ $t('No products found') }}</h2>
 
-                    <v-row>
-                      <v-col cols="12">
-                        <button-load-products>
-                          <v-icon class="mr-2">mdi-refresh</v-icon>
-                          {{ $t('Refresh page') }}
-                        </button-load-products>
-                      </v-col>
-                    </v-row>
-                  </b-card-text>
-                </b-card>
+                      <v-row>
+                        <v-col cols="12">
+                          <button-load-products>
+                            <v-icon class="mr-2">mdi-refresh</v-icon>
+                            {{ $t('Refresh page') }}
+                          </button-load-products>
+                        </v-col>
+                      </v-row>
+                    </b-card-text>
+                  </b-card>
+                </div>
               </div>
-            </div>
 
-            <transition-group v-else name="card-transition" tag="div" class="row">
-              <div v-for="product in sortedProducts" :key="product.id" :class="{ 'col-lg-4': !multipleGridDisplay, 'col-lg-3': multipleGridDisplay }">
-                <card :product="product" :multiple-grid-display="multipleGridDisplay" :is-loading="isLoading" />
-              </div>
-            </transition-group>
+              <!-- Products -->
+              <transition-group v-else name="card-transition" tag="div" class="row">
+                <div v-for="product in sortedProducts" :key="product.id" :class="{ 'col-lg-4': !multipleGridDisplay, 'col-lg-3': multipleGridDisplay }">
+                  <card :key="product.id" :product="product" :multiple-grid-display="multipleGridDisplay" :is-loading="isLoading" :show-cart-button="true" />
+                </div>
+              </transition-group>
+            </transition>
 
             <!-- TODO: Display product grid using flex instead of row + columns -->
             <!-- <div class="row">
@@ -55,7 +58,7 @@
     <hr>  
 
     <!-- Pagination -->
-    <pagination v-if="sortedProducts.length > 0" :product-count="sortedProducts.length" @is-loading="isLoading=true" @end-loading="isLoading=false" />
+    <pagination v-if="sortedProducts.length > 0" :product-count="sortedProducts.length" @start-pagination="isLoading=true" @end-pagination="isLoading=false" />
     
     <!-- Ad -->
     <section class="my-6">
@@ -76,7 +79,9 @@
 <script>
 var _ = require('lodash')
 
-import { mapGetters, mapState } from 'vuex'
+import shopMixin from '../components/shopMixin'
+
+import { mapGetters, mapMutations, mapState } from 'vuex'
 
 import ButtonLoadProducts from '../components/products/ButtonLoadProducts.vue'
 import Card from "../components/products/Card.vue"
@@ -98,6 +103,8 @@ export default {
   },
   
   title: () => 'Shop Loungewear And Underwear', 
+
+  mixins: [shopMixin],
   
   data: () => ({
     isLoading: true,
@@ -122,14 +129,26 @@ export default {
 
       var products = []
 
-// TODO: Sort by dates
+      // TODO: Sort by dates
       switch (this.sortMethod) {
+        case 'Latest':
+          products = this.sortByDates()
+          break
+
         case 'Price high to low':
-          products = _.orderBy(this.searchedProducts, ['unit_price'], ['desc'])
+          products = this.mapPrices('desc')
           break
 
         case 'Price low to high':
-          products = _.orderBy(this.searchedProducts, ['unit_price'], ['asc'])
+          products = this.mapPrices('asc')
+          break
+
+        case 'Alphabetically A-Z':
+          products = _.orderBy(this.searchedProducts, ['name'], 'asc')
+          break
+
+        case 'Alphabetically Z-A':
+          products = _.orderBy(this.searchedProducts, ['name'], 'desc')
           break
 
         default:
@@ -140,68 +159,26 @@ export default {
       return products
     }
   },
+
+  watch: {
+    '$route.params.collection' (newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.getProducts()
+      }
+    }
+  },
   
   beforeMount () {
     this.multipleGridDisplay = this.$localstorage.retrieve('grid')
     this.hideFilters = this.$localstorage.retrieve('filters')
 
-    // var settings = this.getLocalStorageSettings()
-    // this.multipleGridDisplay = settings['grid']
-    // this.hideFilters = settings['filters']
-
-    // To prevent excess backend querying
-    //  store the produts in the session
-    // on the client side
-    if (!this.$session.contains('products')) {
-
-      this.$api.shop.products.all()
-      .then((response) => {
-
-        var products = response.data
-
-        this.$store.commit('setProducts', products)
-        this.$session.set('products', products)
-
-        setTimeout(() => {
-          this.isLoading = false
-        }, 1000)
-
-      })
-      .catch((error) => {
-        this.$store.dispatch('addErrorMessage', error.response.statusText)
-      })
-
-    } else {
-
-      this.$store.commit('setProducts', this.$session.retrieve('products'))
-
-    }
-
-
-    // var products = this.$session.retrieve('products')
-
-    // if (_.isUndefined(products)) {
-    //   this.isLoading = true
-    //   this.$api.shop.products.all()
-    //   .then((response) => {
-    //     products = response.data
-    //     this.$store.commit('setProducts', products)
-    //     this.$session.set('products', products)
-    //   })
-    //   .catch((error) => {
-    //     this.$store.dispatch('addErrorMessage', error.response.statusText)
-    //   })
-    // } else {
-    //   this.$store.commit('setProducts', products)
-    // }
+    this.getProducts()
+    this.isLoading = false
   },
 
   methods: {
-    // TODO: Create a localstorage plugin that allows
-    // us to run these functions more easily +
-    // create a unique function that does the
-    // getting and the setting at once when passing
-    // a key and a value
+    ...mapMutations(['resetProducts']),
+
     changeGrid () {
       this.multipleGridDisplay = !this.multipleGridDisplay
       this.$localstorage.create('grid', this.multipleGridDisplay)
@@ -214,6 +191,23 @@ export default {
 
     doSort(method) {
       this.sortMethod = method
+      this.$localstorage.create('sort', method)
+    },
+
+    mapPrices (sortMethod) {
+      var items = _.map(this.searchedProducts, (item) => {
+        item['unit_price'] = item['unit_price'] * 1
+        item['sale_price'] = item['sale_price'] * 1
+        return item
+      })
+      var method = sortMethod ? sortMethod : 'desc'
+      return _.orderBy(items, ['unit_price'], [method])
+    },
+
+    sortByDates () {
+      return this.searchedProducts.sort((a, b) => {
+        return new Date(b.created_on) - new Date(a.created_on)
+      })
     }
   }
 }

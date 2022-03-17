@@ -176,6 +176,8 @@ export default {
         // TODO: Show alert that images were
         // correctly associated
         response
+        this.productSelectionModal = false
+        this.selectedImages = []
       })
       .catch((error) => {
         console.log(error)

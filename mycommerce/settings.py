@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     
     'api',
+    'collection',
     'shop',
     'cart',
     'orders',
@@ -197,6 +198,8 @@ REST_FRAMEWORK = {
 
 # Locales
 
-LOCALE_PATHS = Path.joinpath(BASE_DIR, 'locale')
+LOCALE_PATHS = [
+    Path.joinpath(BASE_DIR, 'locale')
+]
 
 LANGUAGE_CODE = 'fr'

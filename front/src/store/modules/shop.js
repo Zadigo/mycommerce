@@ -30,6 +30,13 @@ var shopModule = {
             state.previousUrl = payload.previous
             state.nextUrl = payload.next
         },
+
+        resetProducts (state) {
+            state.cachedResponse = []
+            state.products = []
+            state.previousUrl = null
+            state.nextUrl = null
+        },
         
         setCurrentProduct (state, product) {
             if (typeof product == 'number') {

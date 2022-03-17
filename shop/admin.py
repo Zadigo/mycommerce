@@ -10,7 +10,7 @@ class ProductAdmin(admin.ModelAdmin):
     filter_horizontal = ['images', 'additional_variants']
     list_filter = ['active']
     date_hiearchy = 'created_on'
-    search_fields = ['name', 'reference']
+    search_fields = ['name', 'reference', 'slug']
     fieldsets = [
         ['General', {'fields': ['name', 'reference']}],
         ['Variant', {'fields': ['color', 'additional_variants']}],

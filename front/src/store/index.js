@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 import shopModule from './modules/shop'
 import messagesModule from './modules/messages'
+import dashboardModule from './modules/dashboard'
 
 var _ = require('lodash')
 
@@ -48,7 +49,13 @@ var authenticationModule = {
 export default new Vuex.Store({
   state: {
     openCart: false,
-    cart : []
+
+    cachedCartResponse: {},
+    cartSessionId: null,
+    cartItems : [],
+    cart: [],
+
+    likedProducts: []
   },
 
   mutations: {
@@ -57,19 +64,22 @@ export default new Vuex.Store({
       // user can see what is in his cart
       state.openCart = !state.openCart
     },
-    updateCart (state, products) {
-      // Adds a product to the cart
-      state.cart = products
+
+    updateCart (state, result) {
+      if (result) {
+        state.cachedCartResponse = result
+        state.cartSessionId = result.session_id
+        state.cartItems = result.results
+        state.cart = result.statistics
+      }
     }
-  },
-  
-  actions: {
   },
   
   getters: {
     cartCount (state) {
       return state.cart.length
     },
+    
     cartTotal (state) {
       // Returns the total of the
       // current items that the
@@ -82,9 +92,11 @@ export default new Vuex.Store({
       return total > 0 ? total : 0
     }
   },
+
   modules: {
     shopModule: shopModule,
     messagesModule: messagesModule,
-    authenticationModule: authenticationModule
+    authenticationModule: authenticationModule,
+    dashboardModule: dashboardModule
   }
 })

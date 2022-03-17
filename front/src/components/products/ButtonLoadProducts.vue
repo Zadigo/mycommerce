@@ -1,31 +1,14 @@
 <template>
-  <v-btn :x-large="true" @click="loadMoreProducts">
+  <v-btn :x-large="true" @click="getProducts">
     <slot></slot>
   </v-btn>
 </template>
 
 <script>
+import shopMixin from '../shopMixin'
+
 export default {
   name: 'ButtonLoadProducts',
-  methods: {
-    loadMoreProducts() {
-      this.$emit('start-load')
-
-      this.$api.shop.products.filter(this.nextUrl)
-      .then((response) => {
-        var products = response.data
-
-        this.$store.commit('setProducts', products)
-        this.$session.set('products', products)
-        
-        setTimeout(() => {
-          this.$emit('end-load')
-        }, 1000)
-      })
-      .catch((error) => {
-        this.dispatch('addErrorMessage', error.response.statusText)
-      })
-    }
-  }
+  mixins: [shopMixin]
 }
 </script>

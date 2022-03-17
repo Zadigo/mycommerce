@@ -4,17 +4,16 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import UniqueConstraint
-from django.db.models.expressions import Q
-from django.db.models.signals import post_delete, post_save, pre_save
+from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
 from django.utils.crypto import get_random_string
-from imagekit.models import ImageSpecField, ProcessedImageField
+from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
 from shop.choices import (ColorChoices, VariantChoices,
                           VariantSubcategoryChoices)
-from shop.utils import (calculate_sale, create_image_slug, create_product_slug,
-                        image_path, video_path)
+from shop.utils import (calculate_sale, create_product_slug, image_path,
+                        video_path)
 from shop.validators import price_validator, validate_video_file_extension
 
 USER_MODEL = get_user_model()
@@ -102,7 +101,7 @@ class AdditionalVariant(models.Model):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.reference
+        return f"{self.name} - {self.pk}"
     
     
 class AbstractProduct(models.Model):
@@ -222,7 +221,7 @@ class Like(AbstractUserList):
         constraints = [
             UniqueConstraint(fields=['user'], name='one_list_per_user')
         ]
-    
+        
     
 class Wishlist(AbstractUserList):
     """User's wishlists of products"""

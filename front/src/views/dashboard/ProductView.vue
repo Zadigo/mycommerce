@@ -17,7 +17,8 @@
       </v-col>
 
       <v-col cols="8">
-
+        
+        <!-- Informations -->
         <v-card>
           <v-card-title>
             Informations
@@ -30,13 +31,66 @@
 
         <v-card>
           <v-card-title>
+            Variants
+          </v-card-title>
+
+          <v-card-text>
+            <v-autocomplete v-model="productUpdates.color" :items="['Beige', 'Black', 'White']" auto-select-first solo></v-autocomplete>  
+          </v-card-text>
+        </v-card>
+
+        <!-- Media selection -->
+        <v-card>
+          <v-toolbar dense>
+            <v-toolbar-title>
+              
+              <v-spacer></v-spacer>
+              
+              <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="slide-transition">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn v-bind="attrs" v-on="on" icon>
+                    <v-icon>mdi-vertical-dots</v-icon>
+                  </v-btn>
+                </template>
+
+                <v-list>
+                  <v-list-item @click="loadImages">
+                    <v-list-item-title>Choisir des images</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-toolbar-title>
+
+            <!-- Image selection -->
+            <v-dialog v-model="openImageSelection" fullscreen hide-overlay transition="dialog-bottom-transition" scrollable>
+              <v-card>
+                <v-toolbar dark color="primary">
+                  <v-btn icon dark @click="dialog = false">
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+
+                  <v-toolbar-title>Settings</v-toolbar-title>
+                  
+                  <v-spacer></v-spacer>
+
+                  <v-toolbar-items>
+                    <v-btn dark text @click="dialog = false">
+                      Save
+                    </v-btn>
+                  </v-toolbar-items>
+                </v-toolbar>
+              </v-card>
+            </v-dialog>
+          </v-toolbar>
+
+          <v-card-title>
             Media
           </v-card-title>
 
           <v-card-text>
             <v-row>
               <v-col cols="3">
-                <v-img src="http://via.placeholder.com/300x300"></v-img>
+
               </v-col>
             </v-row>
           </v-card-text>
@@ -68,7 +122,8 @@ export default {
   name: 'ProductView',
   
   data: () => ({
-    productUpdates: {}
+    productUpdates: {},
+    openImageSelection: false
   }),
   
   computed: {
@@ -89,6 +144,17 @@ export default {
       this.$api.dashboard.products.update(this.productUpdates)
       .then((response) => {
         this.$store.commit('dashboardModule/updateProduct', response.data)
+      })
+      .catch((error) => {
+        error
+      })
+    },
+
+    loadImages () {
+      this.$api.dashboard.images.all()
+      .then((response) => {
+        response
+        this.openImageSelection = true
       })
       .catch((error) => {
         error

@@ -22,15 +22,17 @@
                 "run",
                 "serve"
             ],
-            // "args": [
-            //     "run",
-            //     "serve"
-            // ],
             "runtimeExecutable": "npm",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "type": "pwa-node"
+        },
+        {
+            "name": "Launch Microsoft Edge and open the Edge DevTools",
+            "request": "launch",
+            "type": "vscode-edge-devtools.debug",
+            "url": "http://localhost:8080/" // Provide your project's url to finish configuring
         }
     ]
 }

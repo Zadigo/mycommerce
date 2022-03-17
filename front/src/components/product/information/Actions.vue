@@ -53,18 +53,19 @@
       </b-btn>
     </div>
 
-    <div class="other">
+    <!-- <div class="other">
       <v-checkbox v-model="productOptions.is_gift" label="Cet achat sera un cadeau" hide-details></v-checkbox>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import cartMixin from '../../cartMixin'
 
 export default {
   name: 'Actions',
-
+  mixins: [cartMixin],
   props: {
     product: {
       type: Object
@@ -78,15 +79,14 @@ export default {
       default: () => []
     }
   },
+  title: () => 'Cart',
 
   data: () => ({
     productOptions: {
-      variants: {
-        size: 'Unique',
-      },
-      is_gift: false,
-      addingToCart: false
-    }
+      default_size: 'Unique'
+      // is_gift: false,
+    },
+    addingToCart: false
   }),
 
   computed:{
@@ -98,25 +98,20 @@ export default {
       this.addingToCart = true
 
       var options = this.productOptions
-      var cart = this.$session.retrieve('cart')
+      var cart = this.$localstorage.retrieve('cart')
+
       options['session_id'] = cart ? cart['session_id'] : null
 
       this.$api.shop.cart.add(this.product, options)
       .then((response) => {
         var data = response.data
 
-        if (cart) {
-          cart['results'] = data.results
-          this.$session.set('cart', cart)
-        } else {
-          this.$session.set('cart', data)
-        }
-       
-        this.$store.commit('updateCart', response.data)
+        this.$store.commit('updateCart', data)
+        this.$localstorage.create('cart', data)
 
         setTimeout(() => {
           this.addingToCart = false
-        }, 2000);
+        }, 2000)
       })
       .catch((error) => {
         this.$store.dispatch('addErrorMessage', error.response.statusText)
@@ -130,7 +125,8 @@ export default {
       } else {
         this.$api.shop.lists.like(this.product)
         .then((response) => {
-          response
+          var data = response.data
+          console.log(data)
         })
         .catch((error) => {
           error

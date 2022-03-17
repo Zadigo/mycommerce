@@ -28,17 +28,33 @@ class VueLocalStorage {
     }
 
     retrieve (key) {
+        // Return an item under the
+        // session key
         return this.data[key]
     }
 
     create (key, value) {
+        // Create an item under the
+        // session key
         var storedData = this.data
         storedData[key] = value
         this._save(storedData)
     }
 
-    clear () {
-        this.storage.removeItem(DEFAULT_KEY_NAME)
+    // clear () {
+    //     this.storage.removeItem(DEFAULT_KEY_NAME)
+    // }
+
+    save (key, value) {
+        // Save globally in the local storage
+        // and not under the session key
+        this.storage.setItem(key, value)
+    }
+
+    getValue (key) {
+        // Return a value savd globally and
+        // not under the session key
+        return this.storage.getItem(key)
     }
 }
 

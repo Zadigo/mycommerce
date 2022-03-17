@@ -13,15 +13,15 @@
       </v-row>
 
       <div v-else class="row">
-        <div v-for="item in cart" :key="item.id" class="col-12">
+        <div v-for="item in cartItems" :key="item.id" class="col-12">
           <div class="p-1 d-flex justify-content-left">
             <b-img :src="item.product.images[0].mid_size|mediaUrl" height="150" width="auto"></b-img>
             <div class="mx-4">
               <p class="font-weight-bold mb-1">{{ item.product.name }}</p>
 
-              <p v-if="!item.product.on_sale">{{ $n(item.product.unit_price, 'currency', $i18n.locale) }} x {{ item.quantity }}</p>
+              <p v-if="!item.product.on_sale">{{ $n(item.product.unit_price, 'currency', $i18n.locale) }} x 1</p>
               <p v-else>
-                <del>{{ $n(item.product.unit_price, 'currency', $i18n.locale) }}</del> {{ $n(item.product.sale_price, 'currency', $i18n.locale) }} x {{ item.quantity }}
+                <del>{{ $n(item.product.unit_price, 'currency', $i18n.locale) }}</del> {{ $n(item.product.sale_price, 'currency', $i18n.locale) }} x 1
               </p>
 
               <v-btn @click="removeFromCart(item)">
@@ -35,36 +35,41 @@
         <div class="col-12">
           <div class="p-1 d-flex justify-content-between">
             <span>Total:</span>
-            <span class="font-weight-bold">{{ $n(cart.total, 'currency', $i18n.locale) }}</span>
+            <span class="font-weight-bold">{{ $n(cartTotal, 'currency', $i18n.locale) }}</span>
           </div>
         </div>
       </div>
     
     </div>
 
-    <template #modal-footer>
-      <div class="w-100">
-        <v-col class="d-flex justify-content-center" cols="12">
-          <b-btn role="button" class="mx-2" size="lg">
-            {{ $t('View basket') }}
-          </b-btn>
-          <b-btn role="button" size="lg" style="width:174px;">
-            {{ $t('Checkout') }}
-          </b-btn>
-        </v-col>
-      </div>
-    </template>
+    <div class="w-100">
+      <v-col class="d-flex justify-content-center" cols="12">
+        <v-btn class="mx-2" size="lg" @click="goToPage">
+          {{ $t('View basket') }}
+        </v-btn>
+
+        <v-btn  style="width:174px;" @click="goToPage">
+          {{ $t('Checkout') }}
+        </v-btn>
+      </v-col>
+    </div>
+    <!-- <template #modal-footer>
+    </template> -->
   </b-modal>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import cartMixin from './cartMixin'
 
 export default {
   name: 'ModalCart',
-
+  mixins: [cartMixin],
+  
   computed: {
     ...mapState({
+      cartTotal: (state) => { return state.cachedCartResponse.total },
+      cartItems: (state) => { return state.cartItems },
       cart: (state) => { return state.cart }
     }),
 
@@ -78,29 +83,10 @@ export default {
     }
   },
 
-  beforeMount () {
-    var cart = this.getCart()
-    this.$store.commit('updateCart', cart)
-  },
-
   methods: {
-    getCart () {
-      return this.$session.retrieve('cart')
-    },
-
-    removeFromCart (item) {
-      var cart = this.getCart()
-
-      this.$api.shop.cart.remove(item, cart['session_id'])
-      .then(() => {
-        // CHECK: This could break in case there is no
-        // cart in the store but technically the mount
-        // of the modal cart sets this automatically
-        this.$store.commit('removeFromCart', item)
-      })
-      .catch((error) => {
-        this.$store.dispatch('addErrorMessage', error.response.statusText)
-      })
+    goToPage () {
+      this.$store.commit('toggleModalCart')
+      this.$router.push({ name: 'cart', params: { lang: this.$i18n.locale } })
     }
   }
 }

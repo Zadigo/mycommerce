@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import i18n from '../i18n'
 
+import i18n from '../i18n'
 import Account from '../views/Account.vue'
 import store from '../store'
 
@@ -10,6 +10,11 @@ import googleAnalyticsFunctions from '../plugins/analytics/google/functions'
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/',
+    redirect: { name: 'home', params: { lang: i18n.locale }}
+  },
+
   {
     path: '/:lang',
     component: {
@@ -22,19 +27,24 @@ const routes = [
         component: () => import(/* webpackChunkName: "home" */ '../views/HomeView.vue')
       },
       {
-        path: 'collections/all',
-        name: 'collection_all',
-        component: () => import(/* webpackChunkName: "collection" */ '../views/CollectionView.vue')
+        path: 'collections/:collection([a-z-]+)',
+        name: 'collection_details',
+        component: () => import(/* webpackChunkName: "collection" */ '@/views/CollectionView.vue')
       },
-      // {
-      //   path: 'collections/:name([a-z-]+)',
-      //   name: 'collection_details',
-      //   component: () => import(/* webpackChunkName: "collection" */ '../views/CollectionView.vue')
-      // },
       {
         path: 'products/:id(\\d+)/:slug([a-z-]+)',
         name: 'product',
         component: () => import(/* webpackChunkName: "product" */ '../views/ProductView.vue')
+      },
+      {
+        path: 'wishlist',
+        name: 'wishlist',
+        component: () => import(/* webpackChunkName: "wishlist" */'@/views/WishlistView.vue')
+      },
+      {
+        path: 'cart',
+        name: 'cart',
+        component: () => import(/* webpackChunkName: "cart" */'@/views/CartView.vue')
       },
 
       {
@@ -128,7 +138,73 @@ const routes = [
     ]
   },
 
+  {
+    path: '/dashboard',
+    components: {
+      dashboard: () => import('@/components/dashboard/BaseLayout.vue')
+    },
+    children: [
+      {
+        path: '',
+        name: 'dashboard_index',
+        meta: {
+          text: 'Home',
+          icon: 'home',
+          isAdmin: true
+          // requiresAdmin: true
+        },
+        components: {
+          content: () => import('@/views/dashboard/IndexView.vue')
+        }
+      },
+      {
+        path: 'products',
+        name: 'dashboard_products',
+        meta: {
+          text: 'Products',
+          icon: 'table',
+          isAdmin: true
+          // requiresAdmin: true
+        },
+        components: {
+          content: () => import('@/views/dashboard/ProductsView.vue')
+        }
+      },
+      {
+        path: 'products/:id',
+        name: 'dashboard_product',
+        meta: {
+          text: 'Product',
+          icon: 'table',
+          isAdmin: true
+          // requiresAdmin: true
+        },
+        components: {
+          content: () => import('@/views/dashboard/ProductView.vue')
+        }
+      },
+      {
+        path: 'images',
+        name: 'dashboard_images',
+        meta: {
+          text: 'Images',
+          icon: 'images',
+          isAdmin: true
+          // requiresAdmin: true
+        },
+        components: {
+          content: () => import('@/views/dashboard/ProductImagesView.vue')
+        }
+      }
+    ]
+  },
 
+  {
+    path: '/404',
+    name: 'not_found',
+    alias: '*',
+    component: () => import('@/views/404_View.vue')
+  }
 ]
 
 const router = new VueRouter({
@@ -139,6 +215,10 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  if (to.name.includes('dashboard')) {
+    return next()
+  }
+
   var localeLanguage = to.params.lang
   var supportedLanguages = process.env.VUE_APP_I18N_SUPPORTED_LOCALE.split(',')
 
