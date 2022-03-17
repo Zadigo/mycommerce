@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-11 10:16+0100\n"
+"POT-Creation-Date: 2022-03-17 22:27+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,24 +20,87 @@ msgstr ""
 
 #: .\collection\choices.py:5
 msgid "Coats"
-msgstr ""
+msgstr "Blazers"
 
-#: .\collection\choices.py:6
+#: .\collection\choices.py:6 .\shop\choices.py:73
 msgid "Dresses"
-msgstr ""
+msgstr "Robes"
 
 #: .\collection\choices.py:7
 msgid "Lingerie"
-msgstr ""
+msgstr "Lingerie"
 
-#: .\collection\choices.py:8
+#: .\collection\choices.py:8 .\shop\choices.py:74
 msgid "Pants"
-msgstr ""
+msgstr "Pantalons"
 
-#: .\collection\choices.py:9
+#: .\collection\choices.py:9 .\shop\choices.py:77
 msgid "Shorts"
-msgstr ""
+msgstr "Shorts"
 
 #: .\collection\choices.py:10
 msgid "Skirts"
+msgstr "Jupes"
+
+#: .\shop\choices.py:68
+msgid "Accessories"
+msgstr "Accesoires"
+
+#: .\shop\choices.py:69
+msgid "Activewear"
+msgstr "Tenues de sport"
+
+#: .\shop\choices.py:70
+msgid "Bags"
 msgstr ""
+
+#: .\shop\choices.py:71
+msgid "Bras"
+msgstr "Soutien-Gorge"
+
+#: .\shop\choices.py:72
+msgid "Denim"
+msgstr "Jeans"
+
+#: .\shop\choices.py:75
+msgid "Panties"
+msgstr "Culottes"
+
+#: .\shop\choices.py:76
+msgid "Shoes"
+msgstr "Chaussures"
+
+#: .\shop\choices.py:78
+msgid "Suits"
+msgstr "Blazers"
+
+#: .\shop\choices.py:79
+msgid "Tops"
+msgstr "Tops"
+
+#: .\shop\models.py:28
+msgid "Used for the image's alt attribute"
+msgstr "Utilisé pour l'attribut alt the l'image"
+
+#: .\shop\models.py:66
+msgid "Used for the video alt attribute"
+msgstr ""
+
+#: .\shop\models.py:121
+msgid "Defines a declination of a main product in color"
+msgstr "Déclinaison du produit en couleur"
+
+#: .\shop\models.py:127
+msgid "Declination in size, patterns..."
+msgstr "Déclinaisons du produit en taille, motifs..."
+
+#: .\shop\models.py:146
+msgid "Cost price of the product"
+msgstr "Coût d'achat ou de fabrication du produit"
+
+#: .\shop\models.py:160
+msgid "Explicitly mark a product as being new"
+msgstr "Marquer le produit comme étant nouveau"
+
+#~ msgid "Bag"
+#~ msgstr "Sacs"
