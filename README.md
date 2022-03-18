@@ -1,6 +1,6 @@
 # Full Stack Fashion Ecommerce Website
 
-A fullstack fashion ecommerce website created with Vue and Django.
+A fullstack SPA fashion ecommerce website created with Vue and Django.
 
 ## Getting started
 

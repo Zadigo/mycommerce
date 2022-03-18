@@ -10,9 +10,9 @@ class ProductAdmin(admin.ModelAdmin):
     filter_horizontal = ['images', 'additional_variants']
     list_filter = ['active']
     date_hiearchy = 'created_on'
-    search_fields = ['name', 'reference', 'slug']
+    search_fields = ['name', 'slug']
     fieldsets = [
-        ['General', {'fields': ['name', 'reference']}],
+        ['General', {'fields': ['name', 'sku']}],
         ['Variant', {'fields': ['color', 'additional_variants']}],
         ['Media', {'fields': ['images', 'video']}],
         ['Pricing', {'fields': ['unit_price', 'sale_value', 'sale_price', 'on_sale']}],

@@ -1,15 +1,16 @@
 from django.db import models
-from shipments.choices import Transporters
 
+from shipments.choices import TransporterChoices
 from shipments.utils import get_orders_model
 
 CUSTOMER_ORDERS_MODEL = get_orders_model()
 
+
 class Shipment(models.Model):
     transporter = models.CharField(
         max_length=150,
-        choices=Transporters.choices,
-        default=Transporters.IN_HOUSE
+        choices=TransporterChoices.choices,
+        default=TransporterChoices.IN_HOUSE
     )
     tracking_number = models.CharField(
         max_length=100,

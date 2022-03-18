@@ -5,7 +5,7 @@ from api.serializers.products import ProductSerializer
 from api.utils import get_product_model
 from cart.models import Cart
 from rest_framework import fields
-from shop.choices import ClotheSizes
+from shop.choices import ClotheSizesChoices
 from django.db.models import QuerySet
 from rest_framework.serializers import Serializer
 
@@ -22,16 +22,16 @@ class CartSerializer(Serializer):
 
 class ValidateVariants(Serializer):
     size = fields.ChoiceField(
-        ClotheSizes.sizes, 
-        default=ClotheSizes.default('S')
+        ClotheSizesChoices.sizes, 
+        default=ClotheSizesChoices.default('S')
     )
 
 
 class ValidateCart(Serializer):
     product = fields.IntegerField()
     default_size = fields.ChoiceField(
-        ClotheSizes.choices(),
-        default=ClotheSizes.default('Unique')
+        ClotheSizesChoices.choices(),
+        default=ClotheSizesChoices.default('Unique')
     )
     session_id = fields.CharField(allow_null=True)
     is_gift = fields.BooleanField(default=False)

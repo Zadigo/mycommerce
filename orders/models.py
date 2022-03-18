@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.crypto import get_random_string
+from django.utils.translation import gettext_lazy as _
 
 from orders.utils import get_product_model
 
@@ -28,7 +29,8 @@ class ProductHistory(models.Model):
     created_on = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name_plural = 'Product histories'
+        verbose_name = _('Product history')
+        verbose_name_plural = _('Product histories')
         ordering = ['created_on']
     
     def __str__(self):
@@ -65,6 +67,8 @@ class CustomerOrder(models.Model):
     created_on = models.DateTimeField(auto_now=True)
     
     class Meta:
+        verbose_name = _('CustomerOrder')
+        verbose_name_plural = _('CustomerOrders')
         ordering = ['created_on']
 
     def __str__(self):

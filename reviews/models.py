@@ -2,14 +2,12 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
-from orders.models import CustomerOrder
-from reviews.utils import review_media_path
 from shop.models import Product
 
+from reviews.utils import review_media_path
 from reviews.validators import validate_rating, validate_video
 
 USER_MODEL = get_user_model()
-
 
 class ReviewMedia(models.Model):
     image = ProcessedImageField(

@@ -6,11 +6,13 @@ from django.db import models
 from django.db.models import UniqueConstraint
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
+from django.forms import ValidationError
 from django.utils.crypto import get_random_string
+from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
-from shop.choices import (ColorChoices, VariantChoices,
+from shop.choices import (CategoryChoices, ColorChoices, VariantChoices,
                           VariantSubcategoryChoices)
 from shop.utils import (calculate_sale, create_product_slug, image_path,
                         video_path)
@@ -24,7 +26,7 @@ class Image(models.Model):
     name = models.CharField(
         max_length=100,
         unique=True,
-        help_text="Used for the image's alt attribute"
+        help_text=_("Used for the image's alt attribute")
     )
     variant = models.CharField(
         max_length=100,
@@ -62,7 +64,7 @@ class Video(models.Model):
     name = models.CharField(
         max_length=100,
         unique=True,
-        help_text='Used for the video alt attribute'
+        help_text=_('Used for the video alt attribute')
     )
     content = models.FileField(
         upload_to=video_path,
@@ -105,25 +107,29 @@ class AdditionalVariant(models.Model):
     
     
 class AbstractProduct(models.Model):
-    # TODO: Delete reference, think it's useless
-    reference = models.CharField(
-        max_length=100,
-        default=get_random_string(10),
-        unique=True
-    )
-    
     name = models.CharField(max_length=100)
     color = models.CharField(
         max_length=100,
         choices=ColorChoices.choices,
         default=ColorChoices.BLACK,
-        help_text='Defines a declination of a main product in color'
+        help_text=_('Defines a declination of a main product in color')
     )
-        
+    sku = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        validators=[]
+    )
+    
     additional_variants = models.ManyToManyField(
         AdditionalVariant, 
         blank=True,
-        help_text='Declination in size, patterns...'
+        help_text=_('Declination in size, patterns...')
+    )
+    category = models.CharField(
+        max_length=100,
+        choices=CategoryChoices.choices,
+        default=CategoryChoices.SHORTS
     )
     images = models.ManyToManyField(Image, blank=True)
     video = models.ForeignKey(
@@ -137,7 +143,7 @@ class AbstractProduct(models.Model):
         max_digits=5,
         decimal_places=2,
         default=1,
-        help_text='Cost price of the product',
+        help_text=_('Cost value of the product'),
         validators=[price_validator]
     )
     
@@ -151,7 +157,7 @@ class AbstractProduct(models.Model):
     
     display_new = models.BooleanField(
         default=False,
-        help_text='Explicitly mark a product as being new'
+        help_text=_('Explicitly mark a product as being new')
     )
     slug = models.SlugField(unique=True)
     active = models.BooleanField(default=False)
@@ -163,7 +169,7 @@ class AbstractProduct(models.Model):
         abstract = True
         ordering = ['name', '-created_on']
         indexes = [
-            models.Index(fields=['name', 'reference'])
+            models.Index(fields=['name', 'sku', 'category'])
         ]
         constraints = [
             UniqueConstraint(fields=['name', 'color'], name='unique_name_with_color')
@@ -181,19 +187,22 @@ class AbstractProduct(models.Model):
 
     @property
     def get_price(self):
-        pass
+        if self.on_sale and self.sale_price > 0:
+            return self.sale_price
+        return self.unit_price
     
     def clean(self):
-        tokens = [self.color.lower()]
-        tokens.extend(self.name.split(' '))
-        self.slug = create_product_slug(' '.join(tokens))
-
+        if self.on_sale:
+            if self.sale_value == 0:
+                raise ValidationError({'sale_value': _("A product on sale cannot have a sale value of 0")})
+            self.sale_price = calculate_sale(self.unit_price, self.sale_value)
+        # self.slug = create_product_slug(self.name, self.color)
+        
 
 class Product(AbstractProduct):    
-    def clean(self):
-        super().clean()
-        if self.on_sale:
-            self.sale_price = calculate_sale(self.unit_price, self.sale_value)
+    class Meta(AbstractProduct.Meta):
+        verbose_name = _('Product')
+        verbose_name_plural = _('Produits')
     
 
 class AbstractUserList(models.Model):
@@ -233,12 +242,9 @@ class Wishlist(AbstractUserList):
         ]
 
 
-# @receiver(post_save, sender=Product)
-# def create_slug(instance, created, **kwargs):
-#     if created:
-#         if instance.name:
-#             instance.slug = create_product_slug(instance.name)
-#             instance.save()
+@receiver(pre_save, sender=Product)
+def create_slug(instance, created, **kwargs):
+    instance.slug = create_product_slug(instance.name)
 
 
 @receiver(post_delete, sender=Image)
@@ -255,16 +261,7 @@ def delete_image(sender, instance, **kwargs):
                 os.remove(instance.original.path)
     else:
         instance.url.delete(save=False)
-
-
-# @receiver(pre_delete, sender=Product)
-def delete_images(sender, instance, **kwargs):
-    images = instance.images.all()
-    for image in images:
-        if image.url:
-            if os.path.isfile(image.original.path):
-                os.remove(image.url.path)
-
+        
 
 @receiver(pre_save, sender=Image)
 def delete_image_on_update(sender, instance, **kwargs):
@@ -287,3 +284,12 @@ def delete_image_on_update(sender, instance, **kwargs):
                         os.remove(old_image.original.path)
     else:
         instance.original.delete(save=False)
+
+
+# @receiver(pre_delete, sender=Product)
+def delete_images(sender, instance, **kwargs):
+    images = instance.images.all()
+    for image in images:
+        if image.url:
+            if os.path.isfile(image.original.path):
+                os.remove(image.url.path)

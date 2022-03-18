@@ -94,7 +94,7 @@ const routes = [
       },
 
       {
-        path: '/login',
+        path: 'login',
         name: 'login',
         meta: {
           fullPage: true
@@ -128,13 +128,13 @@ const routes = [
       {
         path: '/payment-methods',
         name: 'payment_methods'
-      },
-
-      {
-        path: '*',
-        name: '404_error',
-        component: () => import('@/views/404_View.vue')
       }
+
+      // {
+      //   path: '*',
+      //   name: '404_error',
+      //   component: () => import('@/views/404_View.vue')
+      // }
     ]
   },
 
