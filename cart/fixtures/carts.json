@@ -1,0 +1,28 @@
+[
+    {
+        "model": "cart.Cart",
+        "pk": 1,
+        "fields": {
+            "created_on": "2022-03-18 02:12:05.396826-05:00",
+            "is_anonymous": true,
+            "is_paid_for": false,
+            "product": 1,
+            "price": 10,
+            "session_id": "test_session",
+            "user": null
+        }
+    },
+    {
+        "model": "cart.Cart",
+        "pk": 1,
+        "fields": {
+            "created_on": "2022-03-18 02:12:05.396826-05:00",
+            "is_anonymous": false,
+            "is_paid_for": false,
+            "product": 2,
+            "price": 11,
+            "session_id": "auth_session",
+            "user": null
+        }
+    }
+]
