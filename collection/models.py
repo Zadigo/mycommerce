@@ -1,7 +1,7 @@
 from django.db import models
 from shop.models import Product
 
-from collection.choices import CollectionCategories
+from collection.choices import CollectionCategoryChoices
 
 
 class Collection(models.Model):
@@ -11,8 +11,8 @@ class Collection(models.Model):
     )
     category = models.CharField(
         max_length=100,
-        choices=CollectionCategories.choices,
-        default=CollectionCategories.SKIRTS
+        choices=CollectionCategoryChoices.choices,
+        default=CollectionCategoryChoices.SHORTS
     )
     description = models.TextField(
         max_length=500,

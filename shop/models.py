@@ -243,7 +243,7 @@ class Wishlist(AbstractUserList):
 
 
 @receiver(pre_save, sender=Product)
-def create_slug(instance, created, **kwargs):
+def create_slug(instance, **kwargs):
     instance.slug = create_product_slug(instance.name)
 
 
