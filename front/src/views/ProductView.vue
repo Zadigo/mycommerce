@@ -43,8 +43,8 @@
     </div>
   </section>
 
-  <section v-else id="product" class="space">
-    <div class="container dark-grey-text mt-5">
+  <section v-else id="product" class="space my-9">
+    <div class="container-fluid dark-grey-text mt-5">
 
       <div class="row">
         <!-- <div class="col-12">
@@ -53,7 +53,8 @@
 
         <!-- Images -->
         <div class="col-md-7">
-          <images :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" />
+          <tile-display :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" />
+          <!-- <images :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" /> -->
         </div>
 
         <!-- Information -->
@@ -83,26 +84,28 @@
 <script>
 import { mapState } from 'vuex'
 
-import Images from '../components/product/Images.vue'
+// import Images from '../components/product/Images.vue'
 import Information from '../components/product/Information.vue'
 import MoreProducts from '../components/product/MoreProducts.vue'
+import TileDisplay from '../components/product/images/TileDisplay.vue'
 // import Reviews from '../components/product/Reviews.vue'
 // import RecentlyViewed from '../components/product/RecentlyViewed.vue'
 
 export default {
   name: 'Product',
 
+  title () {
+    return this.currentProduct.name
+  },
+
   components: {
-    Images,
     Information,
     MoreProducts,
+    TileDisplay
+    // Images,
     // Reviews,
     // RecentlyViewed
   },
-  
-  // title () {
-  //   return this.$options.filters.capitalizeLetters(this.currentProduct.name)
-  // },
 
   data: () => ({
     isLoading: true,
@@ -148,10 +151,10 @@ export default {
   },
 
   watch: {
-    $route (n, o) {
-      if (n.params.id != o.params.id) {
-        this.$store.commit('setCurrentProduct', n.params.id)
-        this.$store.commit('setRecentlyViewed', n.params.id)
+    '$route.params.id'(newValue, oldValue) {
+      if (newValue != oldValue) {
+        this.$store.commit('setCurrentProduct', newValue)
+        this.$store.commit('setRecentlyViewed', newValue)
         this.$localstorage.create('recentlyViewedProducts', this.$store.getters['recentlyViewedProducts'])
         this.requestProductVariants()
       }

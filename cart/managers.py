@@ -20,15 +20,15 @@ class CartManager(QuerySet):
             cart_instance.refresh_from_db()
             return cart_instance
         
-    def cart_products(self, session_id):
+    def cart_items(self, session_id):
         """Return all the items in the user's cart
         using the cart_session_id"""
-        reference = str(session_id)
-        return self.filter(session_id__iexact=reference, is_paid_for=False)
+        session_id = str(session_id)
+        return self.filter(session_id=session_id, is_paid_for=False)
     
-    def get_cart_total(self, session_id):
-        queryset = self.cart_products(session_id)
-        return queryset, queryset.aggregate(Sum('total'))
+    def cart_total(self, session_id):
+        queryset = self.cart_items(session_id)
+        return queryset.aggregate(Sum('price'))
     
     def _add_to_cart(self, request, session_id, product, **kwargs):
         if not product.active:

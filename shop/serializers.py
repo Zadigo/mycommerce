@@ -34,12 +34,10 @@ class VideoSerializer(Serializer):
 class ProductSerializer(Serializer):
     id = fields.IntegerField()
     name = fields.CharField(required=False)
-    reference = fields.CharField(required=False)
     unit_price = fields.DecimalField(5, 2, required=False)
 
     color = fields.CharField()
-    additional_variants = AdditionalVariantSerializer(
-        many=True, required=False)
+    additional_variants = AdditionalVariantSerializer(many=True, required=False)
     images = ImageSerializer(many=True, required=False)
     video = VideoSerializer(required=False)
 

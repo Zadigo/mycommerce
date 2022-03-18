@@ -1,10 +1,10 @@
 <template>
-  <section id="collection">
+  <section id="collection" class="my-8">
 
     <!-- Page Header -->
     <page-header :title="''" :content="''" :src="'http://via.placeholder.com/1200x300'" />
 
-    <div class="container">
+    <div class="container-fluid">
       <page-nav :multiple-grid-display="multipleGridDisplay" @change-grid="changeGrid" @do-sort="doSort" @toggle-filters="toggleFilters" />
 
       <section id="products" class="mb-4">

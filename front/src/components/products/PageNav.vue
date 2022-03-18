@@ -1,49 +1,75 @@
 <template>
-  <b-navbar class="border p-4 rounded mdb-color lighten-3 mt-3 mb-5">
-    <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+  <nav ref="link" class="navbar navbar-expand-lg navbar-light my-5">
+    <div class="container">
+      <div class="collapse navbar-collapse flex-column justify-content-left align-items-start">
+        <ul class="navbar-nav">
 
-    <b-collapse id="nav-collapse" is-nav>
-      <!-- Filter -->
-      <b-navbar-nav>        
-        <b-nav-item>
-          <v-btn icon @click="$emit('toggle-filters')">
-            <v-icon>mdi-filter</v-icon>
-          </v-btn>
-        </b-nav-item>
-
-        <!-- Grid -->
-        <b-nav-item>
-          <v-btn icon @click="$emit('change-grid')">
-            <v-icon>mdi-grid</v-icon>
-          </v-btn>
-        </b-nav-item>
-
-        <!-- Sort -->
-        <b-nav-item>
-          <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="expand-transition">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn text v-bind="attrs" v-on="on">
-                <v-icon class="mr-2">mdi-sort</v-icon>
-                {{ sortMethod }}
+          <!-- <li class="nav-item">
+            <span class="font-weight-bold">
+              <v-btn disabled>
+                {{ $t('Filters') }}
               </v-btn>
-            </template>
+            </span>
+          </li> -->
 
-            <v-list>
-              <v-list-item v-for="method in sortMethods" :key="method" @click="doSort(method)">
-                <v-list-item-title>{{ method }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </b-nav-item>
-      </b-navbar-nav>
-    </b-collapse>
+          <li class="nav-item mx-2">
+            <v-btn icon @click="$emit('change-grid')">
+              <v-icon>mdi-grid</v-icon>
+            </v-btn>
+          </li>
 
-    <form class="form-inline">
-      <div class="md-form my-0">
-        <v-autocomplete v-model="select" :loading="loading" :items="items" :search-input.sync="searchedValue" cache-items flat hide-no-data hide-details outlined placeholder="Search for clothes"></v-autocomplete>
+          <li class="nav-item mx-2">
+            <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="scale-transition">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn text v-bind="attrs" v-on="on">
+                  <v-icon class="mr-2">mdi-sort</v-icon>
+                  {{ sortMethod }}
+                </v-btn>
+              </template>
+
+              <v-list>
+                <v-list-item v-for="method in sortMethods" :key="method" @click="doSort(method)">
+                  <v-list-item-title>{{ method }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </li>
+
+          <li class="nav-item mx-2">
+            <v-btn text @click="openFilters('size')">
+              {{ $t('Size') }}
+              <v-icon class="ms-1">mdi-arrow-down</v-icon>
+            </v-btn>
+          </li>
+
+          <li class="nav-item mx-2">
+            <v-btn text @click="openFilters('colors')">
+              {{ $t('Color') }}
+              <v-icon class="ms-1">mdi-arrow-down</v-icon>
+            </v-btn>
+          </li>
+        </ul>
+        
+        <transition name="slide-transition">
+          <div v-if="showFilters" id="filters" class="d-flex justify-content-center" style="flex-wrap:wrap;">
+            
+            <div v-if="selectedFilter == 'size'">
+              <v-chip v-for="(size, i) in sizes" :key="i" class="mx-1" link>
+                {{ size }}
+              </v-chip>
+            </div>
+
+            <div v-else-if="selectedFilter == 'colors'" class="d-flex justify-content-around">
+              <v-img v-for="(color, i) in colors" :key="i" :src="color" class="mx-1"></v-img>
+            </div>
+          
+          </div>
+        </transition>
       </div>
-    </form>
-  </b-navbar>
+    </div>
+  </nav>
+  <!-- <transition name="slide-transition">
+  </transition> -->
 </template>
 
 <script>
@@ -72,7 +98,23 @@ export default {
       'Alphabetically Z-A',
       'Price high to low', 
       'Price low to high'
-    ]
+    ],
+
+    showFilters: false,
+    selectedFilter: 'size',
+
+    selectedElements: {
+        size: {},
+        color: [],
+        brand: {},
+        material: {},
+        cut: {},
+        season: {},
+        novelties: {},
+        delivery: {}
+    },
+
+    sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
   }),
   
   computed: {
@@ -89,6 +131,13 @@ export default {
     searchedValue: {
       get () { return this.$store.state.search },
       set (value) { this.$store.commit('setSearch', value) }
+    },
+
+    colors () {
+      var items = ['beige', 'black', 'camel', 'red']
+      return _.map(items, (item) => {
+        return this.$options.filters.mediaUrl(`/media/swatches/${ item }.png`)
+      })
     }
   },
 
@@ -108,7 +157,76 @@ export default {
     doSort (method) {
       this.sortMethod = method
       this.$emit('do-sort', method)
+    },
+
+    openFilters (method) {
+      this.selectedFilter = method
+      this.showFilters = !this.showFilters
+    },
+
+    handleScroll () {
+      if (document.documentElement.scrollTop > 350) {
+        this.$refs.link.classList.add('scrolled')
+      } else {
+        this.$refs.link.classList.remove('scrolled')
+      }
     }
+  },
+
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll)
+  },
+
+  destroyed() {
+    window.removeEventListener('scroll', this.handleScroll)
   }
 }
 </script>
+
+<style scoped>
+.navbar {
+  transition: all .4s ease-in-out;
+}
+.nav-collapse {
+  position: relative;
+}
+#filters {
+  width: 100%;
+  height: auto;
+  min-height: 100px;
+  padding: .25rem;
+  margin-top: 2rem;
+}
+
+.slide-transition-enter-active,
+.slide-transition-enter-active {
+  transition: all .4s ease;
+}
+.slide-transition-enter,
+.slide-transition-leave-to {
+  opacity: 0;
+  transform: translateY(-30px) scale(.9, .9);
+}
+.slide-transition-leave,
+.slide-transition-enter-to {
+  opacity: 1;
+  transform: translateY(0px) scale(1, 1);
+}
+.slide-transition-move {
+  transition: all .3s ease;
+}
+
+.navbar {
+  transition: all .3s ease-in-out;
+}
+.navbar.scrolled {
+  position: fixed;
+  top: 15%;
+  left: 25%;
+  right: 25%;
+  border: 0;
+  width: auto;
+  background-color: white;
+  padding: .10rem;
+}
+</style>

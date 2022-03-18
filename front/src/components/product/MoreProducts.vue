@@ -1,25 +1,27 @@
 <template>
-  <div class="row d-flex justify-content-center">
-    <div class="col-md-12">
-      <div class="d-flex justify-content-between mt-4 mb-2 ">
-        <h4 class="text-uppercase font-weight-bold">
-          {{ $t('You may also like') }}
-        </h4>
-        
-        <!-- TODO: Put a recommended collection in the backend -->
-        <router-link id="link-recommendations" :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale } }">
-          {{ $t('View all') }}
-        </router-link>
+  <div class="container">
+    <div class="row d-flex justify-content-center">
+      <div class="col-md-12">
+        <div class="d-flex justify-content-between mt-4 mb-2 ">
+          <h4 class="text-uppercase font-weight-bold">
+            {{ $t('You may also like') }}
+          </h4>
+          
+          <!-- TODO: Put a recommended collection in the backend -->
+          <router-link id="link-recommendations" :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale } }">
+            {{ $t('View all') }}
+          </router-link>
+        </div>
       </div>
-    </div>
-    
-    <!-- Products -->
-    <div class="col-md-12">
-      <v-row>
-        <v-col v-for="product in recommendedProducts" :key="product.id" cols="3">
-          <card :product="product" :is-loading="isLoading" @product-card-click="updateProductList" />
-        </v-col>
-      </v-row>
+      
+      <!-- Products -->
+      <div class="col-md-12">
+        <v-row>
+          <v-col v-for="product in recommendedProducts" :key="product.id" cols="3">
+            <card :product="product" :is-loading="isLoading" @product-card-click="updateProductList" />
+          </v-col>
+        </v-row>
+      </div>
     </div>
   </div>
 </template>

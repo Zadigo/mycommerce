@@ -8,7 +8,7 @@
       </p>
 
       <div v-if="sizes.length > 0" class="sizes">
-        <b-btn v-for="(size, i) in sizes" id="btn-select-size" :key="size.key" :class="{ 'ml-2': i > 0 }" class="shadow-none border" variant="light" @click="setSize(size)">
+        <b-btn v-for="(size, i) in sizes" id="btn-select-size" :key="size.key" :class="{ 'ml-2': i > 0, 'bg-dark': productOptions.default_size == size }" class="shadow-none border" variant="light" @click="setSize(size)">
           {{ size.name }}
         </b-btn>
       </div>
@@ -111,6 +111,7 @@ export default {
 
         setTimeout(() => {
           this.addingToCart = false
+          this.productOptions.default_size = 'Unique'
         }, 2000)
       })
       .catch((error) => {
@@ -146,7 +147,7 @@ export default {
     },
 
     setSize (size) {
-      this.productOptions.variants.size = size
+      this.productOptions.default_size = size
     }
   }
 }

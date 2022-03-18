@@ -2,11 +2,13 @@ from django.contrib import admin
 
 from shop.models import (AdditionalVariant, Image, Like, Product, Video,
                          Wishlist)
+import random
 
+from shop.utils import create_product_slug
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'unit_price', 'active']
+    list_display = ['name', 'color', 'unit_price', 'active']
     filter_horizontal = ['images', 'additional_variants']
     list_filter = ['active']
     date_hiearchy = 'created_on'
@@ -18,7 +20,7 @@ class ProductAdmin(admin.ModelAdmin):
         ['Pricing', {'fields': ['unit_price', 'sale_value', 'sale_price', 'on_sale']}],
         ['Other', {'fields': ['display_new', 'active', 'slug']}]
     ]
-    actions = ['activate', 'deactivate', 'download_csv']
+    actions = ['activate', 'deactivate', 'download_csv', 'copy_products']
     
     def activate(self, request, queryset):
         queryset.update(active=True)
@@ -28,6 +30,14 @@ class ProductAdmin(admin.ModelAdmin):
         
     def download_csv(self, request, queryset):
         queryset = None
+        
+    def copy_products(self, request, queryset):
+        new_products = []
+        for product in queryset:
+            new_name = f"{product.name}{random.randrange(1, 999)}"
+            slug = create_product_slug(new_name, product.color)
+            new_products.append(Product(name=new_name, color=product.color, category=product.category, unit_price=product.unit_price, slug=slug))
+        Product.objects.bulk_create(new_products)
 
 
 @admin.register(Image)

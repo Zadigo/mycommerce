@@ -4,6 +4,10 @@
     /* font-size: 14px; */
 }
 
+html, body {
+    color: rgba(0, 0, 0, .8);
+}
+
 ::-webkit-scrollbar {
     width: 10px;
     height: 10px;

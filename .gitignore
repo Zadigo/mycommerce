@@ -165,3 +165,6 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Testing/Project configuration
+project.ini

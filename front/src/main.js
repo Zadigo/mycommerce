@@ -7,9 +7,7 @@ import Vue from 'vue'
 import './plugins/fontawesome'
 import './plugins/axios'
 import './plugins/bootstrap-vue'
-// import './plugins/session'
 import session from './plugins/my-session'
-// TODO: Unify in vue-project
 import ecommerce from './plugins/ecommerce'
 import myProject from './plugins/my-project'
 import i18n from './i18n'
@@ -36,10 +34,10 @@ Vue.config.productionTip = false
 // Plugins
 Vue.use(ecommerce)
 Vue.use(hero)
-// Vue.use(mySharingLinks)
 Vue.use(myAnalytics)
 Vue.use(myProject)
 Vue.use(session)
+// Vue.use(mySharingLinks)
 
 // Mixins
 // Vue.mixin(globalMixin)

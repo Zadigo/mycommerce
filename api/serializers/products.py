@@ -103,7 +103,6 @@ class ValidateAddToList(Serializer):
 
 class SimpleProductVariantSerializer(Serializer):
     id = fields.IntegerField()
-    reference = fields.CharField()
     color = fields.CharField()
     display_new = fields.BooleanField()
     slug = fields.SlugField()

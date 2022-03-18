@@ -1,6 +1,6 @@
 <template>
   <section id="home">
-    <intro :image="require('@/assets/hero.jpg')">
+    <intro :image="require('@/assets/hero3.jpg')">
       <intro-mask :opacity="0.3">
         <intro-container>
 

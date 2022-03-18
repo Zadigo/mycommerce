@@ -36,12 +36,7 @@ urlpatterns = [
     
     re_path(r'^likes', products.liked_products_view),
     re_path(r'^orders', orders.my_orders_view),
-    re_path(r'^payment', orders.create_order),
-    
-    # re_path(r'^cart/(?P<pk>\d+)/remove', carts.delete_from_cart_view),
-    # re_path(r'^cart/update', carts.update_in_cart_view),
-    # re_path(r'^cart/add', carts.add_to_cart_view),
-    # re_path(r'^cart', carts.cart_view)
+    re_path(r'^payment', orders.create_order)
 ]
 
 urlpatterns += router.urls

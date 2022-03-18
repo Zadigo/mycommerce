@@ -1,7 +1,9 @@
 <template>
   <transition name="general-transition" mode="out-in">
-    <b-card v-if="isLoading">
-      <b-skeleton-img height="400px" />
+    <b-card v-if="isLoading || !mainImage" id="link-product-card" class="product">
+      <div id="image">
+        <b-skeleton-img height="400px" />
+      </div>
       <b-skeleton width="65%" class="mt-3" />
       <b-skeleton width="25%" class="mt-3" />
     </b-card>

@@ -4,6 +4,17 @@ from rest_framework import fields
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
+import re
+
+class CommaSeperatedField(fields.Field):
+    def to_internal_value(self, data):
+        result = re.match(r'(\w+)\,', data)
+        if result:
+            return list(result.groups())
+        self.fail('invalid', input=data)
+        
+    def to_representation(self, value):
+        tokens = value
 
 
 class CustomPagination(LimitOffsetPagination):

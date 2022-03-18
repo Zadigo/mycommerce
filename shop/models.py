@@ -159,7 +159,7 @@ class AbstractProduct(models.Model):
         default=False,
         help_text=_('Explicitly mark a product as being new')
     )
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(max_length=100, unique=True)
     active = models.BooleanField(default=False)
     
     modified_on = models.DateField(auto_now_add=True)
@@ -244,7 +244,7 @@ class Wishlist(AbstractUserList):
 
 @receiver(pre_save, sender=Product)
 def create_slug(instance, **kwargs):
-    instance.slug = create_product_slug(instance.name)
+    instance.slug = create_product_slug(instance.name, instance.color)
 
 
 @receiver(post_delete, sender=Image)

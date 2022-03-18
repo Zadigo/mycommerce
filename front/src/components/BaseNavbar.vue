@@ -1,96 +1,63 @@
 <template>
-  <b-navbar v-if="!$route.meta.fullPage" toggleable="lg" type="light" variant="white" class="mb-0">
-    <b-container>
-      <b-navbar-brand :to="{ name: 'home', params: { lang: $i18n.locale } }" class="fs-22">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow" fixed-top>
+    <div class="container">
+      <router-link :to="{ name: 'home', params: { lang: $i18n.locale } }" class="navbar-brand">
         <span class="text-uppercase font-weight-bold">
           {{ myproject.company.legalName }}
         </span>
-      </b-navbar-brand>
+      </router-link>
 
+      <div class="collapse navbar-collapse justify-content-around">
 
-      <b-collapse id="nav-collapse" is-nav>
+        <ul class="navbar-nav">
+          <li class="nav-item" @mouseenter="showMegaMenu">
+            <router-link :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale } }" class="nav-link text">
+              {{ $t('Shop') }}
+            </router-link>
+          </li>
 
-        <b-navbar-nav>
-          <b-nav-item :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale } }" class="text-uppercase">
-            {{ $t('Shop') }}
-          </b-nav-item>
+           <li class="nav-item">
+            <router-link :to="{ name: 'dashboard_index' }" class="nav-link text">
+              {{ $t('Admin') }}
+            </router-link>
+          </li>
 
-          <b-nav-item :to="{ name: 'collection_details', params: { collection: 'lingerie', lang: $i18n.locale } }" class="text-uppercase">
-            {{ $t('Skirts') }}
-          </b-nav-item>
+          <!-- Mega-menu -->
+          <ecommerce-megamenu :is-visible="isVisible" @close-megamenu="isVisible=false"></ecommerce-megamenu>
+        </ul>
 
-          <b-nav-item :to="{ name: 'dashboard_index' }" class="text-uppercase">
-            Admin
-          </b-nav-item>
-        </b-navbar-nav>
-
-        <form class="form-inline">
-          <v-text-field type="search" outlined hide-details></v-text-field>
-        </form>
-        
-        <b-navbar-nav class="ml-auto">
-          <!-- <b-nav-form>
-            <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
-            <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
-          </b-nav-form> -->
-
-          <!-- <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="slide-transition" :offset-y="true">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn v-bind="attrs" v-on="on" text>
-                <v-icon size="28" class="font-weight-bold">mdi-account</v-icon>
-              </v-btn>
-            </template>
-
-            <v-list>
-              <v-list-item v-if="isAuthenticated" :to="{ name: 'account_home' }">
-                <v-list-item-title>Profile</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item v-if="!isAuthenticated" :to="{ name: 'login' }">
-                <v-list-item-title>Login</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item v-if="!isAuthenticated" :to="{ name: 'login' }">
-                <v-list-item-title>Signup</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item v-if="isAuthenticated" @click="logout">
-                <v-list-item-title>Logout</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu> -->
+        <ul class="navbar-nav">
+          <form class="form-inline px-3">
+            <v-text-field :placeholder="$t('Search')" type="search" outlined hide-details></v-text-field>
+          </form>
           
-          <!-- TODO: Open this menu programatically -->
-          <!-- <b-nav-item>
-            <span v-e-menu:megamenu>Something</span>
-            <base-menu />
-          </b-nav-item> -->
+          <li class="nav-item">
+            <router-link :to="{ name: 'wishlist', params: { lang: $i18n.locale } }" class="nav-link">
+              <v-icon size="28" class="mr-2">mdi-heart</v-icon>
+            </router-link>
+          </li>
 
-          <b-nav-item :to="{ name: 'wishlist', params: { lang: $i18n.locale } }">
-            <v-icon size="28" class="mr-2">mdi-heart</v-icon>
-          </b-nav-item>
-          
-          <b-nav-item @click="$store.commit('toggleModalCart')">
-            <!-- <span class="badge red z-depth-1 mr-1"> {{ cartCount }} </span> -->
-            <!-- <font-awesome-icon icon="shopping-cart" class="mr-2" /> -->
-            <v-icon size="28" class="mr-2">mdi-cart</v-icon>
-          </b-nav-item>        
-        </b-navbar-nav>
-
-      </b-collapse>
-    </b-container>
-  </b-navbar>
+          <li class="nav-item" @click="$store.commit('toggleModalCart')">
+            <a class="nav-link">
+              <v-icon size="28" class="mr-2">mdi-cart</v-icon>
+            </a>
+          </li>
+        </ul>
+      
+      </div>
+    </div>
+  </nav>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 
-// import BaseMenu from '../components/BaseMenu.vue'
-
 export default {
   name: 'BaseNavbar',
 
-  // components: { BaseMenu },
+  data: () => ({
+    isVisible: false
+  }),
   
   computed: {
     ...mapGetters(['cartCount']),
@@ -101,7 +68,28 @@ export default {
     logout() {
       this.$store.commit('authenticationModule/logout')
       this.$router.push({ name: 'home', params: { lang: this.$i18n.locale } })
+    },
+
+    showMegaMenu() {
+      // var html = document.querySelector('body')
+      // html.style.backgroundColor = "rgba(0, 0, 0, 0.6)"
+      this.isVisible=true
     }
   }
 }
 </script>
+
+<style scoped>
+.navbar {
+  height: 90px;
+}
+
+.navbar-light .navbar-nav .nav-link.text:focus, .navbar-light .navbar-nav .nav-link.text:hover {
+  color: rgba(0,0,0,.7);
+  border-bottom: 2px solid #000000;
+}
+
+.nav-item {
+  font-weight: 600;
+}
+</style>
