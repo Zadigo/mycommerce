@@ -16,6 +16,7 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import hero from './plugins/hero'
 import myAnalytics from './plugins/my-analytics'
+import currency from './plugins/currency'
 
 // Components
 import BaseSubscriptionModal from './components/BaseSubscriptionModal.vue'
@@ -37,6 +38,7 @@ Vue.use(hero)
 Vue.use(myAnalytics)
 Vue.use(myProject)
 Vue.use(session)
+Vue.use(currency)
 // Vue.use(mySharingLinks)
 
 // Mixins

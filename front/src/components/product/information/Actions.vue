@@ -42,14 +42,14 @@
       <!-- Add to cart -->
       <b-btn id="btn-add-cart" class="mr-2" variant="dark" @click="addToCart">
         <v-progress-circular v-if="addingToCart" :size="25" class="mr-2" color="white" indeterminate></v-progress-circular>
-        <v-icon v-else class="mr-2">mdi-cart</v-icon>
+        <v-icon v-else class="mr-2 text-white">mdi-cart</v-icon>
         {{ $t('Add to cart') }}
       </b-btn>
 
       <!-- Add to like -->
       <b-btn id="btn-add-like" class="btn-md my-0" variant="danger" @click="addToLikes">
         <!-- <font-awesome-icon icon="heart" /> -->
-        <v-icon>mdi-heart</v-icon>
+        <v-icon class="text-white">mdi-heart</v-icon>
       </b-btn>
     </div>
 

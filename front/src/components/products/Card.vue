@@ -1,14 +1,16 @@
 <template>
   <transition name="general-transition" mode="out-in">
-    <b-card v-if="isLoading || !mainImage" id="link-product-card" class="product">
+    <div v-if="isLoading || !mainImage" id="link-product-card" class="product">
       <div id="image">
-        <b-skeleton-img height="400px" />
+        <b-skeleton-img height="504px" />
       </div>
+
       <b-skeleton width="65%" class="mt-3" />
       <b-skeleton width="25%" class="mt-3" />
-    </b-card>
+    </div>
 
-    <router-link v-else :to="{ name: 'product', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-17">
+    <!-- TODO: Change .v-application a which makes links blue -->
+    <router-link v-else :to="{ name: 'product', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-17 normalize-link">
       <div id="link-product-card" class="product" @mouseenter="isHovered=true" @mouseleave="isHovered=false" @click="$emit('product-card-click')">
         <!-- TODO: Show when a product is marked as new -->
         <!-- <div class="product-badge">Nouveau</div> -->
@@ -20,7 +22,7 @@
           <v-img :lazy-src="'http://via.placeholder.com/600x1100'" :src="mainImage.mid_size|mediaUrl" :alt="mainImage.name" :class="{ 'zoom': isHovered && hasEffect }" />
         </div>
 
-        <div id="details" class="normalize-link">
+        <div id="details" class="mt-2">
           <p class="mb-0">
             {{ product.name|capitalizeLetters|truncate }}
           </p>
@@ -48,7 +50,7 @@
         </base-tag>
 
         <base-tag v-if="product.display_new && !product.on_sale" :is-absolute="true" :padding="1" :width="30" class="m-3">
-          {{ $t('Nouveau') }}
+          {{ $t('New') }}
         </base-tag>
       </div>
     </router-link>

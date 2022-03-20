@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-12">
 
-      <div id="product-content" class="pr-4 pl-5 pt-5 pb-5">
+      <div id="product-content" class="pr-4 pl-5 pb-5">
         <base-tag v-if="product.on_sale" background-color="error">
           <template>
             {{ $t('Sale') }}
@@ -10,12 +10,15 @@
         </base-tag>
 
         <div id="product-info" class="mb-6">
-          <p class="font-weight-bold fs-18 mb-2">{{ product.name|capitalizeLetters }}</p>
+          <p class="font-weight-bold mb-2 font-size-2">{{ product.name|capitalizeLetters }}</p>
 
-          <p class="mb-2">
-            <span v-if="product.on_sale" class="mr-1"><del>{{ $n(product.unit_price, 'currency') }}</del></span>
+          <p class="mb-2 font-size-2">
+            <span v-if="product.on_sale" class="mr-1 text-muted">
+              <del>{{ $n(product.unit_price, 'currency') }}</del>
+            </span>
+
             <span v-if="product.on_sale">{{ $n(product.sale_price, 'currency', $i18n.locale) }}</span>
-            <span v-else>{{ $n(product.unit_price, 'currency', $i18n.locale) }}</span>
+            <span v-else class="fw-4 fs-24">{{ $n(product.unit_price, 'currency', $i18n.locale) }}</span>
           </p>
 
           <div class="d-flex justify-content-left">

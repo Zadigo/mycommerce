@@ -60,6 +60,10 @@ var axiosPlugin = {
   install: (Vue) => {
     window.client = client
     Vue.prototype.$api = api(client)
+
+    // TEST: Transform calls directly to the template
+    // which can help us benefit from async
+    Vue.prototype.$axios = client
   }
 }
 

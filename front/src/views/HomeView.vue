@@ -5,8 +5,8 @@
         <intro-container>
 
           <div class="text-white">
-            <h1 v-font-size="54" class="mb-3">Assouvis tes ardents désir</h1>
-            <h5 class="mb-4">Craquez pour nos nouveautés signées Lounge</h5>
+            <h1 class="mb-3 lead">Assouvis tes ardents désir</h1>
+            <h5 class="mb-4 lead-smaller">Craquez pour nos nouveautés signées Lounge</h5>
 
             <router-link :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale  } }" class="btn btn-outline-light btn-lg m-2" role="button">
               Découvrir

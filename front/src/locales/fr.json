@@ -35,6 +35,7 @@
   "Load more": "Plus encore",
   "Login": "Se connecter",
   "My account": "Mon compte",
+  "Admin": "Admin",
   "New": "Nouveau",
   "No products found": "Aucun produits n'a pu être trouvé sur ce site",
   "Novelties": "Nouveautés",
@@ -97,5 +98,11 @@
   "verified_order": "Achat vérifié",
   "your_account": "Votre compte",
   "your_orders": "Vos commandes",
-  "your_payments": "Vos paiements"
+  "your_payments": "Vos paiements",
+  "Price high to low": "Prix décroissant",
+  "Price low to high": "Prix croissant",
+  "Latest": "Récent",
+  "Alphabetically A-Z": "Alphabétique A-Z",
+  "Alphabetically Z-A": "Alphabétique Z-A",
+  "Select an option": "Selectionnez une option"
 }

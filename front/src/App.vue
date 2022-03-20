@@ -11,14 +11,14 @@
     </v-main> -->
     
     <!-- <v-main v-else> -->
+
+    <base-top-banner v-if="$route.meta.fullPage==false" />
+
+    <base-navbar v-if="$route.meta.fullPage==false" />
+
+    <base-messages />
+
     <v-main>
-      <base-top-banner />
-
-      <base-navbar />
-    
-
-      <base-messages />
-
       <transition name="general-transition" mode="out-in">
         <router-view :key="$route.name"/>
       </transition>
@@ -28,11 +28,9 @@
       <login-modal />
       <base-subscription-modal />
       <modal-language-selection />
-
-
-      <base-footer />
     </v-main>
 
+    <base-footer v-if="$route.meta.fullPage==false" />
   </v-app>
 </template>
 

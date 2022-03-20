@@ -17,6 +17,12 @@
           </li>
 
            <li class="nav-item">
+            <router-link :to="{ name: 'fitting_room_view' }" class="nav-link text">
+              {{ $t('Fitting room') }}
+            </router-link>
+          </li>
+
+           <li class="nav-item">
             <router-link :to="{ name: 'dashboard_index' }" class="nav-link text">
               {{ $t('Admin') }}
             </router-link>

@@ -52,7 +52,7 @@ export default Vue.extend({
             ref: 'intro'
         }
 
-        return h('section', { attrs: { id: 'hero' } }, [
+        return h('section', { attrs: { class: ['hero'] } }, [
             h('div', options, [this.$slots.default])
         ])
     }

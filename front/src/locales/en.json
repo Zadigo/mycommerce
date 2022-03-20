@@ -13,6 +13,7 @@
   "Company info": "Company info",
   "Contact us": "Contact us",
   "Cookie policy": "Cookie policy",
+  "Admin": "Admin",
   "Copyright": "Copyright:",
   "Customer care": "Customer care",
   "Cut": "Cut",
@@ -99,5 +100,11 @@
   "verified_order": "Verified order",
   "your_account": "Your account",
   "your_orders": "My orders",
-  "your_payments": "Payments"
+  "your_payments": "Payments",
+  "Price high to low": "Price high to low",
+  "Price low to high": "Price low to high",
+  "Latest": "Latest",
+  "Alphabetically A-Z": "Alphabetically A-Z",
+  "Alphabetically Z-A": "Alphabetically Z-A",
+  "Select an option": "Select an option"
 }

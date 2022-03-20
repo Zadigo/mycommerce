@@ -1,5 +1,5 @@
 * {
-    /* font-family: "Montserrat", "Roboto", sans-serif; */
+    font-family: "Montserrat", "Roboto", sans-serif;
     /* font-weight: 300; */
     /* font-size: 14px; */
 }
@@ -42,7 +42,7 @@ html, body {
 
 .normalize-link {
     text-decoration: none;
-    color: black;
+    color: rgba(0, 0, 0, .8);
 }
 
 .normalize-links a {
@@ -50,7 +50,44 @@ html, body {
     color: black;
 }
 
-.fs-14 {
+.font-size-1 {
+  font-size: 1.1666666667rem;
+}
+
+.font-size-2 {
+  font-size: 1.3333333333rem;
+}
+
+.font-size-3 {
+  font-size: 1.5rem;
+}
+
+.font-size-4 {
+  font-size: 1.6666666667rem;
+}
+
+.font-size-5 {
+  font-size: 1.8333333333rem;
+}
+
+.font-size-6 {
+  font-size: 2rem;
+}
+
+.font-size-7 {
+  font-size: 2.1666666667rem;
+}
+
+.font-size-8 {
+  font-size: 2.3333333333rem;
+}
+
+.font-size-9 {
+  font-size: 2.5rem;
+}
+
+
+/* .fs-14 {
     font-size: 14px;
 }
 
@@ -65,6 +102,14 @@ html, body {
 .fs-22 {
     font-size: 22px;
 }
+
+.fs-24 {
+    font-size: 24px;
+}
+
+.fs-26 {
+    font-size: 26px;
+} */
 
 .text-17 {
     font-size: 17px;
@@ -103,4 +148,8 @@ section.space {
 .my-7 {
     margin-top: 3rem;
     margin-bottom: 3rem;
+}
+
+.btn-rounded {
+    border-radius: 10rem;
 }

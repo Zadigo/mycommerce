@@ -6,7 +6,7 @@
           <h4 class="text-uppercase font-weight-bold">
             {{ $t('You may also like') }}
           </h4>
-          
+
           <!-- TODO: Put a recommended collection in the backend -->
           <router-link id="link-recommendations" :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale } }">
             {{ $t('View all') }}
@@ -33,12 +33,12 @@ import Card from '../products/Card.vue'
 
 export default {
   name: 'AdditionalInformation',
-  
+  props: {
+    isLoading: {
+      type: Boolean
+    }
+  },
   components: { Card },
-
-  data: () => ({
-    isLoading: false
-  }),
 
   computed: {
     ...mapGetters(['recommendedProducts'])

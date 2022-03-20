@@ -9,6 +9,10 @@ import googleAnalyticsFunctions from '../plugins/analytics/google/functions'
 
 Vue.use(VueRouter)
 
+function loadView(component) {
+  return () => import(`@/views/${component}.vue`)
+}
+
 const routes = [
   {
     path: '/',
@@ -24,27 +28,54 @@ const routes = [
       {
         path: '',
         name: 'home',
-        component: () => import(/* webpackChunkName: "home" */ '../views/HomeView.vue')
+        component: () => import(/* webpackChunkName: "home" */ '../views/HomeView.vue'),
+        meta: {
+          fullPage: false
+        }
       },
       {
         path: 'collections/:collection([a-z-]+)',
         name: 'collection_details',
-        component: () => import(/* webpackChunkName: "collection" */ '@/views/CollectionView.vue')
+        component: () => import(/* webpackChunkName: "collection" */ '@/views/CollectionView.vue'),
+        meta: {
+          fullPage: false
+        }
       },
       {
         path: 'products/:id(\\d+)/:slug([a-z-]+)',
         name: 'product',
-        component: () => import(/* webpackChunkName: "product" */ '../views/ProductView.vue')
+        component: () => import(/* webpackChunkName: "product" */ '../views/ProductView.vue'),
+        meta: {
+          fullPage: false
+        }
       },
       {
         path: 'wishlist',
         name: 'wishlist',
-        component: () => import(/* webpackChunkName: "wishlist" */'@/views/WishlistView.vue')
+        component: () => import(/* webpackChunkName: "wishlist" */'@/views/WishlistView.vue'),
+        meta: {
+          fullPage: false
+        }
       },
       {
         path: 'cart',
         name: 'cart',
         component: () => import(/* webpackChunkName: "cart" */'@/views/CartView.vue')
+      },
+
+      {
+        path: 'size-guide',
+        name: 'size_guide',
+        component: loadView('SizeGuideView'),
+        meta: {
+          fullPage: true
+        }
+      },
+
+      {
+        path: 'fitting-room',
+        name: 'fitting_room_view',
+        component: loadView('FittingRoomView')
       },
 
       {
@@ -100,12 +131,6 @@ const routes = [
           fullPage: true
         },
         component: () => import('@/views/LoginView.vue')
-      },
-      
-      {
-        path: '/size-guide',
-        name: 'size_guide',
-        component: () => import('@/views/SizeGuideView.vue')
       },
 
       {
@@ -210,7 +235,11 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   // base: process.env.BASE_URL,
-  scrollBehavior: () => { window.scrollTo(0, 0) },
+  scrollBehavior: () => {
+    setTimeout(() => {
+      window.scrollTo(0, 0)
+    }, 700);
+  },
   routes
 })
 

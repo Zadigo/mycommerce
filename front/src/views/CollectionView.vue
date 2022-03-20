@@ -11,9 +11,10 @@
         <div class="row">
           <!-- TODO: Implement transition for all of this section especially between the filters and the products section -->
           <!-- Side Filters -->
-          <side-filters :hide-filters="hideFilters" @selection-start="isLoading=true" @selection-end="isLoading=false" />
+          <!-- <side-filters :hide-filters="hideFilters" @selection-start="isLoading=true" @selection-end="isLoading=false" /> -->
 
-          <div :class="{ 'col-10': !hideFilters, 'col-12': hideFilters }">
+          <!-- <div :class="{ 'col-10': !hideFilters, 'col-12': hideFilters }"> -->
+          <div class="col-12">
             <transition name="general-transition" mode="out-in">
               <div v-if="sortedProducts.length == 0" class="row">
                 <div class="col-md-12">
@@ -88,7 +89,7 @@ import Card from "../components/products/Card.vue"
 import PageHeader from "../components/products/PageHeader.vue"
 import Pagination from "../components/products/Pagination.vue"
 import PageNav from '../components/products/PageNav.vue'
-import SideFilters from '../components/products/SideFilters.vue'
+// import SideFilters from '../components/products/SideFilters.vue'
 
 export default {
   name: 'CollectionView',
@@ -99,7 +100,7 @@ export default {
     PageHeader,
     Pagination,
     PageNav,
-    SideFilters
+    // SideFilters
   },
   
   title: () => 'Shop Loungewear And Underwear', 

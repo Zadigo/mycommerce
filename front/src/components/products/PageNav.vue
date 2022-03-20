@@ -3,27 +3,19 @@
     <div class="container">
       <div class="collapse navbar-collapse flex-column justify-content-left align-items-start">
         <ul class="navbar-nav">
-
-          <!-- <li class="nav-item">
-            <span class="font-weight-bold">
-              <v-btn disabled>
-                {{ $t('Filters') }}
-              </v-btn>
-            </span>
-          </li> -->
-
           <li class="nav-item mx-2">
             <v-btn icon @click="$emit('change-grid')">
               <v-icon>mdi-grid</v-icon>
             </v-btn>
           </li>
 
-          <li class="nav-item mx-2">
+          <!-- Sort method -->
+          <li class="nav-item mx-1">
             <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="scale-transition">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn text v-bind="attrs" v-on="on">
                   <v-icon class="mr-2">mdi-sort</v-icon>
-                  {{ sortMethod }}
+                  {{ $t(sortMethod) }}
                 </v-btn>
               </template>
 
@@ -35,17 +27,19 @@
             </v-menu>
           </li>
 
-          <li class="nav-item mx-2">
+          <!-- Size -->
+          <li class="nav-item mx-1">
             <v-btn text @click="openFilters('size')">
               {{ $t('Size') }}
-              <v-icon class="ms-1">mdi-arrow-down</v-icon>
+              <v-icon class="ms-1">mdi-chevron-down</v-icon>
             </v-btn>
           </li>
 
-          <li class="nav-item mx-2">
+          <!-- Colors -->
+          <li class="nav-item mx-1">
             <v-btn text @click="openFilters('colors')">
               {{ $t('Color') }}
-              <v-icon class="ms-1">mdi-arrow-down</v-icon>
+              <v-icon class="ms-1">mdi-chevron-down</v-icon>
             </v-btn>
           </li>
         </ul>

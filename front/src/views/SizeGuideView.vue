@@ -5,7 +5,7 @@
     <v-container>
       <v-row>
         <v-col cols="9" offset-md="2">
-          <h4 class="text-uppercase h5">Selectionnez une option:</h4> 
+          <h4 class="text-uppercase h5">{{ $t('Select an option') }}</h4> 
         </v-col>
 
         <v-col cols="9" offset-md="2">
