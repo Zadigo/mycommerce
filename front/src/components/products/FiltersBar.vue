@@ -243,13 +243,13 @@ export default {
 .navbar.scrolled {
   position: fixed;
   display: block;
-  top: 15%;
+  top: 20%;
   left: 25%;
   right: 25%;
   border: 0;
   width: auto;
   background-color: white;
-  padding: .5rem;
+  padding: .25rem;
 }
 
 #color {

@@ -4,7 +4,7 @@ export default {
     }),
 
     methods: {
-        subsribeUser() {
+        async subsribeUser() {
             // Do something
         }
     }

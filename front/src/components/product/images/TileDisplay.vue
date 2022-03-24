@@ -85,7 +85,7 @@ export default {
   color: black;
 }
 
-.v-image__image {
+.v-image {
   cursor: pointer;
 }
 

@@ -126,7 +126,7 @@ def product_details_view(request, pk, **kwargs):
         reviews_serializer = ReviewSerializer(instance=queryset, many=True)
         data = {'reviews': reviews_serializer.data}
         data = data | queryset.aggregate(average_rating=Avg('rating'))
-        cache.set(product.name, data, 1)
+        cache.set(product.name, data, 3600)
         reviews = data
         
     recommended_products = Product.objects.filter(name__contains=product.name).exclude(id=product.id)

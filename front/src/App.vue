@@ -1,22 +1,26 @@
+  <!-- <dashboard-site v-if="routerViewForAdmin" /> -->
+
+  <!-- <base-site v-else /> -->
+
+  <!-- TODO: Think of a more efficient way to switch between the dashboard and the shop section -->
+  <!-- <v-main v-if="routerViewForAdmin">
+    <router-view :key="$route.name" name="dashboard" />
+  </v-main> -->
+  
+  <!-- <v-main v-else> -->
 <template>
   <v-app>
+    <header class="fixed-top">
+      <!-- Top banner -->
+      <base-top-banner v-if="$route.meta.fullPage==false" />
+
+      <!-- Navbar -->
+      <base-navbar v-if="$route.meta.fullPage==false" />
+
+      <!-- Messages -->
+      <base-messages />
+    </header>
     
-    <!-- <dashboard-site v-if="routerViewForAdmin" /> -->
-
-    <!-- <base-site v-else /> -->
-
-    <!-- TODO: Think of a more efficient way to switch between the dashboard and the shop section -->
-    <!-- <v-main v-if="routerViewForAdmin">
-      <router-view :key="$route.name" name="dashboard" />
-    </v-main> -->
-    
-    <!-- <v-main v-else> -->
-
-    <base-top-banner v-if="$route.meta.fullPage==false" />
-
-    <base-navbar v-if="$route.meta.fullPage==false" />
-
-    <base-messages />
 
     <v-main>
       <transition name="general-transition" mode="out-in">
@@ -103,5 +107,13 @@ export default {
 
   nav {
     z-index: 1000;
+  }
+
+  header.fixed-top {
+    position: fixed;
+    top: 0px;
+    right: 0;
+    left: 0;
+    z-index: 1030;
   }
 </style>
