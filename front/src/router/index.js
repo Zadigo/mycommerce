@@ -5,8 +5,6 @@ import i18n from '../i18n'
 import Account from '../views/Account.vue'
 import store from '../store'
 
-import googleAnalyticsFunctions from '../plugins/analytics/google/functions'
-
 Vue.use(VueRouter)
 
 function loadView(component) {
@@ -264,9 +262,7 @@ router.beforeEach((to, from, next) => {
       next()
     }
   }
-  // googleAnalyticsFunctions.DEFAULT_CURRENCY i18n.n()
-  googleAnalyticsFunctions.pageView(to.path, null)
-  
+
   return next()
 })
 

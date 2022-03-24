@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="ecommerce-section">
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12 d-flex justify-content-left">

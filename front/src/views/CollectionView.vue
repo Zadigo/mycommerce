@@ -1,60 +1,66 @@
 <template>
-  <section id="collection" class="mb-8">
+  <section id="collection" class="ecommerce-section">
 
     <!-- Optional: Page Header -->
     <!-- <page-header :title="''" :content="''" :src="'http://via.placeholder.com/1200x300'" /> -->
 
     <div class="container-fluid">
-      <!-- Filters -->
-      <filters-bar :multiple-grid-display="multipleGridDisplay" @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" @change-grid="changeGrid" @do-sort="doSort" @toggle-filters="toggleFilters" />
-
-      <section id="products" class="mb-4">
-        <div class="row">
-          <!-- TODO: Implement transition for all of this section especially between the filters and the products section -->
-          <!-- Side Filters -->
-          <!-- <side-filters :hide-filters="hideFilters" @selection-start="isLoading=true" @selection-end="isLoading=false" /> -->
-
-          <!-- <div :class="{ 'col-10': !hideFilters, 'col-12': hideFilters }"> -->
-          <div class="col-12">
-            <transition name="general-transition" mode="out-in">
-              <div v-if="sortedProducts.length == 0" class="row">
-                <div class="col-md-12">
-                  <b-card>
-                    <b-card-text class="text-center">
-                      <h2 class="p-1 mb-5">{{ $t('No products found') }}</h2>
-
-                      <v-row>
-                        <v-col cols="12">
-                          <button-load-products>
-                            <v-icon class="mr-2">mdi-refresh</v-icon>
-                            {{ $t('Refresh page') }}
-                          </button-load-products>
-                        </v-col>
-                      </v-row>
-                    </b-card-text>
-                  </b-card>
-                </div>
-              </div>
-
-              <!-- Products -->
-              <transition-group v-else name="card-transition" tag="div" class="row">
-                <div v-for="product in sortedProducts" :key="product.id" :class="{ 'col-lg-4': !multipleGridDisplay, 'col-lg-3': multipleGridDisplay }">
-                  <card :key="product.id" :product="product" :multiple-grid-display="multipleGridDisplay" :is-loading="isLoading" :show-cart-button="true" />
-                </div>
-              </transition-group>
-            </transition>
-
-            <!-- TODO: Display product grid using flex instead of row + columns -->
-            <!-- <div class="row">
-              <transition-group name="card-transition" tag="div" style="display:flex;flex-direction:row;align-items:flex-start;justify-content:flex-start;flex-wrap:wrap;">
-                <template v-for="product in sortedProducts">
-                  <card :key="product.id" :product="product" :multiple-grid-display="multipleGridDisplay" :is-loading="isLoading" />
-                </template>
-              </transition-group>
-            </div> -->
-          </div>
+      <div class="row">
+        <div class="col-8 offset-md-2">
+          <!-- Filters -->
+          <filters-bar :multiple-grid-display="multipleGridDisplay" @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" @change-grid="changeGrid" @do-sort="doSort" @toggle-filters="toggleFilters" />
         </div>
-      </section>
+
+        <div class="col-12">
+          <section id="products">
+            <div class="row">
+              <!-- TODO: Implement transition for all of this section especially between the filters and the products section -->
+              <!-- Side Filters -->
+              <!-- <side-filters :hide-filters="hideFilters" @selection-start="isLoading=true" @selection-end="isLoading=false" /> -->
+
+              <!-- <div :class="{ 'col-10': !hideFilters, 'col-12': hideFilters }"> -->
+              <div class="col-12">
+                <transition name="general-transition" mode="out-in">
+                  <div v-if="sortedProducts.length == 0" class="row">
+                    <div class="col-md-12">
+                      <b-card>
+                        <b-card-text class="text-center">
+                          <h2 class="p-1 mb-5">{{ $t('No products found') }}</h2>
+
+                          <v-row>
+                            <v-col cols="12">
+                              <button-load-products>
+                                <v-icon class="mr-2">mdi-refresh</v-icon>
+                                {{ $t('Refresh page') }}
+                              </button-load-products>
+                            </v-col>
+                          </v-row>
+                        </b-card-text>
+                      </b-card>
+                    </div>
+                  </div>
+
+                  <!-- Products -->
+                  <transition-group v-else name="card-transition" tag="div" class="row">
+                    <div v-for="product in sortedProducts" :key="product.id" :class="{ 'col-lg-4': !multipleGridDisplay, 'col-lg-3': multipleGridDisplay }">
+                      <card :key="product.id" :product="product" :multiple-grid-display="multipleGridDisplay" :is-loading="isLoading" :show-cart-button="true" />
+                    </div>
+                  </transition-group>
+                </transition>
+
+                <!-- TODO: Display product grid using flex instead of row + columns -->
+                <!-- <div class="row">
+                  <transition-group name="card-transition" tag="div" style="display:flex;flex-direction:row;align-items:flex-start;justify-content:flex-start;flex-wrap:wrap;">
+                    <template v-for="product in sortedProducts">
+                      <card :key="product.id" :product="product" :multiple-grid-display="multipleGridDisplay" :is-loading="isLoading" />
+                    </template>
+                  </transition-group>
+                </div> -->
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
     </div>
 
     <hr>  

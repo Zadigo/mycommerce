@@ -1,5 +1,5 @@
 <template>
-  <nav ref="link" class="navbar navbar-expand-lg navbar-light my-5">
+  <nav ref="link" class="navbar navbar-expand-lg navbar-light mb-2">
     <div class="container">
       <div class="collapse navbar-collapse flex-column justify-content-left align-items-start">
         <ul class="navbar-nav">
@@ -144,11 +144,21 @@ export default {
     },
 
     handleScroll() {
-      if (document.documentElement.scrollTop > 350) {
+      // if (document.documentElement.scrollTop > 250) {
+      //   this.$refs.link.classList.add('scrolled')
+      // } else {
+      //   this.$refs.link.classList.remove('scrolled')
+      // }
+      var scrollPercentage = this.getVerticalScrollPercentage(document.body)
+
+      if (scrollPercentage >= 5) {
         this.$refs.link.classList.add('scrolled')
-      } else {
+      }
+
+      if (scrollPercentage >= 90 || scrollPercentage == 0) {
         this.$refs.link.classList.remove('scrolled')
       }
+
     },
 
     setSearchItem(key, value) {
@@ -200,7 +210,7 @@ export default {
 #filters {
   width: 100%;
   height: auto;
-  min-height: 100px;
+  min-height: 60px;
   padding: .25rem;
   margin-top: 2rem;
 }
@@ -239,7 +249,7 @@ export default {
   border: 0;
   width: auto;
   background-color: white;
-  padding: .10rem;
+  padding: .5rem;
 }
 
 #color {

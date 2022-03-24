@@ -138,7 +138,7 @@ var shopModule = {
             return state.products.length > 0
         },
 
-        recommendedProducts(state) {
+        alternativeRecommendedProducts(state) {
             // Show the users additional products
             // that could interest them and that
             // are possibly in the same category
@@ -148,7 +148,6 @@ var shopModule = {
                     return product.id != state.currentProduct.id
                 })
                 _.shuffle(products)
-                // return _.slice(products, 0, 4)
                 return _.sampleSize(products, 4)
             } else {
                 return []

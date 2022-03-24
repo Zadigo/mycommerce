@@ -153,3 +153,15 @@ section.space {
 .btn-rounded {
     border-radius: 10rem;
 }
+
+
+section.ecommerce-section {
+    margin-top: 6rem;
+    margin-bottom: 2rem;
+}
+
+
+.btn-floating.btn-lg i {
+    width: 2.8125rem;
+    line-height: 2.8125rem;
+}

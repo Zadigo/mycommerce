@@ -116,83 +116,68 @@ export default {
   #home {
     z-index: -3;
   }
-   #intro {
-      /* background-image: url("https://mdbootstrap.com/img/new/fluid/city/018.jpg"); */
-      /* height: 100vh; */
-    }
+  .banner {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 400px;
+    overflow: hidden;
+  }
+  .banner-absolute {
+    position: relative;
+    max-width: 100%;
+    height: 600px;
+    min-height: 400px;
+    width: 100%;
+    overflow: hidden;
+  }
+  .banner-absolute img {
+    width: 100%;
+    max-width: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .banner #left, .banner #right {
+    position: relative;
+    width: 50%;
+    overflow: hidden;
+  }
+  .banner #title, .banner-absolute #title {
+    position: absolute;
+    left: 0;
+    bottom: 10%;
+    /* bottom: 0; */
+    font-size: 28px;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    padding: 2rem;
+  }
+  .banner.banner-img {
+    background-position: center;
+    background-repeat: no-repeat;
+  }
 
-    /* Height for devices larger than 576px */
-    /* @media (min-width: 992px) {
-      #intro {
-        margin-top: -58.59px;
-      }
-    } */
+  .box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 3px;
+    min-height: 600px;
+    width: 100%;
+    height: auto;
+    padding: 2rem;
+    overflow-x: scroll;
+  }
 
-    /* .navbar .nav-link {
-      color: #fff !important;
-    } */
-    .banner {
-      position: relative;
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: nowrap;
-      width: 100%;
-      max-width: 100%;
-      height: auto;
-      min-height: 400px;
-      overflow: hidden;
-    }
-    .banner-absolute {
-      position: relative;
-      max-width: 100%;
-      height: 600px;
-      min-height: 400px;
-      width: 100%;
-      overflow: hidden;
-    }
-    .banner-absolute img {
-      width: 100%;
-      max-width: 100%;
-      object-fit: cover;
-      object-position: center;
-    }
-    .banner #left, .banner #right {
-      position: relative;
-      width: 50%;
-      overflow: hidden;
-    }
-    .banner #title, .banner-absolute #title {
-      position: absolute;
-      left: 0;
-      bottom: 10%;
-      /* bottom: 0; */
-      font-size: 28px;
-      font-weight: 600;
-      color: white;
-      text-transform: uppercase;
-      padding: 2rem;
-    }
-    .banner.banner-img {
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    .box {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-around;
-      gap: 3px;
-      min-height: 600px;
-      width: 100%;
-      height: auto;
-      padding: 2rem;
-      overflow-x: scroll;
-    }
-
-    .box .content-wrapper {
-      /* padding: .15rem; */
-      /* width: 30%; */
-      height: auto;
-    }
+  .box .content-wrapper {
+    /* padding: .15rem; */
+    /* width: 30%; */
+    height: auto;
+  }
 </style>

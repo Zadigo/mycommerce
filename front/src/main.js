@@ -15,8 +15,10 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import hero from './plugins/hero'
-import myAnalytics from './plugins/my-analytics'
 import currency from './plugins/currency'
+
+// Mixins
+import mixins from './mixins'
 
 // Components
 import BaseSubscriptionModal from './components/BaseSubscriptionModal.vue'
@@ -35,14 +37,13 @@ Vue.config.productionTip = false
 // Plugins
 Vue.use(ecommerce)
 Vue.use(hero)
-Vue.use(myAnalytics)
 Vue.use(myProject)
 Vue.use(session)
 Vue.use(currency)
 // Vue.use(mySharingLinks)
 
 // Mixins
-// Vue.mixin(globalMixin)
+Vue.mixin(mixins)
 
 // Components
 Vue.component('modal-cart', ModalCart)
@@ -58,6 +59,5 @@ new Vue({
   store,
   i18n,
   vuetify,
-  trackSiteAnalytics: true,
   render: h => h(App),
 }).$mount('#app')

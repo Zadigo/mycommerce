@@ -20,7 +20,7 @@ const client = axios.create({
   baseURL: process.env.baseURL || 'http://127.0.0.1:8000/api/v1',
   timeout: 60 * 1000,
   responseType: 'json',
-  withCredentials: true, // Check cross-site Access-Control
+  withCredentials: true
 })
 
 client.interceptors.request.use(

@@ -1,7 +1,7 @@
 <template>
   <product-skeleton v-if="isLoading" />
 
-  <section v-else id="product" class="space my-9">
+  <section v-else id="product" class="ecommerce-section">
     <div class="container-fluid dark-grey-text mt-5">
 
       <div class="row">
@@ -12,7 +12,6 @@
         <!-- Images -->
         <div class="col-md-7">
           <tile-display :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" />
-          <!-- <images :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" /> -->
         </div>
 
         <!-- Information -->
@@ -29,7 +28,6 @@
       <!-- TODO:  Implement recently viewed -->
       <!-- <recently-viewed /> -->
       
-      <!-- FIXME: Implement the review section -->
       <hr>
       
       <!-- Reviews -->
@@ -42,7 +40,6 @@
 <script>
 import { mapState } from 'vuex'
 
-// import Images from '../components/product/Images.vue'
 import Information from '../components/product/Information.vue'
 import MoreProducts from '../components/product/MoreProducts.vue'
 import TileDisplay from '../components/product/images/TileDisplay.vue'
