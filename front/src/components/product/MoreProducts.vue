@@ -27,8 +27,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
 import Card from '../products/Card.vue'
 
 export default {
@@ -36,13 +34,13 @@ export default {
   props: {
     isLoading: {
       type: Boolean
+    },
+    recommendedProducts: {
+      type: Array,
+      default: () => []
     }
   },
   components: { Card },
-
-  computed: {
-    ...mapGetters(['recommendedProducts'])
-  },
 
   methods: {
     updateProductList() {

@@ -44,7 +44,8 @@
 
           <div class="d-flex justify-content-left">
             <div id="rating" class="mr-2">
-              <font-awesome-icon v-for="i in 5" :key="i" :icon="reviewStars(index, review.rating)" />
+              <v-icon v-for="i in 5" :key="i">{{ reviewStars(i, review.rating) }}</v-icon>
+              <!-- <font-awesome-icon v-for="i in review.rating" :key="i" :icon="reviewStars(index, review.rating)" /> -->
             </div>
             <span class="text-muted">{{ $t('reviewed_in', { country: 'France' }) }} {{ review.created_on }}</span>
           </div>
@@ -120,7 +121,7 @@ export default {
     },
 
     reviewStars (index, rating) {
-      return index < rating ? 'star' : 'star-'
+      return index <= rating ? 'mdi-star' : 'mdi-star-outline'
     },
   }
 }

@@ -50,3 +50,12 @@ class ProductSerializer(Serializer):
     slug = fields.SlugField(required=False)
     modified_on = fields.DateField(required=False)
     created_on = fields.DateField(required=False)
+
+
+class VariantSerializer(Serializer):
+    id = fields.IntegerField()
+    color = fields.CharField()
+    display_new = fields.BooleanField()
+    slug = fields.SlugField()
+    modified_on = fields.DateField()
+    created_on = fields.DateField()

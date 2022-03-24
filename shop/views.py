@@ -1,13 +1,17 @@
 from collections import OrderedDict
 
 from django.db.models.expressions import Q
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from mycommerce.responses import CustomPagination, api_response
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from reviews.serializers import ReviewSerializer
 
+from django.db.models import Avg    
+import random
 from shop.models import Product
-from shop.serializers import ProductSerializer
+from django.core.cache import cache
+from shop.serializers import ProductSerializer, VariantSerializer
 
 
 class CustomProductPagination(CustomPagination):
@@ -98,4 +102,44 @@ def advanced_search_view(request, **kwargs):
     return_response = {
         'results': serializer.data
     }
+    return api_response(data=return_response)
+
+
+@api_view(['post'])
+def product_details_view(request, pk, **kwargs):
+    """Returns additional information on the product
+    that is currently view
+    
+        * variants: products which carry the same name 
+                    but have a different color variant
+                    
+        * reviews: the reviews on the current product
+                   including the average rating 
+    """
+    product = get_object_or_404(Product, id=pk)
+    products = Product.objects.filter(name__exact=product.name)
+    variant_serializer = VariantSerializer(instance=products, many=True)
+    
+    reviews = cache.get(product.slug, None)
+    if reviews is None:
+        queryset = product.review_set.all()
+        reviews_serializer = ReviewSerializer(instance=queryset, many=True)
+        data = {'reviews': reviews_serializer.data}
+        data = data | queryset.aggregate(average_rating=Avg('rating'))
+        cache.set(product.name, data, 1)
+        reviews = data
+        
+    recommended_products = Product.objects.filter(name__contains=product.name).exclude(id=product.id)
+    recommended_products_serializer = ProductSerializer(
+        # instance=random.choices(recommended_products, k=4),
+        instance=recommended_products[:4],
+        many=True
+    )
+
+    return_response = {
+        'variants': variant_serializer.data,
+        'recommended_products': recommended_products_serializer.data,
+        **reviews
+    }
+    
     return api_response(data=return_response)

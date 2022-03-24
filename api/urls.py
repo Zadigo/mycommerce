@@ -29,7 +29,7 @@ urlpatterns = [
     re_path(r'^wishlists/create', products.create_whishlist_view),
     re_path(r'^wishlists', products.whishlists_view),
     
-    re_path(r'^products/(?P<pk>\d+)/variants', products.product_variants_view),
+    # re_path(r'^products/(?P<pk>\d+)/variants', products.product_variants_view),
     re_path(r'^products/(?P<pk>\d+)/like', products.add_liked_view),
     re_path(r'^products/(?P<product_id>\d+)/reviews', products.reviews),
     # re_path(r'^products$', products.products_view),

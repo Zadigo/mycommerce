@@ -24,16 +24,16 @@
       <hr class="my-8">
 
       <!-- More -->
-      <more-products :is-loading="isLoading" />
+      <more-products :recommended-products="recommendedProducts" :is-loading="isLoading" />
 
       <!-- TODO:  Implement recently viewed -->
       <!-- <recently-viewed /> -->
       
       <!-- FIXME: Implement the review section -->
-      <!-- <hr> -->
+      <hr>
       
       <!-- Reviews -->
-      <!-- <reviews :reviews="currentProductReviews" /> -->
+      <reviews :reviews="reviews" />
     </div>
 
   </section>
@@ -47,7 +47,7 @@ import Information from '../components/product/Information.vue'
 import MoreProducts from '../components/product/MoreProducts.vue'
 import TileDisplay from '../components/product/images/TileDisplay.vue'
 import ProductSkeleton from '../components/skeletons/ProductSkeleton.vue'
-// import Reviews from '../components/product/Reviews.vue'
+import Reviews from '../components/product/Reviews.vue'
 // import RecentlyViewed from '../components/product/RecentlyViewed.vue'
 
 export default {
@@ -61,21 +61,21 @@ export default {
     Information,
     MoreProducts,
     TileDisplay,
-    ProductSkeleton
-    // Images,
-    // Reviews,
+    ProductSkeleton,
+    Reviews,
     // RecentlyViewed
   },
 
   data: () => ({
     isLoading: true,
-    productVariants: []
+    productVariants: [],
+    reviews: [],
+    recommendedProducts: []
   }),
   
   computed: {
     ...mapState({
-      currentProduct: (state) => { return state.shopModule.currentProduct },
-      currentProductReviews: (state) => { return state.shopModule.currentProductReviews },
+      currentProduct: (state) => { return state.shopModule.currentProduct }
     }),
     
     productImages() {
@@ -87,7 +87,7 @@ export default {
     },
     
     numberOfReviews() {
-      return this.currentProductReviews.length
+      return this.reviews.length
     },
 
     
@@ -174,9 +174,14 @@ export default {
     //   })
     async requestProductVariants() {
       try {
-        var response = await this.$axios.post(`/products/${ this.currentProduct.id }/variants`)
+        var response = await this.$axios.post(`/shop/products/${ this.currentProduct.id }`)
 
-        this.productVariants = response.data
+        this.productVariants = response.data['variants']
+        this.reviews = response.data['reviews']
+
+        // TODO: If the recommended products is below 1, maybe propose
+        // and alternative set of items to the user
+        this.recommendedProducts = response.data['recommended_products']
 
         setTimeout(() => {
           this.isLoading = false

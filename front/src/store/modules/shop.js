@@ -1,6 +1,5 @@
 import { toInteger, toNumber } from 'lodash'
 
-import reviews from '../../data/reviews.json'
 
 var _ = require('lodash')
 
@@ -9,7 +8,7 @@ var shopModule = {
         cachedResponse: [],
         products: [],
         currentProduct: {},
-        currentProductReviews: reviews,
+        currentProductReviews: [],
 
         previousUrl: null,
         nextUrl: null,
