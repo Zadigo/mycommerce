@@ -13,16 +13,8 @@ export default {
       type: String,
       default: 'primary'
     },
-    width: {
-      type: Number,
-      default: 20
-    },
     isAbsolute: {
       type: Boolean
-    },
-    top: {
-      type: Number,
-      default: 0
     },
     left: {
       type: Number, 
@@ -31,6 +23,14 @@ export default {
     padding: {
       type: Number,
       default: 3
+    },
+    top: {
+      type: Number,
+      default: 0
+    },
+    width: {
+      type: Number,
+      default: 20
     }
   },
 

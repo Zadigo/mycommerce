@@ -10,19 +10,31 @@
     </div>
 
     <!-- TODO: Change .v-application a which makes links blue -->
-    <router-link v-else :to="{ name: 'product', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-17 normalize-link">
-      <div id="link-product-card" class="product" @mouseenter="isHovered=true" @mouseleave="isHovered=false" @click="$emit('product-card-click')">
-        <!-- TODO: Show when a product is marked as new -->
-        <!-- <div class="product-badge">Nouveau</div> -->
-        
-        <div id="image">
-          <!-- FIXME: When a product has not image, the single component does not mount
-          maybe force products to have images on the backend so that this does not happen
-          or use a placeholder image -->
-          <v-img :lazy-src="'http://via.placeholder.com/600x1100'" :src="mainImage.mid_size|mediaUrl" :alt="mainImage.name" :class="{ 'zoom': isHovered && hasEffect }" />
-        </div>
+    <div v-else id="link-product-card" class="product" @click="$emit('product-card-click')" @mouseenter="isHovered=true" @mouseleave="isHovered=false">
+      <!-- TODO: Show when a product is marked as new -->
+      <!-- <div class="product-badge">Nouveau</div> -->
+      
+      <div id="product-image">
+        <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }">
+          <!-- <v-img :lazy-src="'http://via.placeholder.com/600x1100'" :src="mainImage.mid_size|mediaUrl" :alt="mainImage.name" /> -->
+          <img :src="mainImage.mid_size|mediaUrl" :alt="mainImage.name" class="img-fluid" />
+        </router-link>
 
-        <div id="details" class="mt-2">
+        <transition name="slide-transition">
+          <div v-if="isHovered" class="mini-cart p-3">
+            <div class="font-weight-bold mb-3 text-uppercase">{{ $t('Add to cart') }}</div>
+
+            <div id="sizes">
+              <button type="button" class="btn btn-outline-dark">XS</button>
+              <button type="button" class="btn btn-outline-dark mx-1">S</button>
+              <button type="button" class="btn btn-outline-dark mx-1">M</button>
+            </div>
+          </div>
+        </transition>
+      </div>
+
+      <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-17 normalize-link">
+        <div id="product-details" class="mt-2">
           <p class="mb-0">
             {{ product.name|capitalizeLetters|truncate }}
           </p>
@@ -30,30 +42,30 @@
           <span v-if="product.on_sale" class="font-weight-bold">
             {{ $n(product.sale_price, 'currency', $i18n.locale) }}
           </span>
+
           <span v-else class="font-weight-bold">
             {{ $n(product.unit_price, 'currency', $i18n.locale) }}
           </span>
-          <span v-if="product.on_sale" class="ml-3 text-red">
+          
+          <span v-if="product.on_sale" class="ml-2 text-red">
             <del>{{ $n(product.unit_price, 'currency', $i18n.locale) }}</del>
           </span>
+
+          <span v-if="product.sale_value" class="bg-danger p-1 rounded text-white ml-3">
+            {{ `-${product.sale_value}%`  }}
+          </span>
         </div>
+      </router-link>
 
-        <!-- <transition name="button-transition">
-          <v-btn v-if="isHovered && showCartButton" id="add-to-cart" variant="primary" @click="addToCart(product)">
-            {{ $t('Add to cart') }}
-          </v-btn>
-        </transition>
-         -->
-        <!-- TODO: The tags are colliding when there are multiple -->
-        <base-tag v-if="product.on_sale" :is-absolute="true" :padding="1" :width="30" background-color="red" class="m-3">
-          {{ $t('Sale') }}
-        </base-tag>
+      <!-- TODO: The tags are colliding when there are multiple -->
+      <base-tag v-if="product.on_sale" :is-absolute="true" :padding="1" :width="30" background-color="red" class="m-3">
+        {{ $t('Sale') }}
+      </base-tag>
 
-        <base-tag v-if="product.display_new && !product.on_sale" :is-absolute="true" :padding="1" :width="30" class="m-3">
-          {{ $t('New') }}
-        </base-tag>
-      </div>
-    </router-link>
+      <base-tag v-if="product.display_new && !product.on_sale" :is-absolute="true" :padding="1" :width="30" class="m-3">
+        {{ $t('New') }}
+      </base-tag>
+    </div>
   </transition>
 </template>
 
@@ -67,7 +79,7 @@ export default {
   name: 'Card',
   filters: {
     truncate(value) {
-      return `${value.slice(0, 20)}...`
+      return `${value.slice(0, 28)}...`
     }
   },
   components: {
@@ -76,23 +88,13 @@ export default {
   mixins: [cartMixin],
 
   props: {
-    product: {
-      type: Object,
-      required: true
-    },
-    multipleGridDisplay: {
-      type: Boolean,
-      default: false
-    },
     isLoading: {
       type: Boolean,
       default: false
     },
-    showCartButton: {
-      type: Boolean
-    },
-    hasEffect: {
-      type: Boolean
+    product: {
+      type: Object,
+      required: true
     }
   },
 
@@ -113,40 +115,22 @@ export default {
   .product {
     position: relative;
   }
-
-  .product #add-to-cart {
-    position: absolute;
-    bottom: 20%;
-    left: 15%;
-    z-index: 6000;
-  }
-  .product #image {
-    transition: all .2s ease;
+  
+  #product-image {
+    position: relative;
     overflow: hidden;
   }
 
-  btn#add-to-cart {
-    z-index: 8000;
+  #product-image img {
+    /* transition: all .2s ease; */
+    transition: all 0.3s cubic-bezier(0, 0.5, 0.5, 1);
+    overflow: hidden;
   }
 
-  .button-transition-enter-active,
-  .button-transition-leave-active {
-    transition: all .3s ease-in;
+  #product-image:hover img {
+    transform: scale(1.2);
   }
-  .button-transition-enter,
-  .button-transition-leave-to {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  .button-transition-enter-to,
-  .button-transition-leave {
-    opacity: 1;
-    transform: translateY(0px);
-  }
-  .zoom {
-    transform: scale(1.2, 1.2) rotate(-5deg);
-  }
-
+  
   .product-badge {
     position: absolute;
     top: 5%;
@@ -166,14 +150,47 @@ export default {
   .scale-transition-leave-active {
     transition: all .8s ease-in-out;
   }
+  
   .scale-transition-enter,
   .scale-transition-leave-to {
     opacity: 0;
     transform: scale(.8, .8);
   }
+  
   .scale-transition-enter-to,
   .scale-transition-leave {
     opacity: 1;
     transform: scale(1, 1);
+  }
+
+  .slide-transition-enter-active,
+  .slide-transition-leave-active {
+    transition: all .3s cubic-bezier(0, 0.5, 0.5, 1);
+  }
+
+  .slide-transition-enter,
+  .slide-transition-leave-to {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  
+  .slide-transition-enter-to,
+  .slide-transition-leave {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+
+  .mini-cart {
+    position: absolute;
+    bottom: 0%;
+    left: 0;
+    width: 100%;
+    opacity: .8;
+    min-height: 150px;
+    background-color: white;
+  }
+
+  .mini-cart .btn {
+    width: 15%;
   }
 </style>

@@ -22,9 +22,14 @@
           </div>
 
           <div class="col-3">
-            <h2 class="text-uppercase h4">Rejoignez la female family</h2>
-            <p class="text-muted">Inscrivez-vous pour connaître les dates de sortie de nouveaux produits, les meilleures offres et les actus Lounge.</p>
-            <b-form-input v-model="subscriptionEmail" type="email" :placeholder="$t('Enter your email')"></b-form-input>
+            <h2 class="text-uppercase h4">
+              {{ $t('newsletter_title_phrase', { company: myproject.company.legalName }) }}
+            </h2>
+            <p class="text-muted">
+              {{ $t('newsletter_phrase', { company: myproject.company.legalName }) }}
+              <!-- Inscrivez-vous pour connaître les dates de sortie de nouveaux produits, les meilleures offres et les actus Lounge. -->
+            </p>
+            <b-form-input v-model="subscriptionEmail" type="email" :placeholder="$t('Enter your email')"  @keypress.enter="subscribeUser"></b-form-input>
           </div>
 
           <!-- Language -->
@@ -71,6 +76,18 @@ export default {
   data: () => ({
     items: footer,
     subscriptionEmail: null
-  })
+  }),
+
+  methods: {
+    async subscribeUser() {
+      try {
+        var response = this.$axios.post('/subscribe', { email: this.subscriptionEmail })
+        this.subscriptionEmail = null
+        response
+      } catch(error) {
+        this.$store.dispatch('messagesModule/addErrorMessage', error.response.statusText)
+      }
+    }
+  }
 }
 </script>

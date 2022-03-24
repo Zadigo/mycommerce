@@ -28,7 +28,7 @@
 
       <!-- TODO: Create a swatch reusable component -->
       <div class="swatch">
-        <router-link v-for="variant in productVariants" :key="variant.id" :to="{ name: 'product', params: { id: variant.id, slug: variant.slug, lang: $i18n.locale } }" :class="{ active: matchesWithRoute(variant) }" class="color">
+        <router-link v-for="variant in productVariants" :key="variant.id" :to="{ name: 'product_view', params: { id: variant.id, slug: variant.slug, lang: $i18n.locale } }" :class="{ active: matchesWithRoute(variant) }" class="color">
           <v-img :src="buildSwatch(variant.color)"></v-img>
         </router-link>
       </div>
@@ -48,7 +48,6 @@
 
       <!-- Add to like -->
       <b-btn id="btn-add-like" class="btn-md my-0" variant="danger" @click="addToLikes">
-        <!-- <font-awesome-icon icon="heart" /> -->
         <v-icon class="text-white">mdi-heart</v-icon>
       </b-btn>
     </div>
@@ -61,6 +60,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+
 import cartMixin from '../../cartMixin'
 
 export default {

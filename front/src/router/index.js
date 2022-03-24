@@ -43,8 +43,8 @@ const routes = [
       },
       {
         path: 'products/:id(\\d+)/:slug([a-z-]+)',
-        name: 'product',
-        component: () => import(/* webpackChunkName: "product" */ '../views/ProductView.vue'),
+        name: 'product_view',
+        component: loadView('ProductView'),
         meta: {
           fullPage: false
         }
@@ -60,7 +60,10 @@ const routes = [
       {
         path: 'cart',
         name: 'cart',
-        component: () => import(/* webpackChunkName: "cart" */'@/views/CartView.vue')
+        component: () => import(/* webpackChunkName: "cart" */'@/views/CartView.vue'),
+        meta: {
+          fullPage: false
+        }
       },
 
       {

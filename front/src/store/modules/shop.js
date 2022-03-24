@@ -14,7 +14,6 @@ var shopModule = {
         previousUrl: null,
         nextUrl: null,
 
-        search: null,
         searchedPrice: [],
         
         // TODO: viewingHistory
@@ -48,10 +47,6 @@ var shopModule = {
         
         setCurrentProductReviews (state, reviews) {
             state.currentProductReviews = reviews
-        },
-        
-        setSearch (state, value) {
-            state.search = value
         },
         
         setSearchedPrices (state, values) {
@@ -90,18 +85,6 @@ var shopModule = {
                 prices.push(_.toNumber(product.unit_price))
             })
             return prices
-        },
-        
-        searchedProducts (state) {
-            // Return a set of products based on a
-            // searched value
-            if (_.isNull(state.search) | state.search == '') {
-                return state.products
-            }
-
-            return _.filter(state.products, (product) => {
-                return product.name.includes(state.search) || product.name.includes(state.search.toLowerCase()) || product.name.toLowerCase().includes(state.search)
-            })
         },
 
         filteredByPrice (state, getters) {

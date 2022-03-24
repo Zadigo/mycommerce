@@ -21,7 +21,8 @@
             <span v-else class="fw-4 fs-24">{{ $n(product.unit_price, 'currency', $i18n.locale) }}</span>
           </p>
 
-          <div class="d-flex justify-content-left">
+          <!-- TODO: Implementt reviews -->
+          <!-- <div class="d-flex justify-content-left">
             <div class="mr-3">
               <font-awesome-icon icon="star" />
               <font-awesome-icon icon="star" />
@@ -29,7 +30,7 @@
               <font-awesome-icon icon="star" />
             </div>
             <b-link @click="goToReviewsSection">{{ numberOfReviews }} {{ $tc('review', numberOfReviews) }}</b-link>
-          </div>
+          </div> -->
         </div>
         
         <!-- TODO: Put triggers for these sections and implement them -->

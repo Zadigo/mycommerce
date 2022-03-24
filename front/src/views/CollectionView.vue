@@ -1,11 +1,12 @@
 <template>
-  <section id="collection" class="my-8">
+  <section id="collection" class="mb-8">
 
-    <!-- Page Header -->
-    <page-header :title="''" :content="''" :src="'http://via.placeholder.com/1200x300'" />
+    <!-- Optional: Page Header -->
+    <!-- <page-header :title="''" :content="''" :src="'http://via.placeholder.com/1200x300'" /> -->
 
     <div class="container-fluid">
-      <page-nav :multiple-grid-display="multipleGridDisplay" @change-grid="changeGrid" @do-sort="doSort" @toggle-filters="toggleFilters" />
+      <!-- Filters -->
+      <filters-bar :multiple-grid-display="multipleGridDisplay" @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" @change-grid="changeGrid" @do-sort="doSort" @toggle-filters="toggleFilters" />
 
       <section id="products" class="mb-4">
         <div class="row">
@@ -86,10 +87,9 @@ import { mapGetters, mapMutations, mapState } from 'vuex'
 
 import ButtonLoadProducts from '../components/products/ButtonLoadProducts.vue'
 import Card from "../components/products/Card.vue"
-import PageHeader from "../components/products/PageHeader.vue"
+// import PageHeader from "../components/products/PageHeader.vue"
 import Pagination from "../components/products/Pagination.vue"
-import PageNav from '../components/products/PageNav.vue'
-// import SideFilters from '../components/products/SideFilters.vue'
+import FiltersBar from '../components/products/FiltersBar.vue'
 
 export default {
   name: 'CollectionView',
@@ -97,10 +97,9 @@ export default {
   components: {
     ButtonLoadProducts,
     Card,
-    PageHeader,
+    // PageHeader,
     Pagination,
-    PageNav,
-    // SideFilters
+    FiltersBar
   },
   
   title: () => 'Shop Loungewear And Underwear', 
@@ -116,7 +115,7 @@ export default {
   
   computed: {
     ...mapState({ products: (state) => { return state.shopModule.products } }),
-    ...mapGetters(['searchedProducts', 'minPrice', 'maxPrice']),
+    ...mapGetters(['minPrice', 'maxPrice']),
 
     searchedPrice: {
       get () { return this.$store.setSearchedPrices },
@@ -145,15 +144,15 @@ export default {
           break
 
         case 'Alphabetically A-Z':
-          products = _.orderBy(this.searchedProducts, ['name'], 'asc')
+          products = _.orderBy(this.products, ['name'], 'asc')
           break
 
         case 'Alphabetically Z-A':
-          products = _.orderBy(this.searchedProducts, ['name'], 'desc')
+          products = _.orderBy(this.products, ['name'], 'desc')
           break
 
         default:
-          products = this.searchedProducts
+          products = this.products
           break
       }
 
@@ -196,7 +195,7 @@ export default {
     },
 
     mapPrices (sortMethod) {
-      var items = _.map(this.searchedProducts, (item) => {
+      var items = _.map(this.products, (item) => {
         item['unit_price'] = item['unit_price'] * 1
         item['sale_price'] = item['sale_price'] * 1
         return item
@@ -206,7 +205,7 @@ export default {
     },
 
     sortByDates () {
-      return this.searchedProducts.sort((a, b) => {
+      return this.products.sort((a, b) => {
         return new Date(b.created_on) - new Date(a.created_on)
       })
     }

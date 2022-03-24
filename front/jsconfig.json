@@ -1,0 +1,9 @@
+{
+    "include": [
+        "src/**/*",
+        "views/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

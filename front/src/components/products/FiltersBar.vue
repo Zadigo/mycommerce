@@ -46,24 +46,22 @@
         
         <transition name="slide-transition">
           <div v-if="showFilters" id="filters" class="d-flex justify-content-center" style="flex-wrap:wrap;">
-            
+            <!-- Sizes -->
             <div v-if="selectedFilter == 'size'">
-              <v-chip v-for="(size, i) in sizes" :key="i" class="mx-1" link>
+              <v-chip v-for="(size, i) in sizes" :key="i" class="mx-1" link @click="setSearchItem('sizes', size)">
                 {{ size }}
               </v-chip>
             </div>
 
+            <!-- Colors -->
             <div v-else-if="selectedFilter == 'colors'" class="d-flex justify-content-around">
-              <v-img v-for="(color, i) in colors" :key="i" :src="color" class="mx-1"></v-img>
+              <v-img v-for="(color, i) in colors" :key="i" :src="color[1]" id="color" class="mx-2" height="50px" width="50px" @click="setSearchItem('colors', color[0])"></v-img>
             </div>
-          
           </div>
         </transition>
       </div>
     </div>
   </nav>
-  <!-- <transition name="slide-transition">
-  </transition> -->
 </template>
 
 <script>
@@ -72,7 +70,7 @@ var _ = require('lodash')
 import { mapState } from 'vuex'
 
 export default {
-  name: 'PageNav',
+  name: 'FiltersBar',
 
   props: {
     multipleGridDisplay: {
@@ -83,7 +81,6 @@ export default {
 
   data: () => ({
     select: null,
-    loading: false,
     items: [],
     sortMethod: 'Latest',
     sortMethods: [
@@ -98,14 +95,14 @@ export default {
     selectedFilter: 'size',
 
     selectedElements: {
-        size: {},
-        color: [],
-        brand: {},
-        material: {},
-        cut: {},
-        season: {},
-        novelties: {},
-        delivery: {}
+        sizes: [],
+        colors: [],
+        // brand: {},
+        // material: {},
+        // cut: {},
+        // season: {},
+        // novelties: {},
+        // delivery: {}
     },
 
     sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
@@ -122,47 +119,61 @@ export default {
       }
     }),
 
-    searchedValue: {
-      get () { return this.$store.state.search },
-      set (value) { this.$store.commit('setSearch', value) }
-    },
-
     colors () {
       var items = ['beige', 'black', 'camel', 'red']
       return _.map(items, (item) => {
-        return this.$options.filters.mediaUrl(`/media/swatches/${ item }.png`)
+        return [item, this.$options.filters.mediaUrl(`/media/swatches/${ item }.png`)]
       })
-    }
-  },
+    },
 
-  watch: {
-    searchedValue (value) {
-      if (value && value != null) {
-        setTimeout(() => {
-          // FIXME: This sends an undefined to the store
-          // on initialization of the page
-          console.log('search')
-        }, 8000);
-      }
+    searchQuery() {
+        var items = new URLSearchParams({...this.selectedElements})
+        return `?${items}`
     }
   },
 
   methods: {
-    doSort (method) {
+    doSort(method) {
       this.sortMethod = method
       this.$emit('do-sort', method)
     },
 
-    openFilters (method) {
+    openFilters(method) {
       this.selectedFilter = method
       this.showFilters = !this.showFilters
     },
 
-    handleScroll () {
+    handleScroll() {
       if (document.documentElement.scrollTop > 350) {
         this.$refs.link.classList.add('scrolled')
       } else {
         this.$refs.link.classList.remove('scrolled')
+      }
+    },
+
+    setSearchItem(key, value) {
+      // TODO: Make a global function that allows
+      // us to dynamically push/remove a value from
+      // an array based non a selection
+      var values = this.selectedElements[key]
+      if (values.includes(value)) {
+        var indexOfValue = _.indexOf(values, value) 
+        values.splice(0, indexOfValue)
+      } else {
+        values.push(value)
+      }
+      this.selectedElements[key] = values
+      this.getProducts()
+    },
+
+    async getProducts() {
+      try {
+        this.$emit('loading-products-start')
+        var response = await this.$axios.get(`/shop/advanced/search${this.searchQuery}`)
+        this.$store.commit('setProducts', response.data)
+        this.$emit('loading-products-end')
+      } catch(error) {  
+        console.log(error)
       }
     }
   },
@@ -181,9 +192,11 @@ export default {
 .navbar {
   transition: all .4s ease-in-out;
 }
+
 .nav-collapse {
   position: relative;
 }
+
 #filters {
   width: 100%;
   height: auto;
@@ -196,16 +209,19 @@ export default {
 .slide-transition-enter-active {
   transition: all .4s ease;
 }
+
 .slide-transition-enter,
 .slide-transition-leave-to {
   opacity: 0;
   transform: translateY(-30px) scale(.9, .9);
 }
+
 .slide-transition-leave,
 .slide-transition-enter-to {
   opacity: 1;
   transform: translateY(0px) scale(1, 1);
 }
+
 .slide-transition-move {
   transition: all .3s ease;
 }
@@ -213,8 +229,10 @@ export default {
 .navbar {
   transition: all .3s ease-in-out;
 }
+
 .navbar.scrolled {
   position: fixed;
+  display: block;
   top: 15%;
   left: 25%;
   right: 25%;
@@ -222,5 +240,9 @@ export default {
   width: auto;
   background-color: white;
   padding: .10rem;
+}
+
+#color {
+  cursor: pointer;
 }
 </style>

@@ -40,7 +40,7 @@ html, body {
     transform: translateX(0px);
 }
 
-.normalize-link {
+.normalize-link, a.normalize-link {
     text-decoration: none;
     color: rgba(0, 0, 0, .8);
 }

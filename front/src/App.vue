@@ -28,6 +28,7 @@
       <login-modal />
       <base-subscription-modal />
       <modal-language-selection />
+      <base-search-modal />
     </v-main>
 
     <base-footer v-if="$route.meta.fullPage==false" />
@@ -41,6 +42,7 @@ import languageMixin from './components/languageMixin'
 
 import BaseNavbar from './components/BaseNavbar.vue'
 import BaseFooter from './components/BaseFooter.vue'
+import BaseSearchModal from './components/BaseSearchModal.vue'
 import ModalLanguageSelection from './components/ModalLanguageSelection.vue'
 
 export default {
@@ -53,7 +55,8 @@ export default {
   components: { 
     BaseNavbar,
     BaseFooter,
-    ModalLanguageSelection
+    ModalLanguageSelection,
+    BaseSearchModal
   },
 
   mixins: [languageMixin],
