@@ -168,3 +168,5 @@ pnpm-debug.log*
 
 # Testing/Project configuration
 project.ini
+
+cache/
