@@ -202,6 +202,11 @@ export default {
     }
   },
 
+  beforeMount() {
+    this.sortMethod =  this.$localstorage.retrieve('sort')
+    this.doSort(this.sortMethod)
+  },
+
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
   },

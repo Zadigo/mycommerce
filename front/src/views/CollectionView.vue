@@ -73,7 +73,8 @@
 </template>
 
 <script>
-var _ = require('lodash')
+import _ from 'lodash'
+import dayjs from '../plugins/dayjs-plugin'
 
 import shopMixin from '../mixins/shopMixin'
 
@@ -200,7 +201,8 @@ export default {
 
     sortByDates () {
       return this.products.sort((a, b) => {
-        return new Date(b.created_on) - new Date(a.created_on)
+        // return new Date(b.created_on) - new Date(a.created_on)
+        return dayjs(a.created_on) - dayjs(b.created_on)
       })
     }
   }

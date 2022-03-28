@@ -7,4 +7,6 @@ var dayjs = require('dayjs')
 dayjs.extend(duration)
 dayjs.locale(i18n.locale)
 
+window.dayjs = dayjs
+
 export default dayjs

@@ -109,6 +109,8 @@
   "newsletter_phrase": "Inscrivez-vous pour connaître les dates de sortie de nouveaux produits, les meilleures offres et les actus {company}",
   "newsletter_title_phrase": "Rejoignez la female family",
   "An error occured": "Une erreur est survenue sur la page",
+  "You have no saved items": "Aucun article sauvegardé",
+  "Sign in to sync your saved items across all your devices": "Se connecter pour synchroniser vos articles sauvegardés sur tous vos appareils",
   "failed_search_title": "Aucun article ne correspond à votre recherche",
   "failed_sarch_content": "Mais vous pouvez toujours retenter votre chance : vérifiez l'orthographe ou essayez des termes de recherche moins spécifiques.",
   "Sign in": "Se connecter",
