@@ -5,9 +5,9 @@
     <div class="container-fluid dark-grey-text mt-5">
 
       <div class="row">
-        <!-- <div class="col-12">
+        <div class="col-12">
           <b-breadcrumb :items="breadcrumbs" class="pl-1"></b-breadcrumb>
-        </div> -->
+        </div>
 
         <!-- Images -->
         <div class="col-md-7">
@@ -48,10 +48,10 @@ import Reviews from '../components/product/Reviews.vue'
 // import RecentlyViewed from '../components/product/RecentlyViewed.vue'
 
 export default {
-  name: 'Product',
+  name: 'ProductView',
 
-  title () {
-    return this.currentProduct.name
+  title() {
+    return 'this.currentProduct.name'
   },
 
   components: {
@@ -89,22 +89,23 @@ export default {
 
     
 
-    // breadcrumbs() {
-    //   return [
-    //       {
-    //         text: 'Home',
-    //         to: 'home'
-    //       },
-    //       {
-    //         text: 'Collections',
-    //         to: 'collection_all'
-    //       },
-    //       {
-    //         text: this.currentProduct.name,
-    //         active: false
-    //       }
-    //     ]
-    // }
+    breadcrumbs() {
+      return [
+          {
+            text: this.$t('Home'),
+            to: 'home'
+          },
+          {
+            text: this.$route.params.collection,
+            to: 'collection_details',
+            params: { collection: this.$route.params.collection }
+          },
+          {
+            text: this.currentProduct.name,
+            active: false
+          }
+        ]
+    }
   },
 
   watch: {

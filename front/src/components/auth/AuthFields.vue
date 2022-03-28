@@ -1,6 +1,6 @@
 <template>
   <v-col v-if="showLoginFields" cols="12">
-    <b-form-input v-for="field in loginFields" :key="field" :type="field" :placeholder="field" class="my-2" @update="updateLoginFields($event, field)"></b-form-input>          
+    <b-form-input v-for="field in loginFields" :key="field.key" :type="field.key" :placeholder="field.name" class="my-2" @update="updateLoginFields($event, field)"></b-form-input>          
   </v-col>
 
   <v-col v-else cols="12">
@@ -40,10 +40,11 @@ export default {
     },
 
     updateLoginFields(e, field) {
-      this.$emit('login-credentials', { [`${field}`]: e })
+      this.$emit('login-credentials', { [`${field.key}`]: e })
     },
+
     updateSignupFields(e, field) {
-      this.$emit('signup-credentials', { [`${field}`]: e })
+      this.$emit('signup-credentials', { [`${field.key}`]: e })
     }
   }
 }

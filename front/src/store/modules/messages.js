@@ -6,26 +6,25 @@ var messagesModule = {
     }),
 
     mutations: {
-        addMessage (state, message) {
+        addMessage(state, message) {
             state.messages.push(message)
         },
 
-        clearMessage (state, index) {
+        clearMessage(state, index) {
             state.messages = state.messages.splice(0, index)
         },
 
-        clearMessages (state) {
+        clearMessages(state) {
             state.messages = []
         }
     },
     
     actions: {
-        addErrorMessage ({ commit }, payload) {
+        addErrorMessage({ commit }, payload) {
             // Create a new error message
-            setTimeout(() => {
-                commit('addMessage', { type: 'error', content: payload })
-            }, 500);
+            commit('addMessage', { type: 'error', content: payload })
         },
+
         addSuccessMessage({ commit }, payload) {
             // Create a new success message
             commit('addMessage', { type: 'success', content: payload })
@@ -33,7 +32,7 @@ var messagesModule = {
     },
 
     getters: {
-        hasMessages (state) {
+        hasMessages(state) {
             return state.messages.length > 0
         }
     }

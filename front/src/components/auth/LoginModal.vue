@@ -51,21 +51,5 @@ export default {
       set() { this.$store.commit('authenticationModule/loginUser') }
     }
   }
-
-//   methods: {
-//     async login() {
-//       try {
-//         var response = await this.login()
-//         var data = response.data
-
-//         this.$store.commit('authenticationModule/setUserProfile', data)
-//         this.$session.set('auth', data)
-//         this.$session.set('rememberMe', this.rememberMe)
-//         this.$store.commit('authenticationModule/loginUser')
-//       } catch(error) {
-//         console.log(error)
-//       }
-//     }
-//   }
 }
 </script>

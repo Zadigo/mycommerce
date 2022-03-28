@@ -1,8 +1,8 @@
 <template>
   <transition name="general-transition">
-    <div v-if="hasMessages" id="messages">
-      <div id="alerts">
-        <v-alert v-for="(message, i) in messages" :key="i" :type="message.type" class="m-0" dismissible @input="clearMessage(i)">
+    <div v-if="hasMessages" id="messages" class="mb-5">
+      <div id="alerts" class="mb-2">
+        <v-alert v-for="(message, i) in messages" :key="i" :type="message.type" class="m-0 rounded-0" dismissible @input="clearMessage(i)">
           {{ message.content }}
         </v-alert>
       </div>

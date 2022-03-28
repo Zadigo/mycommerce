@@ -109,5 +109,15 @@
   "Select an option": "Select an option",
   "Fitting room": "Fitting room",
   "newsletter_phrase": "You're signing up for new product launch release dates, top offers and {company} updates",
-  "newsletter_title_phrase": "Join the female family"
+  "newsletter_title_phrase": "Join the female family",
+  "An error occured": "An error occured",
+  "You have no saved items": "You have no saved items",
+  "Sign in to sync your saved items across all your devices": "Sign in to sync your saved items across all your devices",
+  "failed_search_title": "Nothing matches your search",
+  "failed_sarch_content": "But don't give up – check the spelling or try less specific search terms.",
+  "Sign in": "Sign in",
+  "Email": "Email address",
+  "Password": "Password",
+  "email": "Email address",
+  "Ppassword": "Password"
 }

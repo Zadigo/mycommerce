@@ -2,7 +2,7 @@
     "include": [
         "src/**/*",
         "views/**/*"
-    ],
+, "src/.old/devtools.js"    ],
     "exclude": [
         "node_modules"
     ]

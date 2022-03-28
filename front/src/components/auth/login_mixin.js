@@ -1,3 +1,5 @@
+var _ = require('lodash')
+
 export default {
     data: () => ({
         rememberMe: false,
@@ -19,24 +21,27 @@ export default {
 
     computed: {
         loginFields() {
-            return Object.keys(this.loginCredentials)
+            return _.map(Object.keys(this.loginCredentials), (key) => {
+                return { name: this.$t(key), key: key }
+            })
         },
 
         signupFields() {
-            return Object.keys(this.signupCredentials)
+            return _.map(Object.keys(this.signupCredentials), (key) => {
+                return { name: this.$t(key), key: key }
+            })
         }
     },
 
     methods: {
         async login(options) {
-            // return this.$api.auth.login(this.loginCredentials)
             try {
                 var response = await this.$axios.post('/login', this.loginCredentials)
                 var data = response.data
 
                 this.$store.commit('authenticationModule/setUserProfile', data)
-                this.$session.set('auth', data)
-                this.$session.set('rememberMe', this.rememberMe)
+                this.$session.create('auth', data)
+                this.$session.create('rememberMe', this.rememberMe)
                 this.$store.commit('authenticationModule/loginUser')
 
                 let { redirect, to, params } = options
@@ -49,16 +54,6 @@ export default {
             }
         },
 
-        // signup() {
-        //     this.$api.auth.signup(this.signupCredentials)
-        //     .then((response) => {
-        //         this.$store.commit('authenticationModule/setUserProfile', response.data)
-        //         this.showLogin = true
-        //     })
-        //     .catch((error) => {
-        //         console.log(error)
-        //     })
-        // }
         async signup() {
             try {
                 var response = await this.$axios.post('/signup', this.signupCredentials)

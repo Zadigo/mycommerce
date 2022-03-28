@@ -54,21 +54,6 @@ export default {
     updateSignupFields(params) {
       this.signupCredentials = Object.assign({}, this.loginCredentials, params)
     }
-    // doLogin() {
-    //   this.login().then((response) => {
-    //       var data = response.data
-
-    //       this.$store.commit('authenticationModule/setUserProfile', data)
-
-    //       this.$session.set('auth', data)
-    //       this.$session.set('rememberMe', this.rememberMe)
-          
-    //       this.$router.push({ name: 'home', params: { lang: this.$i18n.locale } })
-    //   })
-    //   .catch(() => {
-    //     this.$store.dispatch('addErrorMessage', "Either the username/password is not correct")
-    //   })
-    // }
   }
 }
 </script>

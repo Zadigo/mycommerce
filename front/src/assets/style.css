@@ -158,6 +158,7 @@ section.space {
 section.ecommerce-section {
     margin-top: 10rem;
     margin-bottom: 2rem;
+    min-height:50vh;
 }
 
 

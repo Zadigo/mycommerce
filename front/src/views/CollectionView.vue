@@ -47,15 +47,6 @@
                     </div>
                   </transition-group>
                 </transition>
-
-                <!-- TODO: Display product grid using flex instead of row + columns -->
-                <!-- <div class="row">
-                  <transition-group name="card-transition" tag="div" style="display:flex;flex-direction:row;align-items:flex-start;justify-content:flex-start;flex-wrap:wrap;">
-                    <template v-for="product in sortedProducts">
-                      <card :key="product.id" :product="product" :multiple-grid-display="multipleGridDisplay" :is-loading="isLoading" />
-                    </template>
-                  </transition-group>
-                </div> -->
               </div>
             </div>
           </section>

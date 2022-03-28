@@ -40,6 +40,14 @@ const routes = [
         }
       },
       {
+        path: 'collections/:collection([a-z-]+)/:product(\\d+)/:slug([a-z-]+)',
+        name: 'collection_product_view',
+        component: loadView('CollectionView'),
+        meta: {
+          fullPage: false
+        }
+      },
+      {
         path: 'products/:id(\\d+)/:slug([a-z-]+)',
         name: 'product_view',
         component: loadView('ProductView'),
