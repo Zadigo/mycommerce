@@ -55,17 +55,23 @@ export default new Vuex.Store({
     cartItems : [],
     cart: [],
 
-    likedProducts: []
+    likedProducts: [],
+
+    showSearchModal: false
   },
 
   mutations: {
-    toggleModalCart (state) {
+    toggleModalCart(state) {
       // Open the modal cart so that the 
       // user can see what is in his cart
       state.openCart = !state.openCart
     },
 
-    updateCart (state, result) {
+    toggleSearchModal(state) {
+      state.showSearchModal = !state.showSearchModal
+    },
+
+    updateCart(state, result) {
       if (result) {
         state.cachedCartResponse = result
         state.cartSessionId = result.session_id

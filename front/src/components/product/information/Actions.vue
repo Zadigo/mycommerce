@@ -61,7 +61,7 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import cartMixin from '../../cartMixin'
+import cartMixin from '../../../mixins/cartMixin'
 
 export default {
   name: 'Actions',

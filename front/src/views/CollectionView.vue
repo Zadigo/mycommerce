@@ -6,13 +6,13 @@
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col-8 offset-md-2">
+        <div v-if="hasProducts" class="col-8 offset-md-2">
           <!-- Filters -->
-          <filters-bar :multiple-grid-display="multipleGridDisplay" @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" @change-grid="changeGrid" @do-sort="doSort" @toggle-filters="toggleFilters" />
+          <filters-bar :multiple-grid-display="multipleGridDisplay" @load-products="getProducts" @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" @change-grid="changeGrid" @do-sort="doSort" @toggle-filters="toggleFilters" />
         </div>
 
         <div class="col-12">
-          <section id="products">
+          <section id="products" class="py-8 my-4">
             <div class="row">
               <!-- TODO: Implement transition for all of this section especially between the filters and the products section -->
               <!-- Side Filters -->
@@ -22,21 +22,18 @@
               <div class="col-12">
                 <transition name="general-transition" mode="out-in">
                   <div v-if="sortedProducts.length == 0" class="row">
-                    <div class="col-md-12">
-                      <b-card>
-                        <b-card-text class="text-center">
-                          <h2 class="p-1 mb-5">{{ $t('No products found') }}</h2>
+                    <div class="col-md-12 text-center py-8">
+                      <v-icon class="mb-3" size="70">mdi-emoticon-sad-outline</v-icon>
+                      <h2 class="p-1 mb-5 font-weight-bold">{{ $t('No products found') }}</h2>
 
-                          <v-row>
-                            <v-col cols="12">
-                              <button-load-products>
-                                <v-icon class="mr-2">mdi-refresh</v-icon>
-                                {{ $t('Refresh page') }}
-                              </button-load-products>
-                            </v-col>
-                          </v-row>
-                        </b-card-text>
-                      </b-card>
+                      <v-row>
+                        <v-col cols="12">
+                          <button-load-products>
+                            <v-icon class="mr-2">mdi-refresh</v-icon>
+                            {{ $t('Refresh page') }}
+                          </button-load-products>
+                        </v-col>
+                      </v-row>
                     </div>
                   </div>
 
@@ -78,7 +75,7 @@
 <script>
 var _ = require('lodash')
 
-import shopMixin from '../components/shopMixin'
+import shopMixin from '../mixins/shopMixin'
 
 import { mapGetters, mapMutations, mapState } from 'vuex'
 
@@ -112,7 +109,7 @@ export default {
   
   computed: {
     ...mapState({ products: (state) => { return state.shopModule.products } }),
-    ...mapGetters(['minPrice', 'maxPrice']),
+    ...mapGetters(['minPrice', 'maxPrice', 'hasProducts']),
 
     searchedPrice: {
       get () { return this.$store.setSearchedPrices },

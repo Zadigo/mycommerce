@@ -87,8 +87,6 @@ export default {
       return this.reviews.length
     },
 
-    
-
     breadcrumbs() {
       return [
           {
@@ -133,7 +131,7 @@ export default {
     })
   },
 
-  created () {
+  created() {
     console.log(1)
     // In order to get the currentProduct set,
     // reload the current list of products
@@ -144,6 +142,11 @@ export default {
 
     var product = this.$store.getters['getProduct'](this.$route.params.id)
     this.$store.commit('setCurrentProduct', product)
+
+    // if (!product) {
+    //   this.$router.push({ name: 'not_found_view' })
+    // } else {
+    // }
   },
 
   mounted () {
@@ -154,22 +157,6 @@ export default {
   },
 
   methods: {
-    // requestProductVariants () {
-    //   // TODO: Maybe if we preload all the products from
-    //   // the database, we might not need to request
-    //   // the variants because this relies on the front
-    //   // knowing all similar products that exis in the
-    //   // database in order to show the color variants
-    //   this.$api.shop.products.variants(this.currentProduct)
-    //   .then((response) => {
-    //     this.productVariants = response.data
-    //     setTimeout(() => {
-    //       this.isLoading = false
-    //     }, 1000);
-    //   })
-    //   .catch((error) => {
-    //     this.$store.dispatch('addErrorMessage', error.response.statusText)
-    //   })
     async requestProductVariants() {
       try {
         var response = await this.$axios.post(`/shop/products/${ this.currentProduct.id }`)
@@ -185,7 +172,8 @@ export default {
           this.isLoading = false
         }, 1000)
       } catch(error) {
-        this.$store.dispatch('addErrorMessage', error.response.statusText)
+        console.log(error.response.status)
+        this.$store.dispatch('addErrorMessage', 'Could not get the current product')
       }
     }
     // FIXME: Use mapmutations to

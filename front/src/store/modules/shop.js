@@ -23,10 +23,12 @@ var shopModule = {
 
     mutations: {
         setProducts (state, payload) {
-            state.cachedResponse = payload
-            state.products = payload.results
-            state.previousUrl = payload.previous
-            state.nextUrl = payload.next
+            if (payload) {
+                state.cachedResponse = payload
+                state.products = payload.results
+                state.previousUrl = payload.previous
+                state.nextUrl = payload.next
+            }
         },
 
         resetProducts (state) {

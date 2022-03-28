@@ -29,7 +29,7 @@
 
           <!-- Size -->
           <li class="nav-item mx-1">
-            <v-btn text @click="openFilters('size')">
+            <v-btn text @click="openFilters('sizes')">
               {{ $t('Size') }}
               <v-icon class="ms-1">mdi-chevron-down</v-icon>
             </v-btn>
@@ -47,15 +47,18 @@
         <transition name="slide-transition">
           <div v-if="showFilters" id="filters" class="d-flex justify-content-center" style="flex-wrap:wrap;">
             <!-- Sizes -->
-            <div v-if="selectedFilter == 'size'">
-              <v-chip v-for="(size, i) in sizes" :key="i" class="mx-1" link @click="setSearchItem('sizes', size)">
+            <div v-if="selectedFilter == 'sizes'">
+              <v-chip v-for="(size, i) in sizes" :key="i" class="mx-1" link @click="setFilterValue('sizes', size)">
                 {{ size }}
               </v-chip>
             </div>
 
             <!-- Colors -->
             <div v-else-if="selectedFilter == 'colors'" class="d-flex justify-content-around">
-              <v-img v-for="(color, i) in colors" :key="i" :src="color[1]" id="color" class="mx-2" height="50px" width="50px" @click="setSearchItem('colors', color[0])"></v-img>
+              <div v-for="(color, i) in colors" :key="i" style="position:relative;" @click="setFilterValue('colors', color[0])">
+                <v-icon v-if="isSelected('colors', color[0])" class="text-white filter-icon" x-large>mdi-check</v-icon>
+                <v-img :src="color[1]" id="color" class="mx-2" height="50px" width="50px"></v-img>
+              </div>
             </div>
           </div>
         </transition>
@@ -92,7 +95,7 @@ export default {
     ],
 
     showFilters: false,
-    selectedFilter: 'size',
+    selectedFilter: 'sizes',
 
     selectedElements: {
         sizes: [],
@@ -129,26 +132,45 @@ export default {
     searchQuery() {
         var items = new URLSearchParams({...this.selectedElements})
         return `?${items}`
+    },
+
+    hasFilters() {
+      var truthArray = _.map(Object.keys(this.selectedElements), (key) => {
+        return this.selectedElements[key].length > 0
+      })
+      return truthArray.some((value) => { return value == true })
     }
   },
 
   methods: {
+    async getFilteredProducts() {
+      try {
+        this.$emit('loading-products-start')
+        
+        var response = await this.$axios.get(`/shop/advanced/search${this.searchQuery}`)
+        
+        this.$store.commit('setProducts', response.data)
+        this.$emit('loading-products-end')
+      } catch(error) {  
+        this.$store.dispatch('addErrorMessag', 'An error occured')
+      }
+    },
+
     doSort(method) {
       this.sortMethod = method
       this.$emit('do-sort', method)
     },
 
     openFilters(method) {
+      if (method !== this.selectedFilter && this.showFilters) {
+        this.showFilters = true
+      } else {
+        this.showFilters = !this.showFilters
+      }
       this.selectedFilter = method
-      this.showFilters = !this.showFilters
     },
 
     handleScroll() {
-      // if (document.documentElement.scrollTop > 250) {
-      //   this.$refs.link.classList.add('scrolled')
-      // } else {
-      //   this.$refs.link.classList.remove('scrolled')
-      // }
       var scrollPercentage = this.getVerticalScrollPercentage(document.body)
 
       if (scrollPercentage >= 5) {
@@ -161,30 +183,22 @@ export default {
 
     },
 
-    setSearchItem(key, value) {
-      // TODO: Make a global function that allows
-      // us to dynamically push/remove a value from
-      // an array based non a selection
+    setFilterValue(key, colorValue) {
       var values = this.selectedElements[key]
-      if (values.includes(value)) {
-        var indexOfValue = _.indexOf(values, value) 
-        values.splice(0, indexOfValue)
+
+      this.selectedElements[key] = this.updateList(colorValue, values)
+      if (!this.hasFilters) {
+        this.$emit('loading-products-start')
+        this.$emit('load-products')
+        this.$emit('loading-products-end')
       } else {
-        values.push(value)
+        this.getFilteredProducts()
       }
-      this.selectedElements[key] = values
-      this.getProducts()
+      this.scrollToTop()
     },
 
-    async getProducts() {
-      try {
-        this.$emit('loading-products-start')
-        var response = await this.$axios.get(`/shop/advanced/search${this.searchQuery}`)
-        this.$store.commit('setProducts', response.data)
-        this.$emit('loading-products-end')
-      } catch(error) {  
-        console.log(error)
-      }
+    isSelected(key, value) {
+      return this.selectedElements[key].includes(value)
     }
   },
 
@@ -254,5 +268,19 @@ export default {
 
 #color {
   cursor: pointer;
+}
+
+.selected {
+  border: 2px solid white;
+  opacity: .5;
+}
+
+.filter-icon {
+  position: absolute;
+  left: 50%;
+  right: 50%;
+  top: 50%;
+  bottom: 50%;
+  z-index: 1200;
 }
 </style>

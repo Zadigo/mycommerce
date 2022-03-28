@@ -1,24 +1,27 @@
 <template>
-  <b-modal v-model="loginModal" id="login-modal" title="Login" centered>
+  <b-modal v-model="loginModal" id="login-modal" :title="$t('Login')" centered>
     <v-container>
       <v-row>
         <!-- Login -->
         <v-col v-if="showLoginFields" cols="12">
-          <b-form-input v-for="field in loginFields" :key="field" v-model="loginCredentials[field]" :type="field" :placeholder="field" class="my-2"></b-form-input>          
+          <b-form-input v-for="field in loginFields" :key="field.key" v-model="loginCredentials[field.key]" :type="field.key" :placeholder="field.name"  :autocomplete="getAutocomplete(true, field)" class="my-2"></b-form-input>          
         </v-col>
+
+        <!-- <input autocomplete="pager"> -->
 
         <!-- Signup -->
         <v-col v-else cols="12">
-          <b-form-input v-for="field in signupFields" :key="field" v-model="signupCredentials[field]" :type="checkFieldType(field)" :placeholder="field" class="my-2"></b-form-input>          
+          <b-form-input v-for="field in signupFields" :key="field.key" v-model="signupCredentials[field.key]" :type="checkFieldType(field)" :placeholder="field.name" :autocomplete="getAutocomplete(false, field)" class="my-2"></b-form-input>          
         </v-col>
 
         <v-checkbox v-model="rememberMe" :label="$t('Remember me')"></v-checkbox>
 
         <v-col v-if="showLoginFields" cols="12">
-          Don't have an account ? <b-link @click="showLoginFields = !showLoginFields">Signup</b-link>
+          Don't have an account ? <v-btn @click="showLoginFields=false">Signup</v-btn>
         </v-col>
+
         <v-col v-else cols="12">
-          Already have an account ? <b-link @click="showLoginFields = !showLoginFields">Login</b-link>
+          Already have an account ? <v-btn @click="showLoginFields=true">Login</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -38,7 +41,7 @@
 </template>
 
 <script>
-import loginMixin from './login_mixin'
+import loginMixin from '../../mixins/login_mixin'
 
 export default {
   name: 'LoginModal',

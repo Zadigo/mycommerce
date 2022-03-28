@@ -33,9 +33,15 @@
         </ul>
 
         <ul class="navbar-nav">
-          <form class="form-inline px-3">
+          <!-- <form class="form-inline px-3">
             <v-text-field :placeholder="$t('Search')" type="search" outlined hide-details></v-text-field>
-          </form>
+          </form> -->
+          
+          <li class="nav-item">
+            <a class="nav-link" @click="toggleSearchModal">
+              <v-icon size="28" class="mr-2">mdi-magnify</v-icon>
+            </a>
+          </li>
           
           <li class="nav-item">
             <router-link :to="{ name: 'wishlist', params: { lang: $i18n.locale } }" class="nav-link">
@@ -56,7 +62,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: 'BaseNavbar',
@@ -71,6 +77,7 @@ export default {
   },
 
   methods: {
+    ...mapMutations(['toggleSearchModal']),
     logout() {
       this.$store.commit('authenticationModule/logout')
       this.$router.push({ name: 'home', params: { lang: this.$i18n.locale } })

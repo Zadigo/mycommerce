@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import languageMixin from '../components/languageMixin'
+import languageMixin from '../mixins/languageMixin'
 
 import BaseNavbar from '../components/BaseNavbar.vue'
 import BaseFooter from '../components/BaseFooter.vue'

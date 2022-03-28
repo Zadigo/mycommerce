@@ -19,6 +19,9 @@
 
       <!-- Messages -->
       <base-messages />
+
+      <!-- Search -->
+      <base-search-modal />
     </header>
     
 
@@ -35,18 +38,16 @@
       <login-modal />
       <base-subscription-modal />
       <modal-language-selection />
-      <base-search-modal />
     </v-main>
 
     <base-footer v-if="$route.meta.fullPage==false" />
-
   </v-app>
 </template>
 
 <script>
 // import BaseSite from '@/views/BaseSite.vue'
 // import DashboardSite from '@/views/DashboardSite.vue'
-import languageMixin from './components/languageMixin'
+import languageMixin from './mixins/languageMixin'
 
 import BaseNavbar from './components/BaseNavbar.vue'
 import BaseFooter from './components/BaseFooter.vue'

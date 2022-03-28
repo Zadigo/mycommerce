@@ -26,7 +26,7 @@ const routes = [
       {
         path: '',
         name: 'home',
-        component: () => import(/* webpackChunkName: "home" */ '../views/HomeView.vue'),
+        component: loadView('HomeView'),
         meta: {
           fullPage: false
         }
@@ -34,19 +34,19 @@ const routes = [
       {
         path: 'collections/:collection([a-z-]+)',
         name: 'collection_details',
-        component: () => import(/* webpackChunkName: "collection" */ '@/views/CollectionView.vue'),
-        meta: {
-          fullPage: false
-        }
-      },
-      {
-        path: 'collections/:collection([a-z-]+)/:product(\\d+)/:slug([a-z-]+)',
-        name: 'collection_product_view',
         component: loadView('CollectionView'),
         meta: {
           fullPage: false
         }
       },
+      // {
+      //   path: 'collections/:collection([a-z-]+)/:product(\\d+)/:slug([a-z-]+)',
+      //   name: 'collection_product_view',
+      //   component: loadView('CollectionView'),
+      //   meta: {
+      //     fullPage: false
+      //   }
+      // },
       {
         path: 'products/:id(\\d+)/:slug([a-z-]+)',
         name: 'product_view',
@@ -135,11 +135,11 @@ const routes = [
 
       {
         path: 'login',
-        name: 'login',
+        name: 'login_view',
         meta: {
           fullPage: true
         },
-        component: () => import('@/views/LoginView.vue')
+        component: loadView('auth/LoginView')
       },
 
       {
@@ -234,10 +234,15 @@ const routes = [
   },
 
   {
+    path: '/500',
+    name: 'server_error_view',
+    component: loadView('404View')
+  },
+  {
     path: '/404',
-    name: 'not_found',
+    name: 'not_found_view',
     alias: '*',
-    component: () => import('@/views/404_View.vue')
+    component: loadView('404View')
   }
 ]
 

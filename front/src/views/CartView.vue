@@ -1,5 +1,5 @@
 <template>
-  <section id="cart" class="my-8">
+  <section id="cart" class="ecommerce-section">
 
     <v-container>
       <v-row>
@@ -126,7 +126,7 @@
 <script>
 import { mapState } from 'vuex'
 
-import cartMixin from '../components/cartMixin'
+import cartMixin from '../mixins/cartMixin'
 
 export default {
   name: 'CartView',

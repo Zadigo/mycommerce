@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import shopMixin from '../shopMixin'
+import shopMixin from '../../mixins/shopMixin'
 
 export default {
   name: 'ButtonLoadProducts',
