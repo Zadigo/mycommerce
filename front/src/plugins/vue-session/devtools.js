@@ -5,13 +5,10 @@ const INSPECTORID = 'vue-session'
 const TIMELINEID = 'vue-session'
 
 export function setupDevtools(Vue, instance) {
-    let devtoolsApi = null
     let trackId = 0
+    let devtoolsApi = null
 
     const devtools = {
-        // This section allows use to track
-        // events for the timeline
-        // trackStart: (label, string) => {
         trackStart: (label) => {
             const groupId = 'track' + trackId++
 
@@ -20,7 +17,7 @@ export function setupDevtools(Vue, instance) {
                 event: {
                     time: Date.now(),
                     title: label,
-                    data: { label },
+                    data: { label: label },
                     groupId
                 }
             })
@@ -32,35 +29,23 @@ export function setupDevtools(Vue, instance) {
                     event: {
                         time: Date.now(),
                         title: `${label} - finished`,
-                        data: { label, done: true, data: instance.instance.getData() },
+                        data: { label: label, data: instance._lastHistory },
                         groupId
                     }
                 })
             }
         }
     }
-
     setupDevtoolsPlugin({
         id: 'vue-session',
         label: 'Vue Session',
         packageName: 'vue-session',
-        homepage: null,
+        homepage: 'http://example.com',
         componentStateTypes: [STATETYPE],
         enableEarlyProxy: true,
-        settings: {
-            persistentStorage: {
-                label: 'Persistent storage',
-                type: 'boolean',
-                defaultValue: false
-            },
-            sessionName: {
-                label: 'Session name',
-                type: 'text',
-                defaultValue: 'session-id'
-            }
-        },
         Vue
     }, api => {
+
         devtoolsApi = api
 
         api.addInspector({
@@ -75,36 +60,27 @@ export function setupDevtools(Vue, instance) {
             color: 0xff984f
         })
 
+        api.on.getInspectorState((payload) => {
+            if (payload.inspectorId == INSPECTORID) {
+                payload.state = {
+                    state: [
+                        {
+                            key: 'vue-session',
+                            value: instance.data
+                        }
+                    ]
+                }
+            }
+        })
+
         api.on.getInspectorTree((payload) => {
             if (payload.inspectorId == INSPECTORID) {
                 payload.rootNodes = [
                     {
-                        id: 'root',
-                        label: 'Root',
-                        tags: [
-                            {
-                                label: instance.instance.sessionId(),
-                                textColor: 0x000000,
-                                backgroundColor: 0xff984f
-                            }
-                        ]
+                        id: 'storage',
+                        label: 'Storage'
                     }
                 ]
-            }
-        })
-
-        api.on.getInspectorState((payload) => {
-            if (payload.inspectorId == INSPECTORID) {
-                if (payload.nodeId == 'root') {
-                    payload.state = {
-                        state: [
-                            {
-                                key: 'storedData',
-                                value: instance.instance.getData()
-                            }
-                        ]
-                    }
-                }
             }
         })
 
@@ -112,15 +88,14 @@ export function setupDevtools(Vue, instance) {
             payload.instanceData.state.push({
                 type: STATETYPE,
                 key: '$session',
-                value: instance.instance.getData()
+                value: instance.data
             })
         })
 
         setInterval(() => {
             api.sendInspectorState(INSPECTORID)
             api.notifyComponentUpdate()
-        }, 3000);
-        
+        }, 3000)
     })
 
     return devtools

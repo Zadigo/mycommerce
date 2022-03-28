@@ -5,155 +5,164 @@
 
 // import { setupDevtools } from './devtools'
 
-const SESSION_ID_KEY = 'session-id'
+const VUE_SESSION_KEY = 'vue-session'
 
-var STORAGE = null
 
-var createSessionKey = () => {
-    return `sess:${Date.now()}`
-}
+class VueSession {
+    constructor(options) {
+        let { persistent, initial } = options
 
-var VueSession = {
-    key: 'vue-session-key',
-    // flash_key: 'vue-session-flash-key',
+        this.storage = sessionStorage
+        this._track = null
+        this._history = []
 
-    setData(initialData) {
-        STORAGE.setItem(VueSession.key, JSON.stringify(initialData))
-    },
+        // TODO: Implement functionnalities for persistence
+        // and for implementing initial data
+        this.isPersistent = persistent ? true : false
+        if (initial && typeof initial != 'object') {
+            throw new Error('Initial should be a dictionnary')
+        }
+        this.initial = initial
+    }
 
-    getData() {
-        return JSON.parse(STORAGE.getItem(VueSession.key))
-    },
+    get data() {
+        return JSON.parse(this.storage.getItem(VUE_SESSION_KEY))
+    }
 
-    sessionId() {
-        // Return the curreent session ID
-        return this.getData(VueSession.key)[SESSION_ID_KEY]
-    },
-}
+    get _lastHistory() {
+        return this._history[this._history.length - 1]
+    }
 
-var VueSessionApi = {
-
-    init: (params) => {
-        return {
-            install: (Vue, options) => {
-                // let devtools
-
-                // Use the SessionStorage unless the
-                // use specifies persistence which
-                // will then shift to the localStorage
-                STORAGE = window.sessionStorage
-                if (options && 'persist' in options) {
-                    STORAGE = localStorage
-                }
-
-                // Sets up the devtools in th browser for VueSession
-                // devtools = setupDevtools(Vue, { instance: VueSession })
-
-                params
-
-                // var track = function (valueToResolve) {
-                //     const trackEnd = devtools ? devtools.trackStart('$session') : null
-                //     return new Promise(resolve => {
-                //         setTimeout(() => {
-                //             if (trackEnd) trackEnd()
-                //             resolve(valueToResolve)
-                //         }, 1000)
-                //     })
-                // }
-
-                Vue.mixin({
-                    data: () => ({
-                        session: VueSession.getData()
-                    })
-                    // beforeCreate () {
-                    //     setupDevtools(this, { intance: VueSession })
-                    // }
-                })
-
-                Vue.prototype.$session = {
-                    getAll() {
-                        // Returns all the elements stored in the
-                        // current session
-                        var storedData = JSON.parse(STORAGE.getItem(VueSession.key))
-                        return storedData || {}
-                    },
-        
-                    set(key, value) {
-                        // Session ID is our reserved key do
-                        // do not allow it to be overriden
-                        if (key == SESSION_ID_KEY) { return false }
-                        
-                        var storedData = this.getAll()
-                        
-                        if (!(SESSION_ID_KEY in storedData)) {
-                            storedData['session-id'] = createSessionKey()
-                            VueSession.setData(storedData)
-                        }
-                        storedData[key] = value
-                        VueSession.setData(storedData)
-                        track(storedData)
-                    },
-        
-                    get(key) {
-                        // Returns an item from the storage
-                        return this.getAll()[key]
-                    },
-        
-                    remove(key) {
-                        // Remove a key from the storage
-                        var storedData = this.getAll()
-                        delete storedData[key]
-                        VueSession.setData(storedData)
-                    },
-        
-                    clear() {
-                        // Clear the session storage
-                        var storedData = this.getAll()
-                        var newSession = { 'session-id': storedData[SESSION_ID_KEY] }
-                        VueSession.setData(newSession)
-                        track('cleared')
-                    },
-        
-                    destroy() {
-                        // Destroy the session
-                        VueSession.setData({})
-                    },
-        
-                    sessionId() {
-                        // Return the curreent session ID
-                        return self.getAll(VueSession.key)
-                    },
-        
-                    renew(sessionKey) {
-                        // Renew the session ID
-                        typeof sessionKey === 'undefined' ? createSessionKey() : sessionKey
-                        var storedData = this.getAll()
-                        storedData[SESSION_ID_KEY] = sessionKey
-                    },
-        
-                    isConfigured() {
-                        // Determines whether VueSession is
-                        // configured
-                        return SESSION_ID_KEY in this.getAll()
-                    }
-                }
-
-                // TODO: Show this ONLY in development mode
-                // if (typeof window !== 'undefined' && window.__VUE__) {
-                //     window.VueSession = VueSession
-                //     // window.Vue.use(VueSession)
-                // }
-            }
+    _precheck() {
+        // Ensures that the session key above
+        // is always present before doing any
+        // operations
+        if (!(VUE_SESSION_KEY in this.storage)) {
+            var sessionData = { 'session-id': Date.now() }
+            this.storage.setItem(VUE_SESSION_KEY, JSON.stringify(sessionData))
         }
     }
 
+    _save(data) {
+        this._precheck()
+        this.storage.setItem(VUE_SESSION_KEY, JSON.stringify(data))
+        this._track(data)
+        this._history.push(['save', data])
+    }
+
+    * iter() {
+        yield* Object.values(this.data)
+    }
+
+    create(key, value) {
+        this._precheck()
+        var storedData = this.data
+        storedData[key] = value
+        this._save(storedData)
+    }
+
+    retrieve(key) {
+        this._precheck()
+        return this.data[key]
+    }
+
+    remove(key) {
+        var storedData = this.data
+        delete storedData[key]
+        this._save(storedData)
+    }
+
+    renew() {
+        // Fails silently if there is no
+        // session in the storage
+        try {
+            var storedData = this.data
+            storedData['session-id'] = Date.now()
+            this.storage.setItem(VUE_SESSION_KEY, JSON.stringify(storedData))
+        } catch {
+            return false
+        }
+    }
+
+    clear() {
+        // Fails silently if there is no
+        // session in the storage
+        try {
+            var sessionId = this.data['session-id']
+            this.storage.setItem(VUE_SESSION_KEY, JSON.stringify({ 'session-id': sessionId }))
+        } catch {
+            return false
+        }
+    }
+
+    contains(key) {
+        return this.data ? key in this.data : false
+    }
+
+    destroy() {
+        this.storage.clear()
+    }
+
+    getOrCreate(key, value) {
+        this._precheck()
+
+        var storedData = this.data
+
+        if (!(key in storedData)) {
+            this.create(key, value)
+        }
+
+        return storedData[key]
+    }
+
+    toggle(key) {
+        var storedData = this.data
+        if (typeof storedData[key] !== 'boolean') {
+            console.warn('Only Boolean values can be toggled')
+        }
+        var result = !storedData[key]
+        storedData[key] = result
+        this._save(storedData)
+        return { [`${key}`]: result }
+    }
+
+    // afterEach (func) {
+    //     var result = func.call(this, this.storage, this.data)
+    //     result
+    // }
+
+    install(Vue) {
+        const self = this
+
+        Vue.prototype.$session = self
+
+        // Vue.mixin({
+        //     beforeCreate() {
+        //         setupDevtools(this, self)
+                
+        //         // var track = function (valueToResolve) {
+        //         //     const trackEnd = devtools ? devtools.trackStart('$session') : null
+        //         //     return new Promise(resolve => {
+        //         //         setTimeout(() => {
+        //         //             if (trackEnd) trackEnd()
+        //         //             resolve(valueToResolve)
+        //         //         }, 1000)
+        //         //     })
+        //         // }
+
+        //         // self._track = track
+        //     }
+        // })
+        
+        window.VueSession = self
+    }
 }
 
-
 function createVueSession(options) {
-    return VueSessionApi.init(options)
+    return new VueSession(options)
 }
 
 export {
+    VUE_SESSION_KEY,
     createVueSession
 }
