@@ -119,5 +119,7 @@
   "Email": "Email address",
   "Password": "Password",
   "email": "Email address",
-  "Ppassword": "Password"
+  "password": "Password",
+  "Discover": "Discover",
+  "Select language": "Select language"
 }

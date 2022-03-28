@@ -9,7 +9,7 @@
             <h5 class="mb-4 lead-smaller">Craquez pour nos nouveautés signées Lounge</h5>
 
             <router-link :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale  } }" class="btn btn-outline-light btn-lg m-2" role="button">
-              Découvrir
+              {{ $t('Discover') }}
             </router-link>
           </div>
         

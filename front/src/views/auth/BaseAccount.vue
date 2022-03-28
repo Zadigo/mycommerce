@@ -16,7 +16,9 @@
 <script>
 export default {
   name: 'Account',
-  title: () => 'Account'
+  title() {
+    return 'Account'
+  }
 }
 </script>
 

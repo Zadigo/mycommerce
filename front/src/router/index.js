@@ -2,8 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import i18n from '../i18n'
-import Account from '../views/Account.vue'
 import store from '../store'
+
+import BaseAccount from '../views/auth/BaseAccount.vue'
 
 Vue.use(VueRouter)
 
@@ -58,7 +59,7 @@ const routes = [
       {
         path: 'wishlist',
         name: 'wishlist',
-        component: () => import(/* webpackChunkName: "wishlist" */'@/views/WishlistView.vue'),
+        component: loadView('WishlistView'),
         meta: {
           fullPage: false
         }
@@ -66,7 +67,7 @@ const routes = [
       {
         path: 'cart',
         name: 'cart',
-        component: () => import(/* webpackChunkName: "cart" */'@/views/CartView.vue'),
+        component: loadView('CartView'),
         meta: {
           fullPage: false
         }
@@ -89,7 +90,7 @@ const routes = [
 
       {
         path: 'account',
-        component: Account,
+        component: BaseAccount,
         children: [
           {
             path: '',
