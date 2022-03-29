@@ -1,5 +1,5 @@
 // import { setupDevtools } from "../devtools"
-import googleAnalyticsFunctions from './functions'
+import functions from './functions'
 
 function createProduct(id, name, price, brand, category, index) {
     // Standard function for creating a product
@@ -29,29 +29,44 @@ function mapToFields(products, mapping) {
     })
 }
 
-function createGoogleAnalytics(tag, currency) {
-    googleAnalyticsFunctions.DEFAULT_CURRENCY = currency || googleAnalyticsFunctions.DEFAULT_CURRENCY
+function createGoogleAnalytics(tag, options) {
+    let { currency, brand } = options
 
+    functions.DEFAULT_CURRENCY = currency ? currency : functions.DEFAULT_CURRENCY
+    functions.DEFAULT_BRAND = brand
+
+    var head = document.getElementsByTagName('head')[0]
+
+    // Create the no script tag
     var noScript = document.createElement('script')
-    var attr = document.createAttribute('src')
-    attr.value = 'https://www.googletagmanager.com/gtag/js?id=G-TQ8RWETJ4Q'
+    var srcAttribute = document.createAttribute('src')
+    var url = new URL('https://www.googletagmanager.com/gtag/js')
 
-    var attr2 = document.createAttribute('async')
-    noScript.setAttributeNode(attr)
-    noScript.setAttributeNode(attr2)
+    url.searchParams.append('id', tag)
+    srcAttribute.value = url.toString()
 
+    var asyncAttribute = document.createAttribute('async')
+    noScript.setAttributeNode(srcAttribute)
+    noScript.setAttributeNode(asyncAttribute)
+
+    // Create the main script tag
     var script = document.createElement('script')
     var content = document.createTextNode(`
     window.dataLayer = window.dataLayer || []
     function gtag() { dataLayer.push(arguments) }
     gtag('js', 1 * new Date())
-    gtag('config', 'G-TQ8RWETJ4Q')`)
+    gtag('config', '${tag}', { currency: '${functions.DEFAULT_CURRENCY}' })`)
+
     script.appendChild(content)
 
-    var head = document.getElementsByTagName('head')
-    head[0].appendChild(noScript)
-    // script.parentNode.insertBefore(noScript, script)
-    head[0].appendChild(script)
+    // additionalProperties.forEach((property) => {
+    //     var textObject = document.createTextNode(`gtag('config', '${property}', { currency: '${functions.DEFAULT_CURRENCY}' })`)
+    //     script.appendChild(textObject)
+    // })
+
+    // Mount the tags
+    head.appendChild(script)
+    script.parentNode.insertBefore(noScript, script)
 
     return {
         install: (Vue) => {
@@ -63,14 +78,20 @@ function createGoogleAnalytics(tag, currency) {
                     }
                 }),
 
-                // beforeCreate() {
-                //     if (this.$options.analyticsPlugin) {
-                //         setupDevtools(this)
+                // mounted() {
+                //     // Measures the loading performance
+                //     // of the VueJS application
+                //     if (window.performance) {
+                //         functions.measureTiming('Application Mount')
                 //     }
                 // }
             })
 
-            Vue.prototype.$google_analytics = googleAnalyticsFunctions
+            Vue.prototype.$analytics = {
+                google: functions
+            }
+
+            window.VueAnalytics = functions
         }
     }
 }
@@ -78,5 +99,6 @@ function createGoogleAnalytics(tag, currency) {
 export {
     createProduct,
     createGoogleAnalytics,
-    mapToFields
+    mapToFields,
+    functions
 }

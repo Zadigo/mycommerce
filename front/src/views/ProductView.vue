@@ -114,6 +114,7 @@ export default {
         this.$store.commit('setRecentlyViewed', newValue)
         this.$localstorage.create('recentlyViewedProducts', this.$store.getters['recentlyViewedProducts'])
         this.requestProductVariants()
+        this.sendAnalytics()
       }
     }
   },
@@ -121,6 +122,8 @@ export default {
   beforeRouteEnter (to, from, next) {
     console.log(2)
     next(vm => {
+      // TODO: Set the name on the page via the product
+      vm.sendAnalytics()
       // TODO: When relaoding (or maybe even accessing the page)
       // this tries to access products/product that is not yet
       // defined. We have to define these to prevent
@@ -175,6 +178,19 @@ export default {
         console.log(error.response.status)
         this.$store.dispatch('addErrorMessage', 'Could not get the current product')
       }
+    },
+
+    sendAnalytics() {
+      var product = this.currentProduct
+
+      this.$analytics.google.viewItem({
+        index : this.$store.getters['productIndex'](product),
+        item_id: product.id,
+        item_name: product.name,
+        item_variant: product.color,
+        price: product.get_price,
+        discount: product.sale_value
+      })
     }
     // FIXME: Use mapmutations to
     // set the recently viewed product

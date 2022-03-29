@@ -9,6 +9,8 @@
         <div v-if="hasProducts" class="col-8 offset-md-2">
           <!-- Filters -->
           <filters-bar :multiple-grid-display="multipleGridDisplay" @load-products="getProducts" @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" @change-grid="changeGrid" @do-sort="doSort" @toggle-filters="toggleFilters" />
+        
+          <p class="text-center text-muted m-0 mt-5">{{ $tc('styles_found', sortedProducts.length) }}</p>
         </div>
 
         <div class="col-12">
@@ -19,6 +21,7 @@
               <!-- <side-filters :hide-filters="hideFilters" @selection-start="isLoading=true" @selection-end="isLoading=false" /> -->
 
               <!-- <div :class="{ 'col-10': !hideFilters, 'col-12': hideFilters }"> -->
+              
               <div class="col-12">
                 <transition name="general-transition" mode="out-in">
                   <div v-if="sortedProducts.length == 0" class="row">
@@ -39,8 +42,8 @@
 
                   <!-- Products -->
                   <transition-group v-else name="card-transition" tag="div" class="row">
-                    <div v-for="product in sortedProducts" :key="product.id" :class="{ 'col-lg-4': !multipleGridDisplay, 'col-lg-3': multipleGridDisplay }">
-                      <card :key="product.id" :product="product" :multiple-grid-display="multipleGridDisplay" :is-loading="isLoading" :show-cart-button="true" />
+                    <div v-for="(product, index) in sortedProducts" :key="product.id" :class="{ 'col-lg-4': !multipleGridDisplay, 'col-lg-3': multipleGridDisplay }">
+                      <card :key="product.id" :product="product" :index="index" :multiple-grid-display="multipleGridDisplay" :is-loading="isLoading" :show-cart-button="true" @product-card-click="sendAnalytics" />
                     </div>
                   </transition-group>
                 </transition>
@@ -75,10 +78,9 @@
 <script>
 import _ from 'lodash'
 import dayjs from '../plugins/dayjs-plugin'
+import { mapGetters, mapMutations, mapState } from 'vuex'
 
 import shopMixin from '../mixins/shopMixin'
-
-import { mapGetters, mapMutations, mapState } from 'vuex'
 
 import ButtonLoadProducts from '../components/products/ButtonLoadProducts.vue'
 import Card from "../components/products/Card.vue"
@@ -167,9 +169,30 @@ export default {
     this.multipleGridDisplay = this.$localstorage.retrieve('grid')
     this.hideFilters = this.$localstorage.retrieve('filters')
 
+    // this.isLoading = true
     this.getProducts()
     this.isLoading = false
   },
+
+  mounted() {
+    this.$analytics.google.viewItems(_.map(this.products, (product) => {
+      return {
+        item_id: product.id,
+        item_name: product.name,
+        discount: product.sale_price,
+        item_variant: product.color
+      }
+    }), 'Collection')
+  },
+
+  // beforeRouteLeave(to, from, next) {
+  //   if (to.name === 'product_view') {
+  //     this.$analytics.selectItem({
+  //       item_name: null
+  //     }, from.params.collection, 0)
+  //   }
+  //   next()
+  // },
 
   methods: {
     ...mapMutations(['resetProducts']),
@@ -204,6 +227,14 @@ export default {
         // return new Date(b.created_on) - new Date(a.created_on)
         return dayjs(a.created_on) - dayjs(b.created_on)
       })
+    },
+
+    sendAnalytics(product, index) {
+      this.$analytics.google.selectItem({
+        item_id: product.id,
+        item_name: product.name,
+        item_variant: product.color
+      }, 'Collection', index)
     }
   }
 }

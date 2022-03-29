@@ -121,5 +121,6 @@
   "email": "Email address",
   "password": "Password",
   "Discover": "Discover",
-  "Select language": "Select language"
+  "Select language": "Select language",
+  "styles_found": "{n} style found|{n} styles found"
 }

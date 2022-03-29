@@ -1,7 +1,7 @@
-import { createGoogleAnalytics, createProduct, mapToFields } from "./google"
+import { createGoogleAnalytics, createProduct, functions } from './google'
 
 export {
     createGoogleAnalytics,
     createProduct,
-    mapToFields
+    functions
 }

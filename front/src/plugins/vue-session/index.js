@@ -13,7 +13,7 @@ class VueSession {
         let { persistent, initial } = options
 
         this.storage = sessionStorage
-        this._track = null
+        // this._track = null
         this._history = []
 
         // TODO: Implement functionnalities for persistence
@@ -46,7 +46,7 @@ class VueSession {
     _save(data) {
         this._precheck()
         this.storage.setItem(VUE_SESSION_KEY, JSON.stringify(data))
-        this._track(data)
+        // this._track(data)
         this._history.push(['save', data])
     }
 

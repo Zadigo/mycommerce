@@ -95,6 +95,7 @@ export default {
 
   methods: {
     addToCart () {
+      // TODO: Create a general function
       this.addingToCart = true
 
       var options = this.productOptions
@@ -108,6 +109,10 @@ export default {
 
         this.$store.commit('updateCart', data)
         this.$localstorage.create('cart', data)
+        
+        this.$analytics.google.addToCart({
+          item_name: this.product.name
+        })
 
         setTimeout(() => {
           this.addingToCart = false
@@ -120,7 +125,7 @@ export default {
     },
 
     addToLikes () {
-      // Add product to liked products
+      // TODO: Create a general function for this
       if (!this.isAuthenticated) {
         this.$store.commit('authenticationModule/loginUser')
       } else {

@@ -4,7 +4,7 @@
   </v-col>
 
   <v-col v-else cols="12">
-    <b-form-input v-for="field in signupFields" :key="field" :type="checkFieldType(field)" :placeholder="field" class="my-2" @update="updateSignupFields($event, field)"></b-form-input>          
+    <b-form-input v-for="field in signupFields" :key="field.key" :type="checkFieldType(field)" :placeholder="field.name" class="my-2" @update="updateSignupFields($event, field)"></b-form-input>          
   </v-col>
 </template>
 

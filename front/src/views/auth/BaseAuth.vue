@@ -8,6 +8,8 @@
               <b-card :title="$t('Login')" style="background-color:rgba(255, 255, 255, 0.3)">
                 <slot></slot>
               </b-card>
+              
+              <slot name="additional-actions"></slot>
             </v-col>
           </v-row>
         </v-container>

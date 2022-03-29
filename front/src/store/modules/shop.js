@@ -154,6 +154,12 @@ var shopModule = {
             } else {
                 return []
             }
+        },
+
+        productIndex(state) {
+            return (product) => {
+                return _.findIndex(state.products, ['id', product.id])
+            }
         }
     }
 }

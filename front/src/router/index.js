@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 
 import i18n from '../i18n'
 import store from '../store'
+// import { functions } from '../plugins/analytics'
 
 import BaseAccount from '../views/auth/BaseAccount.vue'
 
@@ -142,6 +143,14 @@ const routes = [
         },
         component: loadView('auth/LoginView')
       },
+      {
+        path: 'signup',
+        name: 'signup_view',
+        meta: {
+          fullPage: true
+        },
+        component: loadView('auth/SignupView')
+      },
 
       {
         path: '/how-to-order',
@@ -269,6 +278,8 @@ router.beforeEach((to, from, next) => {
   if (!supportedLanguages.includes(localeLanguage)) { return next('en') }
   if (i18n.locale !== localeLanguage) { i18n.locale = localeLanguage }
 
+  // functions.pageView(to.path, 'Page Title')
+  
   if (to.meta['requiresAuthentication']) {
     if (!store.getters['authenticationModule/isAuthenticated']) {
       next('login')

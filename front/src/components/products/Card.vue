@@ -10,7 +10,7 @@
     </div>
 
     <!-- TODO: Change .v-application a which makes links blue -->
-    <div v-else id="link-product-card" class="product" @click="$emit('product-card-click')" @mouseenter="isHovered=true" @mouseleave="isHovered=false">
+    <div v-else id="link-product-card" class="product" @click="$emit('product-card-click', product)" @mouseenter="isHovered=true" @mouseleave="isHovered=false">
       <!-- TODO: Show when a product is marked as new -->
       <!-- <div class="product-badge">Nouveau</div> -->
       

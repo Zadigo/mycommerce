@@ -3,4 +3,6 @@ import { createGoogleAnalytics } from './analytics'
 
 // createClarity()
 
-export default createGoogleAnalytics('G-TQ8RWETJ4Q')
+export default createGoogleAnalytics('G-TQ8RWETJ4Q', {
+    
+})

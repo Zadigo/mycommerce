@@ -6,10 +6,10 @@
 
 export default {
     methods: {
-        async getProducts() {
+        async productsRequest() {
             try {
-                this.$emit('start-load')
-
+                // Sends a request to get the backend
+                // without sending an emit
                 var collectionName = this.$route.params.collection
                 var response = null
                 if (collectionName == 'all') {
@@ -17,15 +17,28 @@ export default {
                 } else {
                     response = await this.$axios.get(`/collection/${collectionName}`)
                 }
+                return response
+            } catch(error) {
+                console.log(error)
+                this.$store.dispatch('addErrorMessage', this.$t('An error occured'))
+            }   
+        },
+
+        async getProducts() {
+            try {
+                this.$emit('start-load')
+
+                var response = await this.productsRequest()
                 var products = response.data
 
                 this.$store.commit('setProducts', products)
                 this.$session.create('products', products)
 
-                setTimeout(() => {
-                    this.$emit('end-load')
-                }, 1000);
+                this.$emit('end-load')
+                // setTimeout(() => {
+                // }, 1000);
             } catch(error) {
+                console.log(error)
                 this.$store.dispatch('addErrorMessage', this.$t('An error occured'))
             }
         }
