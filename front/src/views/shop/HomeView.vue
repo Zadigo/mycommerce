@@ -1,7 +1,7 @@
 <template>
   <section id="home">
     <!-- Intro -->
-    <intro :image="require('@/assets/hero4.jpg')">
+    <intro :image="require('@/assets/hero4.jpg')" style="margin-top:3rem">
       <intro-mask :opacity="0.3">
         <intro-container>
           <div class="text-white">

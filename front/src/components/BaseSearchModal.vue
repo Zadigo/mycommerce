@@ -74,6 +74,7 @@ export default {
 <style scoped>
 #search {
   position: absolute;
+  z-index: -1;
   top: 100%;
   left: 0;
   background-color: white;
@@ -92,10 +93,10 @@ export default {
 .search-transition-enter,
 .search-transition-leave-to {
   opacity: 0;
-  transform: translateY(-50%);
+  transform: translateY(-20%);
 }
 
-.search-transition-leeave,
+.search-transition-leave,
 .search-transition-enter-to {
   opacity: 1;
   transform: translateY(0%);

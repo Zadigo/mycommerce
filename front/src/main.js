@@ -3,7 +3,7 @@ import 'mutationobserver-shim'
 import App from './App.vue'
 import Vue from 'vue'
 
-// Plugins
+// Plugins/Mixins
 import './plugins/fontawesome'
 import './plugins/axios'
 import './plugins/bootstrap-vue'
@@ -18,10 +18,7 @@ import hero from './plugins/hero'
 import currency from './plugins/currency'
 import client from './plugins/axios'
 import VueAxios from 'vue-axios'
-// import myAnalytics from './plugins/my-analytics'
-
-// Mixins
-import mixins from './mixins'
+import mixins from './mixins/utils'
 
 // Components
 import BaseSubscriptionModal from './components/BaseSubscriptionModal.vue'

@@ -2,10 +2,10 @@
   <v-app>
     <header class="fixed-top">
       <!-- Top banner -->
-      <base-top-banner v-if="$route.meta.fullPage==false" />
+      <base-top-banner />
 
       <!-- Navbar -->
-      <base-navbar v-if="$route.meta.fullPage==false" />
+      <base-navbar />
 
       <!-- Messages -->
       <base-messages />
@@ -20,9 +20,7 @@
         <router-view :key="$route.name"/>
       </transition>
 
-      <button v-if="displayItem" type="button" class="btn btn-primary btn-lg btn-floating" style="position:fixed;right:3%;bottom:5%;z-index:9999;" @click="window.scrollTo(0, 0)">
-        <v-icon>mdi-arrow-up</v-icon>
-      </button>
+      <scroll-top-button />
 
       <modal-cart />
       <login-modal />
@@ -30,17 +28,16 @@
       <modal-language-selection />
     </v-main>
 
-    <base-footer v-if="$route.meta.fullPage==false" />
+    <base-footer />
   </v-app>
 </template>
+
 <script>
-
-import languageMixin from '@/mixins/languageMixin'
-
 import BaseSearchModal from '@/components/BaseSearchModal.vue'
 import BaseNavbar from '@/components/BaseNavbar.vue'
 import BaseFooter from '@/components/BaseFooter.vue'
 import ModalLanguageSelection from '@/components/ModalLanguageSelection.vue'
+import ScrollTopButton from '@/components/ScrollTopButton.vue'
 
 export default {
   name: 'BaseSite',
@@ -48,13 +45,8 @@ export default {
     BaseFooter,
     BaseNavbar,
     BaseSearchModal,
-    ModalLanguageSelection
-  },
-  mixins: [languageMixin],
-  computed: {
-    displayItem() {
-      return this.getVerticalScrollPercentage(document.body) >= 10
-    }
+    ModalLanguageSelection,
+    ScrollTopButton
   }
 }
 </script>

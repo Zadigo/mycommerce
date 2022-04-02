@@ -1,12 +1,10 @@
 <template>
   <base-banner>
-
     <div id="actions" class="ml-auto normalize-links">
-      <b-link href="http://example.com" target="_blank">Blog</b-link>
-      <b-link href="http://example.com" target="_blank">Help</b-link>
-      <b-link v-b-modal.select-language>{{ $i18n.locale.toUpperCase() }}</b-link>
+      <a href="http://example.com" target="_blank">Blog</a>
+      <a href="http://example.com" target="_blank">Help</a>
+      <a v-b-modal.select-language>{{ $i18n.locale.toUpperCase() }}</a>
     </div>
-    
   </base-banner>
 </template>
 

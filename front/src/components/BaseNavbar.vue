@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-none">
     <div class="container">
       <router-link :to="{ name: 'home_view', params: { lang: $i18n.locale } }" class="navbar-brand">
         <span class="text-uppercase font-weight-bold">
@@ -10,7 +10,7 @@
       <div class="collapse navbar-collapse justify-content-around">
         <ul class="navbar-nav">
           <li class="nav-item" @mouseenter="showMegaMenu">
-            <router-link :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale } }" class="nav-link text">
+            <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }" class="nav-link text">
               {{ $t('Shop') }}
             </router-link>
           </li>
@@ -22,9 +22,6 @@
           </li>
 
           <li class="nav-item">
-            <!-- <router-link :to="{ name: 'dashboard_index' }" class="nav-link text" @click="$store.commit('changeSite', 'dashboard-site')">
-              {{ $t('Admin') }}
-            </router-link> -->
             <a class="nav-link" @click="goToAdmin">
                {{ $t('Admin') }}
             </a>
@@ -35,10 +32,6 @@
         </ul>
 
         <ul class="navbar-nav">
-          <!-- <form class="form-inline px-3">
-            <v-text-field :placeholder="$t('Search')" type="search" outlined hide-details></v-text-field>
-          </form> -->
-          
           <li class="nav-item">
             <a class="nav-link" @click="toggleSearchModal">
               <v-icon size="28" class="mr-2">mdi-magnify</v-icon>
@@ -102,10 +95,10 @@ export default {
   height: 90px;
 }
 
-.navbar-light .navbar-nav .nav-link.text:focus, .navbar-light .navbar-nav .nav-link.text:hover {
+/* .navbar-light .navbar-nav .nav-link.text:focus, .navbar-light .navbar-nav .nav-link.text:hover {
   color: rgba(0,0,0,.7);
   border-bottom: 2px solid #000000;
-}
+} */
 
 .nav-item {
   font-weight: 600;

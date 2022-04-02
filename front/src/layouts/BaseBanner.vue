@@ -1,7 +1,7 @@
 <template>
-  <b-nav id="banner">
+  <div id="banner" class="nav">
     <slot></slot>
-  </b-nav>
+  </div>
 </template>
 
 <script>
