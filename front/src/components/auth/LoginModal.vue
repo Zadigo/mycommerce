@@ -1,5 +1,5 @@
 <template>
-  <b-modal v-model="loginModal" id="login-modal" :title="$t('Login')" centered>
+  <b-modal id="login-modal" v-model="loginModal" :title="$t('Login')" centered>
     <v-container>
       <v-row>
         <!-- Login -->

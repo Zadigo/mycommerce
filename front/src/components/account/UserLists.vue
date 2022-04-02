@@ -61,7 +61,7 @@
                       
                       <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="scale-transition">
                         <template v-slot:activator="{ on, attrs }">
-                          <v-btn v-bind="attrs" v-on="on" class="mr-2">Déplacer</v-btn>
+                          <v-btn v-bind="attrs" class="mr-2" v-on="on">Déplacer</v-btn>
                         </template>
                         <v-list>
                           <v-list-item>

@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import HomeComponent from '../components/fitting_room/HomeComponent.vue'
-import FidelityComponent from '../components/fitting_room/FidelityComponent.vue'
+import HomeComponent from '@/components/fitting_room/HomeComponent.vue'
+import FidelityComponent from '@/components/fitting_room/FidelityComponent.vue'
 
 export default {
     name: 'FittingRoomView',

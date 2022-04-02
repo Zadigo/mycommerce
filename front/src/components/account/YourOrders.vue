@@ -23,7 +23,7 @@
                 <v-row>
                   <v-col cols="6">
                     <div class="d-flex jusify-content-betwen">
-                      <v-text-field type=" text" v-model="search" placeholder="Search orders" solo hide-details></v-text-field>
+                      <v-text-field v-model="search" type=" text" placeholder="Search orders" solo hide-details></v-text-field>
 
                       <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="scale-transition">
                         <template v-slot:activator="{ on, attrs }">
@@ -66,7 +66,7 @@
                                 
                                 <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="scale-transition">
                                   <template v-slot:activator="{ on, attrs }">
-                                    <v-btn v-bind="attrs" v-on="on" class="ml-2">
+                                    <v-btn v-bind="attrs" class="ml-2" v-on="on">
                                       <v-icon>mdi-dots-horizontal</v-icon>
                                     </v-btn>
                                   </template>

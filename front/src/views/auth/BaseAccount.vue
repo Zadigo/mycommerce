@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  name: 'Account',
+  name: 'BaseAccount',
   title() {
     return 'Account'
   }

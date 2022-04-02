@@ -3,9 +3,11 @@
 import Vue from 'vue'
 import axios from "axios"
 
-import api from './api'
-import store from '../store'
-import router from '../router'
+// TODO: Remove from project
+import api from '@/plugins/api'
+
+import store from '@/store'
+import router from '@/router'
 import i18n from '../i18n'
 
 // Full config:  https://github.com/axios/axios#request-config

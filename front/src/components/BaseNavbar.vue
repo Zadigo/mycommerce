@@ -16,16 +16,19 @@
             </router-link>
           </li>
 
-           <li class="nav-item">
+          <li class="nav-item">
             <router-link :to="{ name: 'fitting_room_view' }" class="nav-link text">
               {{ $t('Fitting room') }}
             </router-link>
           </li>
 
-           <li class="nav-item">
-            <router-link :to="{ name: 'dashboard_index' }" class="nav-link text">
+          <li class="nav-item">
+            <!-- <router-link :to="{ name: 'dashboard_index' }" class="nav-link text" @click="$store.commit('changeSite', 'dashboard-site')">
               {{ $t('Admin') }}
-            </router-link>
+            </router-link> -->
+            <a class="nav-link" @click="goToAdmin">
+               {{ $t('Admin') }}
+            </a>
           </li>
 
           <!-- Mega-menu -->
@@ -81,6 +84,11 @@ export default {
     logout() {
       this.$store.commit('authenticationModule/logout')
       this.$router.push({ name: 'home', params: { lang: this.$i18n.locale } })
+    },
+
+    goToAdmin() {
+      this.$store.commit('changeSite', 'dashboard-site')
+      this.$router.push({ name: 'dashboard_index_view' })
     },
 
     showMegaMenu() {

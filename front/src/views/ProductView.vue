@@ -40,11 +40,12 @@
 <script>
 import { mapState } from 'vuex'
 
-import Information from '../components/product/Information.vue'
-import MoreProducts from '../components/product/MoreProducts.vue'
-import TileDisplay from '../components/product/images/TileDisplay.vue'
-import ProductSkeleton from '../components/skeletons/ProductSkeleton.vue'
-import Reviews from '../components/product/Reviews.vue'
+import Information from '@/components/product/Information.vue'
+import MoreProducts from '@/components/product/MoreProducts.vue'
+import TileDisplay from '@/components/product/images/TileDisplay.vue'
+import ProductSkeleton from '@/components/skeletons/ProductSkeleton.vue'
+import Reviews from '@/components/product/Reviews.vue'
+
 // import RecentlyViewed from '../components/product/RecentlyViewed.vue'
 
 export default {
@@ -182,15 +183,15 @@ export default {
 
     sendAnalytics() {
       var product = this.currentProduct
-
-      this.$analytics.google.viewItem({
-        index : this.$store.getters['productIndex'](product),
-        item_id: product.id,
-        item_name: product.name,
-        item_variant: product.color,
-        price: product.get_price,
-        discount: product.sale_value
-      })
+      product
+      // this.$analytics.google.viewItem({
+      //   index : this.$store.getters['productIndex'](product),
+      //   item_id: product.id,
+      //   item_name: product.name,
+      //   item_variant: product.color,
+      //   price: product.get_price,
+      //   discount: product.sale_value
+      // })
     }
     // FIXME: Use mapmutations to
     // set the recently viewed product

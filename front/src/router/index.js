@@ -2,15 +2,19 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import i18n from '../i18n'
-import store from '../store'
-// import { functions } from '../plugins/analytics'
+import store from '@/store'
+// import googleAnalytics from 'google_analytics'
 
-import BaseAccount from '../views/auth/BaseAccount.vue'
+import BaseAccount from '@/views/auth/BaseAccount.vue'
 
 Vue.use(VueRouter)
 
 function loadView(component) {
   return () => import(`@/views/${component}.vue`)
+}
+
+function loadLayout(component) {
+  return () => import(`@/layouts/${component}.vue`)
 }
 
 const routes = [
@@ -182,24 +186,20 @@ const routes = [
     ]
   },
 
+
   {
     path: '/dashboard',
-    components: {
-      dashboard: () => import('@/components/dashboard/BaseLayout.vue')
-    },
+    component: loadLayout('DashboardSite'),
     children: [
       {
         path: '',
-        name: 'dashboard_index',
+        name: 'dashboard_index_view',
         meta: {
           text: 'Home',
           icon: 'home',
-          isAdmin: true
-          // requiresAdmin: true
+          adminLink: true
         },
-        components: {
-          content: () => import('@/views/dashboard/IndexView.vue')
-        }
+        component: loadView('dashboard/IndexView')
       },
       {
         path: 'products',
@@ -207,25 +207,18 @@ const routes = [
         meta: {
           text: 'Products',
           icon: 'table',
-          isAdmin: true
-          // requiresAdmin: true
+          adminLink: true
         },
-        components: {
-          content: () => import('@/views/dashboard/ProductsView.vue')
-        }
+        component: loadView('dashboard/ProductsView')
       },
       {
         path: 'products/:id',
         name: 'dashboard_product',
         meta: {
           text: 'Product',
-          icon: 'table',
-          isAdmin: true
-          // requiresAdmin: true
+          icon: 'table'
         },
-        components: {
-          content: () => import('@/views/dashboard/ProductView.vue')
-        }
+        component: loadView('dashboard/ProductView')
       },
       {
         path: 'images',
@@ -233,12 +226,18 @@ const routes = [
         meta: {
           text: 'Images',
           icon: 'images',
-          isAdmin: true
-          // requiresAdmin: true
+          adminLink: true
         },
-        components: {
-          content: () => import('@/views/dashboard/ProductImagesView.vue')
-        }
+        component: loadView('dashboard/ProductsImagesView')
+      },
+      {
+        path: 'images/:id(\\d+)',
+        name: 'dashboard_image_view',
+        meta: {
+          text: 'Image',
+          icon: 'image'
+        },
+        component: loadView('dashboard/ProductImageView')
       }
     ]
   },

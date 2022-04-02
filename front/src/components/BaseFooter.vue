@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import footer from '../data/footer'
+import footer from '@/data/footer'
 
 export default {
   name: 'BaseFooter',

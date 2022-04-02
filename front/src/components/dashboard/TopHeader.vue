@@ -51,9 +51,12 @@
           </li>
 
           <li class="nav-item me-3 me-lg-0">
-            <router-link :to="{ name: 'home', params: { lang: 'fr' } }" class="nav-link">
+            <!-- <router-link :to="{ name: 'home', params: { lang: 'fr' } }" class="nav-link">
               Go to website
-            </router-link>
+            </router-link> -->
+            <a class="nav-link" @click="goToSite">
+              Go to website
+            </a>
           </li>
 
           <!-- Avatar -->
@@ -82,6 +85,12 @@ import SideBar from './SideBar.vue'
 export default {
   components: {
     SideBar
-  }  
+  },
+  methods: {
+    goToSite() {
+      this.$store.commit('changeSite', 'base-site')
+      this.$router.push({ name: 'home', params: { lang: this.$i18n.locale} })
+    }
+  }
 }
 </script>

@@ -32,10 +32,10 @@
 </template>
 
 <script>
-import AuthFields from '../../components/auth/AuthFields.vue'
-import BaseAuth from './BaseAuth.vue'
+import loginMixin from '@/mixins/login_mixin'
 
-import loginMixin from '../../mixins/login_mixin'
+import AuthFields from '@/components/auth/AuthFields.vue'
+import BaseAuth from '@/views/auth/BaseAuth.vue'
 
 export default {
   name: 'LoginView',

@@ -33,10 +33,10 @@
 </template>
 
 <script>
-import subsriptionMixin from './subsriptionMixin'
+import subsriptionMixin from '@/components/subsriptionMixin'
 
 export default {
   name: 'BaseSubscriptionModal',
-  mixins: [ subsriptionMixin ]
+  mixins: [subsriptionMixin]
 }
 </script>

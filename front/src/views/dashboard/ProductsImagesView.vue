@@ -1,5 +1,5 @@
 <template>
-  <section id="images" style="z-index:-1;">
+  <section id="images">
 
     <v-container>
       <!-- Heading -->
@@ -15,12 +15,39 @@
             </v-card-text>
             
             <v-card-actions>
+              <v-dialog v-model="showUploadImagesDialog" width="800">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn v-bind="attrs" class="mr-2" text v-on="on">
+                    <v-icon class="mr-2">mdi-upload</v-icon>
+                    Upload images
+                  </v-btn>
+                </template>
+
+                <v-card>
+                  <v-card-title>
+                    Upload new images
+                  </v-card-title>
+
+                  <v-card-text>
+                    <v-file-input label="File input" prepend-icon="mdi-camera" multiple outlined></v-file-input>
+                  </v-card-text>
+
+                  <v-divider></v-divider>
+
+                  <v-card-actions>
+                    <v-btn text>Upload</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+
               <v-btn class="mr-2" text>Sélectionner tout</v-btn>
               <v-btn text @click="selectedImages=[]">Déselectionner <v-chip class="ml-2" color="primary" label>{{ selectedImages.length }}</v-chip> </v-btn>
 
               <v-btn color="indigo" dark @click="loadGenericProducts">
                 Associer au produit
               </v-btn>
+
+              
             </v-card-actions>
           </v-card>
         </v-col>
@@ -106,7 +133,8 @@ export default {
       product: null
     },
 
-    productSelectionModal: false
+    productSelectionModal: false,
+    showUploadImagesDialog: false
   }),
 
   computed: {
@@ -163,6 +191,37 @@ export default {
   },
 
   methods: {
+    async loadImages (url) {
+      function buildUrl(url) {
+        var limit = 100
+        var offset = 0
+        
+        if (url) {
+            var instance = new URL(url)
+            var potentialLimit = instance.searchParams.get('limit')
+            var potentialOffset = instance.searchParams.get('offset')
+
+            limit = potentialLimit ? potentialLimit : 100
+            offset = potentialOffset ? potentialOffset : 0
+        }
+
+        var path = new URLSearchParams({ limit: limit, offset: offset })
+        return path
+      }
+
+      try {
+        var response = await this.$axios.get(`/images?${ buildUrl(url).toString() }`)
+        var cachedResponse = response.data
+
+        this.cachedResponse = cachedResponse
+        this.$session.create('images', cachedResponse)
+        this.isLoading = false
+        this.scrollToTop()
+      } catch(error) {
+        console.log(error)
+      }
+    },
+
     associateImages () {
       this.associationMenu = false
 
@@ -190,23 +249,6 @@ export default {
 
     loadNext () {
       this.loadImages(this.cachedResponse.next)
-    },
-
-    loadImages (url) {
-      this.$api.dashboard.images.all(url)
-      .then((response) => {
-        var cachedResponse = response.data
-
-        this.cachedResponse = cachedResponse
-        this.$session.set('images', cachedResponse)
-
-        this.isLoading = false
-        // setTimeout(() => {
-        // }, 1000)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
     },
    
     loadGenericProducts () {

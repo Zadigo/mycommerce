@@ -6,8 +6,9 @@
         "moduleResolution": "node",
         "paths": {
             "@/*": [
-                "src/*"
-            ]
+                "src/*",
+            ],
+            "google_functions": ["src/plugins/analytics/google/functions"]
         },
         "lib": [
             "esnext",

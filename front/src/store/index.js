@@ -57,10 +57,15 @@ export default new Vuex.Store({
 
     likedProducts: [],
 
-    showSearchModal: false
+    showSearchModal: false,
+
+    currentSite: 'base-site'
   },
 
   mutations: {
+    changeSite(state, component) {
+      state.currentSite = component
+    },
     toggleModalCart(state) {
       // Open the modal cart so that the 
       // user can see what is in his cart

@@ -1,72 +1,37 @@
-  <!-- <dashboard-site v-if="routerViewForAdmin" /> -->
-
-  <!-- <base-site v-else /> -->
-
-  <!-- TODO: Think of a more efficient way to switch between the dashboard and the shop section -->
-  <!-- <v-main v-if="routerViewForAdmin">
-    <router-view :key="$route.name" name="dashboard" />
-  </v-main> -->
-  
-  <!-- <v-main v-else> -->
 <template>
-  <v-app>
-    <header class="fixed-top">
-      <!-- Top banner -->
-      <base-top-banner v-if="$route.meta.fullPage==false" />
-
-      <!-- Navbar -->
-      <base-navbar v-if="$route.meta.fullPage==false" />
-
-      <!-- Messages -->
-      <base-messages />
-
-      <!-- Search -->
-      <base-search-modal />
-    </header>
-    
-
-    <v-main>
-      <transition name="general-transition" mode="out-in">
-        <router-view :key="$route.name"/>
-      </transition>
-
-      <button v-if="displayItem" type="button" class="btn btn-primary btn-lg btn-floating" style="position:fixed;right:3%;bottom:5%;z-index:9999;" @click="window.scrollTo(0, 0)">
-        <v-icon>mdi-arrow-up</v-icon>
-      </button>
-
-      <modal-cart />
-      <login-modal />
-      <base-subscription-modal />
-      <modal-language-selection />
-    </v-main>
-
-    <base-footer v-if="$route.meta.fullPage==false" />
-  </v-app>
+  <transition mode="out-in">
+    <component :is="currentSite" />
+  </transition>
 </template>
 
 <script>
-// import BaseSite from '@/views/BaseSite.vue'
-// import DashboardSite from '@/views/DashboardSite.vue'
-import languageMixin from './mixins/languageMixin'
+import languageMixin from '@/mixins/languageMixin'
+import { mapState } from 'vuex'
+// import BaseNavbar from './components/BaseNavbar.vue'
+// import BaseNavbar from '@/components/BaseNavbar.vue'
+// import BaseFooter from '@/components/BaseFooter.vue'
+// import BaseSearchModal from '@/components/BaseSearchModal.vue'
+// import ModalLanguageSelection from '@/components/ModalLanguageSelection.vue'
 
-import BaseNavbar from './components/BaseNavbar.vue'
-import BaseFooter from './components/BaseFooter.vue'
-import BaseSearchModal from './components/BaseSearchModal.vue'
-import ModalLanguageSelection from './components/ModalLanguageSelection.vue'
+import BaseSite from '@/layouts/BaseSite.vue'
+import BlankSite from '@/layouts/BlankSite.vue'
+import DashboardSite from '@/layouts/DashboardSite.vue'
 
 export default {
   name: 'App',
-  // components: {
-  //   BaseSite,
-  //   DashboardSite
-  // },
 
-  components: { 
-    BaseNavbar,
-    BaseFooter,
-    ModalLanguageSelection,
-    BaseSearchModal
+  components: {
+    BaseSite,
+    BlankSite,
+    DashboardSite
   },
+
+  // components: { 
+  //   BaseNavbar,
+  //   BaseFooter,
+  //   ModalLanguageSelection,
+  //   BaseSearchModal
+  // },
 
   mixins: [languageMixin],
 
@@ -74,20 +39,8 @@ export default {
     routerViewForAdmin: false
   }),
 
-  watch: {
-    $route (item) {
-      item.meta.isAdmin ? this.routerViewForAdmin = true : this.routerViewForAdmin = false
-    }
-  },
-
   computed: {
-    displayItem() {
-      return this.getVerticalScrollPercentage(document.body) >= 10
-    }
-  },
-
-  beforeMount () {
-    this.$route.meta.isAdmin ? this.routerViewForAdmin = true : this.routerViewForAdmin = false
+    ...mapState(['currentSite'])
   }
 }
 </script>

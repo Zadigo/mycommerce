@@ -89,8 +89,8 @@
 
           <v-card-text>
             <v-row>
-              <v-col cols="3">
-
+              <v-col v-for="image in productDetails.images" :key="image.id" cols="3">
+                <v-img :src="image.original"></v-img>
               </v-col>
             </v-row>
           </v-card-text>

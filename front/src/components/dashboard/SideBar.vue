@@ -23,9 +23,8 @@ export default {
 
   computed: {
     dashboardRoutes () {
-      var excluded_routes = ['dashboard_product']
       return _.filter(this.$router.getRoutes(), (route) => {
-        return route.meta.isAdmin && !excluded_routes.includes(route.name)
+        return route.meta.adminLink
       })
     }
   }

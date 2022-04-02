@@ -16,7 +16,7 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import hero from './plugins/hero'
 import currency from './plugins/currency'
-import myAnalytics from './plugins/my-analytics'
+// import myAnalytics from './plugins/my-analytics'
 
 // Mixins
 import mixins from './mixins'
@@ -41,7 +41,7 @@ Vue.use(hero)
 Vue.use(myProject)
 Vue.use(session)
 Vue.use(currency)
-Vue.use(myAnalytics)
+// Vue.use(myAnalytics)
 // Vue.use(mySharingLinks)
 
 // Mixins

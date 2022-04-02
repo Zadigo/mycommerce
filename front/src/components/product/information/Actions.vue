@@ -110,9 +110,9 @@ export default {
         this.$store.commit('updateCart', data)
         this.$localstorage.create('cart', data)
         
-        this.$analytics.google.addToCart({
-          item_name: this.product.name
-        })
+        // this.$analytics.google.addToCart({
+        //   item_name: this.product.name
+        // })
 
         setTimeout(() => {
           this.addingToCart = false

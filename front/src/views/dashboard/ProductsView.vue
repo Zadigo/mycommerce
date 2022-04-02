@@ -15,7 +15,7 @@
               <v-toolbar-title>
                 <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="scale-transition">
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" v-on="on" text>Options</v-btn>
+                    <v-btn v-bind="attrs" text v-on="on">Options</v-btn>
                   </template>
 
                   <v-list>
@@ -116,18 +116,7 @@ export default {
       }
     ]
   }),
-
-  beforeMount() {
-    this.$api.dashboard.products.all()
-    .then((response) => {
-      // TODO: Check for when pagination is integrated
-      this.$store.commit('dashboardModule/setProducts', response.data)
-    })
-    .catch((error) => {
-      error
-    })
-  },
-
+  
   computed: {
     ...mapState('dashboardModule', ['products']),
 
@@ -140,6 +129,17 @@ export default {
         return product.id
       })
     }
+  },
+
+  beforeMount() {
+    this.$api.dashboard.products.all()
+    .then((response) => {
+      // TODO: Check for when pagination is integrated
+      this.$store.commit('dashboardModule/setProducts', response.data)
+    })
+    .catch((error) => {
+      error
+    })
   },
 
   methods: {

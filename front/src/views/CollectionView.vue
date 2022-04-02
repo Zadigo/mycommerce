@@ -77,20 +77,20 @@
 
 <script>
 import _ from 'lodash'
-import dayjs from '../plugins/dayjs-plugin'
+import dayjs from '@/plugins/dayjs-plugin'
+import shopMixin from '@/mixins/shopMixin'
+
 import { mapGetters, mapMutations, mapState } from 'vuex'
 
-import shopMixin from '../mixins/shopMixin'
+import ButtonLoadProducts from '@/components/products/ButtonLoadProducts.vue'
+import Card from "@/components/products/Card.vue"
+import Pagination from "@/components/products/Pagination.vue"
+import FiltersBar from '@/components/products/FiltersBar.vue'
 
-import ButtonLoadProducts from '../components/products/ButtonLoadProducts.vue'
-import Card from "../components/products/Card.vue"
 // import PageHeader from "../components/products/PageHeader.vue"
-import Pagination from "../components/products/Pagination.vue"
-import FiltersBar from '../components/products/FiltersBar.vue'
-
 export default {
   name: 'CollectionView',
-  
+
   components: {
     ButtonLoadProducts,
     Card,
@@ -123,7 +123,6 @@ export default {
       // TODO: Determine whether we should send a request
       // to the database in order to refresh the products
       // when the uses the sort function
-
       var products = []
 
       // TODO: Sort by dates
@@ -168,21 +167,21 @@ export default {
   beforeMount () {
     this.multipleGridDisplay = this.$localstorage.retrieve('grid')
     this.hideFilters = this.$localstorage.retrieve('filters')
-
+    
     // this.isLoading = true
     this.getProducts()
     this.isLoading = false
   },
 
   mounted() {
-    this.$analytics.google.viewItems(_.map(this.products, (product) => {
-      return {
-        item_id: product.id,
-        item_name: product.name,
-        discount: product.sale_price,
-        item_variant: product.color
-      }
-    }), 'Collection')
+    // this.$analytics.google.viewItems(_.map(this.products, (product) => {
+    //   return {
+    //     item_id: product.id,
+    //     item_name: product.name,
+    //     discount: product.sale_price,
+    //     item_variant: product.color
+    //   }
+    // }), 'Collection')
   },
 
   // beforeRouteLeave(to, from, next) {
@@ -230,11 +229,13 @@ export default {
     },
 
     sendAnalytics(product, index) {
-      this.$analytics.google.selectItem({
-        item_id: product.id,
-        item_name: product.name,
-        item_variant: product.color
-      }, 'Collection', index)
+      product
+      index
+      // this.$analytics.google.selectItem({
+      //   item_id: product.id,
+      //   item_name: product.name,
+      //   item_variant: product.color
+      // }, 'Collection', index)
     }
   }
 }
