@@ -12,23 +12,41 @@
           <v-card>
             <!-- Toolbar -->
             <v-toolbar>
+              <v-spacer></v-spacer>
               <v-toolbar-title>
                 <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="scale-transition">
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" text v-on="on">Options</v-btn>
+                    <v-btn v-bind="attrs" icon v-on="on">
+                      <v-icon>mdi-dots-horizontal</v-icon>
+                    </v-btn>
                   </template>
 
                   <v-list>
                     <v-list-item>
-                      <v-list-item-title @click="renameProductsModal = true">
+                      <v-list-item-title>
+                        Activer
+                      </v-list-item-title>
+                    </v-list-item>
+
+                    <v-list-item>
+                      <v-list-item-title>
+                        Désactiver
+                      </v-list-item-title>
+                    </v-list-item>
+                    
+                    <v-list-item @click="renameProductsModal=true">
+                      <v-list-item-title>
                         Renommer
                       </v-list-item-title>
                     </v-list-item>
+
+                    <v-list-item>
+                      <v-list-item-title>
+                        Supprimer
+                      </v-list-item-title>
+                    </v-list-item>
                   </v-list>
-                </v-menu>
-                
-                <!-- <v-spacer></v-spacer> -->
-                
+                </v-menu>                
               </v-toolbar-title>
             </v-toolbar>
 
@@ -43,7 +61,8 @@
 
                 <template v-slot:item.active="{ item }">
                   <v-chip :color="getColor(item.active)" dark>
-                    <v-icon>mdi-check</v-icon>
+                    <v-icon v-if="item.active">mdi-check</v-icon>
+                    <v-icon v-else>mdi-window-close</v-icon>
                   </v-chip>
                 </template>  
 
@@ -132,37 +151,57 @@ export default {
   },
 
   beforeMount() {
-    this.$api.dashboard.products.all()
-    .then((response) => {
-      // TODO: Check for when pagination is integrated
-      this.$store.commit('dashboardModule/setProducts', response.data)
-    })
-    .catch((error) => {
-      error
-    })
+    this.getProducts()
   },
 
   methods: {
-    renameProducts () {
-      
-      var data = {
-        name: this.newProductsName,
-        products: this.selectedProductsIds
+    async getProducts() {
+      // TODO: Check for when pagination is integrated
+      try {
+        var response = await this.axios.get('/dashboard/products')
+        this.$store.commit('dashboardModule/setProducts', response.data)
+      } catch(error) {
+        console.log(error)
       }
-      
-      this.$api.dashboard.products.rename(data)
-      .then((response) => {
-        response
-        // this.$store.commit('dashboardModule/setProducts', response.data)
-        this.renameProductsModal = false
-      })
-      .catch((error) => {
-        error
-      })
     },
 
-    getColor () {
-      return 'green'
+    async renameProducts() {
+      var data = {
+        name: this.newProductsName,
+        products: this.selectedProducts
+      }
+
+      try {
+        var response = await this.axios.post('/dashboard/products/rename', data)
+        response
+        this.renameProductsModal = false
+      } catch(error) {
+        console.log(error)
+      }
+    },
+    // renameProducts () {
+    //   var data = {
+    //     name: this.newProductsName,
+    //     products: this.selectedProductsIds
+    //   }
+      
+    //   this.$api.dashboard.products.rename(data)
+    //   .then((response) => {
+    //     response
+    //     // this.$store.commit('dashboardModule/setProducts', response.data)
+    //     this.renameProductsModal = false
+    //   })
+    //   .catch((error) => {
+    //     error
+    //   })
+    // },
+
+    getColor (state) {
+      if (state) {
+        return 'green'
+      } else {
+        return 'red'
+      }
     }
   }
 }

@@ -1,0 +1,221 @@
+{
+    path: '/',
+    redirect: { name: 'home', params: { lang: i18n.locale }}
+  },
+
+  {
+    path: '/:lang',
+    component: {
+      render: h => h('router-view')
+    },
+    children: [
+      {
+        path: '',
+        name: 'home',
+        component: loadView('HomeView'),
+        meta: {
+          fullPage: false
+        }
+      },
+      {
+        path: 'collections/:collection([a-z-]+)',
+        name: 'collection_details',
+        component: loadView('CollectionView'),
+        meta: {
+          fullPage: false
+        }
+      },
+      {
+        path: 'products/:id(\\d+)/:slug([a-z-]+)',
+        name: 'product_view',
+        component: loadView('ProductView'),
+        meta: {
+          fullPage: false
+        }
+      },
+      {
+        path: 'wishlist',
+        name: 'wishlist',
+        component: loadView('WishlistView'),
+        meta: {
+          fullPage: false
+        }
+      },
+      {
+        path: 'cart',
+        name: 'cart',
+        component: loadView('CartView'),
+        meta: {
+          fullPage: false
+        }
+      },
+
+      {
+        path: 'size-guide',
+        name: 'size_guide',
+        component: loadView('SizeGuideView'),
+        meta: {
+          fullPage: true
+        }
+      },
+
+      {
+        path: 'fitting-room',
+        name: 'fitting_room_view',
+        component: loadView('FittingRoomView')
+      },
+
+      {
+        path: 'account',
+        component: BaseAccount,
+        children: [
+          {
+            path: '',
+            name: 'account_home',
+            meta: { requiresAuthentication: true },
+            component: () => import(/* webpackChunkName: "account" */ '../components/account/Home.vue')
+          },
+          {
+            path: 'your-orders',
+            name: 'your_orders',
+            component: () => import(/* webpackChunkName: "account" */ '../components/account/YourOrders.vue')
+          },
+          {
+            path: 'your-account',
+            name: 'your_account',
+            meta: {
+              pageTitle: i18n.t('your_account')
+            },
+            component: () => import(/* webpackChunkName: "account" */ '../components/account/YourAccount.vue')
+          },
+          {
+            path: 'advantages',
+            name: 'advantages',
+            component: () => import(/* webpackChunkName: "account" */ '../components/account/Home.vue')
+          },
+          {
+            path: 'your_payments',
+            name: 'your_payments',
+            component: () => import(/* webpackChunkName: "account" */ '../components/account/Home.vue')
+          },
+          {
+            path: 'help',
+            name: 'help',
+            component: () => import(/* webpackChunkName: "account" */ '../components/account/Home.vue')
+          },
+          {
+            path: 'lists',
+            name: 'likes_and_lists',
+            component: () => import(/* webpackChunkName: "account" */ '../components/account/UserLists.vue')
+          }
+        ]
+      },
+
+      {
+        path: 'login',
+        name: 'login_view',
+        meta: {
+          fullPage: true
+        },
+        component: loadView('auth/LoginView')
+      },
+      {
+        path: 'signup',
+        name: 'signup_view',
+        meta: {
+          fullPage: true
+        },
+        component: loadView('auth/SignupView')
+      },
+
+      {
+        path: '/how-to-order',
+        name: 'how_to_order'
+      },
+      {
+        path: '/how-to-track',
+        name: 'how_to_track'
+      },
+      {
+        path: '/delivery-and-returns',
+        name: 'delivery_and_returns',
+        component: loadView('customer_care/DeliveryAndReturnsView')
+      },
+      {
+        path: '/contact-us',
+        name: 'contact_us'
+      },
+      {
+        path: '/payment-methods',
+        name: 'payment_methods'
+      }
+    ]
+  },
+
+
+  {
+    path: '/dashboard',
+    component: loadLayout('DashboardSite'),
+    children: [
+      {
+        path: '',
+        name: 'dashboard_index_view',
+        meta: {
+          text: 'Home',
+          icon: 'home',
+          adminLink: true
+        },
+        component: loadView('dashboard/IndexView')
+      },
+      {
+        path: 'products',
+        name: 'dashboard_products',
+        meta: {
+          text: 'Products',
+          icon: 'table',
+          adminLink: true
+        },
+        component: loadView('dashboard/ProductsView')
+      },
+      {
+        path: 'products/:id',
+        name: 'dashboard_product',
+        meta: {
+          text: 'Product',
+          icon: 'table'
+        },
+        component: loadView('dashboard/ProductView')
+      },
+      {
+        path: 'images',
+        name: 'dashboard_images',
+        meta: {
+          text: 'Images',
+          icon: 'images',
+          adminLink: true
+        },
+        component: loadView('dashboard/ProductsImagesView')
+      },
+      {
+        path: 'images/:id(\\d+)',
+        name: 'dashboard_image_view',
+        meta: {
+          text: 'Image',
+          icon: 'image'
+        },
+        component: loadView('dashboard/ProductImageView')
+      }
+    ]
+  },
+
+  {
+    path: '/500',
+    name: 'server_error_view',
+    component: loadView('404View')
+  },
+  {
+    path: '/404',
+    name: 'not_found_view',
+    alias: '*',
+    component: loadView('404View')
+  }

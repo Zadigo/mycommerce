@@ -8,7 +8,6 @@
           <router-view :key="$route.name" />        
         </div>
       </main>
-
     </section>
   </v-app>
 </template>

@@ -2,7 +2,9 @@
   <b-card>
     <b-card-text class="d-flex flex-direction-row justify-content-left">
       <h1 class="home blue-text h2">
-        <router-link :to="{ name: 'dashboard_index'}" class="text-decoration font-weight-bold">Accueil</router-link>
+        <router-link :to="{ name: 'dashboard_index_view' }" class="text-decoration-none font-weight-bold">
+          Accueil
+        </router-link>
       </h1>
 
       <h1 class="h2">

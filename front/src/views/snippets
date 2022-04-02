@@ -1,0 +1,45 @@
+    <!-- <section class="banner banner-img" :style="`background-image: url('${require('@/assets/side1.jpg')}');`">
+      <div class="mask" style="background-color: rgba(0, 0, 0, 0.2);">
+        <div id="title">
+          <p class="font-weight-bold text-center">Renouvellez votre garde-robe</p>
+        </div>
+      </div>
+    </section> -->
+
+    <!-- Banner - 2 -->
+    <!-- <section class="banner-absolute">
+      <v-img :src="require('@/assets/side1.jpg')"></v-img>
+      <div class="title">
+        <p style="font-size: 35px;">Renouvellez votre garde-robe</p>
+        <v-btn>Découvrir</v-btn>
+      </div>
+    </section> -->
+
+
+    <!-- <div ref="intro" id="intro" class="bg-image shadow-2-strong">
+      <div ref="mask" class="mask" style="background-color: rgba(0, 0, 0, 0.3);">
+        <div class="container d-flex align-items-center justify-content-center text-center h-100">
+          <div class="text-white">
+            <h1 v-font-size="54" class="mb-3">Assouvis tes ardents désir</h1>
+            <h5 class="mb-4">Craquez pour nos nouveautés signées Lounge</h5>
+
+            <router-link :to="{ name: 'collection_all' }" class="btn btn-outline-light btn-lg m-2" role="button">
+              Découvrir
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- Hottest products -->
+    <!-- <section id="products" class="my-6">
+      <v-container>
+        <v-row>
+          <v-col cols="12">
+            <p class="font-weight-bold fs-22">Faire des achats</p>
+
+            <product-slider />
+          </v-col>
+        </v-row>
+      </v-container>
+    </section> -->

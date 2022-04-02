@@ -1,14 +1,13 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-white shadow">
     <div class="container">
-      <router-link :to="{ name: 'home', params: { lang: $i18n.locale } }" class="navbar-brand">
+      <router-link :to="{ name: 'home_view', params: { lang: $i18n.locale } }" class="navbar-brand">
         <span class="text-uppercase font-weight-bold">
           {{ myproject.company.legalName }}
         </span>
       </router-link>
 
       <div class="collapse navbar-collapse justify-content-around">
-
         <ul class="navbar-nav">
           <li class="nav-item" @mouseenter="showMegaMenu">
             <router-link :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale } }" class="nav-link text">
@@ -58,7 +57,6 @@
             </a>
           </li>
         </ul>
-      
       </div>
     </div>
   </nav>
@@ -81,6 +79,7 @@ export default {
 
   methods: {
     ...mapMutations(['toggleSearchModal']),
+    
     logout() {
       this.$store.commit('authenticationModule/logout')
       this.$router.push({ name: 'home', params: { lang: this.$i18n.locale } })
@@ -92,8 +91,6 @@ export default {
     },
 
     showMegaMenu() {
-      // var html = document.querySelector('body')
-      // html.style.backgroundColor = "rgba(0, 0, 0, 0.6)"
       this.isVisible=true
     }
   }

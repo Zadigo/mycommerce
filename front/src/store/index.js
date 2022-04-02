@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+var _ = require('lodash')
+
 import shopModule from './modules/shop'
 import messagesModule from './modules/messages'
 import dashboardModule from './modules/dashboard'
-
-var _ = require('lodash')
 
 Vue.use(Vuex)
 
@@ -63,12 +63,11 @@ export default new Vuex.Store({
   },
 
   mutations: {
-    changeSite(state, component) {
-      state.currentSite = component
+    changeSite(state, name) {
+      state.currentSite = name
     },
+
     toggleModalCart(state) {
-      // Open the modal cart so that the 
-      // user can see what is in his cart
       state.openCart = !state.openCart
     },
 
@@ -92,12 +91,8 @@ export default new Vuex.Store({
     },
     
     cartTotal (state) {
-      // Returns the total of the
-      // current items that the
-      // user has in his cart
-      var prices = []
-      _.forEach(state.cart, (product) => {
-        prices.push(_.toNumber(product.unit_price))
+      var prices = _.map(state.cart, (product) => {
+        return _.toNumber(product.unit_price)
       })
       var total = _.sum(prices)
       return total > 0 ? total : 0
