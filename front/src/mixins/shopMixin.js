@@ -12,10 +12,11 @@ export default {
                 // without sending an emit
                 var collectionName = this.$route.params.collection
                 var response = null
+                
                 if (collectionName == 'all') {
-                    response = await this.$axios.get('/collection/all')
+                    response = await this.axios.get('/collection/all')
                 } else {
-                    response = await this.$axios.get(`/collection/${collectionName}`)
+                    response = await this.axios.get(`/collection/${collectionName}`)
                 }
                 return response
             } catch(error) {

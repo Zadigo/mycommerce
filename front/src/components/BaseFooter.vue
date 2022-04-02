@@ -81,7 +81,7 @@ export default {
   methods: {
     async subscribeUser() {
       try {
-        var response = this.$axios.post('/subscribe', { email: this.subscriptionEmail })
+        var response = this.axios.post('/subscribe', { email: this.subscriptionEmail })
         this.subscriptionEmail = null
         response
       } catch(error) {

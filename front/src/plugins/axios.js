@@ -1,10 +1,10 @@
 "use strict";
 
-import Vue from 'vue'
+// import Vue from 'vue'
 import axios from "axios"
 
 // TODO: Remove from project
-import api from '@/plugins/api'
+// import api from '@/plugins/api'
 
 import store from '@/store'
 import router from '@/router'
@@ -58,17 +58,17 @@ client.interceptors.response.use(
 // Register all the API functions that
 // we will be using in Vue
 
-var axiosPlugin = {
-  install: (Vue) => {
-    window.client = client
-    Vue.prototype.$api = api(client)
+// var axiosPlugin = {
+//   install: (Vue) => {
+//     window.client = client
+//     Vue.prototype.$api = api(client)
 
-    // TEST: Transform calls directly to the template
-    // which can help us benefit from async
-    Vue.prototype.$axios = client
-  }
-}
+//     // TEST: Transform calls directly to the template
+//     // which can help us benefit from async
+//     // Vue.prototype.$axios = client
+//   }
+// }
 
-Vue.use(axiosPlugin)
+// Vue.use(axiosPlugin)
 
-export default axiosPlugin
+export default client

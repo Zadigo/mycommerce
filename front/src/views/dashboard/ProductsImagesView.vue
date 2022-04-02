@@ -210,7 +210,7 @@ export default {
       }
 
       try {
-        var response = await this.$axios.get(`/images?${ buildUrl(url).toString() }`)
+        var response = await this.axios.get(`/images?${ buildUrl(url).toString() }`)
         var cachedResponse = response.data
 
         this.cachedResponse = cachedResponse

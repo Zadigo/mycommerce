@@ -56,7 +56,7 @@ export default {
       try {
         // TODO: When the user types a search query, implement it also
         // in the url for seo purposes
-        var response = await this.$axios.get('/shop/search', { params: { q: this.search } })
+        var response = await this.axios.get('/shop/search', { params: { q: this.search } })
         this.searchedProducts = response.data
         this.isLoading = false
       } catch(error) {

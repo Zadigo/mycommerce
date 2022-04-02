@@ -163,7 +163,7 @@ export default {
   methods: {
     async requestProductVariants() {
       try {
-        var response = await this.$axios.post(`/shop/products/${ this.currentProduct.id }`)
+        var response = await this.axios.post(`/shop/products/${ this.currentProduct.id }`)
 
         this.productVariants = response.data['variants']
         this.reviews = response.data['reviews']
