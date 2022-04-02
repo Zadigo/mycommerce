@@ -3,12 +3,6 @@
     <div class="container">
       <div class="collapse navbar-collapse flex-column justify-content-left align-items-start">
         <ul class="navbar-nav">
-          <li class="nav-item mx-2">
-            <v-btn icon @click="$emit('change-grid')">
-              <v-icon>mdi-grid</v-icon>
-            </v-btn>
-          </li>
-
           <!-- Sort method -->
           <li class="nav-item mx-1">
             <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="scale-transition">

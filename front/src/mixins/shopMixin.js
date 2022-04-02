@@ -18,30 +18,23 @@ export default {
                 } else {
                     response = await this.axios.get(`/collection/${collectionName}`)
                 }
-                return response
+
+                this.$store.commit('setProducts', response.data)
+                this.$session.create('products', response.data)
             } catch(error) {
-                console.log(error)
                 this.$store.dispatch('addErrorMessage', this.$t('An error occured'))
             }   
         },
 
-        async getProducts() {
-            try {
-                this.$emit('start-load')
+        getProducts() {
+            this.$emit('start-load')
+            this.productsRequest()
+            this.$emit('end-load')
 
-                var response = await this.productsRequest()
-                var products = response.data
-
-                this.$store.commit('setProducts', products)
-                this.$session.create('products', products)
-
-                this.$emit('end-load')
-                // setTimeout(() => {
-                // }, 1000);
-            } catch(error) {
-                console.log(error)
-                this.$store.dispatch('addErrorMessage', this.$t('An error occured'))
-            }
+            // try {
+            // } catch(error) {
+            //     this.$store.dispatch('addErrorMessage', this.$t('An error occured'))
+            // }
         }
     }
 }

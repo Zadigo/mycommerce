@@ -19,18 +19,15 @@ import ButtonLoadProducts from './ButtonLoadProducts.vue'
 
 export default {
   name: 'Pagination',
-
   components: {
     ButtonLoadProducts
   },
-
   props: {
     productCount: {
       type: Number,
       default: 0
     }
   },
-
   computed: {
     ...mapGetters(['totalCount', 'nextUrl']),
   }

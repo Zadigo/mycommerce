@@ -43,7 +43,7 @@ import { mapState } from 'vuex'
 import Information from '@/components/product/Information.vue'
 import MoreProducts from '@/components/product/MoreProducts.vue'
 import TileDisplay from '@/components/product/images/TileDisplay.vue'
-import ProductSkeleton from '@/components/skeletons/ProductSkeleton.vue'
+import ProductSkeleton from '@/components/shop/skeletons/ProductSkeleton.vue'
 import Reviews from '@/components/product/Reviews.vue'
 
 // import RecentlyViewed from '../components/product/RecentlyViewed.vue'
