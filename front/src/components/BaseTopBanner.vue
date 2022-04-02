@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import BaseBanner from '@/components/BaseBanner.vue'
+import BaseBanner from '@/layouts/BaseBanner.vue'
 
 export default {
     name: 'BaseTopBanner',

@@ -35,7 +35,7 @@
 import loginMixin from '@/mixins/login_mixin'
 
 import AuthFields from '@/components/auth/AuthFields.vue'
-import BaseAuth from '@/views/auth/BaseAuth.vue'
+import BaseAuth from '@/layouts/BaseAuth.vue'
 
 export default {
   name: 'LoginView',

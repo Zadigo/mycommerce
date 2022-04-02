@@ -73,7 +73,7 @@
 var _ = require('lodash') 
 
 import cartMixin from '../../mixins/cartMixin'
-import BaseTag from '../BaseTag.vue'
+import BaseTag from '../../layouts/BaseTag.vue'
 
 export default {
   name: 'Card',

@@ -5,7 +5,7 @@ import i18n from '../i18n'
 import store from '@/store'
 // import googleAnalytics from 'google_analytics'
 
-import BaseAccount from '@/views/auth/BaseAccount.vue'
+import BaseAccount from '@/layouts/BaseAccount.vue'
 
 Vue.use(VueRouter)
 
