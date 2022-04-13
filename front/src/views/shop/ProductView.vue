@@ -16,9 +16,15 @@
           <div class="row">
             <!-- Tags -->
             <div id="tags" class="col-12">
-              <base-tag v-if="currentProduct.on_sale" background-color="error">
+              <base-tag v-if="currentProduct.on_sale" class="mr-2" background-color="error">
                 <template>
                   {{ $t('Sale') }}
+                </template>
+              </base-tag>
+
+              <base-tag v-if="currentProduct.display_new" background-color="primary">
+                <template>
+                  {{ $t('New') }}
                 </template>
               </base-tag>
             </div>
@@ -263,5 +269,14 @@ export default {
   section#product {
     height: auto;
     min-height: 600px;
+  }
+
+  #tags {
+    display: flex;
+    justify-content: around;
+  }
+
+  .v-image__image {
+    cursor: pointer;
   }
 </style>

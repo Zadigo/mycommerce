@@ -1,16 +1,19 @@
 <template>
-  <div id="selected-image" class="col-12">
-    <v-img :src="selectedImage|mediaUrl"></v-img>
+  <div class="col-12 selected-image">
+    <!-- <v-img :src="selectedImage|mediaUrl"></v-img> -->
+    <div ref="link" :class="{ zoom: isZoomed }" class="img-container" @mousemove="zoomEvent($event)">
+      <img :src="selectedImage|mediaUrl" class="img-fluid" @click="zoomImage($event)">
+    </div>
 
     <v-btn id="btn-close" icon>
       <v-icon @click="$emit('reset-selected-image')">mdi-close</v-icon>
     </v-btn>
 
-    <base-tag v-if="isNew" :is-absolute="true" :top="3" :left="5" :padding="2" background-color="primary">
+    <!-- <base-tag v-if="isNew" :is-absolute="true" :top="3" :left="5" :padding="2" background-color="primary">
       <template>
         {{ $t('New') }}
       </template>
-    </base-tag>
+    </base-tag> -->
   </div>
 </template>
 
@@ -25,12 +28,52 @@ export default {
     isNew: {
       type: Boolean
     }
+  },
+  data: () => ({
+    isZoomed: false
+  }),
+  methods: {
+    zoomImage(e) {
+      this.isZoomed = !this.isZoomed
+
+      var image = this.$refs.link.querySelector('img')
+      var mouseX = e.pageX
+      var mouseY = e.pageY
+      var totalX = this.$refs.link.clientWidth
+      var totalY = this.$refs.link.clientHeight
+      var centerX = totalX / mouseX
+      var centerY = totalY / mouseY
+      var shiftX = centerX - mouseX
+      var shiftY = centerY - mouseY
+
+      // image.style.right = `${shiftX}px`
+      // image.style.top = `${shiftY}px`
+      image.transform = `translate(${shiftX}px, ${shiftY}px)`
+    },
+
+    zoomEvent(e) {
+      if (this.isZoomed) {
+        var image = this.$refs.link.querySelector('img')
+        var mouseX = e.pageX
+        var mouseY = e.pageY
+        var totalX = this.$refs.link.clientWidth
+        var totalY = this.$refs.link.clientHeight
+        var centerX = totalX / mouseX
+        var centerY = totalY / mouseY
+        var shiftX = centerX - mouseX
+        var shiftY = centerY - mouseY
+  
+        // image.style.left = `${shiftX}px`
+        // image.style.top = `${shiftY}px`
+        image.transform = `translate(${shiftX}px, ${shiftY}px)`
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
-#selected-image {
+.selected-image {
   position: relative;
 }
 
@@ -38,6 +81,21 @@ export default {
   position: absolute;
   top: 2%;
   right: 5%;
+}
+
+.img-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  min-height: 800px;
+}
+
+.img-container.zoom img {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  transform: scale(2.5, 2.5);
 }
 
 </style>
