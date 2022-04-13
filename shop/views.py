@@ -1,18 +1,21 @@
+import random
 from collections import OrderedDict
+from hashlib import md5
 
+from django.core.cache import cache
+from django.db.models import Avg
 from django.db.models.expressions import Q
-from django.shortcuts import get_object_or_404, render
-from mycommerce.responses import CustomPagination, api_response, simple_api_response
-from rest_framework.decorators import api_view
+from django.shortcuts import get_list_or_404, get_object_or_404
+from mycommerce.responses import (CustomPagination, api_response,
+                                  simple_api_response)
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from reviews.serializers import ReviewSerializer
-from hashlib import md5
-from rest_framework.decorators import permission_classes
-from django.db.models import Avg    
-import random
-from shop.models import Product
-from django.core.cache import cache
-from shop.serializers import ProductSerializer, VariantSerializer
+
+from shop.models import Like, Product, Wishlist
+from shop.serializers import (ProductSerializer, ValidateWishList,
+                              VariantSerializer, WishlistSerializer)
 
 
 class CustomProductPagination(CustomPagination):
@@ -62,7 +65,10 @@ def build_colors(colors):
 @api_view(['get'])
 def products_view(request, **kwargs):
     """Return all the products present on the website"""
-    queryset = Product.objects.prefetch_related('additional_variants').filter(active=True)
+    queryset = cache.get('products', None)
+    if queryset is None:
+        queryset = Product.objects.prefetch_related('additional_variants').filter(active=True)
+        cache.set('products', queryset, timeout=10)
     
     pagination_instance = CustomProductPagination()
     result = pagination_instance.paginate_queryset(queryset, request)
@@ -96,7 +102,7 @@ def search_view(request, **kwargs):
 
 @api_view(['get'])
 def advanced_search_view(request, **kwargs):
-    """Search for items in the database"""
+    """Advanced search for colors, variants..."""
     products = Product.objects.filter(active=True)
     queryset = products_filering_helper(request, products)
     serializer = ProductSerializer(instance=queryset, many=True)
@@ -118,8 +124,10 @@ def product_details_view(request, pk, **kwargs):
                    including the average rating 
     """
     product = get_object_or_404(Product, id=pk)
-    products = Product.objects.filter(name__exact=product.name)
-    variant_serializer = VariantSerializer(instance=products, many=True)
+    
+    products = Product.objects.all()
+    product_variants = products.filter(name__exact=product.name)
+    variant_serializer = VariantSerializer(instance=product_variants, many=True)
     
     cache_key = md5(product.slug.encode('utf-8')).hexdigest()
     
@@ -132,7 +140,6 @@ def product_details_view(request, pk, **kwargs):
         cache.set(cache_key, data, 3600)
         reviews = data
     
-    products = Product.objects.all()
     recommended_products = products.filter(name__icontains=product.name).exclude(id=product.id)
     
     if len(recommended_products) <= 3:
@@ -157,6 +164,80 @@ def product_details_view(request, pk, **kwargs):
     return api_response(data=return_response)
 
 
+@api_view(['post'])
+@permission_classes([IsAuthenticated])
+def like_product_view(request, pk, **kwargs):
+    """Add a product to the like list"""
+    product = get_object_or_404(Product, id=pk)
+    queryset = product.like_set.filter(user=request.user)
+    
+    if queryset.exists():
+        response = False
+    else:
+        instance, state = Like.objects.get_or_create(user=request.user)
+        instance.products.add(product)
+        response = True
+    return simple_api_response({'status': response})
+
+
+@api_view(['post'])
+@permission_classes([IsAuthenticated])
+def create_whishlist_view(request, **kwargs):
+    """Create a whishlist"""
+    serializer = ValidateWishList(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    new_serializer = serializer.save(request)
+    return simple_api_response(new_serializer)
+
+
+@api_view(['get'])
+@permission_classes([IsAuthenticated])
+def whishlist_details_view(request, pk, **kwargs):
+    """Get a specific whishlist"""
+    wishlist = get_object_or_404(Wishlist, id=pk)
+    serializer = WishlistSerializer(instance=wishlist)
+    return api_response(serializer)
+
+
+@api_view(['post'])
+@permission_classes([IsAuthenticated])
+def add_to_list_view(request, pk, **kwargs):
+    """Get a specific whishlist"""
+    wishlist = get_object_or_404(Wishlist, pk=pk)
+    product = get_object_or_404(Product, id=request.data.get('product', None))
+    
+    if not product.active:
+        return simple_api_response({'state': False, 'message': 'Not active'})
+    
+    products = wishlist.products.filter(id=product.id)
+    if products.exists():
+        return simple_api_response({'state': False, 'message': 'Already liked'})
+    else:
+        wishlist.products.add(product)
+        serializer = WishlistSerializer(instance=wishlist)
+        return simple_api_response(serializer)
+
+
+@api_view(['post'])
+@permission_classes([IsAuthenticated])
+def remove_from_list_view(request, pk, **kwargs):
+    """Get a specific whishlist"""
+    wishlist = get_object_or_404(Wishlist, pk=pk)
+    product = get_object_or_404(Product, id=request.data.get('product', None))
+    wishlist.products.remove(product)
+    serializer = WishlistSerializer(instance=wishlist)
+    return simple_api_response(serializer)
+
+
+@api_view(['get'])
+@permission_classes([IsAuthenticated])
+def list_whishlists_view(request, **kwargs):
+    """Get all the user's whishlists"""
+    whishlist = get_list_or_404(Wishlist, user=request.user)
+    serializer = WishlistSerializer(instance=whishlist, many=True)
+    return simple_api_response(serializer)
+
+
 @api_view(['get'])
 @permission_classes([])
 def dashboard_product_view(request, pk, **kwargs):
@@ -164,3 +245,4 @@ def dashboard_product_view(request, pk, **kwargs):
     product = get_object_or_404(Product, id=pk)
     serializer = ProductSerializer(instance=product)
     return simple_api_response(serializer)
+

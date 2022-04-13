@@ -1,3 +1,4 @@
+from django.test import Client
 from django.test import RequestFactory, TestCase
 from django.contrib.auth import get_user_model
 from cart import views
@@ -13,7 +14,7 @@ def create_user():
     
 
 class TestCartApi(TestCase):
-    fixtures = ['products.json', 'carts.json']
+    fixtures = ['carts.json']
     
     # def test_cart_view(self):
     #     user = create_user()
@@ -27,4 +28,8 @@ class TestCartApi(TestCase):
         factory = RequestFactory()
         request = factory.post('api/v1/cart/add', data={'product': 1, 'default_size': 'Unique', 'session_id': 'test_session'})
         response = views.cart_view(request)
-        print(response.data)
+        
+    def test_add_to_cart(self):
+        client = Client()
+        response = client.post('api/v1/cart/add', data={'product': 2, 'default_size': 'Unique', 'session_id': 'test_session'})
+        self.assertEqual(response.status_code, 200)

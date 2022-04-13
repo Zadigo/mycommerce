@@ -19,4 +19,4 @@ class TestShopApi(TestCase):
         request = self.factory.get('/api/v1/shop/search', data={'q': 'Tanga'})
         response = views.search_view(request)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(len(response.data), 2)

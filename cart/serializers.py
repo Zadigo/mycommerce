@@ -3,6 +3,7 @@ from typing import Tuple
 from api.utils import get_product_model
 from django.db.models import Count, QuerySet, Sum
 from django.shortcuts import get_object_or_404
+from orders.choices import ShipmentChoices
 from rest_framework import fields
 from rest_framework.serializers import Serializer
 from shop.choices import ClotheSizesChoices
@@ -46,10 +47,13 @@ class ValidateVariants(Serializer):
     
 
 class ValidateCart(Serializer):
+    """Validates the data used create a
+    cart item in the database"""
+    
     product = fields.IntegerField(allow_null=True)
     default_size = fields.ChoiceField(
         ClotheSizesChoices.choices(),
-        default=ClotheSizesChoices.default('Unique')
+        default=ClotheSizesChoices.default('S')
     )
     session_id = fields.CharField(allow_null=True)
 
@@ -70,23 +74,23 @@ class ValidateCart(Serializer):
             return self.update(self.instance, validated_data)
         return self.create(validated_data, request=request)
     
-    def delete(self, product_id, **kwargs):
+    def delete(self, request, **kwargs):
+        product_id = self.validated_data['product']
         session_id = self.validated_data['session_id']
-        if product_id is not None:
-            item = get_object_or_404(Cart, id=product_id, session_id=session_id)
-            item.delete()
-        return Cart.objects.filter(session_id__iexact=session_id)
+        return Cart.objects.remove_from_cart(request, product_id, session_id)
 
 
-# class ValidateCartSession(Serializer):
-#     session_id = fields.CharField(required=True)
-
-#     def list_items(self, **kwargs):
-#         session_id = self.validated_data['session_id']
-#         return Cart.objects.cart_items(session_id=session_id)
-
-#     def delete(self, product_id, **kwargs):
-#         session_id = self.validated_data['session_id']
-#         item = get_object_or_404(Cart, id=product_id, session_id=session_id)
-#         item.delete()
-#         return Cart.objects.filter(session_id__iexact=session_id)
+class ValidateShipment(Serializer):
+    session_id = fields.CharField()
+    email = fields.CharField()
+    firstname = fields.CharField()
+    lastname = fields.CharField()
+    address = fields.CharField()
+    zip_code = fields.CharField()
+    city = fields.CharField()
+    country = fields.CharField()
+    telephone = fields.CharField()
+    delivery_option = fields.ChoiceField(
+        ShipmentChoices.choices,
+        default=ShipmentChoices.COLISSIMO_STANDARD
+    )

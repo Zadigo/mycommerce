@@ -62,11 +62,12 @@ class AdditionalVariantAdmin(admin.ModelAdmin):
 
 @admin.register(Wishlist)
 class WishlistAdmin(admin.ModelAdmin):
-    list_display = ['user', 'created_on']
+    list_display = ['user', 'name', 'created_on']
     date_hiearchy = 'created_on'
 
 
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):
     list_display = ['user', 'created_on']
+    search_fields = ['products__name']
     date_hiearchy = 'created_on'

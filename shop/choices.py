@@ -18,9 +18,9 @@ class ClotheSizesChoices:
         return cls.sizes
     
     @classmethod
-    def default(cls, size) -> str:
+    def default(cls, size):
         candidates = list(filter(lambda x: size in x, cls.sizes))
-        return candidates[-1]
+        return candidates[0][-1]
 
 
 class ShoeSizesChoices:

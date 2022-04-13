@@ -2,10 +2,8 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
-
-from orders.utils import get_product_model
-
-PRODUCT_MODEL = get_product_model()
+from mycommerce.choices import CityChoices, CountryChoices
+from shop.models import Product
 
 USER_MODEL = get_user_model()
 
@@ -17,7 +15,7 @@ class ProductHistory(models.Model):
     changes, then the price in the order would 
     only reflect the initial state"""
     product = models.ForeignKey(
-        PRODUCT_MODEL,
+        Product,
         on_delete=models.SET_NULL,
         null=True
     )
@@ -54,9 +52,18 @@ class CustomerOrder(models.Model):
         null=True
     )
     
-    address = None
-    city = None
-    zip_code = None
+    address = models.CharField(max_length=100)
+    city = models.CharField(
+        max_length=100,
+        choices=CityChoices.choices,
+        default=CityChoices.LILLE
+    )
+    zip_code = models.CharField(max_length=100)
+    country = models.CharField(
+        max_length=100,
+        choices=CountryChoices.choices,
+        default=CountryChoices.FRANCE
+    )
     
     products = models.ManyToManyField(ProductHistory, blank=True)
     total = models.DecimalField(

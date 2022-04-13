@@ -1,5 +1,7 @@
 from rest_framework import fields
-from rest_framework.serializers import Serializer
+from rest_framework.serializers import Serializer, ModelSerializer
+from rest_framework.serializers import raise_errors_on_nested_writes
+from shop.models import Wishlist
 
 
 class AdditionalVariantSerializer(Serializer):
@@ -61,3 +63,22 @@ class VariantSerializer(Serializer):
     slug = fields.SlugField()
     modified_on = fields.DateField()
     created_on = fields.DateField()
+
+
+class UserlistSerializer(Serializer):
+    id = fields.IntegerField()
+    products = ProductSerializer(many=True)
+
+
+class WishlistSerializer(UserlistSerializer):
+    name = fields.CharField()
+
+
+class ValidateWishList(Serializer):
+    name = fields.CharField()
+    
+    def save(self, request, **kwargs):
+        data = self.validated_data.copy()
+        data['user'] = request.user
+        instance, state = Wishlist.objects.get_or_create(**data)
+        return WishlistSerializer(instance=instance)
