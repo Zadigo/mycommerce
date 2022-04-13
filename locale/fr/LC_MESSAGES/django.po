@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-17 22:27+0100\n"
+"POT-Creation-Date: 2022-04-13 19:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,75 +18,83 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: .\collection\choices.py:5
-msgid "Coats"
-msgstr "Blazers"
+#: .\cart\models.py:14
+msgid "Unique identifier used essentially for anonymous user carts"
+msgstr ""
 
-#: .\collection\choices.py:6 .\shop\choices.py:73
-msgid "Dresses"
-msgstr "Robes"
-
-#: .\collection\choices.py:7
-msgid "Lingerie"
-msgstr "Lingerie"
-
-#: .\collection\choices.py:8 .\shop\choices.py:74
-msgid "Pants"
-msgstr "Pantalons"
-
-#: .\collection\choices.py:9 .\shop\choices.py:77
-msgid "Shorts"
-msgstr "Shorts"
-
-#: .\collection\choices.py:10
-msgid "Skirts"
-msgstr "Jupes"
-
-#: .\shop\choices.py:68
+#: .\collection\choices.py:7 .\shop\choices.py:68
 msgid "Accessories"
 msgstr "Accesoires"
 
-#: .\shop\choices.py:69
+#: .\collection\choices.py:8 .\shop\choices.py:69
 msgid "Activewear"
 msgstr "Tenues de sport"
 
-#: .\shop\choices.py:70
+#: .\collection\choices.py:9 .\shop\choices.py:70
 msgid "Bags"
-msgstr ""
+msgstr "Sacs"
 
-#: .\shop\choices.py:71
+#: .\collection\choices.py:10 .\shop\choices.py:71
 msgid "Bras"
 msgstr "Soutien-Gorge"
 
-#: .\shop\choices.py:72
+#: .\collection\choices.py:11 .\shop\choices.py:72
 msgid "Denim"
 msgstr "Jeans"
 
-#: .\shop\choices.py:75
+#: .\collection\choices.py:12 .\shop\choices.py:73
+msgid "Dresses"
+msgstr "Robes"
+
+#: .\collection\choices.py:13 .\shop\choices.py:74
+msgid "Pants"
+msgstr "Pantalons"
+
+#: .\collection\choices.py:14 .\shop\choices.py:75
 msgid "Panties"
 msgstr "Culottes"
 
-#: .\shop\choices.py:76
+#: .\collection\choices.py:15 .\shop\choices.py:76
 msgid "Shoes"
 msgstr "Chaussures"
 
-#: .\shop\choices.py:78
+#: .\collection\choices.py:16 .\shop\choices.py:77
+msgid "Shorts"
+msgstr "Shorts"
+
+#: .\collection\choices.py:17 .\shop\choices.py:78
 msgid "Suits"
 msgstr "Blazers"
 
-#: .\shop\choices.py:79
+#: .\collection\choices.py:18 .\shop\choices.py:79
 msgid "Tops"
 msgstr "Tops"
 
-#: .\shop\models.py:28
+#: .\orders\models.py:30
+msgid "Product history"
+msgstr "Historique produits"
+
+#: .\orders\models.py:31
+msgid "Product histories"
+msgstr "Historique produits"
+
+#: .\orders\models.py:77
+msgid "Customer order"
+msgstr "Commande client"
+
+#: .\orders\models.py:78
+msgid "Customer orders"
+msgstr "Commandes clients"
+
+#: .\shop\models.py:29
 msgid "Used for the image's alt attribute"
 msgstr "Utilisé pour l'attribut alt the l'image"
 
-#: .\shop\models.py:66
+#: .\shop\models.py:67
 msgid "Used for the video alt attribute"
-msgstr ""
+msgstr "Correspond à l'attribut alt de l'image"
 
-#: .\shop\models.py:121
+#: .\shop\models.py:115
 msgid "Defines a declination of a main product in color"
 msgstr "Déclinaison du produit en couleur"
 
@@ -95,12 +103,41 @@ msgid "Declination in size, patterns..."
 msgstr "Déclinaisons du produit en taille, motifs..."
 
 #: .\shop\models.py:146
-msgid "Cost price of the product"
+#, fuzzy
+#| msgid "Cost price of the product"
+msgid "Cost value of the product"
 msgstr "Coût d'achat ou de fabrication du produit"
 
 #: .\shop\models.py:160
 msgid "Explicitly mark a product as being new"
 msgstr "Marquer le produit comme étant nouveau"
+
+#: .\shop\models.py:197
+msgid "A product on sale cannot have a sale value of 0"
+msgstr "Un produit soldé ne peut pas avoir une valeur inférieur à zéro"
+
+#: .\shop\models.py:203
+msgid "Product"
+msgstr "Produit"
+
+#: .\shop\models.py:204
+#, fuzzy
+#| msgid "Suits"
+msgid "Produits"
+msgstr "Blazers"
+
+#: .\shop\validators.py:15
+msgid "The product's price should be at least above 0"
+msgstr "Le prix du produit doit être supérieur à zéro"
+
+#~ msgid "Coats"
+#~ msgstr "Blazers"
+
+#~ msgid "Lingerie"
+#~ msgstr "Lingerie"
+
+#~ msgid "Skirts"
+#~ msgstr "Jupes"
 
 #~ msgid "Bag"
 #~ msgstr "Sacs"

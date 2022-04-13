@@ -74,8 +74,8 @@ class CustomerOrder(models.Model):
     created_on = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name = _('CustomerOrder')
-        verbose_name_plural = _('CustomerOrders')
+        verbose_name = _('Customer order')
+        verbose_name_plural = _('Customer orders')
         ordering = ['created_on']
 
     def __str__(self):
