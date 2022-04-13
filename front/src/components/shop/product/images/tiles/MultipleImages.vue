@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import tilesMixin from './tilesMixin'
+import tilesMixin from '@/mixins/tiles'
 
 export default {
   // Component for showing images of a product

@@ -1,4 +1,4 @@
-import VideoTile from './VideoTile'
+import VideoTile from '@/components/shop/product/images/tiles/VideoTile.vue'
 
 export default {
     components: {

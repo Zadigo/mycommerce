@@ -78,11 +78,11 @@ import { mapState } from 'vuex'
 
 import Actions from '@/components/shop/product/Actions.vue'
 import Information from '@/components/shop/product/Information.vue'
-import MoreProducts from '@/components/product/MoreProducts.vue'
+import MoreProducts from '@/components/shop/product/MoreProducts.vue'
 import RecentlyViewed from '@/components/shop/product/RecentlyViewed.vue'
 // import ProductSkeleton from '@/components/shop/skeletons/ProductSkeleton.vue'
 import Reviews from '@/components/product/Reviews.vue'
-import TileDisplay from '@/components/product/images/TileDisplay.vue'
+import TileDisplay from '@/components/shop/product/images/TileDisplay.vue'
 
 
 export default {
