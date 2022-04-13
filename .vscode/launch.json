@@ -15,24 +15,26 @@
             "django": true
         },
         {
-            "name": "Vue: Fashion E-commerce",
+            "type": "pwa-msedge",
             "request": "launch",
-            "cwd": "${workspaceFolder}/front",
-            "runtimeArgs": [
-                "run",
-                "serve"
+            "name": "vuejs:chrome",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}/src",
+            "vueComponentPaths": [
+                "${workspaceFolder}/src/**/*.vue"
             ],
-            "runtimeExecutable": "npm",
+            "breakOnLoad": true,
+            "sourceMapPathOverrides": {
+                "webpack:///src/*": "${webRoot}/*"
+            },
+            "pathMapping": {
+                "webpack:///src/": "${webRoot}/src"
+            },
             "skipFiles": [
+                "${workspaceFolder}/node_modules/**/*.js",
+                "${webRoot}/node_modules/*",
                 "<node_internals>/**"
             ],
-            "type": "pwa-node"
-        },
-        {
-            "name": "Launch Microsoft Edge and open the Edge DevTools",
-            "request": "launch",
-            "type": "vscode-edge-devtools.debug",
-            "url": "http://localhost:8080/" // Provide your project's url to finish configuring
         }
     ]
 }

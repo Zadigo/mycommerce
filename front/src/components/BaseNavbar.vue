@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-none">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-none border-bottom">
     <div class="container">
       <router-link :to="{ name: 'home_view', params: { lang: $i18n.locale } }" class="navbar-brand">
         <span class="text-uppercase font-weight-bold">

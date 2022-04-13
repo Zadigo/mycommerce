@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row d-flex justify-content-center">
-      <div class="col-md-12">
+      <div class="col-sm-12 col-md-12">
         <div class="d-flex justify-content-between mt-4 mb-2 ">
           <h4 class="text-uppercase font-weight-bold">
             {{ $t('You may also like') }}
@@ -17,9 +17,9 @@
       <!-- Products -->
       <div class="col-md-12">
         <v-row>
-          <v-col v-for="product in recommendedProducts" :key="product.id" cols="3">
+          <div v-for="product in recommendedProducts" :key="product.id" class="col-sm-12 col-md-3">
             <card :product="product" :is-loading="isLoading" @product-card-click="updateProductList" />
-          </v-col>
+          </div>
         </v-row>
       </div>
     </div>
@@ -30,10 +30,11 @@
 import Card from '../products/Card.vue'
 
 export default {
-  name: 'AdditionalInformation',
+  name: 'MoreProducts',
   props: {
     isLoading: {
-      type: Boolean
+      type: Boolean,
+      default: true
     },
     recommendedProducts: {
       type: Array,

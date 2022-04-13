@@ -196,7 +196,6 @@ class AbstractProduct(models.Model):
             if self.sale_value == 0:
                 raise ValidationError({'sale_value': _("A product on sale cannot have a sale value of 0")})
             self.sale_price = calculate_sale(self.unit_price, self.sale_value)
-        # self.slug = create_product_slug(self.name, self.color)
         
 
 class Product(AbstractProduct):    

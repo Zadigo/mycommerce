@@ -1,67 +1,105 @@
 <template>
-  <product-skeleton v-if="isLoading" />
-
-  <section v-else id="product" class="ecommerce-section">
-    <div class="container-fluid dark-grey-text mt-5">
-
+  <section id="product" class="ecommerce-section">
+    <div class="container-fluid">
       <div class="row">
+        <!-- Breadbumbs -->
         <div class="col-12">
-          <b-breadcrumb :items="breadcrumbs" class="pl-1"></b-breadcrumb>
+
         </div>
 
         <!-- Images -->
-        <div class="col-md-7">
+        <div class="col-sm-12 col-md-7">
           <tile-display :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" />
         </div>
 
-        <!-- Information -->
-        <div class="col-md-5">
-          <information :product="currentProduct" :number-of-reviews="numberOfReviews" :product-variants="productVariants" />
+        <div class="col-sm-12 col-md-5 ps-5">
+          <div class="row">
+            <!-- Tags -->
+            <div id="tags" class="col-12">
+              <base-tag v-if="currentProduct.on_sale" background-color="error">
+                <template>
+                  {{ $t('Sale') }}
+                </template>
+              </base-tag>
+            </div>
+
+            <!-- Information -->
+            <div id="information" class="col-12 pt-0 pb-0">
+              <p class="font-weight-bold font-size-3 m-0">
+                {{ currentProduct.name|capitalizeLetters }}
+              </p>
+
+              <p class="my-2 font-weight-bold">
+                <span v-if="currentProduct.on_sale" class="mr-1 text-muted">
+                  <del>{{ $n(currentProduct.unit_price, 'currency') }}</del>
+                </span>
+
+                <span v-if="currentProduct.on_sale">
+                  {{ $n(currentProduct.sale_price, 'currency', $i18n.locale) }}
+                </span>
+
+                <span v-else class="fw-4 fs-24">
+                  {{ $n(currentProduct.unit_price, 'currency', $i18n.locale) }}
+                </span>
+              </p>
+            </div>
+
+            <!-- Actions -->
+            <actions :product="currentProduct" :product-variants="productVariants" :sizes="sizes" />
+
+            <!-- Additional Information -->
+            <information :product="currentProduct" />
+          </div>
         </div>
       </div>
 
-      <hr class="my-8">
+      <hr class="my-5">
 
-      <!-- More -->
-      <more-products :recommended-products="recommendedProducts" :is-loading="isLoading" />
+      <div class="row">
+        <div class="col-12">
+          <more-products :recommended-products="recommendedProducts" :is-loading="isLoading" />
+        </div>
 
-      <!-- TODO:  Implement recently viewed -->
-      <!-- <recently-viewed /> -->
-      
-      <hr>
-      
-      <!-- Reviews -->
-      <reviews :reviews="reviews" />
+        <div class="col-12">
+          <recently-viewed :is-loading="isLoading" />
+        </div>
+
+        <div class="col-12">
+          <reviews :reviews="[]" />
+        </div>
+      </div>
     </div>
-
   </section>
 </template>
 
 <script>
+import _ from 'lodash'
 import { mapState } from 'vuex'
 
-import Information from '@/components/product/Information.vue'
+import Actions from '@/components/shop/product/Actions.vue'
+import Information from '@/components/shop/product/Information.vue'
 import MoreProducts from '@/components/product/MoreProducts.vue'
-import TileDisplay from '@/components/product/images/TileDisplay.vue'
-import ProductSkeleton from '@/components/shop/skeletons/ProductSkeleton.vue'
+import RecentlyViewed from '@/components/shop/product/RecentlyViewed.vue'
+// import ProductSkeleton from '@/components/shop/skeletons/ProductSkeleton.vue'
 import Reviews from '@/components/product/Reviews.vue'
+import TileDisplay from '@/components/product/images/TileDisplay.vue'
 
-// import RecentlyViewed from '../components/product/RecentlyViewed.vue'
 
 export default {
   name: 'ProductView',
 
   title() {
-    return 'this.currentProduct.name'
+    return this.currentProduct.name
   },
 
   components: {
+    Actions,
     Information,
     MoreProducts,
-    TileDisplay,
-    ProductSkeleton,
+    // ProductSkeleton,
     Reviews,
-    // RecentlyViewed
+    TileDisplay,
+    RecentlyViewed
   },
 
   data: () => ({
@@ -90,20 +128,31 @@ export default {
 
     breadcrumbs() {
       return [
-          {
-            text: this.$t('Home'),
-            to: 'home'
-          },
-          {
-            text: this.$route.params.collection,
-            to: 'collection_details',
-            params: { collection: this.$route.params.collection }
-          },
-          {
-            text: this.currentProduct.name,
-            active: false
-          }
-        ]
+        {
+          text: this.$t('Home'),
+          to: 'home'
+        },
+        {
+          text: this.$route.params.collection,
+          to: 'collection_details',
+          params: { collection: this.$route.params.collection }
+        },
+        {
+          text: this.currentProduct.name,
+          active: false
+        }
+      ]
+    },
+
+    hasDescription() {
+      return this.product == undefined
+    },
+
+    sizes() {
+      // Return all the size options for the given product
+      return _.filter(this.currentProduct.additional_variants, (variant) => {
+        return variant.category === 'Size'
+      })
     }
   },
 
@@ -130,7 +179,6 @@ export default {
       // defined. We have to define these to prevent
       // sending undefined to the recentlyViewed
       vm.$store.commit('setRecentlyViewed', to.params.id)
-      // vm.$session.set('recentlyViewedProducts', vm.$store.state.shopModule.recentlyViewed)
       vm.$localstorage.create('recentlyViewedProducts', vm.$store.getters['recentlyViewedProducts'])
     })
   },

@@ -1,11 +1,11 @@
 * {
     font-family: "Montserrat", "Roboto", sans-serif;
-    /* font-weight: 300; */
-    /* font-size: 14px; */
 }
 
 html, body {
-    color: rgba(0, 0, 0, .8);
+    /* color: rgba(0, 0, 0, .8); */
+    font-size: 10px;
+    font-weight: 300;
 }
 
 ::-webkit-scrollbar {
@@ -51,11 +51,11 @@ html, body {
 }
 
 .font-size-1 {
-  font-size: 1.1666666667rem;
+  font-size: 0.625rem;
 }
 
 .font-size-2 {
-  font-size: 1.3333333333rem;
+  font-size: 0.6875rem;
 }
 
 .font-size-3 {
@@ -63,11 +63,11 @@ html, body {
 }
 
 .font-size-4 {
-  font-size: 1.6666666667rem;
+  font-size: 0.75rem;
 }
 
 .font-size-5 {
-  font-size: 1.8333333333rem;
+  font-size: 0.8125rem;
 }
 
 .font-size-6 {
@@ -75,41 +75,32 @@ html, body {
 }
 
 .font-size-7 {
-  font-size: 2.1666666667rem;
+  font-size: 0.875rem;
 }
 
 .font-size-8 {
-  font-size: 2.3333333333rem;
+  font-size: 0.9375rem;
 }
 
 .font-size-9 {
-  font-size: 2.5rem;
+  font-size: 1rem;
 }
 
-
-/* .fs-14 {
-    font-size: 14px;
+.font-size-10 {
+  font-size: 1.0625rem;
 }
 
-.fs-18 {
-    font-size: 18px;
+.font-size-11 {
+  font-size: 1.125rem;
 }
 
-.fs-20 {
-    font-size: 20px;
+.font-size-12 {
+  font-size: 1.1875rem;
 }
 
-.fs-22 {
-    font-size: 22px;
+.font-size-13 {
+    font-size: 1.25rem;
 }
-
-.fs-24 {
-    font-size: 24px;
-}
-
-.fs-26 {
-    font-size: 26px;
-} */
 
 .text-17 {
     font-size: 17px;

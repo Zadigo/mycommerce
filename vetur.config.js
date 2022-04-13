@@ -18,13 +18,14 @@ module.exports = {
             // Where is `package.json` in the project?
             // We use it to determine the version of vue.
             // It is relative to root property.
-            package: './package.json',
+            package: 'package.json',
             // **optional** default: `'./.vscode/vetur/snippets'`
             // Where is vetur custom snippets folders?
-            snippetFolder: './.vscode/vetur/snippets',
+            // snippetFolder: './.vscode/vetur/snippets',
             globalComponents: [
-                './src/components/**/*.vue',
-                './src/views/**/*.vue'
+                'src/**/*.vue'
+                // 'src/components/**/*.vue',
+                // 'src/views/**/*.vue'
             ]
         }
     ]

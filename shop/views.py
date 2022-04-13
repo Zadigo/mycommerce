@@ -2,11 +2,12 @@ from collections import OrderedDict
 
 from django.db.models.expressions import Q
 from django.shortcuts import get_object_or_404, render
-from mycommerce.responses import CustomPagination, api_response
+from mycommerce.responses import CustomPagination, api_response, simple_api_response
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from reviews.serializers import ReviewSerializer
-
+from hashlib import md5
+from rest_framework.decorators import permission_classes
 from django.db.models import Avg    
 import random
 from shop.models import Product
@@ -120,21 +121,32 @@ def product_details_view(request, pk, **kwargs):
     products = Product.objects.filter(name__exact=product.name)
     variant_serializer = VariantSerializer(instance=products, many=True)
     
-    reviews = cache.get(product.slug, None)
+    cache_key = md5(product.slug.encode('utf-8')).hexdigest()
+    
+    reviews = cache.get(cache_key, None)
     if reviews is None:
         queryset = product.review_set.all()
         reviews_serializer = ReviewSerializer(instance=queryset, many=True)
         data = {'reviews': reviews_serializer.data}
         data = data | queryset.aggregate(average_rating=Avg('rating'))
-        cache.set(product.name, data, 3600)
+        cache.set(cache_key, data, 3600)
         reviews = data
+    
+    products = Product.objects.all()
+    recommended_products = products.filter(name__icontains=product.name).exclude(id=product.id)
+    
+    if len(recommended_products) <= 3:
+        other_products = products.exclude(id=product.id)
         
-    recommended_products = Product.objects.filter(name__contains=product.name).exclude(id=product.id)
-    recommended_products_serializer = ProductSerializer(
-        # instance=random.choices(recommended_products, k=4),
-        instance=recommended_products[:4],
-        many=True
-    )
+        recommended_products_serializer = ProductSerializer(
+            instance=random.choices(other_products, k=4),
+            many=True
+        )
+    else:
+        recommended_products_serializer = ProductSerializer(
+            instance=recommended_products[:4],
+            many=True
+        )
 
     return_response = {
         'variants': variant_serializer.data,
@@ -143,3 +155,12 @@ def product_details_view(request, pk, **kwargs):
     }
     
     return api_response(data=return_response)
+
+
+@api_view(['get'])
+@permission_classes([])
+def dashboard_product_view(request, pk, **kwargs):
+    """Get additional details of a given product"""
+    product = get_object_or_404(Product, id=pk)
+    serializer = ProductSerializer(instance=product)
+    return simple_api_response(serializer)

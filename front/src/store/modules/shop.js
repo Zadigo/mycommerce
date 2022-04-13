@@ -111,10 +111,17 @@ var shopModule = {
 
         recentlyViewedProducts(state) {
             var uniqueItems = _.uniq(state.recentlyViewed)
-            
-            return _.filter(state.products, (product) => {
+            var sampleProducts = _.filter(state.products, (product) => {
                 return uniqueItems.includes(product.id)
             })
+            var products = []
+            
+            _.forEach(sampleProducts, (product) => {
+                if (product.id != state.currentProduct.id) {
+                    return product
+                }
+            })
+            return _.sampleSize(products, 4)
         },
 
         totalCount(state) {

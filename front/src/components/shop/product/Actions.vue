@@ -1,29 +1,9 @@
 <template>
   <div id="actions">
-    
-    <!-- Size -->
-    <div id="size-selection" class="my-2">
-      <p class="font-weight-bold mb-2">
-        {{ $t('Size') }}
-      </p>
-
-      <div v-if="sizes.length > 0" class="sizes">
-        <b-btn v-for="(size, i) in sizes" id="btn-select-size" :key="size.key" :class="{ 'ml-2': i > 0, 'bg-dark': productOptions.default_size == size }" class="shadow-none border" variant="light" @click="setSize(size)">
-          {{ size.name }}
-        </b-btn>
-      </div>
-
-      <div v-else id="sizes">
-        <b-btn id="btn-no-size" class="shadow-none border" disabled>
-          {{ $t('Unique size') }}
-        </b-btn>
-      </div>
-    </div>
-
     <!-- Colors -->
-    <div id="color-selection" class="mt-4 mb-4">
-      <p class="font-weight-bold mb-2">
-        {{ $t('Color') }}
+    <div id="colors" class="my-3">
+      <p class="mb-2 font-size-2">
+        <span class="font-weight-bold">{{ $t('Color') }}</span>: {{ product.color }}
       </p>
 
       <!-- TODO: Create a swatch reusable component -->
@@ -34,37 +14,55 @@
       </div>
     </div>
 
-    <!-- Actions -->
-    <div class="d-flex justify-content-left">
-      <!-- TODO: Most shopping websites don't have a quantity input. So use this optionnally -->
-      <!-- <b-form-input v-model="productOptions.quantity" :min="1" :max="99" :step="1" type="number" aria-label="Quantity" style="width: 100px"></b-form-input> -->
-      
-      <!-- Add to cart -->
-      <b-btn id="btn-add-cart" class="mr-2" variant="dark" @click="addToCart">
-        <v-progress-circular v-if="addingToCart" :size="25" class="mr-2" color="white" indeterminate></v-progress-circular>
-        <v-icon v-else class="mr-2 text-white">mdi-cart</v-icon>
-        {{ $t('Add to cart') }}
-      </b-btn>
+    <!-- Size -->
+    <div id="sizes" class="my-2">
+      <p class="mb-2 font-size-2">
+        {{ $t('Size') }}
+      </p>
 
-      <!-- Add to like -->
-      <b-btn id="btn-add-like" class="btn-md my-0" variant="danger" @click="addToLikes">
-        <v-icon class="text-white">mdi-heart</v-icon>
-      </b-btn>
+      <div v-if="sizes.length > 0" class="sizes">
+        <b-btn v-for="(size, i) in sizes" id="btn-select-size" :key="size.key" :class="{ 'ml-2': i > 0, 'bg-dark': productOptions.default_size == size }" class="shadow-none border" variant="light" @click="setSize(size)">
+          {{ size.name }}
+        </b-btn>
+      </div>
+
+      <div v-else id="sizes">
+        <btn id="btn-no-size" class="btn btn-md btn-outline-dark shadow-none border disabled">
+          {{ $t('Unique size') }}
+        </btn>
+      </div>
+
+      <size-guide />
     </div>
 
-    <!-- <div class="other">
-      <v-checkbox v-model="productOptions.is_gift" label="Cet achat sera un cadeau" hide-details></v-checkbox>
-    </div> -->
+    <!-- Actions -->
+    <div id="cart" class="d-flex justify-content-left my-4">      
+      <!-- Add to cart -->
+      <btn id="btn-add-cart" class="btn btn-lg btn-dark mr-2 font-size-3" @click="addToCart">
+        <v-progress-circular v-if="addingToCart" :size="25" class="mr-2" color="white" indeterminate></v-progress-circular>
+        {{ $t('Add to cart') }}
+      </btn>
+
+      <!-- Add to like -->
+      <btn id="btn-add-like" class="btn btn-md btn-danger" @click="addToLikes">
+        <v-icon class="text-white">mdi-heart</v-icon>
+      </btn>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 
-import cartMixin from '../../../mixins/cartMixin'
+import cartMixin from '@/mixins/cartMixin'
+
+import SizeGuide from './SizeGuide.vue'
 
 export default {
   name: 'Actions',
+  components: {
+    SizeGuide
+  },
   mixins: [cartMixin],
   props: {
     product: {
@@ -84,7 +82,6 @@ export default {
   data: () => ({
     productOptions: {
       default_size: 'Unique'
-      // is_gift: false,
     },
     addingToCart: false
   }),

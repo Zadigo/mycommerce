@@ -1,5 +1,5 @@
 <template>
-  <v-expansion-panels accordion>
+  <v-expansion-panels class="my-3">
     <v-expansion-panel>
       <v-expansion-panel-header class="font-weight-bold">
         Matière et entretien
@@ -41,6 +41,6 @@
 
 <script>
 export default {
-  name: 'AdditionalInformation'
+  name: 'TechnicalInformation'
 }
 </script>

@@ -6,7 +6,7 @@
         
         <!-- Sections -->
         <div class="row">
-          <div v-for="(section, x) in items" :key="x" class="col-3">
+          <div v-for="(section, x) in items" :key="x" class="col-sm-12 col-md-3">
             <p class="font-weight-bold text-uppercase">{{ $t(section.name) }}</p>
 
             <template v-for="(link, y) in section.links">
@@ -21,7 +21,7 @@
             </template>
           </div>
 
-          <div class="col-3">
+          <div class="col-sm-12 col-md-3">
             <h2 class="text-uppercase h4">
               {{ $t('newsletter_title_phrase', { company: myproject.company.legalName }) }}
             </h2>

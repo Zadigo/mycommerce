@@ -17,7 +17,7 @@
     </intro>
 
     <!-- Banner - 1 -->
-    <section class="banner my-2">
+    <!-- <section class="banner my-2">
       <div id="left">
         <v-img :src="require('@/assets/side1.jpg')" height="500"></v-img>
         <div id="title">
@@ -47,6 +47,23 @@
         <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale  } }" class="btn btn-dark btn-lg">
           {{ $t('Discover') }}
         </router-link>
+      </div>
+    </section> -->
+
+    <section class="my-2">
+      <div class="row g-1">
+        <div class="col-sm-12 col-md-6 p-1">
+          <v-img :src="require('@/assets/side1.jpg')" height="500"></v-img>
+        </div>
+        <div class="col-sm-12 col-md-6 p-1">
+          <v-img :src="require('@/assets/side2.jpg')" height="500"></v-img>
+        </div>
+        <div class="col-sm-12 col-md-6 p-1">
+          <v-img :src="require('@/assets/side2.jpg')" height="500"></v-img>
+        </div>
+        <div class="col-sm-12 col-md-6 p-1">
+          <v-img :src="require('@/assets/side1.jpg')" height="500"></v-img>
+        </div>
       </div>
     </section>
   </section>

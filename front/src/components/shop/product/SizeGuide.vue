@@ -1,9 +1,9 @@
 <template>
   <div id="size-guide" class="my-3">
-    <v-btn v-b-modal.modal-1 variant="link">
-      <font-awesome-icon icon="ruler" class="mr-2" />
+    <a class="text-underline font-size-2 pt-0" v-b-modal.modal-1 link>
+      <!-- <font-awesome-icon icon="ruler" class="mr-2" /> -->
       {{ $t('Size guide') }}
-    </v-btn>
+    </a>
 
     <b-modal id="modal-1" :title="$t('Size guide')" size="lg" scrollable hide-footer>
       <div class="container">

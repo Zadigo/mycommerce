@@ -8,14 +8,14 @@ from shop.utils import create_product_slug
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'color', 'unit_price', 'active']
+    list_display = ['name', 'color', 'category', 'unit_price', 'active']
     filter_horizontal = ['images', 'additional_variants']
     list_filter = ['active']
     date_hiearchy = 'created_on'
     search_fields = ['name', 'slug']
     fieldsets = [
         ['General', {'fields': ['name', 'sku']}],
-        ['Variant', {'fields': ['color', 'additional_variants']}],
+        ['Variant', {'fields': ['color', 'category', 'additional_variants']}],
         ['Media', {'fields': ['images', 'video']}],
         ['Pricing', {'fields': ['unit_price', 'sale_value', 'sale_price', 'on_sale']}],
         ['Other', {'fields': ['display_new', 'active', 'slug']}]

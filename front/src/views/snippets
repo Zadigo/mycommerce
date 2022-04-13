@@ -43,3 +43,85 @@
         </v-row>
       </v-container>
     </section> -->
+
+
+
+
+
+
+    <product-skeleton v-if="isLoading" />
+    
+    <section v-else id="product" class="ecommerce-section">
+      <div class="container-fluid dark-grey-text mt-5">
+    
+        <div class="row">
+          <div class="col-12">
+            <b-breadcrumb :items="breadcrumbs" class="pl-1"></b-breadcrumb>
+          </div>
+    
+          <!-- Images -->
+          <div class="col-md-7">
+            <tile-display :is-new="currentProduct.display_new" :images="productImages"
+              :product-video="currentProduct.video" />
+          </div>
+    
+          <!-- Information -->
+          <div class="col-md-5">
+            <information :product="currentProduct" :number-of-reviews="numberOfReviews"
+              :product-variants="productVariants" />
+          </div>
+        </div>
+    
+        <hr class="my-8">
+    
+        <!-- More -->
+        <more-products :recommended-products="recommendedProducts" :is-loading="isLoading" />
+    
+        <!-- TODO:  Implement recently viewed -->
+        <!-- <recently-viewed /> -->
+    
+        <hr>
+    
+        <!-- Reviews -->
+        <reviews :reviews="reviews" />
+      </div>
+    
+    </section>
+    <product-skeleton v-if="isLoading" />
+    
+    <section v-else id="product" class="ecommerce-section">
+      <div class="container-fluid dark-grey-text mt-5">
+    
+        <div class="row">
+          <div class="col-12">
+            <b-breadcrumb :items="breadcrumbs" class="pl-1"></b-breadcrumb>
+          </div>
+    
+          <!-- Images -->
+          <div class="col-md-7">
+            <tile-display :is-new="currentProduct.display_new" :images="productImages"
+              :product-video="currentProduct.video" />
+          </div>
+    
+          <!-- Information -->
+          <div class="col-md-5">
+            <information :product="currentProduct" :number-of-reviews="numberOfReviews"
+              :product-variants="productVariants" />
+          </div>
+        </div>
+    
+        <hr class="my-8">
+    
+        <!-- More -->
+        <more-products :recommended-products="recommendedProducts" :is-loading="isLoading" />
+    
+        <!-- TODO:  Implement recently viewed -->
+        <!-- <recently-viewed /> -->
+    
+        <hr>
+    
+        <!-- Reviews -->
+        <reviews :reviews="reviews" />
+      </div>
+    
+    </section>

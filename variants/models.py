@@ -1,6 +1,8 @@
 from django.db import models
 from shop.models import Product
+
 from variants.choices import ClotheSizesChoices
+
 
 class Size(models.Model):
     product = models.ForeignKey(

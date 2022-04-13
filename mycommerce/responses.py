@@ -1,6 +1,7 @@
 from typing import Union
 
 from django.db.models.query import QuerySet
+from numpy import isin
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from rest_framework.pagination import LimitOffsetPagination
@@ -19,3 +20,12 @@ def api_response(serializer: Serializer=None, data: Union[list, dict]=None, quer
     elif data is not None:
         return Response(data=data)
     raise ValueError('Both data and queryset is None')
+
+
+def simple_api_response(data_or_serializer):
+    data = None
+    if isinstance(data_or_serializer, Serializer):
+        data = data_or_serializer.data
+    else:
+        data = data_or_serializer
+    return Response(data=data)

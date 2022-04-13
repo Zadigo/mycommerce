@@ -37,10 +37,12 @@ class ProductSerializer(Serializer):
     unit_price = fields.DecimalField(5, 2, required=False)
 
     color = fields.CharField()
+    category = fields.CharField()
     additional_variants = AdditionalVariantSerializer(many=True, required=False)
     images = ImageSerializer(many=True, required=False)
     video = VideoSerializer(required=False)
 
+    get_price = fields.DecimalField(5, 2)
     sale_value = fields.IntegerField()
     sale_price = fields.DecimalField(5, 2)
     on_sale = fields.BooleanField()

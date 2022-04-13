@@ -31,7 +31,7 @@
 
         <div v-else class="col-12">
           <div class="row">
-            <div v-for="(product, index) in sortedProducts" :key="product.id" class="col-3">
+            <div v-for="(product, index) in sortedProducts" :key="product.id" class="col-sm-2 col-md-3">
               <card :key="product.id" :product="product" :index="index" :multiple-grid-display="multipleGridDisplay" :is-loading="isLoading" :show-cart-button="true" @product-card-click="sendAnalytics" />
             </div>
           </div>
