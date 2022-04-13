@@ -126,7 +126,7 @@
 <script>
 import { mapState } from 'vuex'
 
-import cartMixin from '@/mixins/cartMixin'
+import cartMixin from '@/mixins/cart'
 
 export default {
   name: 'CartView',

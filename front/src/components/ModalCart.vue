@@ -8,7 +8,9 @@
 
           <hr>
 
-          <b-btn block @click="$store.commit('toggleModalCart')">Continue shopping</b-btn>
+          <b-btn block @click="$store.commit('toggleModalCart')">
+            {{ $t('Continue shopping') }}
+          </b-btn>
         </v-col>
       </v-row>
 
@@ -60,7 +62,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import cartMixin from '@/mixins/cartMixin'
+import cartMixin from '@/mixins/cart'
 
 export default {
   name: 'ModalCart',

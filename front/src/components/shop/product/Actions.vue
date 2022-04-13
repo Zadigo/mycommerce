@@ -54,7 +54,7 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import cartMixin from '@/mixins/cartMixin'
+import cartMixin from '@/mixins/cart'
 
 import SizeGuide from './SizeGuide.vue'
 
