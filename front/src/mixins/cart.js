@@ -20,6 +20,39 @@ export default {
             return this.getCart()['session_id']
         },
 
+        async removeFromCart(product) {
+            try {
+                var options = {
+                    product: product.id,
+                    session_id: this.getSessionId()
+                }
+                var response = await this.axios.post('cart/remove', options)
+                var data = response.data
+
+                this.$store.commit('updateCart', data)
+                this.$localstorage.create('cart', data)
+            } catch(error) {
+                this.$store.dispatch('addErrorMessage', error)
+            }
+        },
+
+        async simpleAddToCard(product, size) {
+            try {
+                var options = {
+                    product: product.id,
+                    default_size: size.name,
+                    session_id: this.getSessionId()
+                }
+                var response = await this.axios.post('cart/add', options)
+                var data = response.data
+
+                this.$store.commit('updateCart', data)
+                this.$localstorage.create('cart', data)
+            } catch(error) {
+                this.$store.dispatch('addErrorMessage', error)
+            }
+        }
+
         // async addToCart() {
         //     this.addingToCart = true
             
@@ -43,20 +76,6 @@ export default {
         //     } catch(error) {
         //         this.$store.dispatch('addErrorMessage', error.response.statusText)
         //     }
-        // },
-        
-        removeFromCart(item) {
-            this.$api.shop.cart.remove(item, this.getSessionId())
-            .then((response) => {   
-                var data = response.data
-
-                this.$store.commit('updateCart', data)
-                this.$localstorage.create('cart', data)
-            })
-            .catch((error) => {
-                console.log(error)
-                this.$store.dispatch('addErrorMessage', 'error.response.statusText')
-            })
-        }
+        // }
     }
 }

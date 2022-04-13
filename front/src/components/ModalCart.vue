@@ -21,13 +21,16 @@
             <div class="mx-4">
               <p class="font-weight-bold mb-1">{{ item.product.name }}</p>
 
-              <p v-if="!item.product.on_sale">{{ $n(item.product.unit_price, 'currency', $i18n.locale) }} x 1</p>
+              <p v-if="!item.product.on_sale">
+                <span class="font-weight-bold">{{ $n(item.product.unit_price, 'currency', $i18n.locale) }}</span> x 1 ({{ item.default_size }})
+              </p>
               <p v-else>
                 <del>{{ $n(item.product.unit_price, 'currency', $i18n.locale) }}</del> {{ $n(item.product.sale_price, 'currency', $i18n.locale) }} x 1
               </p>
 
               <v-btn @click="removeFromCart(item)">
-                {{ $t('Remove') }}
+                <v-icon>mdi-delete</v-icon>
+                <!-- {{ $t('Remove') }} -->
               </v-btn>
             </div>
           </div>
@@ -45,7 +48,7 @@
     </div>
 
     <div class="w-100">
-      <v-col class="d-flex justify-content-center" cols="12">
+      <v-col class="d-flex justify-content-around" cols="12">
         <v-btn class="mx-2" size="lg" @click="goToPage">
           {{ $t('View basket') }}
         </v-btn>

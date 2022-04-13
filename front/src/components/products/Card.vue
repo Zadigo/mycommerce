@@ -21,11 +21,17 @@
       <transition name="slide-transition">
         <div v-if="isHovered" class="mini-cart p-3">
           <div class="font-weight-bold mb-3 text-uppercase">{{ $t('Add to cart') }}</div>
-
+          
           <div id="sizes">
-            <button type="button" class="btn btn-outline-dark">XS</button>
-            <button type="button" class="btn btn-outline-dark mx-1">S</button>
-            <button type="button" class="btn btn-outline-dark mx-1">M</button>
+            <div v-if="hasSizes">
+              <button v-for="size in sizes" :key="size.name" type="button" class="btn btn-outline-dark mr-2" @click="simpleAddToCard(product, size)">
+                {{ size.name }}
+              </button>
+            </div>
+
+            <button v-else class="btn btn-outline-dark" @click="simpleAddToCard(product, { name: 'Unique' })">
+              {{ $t('Unique') }}
+            </button>
           </div>
         </div>
       </transition>
@@ -71,7 +77,7 @@
 <script>
 var _ = require('lodash') 
 
-import cartMixin from '../../mixins/cart'
+import cartMixin from '@/mixins/cart'
 import BaseTag from '../../layouts/BaseTag.vue'
 
 export default {
@@ -105,6 +111,18 @@ export default {
     mainImage () {
       var mainImage = _.find(this.product.images, ['is_main_image', true])
       return _.isUndefined(mainImage) ? this.product.images[0] : mainImage
+    },
+
+    sizes() {
+      // TODO: Make this global ?
+      // Return all the size options for the given product
+      return _.filter(this.product.additional_variants, (variant) => {
+        return variant.category === 'Size'
+      })
+    },
+
+    hasSizes() {
+      return this.sizes.length > 0
     }
   }
 }

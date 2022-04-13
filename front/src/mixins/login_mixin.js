@@ -36,7 +36,7 @@ export default {
     methods: {
         async login(options) {
             try {
-                var response = await this.$axios.post('/login', this.loginCredentials)
+                var response = await this.axios.post('login', this.loginCredentials)
                 var data = response.data
 
                 this.$store.commit('authenticationModule/setUserProfile', data)
@@ -50,8 +50,13 @@ export default {
                     this.$router.push({ name: to, params: { ...params, lang: this.$i18n.locale } })
                 }
             } catch(error) {
-                console.log(error)
+                this.$store.commit('addErrorMessage', error)
             }
+        },
+
+        async logout() {
+            await this.axios.post('logout')
+            this.$store.commit('authenticationModule/reset')
         },
 
         async signup() {

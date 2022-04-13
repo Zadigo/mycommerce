@@ -149,6 +149,7 @@ export default {
     },
 
     sizes() {
+      // TODO: Make this global ?
       // Return all the size options for the given product
       return _.filter(this.currentProduct.additional_variants, (variant) => {
         return variant.category === 'Size'

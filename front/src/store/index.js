@@ -35,6 +35,11 @@ var authenticationModule = {
       // for the user
       state.token = payload.token
       state.user = payload.user
+    },
+    
+    reset(state) {
+      state.user = {}
+      state.token = null
     }
   },
 

@@ -20,33 +20,35 @@
         {{ $t('Size') }}
       </p>
 
-      <div v-if="sizes.length > 0" class="sizes">
-        <b-btn v-for="(size, i) in sizes" id="btn-select-size" :key="size.key" :class="{ 'ml-2': i > 0, 'bg-dark': productOptions.default_size == size }" class="shadow-none border" variant="light" @click="setSize(size)">
+      <div v-if="hasSizes" class="sizes">
+        <b-btn v-for="(size, i) in sizes" id="btn-select-size" :key="size.key" :class="{ 'ml-2': i > 0, 'bg-dark': productOptions.default_size == size.name }" class="shadow-none border" variant="light" @click="setSize(size)">
           {{ size.name }}
         </b-btn>
       </div>
 
       <div v-else id="sizes">
-        <btn id="btn-no-size" class="btn btn-md btn-outline-dark shadow-none border disabled">
+        <button id="btn-no-size" class="btn btn-md btn-outline-dark shadow-none border disabled">
           {{ $t('Unique size') }}
-        </btn>
+        </button>
       </div>
 
       <size-guide />
     </div>
 
+    <div v-if="noSizeSelected" class="bg-light p-2 rounded">Choississez une taille</div>  
+
     <!-- Actions -->
-    <div id="cart" class="d-flex justify-content-left my-4">      
+    <div id="cart" class="d-flex justify-content-left my-4">
       <!-- Add to cart -->
-      <btn id="btn-add-cart" class="btn btn-lg btn-dark mr-2 font-size-3" @click="addToCart">
+      <button id="btn-add-cart" class="btn btn-lg btn-dark mr-2 font-size-3" @click="addToCart">
         <v-progress-circular v-if="addingToCart" :size="25" class="mr-2" color="white" indeterminate></v-progress-circular>
         {{ $t('Add to cart') }}
-      </btn>
+      </button>
 
       <!-- Add to like -->
-      <btn id="btn-add-like" class="btn btn-md btn-danger" @click="addToLikes">
+      <button id="btn-add-like" class="btn btn-md btn-danger" @click="addToLikes">
         <v-icon class="text-white">mdi-heart</v-icon>
-      </btn>
+      </button>
     </div>
   </div>
 </template>
@@ -81,59 +83,62 @@ export default {
 
   data: () => ({
     productOptions: {
-      default_size: 'Unique'
+      default_size: null
     },
-    addingToCart: false
+    addingToCart: false,
+    noSizeSelected: false
   }),
 
   computed:{
-    ...mapGetters('authenticationModule', ['isAuthenticated'])
+    ...mapGetters('authenticationModule', ['isAuthenticated']),
+
+    hasSizes() {
+      return this.sizes.length > 0
+    }
   },
 
   methods: {
-    addToCart () {
-      // TODO: Create a general function
-      this.addingToCart = true
+    // TODO: Create a general function
+    async addToCart() {
+      try {
+        this.addingToCart = true
 
-      var options = this.productOptions
-      var cart = this.$localstorage.retrieve('cart')
+        
+        var options = this.productOptions
+        // var cart = this.$localstorage.retrieve('cart')
 
-      options['session_id'] = cart ? cart['session_id'] : null
+        if (this.hasSizes && this.productOptions['default_size'] == null) {
+          this.noSizeSelected = true
+          this.addingToCart = false
+          return
+        }
 
-      this.$api.shop.cart.add(this.product, options)
-      .then((response) => {
+        options['session_id'] = this.getSessionId()
+        options['product'] = this.product.id
+
+        var response = await this.axios.post('cart/add', options)
         var data = response.data
-
+        
         this.$store.commit('updateCart', data)
         this.$localstorage.create('cart', data)
-        
-        // this.$analytics.google.addToCart({
-        //   item_name: this.product.name
-        // })
 
-        setTimeout(() => {
-          this.addingToCart = false
-          this.productOptions.default_size = 'Unique'
-        }, 2000)
-      })
-      .catch((error) => {
-        this.$store.dispatch('addErrorMessage', error.response.statusText)
-      })
+        this.addingToCart = false
+        this.noSizeSelected = false
+        this.productOptions = {
+          default_size: 'Unique'
+        }
+      } catch(error) {
+        this.$store.dispatch('addErrorMessage', error)
+      }
     },
 
-    addToLikes () {
+    async addToLikes() {
       // TODO: Create a general function for this
-      if (!this.isAuthenticated) {
-        this.$store.commit('authenticationModule/loginUser')
-      } else {
-        this.$api.shop.lists.like(this.product)
-        .then((response) => {
-          var data = response.data
-          console.log(data)
-        })
-        .catch((error) => {
-          error
-        })
+      try {
+        await this.axios.post(`shop/products/${this.product.id}/like`)
+        this.$store.commit('addSuccessMessage', 'Added to like')
+      } catch(error) {
+        this.$store.commit('addErrorMessage', error)
       }
     },
 
@@ -149,7 +154,8 @@ export default {
     },
 
     setSize (size) {
-      this.productOptions.default_size = size
+      this.noSizeSelected = false
+      this.productOptions.default_size = size.name
     }
   }
 }

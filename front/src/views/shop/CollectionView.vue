@@ -7,7 +7,7 @@
 
         <div class="col-12">
           <!-- Filters -->
-          <filters-bar @load-products="getProducts" @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" @change-grid="changeGrid" @do-sort="doSort" @toggle-filters="toggleFilters" />
+          <filters-bar @load-products="getProducts" @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" @do-sort="doSort" />
           
           <!-- Statistics -->
           <p class="text-center text-muted m-0 mt-5">{{ $tc('styles_found', sortedProducts.length) }}</p>
@@ -178,10 +178,10 @@ export default {
       this.$localstorage.create('grid', this.multipleGridDisplay)
     },
 
-    toggleFilters () {
-      this.hideFilters = !this.hideFilters
-      this.$localstorage.create('filters', this.hideFilters)
-    },
+    // toggleFilters () {
+    //   this.hideFilters = !this.hideFilters
+    //   this.$localstorage.create('filters', this.hideFilters)
+    // },
 
     doSort(method) {
       this.sortMethod = method
