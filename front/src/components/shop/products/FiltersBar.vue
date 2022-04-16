@@ -1,63 +1,70 @@
 <template>
-  <nav ref="link" class="navbar navbar-expand-lg navbar-light mb-2">
-    <div class="container">
-      <div class="collapse navbar-collapse flex-column justify-content-left align-items-start">
-        <ul class="navbar-nav">
-          <!-- Sort method -->
-          <li class="nav-item mx-1">
-            <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="scale-transition">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn text v-bind="attrs" v-on="on">
-                  <v-icon class="mr-2">mdi-sort</v-icon>
-                  {{ $t(sortMethod) }}
-                </v-btn>
-              </template>
-
-              <v-list>
-                <v-list-item v-for="method in sortMethods" :key="method" @click="doSort(method)">
-                  <v-list-item-title>{{ method }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </li>
-
-          <!-- Size -->
-          <li class="nav-item mx-1">
-            <v-btn text @click="openFilters('sizes')">
-              {{ $t('Size') }}
-              <v-icon class="ms-1">mdi-chevron-down</v-icon>
-            </v-btn>
-          </li>
-
-          <!-- Colors -->
-          <li class="nav-item mx-1">
-            <v-btn text @click="openFilters('colors')">
-              {{ $t('Color') }}
-              <v-icon class="ms-1">mdi-chevron-down</v-icon>
-            </v-btn>
-          </li>
-        </ul>
+  <nav ref="link" class="navbar navbar-expand-lg shadow-none navbar-light mb-2">
+    <div class="collapse navbar-collapse flex-column justify-content-left align-items-start">
+      <ul class="navbar-nav w-100 justify-content-center">
+        <li class="nav-item font-weight-bold text-uppercase">
+          <v-btn disabled text>
+            <v-icon class="mr-2">mdi-tune</v-icon>
+            Filtres
+          </v-btn>
+        </li>
         
-        <transition name="slide-transition">
-          <div v-if="showFilters" id="filters" class="d-flex justify-content-center" style="flex-wrap:wrap;">
-            <!-- Sizes -->
-            <div v-if="selectedFilter == 'sizes'">
-              <v-chip v-for="(size, i) in sizes" :key="i" class="mx-1" link @click="setFilterValue('sizes', size)">
-                {{ size }}
-              </v-chip>
-            </div>
+        <!-- Sort method -->
+        <li class="nav-item mx-1">
+          <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="scale-transition">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn text v-bind="attrs" v-on="on">
+                <v-icon class="mr-2">mdi-sort</v-icon>
+                {{ $t(sortMethod) }}
+              </v-btn>
+            </template>
 
-            <!-- Colors -->
-            <div v-else-if="selectedFilter == 'colors'" class="d-flex justify-content-around">
-              <div v-for="(color, i) in colors" :key="i" style="position:relative;" @click="setFilterValue('colors', color[0])">
-                <v-icon v-if="isSelected('colors', color[0])" class="text-white filter-icon" x-large>mdi-check</v-icon>
-                <v-img :src="color[1]" id="color" class="mx-2" height="50px" width="50px"></v-img>
-              </div>
-            </div>
+            <v-list>
+              <v-list-item v-for="method in sortMethods" :key="method" @click="doSort(method)">
+                <v-list-item-title>{{ method }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </li>
+
+        <!-- Size -->
+        <li class="nav-item mx-1">
+          <v-btn text @click="openFilters('sizes')">
+            {{ $t('Size') }}
+            <v-icon class="ms-1">mdi-chevron-down</v-icon>
+          </v-btn>
+        </li>
+
+        <!-- Colors -->
+        <li class="nav-item mx-1">
+          <v-btn text @click="openFilters('colors')">
+            {{ $t('Color') }}
+            <v-icon class="ms-1">mdi-chevron-down</v-icon>
+          </v-btn>
+        </li>
+      </ul>
+      
+      <div v-if="showFilters" id="filters" class="d-flex justify-content-center" style="flex-wrap:wrap;">
+        <!-- Sizes -->
+        <div v-if="selectedFilter == 'sizes'">
+          <v-chip v-for="(size, i) in sizes" :key="i" class="font-weight-bold me-3" style="height:50px;width:50px; border-radius:50%;text-align:center;" link @click="setFilterValue('sizes', size)">
+            {{ size }}
+          </v-chip>
+        </div>
+
+        <!-- Colors -->
+        <div v-else-if="selectedFilter == 'colors'" class="d-flex justify-content-center">
+          <div v-for="(color, i) in colors" :key="i" @click="setFilterValue('colors', color[0])">
+            <v-icon v-if="isSelected('colors', color[0])" class="text-white filter-icon" x-large>mdi-check</v-icon>
+            <v-img :src="color[1]" id="color" class="mx-2" height="50px" width="50px"></v-img>
           </div>
-        </transition>
+        </div>
       </div>
+      <!-- <transition name="slide-transition">
+      </transition> -->
     </div>
+    <!-- <div class="container-fluid">
+    </div> -->
   </nav>
 </template>
 
@@ -68,16 +75,9 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'FiltersBar',
-
-  props: {
-    multipleGridDisplay: {
-      type: Boolean,
-      default: false
-    }
-  },
-
+  
   data: () => ({
-    select: null,
+    // select: null,
     items: [],
     sortMethod: 'Latest',
     sortMethods: [
@@ -225,7 +225,7 @@ export default {
   height: auto;
   min-height: 60px;
   padding: .25rem;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 .slide-transition-enter-active,
@@ -263,10 +263,12 @@ export default {
   width: auto;
   background-color: white;
   padding: .25rem;
+  box-shadow: 0 4px 12px 0 rgb(0 0 0 / 7%), 0 2px 4px rgb(0 0 0 / 5%);
 }
 
 #color {
   cursor: pointer;
+  border-radius: 50%;
 }
 
 .selected {

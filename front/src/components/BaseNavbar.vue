@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-none border-bottom">
+  <nav ref="link" class="navbar navbar-expand-lg navbar-light bg-white shadow-md border-bottom p-0">
     <div class="container">
       <router-link :to="{ name: 'home_view', params: { lang: $i18n.locale } }" class="navbar-brand">
         <span class="text-uppercase font-weight-bold">
@@ -8,11 +8,13 @@
       </router-link>
 
       <div class="collapse navbar-collapse justify-content-around">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav text-uppercase">
           <li class="nav-item" @mouseenter="showMegaMenu">
-            <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }" class="nav-link text">
+            <a class="nav-link text">
               {{ $t('Shop') }}
-            </router-link>
+            </a>
+            <!-- <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }" class="nav-link text">
+            </router-link> -->
           </li>
 
           <li class="nav-item">
@@ -74,7 +76,16 @@ export default {
   
   computed: {
     ...mapGetters(['cartCount']),
-    ...mapGetters('authenticationModule', ['isAuthenticated'])
+    ...mapGetters('authenticationModule', ['isAuthenticated']),
+
+    // hasShadow() {
+    //   var position = this.getVerticalScrollPercentage(this.$refs.link)
+    //   console.log(position)
+    //   if (position > 10) {
+    //     return true
+    //   }
+    //   return false
+    // }
   },
 
   methods: {
