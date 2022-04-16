@@ -50,6 +50,7 @@ client.interceptors.response.use(
       // and session by security
       store.commit('authenticationModule/logout')
       router.push({ name: 'login' })
+      // Vue.$router.push({ name: 'login_view', params: { lang: Vue.$i18n.locale } })
     }
     return Promise.reject(error)
   }

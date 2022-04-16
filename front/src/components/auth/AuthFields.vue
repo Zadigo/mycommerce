@@ -1,11 +1,13 @@
 <template>
-  <v-col v-if="showLoginFields" cols="12">
-    <b-form-input v-for="field in loginFields" :key="field.key" :type="field.key" :placeholder="field.name" class="my-2" @update="updateLoginFields($event, field)"></b-form-input>          
-  </v-col>
+  <form>
+    <v-col v-if="showLoginFields" cols="12">
+      <b-form-input v-for="field in loginFields" :key="field.key" :type="field.key" :placeholder="field.name" class="my-2" @update="updateLoginFields($event, field)"></b-form-input>          
+    </v-col>
 
-  <v-col v-else cols="12">
-    <b-form-input v-for="field in signupFields" :key="field.key" :type="checkFieldType(field)" :placeholder="field.name" class="my-2" @update="updateSignupFields($event, field)"></b-form-input>          
-  </v-col>
+    <v-col v-else cols="12">
+      <b-form-input v-for="field in signupFields" :key="field.key" :type="checkFieldType(field)" :placeholder="field.name" class="my-2" @update="updateSignupFields($event, field)"></b-form-input>          
+    </v-col>
+  </form>
 </template>
 
 <script>

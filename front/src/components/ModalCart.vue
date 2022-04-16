@@ -49,11 +49,11 @@
 
     <div class="w-100">
       <v-col class="d-flex justify-content-around" cols="12">
-        <v-btn class="mx-2" size="lg" @click="goToPage">
+        <v-btn class="mx-2" size="lg" @click="goToPage('cart_view')">
           {{ $t('View basket') }}
         </v-btn>
 
-        <v-btn  style="width:174px;" @click="goToPage">
+        <v-btn  style="width:174px;" @click="goToPage('shipment_view')">
           {{ $t('Checkout') }}
         </v-btn>
       </v-col>
@@ -89,9 +89,9 @@ export default {
   },
 
   methods: {
-    goToPage () {
+    goToPage(name) {
       this.$store.commit('toggleModalCart')
-      this.$router.push({ name: 'cart', params: { lang: this.$i18n.locale } })
+      this.$router.push({ name: name, params: { lang: this.$i18n.locale } })
     }
   }
 }

@@ -16,4 +16,24 @@ export default [
         name: 'product_view',
         component: loadView('shop/ProductView')
     },
+    {
+        path: 'cart',
+        name: 'cart_view',
+        component: loadView('shop/CartView')
+    },
+    {
+        path: 'cart/shipment',
+        name: 'shipment_view',
+        component: loadView('shop/ShipmentView')
+    },
+    {
+        path: 'likes',
+        name: 'wishlists_view',
+        component: loadView('shop/LikedProductsView')
+    },
+    {
+        path: 'login',
+        name: 'login_view',
+        component: loadView('shop/auth/LoginView')
+    }
 ]

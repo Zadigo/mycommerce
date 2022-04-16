@@ -15,7 +15,7 @@ from reviews.serializers import ReviewSerializer
 
 from shop.models import Like, Product, Wishlist
 from shop.serializers import (ProductSerializer, ValidateWishList,
-                              VariantSerializer, WishlistSerializer)
+                              VariantSerializer, WishlistSerializer, LikeSerializer)
 
 
 class CustomProductPagination(CustomPagination):
@@ -166,22 +166,6 @@ def product_details_view(request, pk, **kwargs):
 
 @api_view(['post'])
 @permission_classes([IsAuthenticated])
-def like_product_view(request, pk, **kwargs):
-    """Add a product to the like list"""
-    product = get_object_or_404(Product, id=pk)
-    queryset = product.like_set.filter(user=request.user)
-    
-    if queryset.exists():
-        response = False
-    else:
-        instance, state = Like.objects.get_or_create(user=request.user)
-        instance.products.add(product)
-        response = True
-    return simple_api_response({'status': response})
-
-
-@api_view(['post'])
-@permission_classes([IsAuthenticated])
 def create_whishlist_view(request, **kwargs):
     """Create a whishlist"""
     serializer = ValidateWishList(data=request.data)
@@ -246,3 +230,30 @@ def dashboard_product_view(request, pk, **kwargs):
     serializer = ProductSerializer(instance=product)
     return simple_api_response(serializer)
 
+
+@api_view(['post'])
+@permission_classes([IsAuthenticated])
+def like_product_view(request, pk, **kwargs):
+    """Add a product to the like list"""
+    product = get_object_or_404(Product, id=pk)
+    # Check whether the user has already liked
+    # the product
+    queryset = product.like_set.filter(user=request.user)
+
+    response_data = {'status': False}
+    
+    if not queryset.exists():
+        instance, state = Like.objects.get_or_create(user=request.user)
+        instance.products.add(product)
+        response_data['status'] = True
+        serializer = ProductSerializer(instance=instance.products.all(), many=True)
+        response_data['result'] = serializer.data
+    return simple_api_response(response_data)
+
+
+@api_view(['get'])
+@permission_classes([IsAuthenticated])
+def liked_products_view(request, **kwargs):
+    """Return all the products liked by a given user"""
+    likes_list = get_object_or_404(Like, user=request.user)
+    return api_response(LikeSerializer, queryset=likes_list)

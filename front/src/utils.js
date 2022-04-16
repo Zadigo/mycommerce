@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 function indexElements(items) {
     return _.map(items, (item, i) => {
         item['id'] = i
@@ -20,7 +22,7 @@ function readFile(file) {
             filePreview = e.target.result
         }
         
-        reader.readAsDataURL(imgFile[0])
+        reader.readAsDataURL(file[0])
     }
     return filePreview
 }
@@ -31,9 +33,14 @@ function readMultipleFiles(files) {
     })
 }
 
+function truncate(value) {
+    return `${value.slice(0, 28)}...`
+}
+
 export {
     indexElements,
     incrementLastId,
     readFile,
-    readMultipleFiles
+    readMultipleFiles,
+    truncate
 }

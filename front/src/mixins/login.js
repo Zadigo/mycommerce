@@ -21,15 +21,11 @@ export default {
 
     computed: {
         loginFields() {
-            return _.map(Object.keys(this.loginCredentials), (key) => {
-                return { name: this.$t(key), key: key }
-            })
+            return this.mapKeys(Object.keys(this.loginCredentials))
         },
 
         signupFields() {
-            return _.map(Object.keys(this.signupCredentials), (key) => {
-                return { name: this.$t(key), key: key }
-            })
+            return this.mapKeys(Object.keys(this.signupCredentials))
         }
     },
 
@@ -44,10 +40,16 @@ export default {
                 this.$session.create('rememberMe', this.rememberMe)
                 this.$store.commit('authenticationModule/loginUser')
 
-                let { redirect, to, params } = options
+                let { redirect, to, params, callback } = options
 
                 if (redirect) {
                     this.$router.push({ name: to, params: { ...params, lang: this.$i18n.locale } })
+                }
+
+                if (callback && typeof callback == 'function') {
+                    // An action that should be executed directly
+                    // after the login has been executed
+                    callback()
                 }
             } catch(error) {
                 this.$store.commit('addErrorMessage', error)
@@ -67,6 +69,12 @@ export default {
             } catch(error) {
                 this.$store.commit('addErrorMessage', 'Some error occured')
             }
+        },
+
+        mapKeys(keys) {
+            return _.map(keys, (key) => {
+                return { name: this.$t(key), key: key }
+            })
         },
 
         updateLoginFields(params) {

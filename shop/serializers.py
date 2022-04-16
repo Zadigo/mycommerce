@@ -41,6 +41,7 @@ class ProductSerializer(Serializer):
     color = fields.CharField()
     category = fields.CharField()
     additional_variants = AdditionalVariantSerializer(many=True, required=False)
+    get_main_image = ImageSerializer(required=False)
     images = ImageSerializer(many=True, required=False)
     video = VideoSerializer(required=False)
 
@@ -82,3 +83,8 @@ class ValidateWishList(Serializer):
         data['user'] = request.user
         instance, state = Wishlist.objects.get_or_create(**data)
         return WishlistSerializer(instance=instance)
+
+
+class LikeSerializer(UserlistSerializer):
+    id = fields.IntegerField()
+    products = ProductSerializer(many=True)

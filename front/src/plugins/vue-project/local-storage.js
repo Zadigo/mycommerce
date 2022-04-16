@@ -24,6 +24,8 @@ class VueLocalStorage {
     }
 
     _save (data) {
+        // Saves an element under the global session
+        // key name above
         this.storage.setItem(DEFAULT_KEY_NAME, JSON.stringify(data))
     }
 
@@ -41,9 +43,11 @@ class VueLocalStorage {
         this._save(storedData)
     }
 
-    // clear () {
-    //     this.storage.removeItem(DEFAULT_KEY_NAME)
-    // }
+    remove(key) {
+        var result = this.data
+        delete result[key]
+        this._save(result)
+    }
 
     save (key, value) {
         // Save globally in the local storage

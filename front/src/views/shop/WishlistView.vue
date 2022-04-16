@@ -1,9 +1,9 @@
 <template>
   <section id="wishlist" class="ecommerce-section">
-
     <v-container>
       <v-row>
         <v-col class="text-center" cols="12">
+          <!-- Items -->
           <v-row v-if="wishlist.length > 0">
             <v-col v-for="product in wishlist" :key="product.id" cols="3">
 
@@ -23,6 +23,7 @@
             </v-col>
           </v-row>
 
+          <!-- Login -->
           <v-row v-else>
             <v-col cols="12" class="text-center">
               <v-icon class="mb-4" x-large>mdi-heart</v-icon>
@@ -40,7 +41,6 @@
         </v-col>
       </v-row>
     </v-container>
-
   </section>
 </template>
 
@@ -52,10 +52,24 @@ export default {
   },
   data: () => ({
     wishlist: []
-  })
-  // beforeMount() {
-  //   var wishlist = this.$localstorage.retrieve('vue-session')
-  //   this.$store.commit('setWhishlist', wishlist)
-  // }
+  }),
+  beforeMount() {
+    var wishlist = this.$localstorage.retrieve('vue_local')
+    if (wishlist) {
+      this.wishlist = wishlist
+      // this.$store.commit('setWhishlist', wishlist)
+    } else {
+      this.getWishlist()
+    }
+  },
+  methods: {
+    async getWishlist() {
+      try {
+        // pass
+      } catch(error) {
+        this.$store.commit('addErrorMessage', error)
+      }
+    }
+  }
 }
 </script>

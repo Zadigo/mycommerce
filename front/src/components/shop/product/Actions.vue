@@ -102,15 +102,23 @@ export default {
     async addToCart() {
       try {
         this.addingToCart = true
-
         
         var options = this.productOptions
-        // var cart = this.$localstorage.retrieve('cart')
+        var default_size = this.productOptions['default_size']
 
-        if (this.hasSizes && this.productOptions['default_size'] == null) {
+        if (this.hasSizes && default_size == null) {
           this.noSizeSelected = true
           this.addingToCart = false
           return
+        }
+
+        // When the size is unique, and since
+        // we initially set the default size
+        // as null, set it to Unique or this
+        // will return an error requiring that
+        // the default_size be not null
+        if (default_size == null) {
+          options['default_size'] = 'Unique'
         }
 
         options['session_id'] = this.getSessionId()
@@ -125,20 +133,25 @@ export default {
         this.addingToCart = false
         this.noSizeSelected = false
         this.productOptions = {
-          default_size: 'Unique'
+          default_size: null
         }
       } catch(error) {
-        this.$store.dispatch('addErrorMessage', error)
+        this.$store.dispatch('addErrorMessage', `${error}: ${error.response}`)
       }
     },
 
     async addToLikes() {
       // TODO: Create a general function for this
-      try {
-        await this.axios.post(`shop/products/${this.product.id}/like`)
-        this.$store.commit('addSuccessMessage', 'Added to like')
-      } catch(error) {
-        this.$store.commit('addErrorMessage', error)
+      if (!this.isAuthenticated) {
+        this.$store.commit('authenticationModule/loginUser')
+      } else {
+        try {
+          var response = await this.axios.post(`shop/products/${this.product.id}/like`)
+          this.$store.commit('addSuccessMessage', 'Added to like')
+          this.$localstorage.create('likes', response.data.result)
+        } catch(error) {
+          this.$store.commit('addErrorMessage', error)
+        }
       }
     },
 

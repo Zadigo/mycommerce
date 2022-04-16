@@ -16,6 +16,8 @@ urlpatterns = [
     re_path(r'^wishlists/(?P<pk>\d+)', views.whishlist_details_view),
     re_path(r'^wishlists', views.list_whishlists_view),
     
+    re_path(r'^likes', views.liked_products_view),
+    
     re_path(r'^products/(?P<pk>\d+)/like', views.like_product_view),
     re_path(r'^products/(?P<pk>\d+)', views.product_details_view),
     re_path(r'^products', views.products_view)

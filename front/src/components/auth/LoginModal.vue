@@ -41,13 +41,17 @@
 </template>
 
 <script>
-import loginMixin from '../../mixins/login_mixin'
+import loginMixin from '@/mixins/login'
 
 export default {
   name: 'LoginModal',
-
+  props: {
+      callback: {
+          type: Function,
+          required: false
+      }
+  },
   mixins: [loginMixin],
-
   computed: {
     loginModal: {
       get() { return this.$store.state.authenticationModule.loginModal },

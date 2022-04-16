@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 import i18n from '../i18n'
 import shop from './shop'
 import store from '@/store'
+import { loadView } from './utils'
 
 
 // Routes
@@ -29,7 +30,13 @@ var routes = [
       render: h => h('router-view')
     },
     children: [
-      ...shop
+      ...shop,
+
+      {
+        path: '/cookie-settings',
+        name: 'cookie_settings_view',
+        component: loadView('CookiesView')
+      }
     ]
   }
 ]

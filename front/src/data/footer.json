@@ -26,6 +26,11 @@
                 "name": null,
                 "href": "/",
                 "text": "Sitemap"
+            },
+            {
+                "name": "cookie_settings_view",
+                "href": "/",
+                "text": "Cookie settings"
             }
         ]
     },

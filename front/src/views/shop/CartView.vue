@@ -1,6 +1,5 @@
 <template>
   <section id="cart" class="ecommerce-section">
-
     <v-container>
       <v-row>
         <!-- Products -->
@@ -11,34 +10,32 @@
               <p>{{ cartItems.length }} {{ $tc('product', cartItems.length) }}</p>
             </v-col>
 
-            <transition-group name="general-transition">
-              <v-col v-for="item in cartItems" :key="item.id" cols="12" class="d-flex justify-content-left py-5 mb-5 border-bottom">
+            <v-col v-for="item in cartItems" :key="item.id" cols="12" class="d-flex justify-content-left py-5 mb-5 border-bottom">
+              <router-link :to="{ name: 'product_view', params: { id: item.product.id, slug: item.product.slug, lang: $i18n.locale } }">
+                <div id="image" class="me-6">
+                  <v-img :src="item.product.images[0].mid_size|mediaUrl" width="100"></v-img>
+                </div>
+              </router-link>
+              
+              <!-- Information -->
+              <div id="infos">
                 <router-link :to="{ name: 'product_view', params: { id: item.product.id, slug: item.product.slug, lang: $i18n.locale } }">
-                  <div id="image" class="me-6">
-                    <v-img :src="item.product.images[0].mid_size|mediaUrl" width="100"></v-img>
-                  </div>
+                  <h5>{{ item.product.name }}</h5>
                 </router-link>
-                
-                <!-- Information -->
-                <div id="infos">
-                  <router-link :to="{ name: 'product_view', params: { id: item.product.id, slug: item.product.slug, lang: $i18n.locale } }">
-                    <h5>{{ item.product.name }}</h5>
-                  </router-link>
 
-                  <v-text-field type="number" class="my-5" outlined hide-details></v-text-field>
+                <v-text-field type="number" class="my-5" outlined hide-details></v-text-field>
 
-                  <div class="font-weight-bold">
-                    {{ $n(item.price, 'currency', $i18n.locale) }}
-                  </div>
-
-                  <v-btn @click="removeFromCart(item)">
-                    {{ $t('Remove') }}
-                  </v-btn>
+                <div class="font-weight-bold">
+                  {{ $n(item.price, 'currency', $i18n.locale) }}
                 </div>
 
-                <hr class="my-4">
-              </v-col>
-            </transition-group>
+                <v-btn @click="removeFromCart(item)">
+                  {{ $t('Remove') }}
+                </v-btn>
+              </div>
+
+              <hr class="my-4">
+            </v-col>
           </v-row>
 
         </v-col>
@@ -76,9 +73,9 @@
 
                 <hr class="my-7">
 
-                <b-btn class="mb-7" block>
+                <router-link :to="{ name: 'shipment_view', params: {  lang: $i18n.locale } }" class="btn btn-block btn-primary mb-7" block>
                   {{ $t('Checkout') }}
-                </b-btn>
+                </router-link>
 
                 <b-link :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale } }">
                   {{ $t('Continue shopping') }}
@@ -118,8 +115,7 @@
           </div>
         </div>
       </v-row>
-    </v-container>
-    
+    </v-container>    
   </section>
 </template>
 
@@ -140,10 +136,12 @@ export default {
     }
   }),
   computed: {
-    ...mapState(['cartItems']),
+    // ...mapState(['cartItems']),
     ...mapState({
+      cartItems: 'cartItems',
       cartTotal: (state) => { return state.cachedCartResponse.total },
     }),
+
     hasItems () {
       return this.cartItems.length > 0
     }

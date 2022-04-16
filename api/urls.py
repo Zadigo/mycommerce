@@ -35,7 +35,7 @@ urlpatterns = [
     re_path(r'^products/(?P<product_id>\d+)/reviews', products.reviews),
     # re_path(r'^products$', products.products_view),
     
-    re_path(r'^likes', products.liked_products_view),
+    # re_path(r'^likes', products.liked_products_view),
     re_path(r'^orders', orders.my_orders_view),
     re_path(r'^payment', orders.create_order)
 ]

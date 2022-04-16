@@ -52,30 +52,5 @@ export default {
                 this.$store.dispatch('addErrorMessage', error)
             }
         }
-
-        // async addToCart() {
-        //     this.addingToCart = true
-            
-        //     var options = this.productOptions      
-        //     Object.assign(options, {
-        //         product: 1,
-        //         session_id: this.getSessionId()
-        //     })      
-        //     // options['session_id'] = this.getSessionId()
-
-        //     try {
-        //         var response = this.$axios.post('/cart/add', options)
-
-        //         this.$store.commit('updateCart', response.data)
-        //         this.$localstorage.create('cart', response.data)
-
-        //         setTimeout(() => {
-        //             this.addingToCart = false
-        //             this.productOptions.default_size = 'Unique'
-        //         }, 2000);
-        //     } catch(error) {
-        //         this.$store.dispatch('addErrorMessage', error.response.statusText)
-        //     }
-        // }
     }
 }

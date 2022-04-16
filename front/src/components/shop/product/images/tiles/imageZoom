@@ -1,0 +1,287 @@
+
+    function(t, e, s) {
+        "use strict";
+        s.r(e);
+        var i = s(1);
+        class n {
+            constructor(t) {
+                this.zoomFactor = 1,
+                this.offset = {
+                    x: 0,
+                    y: 0
+                },
+                this.initialZoomFactor = 1,
+                this.bindEvents(),
+                this.initElements(t),
+                this.initValues()
+            }
+            bindEvents() {}
+            initElements(t) {}
+            initValues() {}
+            updateSource(t, e) {
+                const s = t.getElementsByTagName("source");
+                new Promise(t=>{
+                    e.onload = ()=>{
+                        t(e),
+                        e.src !== e.dataset.srcsetbig && (e.src = e.dataset.srcsetbig);
+                        for (const t of s)
+                            t.srcset !== t.dataset.srcsetbig && (t.srcset = t.dataset.srcsetbig)
+                    }
+                }
+                )
+            }
+            getCenter(t) {
+                return {
+                    x: (t[1].clientX + t[0].clientX) / 2,
+                    y: (t[1].clientY + t[0].clientY) / 2
+                }
+            }
+            calculateDistance(t) {
+                return Math.sqrt(Math.pow(t[1].clientX - t[0].clientX, 2) + Math.pow(t[1].clientY - t[0].clientY, 2))
+            }
+            addOffset(t) {
+                this.offset = {
+                    x: this.offset.x + t.x,
+                    y: this.offset.y + t.y
+                }
+            }
+            move(t, e) {
+                e && this.addOffset({
+                    y: -(t.y - e.y),
+                    x: -(t.x - e.x)
+                })
+            }
+            sanitizeOffset(t, e, s) {
+                const i = t.offsetWidth * this.initialZoomFactor * this.zoomFactor
+                  , n = t.offsetHeight * this.initialZoomFactor * this.zoomFactor
+                  , o = i - e.offsetWidth
+                  , r = n - e.offsetHeight
+                  , a = Math.max(o, 0)
+                  , c = Math.max(r, 0)
+                  , l = Math.min(o, 0)
+                  , d = Math.min(r, 0);
+                return {
+                    x: Math.min(Math.max(s.x, l), a),
+                    y: Math.min(Math.max(s.y, d), c)
+                }
+            }
+            scaleZoomFactor(t) {
+                const e = this.zoomFactor;
+                return this.zoomFactor *= t,
+                this.zoomFactor = Math.min(6, Math.max(this.zoomFactor, 1)),
+                this.zoomFactor / e
+            }
+            scale(t, e) {
+                t = this.scaleZoomFactor(t),
+                this.addOffset({
+                    x: (t - 1) * (e.x + this.offset.x),
+                    y: (t - 1) * (e.y + this.offset.y)
+                })
+            }
+            compute(t) {
+                const e = this.initialZoomFactor * this.zoomFactor
+                  , s = -this.offset.x / e
+                  , i = -this.offset.y / e;
+                t.style.transform = `scale(${e}, ${e}) translate(${s}px, ${i}px)`
+            }
+        }
+        class o extends n {
+            initValues() {
+                this.originalDistance = 0,
+                this.nthZoom = 0,
+                this.lastZoomCenter = null,
+                this.savedScale = 1,
+                this.lastTap = 0
+            }
+            initElements(t) {
+                this.container = document.createElement("div"),
+                this.container.className = "zoom_container",
+                this.closeBtn = document.createElement("button"),
+                this.closeBtn.className = "-close icon icon-close_black",
+                this.closeBtn.addEventListener("click", this.close);
+                const e = t.cloneNode(!0)
+                  , s = e.getElementsByTagName("img")[0];
+                this.updateSource(e, s),
+                s.addEventListener("touchstart", this.touchStart),
+                s.addEventListener("touchmove", this.touchMove),
+                s.addEventListener("touchend", this.touchEnd),
+                this.container.appendChild(e),
+                this.container.appendChild(this.closeBtn),
+                document.body.appendChild(this.container),
+                document.getElementsByClassName("page")[0].style.display = "none",
+                this.element = s,
+                this.initialZoomFactor = 1
+            }
+            bindEvents() {
+                this.touchStart = t=>this._touchStart(t),
+                this.touchMove = t=>this._touchMove(t),
+                this.touchEnd = t=>this._touchEnd(t),
+                this.close = ()=>this._close(),
+                this.doubleTap = ()=>this._doubleTap()
+            }
+            _touchStart(t) {
+                if (t.preventDefault(),
+                this.nthZoom = 0,
+                2 === t.targetTouches.length)
+                    this.originalDistance = this.calculateDistance(t.targetTouches),
+                    this.lastZoomCenter = null,
+                    this.savedScale = 1,
+                    t.target.style.transformOrigin = "0 0",
+                    this.zoomStart = !0,
+                    this.handlePinch(t);
+                else if (!this.zoomStart) {
+                    const e = (new Date).getTime();
+                    if (e - this.lastTap < 600)
+                        return void this.close();
+                    this.lastTap = e,
+                    this.lastDragPosition = null,
+                    this.handleMove(t)
+                }
+            }
+            _touchMove(t) {
+                t.preventDefault(),
+                2 === t.targetTouches.length ? (this.handlePinch(t),
+                this.offset = this.sanitizeOffset(t.target, t.target, this.offset),
+                requestAnimationFrame(()=>this.compute(t.target))) : this.zoomStart || (this.handleMove(t),
+                this.offset = this.sanitizeOffset(t.target, t.target, this.offset),
+                requestAnimationFrame(()=>this.compute(t.target)))
+            }
+            _touchEnd(t) {
+                0 === t.touches.length && (this.zoomStart = !1)
+            }
+            handleMove(t) {
+                const e = {
+                    x: t.targetTouches[0].clientX,
+                    y: t.targetTouches[0].clientY
+                };
+                this.move(e, this.lastDragPosition),
+                this.lastDragPosition = e
+            }
+            handlePinch(t) {
+                const e = Math.sqrt(Math.pow(t.targetTouches[1].clientX - t.targetTouches[0].clientX, 2) + Math.pow(t.targetTouches[1].clientY - t.targetTouches[0].clientY, 2)) / this.originalDistance
+                  , s = this.getCenter(t.targetTouches)
+                  , i = e / this.savedScale;
+                this.savedScale = e,
+                ++this.nthZoom,
+                this.nthZoom > 3 && (this.scale(i, s),
+                this.move(s, this.lastZoomCenter)),
+                this.lastZoomCenter = s
+            }
+            _close() {
+                this.element.removeEventListener("touchstart", this.touchStart),
+                this.element.removeEventListener("touchmove", this.touchMove),
+                this.element.removeEventListener("touchend", this.touchEnd),
+                this.element.removeEventListener("click", this.doubleTap),
+                this.closeBtn.removeEventListener("click", this.close),
+                this.container.remove(),
+                document.getElementsByClassName("page")[0].style.display = "block",
+                this.onClose && this.onClose()
+            }
+        }
+        class r extends n {
+            constructor(t, e) {
+                super(t),
+                this.scale(2, {
+                    x: (e.offsetX || e.pageX) - this.initialRect.x - document.scrollingElement.scrollLeft,
+                    y: (e.offsetY || e.pageY) - this.initialRect.y - document.scrollingElement.scrollTop
+                }),
+                this.offset = this.sanitizeOffset(this.img, this.div, this.offset),
+                this.compute(this.img)
+            }
+            bindEvents() {
+                this.wheel = t=>this._wheel(t),
+                this.mouseup = t=>this._mouseup(t),
+                this.mousemove = t=>this._mousemove(t),
+                this.click = t=>this._close(t)
+            }
+            initElements(t) {
+                this.saveElement = t;
+                const e = this.saveElement.closest(".productGallery__picture");
+                this.initialRect = this.saveElement.getElementsByTagName("img")[0].getBoundingClientRect(),
+                this.element = this.saveElement.cloneNode(!0),
+                this.div = document.createElement("div"),
+                this.div.className = "zoom_container",
+                this.div.appendChild(this.element),
+                this.img = this.element.getElementsByTagName("img")[0],
+                this.img.style.transformOrigin = "0 0",
+                this.updateSource(this.element, this.img),
+                e.classList.add("-zoom"),
+                this.saveElement.parentElement.replaceChild(this.div, this.saveElement);
+                const s = this.div.offsetWidth / this.img.offsetWidth
+                  , i = this.div.offsetHeight / this.img.offsetHeight;
+                this.initialZoomFactor = Math.min(s, i),
+                this.div.addEventListener("wheel", this.wheel),
+                this.div.addEventListener("mousemove", this.mousemove),
+                this.div.addEventListener("click", this.click)
+            }
+            _mousemove(t) {
+                t.preventDefault(),
+                this.savePosition ? (this.addOffset({
+                    x: t.layerX - this.savePosition.x,
+                    y: t.layerY - this.savePosition.y
+                }),
+                this.savePosition = {
+                    x: t.layerX,
+                    y: t.layerY
+                },
+                this.offset = this.sanitizeOffset(this.img, this.div, this.offset),
+                this.compute(this.img)) : this.savePosition = {
+                    x: t.layerX,
+                    y: t.layerY
+                }
+            }
+            _mouseup(t) {
+                t.preventDefault(),
+                this.div.removeEventListener("mousemove", this.mousemove),
+                window.removeEventListener("mouseup", this.mouseup)
+            }
+            _wheel(t) {
+                t.preventDefault();
+                const e = t.layerX
+                  , s = t.layerY
+                  , i = t.deltaY < 0 ? 1 : -1;
+                let n = Math.exp(.2 * i);
+                this.scale(n, {
+                    x: e,
+                    y: s
+                }),
+                this.offset = this.sanitizeOffset(this.img, this.div, this.offset, !0),
+                this.compute(this.img, !1)
+            }
+            _close(t) {
+                t && (t.preventDefault(),
+                t.stopPropagation()),
+                this.moving && (this.moving = !1),
+                this.div.removeEventListener("click", this.click),
+                this.div.removeEventListener("mousemove", this.mousemove),
+                this.div.removeEventListener("wheel", this.wheel),
+                this.div.parentElement.replaceChild(this.saveElement, this.div),
+                this.saveElement.closest(".productGallery__picture").classList.remove("-zoom"),
+                this.onClose && this.onClose()
+            }
+        }
+        e.default = class {
+            constructor() {
+                this.bindEvents();
+                const t = document.getElementById("productGallery");
+                this.imgs = t.getElementsByTagName("picture");
+                for (const t of this.imgs)
+                    t.addEventListener("click", this.openZoom)
+            }
+            bindEvents() {
+                this.openZoom = t=>this._openZoom(t)
+            }
+            _openZoom(t) {
+                Object(i.getStore)().getState().common.isDesktop ? (this.currentZoom = new r(t.currentTarget,t),
+                this.currentZoom.onClose = ()=>this.zoomClosed()) : (this.currentZoom = new o(t.currentTarget),
+                this.currentZoom.onClose = ()=>this.zoomClosed())
+            }
+            zoomClosed() {
+                this.currentZoom = null
+            }
+            unmount() {
+                for (const t of this.imgs)
+                    t.removeEventListener("click", this.openZoom)
+            }
+        }
+    },

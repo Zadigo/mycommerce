@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import loginMixin from '@/mixins/login_mixin'
+import loginMixin from '@/mixins/login'
 
 import AuthFields from '@/components/auth/AuthFields.vue'
 import BaseAuth from '@/layouts/BaseAuth.vue'

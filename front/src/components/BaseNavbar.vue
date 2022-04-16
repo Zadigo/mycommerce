@@ -39,7 +39,7 @@
           </li>
           
           <li class="nav-item">
-            <router-link :to="{ name: 'wishlist', params: { lang: $i18n.locale } }" class="nav-link">
+            <router-link :to="{ name: 'wishlists_view', params: { lang: $i18n.locale } }" class="nav-link">
               <v-icon size="28" class="mr-2">mdi-heart</v-icon>
             </router-link>
           </li>
@@ -47,6 +47,13 @@
           <li class="nav-item" @click="$store.commit('toggleModalCart')">
             <a class="nav-link">
               <v-icon size="28" class="mr-2">mdi-cart</v-icon>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link">
+              <!-- <v-icon size="28" class="mr-2">mdi-account</v-icon> -->
+              <v-icon v-if="isAuthenticated" size="28" class="mr-2">mdi-logout</v-icon>
             </a>
           </li>
         </ul>

@@ -40,7 +40,7 @@
     <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-17 normalize-link">
       <div id="product-details" class="mt-2">
         <p class="mb-0">
-          {{ product.name|capitalizeLetters|truncate }}
+          {{ product.name|capitalizeLetters|truncateFilter }}
         </p>
 
         <span v-if="product.on_sale" class="font-weight-bold">
@@ -79,19 +79,19 @@ var _ = require('lodash')
 
 import cartMixin from '@/mixins/cart'
 import BaseTag from '../../layouts/BaseTag.vue'
+import { truncate } from '@/utils'
 
 export default {
   name: 'Card',
-  filters: {
-    truncate(value) {
-      return `${value.slice(0, 28)}...`
-    }
-  },
   components: {
     BaseTag
   },
   mixins: [cartMixin],
-
+  filters: {
+    truncateFilter(value) {
+      return truncate(value)
+    }
+  },
   props: {
     isLoading: {
       type: Boolean,
