@@ -4,6 +4,7 @@ from django.db.models.query import QuerySet
 from numpy import isin
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.serializers import ListSerializer, Serializer
 
 
@@ -30,3 +31,7 @@ def simple_api_response(data_or_serializer):
     else:
         data = data_or_serializer
     return Response(data=data)
+
+
+def error_response(data={}):
+    return Response(data=data, status=status.HTTP_404_NOT_FOUND)

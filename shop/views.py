@@ -6,7 +6,7 @@ from django.core.cache import cache
 from django.db.models import Avg
 from django.db.models.expressions import Q
 from django.shortcuts import get_list_or_404, get_object_or_404
-from mycommerce.responses import (CustomPagination, api_response,
+from mycommerce.responses import (CustomPagination, api_response, error_response,
                                   simple_api_response)
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -255,5 +255,20 @@ def like_product_view(request, pk, **kwargs):
 @permission_classes([IsAuthenticated])
 def liked_products_view(request, **kwargs):
     """Return all the products liked by a given user"""
-    likes_list = get_object_or_404(Like, user=request.user)
-    return api_response(LikeSerializer, queryset=likes_list)
+    like_list = get_object_or_404(Like, user=request.user)
+    return api_response(LikeSerializer, queryset=like_list)
+
+
+@api_view(['post'])
+@permission_classes([IsAuthenticated])
+def remove_liked_product_view(request, **kwargs):
+    """Return all the products liked by a given user"""
+    like_list = get_object_or_404(Like, user=request.user)
+    product = request.data.get('product', None)
+    if not product:
+        return error_response()
+    product = get_object_or_404(Product, id=product)
+    like_list.products.remove(product)
+    # TODO: Make this the regular return way for all like
+    # functions that require this
+    return api_response(ProductSerializer, queryset=like_list.products.all(), has_many=True)

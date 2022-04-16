@@ -51,7 +51,7 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link">
+            <a class="nav-link" @click="logout">
               <!-- <v-icon size="28" class="mr-2">mdi-account</v-icon> -->
               <v-icon v-if="isAuthenticated" size="28" class="mr-2">mdi-logout</v-icon>
             </a>
@@ -82,6 +82,7 @@ export default {
     
     logout() {
       this.$store.commit('authenticationModule/logout')
+      this.$localstorage.remove('cart')
       this.$router.push({ name: 'home', params: { lang: this.$i18n.locale } })
     },
 

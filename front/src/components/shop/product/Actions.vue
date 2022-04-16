@@ -121,7 +121,14 @@ export default {
           options['default_size'] = 'Unique'
         }
 
-        options['session_id'] = this.getSessionId()
+        try {
+          // Try to get a current session_id if the
+          // user has already been adding items to
+          // his current cart
+          options['session_id'] = this.getSessionId()
+        } catch(error) {
+          options['session_id'] = null
+        }
         options['product'] = this.product.id
 
         var response = await this.axios.post('cart/add', options)

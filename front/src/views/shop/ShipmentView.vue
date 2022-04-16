@@ -17,7 +17,7 @@
 
                 <div class="col-12">
                   <p class="font-weight-bold">{{ options.firstname }} {{ options.lastname }}</p>
-                  <p class="font-weight-bold">{{ options.address }}, {{ address.zip_code }}</p>
+                  <p class="font-weight-bold">{{ options.address }}, {{ options.zip_code }}</p>
                   <p class="font-weight-bold">{{ options.city }}</p>
                 </div>
 

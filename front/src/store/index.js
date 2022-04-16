@@ -44,7 +44,7 @@ var authenticationModule = {
   },
 
   getters: {
-    isAuthenticated (state) {
+    isAuthenticated(state) {
       // Check whether the user is authenticated
       return state.token != null
     }
@@ -86,6 +86,8 @@ export default new Vuex.Store({
         state.cartSessionId = result.session_id
         state.cartItems = result.results
         state.cart = result.statistics
+      } else {
+        state.cart = []
       }
     }
   },
