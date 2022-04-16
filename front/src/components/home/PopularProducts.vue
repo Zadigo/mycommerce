@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import Card from "../products/Card.vue"
+import Card from "../shop/products/Card.vue"
 
 export default {
   name: 'PopularProducts',

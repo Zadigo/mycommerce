@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import Card from '@/components/products/Card.vue'
+import Card from '@/components/shop/products/Card.vue'
 
 export default {
   name: 'BaseSearchModal',

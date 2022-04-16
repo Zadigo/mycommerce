@@ -5,10 +5,10 @@
 </template>
 
 <script>
-import shopMixin from '@/mixins/shopMixin'
+import shopMixin from '@/mixins/shop'
 
 export default {
-  name: 'ButtonLoadProducts',
+  name: 'BasePagination',
   mixins: [shopMixin]
 }
 </script>

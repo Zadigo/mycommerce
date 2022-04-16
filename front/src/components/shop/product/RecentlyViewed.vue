@@ -15,7 +15,7 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import Card from '@/components/products/Card.vue'
+import Card from '@/components/shop/products/Card.vue'
 
 export default {
   name: 'RecentlyViewd',

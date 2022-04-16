@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import PageHeader from '@/components/products/PageHeader.vue'
+import PageHeader from '@/components/shop/products/PageHeader.vue'
 
 export default {
   name: 'SizeGuideView',

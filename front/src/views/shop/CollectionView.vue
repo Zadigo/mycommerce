@@ -57,15 +57,15 @@
 <script>
 import _ from 'lodash'
 import dayjs from '@/plugins/dayjs-plugin'
-import shopMixin from '@/mixins/shopMixin'
+import shopMixin from '@/mixins/shop'
 
 import { mapGetters, mapMutations, mapState } from 'vuex'
 
-import Card from "@/components/products/Card.vue"
+import Card from "@/components/shop/products/Card.vue"
 // import PageHeader from "../components/products/PageHeader.vue"
-import Pagination from "@/components/products/Pagination.vue"
+import Pagination from "@/components/shop/products/Pagination.vue"
 import ProductsSkeleton from '@/components/shop/skeletons/ProductsSkeleton.vue'
-import FiltersBar from '@/components/products/FiltersBar.vue'
+import FiltersBar from '@/components/shop/products/FiltersBar.vue'
 
 export default {
   name: 'CollectionView',
