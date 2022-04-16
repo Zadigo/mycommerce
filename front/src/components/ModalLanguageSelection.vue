@@ -19,7 +19,7 @@ export default {
 
   methods: {
     changeLanguage(language) {
-      this.$router.push({ name: 'home', params: { lang: language } })
+      this.$router.push({ name: 'home_view', params: { lang: language } })
       this.$bvModal.hide('select-language')
     },
 

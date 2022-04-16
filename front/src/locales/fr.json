@@ -120,5 +120,11 @@
   "password": "Mot de passe",
   "Discover": "Découvrir",
   "Select language": "Choisir sa langue",
-  "styles_found": "{n} produit trouvé|{n} produits trouvés"
+  "styles_found": "{n} produit trouvé|{n} produits trouvés",
+  "Remember me": "Se souvenir de moi",
+  "Unique": "Unique",
+  "Cookie settings": "Réglages cookies",
+  "password1": "Mot de passe",
+  "password2": "Confirmez votre mot de passe",
+  "name": "Nom"
 }

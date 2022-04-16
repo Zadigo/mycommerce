@@ -120,5 +120,11 @@
   "password": "Contraseña",
   "Discover": "Descubrir",
   "Select language": "Cambiar la lengua",
-  "styles_found": "{n} estilo encontrado|{n} estilos encontrados"
+  "styles_found": "{n} estilo encontrado|{n} estilos encontrados",
+  "Remember me": "Remember me",
+  "Unique": "Unique",
+  "Cookie settings": "Cookie settings",
+  "password1": "Password 1",
+  "password2": "Password 2",
+  "name": "Name"
 }

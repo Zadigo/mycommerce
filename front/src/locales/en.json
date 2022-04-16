@@ -122,5 +122,11 @@
   "password": "Password",
   "Discover": "Discover",
   "Select language": "Select language",
-  "styles_found": "{n} style found|{n} styles found"
+  "styles_found": "{n} style found|{n} styles found",
+  "Remember me": "Remember me",
+  "Unique": "Unique",
+  "Cookie settings": "Cookie settings",
+  "password1": "Password",
+  "password2": "Password confirmation",
+  "name": "Name"
 }

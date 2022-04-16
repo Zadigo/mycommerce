@@ -30,7 +30,7 @@ export default {
             flag = 'us'
             break
           default:
-            flag = 'us'
+            flag = this.$i18n.locale
             break
         }
         return flag

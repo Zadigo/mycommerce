@@ -8,10 +8,10 @@
           <div class="row">
             <div class="col-8">
               <p>
-                Stripe utilise des cookies à des fins de marketing et d'amélioration de 
+                {{ myproject.company.legalName }} utilise des cookies à des fins de marketing et d'amélioration de 
                 l'expérience client. Consultez et gérez vos paramètres ci-dessous pour garder 
                 la main sur la protection de votre vie privée. Pour en savoir plus, consultez la 
-                politique de Stripe sur l'utilisation des cookies.
+                politique de {{ myproject.company.legalName }} sur l'utilisation des cookies.
               </p>
             </div>
 
@@ -45,7 +45,7 @@
               <p>
                 Les cookies publicitaires et les autres technologies analogues 
                 utilisées sur stripe.com nous permettent de placer des publicités ciblées 
-                relatives à Stripe sur les autres sites que vous visitez, et de mesurer votre 
+                relatives à {{ myproject.company.legalName }} sur les autres sites que vous visitez, et de mesurer votre 
                 activité concernant ces publicités.
               </p>
             </div>
@@ -63,7 +63,7 @@
 
         <div class="col-12">
           <h2>Authentification</h2>
-          <p>Les cookies d'authentification permettent à Stripe de se souvenir de vous, afin que vous n'ayiez pas à vous identifier chaque fois que vous utilisez nos services.</p>
+          <p>Les cookies d'authentification permettent à {{ myproject.company.legalName }} de se souvenir de vous, afin que vous n'ayiez pas à vous identifier chaque fois que vous utilisez nos services.</p>
         </div>
         
         <div class="col-12">
