@@ -18,6 +18,7 @@ import hero from './plugins/hero'
 import currency from './plugins/currency'
 import client from './plugins/axios'
 import VueAxios from 'vue-axios'
+import VueGeolocation from 'vue-browser-geolocation'
 import mixins from './mixins/utils'
 
 // Components
@@ -41,6 +42,7 @@ Vue.use(myProject)
 Vue.use(session)
 Vue.use(currency)
 Vue.use(VueAxios, client)
+Vue.use(VueGeolocation)
 // Vue.use(myAnalytics)
 // Vue.use(mySharingLinks)
 

@@ -35,5 +35,10 @@ export default [
         path: 'login',
         name: 'login_view',
         component: loadView('shop/auth/LoginView')
+    },
+    {
+        path: 'store-locations',
+        name: 'store_locations_view',
+        component: loadView('shop/StoreFinderView')
     }
 ]

@@ -63,6 +63,11 @@
                 "text": "Contact us"
             },
             {
+                "name": "store_locations_view",
+                "href": null,
+                "text": "Find a store"
+            },
+            {
                 "name": "payment_methods",
                 "href": null,
                 "text": "Payment methods"
