@@ -51,7 +51,7 @@
             </div>
 
             <!-- Actions -->
-            <actions :product="currentProduct" :product-variants="productVariants" :sizes="sizes" />
+            <actions :product="currentProduct" :product-variants="productVariants" />
 
             <!-- Additional Information -->
             <information :product="currentProduct" />
@@ -79,7 +79,6 @@
 </template>
 
 <script>
-import _ from 'lodash'
 import { mapState } from 'vuex'
 
 import Actions from '@/components/shop/product/Actions.vue'
@@ -152,14 +151,6 @@ export default {
 
     hasDescription() {
       return this.product == undefined
-    },
-
-    sizes() {
-      // TODO: Make this global ?
-      // Return all the size options for the given product
-      return _.filter(this.currentProduct.additional_variants, (variant) => {
-        return variant.category === 'Size'
-      })
     }
   },
 

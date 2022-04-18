@@ -21,7 +21,7 @@
       </p>
 
       <div v-if="hasSizes" class="sizes">
-        <b-btn v-for="(size, i) in sizes" id="btn-select-size" :key="size.key" :class="{ 'ml-2': i > 0, 'bg-dark': productOptions.default_size == size.name }" class="shadow-none border" variant="light" @click="setSize(size)">
+        <b-btn v-for="(size, i) in product.sizes" id="btn-select-size" :key="size.id" :class="{ 'ml-2': i > 0, 'bg-dark': productOptions.default_size == size.name }" class="shadow-none border" variant="light" @click="setSize(size)">
           {{ size.name }}
         </b-btn>
       </div>
@@ -73,10 +73,6 @@ export default {
     productVariants: {
       type: Array,
       default: () => []
-    },
-    sizes: {
-      type: Array,
-      default: () => []
     }
   },
   title: () => 'Cart',
@@ -93,7 +89,7 @@ export default {
     ...mapGetters('authenticationModule', ['isAuthenticated']),
 
     hasSizes() {
-      return this.sizes.length > 0
+      return this.product.sizes.length > 0
     }
   },
 
