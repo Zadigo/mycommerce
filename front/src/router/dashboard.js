@@ -29,7 +29,7 @@ export default [
             },
             {
                 path: 'products/:id',
-                name: 'dashboard_product',
+                name: 'dashboard_product_view',
                 meta: {
                     text: 'Product',
                     icon: 'table',

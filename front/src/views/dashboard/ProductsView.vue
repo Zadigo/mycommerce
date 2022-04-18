@@ -54,7 +54,7 @@
             <v-card-text>
               <v-data-table v-model="selectedProducts" :headers="headers" :items="products" :items-per-page="300" item-key="id" show-select class="elevation-0">
                 <template v-slot:item.name="{ item }">
-                  <router-link :to="{ name: 'dashboard_product', params: { id: item.id } }">
+                  <router-link :to="{ name: 'dashboard_product_view', params: { id: item.id } }">
                     {{ item.name }}
                   </router-link>
                 </template>  

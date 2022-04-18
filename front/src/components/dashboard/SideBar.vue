@@ -4,8 +4,9 @@
       <div class="position-sticky">
         <div class="list-group list-group-flush mx-3 mt-4">
 
-          <router-link v-for="route in dashboardRoutes" :key="route.name" :to="{ name: route.name }" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
-            <font-awesome-icon :icon="route.meta.icon" class="mr-2"></font-awesome-icon><span>{{ route.meta.text }}</span>
+          <router-link v-for="route in dashboardRoutes" :key="route.name" :to="{ name: route.name }" :aria-current="route.name === $route.name" :class="{ 'detail-route': isDetailRoute(route) }" class="list-group-item list-group-item-action py-2 ripple">
+            <font-awesome-icon :icon="route.meta.icon" class="mr-2"></font-awesome-icon>
+            <span>{{ route.meta.text }}</span>
           </router-link>
         
         </div>
@@ -26,6 +27,18 @@ export default {
       return _.filter(this.$router.getRoutes(), (route) => {
         return route.meta.adminLink
       })
+    },
+
+  },
+  methods: {
+    isDetailRoute(route) {
+      if (this.$route.name === 'dashboard_product_view' && route.name === this.$route.name) {
+        return true
+      }
+      if (this.$route.name === 'dashboard_image_view' && route.name === this.$route.name) {
+        return true
+      }
+      return false
     }
   }
 }
@@ -37,7 +50,8 @@ export default {
   border-top-width: 1px;
 }
 
-.sidebar .router-link-exact-active {
+.sidebar .router-link-exact-active,
+.sidebar .detail-route {
   border-radius: 5px;
   box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
 }

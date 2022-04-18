@@ -1,0 +1,784 @@
+[
+    {
+        "model": "shop.Product",
+        "pk": 1,
+        "fields": {
+            "name": "Culotte En Dentelle Extensible",
+            "color": "White",
+            "unit_price": 636,
+            "active": false,
+            "display_new": false,
+            "slug": "culotte-dentelle-extensible-white",
+            "category": "Shoes",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 2,
+        "fields": {
+            "name": "Blossom Balcony Soutien Gorge Et String Ensemble",
+            "color": "Green",
+            "unit_price": 71,
+            "active": false,
+            "display_new": true,
+            "slug": "blossom-balcony-soutien-gorge-string-ensemble-green",
+            "category": "Pants",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 3,
+        "fields": {
+            "name": "Jupe Florale",
+            "color": "Cream",
+            "unit_price": 233,
+            "active": false,
+            "display_new": true,
+            "slug": "jupe-florale-cream",
+            "category": "Panties",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 29,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 4,
+        "fields": {
+            "name": "String Shapewear Taille Haute",
+            "color": "Camel",
+            "unit_price": 303,
+            "active": false,
+            "display_new": true,
+            "slug": "string-shapewear-taille-haute-camel",
+            "category": "Denim",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 41,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 5,
+        "fields": {
+            "name": "Robe En Maille Tricot C\u00f4tel\u00e9e Douce",
+            "color": "Black",
+            "unit_price": 65,
+            "active": false,
+            "display_new": false,
+            "slug": "robe-maille-tricot-cotelee-douce-black",
+            "category": "Bras",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 6,
+        "fields": {
+            "name": "Tanga En Dentelle",
+            "color": "Taupe",
+            "unit_price": 15,
+            "active": false,
+            "display_new": false,
+            "slug": "tanga-dentelle-taupe",
+            "category": "Denim",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 17,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 7,
+        "fields": {
+            "name": "Ribbed Crop Top",
+            "color": "Red",
+            "unit_price": 92,
+            "active": false,
+            "display_new": true,
+            "slug": "ribbed-crop-top-red",
+            "category": "Shoes",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 8,
+        "fields": {
+            "name": "Short",
+            "color": "Black",
+            "unit_price": 608,
+            "active": false,
+            "display_new": true,
+            "slug": "short-black",
+            "category": "Dresses",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 31,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 9,
+        "fields": {
+            "name": "Nuisette Fond De Robe",
+            "color": "Beige",
+            "unit_price": 622,
+            "active": false,
+            "display_new": true,
+            "slug": "nuisette-fond-robe-beige",
+            "category": "Activewear",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 41,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 10,
+        "fields": {
+            "name": "Halterneck Triangle Rum",
+            "color": "Green",
+            "unit_price": 216,
+            "active": false,
+            "display_new": false,
+            "slug": "halterneck-triangle-rum-green",
+            "category": "Shorts",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 11,
+        "fields": {
+            "name": "Shorty Microfibre D\u00e9tails Dentelle",
+            "color": "Yellow",
+            "unit_price": 133,
+            "active": false,
+            "display_new": true,
+            "slug": "shorty-microfibre-details-dentelle-yellow",
+            "category": "Bras",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 16,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 12,
+        "fields": {
+            "name": "String En Dentelle",
+            "color": "Green",
+            "unit_price": 596,
+            "active": false,
+            "display_new": true,
+            "slug": "string-dentelle-green",
+            "category": "Activewear",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 20,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 13,
+        "fields": {
+            "name": "Floral Mesh Balcony String",
+            "color": "White",
+            "unit_price": 368,
+            "active": false,
+            "display_new": false,
+            "slug": "floral-mesh-balcony-string-white",
+            "category": "Shorts",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 11,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 14,
+        "fields": {
+            "name": "Liberty Balcony String",
+            "color": "Red",
+            "unit_price": 177,
+            "active": false,
+            "display_new": true,
+            "slug": "liberty-balcony-string-red",
+            "category": "Panties",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 49,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 15,
+        "fields": {
+            "name": "Ribbed Taille Haute Shorts",
+            "color": "Grey",
+            "unit_price": 61,
+            "active": false,
+            "display_new": true,
+            "slug": "ribbed-taille-haute-shorts-grey",
+            "category": "Accessories",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 16,
+        "fields": {
+            "name": "Robe Moulante Gris Pierre \u00c0 D\u00e9coupes Goutte",
+            "color": "Beige",
+            "unit_price": 321,
+            "active": false,
+            "display_new": true,
+            "slug": "robe-moulante-gris-pierre-decoupes-goutte-beige",
+            "category": "Bras",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 40,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 17,
+        "fields": {
+            "name": "Sustainable Culotte",
+            "color": "Beige",
+            "unit_price": 360,
+            "active": false,
+            "display_new": false,
+            "slug": "sustainable-culotte-beige",
+            "category": "Panties",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 34,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 18,
+        "fields": {
+            "name": "Bandeau Et Culotte Floral",
+            "color": "Charcoal",
+            "unit_price": 208,
+            "active": false,
+            "display_new": true,
+            "slug": "bandeau-culotte-floral-charcoal",
+            "category": "Bags",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 19,
+        "fields": {
+            "name": "Vogue Balcony Soutien Gorge Et String Ensemble",
+            "color": "Taupe",
+            "unit_price": 645,
+            "active": false,
+            "display_new": false,
+            "slug": "vogue-balcony-soutien-gorge-string-ensemble-taupe",
+            "category": "Bags",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 20,
+        "fields": {
+            "name": "Flair Balcony Soutien Gorge Et String Ensemble",
+            "color": "Green",
+            "unit_price": 58,
+            "active": false,
+            "display_new": true,
+            "slug": "flair-balcony-soutien-gorge-string-ensemble-green",
+            "category": "Pants",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 21,
+        "fields": {
+            "name": "Floral Mesh Balcony Soutien Gorge Et String Ensemble",
+            "color": "Yellow",
+            "unit_price": 237,
+            "active": false,
+            "display_new": false,
+            "slug": "floral-mesh-balcony-soutien-gorge-string-ensemble-yellow",
+            "category": "Pants",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 22,
+        "fields": {
+            "name": "Dress",
+            "color": "Beige",
+            "unit_price": 457,
+            "active": false,
+            "display_new": true,
+            "slug": "dress-beige",
+            "category": "Denim",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 23,
+        "fields": {
+            "name": "Blazer Jupe Boutons Dor\u00e9s",
+            "color": "Red",
+            "unit_price": 648,
+            "active": false,
+            "display_new": false,
+            "slug": "blazer-jupe-boutons-dores-red",
+            "category": "Pants",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 40,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 24,
+        "fields": {
+            "name": "Robe Blazer",
+            "color": "Grey",
+            "unit_price": 84,
+            "active": false,
+            "display_new": false,
+            "slug": "robe-blazer-grey",
+            "category": "Pants",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 25,
+        "fields": {
+            "name": "Short Biker",
+            "color": "Navy",
+            "unit_price": 485,
+            "active": false,
+            "display_new": true,
+            "slug": "short-biker-navy",
+            "category": "Activewear",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 26,
+        "fields": {
+            "name": "Bandeau R\u00e9versible En Dentelle Et Microfibre Extensible",
+            "color": "Charcoal",
+            "unit_price": 336,
+            "active": false,
+            "display_new": false,
+            "slug": "bandeau-reversible-dentelle-microfibre-extensible-charcoal",
+            "category": "Dresses",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 27,
+        "fields": {
+            "name": "Lingerie",
+            "color": "Grey",
+            "unit_price": 457,
+            "active": false,
+            "display_new": false,
+            "slug": "lingerie-grey",
+            "category": "Shoes",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 28,
+        "fields": {
+            "name": "Shorty En Dentelle",
+            "color": "Grey",
+            "unit_price": 516,
+            "active": false,
+            "display_new": false,
+            "slug": "shorty-dentelle-grey",
+            "category": "Tops",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 49,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 29,
+        "fields": {
+            "name": "Stretch Woven Thigh Low Rise Extreme Micro Mini Skirt",
+            "color": "Taupe",
+            "unit_price": 182,
+            "active": false,
+            "display_new": true,
+            "slug": "stretch-woven-thigh-low-rise-extreme-micro-mini-skirt-taupe",
+            "category": "Bras",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 47,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 30,
+        "fields": {
+            "name": "Ribbed Taille Haute Leggings",
+            "color": "Beige",
+            "unit_price": 206,
+            "active": false,
+            "display_new": false,
+            "slug": "ribbed-taille-haute-leggings-beige",
+            "category": "Shoes",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 31,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 31,
+        "fields": {
+            "name": "Pure Fit",
+            "color": "Cream",
+            "unit_price": 24,
+            "active": false,
+            "display_new": false,
+            "slug": "pure-fit-cream",
+            "category": "Panties",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 35,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 32,
+        "fields": {
+            "name": "Jupe En Cuir",
+            "color": "White",
+            "unit_price": 182,
+            "active": false,
+            "display_new": false,
+            "slug": "jupe-cuir-white",
+            "category": "Shorts",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 29,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 33,
+        "fields": {
+            "name": "Short En Jean",
+            "color": "Camel",
+            "unit_price": 259,
+            "active": false,
+            "display_new": false,
+            "slug": "short-jean-camel",
+            "category": "Suits",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 34,
+        "fields": {
+            "name": "Mesh String",
+            "color": "Taupe",
+            "unit_price": 288,
+            "active": false,
+            "display_new": true,
+            "slug": "mesh-string-taupe",
+            "category": "Tops",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 14,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 35,
+        "fields": {
+            "name": "Beauty Balcony Soutien Gorge Et String Ensemble",
+            "color": "Green",
+            "unit_price": 397,
+            "active": false,
+            "display_new": false,
+            "slug": "beauty-balcony-soutien-gorge-string-ensemble-green",
+            "category": "Bags",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 23,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 36,
+        "fields": {
+            "name": "Combinette Sculptante",
+            "color": "Camel",
+            "unit_price": 469,
+            "active": false,
+            "display_new": true,
+            "slug": "combinette-sculptante-camel",
+            "category": "Activewear",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 38,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 37,
+        "fields": {
+            "name": "Desire Balcony Soutien Gorge Et String Ensemble",
+            "color": "Marine",
+            "unit_price": 798,
+            "active": false,
+            "display_new": false,
+            "slug": "desire-balcony-soutien-gorge-string-ensemble-marine",
+            "category": "Dresses",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 38,
+        "fields": {
+            "name": "Floral Culotte",
+            "color": "Green",
+            "unit_price": 568,
+            "active": false,
+            "display_new": false,
+            "slug": "floral-culotte-green",
+            "category": "Activewear",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 39,
+        "fields": {
+            "name": "Tanga En Microfibre Et Tulle",
+            "color": "Taupe",
+            "unit_price": 351,
+            "active": false,
+            "display_new": true,
+            "slug": "tanga-microfibre-tulle-taupe",
+            "category": "Dresses",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 40,
+        "fields": {
+            "name": "Grace Balcony Soutien Gorge Et String Ensemble",
+            "color": "Grey",
+            "unit_price": 137,
+            "active": false,
+            "display_new": false,
+            "slug": "grace-balcony-soutien-gorge-string-ensemble-grey",
+            "category": "Pants",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 41,
+        "fields": {
+            "name": "Jupon",
+            "color": "Camel",
+            "unit_price": 240,
+            "active": false,
+            "display_new": true,
+            "slug": "jupon-camel",
+            "category": "Pants",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 39,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 42,
+        "fields": {
+            "name": "Shorty En Microfibre Extensible",
+            "color": "Camel",
+            "unit_price": 513,
+            "active": false,
+            "display_new": false,
+            "slug": "shorty-microfibre-extensible-camel",
+            "category": "Dresses",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 16,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 43,
+        "fields": {
+            "name": "Blazer Strapped",
+            "color": "Cream",
+            "unit_price": 164,
+            "active": false,
+            "display_new": false,
+            "slug": "blazer-strapped-cream",
+            "category": "Pants",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 44,
+        "fields": {
+            "name": "Top",
+            "color": "Charcoal",
+            "unit_price": 70,
+            "active": false,
+            "display_new": true,
+            "slug": "top-charcoal",
+            "category": "Bras",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 45,
+        "fields": {
+            "name": "Body Shapewear",
+            "color": "Taupe",
+            "unit_price": 756,
+            "active": false,
+            "display_new": true,
+            "slug": "body-shapewear-taupe",
+            "category": "Shorts",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 46,
+        "fields": {
+            "name": "Mesh Balcony Soutien Gorge Et String Ensemble",
+            "color": "Beige",
+            "unit_price": 420,
+            "active": false,
+            "display_new": true,
+            "slug": "mesh-balcony-soutien-gorge-string-ensemble-beige",
+            "category": "Tops",
+            "created_on": "2022-04-18",
+            "modified_on": "2022-04-18",
+            "sale_value": 24,
+            "on_sale": true
+        }
+    }
+]

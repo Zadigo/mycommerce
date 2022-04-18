@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import fields
-from rest_framework.serializers import (ModelSerializer, Serializer,
+from rest_framework.serializers import (Serializer,
                                         raise_errors_on_nested_writes)
-from shop.choices import CategoryChoices
 from variants.serializers import SizeSerializer
 
+from shop.choices import CategoryChoices
 from shop.models import Image, Product, Wishlist
 
 
@@ -99,11 +99,20 @@ class LikeSerializer(UserlistSerializer):
 
 class ImageAssociationSerializer(Serializer):
     images = fields.ListField()
-
+    
+    def get_object(self, produt_id):
+        return get_object_or_404(Product, id=produt_id)
+    
+    def get_images(self):
+        return Image.objects.filter(id__in=self.validated_data['images'])
+        
     def save(self, product_id, **kwargs):
-        product = get_object_or_404(Product, id=product_id)
-        images = Image.objects.filter(id__in=self.validated_data['images'])
-        product.images.add(*images)
+        product = self.get_object(product_id)
+        product.images.add(*self.get_images())
+        
+    def remove(self, product_id, **kwargs):
+        product = self.get_object(product_id)
+        product.images.remove(*self.get_images())
 
 
 class ProductUpdateValidation(Serializer):

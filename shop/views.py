@@ -1,7 +1,9 @@
 import random
 from collections import OrderedDict
 from hashlib import md5
+from api.serializers.dashboard import ImageSerializer
 
+from api.utils import CustomPagination
 from django.core.cache import cache
 from django.db.models import Avg
 from django.db.models.expressions import Q
@@ -10,12 +12,14 @@ from mycommerce.choices import flatten_choices
 from mycommerce.responses import (CustomPagination, api_response,
                                   error_response, simple_api_response)
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 from reviews.serializers import ReviewSerializer
 
 from shop.choices import CategoryChoices
-from shop.models import Like, Product, Wishlist
+from shop.models import Image, Like, Product, Wishlist
 from shop.serializers import (ImageAssociationSerializer, LikeSerializer,
                               ProductSerializer, ProductUpdateValidation,
                               ValidateWishList, VariantSerializer,
@@ -306,6 +310,15 @@ def associate_images_to_product(request, pk, **kwargs):
 
 
 @api_view(['post'])
+def dissociate_images_from_product(request, pk, **kwargs):
+    """Associate images to a given product"""
+    serializer = ImageAssociationSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.remove(pk)
+    return simple_api_response({'status': True})
+
+
+@api_view(['post'])
 def rename_products_view(request, **kwargs):
     serializer = RenamProductsValidation(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -337,3 +350,10 @@ def query_categories(request, **kwargs):
         categories = map(lambda x: x[-1], CategoryChoices.choices)
         cache.set('categories', list(categories), 3600)
     return simple_api_response(categories)
+
+
+class ProductImagesView(GenericViewSet, ListModelMixin):
+    queryset = Image.objects.all()
+    serializer_class = ImageSerializer
+    permission_classes = []
+    pagination_class = CustomPagination

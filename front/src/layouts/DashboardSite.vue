@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <section id="dashboard">
+    <section id="dashboard" style="z-index:150;">
       <top-header />
 
       <!-- <main style="margin-top: 58px"> -->

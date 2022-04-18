@@ -10,9 +10,9 @@
         </button>
 
         <!-- Brand -->
-        <a class="navbar-brand" href="#">
+        <router-link :to="{ name: 'dashboard_index_view' }" class="navbar-brand">
           <img src="https://mdbootstrap.com/img/logo/mdb-transaprent-noshadows.png" height="25" alt="" loading="lazy" />
-        </a>
+        </router-link>
 
         <!-- Search form -->
         <form class="d-none d-md-flex input-group w-auto my-auto">
@@ -22,18 +22,17 @@
 
         <!-- Right links -->
         <ul class="navbar-nav ms-auto d-flex flex-row">
-          <!-- Notification dropdown -->
+          <!-- Notifications -->
           <li class="nav-item dropdown">
-            <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-              <i class="fas fa-bell"></i>
+            <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#"  role="button" aria-expanded="false">
+              <v-icon class="mr-2">mdi-bell</v-icon>
               <span class="badge rounded-pill badge-notification bg-danger">1</span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink" >
+
+            <ul class="dropdown-menu dropdown-menu-end">
               <li><a class="dropdown-item" href="#">Some news</a></li>
               <li><a class="dropdown-item" href="#">Another news</a></li>
-              <li>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
           </li>
 
@@ -51,9 +50,6 @@
           </li>
 
           <li class="nav-item me-3 me-lg-0">
-            <!-- <router-link :to="{ name: 'home', params: { lang: 'fr' } }" class="nav-link">
-              Go to website
-            </router-link> -->
             <a class="nav-link" @click="goToSite">
               Go to website
             </a>
@@ -61,8 +57,8 @@
 
           <!-- Avatar -->
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false" >
-              <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt="" loading="lazy" />
+            <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" aria-expanded="false" >
+              <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt="some user" loading="lazy" />
             </a>
 
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink" >
@@ -81,15 +77,39 @@
 </template>
 
 <script>
+// import _ from 'lodash'
+
 import SideBar from './SideBar.vue'
+
 export default {
   components: {
     SideBar
   },
+  // created() {
+  //   var dropdowns = document.querySelector('li.dropdown')
+  //   var link = dropdowns.querySelector('a.nav-link')
+  //   var menuItem = link.querySelector('ul')
+  //   if (menuItem) {
+  //     menuItem.addEventListener('mouseenter', this.openMenu(menuItem), { passive: true })
+  //     menuItem.addEventListener('mouseleave', this.closeMenu(menuItem))
+  //   }
+  // },
+  // beforeDestroy() {
+
+  // },
   methods: {
     goToSite() {
       this.$store.commit('changeSite', 'base-site')
       this.$router.push({ name: 'home_view', params: { lang: 'fr' } })
+    },
+
+    openMenu(e) {
+      console.log(e)
+      // el.classList.add('show')
+    },
+    closeMenu(e) {
+      console.log(e)
+      // el.classList.remove('show')
     }
   }
 }

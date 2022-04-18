@@ -1,16 +1,22 @@
 from django.urls import re_path, include
-
+from rest_framework.routers import DefaultRouter
 from shop import views
 
 app_name = 'shop'
 
+router = DefaultRouter()
+router.register('images', views.ProductImagesView)
+
 dashboard_patterns = [
     re_path(r'^categories', views.query_categories),
+    re_path(r'^products/(?P<pk>\d+)/images/dissociate', views.dissociate_images_from_product),
     re_path(r'^products/(?P<pk>\d+)/images/associate', views.associate_images_to_product),
     re_path(r'^products/(?P<pk>\d+)/update', views.update_product_view),
     re_path(r'^products/(?P<pk>\d+)', views.dashboard_product_details_view),
     re_path(r'^products/generic', views.generic_products_view),
 ]
+
+dashboard_patterns += router.urls
 
 urlpatterns = [
     re_path(r'^dashboard/', include((dashboard_patterns, app_name), namespace='dashboard')),

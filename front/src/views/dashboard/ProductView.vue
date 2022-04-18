@@ -1,23 +1,42 @@
 <template>
   <section id="product">
     <v-row>
+      <!-- Top header -->
       <v-col cols="12">
         <v-card flat>
           <v-card-actions class="text-right justify-content-right">
-            <v-btn @click="$router.go(-1)">
-              <v-icon class="mr-2">mdi-arrow-left</v-icon>
+            <v-btn color="danger" text @click="$router.go(-1)">
+              <v-icon class="mr-2">mdi-cancel</v-icon>
               Cancel
             </v-btn>
 
-            <v-btn @click="updateProduct">
-              Update
+            <v-btn text>
+              <v-icon class="mr-2">mdi-arrow-left</v-icon>
+              Previous
+            </v-btn>
+
+            <v-btn text>
+              Next
+              <v-icon class="ml-2">mdi-arrow-right</v-icon>
+            </v-btn>
+            
+            <v-btn color="primary" @click="updateProduct">
+              <v-icon class="mr-2">mdi-save</v-icon>
+              Save and update
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
 
+      <v-col cols="12">
+        <v-card>
+          <v-card-title>
+            {{ productDetails.name }}
+          </v-card-title>
+        </v-card>
+      </v-col>
+
       <v-col cols="8">
-        
         <!-- Informations -->
         <v-card>
           <v-card-title>
@@ -69,7 +88,9 @@
             <v-toolbar-title>
               Media
             </v-toolbar-title>
+            
             <v-spacer></v-spacer>
+
             <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="slide-transition">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn v-bind="attrs" v-on="on" icon>
@@ -78,32 +99,11 @@
               </template>
 
               <v-list>
-                <v-list-item @click="loadImages">
+                <v-list-item @click="loadImages(() => { openImageSelection = true })">
                   <v-list-item-title>Choisir des images</v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>
-
-            <!-- Image selection -->
-            <v-dialog v-model="openImageSelection" fullscreen hide-overlay transition="dialog-bottom-transition" scrollable>
-              <v-card>
-                <v-toolbar dark color="primary">
-                  <v-btn icon dark @click="dialog = false">
-                    <v-icon>mdi-close</v-icon>
-                  </v-btn>
-
-                  <v-toolbar-title>Settings</v-toolbar-title>
-                  
-                  <v-spacer></v-spacer>
-
-                  <v-toolbar-items>
-                    <v-btn dark text @click="dialog = false">
-                      Save
-                    </v-btn>
-                  </v-toolbar-items>
-                </v-toolbar>
-              </v-card>
-            </v-dialog>
           </v-toolbar>
 
           <v-card-text>
@@ -112,14 +112,14 @@
                 <div id="product-image">
                   <v-img :src="image.mid_size|mediaUrl"></v-img>
 
-                  <v-btn icon @click="removeImage">
+                  <v-btn icon @click="removeImage(image)">
                     <v-icon>mdi-window-close</v-icon>
                   </v-btn>
                 </div>
               </v-col>
 
               <v-col cols="3">
-                <div class="select-images">
+                <div class="select-images" @click="selectProductImages=true">
                   <div class="wrapper">
                     <v-icon>mdi-plus</v-icon>
                   </div>
@@ -130,6 +130,7 @@
         </v-card>
       </v-col>
       
+      <!-- Aside -->
       <v-col cols="4">
         <v-card>
           <v-card-title>
@@ -143,15 +144,46 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- Image selection -->
+    <v-dialog v-model="openImageSelection" width="900px" persistent>
+      <v-card style="position:relative;">
+        <v-card-text>
+          <v-container>
+            <v-row v-if="images.length > 0">
+              <v-col v-for="image in images" :key="image.id" :name="image.name" cols="3" @click="selectImage(image)">
+                <v-img :src="image.mid_size|mediaUrl" :class="{ 'shadow': selectedImages.includes(image.id) }"></v-img>
+              </v-col>
+
+              <v-col cols="12" class="d-flex justify-content-center">
+                <v-btn :disabled="!cachedResponse.previous" class="mx-1" @click="loadPrevious">Previous</v-btn>
+                <v-btn class="mx-1" @click="loadNext">Next</v-btn>
+              </v-col>
+
+              <div class="actions">
+                <v-btn @click="openImageSelection=false" text>Close</v-btn>
+                <v-btn @click="selectedImages=[]" text>Deselect all</v-btn>
+                <v-btn :disabled="!selectedImages.length > 0" @click="associateImagesToProduct(() => { openImageSelection = false })" color="primary">Add {{ selectedImages.length }} images</v-btn>
+              </div>
+            </v-row>
+          </v-container>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </section>
 </template>
 
 <script>
-var _ = require('lodash')
+import _ from 'lodash'
+// import { listManager } from '@/utils'
 import { mapState } from 'vuex'
+import imagesMixin from '@/mixins/dashboard/images'
+import itemNavigation from '@/mixins/dashboard/item_navigation'
 
 export default {
   name: 'ProductView',
+
+  mixins: [imagesMixin, itemNavigation],
   
   data: () => ({
     productUpdates: {},
@@ -159,9 +191,11 @@ export default {
     additionalProductDetails: {},
 
     categoriesLoading: false,
-    categories: ['Bags'],
+    categories: [],
     searchedCategory: null,
-    selectedCategory: null
+    selectedCategory: null,
+
+    selectedImages: []
   }),
   
   computed: {
@@ -216,14 +250,17 @@ export default {
       }
     },
     
-    async removeImage() {
-      // Do something
-    },
-
-    async loadImages () {
+    async removeImage(image) {
       try {
-        var response = await this.axios.get('shop/images')
-        this.openImageSelection = true
+        var data = this.newAssociation
+        
+        data['images'] = [image.id]
+
+        if (!data['product']) {
+            data['product'] = this.$route.params.id
+        }
+
+        var response = await this.axios.post(`shop/dashboard/products/${this.$route.params.id}/images/dissociate`, data)
         response
       } catch(error) {
         console.log(error)
@@ -241,7 +278,11 @@ export default {
       } catch(error) {
         console.log(error)
       }
-    }
+    },
+
+    // selectImage(image) {
+    //   this.selectedImages = listManager(this.selectedImages, image.id)
+    // }
   }
 }
 </script>
@@ -250,12 +291,11 @@ export default {
   #product-image {
     cursor: pointer;
   }
-
+/* 
   .select-images {
     position: relative;
     cursor: pointer;
     height: 100%;
-    /* border: 1px solid #d7d7d7; */
     border-radius: 10px;
     background: rgb(240, 240, 240, .5);
     position: relative;
@@ -266,5 +306,28 @@ export default {
     background-color: rgba(240, 240, 240, 1);
     border-radius: 50%;
     padding: 1.5rem;
+  } */
+
+  .actions {
+    position:sticky;
+    display: flex;
+    justify-content: center;
+    bottom:3%;
+    /* left: calc(100% - 600px); */
+    margin: 0 auto;
+    height:auto;
+    min-width: 600px;
+    width: 600px;
+    background-color:white;
+    border-radius:.25em;
+    align-items:center;
+    box-shadow:0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+    padding: 8px 16px;
+  }
+  .actions > .v-btn {
+    padding: 0 8px;
+  }
+  .actions > .v-btn + .v-btn {
+    margin-left: 8px;
   }
 </style>

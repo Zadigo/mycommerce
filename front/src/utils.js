@@ -56,6 +56,10 @@ function buildLimitOffset(url) {
     return new URLSearchParams({ limit: limit, offset: offset })
 }
 
+function limitAndOffsetAsParams(limit, offset) {
+    return new URLSearchParams({ limit: limit, offset: offset })
+}
+
 function listManager(items, itemId) {
     // A helper function that allows managing
     // items in a list by removing or pushing
@@ -70,6 +74,22 @@ function listManager(items, itemId) {
     return items
 }
 
+function increaseIndex(items, initialValue) {
+    var newIndex = initialValue + 1
+    if (initialValue > items.length) {
+        initialValue = 0
+    }
+    return newIndex
+}
+
+function decreaseIndex(items, initialValue) {
+    var newIndex = initialValue - 1
+    if (initialValue < 0) {
+        initialValue = items.length
+    }
+    return newIndex
+}
+
 export {
     indexElements,
     incrementLastId,
@@ -77,5 +97,8 @@ export {
     readMultipleFiles,
     truncate,
     buildLimitOffset,
-    listManager
+    listManager,
+    limitAndOffsetAsParams,
+    increaseIndex,
+    decreaseIndex
 }
