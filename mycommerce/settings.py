@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'api',
     'collection',
     'shop',
+    'variants',
     'cart',
     'orders',
     'shipments',
@@ -83,9 +84,18 @@ WSGI_APPLICATION = 'mycommerce.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mycommerce',
+        'USER': 'test_user',
+        'PASSWORD': 'touparet',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
@@ -214,6 +224,10 @@ CACHES = {
     },
     'redis': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://username:password@127.0.0.1:6379'
+        'LOCATION': 'redis://username:password@127.0.0.1:6379',
+        'OPTIONS': {
+            'CLIENT_CLASS': "django_redis.client.DefaultClient"
+        },
+        'KEY_PREFIX': 'example'
     }
 }

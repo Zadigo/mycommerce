@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from shop.models import (AdditionalVariant, Image, Like, Product, Video,
+from shop.models import (Image, Like, Product, Video,
                          Wishlist)
 import random
 
@@ -9,13 +9,13 @@ from shop.utils import create_product_slug
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'color', 'category', 'unit_price', 'active']
-    filter_horizontal = ['images', 'additional_variants']
+    filter_horizontal = ['images']
     list_filter = ['active']
     date_hiearchy = 'created_on'
     search_fields = ['name', 'slug']
     fieldsets = [
         ['General', {'fields': ['name', 'sku']}],
-        ['Variant', {'fields': ['color', 'category', 'additional_variants']}],
+        ['Variant', {'fields': ['color', 'category']}],
         ['Media', {'fields': ['images', 'video']}],
         ['Pricing', {'fields': ['unit_price', 'sale_value', 'sale_price', 'on_sale']}],
         ['Other', {'fields': ['display_new', 'active', 'slug']}]
@@ -54,10 +54,10 @@ class VideoAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
-@admin.register(AdditionalVariant)
-class AdditionalVariantAdmin(admin.ModelAdmin):
-    list_display = ['reference', 'in_stock', 'active']
-    list_filter = ['active', 'in_stock']
+# @admin.register(AdditionalVariant)
+# class AdditionalVariantAdmin(admin.ModelAdmin):
+#     list_display = ['reference', 'in_stock', 'active']
+#     list_filter = ['active', 'in_stock']
     
 
 @admin.register(Wishlist)

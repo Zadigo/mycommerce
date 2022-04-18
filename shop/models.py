@@ -1,4 +1,6 @@
 import os
+import random
+import string
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -7,13 +9,11 @@ from django.db.models import UniqueConstraint
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
 from django.forms import ValidationError
-from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
-from shop.choices import (CategoryChoices, ColorChoices, VariantChoices,
-                          VariantSubcategoryChoices)
+from shop.choices import CategoryChoices, ColorChoices
 from shop.utils import (calculate_sale, create_product_slug, image_path,
                         video_path)
 from shop.validators import price_validator, validate_video_file_extension
@@ -51,9 +51,6 @@ class Image(models.Model):
 
     class Meta:
         ordering = ['-created_on', 'name']
-        indexes = [
-            models.Index(fields=['original'])
-        ]
         
     def __str__(self):
         return self.name
@@ -76,34 +73,34 @@ class Video(models.Model):
         return self.name
     
     
-class AdditionalVariant(models.Model):
-    """Variants for size..."""
-    reference = models.CharField(
-        max_length=100,
-        default=get_random_string(12),
-        unique=True
-    )
-    category = models.CharField(
-        max_length=100,
-        choices=VariantChoices.choices,
-        default=VariantChoices.SIZE
-    )
-    sub_category = models.CharField(
-        max_length=100,
-        choices=VariantSubcategoryChoices.choices,
-        default=VariantSubcategoryChoices.NOT_ATTRIBUTED
-    )
-    name = models.CharField(
-        max_length=100,
-        blank=True,
-        null=True
-    )
+# class AdditionalVariant(models.Model):
+#     """Variants for size..."""
+#     reference = models.CharField(
+#         max_length=100,
+#         default=get_random_string(12),
+#         unique=True
+#     )
+#     category = models.CharField(
+#         max_length=100,
+#         choices=VariantChoices.choices,
+#         default=VariantChoices.SIZE
+#     )
+#     sub_category = models.CharField(
+#         max_length=100,
+#         choices=VariantSubcategoryChoices.choices,
+#         default=VariantSubcategoryChoices.NOT_ATTRIBUTED
+#     )
+#     name = models.CharField(
+#         max_length=100,
+#         blank=True,
+#         null=True
+#     )
     
-    in_stock = models.BooleanField(default=True)
-    active = models.BooleanField(default=True)
+#     in_stock = models.BooleanField(default=True)
+#     active = models.BooleanField(default=True)
 
-    def __str__(self):
-        return f"{self.name} - {self.pk}"
+#     def __str__(self):
+#         return f"{self.name} - {self.pk}"
     
     
 class AbstractProduct(models.Model):
@@ -115,17 +112,20 @@ class AbstractProduct(models.Model):
         help_text=_('Defines a declination of a main product in color')
     )
     sku = models.CharField(
-        max_length=50,
+        max_length=100,
+        unique=True,
         blank=True,
-        null=True,
-        validators=[]
+        null=True
     )
     
-    additional_variants = models.ManyToManyField(
-        AdditionalVariant, 
-        blank=True,
-        help_text=_('Declination in size, patterns...')
-    )
+    # additional_variants = models.ManyToManyField(
+    #     AdditionalVariant, 
+    #     blank=True,
+    #     help_text=_('Declination in size, patterns...')
+    # )
+    # TODO: When creating a product in the admin,
+    # this wants the translated product name as
+    # opposed to the english one set in Choices
     category = models.CharField(
         max_length=100,
         choices=CategoryChoices.choices,
@@ -191,17 +191,26 @@ class AbstractProduct(models.Model):
             return self.sale_price
         return self.unit_price
     
+    @property
+    def sizes(self):
+        return self.sizes_set.all()
+    
     def clean(self):
         if self.on_sale:
             if self.sale_value == 0:
                 raise ValidationError({'sale_value': _("A product on sale cannot have a sale value of 0")})
             self.sale_price = calculate_sale(self.unit_price, self.sale_value)
+            
+        if not self.sku:
+            color = self.color[:3]
+            numbers = map(lambda _: random.choice(string.digits), range(10))
+            self.sku = f"{color}{''.join(numbers)}"
         
 
 class Product(AbstractProduct):    
     class Meta(AbstractProduct.Meta):
         verbose_name = _('Product')
-        verbose_name_plural = _('Produits')
+        verbose_name_plural = _('Products')
     
 
 class AbstractUserList(models.Model):
@@ -224,18 +233,20 @@ class AbstractUserList(models.Model):
 
 
 class Like(AbstractUserList):
-    """Products liked"""
+    """Liked products"""
     class Meta:
+        verbose_name = _('Like')
         constraints = [
             UniqueConstraint(fields=['user'], name='one_list_per_user')
         ]
         
     
 class Wishlist(AbstractUserList):
-    """User's wishlists of products"""
+    """User's wishlists"""
     name = models.CharField(max_length=100)
     
     class Meta:
+        verbose_name = _('Wishlist')
         constraints = [
             UniqueConstraint(fields=['name', 'user'], name='unique_list_name_per_user')
         ]

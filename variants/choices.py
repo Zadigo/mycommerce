@@ -1,3 +1,5 @@
+from django.db.models import Choices
+
 class ClotheSizesChoices:
     sizes = [
         ('Unique', 'Unique'),
@@ -32,3 +34,10 @@ class ShoeSizesChoices:
     def default(cls, size) -> str:
         candidates = list(filter(lambda x: size in x, cls.sizes))
         return candidates[-1]
+
+
+class VariantSubcategoryChoices(Choices):
+    BRA_SIZE = 'Bra size'
+    CLOTHE_SIZE = 'Clothe size'
+    NOT_ATTRIBUTED = 'Not attributed'
+    SHOE_SIZE = 'Shoe size'
