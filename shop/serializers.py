@@ -1,6 +1,8 @@
 from rest_framework import fields
-from rest_framework.serializers import Serializer, ModelSerializer
-from rest_framework.serializers import raise_errors_on_nested_writes
+from rest_framework.serializers import (ModelSerializer, Serializer,
+                                        raise_errors_on_nested_writes)
+from variants.serializers import SizeSerializer
+
 from shop.models import Wishlist
 
 
@@ -40,7 +42,8 @@ class ProductSerializer(Serializer):
 
     color = fields.CharField()
     category = fields.CharField()
-    additional_variants = AdditionalVariantSerializer(many=True, required=False)
+    sizes = SizeSerializer(many=True)
+    # additional_variants = AdditionalVariantSerializer(many=True, required=False)
     get_main_image = ImageSerializer(required=False)
     images = ImageSerializer(many=True, required=False)
     video = VideoSerializer(required=False)

@@ -67,7 +67,7 @@ def products_view(request, **kwargs):
     """Return all the products present on the website"""
     queryset = cache.get('products', None)
     if queryset is None:
-        queryset = Product.objects.prefetch_related('additional_variants').filter(active=True)
+        queryset = Product.objects.filter(active=True)
         cache.set('products', queryset, timeout=10)
     
     pagination_instance = CustomProductPagination()

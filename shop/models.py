@@ -193,7 +193,7 @@ class AbstractProduct(models.Model):
     
     @property
     def sizes(self):
-        return self.sizes_set.all()
+        return self.size_set.all()
     
     def clean(self):
         if self.on_sale:
@@ -204,7 +204,7 @@ class AbstractProduct(models.Model):
         if not self.sku:
             color = self.color[:3]
             numbers = map(lambda _: random.choice(string.digits), range(10))
-            self.sku = f"{color}{''.join(numbers)}"
+            self.sku = f"{color.upper()}{''.join(numbers)}"
         
 
 class Product(AbstractProduct):    
