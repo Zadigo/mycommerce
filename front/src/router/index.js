@@ -51,10 +51,10 @@ var router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (!to.meta.adminLink) {
+  if (!to.meta.forAdmin) {
     // For now, only do translation for the
     // main website. The admin site will be
-    // defaulted to french
+    // defaulted to french or english
     var localeLanguage = to.params.lang
     var supportedLanguages = process.env.VUE_APP_I18N_SUPPORTED_LOCALE.split(',')
   

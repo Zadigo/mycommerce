@@ -5,7 +5,7 @@
     <v-img :class="{ 'shadow': isSelected }" :src="image.mid_size" @click="doSelection(image)"></v-img>
 
     <div class="actions">
-      <v-btn class="mr-2" @click="$router.push({ name: 'dashboard_image_view', params: { id: image.id } })">
+      <v-btn :to="{ name: 'dashboard_image_view', params: { id: image.id } }" class="mr-2">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
 

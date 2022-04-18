@@ -24,7 +24,7 @@
           
           <div id="sizes">
             <div v-if="hasSizes">
-              <button v-for="size in sizes" :key="size.name" type="button" class="btn btn-outline-dark mr-2" @click="simpleAddToCard(product, size)">
+              <button v-for="size in product.sizes" :key="size.name" type="button" :class="{ disabled: !size.availability }" class="btn btn-outline-dark mr-2" @click="simpleAddToCard(product, size)">
                 {{ size.name }}
               </button>
             </div>
@@ -113,16 +113,8 @@ export default {
       return _.isUndefined(mainImage) ? this.product.images[0] : mainImage
     },
 
-    sizes() {
-      // TODO: Make this global ?
-      // Return all the size options for the given product
-      return _.filter(this.product.additional_variants, (variant) => {
-        return variant.category === 'Size'
-      })
-    },
-
     hasSizes() {
-      return this.sizes.length > 0
+      return this.product.sizes.length > 0
     }
   }
 }

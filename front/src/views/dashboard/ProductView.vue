@@ -6,11 +6,11 @@
           <v-card-actions class="text-right justify-content-right">
             <v-btn @click="$router.go(-1)">
               <v-icon class="mr-2">mdi-arrow-left</v-icon>
-              Annuler
+              Cancel
             </v-btn>
 
             <v-btn @click="updateProduct">
-              Mettre à jour
+              Update
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -26,8 +26,8 @@
 
           <v-card-text class="mb-3">
             <v-text-field type="text" v-model="productUpdates.name" placeholder="Product name" class="mb-3" hide-details outlined></v-text-field>
-            <v-autocomplete :items="['a', 'b', 'c']" placeholder="Category" hide-details auto-select-first outlined>
-              <v-text-field type="text" v-model="productUpdates.category" placeholder="Category"></v-text-field>
+            <v-autocomplete :items="categories" :loading="categoriesLoading" :search-input.sync="searchedCategory" cache-items placeholder="Category" hide-details outlined>
+              <v-text-field type="text"></v-text-field>
             </v-autocomplete>
           </v-card-text>
         </v-card>
@@ -156,11 +156,24 @@ export default {
   data: () => ({
     productUpdates: {},
     openImageSelection: false,
-    additionalProductDetails: {}
+    additionalProductDetails: {},
+
+    categoriesLoading: false,
+    categories: ['Bags'],
+    searchedCategory: null,
+    selectedCategory: null
   }),
   
   computed: {
     ...mapState('dashboardModule', ['productDetails'])
+  },
+
+   watch: {
+    searchedCategory(newValue) {
+      if (newValue && newValue !== this.selectedCategory) {
+        this.queryCategories()
+      }
+    }
   },
   
   beforeMount () {
@@ -178,41 +191,56 @@ export default {
       try {
         var response = await this.axios.get(`shop/dashboard/products/${this.$route.params.id}`)
         var data = response.data
+        
         this.additionalProductDetails = data
-        var updateFields = {}
+        
+        var updatedFields = {}
         var images = _.map(this.additionalProductDetails.images, (image) => {
           return image.id
         })
-        updateFields['images'] = images
-        Object.assign(updateFields, data)
-        this.productUpdates = updateFields
+        
+        updatedFields['images'] = images
+        Object.assign(updatedFields, data)
+        this.productUpdates = updatedFields
       } catch(error) {
         console.log(error)
       }
     },
+    
     async updateProduct() {
       try {
-        var response = await this.axios.post(`/dashboard/products/${this.$route.params.id}/update`, this.productUpdates)
+        var response = await this.axios.post(`shop/dashboard/products/${this.$route.params.id}/update`, this.productUpdates)
         response
       } catch(error) {
         console.log(error)
       }
     },
+    
     async removeImage() {
-      // Do something 
+      // Do something
     },
 
-
-
-    loadImages () {
-      this.$api.dashboard.images.all()
-      .then((response) => {
-        response
+    async loadImages () {
+      try {
+        var response = await this.axios.get('shop/images')
         this.openImageSelection = true
-      })
-      .catch((error) => {
-        error
-      })
+        response
+      } catch(error) {
+        console.log(error)
+      }
+    },
+
+    async queryCategories() {
+      try {
+        this.categoriesLoading = true
+        
+        var response = await this.axios.get('shop/dashboard/categories')
+        this.categories = response.data
+        
+        this.categoriesLoading = false
+      } catch(error) {
+        console.log(error)
+      }
     }
   }
 }

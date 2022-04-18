@@ -70,12 +70,12 @@
         <v-col cols="12">
           <v-btn :class="{ disabled: !hasPrevious }" @click="loadPrevious">
             <v-icon class="mr-2">mdi-arrow-left</v-icon>
-            Précédent
+            Previous
           </v-btn>
 
           <v-btn :class="{ disabled: !hasNext }" @click="loadNext">
             <v-icon class="mr-2">mdi-arrow-right</v-icon>
-            Suivant
+            Next
           </v-btn>
         </v-col>
       </v-row>
@@ -90,7 +90,7 @@
           <b-list-group>
 
             <b-list-group-item v-for="product in products" :key="product.id" action @click="newAssociation.product = product.id">
-              {{ product.name }}
+              {{ product.name }} - {{ product.id }}
             </b-list-group-item>
           
           </b-list-group>                    
