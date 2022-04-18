@@ -2,13 +2,12 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import i18n from '../i18n'
-import shop from './shop'
 import store from '@/store'
 import { loadView } from './utils'
 
-
 // Routes
-
+import shop from './shop'
+import dashboard from './dashboard'
 
 // import BaseAccount from '@/layouts/BaseAccount.vue'
 
@@ -38,7 +37,9 @@ var routes = [
         component: loadView('CookiesView')
       }
     ]
-  }
+  },
+
+  ...dashboard
 ]
 
 var router = new VueRouter({
@@ -50,11 +51,16 @@ var router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  var localeLanguage = to.params.lang
-  var supportedLanguages = process.env.VUE_APP_I18N_SUPPORTED_LOCALE.split(',')
-
-  if (!supportedLanguages.includes(localeLanguage)) { next('en') }
-  if (i18n.locale !== localeLanguage) { i18n.locale = localeLanguage }
+  if (!to.meta.adminLink) {
+    // For now, only do translation for the
+    // main website. The admin site will be
+    // defaulted to french
+    var localeLanguage = to.params.lang
+    var supportedLanguages = process.env.VUE_APP_I18N_SUPPORTED_LOCALE.split(',')
+  
+    if (!supportedLanguages.includes(localeLanguage)) { next('en') }
+    if (i18n.locale !== localeLanguage) { i18n.locale = localeLanguage }
+  }
 
   if (to.meta['requiresAuthentication']) {
     if (!store.getters['authenticationModule/isAuthenticated']) {

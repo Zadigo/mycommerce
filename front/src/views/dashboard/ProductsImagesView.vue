@@ -35,19 +35,22 @@
                   <v-divider></v-divider>
 
                   <v-card-actions>
-                    <v-btn text>Upload</v-btn>
+                    <v-btn text>
+                      Upload
+                    </v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
 
-              <v-btn class="mr-2" text>Sélectionner tout</v-btn>
-              <v-btn text @click="selectedImages=[]">Déselectionner <v-chip class="ml-2" color="primary" label>{{ selectedImages.length }}</v-chip> </v-btn>
-
-              <v-btn color="indigo" dark @click="loadGenericProducts">
-                Associer au produit
+              <v-btn class="mr-2" text>Select all</v-btn>
+              <v-btn text @click="selectedImages=[]">
+                Unselect all 
+                <v-chip class="ml-2" color="primary" label>{{ selectedImages.length }}</v-chip> 
               </v-btn>
 
-              
+              <v-btn color="indigo" dark @click="loadGenericProducts">
+                Associate to product
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -82,9 +85,6 @@
 
     <!-- Modals -->
     <v-dialog v-model="productSelectionModal" height="200" width="500">
-      <!-- <template v-slot:activator="{ on, attrs }">
-      </template> -->
-
       <v-card>
         <v-card-text>
           <b-list-group>
@@ -97,8 +97,8 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-btn text @click="associateImages">
-            Associer
+          <v-btn text @click="associateImagesToProduct">
+            Associate
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -107,10 +107,11 @@
 </template>
 
 <script>
-var _ = require('lodash')
+import _ from 'lodash'
+import { buildLimitOffset, listManager } from '@/utils'
 
-import ImageContainer from '../../components/dashboard/product_images/ImageContainer.vue'
-import PageHeader from '../../components/dashboard/PageHeader.vue'
+import ImageContainer from '@/components/dashboard/product_images/ImageContainer.vue'
+import PageHeader from '@/components/dashboard/PageHeader.vue'
 
 export default {
   name: 'ProductImagesView',
@@ -128,7 +129,7 @@ export default {
     search: [],
 
     selectedImages: [],
-    associationMenu: false,
+
     newAssociation: {
       product: null
     },
@@ -177,40 +178,20 @@ export default {
 
   beforeMount () {
     if (this.$session.contains('images')) {
-
       this.cachedResponse = this.$session.retrieve('images')
       setTimeout(() => {
         this.isLoading = false
       }, 500);
     
     } else {
-    
       this.loadImages()
-    
     }
   },
 
   methods: {
-    async loadImages (url) {
-      function buildUrl(url) {
-        var limit = 100
-        var offset = 0
-        
-        if (url) {
-            var instance = new URL(url)
-            var potentialLimit = instance.searchParams.get('limit')
-            var potentialOffset = instance.searchParams.get('offset')
-
-            limit = potentialLimit ? potentialLimit : 100
-            offset = potentialOffset ? potentialOffset : 0
-        }
-
-        var path = new URLSearchParams({ limit: limit, offset: offset })
-        return path
-      }
-
+    async loadImages(url) {
       try {
-        var response = await this.axios.get(`/images?${ buildUrl(url).toString() }`)
+        var response = await this.axios.get(`/images?${buildLimitOffset(url).toString()}`)
         var cachedResponse = response.data
 
         this.cachedResponse = cachedResponse
@@ -222,55 +203,42 @@ export default {
       }
     },
 
-    associateImages () {
-      this.associationMenu = false
+    async loadGenericProducts() {
+      try {
+        var response = await this.axios.get('shop/dashboard/products/generic')
 
-      // TODO: Simplify this section by unifying
-      // the elements to send in just one array
-      var data = this.newAssociation
-      data['images'] = this.selectedImages
-
-      this.$api.dashboard.products.associateImages(data)
-      .then((response) => {
-        // TODO: Show alert that images were
-        // correctly associated
-        response
-        this.productSelectionModal = false
-        this.selectedImages = []
-      })
-      .catch((error) => {
+        this.products = response.data
+        this.productSelectionModal = true
+      } catch(error) {
         console.log(error)
-      })
+      }
     },
 
-    loadPrevious () {
+    async associateImagesToProduct() {
+      try {
+        var data = this.newAssociation
+        
+        data['images'] = this.selectedImages
+
+        var response = this.axios.post(`shop/dashboard/products/${data.product}/images/associate`, data)
+        this.selectedImages = []
+        this.productSelectionModal = false
+        response
+      } catch(error) {
+        console.log(error)
+      }
+    },
+
+    loadPrevious() {
       this.loadImages(this.cachedResponse.previous)
     },
 
-    loadNext () {
+    loadNext() {
       this.loadImages(this.cachedResponse.next)
     },
-   
-    loadGenericProducts () {
-      this.$api.dashboard.products.generic()
-      .then((response) => {
-        this.productSelectionModal = true
-        this.products = response.data
-      })
-      .catch((error) => {
-        error
-      })
-    },
 
-    setSelection (imageId) {
-      // TODO: Create a mixin that manages the state of
-      // of objects in arrays
-      if (this.selectedImages.includes(imageId)) {
-        var index = _.indexOf(this.selectedImages, imageId)
-        this.selectedImages = this.selectedImages.splice(0, index)
-      } else {
-        this.selectedImages.push(imageId)
-      }
+    setSelection(imageId) {
+      this.selectedImages = listManager(this.selectedImages, imageId)
     }
   }
 }

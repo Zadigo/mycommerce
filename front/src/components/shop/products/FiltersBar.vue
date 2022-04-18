@@ -21,7 +21,7 @@
 
             <v-list>
               <v-list-item v-for="method in sortMethods" :key="method" @click="doSort(method)">
-                <v-list-item-title>{{ method }}</v-list-item-title>
+                <v-list-item-title>{{ $t(method) }}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>

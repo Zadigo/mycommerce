@@ -89,7 +89,7 @@ export default {
   methods: {
     goToSite() {
       this.$store.commit('changeSite', 'base-site')
-      this.$router.push({ name: 'home', params: { lang: this.$i18n.locale} })
+      this.$router.push({ name: 'home_view', params: { lang: 'fr' } })
     }
   }
 }

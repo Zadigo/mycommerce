@@ -1,11 +1,16 @@
-from django.urls import re_path
+from django.urls import re_path, include
 
 from shop import views
 
-api_name = 'shop'
+app_name = 'shop'
+
+dashboard_patterns = [
+    re_path(r'^products/(?P<pk>\d+)/images/associate', views.associate_images_to_product),
+    re_path(r'^products/generic', views.generic_products_view),
+]
 
 urlpatterns = [
-    re_path(r'^dashboard/products/(?P<pk>\d+)', views.dashboard_product_view),
+    re_path(r'^dashboard/', include((dashboard_patterns, app_name), namespace='dashboard')),
     
     re_path(r'^advanced/search', views.advanced_search_view),
     re_path(r'^search', views.search_view),

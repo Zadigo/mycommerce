@@ -6,16 +6,17 @@ from django.core.cache import cache
 from django.db.models import Avg
 from django.db.models.expressions import Q
 from django.shortcuts import get_list_or_404, get_object_or_404
-from mycommerce.responses import (CustomPagination, api_response, error_response,
-                                  simple_api_response)
+from mycommerce.responses import (CustomPagination, api_response,
+                                  error_response, simple_api_response)
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from reviews.serializers import ReviewSerializer
 
 from shop.models import Like, Product, Wishlist
-from shop.serializers import (ProductSerializer, ValidateWishList,
-                              VariantSerializer, WishlistSerializer, LikeSerializer)
+from shop.serializers import (ImageAssociationSerializer, LikeSerializer,
+                              ProductSerializer, ValidateWishList,
+                              VariantSerializer, WishlistSerializer)
 
 
 class CustomProductPagination(CustomPagination):
@@ -272,3 +273,23 @@ def remove_liked_product_view(request, **kwargs):
     # TODO: Make this the regular return way for all like
     # functions that require this
     return api_response(ProductSerializer, queryset=like_list.products.all(), has_many=True)
+
+
+# Dashboard
+
+@api_view(['get'])
+def generic_products_view(request, **kwargs):
+    products = cache.get('generic_product_details')
+    if not products:
+        products = Product.objects.values('id', 'name')
+        cache.get('generic_product_details', products, 3600)
+    return simple_api_response(products)
+
+
+@api_view(['post'])
+def associate_images_to_product(request, pk, **kwargs):
+    """Associate images to a given product"""
+    serializer = ImageAssociationSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save(pk)
+    return simple_api_response({'status': True})

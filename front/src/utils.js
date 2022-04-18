@@ -37,10 +37,45 @@ function truncate(value) {
     return `${value.slice(0, 28)}...`
 }
 
+function buildLimitOffset(url) {
+    // With an url like this http://example.com?limit=100&offset=10,
+    // try to rebuild query params with the provided limit
+    // and offset. If not default.
+    var limit = 100
+    var offset = 0
+
+    if (url) {
+        var instance = new URL(url)
+        var potentialLimit = instance.searchParams.get('limit')
+        var potentialOffset = instance.searchParams.get('offset')
+
+        limit = potentialLimit ? potentialLimit : limit
+        offset = potentialOffset ? potentialOffset : offset
+    }
+
+    return new URLSearchParams({ limit: limit, offset: offset })
+}
+
+function listManager(items, itemId) {
+    // A helper function that allows managing
+    // items in a list by removing or pushing
+    // them depending on whether they are in
+    // the list or not
+    if (items.includes(itemId)) {
+        var index = _.indexOf(items, itemId)
+        items.splice(index, 1)
+    } else {
+        items.push(itemId)
+    }
+    return items
+}
+
 export {
     indexElements,
     incrementLastId,
     readFile,
     readMultipleFiles,
-    truncate
+    truncate,
+    buildLimitOffset,
+    listManager
 }

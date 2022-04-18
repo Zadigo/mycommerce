@@ -1,9 +1,10 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import fields
 from rest_framework.serializers import (ModelSerializer, Serializer,
                                         raise_errors_on_nested_writes)
 from variants.serializers import SizeSerializer
 
-from shop.models import Wishlist
+from shop.models import Image, Product, Wishlist
 
 
 class AdditionalVariantSerializer(Serializer):
@@ -91,3 +92,12 @@ class ValidateWishList(Serializer):
 class LikeSerializer(UserlistSerializer):
     id = fields.IntegerField()
     products = ProductSerializer(many=True)
+
+
+class ImageAssociationSerializer(Serializer):
+    images = fields.ListField()
+
+    def save(self, product_id, **kwargs):
+        product = get_object_or_404(Product, id=product_id)
+        images = Image.objects.filter(id__in=self.validated_data['images'])
+        product.images.add(*images)
