@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-13 19:08+0200\n"
+"POT-Creation-Date: 2022-04-18 14:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: .\cart\models.py:14
 msgid "Unique identifier used essentially for anonymous user carts"
-msgstr ""
+msgstr "Identifiant pour les paniers créés par des utilisateurs anonymes"
 
 #: .\collection\choices.py:7 .\shop\choices.py:68
 msgid "Accessories"
@@ -90,17 +90,13 @@ msgstr "Commandes clients"
 msgid "Used for the image's alt attribute"
 msgstr "Utilisé pour l'attribut alt the l'image"
 
-#: .\shop\models.py:67
+#: .\shop\models.py:64
 msgid "Used for the video alt attribute"
 msgstr "Correspond à l'attribut alt de l'image"
 
-#: .\shop\models.py:115
+#: .\shop\models.py:112
 msgid "Defines a declination of a main product in color"
 msgstr "Déclinaison du produit en couleur"
-
-#: .\shop\models.py:127
-msgid "Declination in size, patterns..."
-msgstr "Déclinaisons du produit en taille, motifs..."
 
 #: .\shop\models.py:146
 #, fuzzy
@@ -112,23 +108,47 @@ msgstr "Coût d'achat ou de fabrication du produit"
 msgid "Explicitly mark a product as being new"
 msgstr "Marquer le produit comme étant nouveau"
 
-#: .\shop\models.py:197
+#: .\shop\models.py:201
 msgid "A product on sale cannot have a sale value of 0"
 msgstr "Un produit soldé ne peut pas avoir une valeur inférieur à zéro"
 
-#: .\shop\models.py:203
+#: .\shop\models.py:212
 msgid "Product"
 msgstr "Produit"
 
-#: .\shop\models.py:204
+#: .\shop\models.py:213
 #, fuzzy
-#| msgid "Suits"
-msgid "Produits"
-msgstr "Blazers"
+#| msgid "Product"
+msgid "Products"
+msgstr "Produits"
+
+#: .\shop\models.py:238
+msgid "Like"
+msgstr ""
+
+#: .\shop\models.py:249
+msgid "Wishlist"
+msgstr "Liste d'envie"
 
 #: .\shop\validators.py:15
 msgid "The product's price should be at least above 0"
 msgstr "Le prix du produit doit être supérieur à zéro"
+
+#: .\variants\models.py:28
+msgid "Size"
+msgstr "Taille"
+
+#: .\variants\models.py:29
+msgid "Sizes"
+msgstr "Tailles"
+
+#~ msgid "Declination in size, patterns..."
+#~ msgstr "Déclinaisons du produit en taille, motifs..."
+
+#, fuzzy
+#~| msgid "Suits"
+#~ msgid "Produits"
+#~ msgstr "Blazers"
 
 #~ msgid "Coats"
 #~ msgstr "Blazers"

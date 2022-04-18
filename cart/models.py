@@ -1,17 +1,17 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from shop.choices import ClotheSizesChoices
 from django.utils.translation import gettext_lazy as _
-from cart.managers import CartManager
+from shop.choices import ClotheSizesChoices
 from shop.models import Product
 
+from cart.managers import CartManager
 
 USER_MODEL = get_user_model()
 
 class AbstractCart(models.Model):
     session_id = models.CharField(
         max_length=100,
-        help_text=_("Unique identifier used essentially for anonymous user carts")
+        help_text=_("Unique identifier to identify user's carts")
     )
     user = models.ForeignKey(
         USER_MODEL,
@@ -52,3 +52,7 @@ class AbstractCart(models.Model):
 
 class Cart(AbstractCart):
     objects = CartManager.as_manager()
+    
+    class Meta(AbstractCart.Meta):
+        verbose_name = _('Cart')
+        verbose_name_plural = _('Carts')
