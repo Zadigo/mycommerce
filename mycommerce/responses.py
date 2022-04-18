@@ -1,10 +1,9 @@
 from typing import Union
 
 from django.db.models.query import QuerySet
-from numpy import isin
+from rest_framework import status
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.serializers import ListSerializer, Serializer
 
 
