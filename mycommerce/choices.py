@@ -11,3 +11,8 @@ class CountryChoices(Choices):
     MARTINIQUE = 'Martinique'
     MONACO = 'Monaco'
     REUNION = 'Réunion'
+
+
+def flatten_choices(choices):
+    items = map(lambda x: x[-1], choices.choices)
+    return [{'id': i, 'name': choice} for i, choice in enumerate(items)]

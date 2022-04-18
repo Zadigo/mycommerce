@@ -6,6 +6,7 @@ from django.core.cache import cache
 from django.db.models import Avg
 from django.db.models.expressions import Q
 from django.shortcuts import get_list_or_404, get_object_or_404
+from mycommerce.choices import flatten_choices
 from mycommerce.responses import (CustomPagination, api_response,
                                   error_response, simple_api_response)
 from rest_framework.decorators import api_view, permission_classes
@@ -13,10 +14,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from reviews.serializers import ReviewSerializer
 
+from shop.choices import CategoryChoices
 from shop.models import Like, Product, Wishlist
 from shop.serializers import (ImageAssociationSerializer, LikeSerializer,
-                              ProductSerializer, ValidateWishList,
-                              VariantSerializer, WishlistSerializer)
+                              ProductSerializer, ProductUpdateValidation,
+                              ValidateWishList, VariantSerializer,
+                              WishlistSerializer)
 
 
 class CustomProductPagination(CustomPagination):
@@ -286,6 +289,13 @@ def generic_products_view(request, **kwargs):
     return simple_api_response(products)
 
 
+@api_view(['get'])
+def dashboard_product_details_view(request, pk, **kwargs):
+    product = get_object_or_404(Product, pk=pk)
+    serializer = ProductSerializer(instance=product)
+    return simple_api_response(serializer)
+
+
 @api_view(['post'])
 def associate_images_to_product(request, pk, **kwargs):
     """Associate images to a given product"""
@@ -293,3 +303,37 @@ def associate_images_to_product(request, pk, **kwargs):
     serializer.is_valid(raise_exception=True)
     serializer.save(pk)
     return simple_api_response({'status': True})
+
+
+@api_view(['post'])
+def rename_products_view(request, **kwargs):
+    serializer = RenamProductsValidation(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    products = serializer.save()
+    products_serializer = ProductSerializer(instance=products, many=True)
+    return responses.success_response(serializer=products_serializer)
+
+
+@api_view(['get'])
+def products_view(request, **kwargs):
+    queryset = Product.objects.values('id', 'name', 'active')
+    serializer = ProductSerializer(instance=queryset, many=True)
+    return responses.success_response(serializer=serializer)
+
+
+@api_view(['post'])
+def update_product_view(request, pk, **kwargs):
+    product = get_object_or_404(Product, id=pk)
+    serializer = ProductUpdateValidation(instance=product, data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return simple_api_response(serializer)
+
+
+@api_view(['get'])
+def query_categories(request, **kwargs):
+    categories = cache.get('categories', None)
+    if categories is None:
+        categories = map(lambda x: x[-1], CategoryChoices.choices)
+        cache.set('categories', list(categories), 3600)
+    return simple_api_response(categories)

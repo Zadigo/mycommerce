@@ -5,7 +5,10 @@ from shop import views
 app_name = 'shop'
 
 dashboard_patterns = [
+    re_path(r'^categories', views.query_categories),
     re_path(r'^products/(?P<pk>\d+)/images/associate', views.associate_images_to_product),
+    re_path(r'^products/(?P<pk>\d+)/update', views.update_product_view),
+    re_path(r'^products/(?P<pk>\d+)', views.dashboard_product_details_view),
     re_path(r'^products/generic', views.generic_products_view),
 ]
 

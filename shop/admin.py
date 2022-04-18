@@ -1,4 +1,5 @@
 from django.contrib import admin
+from jsonschema import ValidationError
 
 from shop.models import (Image, Like, Product, Video,
                          Wishlist)
@@ -20,7 +21,7 @@ class ProductAdmin(admin.ModelAdmin):
         ['Pricing', {'fields': ['unit_price', 'sale_value', 'sale_price', 'on_sale']}],
         ['Other', {'fields': ['display_new', 'active', 'slug']}]
     ]
-    actions = ['activate', 'deactivate', 'download_csv', 'copy_products']
+    actions = ['activate', 'deactivate', 'download_csv', 'copy_products', 'create_default_sizes']
     
     def activate(self, request, queryset):
         queryset.update(active=True)
@@ -38,6 +39,21 @@ class ProductAdmin(admin.ModelAdmin):
             slug = create_product_slug(new_name, product.color)
             new_products.append(Product(name=new_name, color=product.color, category=product.category, unit_price=product.unit_price, slug=slug))
         Product.objects.bulk_create(new_products)
+        
+    def create_default_sizes(self, request, queryset):
+        """For selected products, create three basic
+        sizes XS, S and M which are generally the
+        average size for clothes"""
+        sizes = ['XS', 'S', 'M']
+        for product in queryset:
+            for size in sizes:
+                try:
+                    product.size_set.create(product=product, name=size, availability=False)
+                except ValidationError:
+                    # If the size already exists for a given
+                    # product, just fail silently
+                    pass
+        self.message_user(request, f'Created default sizes for {len(queryset)} products')
 
 
 @admin.register(Image)
