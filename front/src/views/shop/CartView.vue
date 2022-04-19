@@ -77,9 +77,9 @@
                   {{ $t('Checkout') }}
                 </router-link>
 
-                <b-link :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale } }">
+                <router-link :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale } }">
                   {{ $t('Continue shopping') }}
-                </b-link>
+                </router-link>
               </div>
             </div>
           </aside>

@@ -32,7 +32,7 @@
             <!-- Information -->
             <div id="information" class="col-12 pt-0 pb-0">
               <p class="font-weight-bold font-size-3 m-0">
-                {{ currentProduct.name|capitalizeLetters }}
+                {{ currentProduct.name|capitalizeLetters }} - {{ currentProduct.color }}
               </p>
 
               <p class="my-2 font-weight-bold">

@@ -14,7 +14,7 @@
               <v-expansion-panel-content>
                 All our shipments are climate compensated at no extra cost to you! We plant a tree for 
                 every order, so feel confident knowing you’re a sustainable shopper with Gooseberry! 
-                Find more <b-link>here</b-link>
+                Find more <router-link>here</router-link>
               </v-expansion-panel-content>
             </v-expansion-panel>
 
@@ -148,7 +148,7 @@
               </v-expansion-panel-header>
              
               <v-expansion-panel-content>
-                Visit <b-link href="https://example.returnscenter.com" target="_blank">our return center</b-link>
+                Visit <a href="https://example.returnscenter.com" target="_blank">our return center</a>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>

@@ -13,8 +13,9 @@
             <v-card-text>
               <v-autocomplete v-model="search" :items="imageNames" multiple chips solo></v-autocomplete>
             </v-card-text>
-            
+
             <v-card-actions>
+              <!-- Modal -->
               <v-dialog v-model="showUploadImagesDialog" width="800">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn v-bind="attrs" class="mr-2" text v-on="on">
@@ -42,7 +43,10 @@
                 </v-card>
               </v-dialog>
 
-              <v-btn class="mr-2" text>Select all</v-btn>
+              <v-btn class="mr-2" text>
+                Select all
+              </v-btn>
+
               <v-btn text @click="selectedImages=[]">
                 Unselect all 
                 <v-chip class="ml-2" color="primary" label>{{ selectedImages.length }}</v-chip> 
@@ -83,21 +87,36 @@
       <v-btn elevation="2" absolute bottom right fab></v-btn>
     </v-container>    
 
-    <!-- Modals -->
-    <v-dialog v-model="productSelectionModal" height="200" width="500">
+    <!-- Product selection -->
+    <v-dialog v-model="productSelectionModal" width="800">
       <v-card>
         <v-card-text>
-          <b-list-group>
+          <v-container>
+            <v-row>
+              <v-col cols="12">
+                <div class="list-group list-group-flush">
+                  <a v-for="product in products" :key="product.id" :class="{ active: product.id === newAssociation.product }" class="list-group-item list-group-item-action" @click="newAssociation.product = product.id">
+                    <div class="ms-2 me-auto">
+                      <div class="fw-bold">{{ product.id }}. {{ product.name }}</div>
+                      Cras justo odio
+                    </div>
+                  </a>
+                </div>
+              </v-col>
 
-            <b-list-group-item v-for="product in products" :key="product.id" action @click="newAssociation.product = product.id">
-              {{ product.name }} - {{ product.id }}
-            </b-list-group-item>
-          
-          </b-list-group>                    
+              <v-col cols="12">
+                <v-switch v-model="newAssociation.replace_existing_images" label="Replace product's existing images"></v-switch>
+              </v-col>
+            </v-row>
+          </v-container>
         </v-card-text>
 
         <v-card-actions>
-          <v-btn text @click="associateImagesToProduct">
+          <v-btn text @click="productSelectionModal=false">
+            Cancel
+          </v-btn>
+
+          <v-btn color="primary" @click="associateImagesToProduct">
             Associate
           </v-btn>
         </v-card-actions>
@@ -131,7 +150,8 @@ export default {
     selectedImages: [],
 
     newAssociation: {
-      product: null
+      product: null,
+      replace_existing_images: false
     },
 
     productSelectionModal: false,

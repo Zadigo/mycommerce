@@ -10,14 +10,13 @@
             <p class="font-weight-bold text-uppercase">{{ $t(section.name) }}</p>
 
             <template v-for="(link, y) in section.links">
-              <b-link v-if="link.name" :key="y" :to="{ name: link.name, params: { lang: $i18n.locale } }" class="d-block py-1 text-muted text-decoration-none">
+              <router-link v-if="link.name" :key="y" :to="{ name: link.name, params: { lang: $i18n.locale } }" class="d-block py-1 text-muted text-decoration-none">
                 {{ $t(link.text) }}
-              </b-link>
+              </router-link>
 
-              <b-link v-else :key="y" :href="link.href" class="d-block py-1 text-muted text-decoration-none">
+              <router-link v-else :key="y" :to="link.href" class="d-block py-1 text-muted text-decoration-none">
                 {{ $t(link.text) }}
-              </b-link>
-
+              </router-link>
             </template>
           </div>
 
