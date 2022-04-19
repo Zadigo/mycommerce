@@ -2,10 +2,10 @@
   <v-app>
     <header class="fixed-top">
       <!-- Top banner -->
-      <base-top-banner />
+      <base-top-banner v-show="!$route.meta.isFullPage" />
 
       <!-- Navbar -->
-      <base-navbar />
+      <base-navbar v-show="!$route.meta.isFullPage" />
 
       <!-- Messages -->
       <base-messages />
@@ -28,7 +28,7 @@
       <modal-language-selection />
     </v-main>
 
-    <base-footer />
+    <base-footer v-show="!$route.meta.isFullPage" />
   </v-app>
 </template>
 

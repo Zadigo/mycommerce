@@ -34,6 +34,9 @@ export default [
     {
         path: 'login',
         name: 'login_view',
+        meta: {
+            isFullPage: true
+        },
         component: loadView('shop/auth/LoginView')
     },
     {
