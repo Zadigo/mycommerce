@@ -29,6 +29,8 @@
             - opens (str)
             - closes (str)
 
+        - socials (list) [Optional non json-ld]
+
 */
 
 import _ from 'lodash'
@@ -38,7 +40,7 @@ function checkDetails(details) {
     // in order to normalize as much as possible the
     // details passed by the user and also eventually
     // create clean JSON+LD data for SEO
-    var authorizedKeys = ['legalName', 'urls', 'emails', 'telephones', 'address']
+    var authorizedKeys = ['legalName', 'urls', 'emails', 'telephones', 'address', 'socials']
 
     if (typeof details !== 'object') {
         throw 'Company details should be an object'
