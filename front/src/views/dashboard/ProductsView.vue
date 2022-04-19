@@ -27,7 +27,7 @@
               </template>
 
               <v-list>
-                <v-list-item>
+                <v-list-item @click="activateProducts">
                   <v-list-item-icon>
                     <v-icon>mdi-check-circle</v-icon>
                   </v-list-item-icon>
@@ -37,7 +37,7 @@
                   </v-list-item-title>
                 </v-list-item>
 
-                <v-list-item>
+                <v-list-item @click="deactivateProducts">
                   <v-list-item-icon>
                     <v-icon>mdi-check-circle-outline</v-icon>
                   </v-list-item-icon>
@@ -76,6 +76,7 @@
           <v-data-table v-model="selectedProducts" :headers="headers" :items="searchedProducts" :items-per-page="300" item-key="id" show-select class="elevation-0">
             <template v-slot:item.name="{ item }">
               <router-link :to="{ name: 'dashboard_product_view', params: { id: item.id } }">
+                <v-icon v-if="item.images.length == 0" class="mr-2" color="red darken-1">mdi-image</v-icon>
                 {{ item.name }}
               </router-link>
             </template>  
@@ -187,9 +188,10 @@ export default {
 
   methods: {
     async getProducts() {
-      // TODO: Check for when pagination is integrated
       try {
-        var response = await this.axios.get('/dashboard/products')
+        // TODO: Check for when pagination is integrated
+        var response = await this.axios.get('shop/dashboard/products')
+
         this.$store.commit('dashboardModule/setProducts', response.data)
       } catch(error) {
         console.log(error)
@@ -210,6 +212,35 @@ export default {
         console.log(error)
       }
     },
+
+    async activateProducts() {
+      try {
+        var productIds = this.selectedProducts.map((product) => {
+          return product.id
+        })
+        var response = await this.axios.post('shop/dashboard/products/activate', { products: productIds })
+
+        this.$store.commit('dashboardModule/selectiveProductUpdates', response.data)
+        this.selectedProducts = []
+      } catch(error) {
+        console.log(error)
+      }
+    },
+
+    async deactivateProducts() {
+      try {
+        var productIds  = this.selectedProducts.map((product) => {
+          return product.id
+        })
+        var response = await this.axios.post('shop/dashboard/products/deactivate', { products: productIds })
+        
+        this.$store.dispatch('dashboardModule/selectiveProductUpdates', response.data)
+        this.selectedProducts = []
+      } catch(error) {
+        console.log(error)
+      }
+    },
+
     // renameProducts () {
     //   var data = {
     //     name: this.newProductsName,

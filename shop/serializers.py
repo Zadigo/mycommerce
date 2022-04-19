@@ -1,3 +1,4 @@
+from math import prod
 from django.shortcuts import get_object_or_404
 from rest_framework import fields
 from rest_framework.serializers import (Serializer,
@@ -114,10 +115,14 @@ class ImageAssociationSerializer(Serializer):
             product.images.set(self.get_images())
         else:
             product.images.add(*self.get_images())
+        product.refresh_from_db(fields=['images'])
+        return ProductSerializer(instance=product)
         
     def remove(self, product_id, **kwargs):
         product = self.get_object(product_id)
         product.images.remove(*self.get_images())
+        product.refresh_from_db(fields=['images'])
+        return ProductSerializer(instance=product)
 
 
 class ProductUpdateValidation(Serializer):

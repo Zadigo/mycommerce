@@ -38,3 +38,7 @@ body {
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
 }
+
+.text-decoration-dotted {
+  text-decoration: dotted;
+}

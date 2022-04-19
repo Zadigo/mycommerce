@@ -2,47 +2,8 @@
   <section id="product">
     <v-row>
       <base-edit-heading :is-saving="isSaving" :items="products" :current-item="productDetails" :title="productDetails.name" route-name="dashboard_product_view" @update="updateProduct" @previous="goToPrevious" @next="goToNext" />
-      <!-- TODO: Make this kinda global Top header -->
-      <!-- <v-col cols="12">
-        <v-card elevation="0">
-          <v-card-text class="p-0">
-            <v-btn text>
-              <v-icon class="mr-2">mdi-arrow-left</v-icon>
-              Previous
-            </v-btn>
 
-            <v-btn text>
-              Next
-              <v-icon class="ml-2">mdi-arrow-right</v-icon>
-            </v-btn>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12">
-        <v-card>
-          <v-card-title>
-            {{ productDetails.name }}
-          </v-card-title>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12">
-        <v-card elevation="0">
-          <v-card-text class="p-0">
-            <v-btn color="warning" @click="$router.go(-1)">
-              <v-icon class="mr-2">mdi-cancel</v-icon>
-              Cancel
-            </v-btn>
-
-            <v-btn class="mx-2" color="primary" @click="updateProduct">
-              <v-icon class="mr-2">mdi-save</v-icon>
-              Save and update
-            </v-btn>
-          </v-card-text>
-        </v-card>
-      </v-col> -->
-
+      <!-- Left -->
       <v-col cols="8">
         <!-- Informations -->
         <v-card>
@@ -115,7 +76,7 @@
 
           <v-card-text>
             <v-row>
-              <v-col v-for="image in additionalProductDetails.images" :key="image.id" cols="3">
+              <v-col v-for="image in productDetails.images" :key="image.id" cols="3">
                 <div id="product-image">
                   <v-img :src="image.mid_size|mediaUrl"></v-img>
 
@@ -140,11 +101,15 @@
       <!-- Aside -->
       <v-col cols="4">
         <v-card>
-          <v-card-title>
+          <!-- <v-card-title>
             Options
-          </v-card-title>
+          </v-card-title> -->
 
           <v-card-text>
+            <div v-if="productDetails.images.length == 0" class="alert alert-warning my-4">
+              This product has no images
+            </div>
+
             <v-switch v-model="productUpdates.active" label="Activer" hide-details></v-switch>
 
             <div v-if="!productDetails.active" class="alert alert-warning my-4">
@@ -163,7 +128,7 @@
         <v-card-text>
           <v-container>
             <v-row v-if="images.length > 0">
-              <v-col v-for="image in images" :key="image.id" :name="image.name" cols="3" @click="selectImage(image)">
+              <v-col v-for="image in images" :key="image.id" :title="image.name" cols="3" @click="selectImage(image)">
                 <v-img :src="image.mid_size|mediaUrl" :class="{ 'shadow': selectedImages.includes(image.id) }"></v-img>
               </v-col>
 
@@ -175,7 +140,7 @@
               <div class="actions">
                 <v-btn @click="openImageSelection=false" text>Close</v-btn>
                 <v-btn @click="selectedImages=[]" text>Deselect all</v-btn>
-                <v-btn :disabled="!selectedImages.length > 0" @click="associateImagesToProduct(() => { openImageSelection = false })" color="primary">Add {{ selectedImages.length }} images</v-btn>
+                <v-btn :disabled="!selectedImages.length > 0" @click="associateImagesToProduct(associateImagesCallback)" color="primary">Add {{ selectedImages.length }} images</v-btn>
               </div>
             </v-row>
           </v-container>
@@ -186,7 +151,7 @@
 </template>
 
 <script>
-import _ from 'lodash'
+// import _ from 'lodash'
 // import { listManager } from '@/utils'
 import { mapState } from 'vuex'
 import imagesMixin from '@/mixins/dashboard/images'
@@ -242,25 +207,15 @@ export default {
     // which will be available for when the user
     // updates
     Object.assign(this.productUpdates, this.productDetails)
-    this.getAdditionalDetails()
+    this.refreshDetails()
   },
 
   methods: {
-    async getAdditionalDetails() {
+    async refreshDetails() {
       try {
         var response = await this.axios.get(`shop/dashboard/products/${this.$route.params.id}`)
-        var data = response.data
-        
-        this.additionalProductDetails = data
-        
-        var updatedFields = {}
-        var images = _.map(this.additionalProductDetails.images, (image) => {
-          return image.id
-        })
-        
-        updatedFields['images'] = images
-        Object.assign(updatedFields, data)
-        this.productUpdates = updatedFields
+
+        this.$store.dispatch('dashboardModule/updateProduct', response.data)
       } catch(error) {
         console.log(error)
       }
@@ -269,9 +224,11 @@ export default {
     async updateProduct() {
       try {
         this.isSaving = true
+        
         var response = await this.axios.post(`shop/dashboard/products/${this.$route.params.id}/update`, this.productUpdates)
+        
+        this.$store.dispatch('dashboardModule/updateProduct', response.data)
         this.isSaving = false
-        response
       } catch(error) {
         console.log(error)
       }
@@ -288,7 +245,8 @@ export default {
         }
 
         var response = await this.axios.post(`shop/dashboard/products/${this.$route.params.id}/images/dissociate`, data)
-        response
+        
+        this.$store.dispatch('dashboardModule/updateProduct', response.data)
       } catch(error) {
         console.log(error)
       }
@@ -305,6 +263,11 @@ export default {
       } catch(error) {
         console.log(error)
       }
+    },
+
+    associateImagesCallback(data) {
+      this.$store.dispatch('dashboardModule/updateProduct', data)
+      this.openImageSelection = false
     },
 
     goToPrevious() {

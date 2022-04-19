@@ -25,7 +25,7 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn color="primary" dark @click="loadGenericProducts">
+            <v-btn color="primary" dark @click="productSelectionModal = true">
               <v-icon class="mr-2">mdi-view-list</v-icon>
               Associate to product
             </v-btn>
@@ -65,7 +65,7 @@
               <v-row>
                 <v-col cols="12">
                   <div class="list-group list-group-flush">
-                    <a v-for="product in products" :key="product.id" :class="{ active: product.id === newAssociation.product }" class="list-group-item list-group-item-action" @click="newAssociation.product = product.id">
+                    <a v-for="product in genericProducts" :key="product.id" :class="{ active: product.id === newAssociation.product }" class="list-group-item list-group-item-action" @click="newAssociation.product = product.id">
                       <div class="ms-2 me-auto">
                         <div class="fw-bold">{{ product.id }}. {{ product.name }}</div>
                         Cras justo odio
@@ -86,8 +86,8 @@
               Cancel
             </v-btn>
 
-            <v-btn color="primary" @click="associateImagesToProduct">
-              Associate
+            <v-btn :disabled="!hasSelection" color="primary" @click="associateImagesToProduct">
+              Associate {{ selectedImages.length }} images
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -118,6 +118,7 @@ import { buildLimitOffset, listManager } from '@/utils'
 
 import ImageContainer from '@/components/dashboard/product_images/ImageContainer.vue'
 import PageContent from '@/layouts/dashboard/PageContent.vue'
+import { mapState } from 'vuex'
 
 export default {
   name: 'ProductImagesView',
@@ -128,7 +129,6 @@ export default {
 
   data: () => ({
     cachedResponse: {},
-    products: [],
 
     isLoading: true,
 
@@ -146,6 +146,14 @@ export default {
   }),
 
   computed: {
+    ...mapState('dashboardModule', ['products']),
+
+    genericProducts() {
+      return _.map(this.products, (product) => {
+        return { id: product.id, name: product.name, color: product.color }
+      })
+    },
+
     images () {
       try {
         return this.cachedResponse.results
@@ -214,16 +222,17 @@ export default {
       }
     },
 
-    async loadGenericProducts() {
-      try {
-        var response = await this.axios.get('shop/dashboard/products/generic')
+    // async loadGenericProducts() {
+    //   // try {
+    //   //   var response = await this.axios.get('shop/dashboard/products/generic')
 
-        this.products = response.data
-        this.productSelectionModal = true
-      } catch(error) {
-        console.log(error)
-      }
-    },
+    //   //   this.products = response.data
+    //   //   this.productSelectionModal = true
+    //   // } catch(error) {
+    //   //   console.log(error)
+    //   // }
+
+    // },
 
     async associateImagesToProduct() {
       try {

@@ -230,15 +230,6 @@ def list_whishlists_view(request, **kwargs):
     return simple_api_response(serializer)
 
 
-@api_view(['get'])
-@permission_classes([])
-def dashboard_product_view(request, pk, **kwargs):
-    """Get additional details of a given product"""
-    product = get_object_or_404(Product, id=pk)
-    serializer = ProductSerializer(instance=product)
-    return simple_api_response(serializer)
-
-
 @api_view(['post'])
 @permission_classes([IsAuthenticated])
 def like_product_view(request, pk, **kwargs):
@@ -286,11 +277,13 @@ def remove_liked_product_view(request, **kwargs):
 
 @api_view(['get'])
 def generic_products_view(request, **kwargs):
-    products = cache.get('generic_product_details')
-    if not products:
-        products = Product.objects.values('id', 'name')
-        cache.get('generic_product_details', products, 3600)
-    return simple_api_response(products)
+    # products = cache.get('generic_product_details')
+    # if not products:
+    #     products = Product.objects.values('id', 'name')
+    #     cache.get('generic_product_details', products, 3600)
+    products = Product.objects.all()
+    serializer = ProductSerializer(instance=products, many=True)
+    return simple_api_response(serializer)
 
 
 @api_view(['get'])
@@ -305,8 +298,8 @@ def associate_images_to_product(request, pk, **kwargs):
     """Associate images to a given product"""
     serializer = ImageAssociationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    serializer.save(pk)
-    return simple_api_response({'status': True})
+    product_serializer = serializer.save(pk)
+    return simple_api_response(product_serializer)
 
 
 @api_view(['post'])
@@ -314,8 +307,8 @@ def dissociate_images_from_product(request, pk, **kwargs):
     """Associate images to a given product"""
     serializer = ImageAssociationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    serializer.remove(pk)
-    return simple_api_response({'status': True})
+    product_serializer = serializer.remove(pk)
+    return simple_api_response(product_serializer)
 
 
 @api_view(['post'])
@@ -357,3 +350,27 @@ class ProductImagesView(GenericViewSet, ListModelMixin):
     serializer_class = ImageSerializer
     permission_classes = []
     pagination_class = CustomPagination
+
+
+@api_view(['get'])
+@permission_classes([])
+def dashboard_product_view(request, pk, **kwargs):
+    """Get additional details of a given product"""
+    product = get_object_or_404(Product, id=pk)
+    serializer = ProductSerializer(instance=product)
+    return simple_api_response(serializer)
+
+
+@api_view(['post'])
+def dashboard_toggle_product_state(request, method, **kwargs):
+    product_ids = request.data.get('products', [])
+    products = Product.objects.filter(id__in=product_ids)
+    print(method)
+    if method == 'activate':
+        products.update(active=True)
+    
+    if method == 'deactivate':
+        products.update(active=False)
+        
+    serializer = ProductSerializer(instance=products, many=True)
+    return simple_api_response(serializer)

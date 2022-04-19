@@ -62,13 +62,13 @@ export default {
                     data['product'] = this.$route.params.id
                 }
 
-                var response = this.axios.post(`shop/dashboard/products/${data.product}/images/associate`, data)
+                var response = await this.axios.post(`shop/dashboard/products/${data.product}/images/associate`, data)
+
                 this.selectedImages = []
                 
-                if (callback && typeof callback == 'function') {
-                    callback()
+                if (typeof callback == 'function') {
+                    callback(response.data)
                 }
-                response
             } catch (error) {
                 console.log(error)
             }
