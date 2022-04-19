@@ -12,14 +12,6 @@ export default {
     },
 
     methods: {
-        getCart() {
-            return this.$localstorage.retrieve('cart')
-        },
-
-        getSessionId() {
-            return this.getCart()['session_id']
-        },
-
         async removeFromCart(product) {
             try {
                 var options = {
@@ -31,25 +23,45 @@ export default {
 
                 this.$store.commit('updateCart', data)
                 this.$localstorage.create('cart', data)
-            } catch(error) {
+            } catch (error) {
                 this.$store.dispatch('addErrorMessage', error)
             }
         },
 
-        async simpleAddToCard(product, size) {
+        async simpleAddToCard(product, size, openOnCreate) {
             try {
-                var options = {
+                var details = {
                     product: product.id,
                     default_size: size.name,
                     session_id: this.getSessionId()
                 }
-                var response = await this.axios.post('cart/add', options)
+                var response = await this.axios.post('cart/add', details)
                 var data = response.data
 
                 this.$store.commit('updateCart', data)
                 this.$localstorage.create('cart', data)
-            } catch(error) {
+
+                this.runCallback(openOnCreate)
+            } catch (error) {
                 this.$store.dispatch('addErrorMessage', error)
+            }
+        },
+
+        runCallback(openOnCreate) {
+            if (openOnCreate) {
+                this.$store.commit('toggleModalCart')
+            }
+        },
+
+        getCart() {
+            return this.$localstorage.retrieve('cart')
+        },
+
+        getSessionId() {
+            try {
+                return this.getCart()['session_id']
+            } catch {
+                return null
             }
         }
     }

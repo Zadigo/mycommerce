@@ -22,7 +22,8 @@
 
       <scroll-top-button />
 
-      <modal-cart />
+      <!-- <modal-cart /> -->
+      <cart-off-canvas />
       <login-modal />
       <base-subscription-modal />
       <modal-language-selection />
@@ -38,6 +39,7 @@ import BaseNavbar from '@/components/BaseNavbar.vue'
 import BaseFooter from '@/components/BaseFooter.vue'
 import ModalLanguageSelection from '@/components/ModalLanguageSelection.vue'
 import ScrollTopButton from '@/components/ScrollTopButton.vue'
+import CartOffCanvas from '@/components/shop/cart/CartOffCanvas.vue'
 
 export default {
   name: 'BaseSite',
@@ -45,6 +47,7 @@ export default {
     BaseFooter,
     BaseNavbar,
     BaseSearchModal,
+    CartOffCanvas,
     ModalLanguageSelection,
     ScrollTopButton
   }

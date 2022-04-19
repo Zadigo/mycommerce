@@ -24,12 +24,12 @@
           
           <div id="sizes">
             <div v-if="hasSizes">
-              <button v-for="size in product.sizes" :key="size.name" type="button" :class="{ disabled: !size.availability }" class="btn btn-outline-dark mr-2" @click="simpleAddToCard(product, size)">
+              <button v-for="size in product.sizes" :key="size.name" type="button" :class="{ disabled: !size.availability }" class="btn btn-outline-dark mr-2" @click="simpleAddToCard(product, size, true)">
                 {{ size.name }}
               </button>
             </div>
 
-            <button v-else class="btn btn-outline-dark" @click="simpleAddToCard(product, { name: 'Unique' })">
+            <button v-else class="btn btn-outline-dark" @click="simpleAddToCard(product, { name: 'Unique' }, true)">
               {{ $t('Unique') }}
             </button>
           </div>
