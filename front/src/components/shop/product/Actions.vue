@@ -153,7 +153,7 @@ export default {
           this.$store.commit('addSuccessMessage', 'Added to like')
           this.$localstorage.create('likes', response.data.result)
         } catch(error) {
-          this.$store.commit('addErrorMessage', error)
+          this.$store.dsipatch('addErrorMessage', error)
         }
       }
     },

@@ -20,6 +20,7 @@ export default {
   methods: {
     changeLanguage(language) {
       this.$router.push({ name: 'home_view', params: { lang: language } })
+      this.$localstorage.create('language', this.$i18n.locale)
       this.$bvModal.hide('select-language')
     },
 

@@ -1,11 +1,11 @@
 <template>
   <form>
     <v-col v-if="showLoginFields" cols="12">
-      <b-form-input v-for="field in loginFields" :key="field.key" :type="field.key" :placeholder="field.name" class="my-2" @update="updateLoginFields($event, field)"></b-form-input>          
+      <input v-for="field in loginFields" :key="field.key" :type="field.key" :placeholder="$t(field.name)" :aria-label="$t(field.name)" class="form-control my-2" @keyup="updateLoginFields($event, field)" />          
     </v-col>
 
     <v-col v-else cols="12">
-      <b-form-input v-for="field in signupFields" :key="field.key" :type="checkFieldType(field)" :placeholder="field.name" class="my-2" @update="updateSignupFields($event, field)"></b-form-input>          
+      <input v-for="field in signupFields" :key="field.key" :type="checkFieldType(field)" :placeholder="$t(field.name)" :aria-label="$t(field.name)" class="form-control my-2" @keyup="updateSignupFields($event, field)" />          
     </v-col>
   </form>
 </template>
@@ -42,11 +42,11 @@ export default {
     },
 
     updateLoginFields(e, field) {
-      this.$emit('login-credentials', { [`${field.key}`]: e })
+      this.$emit('login-credentials', { [`${field.key}`]: e.target.value })
     },
 
     updateSignupFields(e, field) {
-      this.$emit('signup-credentials', { [`${field.key}`]: e })
+      this.$emit('signup-credentials', { [`${field.key}`]: e.target.value })
     }
   }
 }

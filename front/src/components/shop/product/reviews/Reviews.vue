@@ -87,8 +87,8 @@
 
 
 <script>
-import ModalNewReview from '@/components/product/ModalNewReview.vue'
-import Review from '@/components/product/Review.vue'
+import ModalNewReview from '@/components/shop/product/reviews/ModalNewReview.vue'
+import Review from '@/components/shop/product/reviews/Review.vue'
 
 export default {
   name: 'Reviews',
