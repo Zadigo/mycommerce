@@ -38,7 +38,7 @@
         "name": "Help",
         "links": [
             {
-                "name": "delivery_and_returns",
+                "name": "delivery_and_returns_view",
                 "href": null,
                 "text": "Delivery and returns"
             },
@@ -53,7 +53,7 @@
                 "text": "How to track"
             },
             {
-                "name": "size_guide",
+                "name": "size_guide_view",
                 "href": null,
                 "text": "Size guide"
             },

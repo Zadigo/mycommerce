@@ -4,7 +4,7 @@
       <div class="row">
         <!-- Breadbumbs -->
         <div class="col-12">
-
+          
         </div>
 
         <!-- Images -->
@@ -90,6 +90,12 @@ import Reviews from '@/components/shop/product/reviews/Reviews.vue'
 import TileDisplay from '@/components/shop/product/images/TileDisplay.vue'
 
 
+// FIXME: When viewing a product and then clicking on a product
+// in the recommended, when we try to return to the previous
+// product by pressing the back button in the browser, we get
+// an error with url http://127.0.0.1:8000/api/v1/shop/products/undefined
+// Seems like the ID is not correctly detected.
+
 export default {
   name: 'ProductView',
 
@@ -156,9 +162,10 @@ export default {
 
   watch: {
     '$route.params.id'(newValue, oldValue) {
+      console.log('watch', newValue, oldValue)
       if (newValue != oldValue) {
         this.isLoading = true
-        this.$store.commit('setCurrentProduct', newValue)
+        this.$store.commit('setCurrentProduct', this.getProduct())
         this.$store.commit('setRecentlyViewed', newValue)
         this.$localstorage.create('recentlyViewedProducts', this.$store.getters['recentlyViewedProducts'])
         this.requestProductVariants()
@@ -168,7 +175,7 @@ export default {
   },
 
   beforeRouteEnter (to, from, next) {
-    console.log(2)
+    console.log(2, to.params, from.params)
     next(vm => {
       // TODO: Set the name on the page via the product
       vm.sendAnalytics()
@@ -190,7 +197,8 @@ export default {
       this.$store.commit('setProducts', this.$session.retrieve('products'))
     }
 
-    var product = this.$store.getters['getProduct'](this.$route.params.id)
+    var product = this.getProduct()
+    console.log('product', product, this.$route.params)
     this.$store.commit('setCurrentProduct', product)
 
     // if (!product) {
@@ -227,6 +235,10 @@ export default {
       }
     },
 
+    getProduct() {
+      return this.$store.getters['getProduct'](this.$route.params.id)
+    },
+
     sendAnalytics() {
       var product = this.currentProduct
       product
@@ -239,6 +251,7 @@ export default {
       //   discount: product.sale_value
       // })
     }
+
     // FIXME: Use mapmutations to
     // set the recently viewed product
     // methods: {

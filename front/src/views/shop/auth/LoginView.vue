@@ -3,11 +3,11 @@
     <template v-slot-scoped="{ showLoginFields, loginFields, signupFields }">
       <div class="card-body">
         <auth-fields :show-login-fields="showLoginFields" :login-fields="loginFields" :signup-fields="signupFields" @login-credentials="updateLoginFields" @signup-credentials="updateSignupFields" />
-
-        <v-col cols="12">
+        <additional-links />
+        <!-- <v-col cols="12">
           <p class="my-1 text-white text-left">Vous n'avez pas encore de compte ? <router-link :to="{ name: 'signup_view' }">Créer un compte</router-link></p>
           <p v-if="!showLoginFields" class="my-1 text-white text-left">Vous avez déjà de compte ? <a @click="showLoginFields=true">Se connecter</a></p>
-        </v-col>
+        </v-col> -->
       </div>
 
       <div class="card-footer">
@@ -23,6 +23,7 @@
 <script>
 import loginMixin from '@/mixins/login'
 
+import AdditionalLinks from '@/components/auth/AdditionalLinks.vue'
 import AuthFields from '@/components/auth/AuthFields.vue'
 import BaseAuth from '@/layouts/BaseAuth.vue'
 
@@ -32,6 +33,10 @@ export default {
     return this.$t('Login')
   },
   mixins: [loginMixin],
-  components: { BaseAuth, AuthFields }
+  components: { 
+    AdditionalLinks,
+    AuthFields,
+    BaseAuth
+  } 
 }
 </script>

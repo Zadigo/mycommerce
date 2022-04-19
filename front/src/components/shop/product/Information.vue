@@ -29,9 +29,9 @@
     </v-menu>
 
     <!-- Reassurance -->
-    <b-card class="shadow-none border">
-      <b-card-text>
-        <b-container>
+    <div class="card shadow-none border">
+      <div class="card-body">
+        <v-container>
           <v-row>
             <v-col cols="12">
               <v-row>
@@ -47,9 +47,9 @@
               </v-row>
             </v-col>
           </v-row>
-        </b-container>
-      </b-card-text>
-    </b-card>
+        </v-container>
+      </div>
+    </div>
 
     <!-- TODO: Delete ? -->
     <!-- <div class="bg-light p-3">

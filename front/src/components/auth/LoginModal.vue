@@ -1,50 +1,40 @@
 <template>
-  <b-modal id="login-modal" v-model="loginModal" :title="$t('Login')" centered>
-    <v-container>
-      <v-row>
-        <!-- Login -->
-        <v-col v-if="showLoginFields" cols="12">
-          <b-form-input v-for="field in loginFields" :key="field.key" v-model="loginCredentials[field.key]" :type="field.key" :placeholder="field.name"  :autocomplete="getAutocomplete(true, field)" class="my-2"></b-form-input>          
-        </v-col>
+  <base-modal :show="loginModal" :centered="true" id="login" @modal-close="loginModal=false">
+    <template>
+      <v-container>
+        <v-row>
+          <auth-fields :show-login-fields="showLoginFields" :login-fields="loginFields" :signup-fields="signupFields" @login-credentials="updateLoginFields" @signup-credentials="updateSignupFields" />
 
-        <!-- <input autocomplete="pager"> -->
+          <v-checkbox v-model="rememberMe" :label="$t('Remember me')"></v-checkbox>
 
-        <!-- Signup -->
-        <v-col v-else cols="12">
-          <b-form-input v-for="field in signupFields" :key="field.key" v-model="signupCredentials[field.key]" :type="checkFieldType(field)" :placeholder="field.name" :autocomplete="getAutocomplete(false, field)" class="my-2"></b-form-input>          
-        </v-col>
-
-        <v-checkbox v-model="rememberMe" :label="$t('Remember me')"></v-checkbox>
-
-        <v-col v-if="showLoginFields" cols="12">
-          Don't have an account ? <v-btn @click="showLoginFields=false">Signup</v-btn>
-        </v-col>
-
-        <v-col v-else cols="12">
-          Already have an account ? <v-btn @click="showLoginFields=true">Login</v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
+          <additional-links :show-login-fields="showLoginFields" @show-login-fields="showLoginFields=true" @show-signup-fields="showLoginFields=false" />
+        </v-row>
+      </v-container>
+    </template>
 
     <template #modal-footer>
       <div class="w-100 text-right">
-        <b-btn v-if="showLoginFields" variant="primary" @click="login">
+        <button v-if="showLoginFields" class="btn btn-primary" @click="login">
           {{ $t('Login') }}
-        </b-btn>
+        </button>
 
-        <b-btn v-else variant="primary" @click="signup">
+        <button v-else class="btn btn-primary" @click="signup">
           {{ $t('Signup') }}
-        </b-btn>
+        </button>
       </div>
     </template>
-  </b-modal>
+  </base-modal>
 </template>
 
 <script>
+import AdditionalLinks from '@/components/auth/AdditionalLinks.vue'
+import AuthFields from '@/components/auth/AuthFields.vue'
+import BaseModal from '@/layouts/BaseModal.vue'
 import loginMixin from '@/mixins/login'
 
 export default {
   name: 'LoginModal',
+  components: { AdditionalLinks, AuthFields, BaseModal },
   props: {
       callback: {
           type: Function,

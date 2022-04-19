@@ -21,9 +21,9 @@
       </p>
 
       <div v-if="hasSizes" class="sizes">
-        <b-btn v-for="(size, i) in product.sizes" id="btn-select-size" :key="size.id" :class="{ 'ml-2': i > 0, 'bg-dark': productOptions.default_size == size.name }" class="shadow-none border" variant="light" @click="setSize(size)">
+        <button v-for="(size, i) in product.sizes" id="btn-select-size" :key="size.id" :class="{ 'ml-2': i > 0, 'btn-dark': productOptions.default_size == size.name, 'btn-light': !(productOptions.default_size == size.name) }" class="btn btn-md shadow-none border" @click="setSize(size)">
           {{ size.name }}
-        </b-btn>
+        </button>
       </div>
 
       <div v-else id="sizes">

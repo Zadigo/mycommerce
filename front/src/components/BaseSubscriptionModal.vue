@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="subscription-modal" size="lg" body-class="p-0" hide-footer>
+  <base-modal id="subscription-modal" size="lg" body-class="p-0">
     <div class="d-flex justify-content-between" style="overflow: hidden;">
       <!-- TODO: Adapt imagee roundness to the modal -->
       <v-img src="http://via.placeholder.com/400x1200" width="300" height="auto" class="rounded"></v-img>
@@ -16,7 +16,6 @@
           </p>
           
           <v-text-field v-model="subscriptionEmail" type="email" placeholder="Addresse e-mail" solo hide-details></v-text-field>
-          <!-- <v-checkbox v-model="" label=""></v-checkbox> -->
           <v-btn size="lg" class="mt-2 mb-5" block>
             {{ $t('Subscribe') }}
           </v-btn>
@@ -29,14 +28,17 @@
         </v-col>
       </v-row>
     </div>
-  </b-modal>
+  </base-modal>
 </template>
 
 <script>
 import subsriptionMixin from '@/mixins/subsriptionMixin'
 
+import BaseModal from '@/layouts/BaseModal.vue'
+
 export default {
   name: 'BaseSubscriptionModal',
+  components: { BaseModal },
   mixins: [subsriptionMixin]
 }
 </script>

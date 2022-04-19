@@ -3,7 +3,9 @@
     <div id="actions" class="ml-auto normalize-links">
       <a href="http://example.com" target="_blank">Blog</a>
       <a href="http://example.com" target="_blank">Help</a>
-      <a v-b-modal.select-language>
+      <!-- <a v-b-modal.select-language> -->
+      <!-- <a b-modal.select-language> -->
+      <a @click="$bModal.open('select-language')">
         <country-flag :country="countryFlag" />
         <!-- {{ $i18n.locale.toUpperCase() }} -->
       </a>

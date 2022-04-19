@@ -1,5 +1,5 @@
 <template>
-  <section id="delivery-and-returns">
+  <section class="ecommerce-section">
     <v-container>
       <v-row>
         <v-col cols="8" offset-md="2">

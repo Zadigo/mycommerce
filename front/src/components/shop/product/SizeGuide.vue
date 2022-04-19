@@ -1,52 +1,60 @@
 <template>
   <div id="size-guide" class="my-3">
-    <a class="text-underline font-size-2 pt-0" v-b-modal.modal-1 link>
-      <!-- <font-awesome-icon icon="ruler" class="mr-2" /> -->
+    <a class="text-underline font-size-2 pt-0" @click="showSizeGuide=!showSizeGuide">
+      <font-awesome-icon icon="ruler" class="mr-2" />
       {{ $t('Size guide') }}
     </a>
 
-    <b-modal id="modal-1" :title="$t('Size guide')" size="lg" scrollable hide-footer>
-      <div class="container">
-        <div class="row">
-          <div class="col-12 text-center">
-            <b-btn class="mx-1" variant="light">
-              {{ $t('product_measurements') }}
-            </b-btn>
-            <b-btn class="mx-1" variant="light">
-              {{ $t('body_measurements') }}
-            </b-btn>
-          </div>
+    <base-modal :show="showSizeGuide" id="modal-1" :title="$t('Size guide')" size="lg" @modal-close="showSizeGuide=false">
+      <template>
+        <div class="container">
+          <div class="row">
+            <div class="col-12 text-center">
+              <button class="btn btn-md btn-primary mx-1">
+                {{ $t('product_measurements') }}
+              </button>
 
-          <div class="col-12">
-            <b-table :items="items" striped hover></b-table>
-            <p>* Les données ont été obtenues en mesurant manuellement le produit, elles peuvent varier de 1cm à 2cm.</p>
-          </div>
+              <button class="btn btn-md btn-primary mx-1">
+                {{ $t('body_measurements') }}
+              </button>
+            </div>
 
-          <hr>
+            <div class="col-12">
+              <!-- <b-table :items="items" striped hover></b-table> -->
+              <p>* Les données ont été obtenues en mesurant manuellement le produit, elles peuvent varier de 1cm à 2cm.</p>
+            </div>
 
-          <div class="col-12">
-            <div class="row">
-              <div class="col-4">
-                <b-img src="http://via.placeholder.com/300x500" fluid alt="clothe" />
-              </div>
-              <div class="col-7">
-                <h4 class="mb-4">Comment mesurer la taille de l'article</h4>
+            <hr>
 
-                <p class="font-weight-bold my-1">Largeur des épaules</p>
-                <p>Mesurez à partir de l'endroit où la couture de l'épaule rejoint la manche jusqu'à l'autre côté.</p>
+            <div class="col-12">
+              <div class="row">
+                <div class="col-4">
+                  <img class="img-fluid" src="http://via.placeholder.com/300x500" alt="clothe" />
+                </div>
+
+                <div class="col-7">
+                  <h4 class="mb-4">Comment mesurer la taille de l'article</h4>
+
+                  <p class="font-weight-bold my-1">Largeur des épaules</p>
+                  <p>Mesurez à partir de l'endroit où la couture de l'épaule rejoint la manche jusqu'à l'autre côté.</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </b-modal>
+      </template>
+    </base-modal>
   </div>
 </template>
 
 <script>
+import BaseModal from '@/layouts/BaseModal.vue'
+
 export default {
   name: 'SizeGuide',
+  components: { BaseModal },
   data: () => ({
+    showSizeGuide: false,
     items: [
         { age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
         { age: 21, first_name: 'Larsen', last_name: 'Shaw' },

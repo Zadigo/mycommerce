@@ -43,5 +43,23 @@ export default [
         path: 'store-locations',
         name: 'store_locations_view',
         component: loadView('shop/StoreFinderView')
+    },
+    {
+        path: 'fitting-room',
+        name: 'fitting_room_view',
+        meta: {
+            isFullPage: true
+        },
+        component: loadView('shop/FittingRoomView')
+    },
+    {
+        path: 'size-guide',
+        name: 'size_guide_view',
+        component: loadView('shop/SizeGuideView')
+    },
+    {
+        path: 'delivery-and-returns',
+        name: 'delivery_and_returns_view',
+        component: loadView('shop/customer_care/DeliveryAndReturnsView')
     }
 ]
