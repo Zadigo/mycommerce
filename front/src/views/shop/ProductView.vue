@@ -86,7 +86,7 @@ import Information from '@/components/shop/product/Information.vue'
 import MoreProducts from '@/components/shop/product/MoreProducts.vue'
 import RecentlyViewed from '@/components/shop/product/RecentlyViewed.vue'
 // import ProductSkeleton from '@/components/shop/skeletons/ProductSkeleton.vue'
-import Reviews from '@/components/product/Reviews.vue'
+import Reviews from '@/components/shop/product/reviews/Reviews.vue'
 import TileDisplay from '@/components/shop/product/images/TileDisplay.vue'
 
 

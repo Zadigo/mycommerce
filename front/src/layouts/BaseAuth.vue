@@ -5,9 +5,9 @@
         <v-container>
           <v-row>
             <v-col cols="4" class="offset-md-4">
-              <b-card :title="$t('Login')" style="background-color:rgba(255, 255, 255, 0.3)">
+              <div :title="$t('Login')" class="card" style="background-color:rgba(255, 255, 255, 0.3)">
                 <slot></slot>
-              </b-card>
+              </div>
               
               <slot name="additional-actions"></slot>
             </v-col>

@@ -67,7 +67,7 @@ export default {
       try {
         // pass
       } catch(error) {
-        this.$store.commit('addErrorMessage', error)
+        this.$store.dispatch('addErrorMessage', error)
       }
     }
   }

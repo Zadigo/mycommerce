@@ -98,7 +98,7 @@ export default {
         this.likes = response.data.products
         this.$localstorage.create('likes', this.likes)
       } catch(error) {
-        this.$store.commit('addErrorMessage', error)
+        this.$store.dispatch('addErrorMessage', error)
       }
     },
 
@@ -108,7 +108,7 @@ export default {
         this.likes = response.data
         this.$localstorage.create('likes',  this.likes)
       } catch(error) {
-        this.$store.commit('addErrorMessage', error)
+        this.$store.dispatch('addErrorMessage', error)
       }
     }
   }

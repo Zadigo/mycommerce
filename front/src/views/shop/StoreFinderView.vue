@@ -29,7 +29,7 @@ export default {
         var coordinates = await this.$getLocation({})
         console.log(coordinates)
       } catch(error) {
-        this.$store.commit('addErrorMessage', error)
+        this.$store.dispatch('addErrorMessage', error)
       }
     }
   }
