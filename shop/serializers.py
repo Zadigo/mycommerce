@@ -99,6 +99,7 @@ class LikeSerializer(UserlistSerializer):
 
 class ImageAssociationSerializer(Serializer):
     images = fields.ListField()
+    replace_existing_images = fields.BooleanField(default=False)
     
     def get_object(self, produt_id):
         return get_object_or_404(Product, id=produt_id)
@@ -108,7 +109,11 @@ class ImageAssociationSerializer(Serializer):
         
     def save(self, product_id, **kwargs):
         product = self.get_object(product_id)
-        product.images.add(*self.get_images())
+        
+        if self.validated_data['replace_existing_images']:
+            product.images.set(self.get_images())
+        else:
+            product.images.add(*self.get_images())
         
     def remove(self, product_id, **kwargs):
         product = self.get_object(product_id)
