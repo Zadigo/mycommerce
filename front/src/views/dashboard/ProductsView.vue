@@ -1,116 +1,143 @@
 <template>
-  <section id="images">
+  <page-content>
+    <template>
+      <v-card>
+        <!-- Toolbar -->
+        <v-toolbar>
+          <v-text-field v-model="search" type="text" solo></v-text-field>
+          
+          <v-spacer></v-spacer>
 
-    <v-container>
-      <!-- Heading -->
-      <v-row>
-        <v-col cols="12">
-          <page-header :title="$route.meta.text" />
-        </v-col>
+          <v-btn text>
+            <v-icon class="mr-2">mdi-plus</v-icon>
+            Create
+          </v-btn>
 
-        <v-col cols="12">
-          <v-card>
-            <!-- Toolbar -->
-            <v-toolbar>
-              <v-spacer></v-spacer>
-              <v-toolbar-title>
-                <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="scale-transition">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn v-bind="attrs" icon v-on="on">
-                      <v-icon>mdi-dots-horizontal</v-icon>
-                    </v-btn>
-                  </template>
+          <v-btn text>
+            <v-icon class="mr-2">mdi-content-copy</v-icon>
+            Duplicate
+          </v-btn>
+          
+          <v-toolbar-title>
+            <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="scale-transition">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn v-bind="attrs" icon v-on="on">
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </template>
 
-                  <v-list>
-                    <v-list-item>
-                      <v-list-item-title>
-                        Activer
-                      </v-list-item-title>
-                    </v-list-item>
+              <v-list>
+                <v-list-item>
+                  <v-list-item-icon>
+                    <v-icon>mdi-check-circle</v-icon>
+                  </v-list-item-icon>
 
-                    <v-list-item>
-                      <v-list-item-title>
-                        Désactiver
-                      </v-list-item-title>
-                    </v-list-item>
-                    
-                    <v-list-item @click="renameProductsModal=true">
-                      <v-list-item-title>
-                        Renommer
-                      </v-list-item-title>
-                    </v-list-item>
+                  <v-list-item-title>
+                    Activate
+                  </v-list-item-title>
+                </v-list-item>
 
-                    <v-list-item>
-                      <v-list-item-title>
-                        Supprimer
-                      </v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>                
-              </v-toolbar-title>
-            </v-toolbar>
+                <v-list-item>
+                  <v-list-item-icon>
+                    <v-icon>mdi-check-circle-outline</v-icon>
+                  </v-list-item-icon>
 
-            <!-- Table -->
-            <v-card-text>
-              <v-data-table v-model="selectedProducts" :headers="headers" :items="products" :items-per-page="300" item-key="id" show-select class="elevation-0">
-                <template v-slot:item.name="{ item }">
-                  <router-link :to="{ name: 'dashboard_product_view', params: { id: item.id } }">
-                    {{ item.name }}
-                  </router-link>
-                </template>  
+                  <v-list-item-title>
+                    Deactivate
+                  </v-list-item-title>
+                </v-list-item>
+                                    
+                <v-list-item @click="renameProductsModal=true">
+                  <v-list-item-icon>
+                    <v-icon>mdi-pen</v-icon>
+                  </v-list-item-icon>
 
-                <template v-slot:item.active="{ item }">
-                  <v-chip :color="getColor(item.active)" dark>
-                    <v-icon v-if="item.active">mdi-check</v-icon>
-                    <v-icon v-else>mdi-window-close</v-icon>
-                  </v-chip>
-                </template>  
+                  <v-list-item-title>
+                    Rename
+                  </v-list-item-title>
+                </v-list-item>
 
-                <template v-slot:item.actions="{ item }">
-                  {{ item }}
-                  <v-icon class="mr-2">mdi-vertical-dots</v-icon>
-                </template>
-              </v-data-table>          
-            </v-card-text>
-          </v-card>
-        </v-col>
+                <v-list-item>
+                  <v-list-item-icon>
+                    <v-icon>mdi-delete</v-icon>
+                  </v-list-item-icon>
 
-      </v-row>
+                  <v-list-item-title>
+                    Delete
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>                
+          </v-toolbar-title>
+        </v-toolbar>
 
-      <!-- Modal -->
+        <!-- Table -->
+        <v-card-text>
+          <v-data-table v-model="selectedProducts" :headers="headers" :items="searchedProducts" :items-per-page="300" item-key="id" show-select class="elevation-0">
+            <template v-slot:item.name="{ item }">
+              <router-link :to="{ name: 'dashboard_product_view', params: { id: item.id } }">
+                {{ item.name }}
+              </router-link>
+            </template>  
+
+            <template v-slot:item.active="{ item }">
+              <v-icon v-if="item.active" color="success">mdi-check-circle</v-icon>
+              <v-icon v-else color="warning">mdi-check-circle-outline</v-icon>
+            </template>  
+
+            <template v-slot:item.actions="{ item }">
+              {{ item }}
+              <v-icon class="mr-2">mdi-vertical-dots</v-icon>
+            </template>
+          </v-data-table>          
+        </v-card-text>
+      </v-card>
+
+      <!-- Modals -->
       <v-dialog v-model="renameProductsModal" max-width="500px">
         <v-card>
           <v-card-text>
-            <v-text-field v-model="newProductsName" type="text"></v-text-field>
+            <div class="container">
+              <div class="row">
+                <div class="col-12">
+                  <v-text-field v-model="newProductsName" type="text" placeholder="New name" solo hide-details></v-text-field>
+                </div>
+              </div>
+            </div>
           </v-card-text>
 
-          <v-card-actions>
-            <v-btn color="blue darken-1" text @click="renameProductsModal = false">Annuler</v-btn>
-            <v-btn :disabled="!hasSelection" color="blue darken-1" @click="renameProducts">Renommer {{ selectedProducts.length }} produits</v-btn>
-            <v-spacer></v-spacer>
+          <v-card-actions class="d-flex justify-content-right">
+            <v-btn text @click="renameProductsModal = false">
+              Cancel
+            </v-btn>
+
+            <v-btn :disabled="!hasSelection" color="blue darken-1" @click="renameProducts">
+              Rename {{ selectedProducts.length }} products
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
-
-    </v-container>
-  </section>
+    </template>
+  </page-content>
 </template>
 
 <script>
+import _ from 'lodash'
 import { mapState } from 'vuex'
-var _ = require('lodash')
+import { searchHelper } from '@/utils'
 
-import PageHeader from '../../components/dashboard/PageHeader.vue'
+import PageContent from '@/layouts/dashboard/PageContent.vue'
 
 export default {
   name: 'ProductsView',
 
   components: {
-    PageHeader
+    PageContent
   },
 
   data: () => ({
     // products: [],
+    search: null,
     newProductsName: null,
     selectedProducts: [],
     renameProductsModal: false,
@@ -138,6 +165,10 @@ export default {
   
   computed: {
     ...mapState('dashboardModule', ['products']),
+
+    searchedProducts() {
+      return searchHelper(this.search, this.products, ['name'])
+    },
 
     hasSelection () {
       return this.selectedProducts.length > 0

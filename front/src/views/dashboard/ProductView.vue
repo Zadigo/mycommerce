@@ -1,15 +1,11 @@
 <template>
   <section id="product">
     <v-row>
-      <!-- Top header -->
-      <v-col cols="12">
-        <v-card flat>
-          <v-card-actions class="text-right justify-content-right">
-            <v-btn color="danger" text @click="$router.go(-1)">
-              <v-icon class="mr-2">mdi-cancel</v-icon>
-              Cancel
-            </v-btn>
-
+      <base-edit-heading :is-saving="isSaving" :items="products" :current-item="productDetails" :title="productDetails.name" route-name="dashboard_product_view" @update="updateProduct" @previous="goToPrevious" @next="goToNext" />
+      <!-- TODO: Make this kinda global Top header -->
+      <!-- <v-col cols="12">
+        <v-card elevation="0">
+          <v-card-text class="p-0">
             <v-btn text>
               <v-icon class="mr-2">mdi-arrow-left</v-icon>
               Previous
@@ -19,12 +15,7 @@
               Next
               <v-icon class="ml-2">mdi-arrow-right</v-icon>
             </v-btn>
-            
-            <v-btn color="primary" @click="updateProduct">
-              <v-icon class="mr-2">mdi-save</v-icon>
-              Save and update
-            </v-btn>
-          </v-card-actions>
+          </v-card-text>
         </v-card>
       </v-col>
 
@@ -35,6 +26,22 @@
           </v-card-title>
         </v-card>
       </v-col>
+
+      <v-col cols="12">
+        <v-card elevation="0">
+          <v-card-text class="p-0">
+            <v-btn color="warning" @click="$router.go(-1)">
+              <v-icon class="mr-2">mdi-cancel</v-icon>
+              Cancel
+            </v-btn>
+
+            <v-btn class="mx-2" color="primary" @click="updateProduct">
+              <v-icon class="mr-2">mdi-save</v-icon>
+              Save and update
+            </v-btn>
+          </v-card-text>
+        </v-card>
+      </v-col> -->
 
       <v-col cols="8">
         <!-- Informations -->
@@ -138,7 +145,12 @@
           </v-card-title>
 
           <v-card-text>
-            <v-switch v-model="productUpdates.active" label="Activer" hide-details></v-switch>  
+            <v-switch v-model="productUpdates.active" label="Activer" hide-details></v-switch>
+
+            <div v-if="!productDetails.active" class="alert alert-warning my-4">
+              The product is not active
+            </div>
+
             <v-switch v-model="productUpdates.display_new" label="Afficher le produit comme nouveau" hide-details></v-switch>  
           </v-card-text>
         </v-card>
@@ -178,12 +190,17 @@ import _ from 'lodash'
 // import { listManager } from '@/utils'
 import { mapState } from 'vuex'
 import imagesMixin from '@/mixins/dashboard/images'
-import itemNavigation from '@/mixins/dashboard/item_navigation'
+import itemNavigationMixin from '@/mixins/dashboard/item_navigation'
+
+import BaseEditHeading from '@/components/dashboard/BaseEditHeading.vue'
+import { getNextItemFromList, getPreviousItemFromList } from '@/utils'
 
 export default {
   name: 'ProductView',
-
-  mixins: [imagesMixin, itemNavigation],
+  components: {
+    BaseEditHeading
+  },
+  mixins: [imagesMixin, itemNavigationMixin],
   
   data: () => ({
     productUpdates: {},
@@ -195,17 +212,25 @@ export default {
     searchedCategory: null,
     selectedCategory: null,
 
-    selectedImages: []
+    selectedImages: [],
+
+    isSaving: false
   }),
   
   computed: {
-    ...mapState('dashboardModule', ['productDetails'])
+    ...mapState('dashboardModule', ['products', 'productDetails'])
   },
 
    watch: {
     searchedCategory(newValue) {
       if (newValue && newValue !== this.selectedCategory) {
         this.queryCategories()
+      }
+    },
+
+    '$route.params.id'(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.getAdditionalDetails()
       }
     }
   },
@@ -243,7 +268,9 @@ export default {
     
     async updateProduct() {
       try {
+        this.isSaving = true
         var response = await this.axios.post(`shop/dashboard/products/${this.$route.params.id}/update`, this.productUpdates)
+        this.isSaving = false
         response
       } catch(error) {
         console.log(error)
@@ -280,7 +307,20 @@ export default {
       }
     },
 
-    // selectImage(image) {
+    goToPrevious() {
+      var previousProduct = getPreviousItemFromList(this.products, this.productDetails, 'id', (options) => {
+        console.log(this, options)
+        // this.$store.commit('dashboardModule/setProductDetails', options.item)
+      })
+      this.$router.push({ name: this.routeName, params: { id: previousProduct.id } })
+    },
+
+    goToNext() {
+      var nextProduct = getNextItemFromList(this.products, this.productDetails, 'id')
+      this.$router.push({ name: this.routeName, params: { id: nextProduct.id } })
+    }
+
+// selectImage(image) {
     //   this.selectedImages = listManager(this.selectedImages, image.id)
     // }
   }

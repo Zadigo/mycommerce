@@ -1,17 +1,19 @@
 <template>
-  <b-card>
-    <b-card-text class="d-flex flex-direction-row justify-content-left">
-      <h1 class="home blue-text h2">
-        <router-link :to="{ name: 'dashboard_index_view' }" class="text-decoration-none font-weight-bold">
-          Accueil
-        </router-link>
-      </h1>
+  <v-card>
+    <v-card-text>
+      <div class="d-flex flex-direction-row justify-content-left">
+        <h1 class="home blue-text h2">
+          <router-link :to="{ name: 'dashboard_index_view' }" class="text-decoration-none font-weight-bold">
+            Accueil
+          </router-link>
+        </h1>
 
-      <h1 class="h2">
-        {{ title }}
-      </h1>
-    </b-card-text>
-  </b-card>
+        <h1 class="h2">
+          {{ title }}
+        </h1>
+      </div>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>

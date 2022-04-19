@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import Vue from 'vue'
 
 function indexElements(items) {
     return _.map(items, (item, i) => {
@@ -74,31 +75,107 @@ function listManager(items, itemId) {
     return items
 }
 
-function increaseIndex(items, initialValue) {
-    var newIndex = initialValue + 1
-    if (initialValue > items.length) {
-        initialValue = 0
+function increaseIndex(items, initialIndex) {
+    // Base on a list of items and an initial index,
+    // increase the index by 1. If the new index is
+    // out of bounds, return 0, or, the index of
+    // the first element
+    var newIndex = initialIndex + 1
+
+    if (newIndex > items.length - 1) {
+        newIndex = 0
     }
     return newIndex
 }
 
-function decreaseIndex(items, initialValue) {
-    var newIndex = initialValue - 1
-    if (initialValue < 0) {
-        initialValue = items.length
+function decreaseIndex(items, initialIndex) {
+    // Base on a list of items and an initial index,
+    // increase the index by 1. If the new index is
+    // out of bounds, return the index of the last
+    // item of the list
+    var newIndex = initialIndex - 1
+
+    if (newIndex < 0) {
+        newIndex = items.length - 1
     }
     return newIndex
 }
+
+function getPreviousItemFromList(items, initialItem, field, callback) {
+    // Returns the previous item from a given list based on the position
+    // of an initial element
+    var index = _.findIndex(items, [field, initialItem[field]])
+    var newIndex = decreaseIndex(items, index)
+
+    if (typeof callback === 'function') {
+        callback.call(Vue, { newIndex: newIndex, item: items[newIndex] })
+        // callback({ newIndex: newIndex, item: items[newIndex] })
+    }
+
+    return items[newIndex]
+}
+
+function getNextItemFromList(items, initialItem, field, callback) {
+    // Returns the next item from a given list based on the position
+    // of an initial element
+    var index = _.findIndex(items, [field, initialItem[field]])
+    var newIndex = increaseIndex(items, index)
+
+    if (typeof callback === 'function') {
+        callback.call(Vue, { newIndex: newIndex, item: items[newIndex] })
+        // callback({ newIndex: newIndex, item: items[newIndex]})
+    }
+
+    return items[newIndex]
+}
+
+function searchHelper(search, items, fields) {
+    // A quick helper function that allows us to
+    // quickly filter a list of dict items based on
+    // some given fields
+    if (search) {
+        return _.filter(items, (item) => {
+            var truthArray = _.map(fields, (field) => {
+                var itemValue = item[field]
+                
+                if (typeof itemValue === 'boolean') {
+                    return itemValue === search
+                }
+                
+                if (typeof itemValue === 'string') {
+                    var lowercasedItem = item[field].toLowerCase()
+                    
+                    return itemValue === search || itemValue.includes(search) || lowercasedItem.includes(search) || lowercasedItem === search
+                }
+
+                if (typeof itemValue === 'number') {
+                    return itemValue === search || itemValue.includes(search)
+                }
+                
+                return false
+            })
+            return _.every(truthArray)
+        })
+    } else {
+        return items
+    }
+}
+
+window.testA = getNextItemFromList
+window.testB = getPreviousItemFromList
 
 export {
-    indexElements,
-    incrementLastId,
-    readFile,
-    readMultipleFiles,
-    truncate,
     buildLimitOffset,
+    decreaseIndex,
+    getPreviousItemFromList,
+    getNextItemFromList,
+    indexElements,
+    increaseIndex,
+    incrementLastId,
     listManager,
     limitAndOffsetAsParams,
-    increaseIndex,
-    decreaseIndex
+    readFile,
+    readMultipleFiles,
+    searchHelper,
+    truncate
 }

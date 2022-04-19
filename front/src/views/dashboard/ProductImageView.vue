@@ -7,6 +7,14 @@
         <v-btn @click="nextImage">Next</v-btn>
       </v-col>
 
+      <v-col cols="12">
+        <v-card>
+          <v-card-title>
+            {{ currentlyViewedImage.name }}
+          </v-card-title>
+        </v-card>
+      </v-col>
+
       <v-col cols="8">
         <v-img :src="currentlyViewedImage.mid_size|mediaUrl"></v-img>
       </v-col>

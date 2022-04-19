@@ -8,7 +8,7 @@
             <h1 class="mb-3 lead">Assouvis tes ardents désir</h1>
             <h5 class="mb-4 lead-smaller">Craquez pour nos nouveautés signées Lounge</h5>
 
-            <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale  } }" class="btn btn-light btn-lg" role="button">
+            <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale  } }" class="btn btn-dark btn-lg" role="button">
               {{ $t('Discover') }}
             </router-link>
           </div>
