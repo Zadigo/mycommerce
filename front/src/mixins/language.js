@@ -1,9 +1,17 @@
 /*
-    Mixin for implementing additional
-    functionnalities in regards to the language
-*/
+ * Mixin for implementing additional
+ * functionnalities in regards to i18n
+ * 
+ */
 
 export default {
+    // created() {
+    //     var language = this.$localstorage.retrieve('language')
+        
+    //     language = language ? language : 'fr'
+    //     this.$i18n.locale = language
+    // },
+
     mounted() {
         this.updateLanguageInHtml()
     },

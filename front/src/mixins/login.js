@@ -1,4 +1,10 @@
-var _ = require('lodash')
+/*
+ * Implements all functionnalities for dealing
+ * with authentiation on the app
+ * 
+ */ 
+
+import _ from 'lodash'
 
 export default {
     data: () => ({
@@ -52,22 +58,23 @@ export default {
                     callback()
                 }
             } catch(error) {
-                this.$store.commit('addErrorMessage', error)
+                this.$store.dispatch('addErrorMessage', error)
             }
         },
 
         async logout() {
             await this.axios.post('logout')
             this.$store.commit('authenticationModule/reset')
+            this.$router.push({ name: 'home_view' })
         },
 
         async signup() {
             try {
-                var response = await this.$axios.post('/signup', this.signupCredentials)
+                var response = await this.$axios.post('signup', this.signupCredentials)
                 this.$store.commit('authenticationModule/setUserProfile', response.data)
                 this.showLogin = true
             } catch(error) {
-                this.$store.commit('addErrorMessage', 'Some error occured')
+                this.$store.dispatch('addErrorMessage', 'Some error occured')
             }
         },
 
