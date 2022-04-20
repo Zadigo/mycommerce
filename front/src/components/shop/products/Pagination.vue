@@ -2,7 +2,7 @@
   <v-row class="text-center">
     <v-col cols="12" class="pb-6">
       <!-- TODO: Translate with "AFFICHAGE ACTUEL 1-48 DE 386 STYLES" -->
-      <p>Showing <span class="font-weight-bold">{{ productCount }}</span> of <span class="font-weight-bold">{{ totalCount }}</span> products</p>
+      <p>Showing <span class="fw-bold">{{ productCount }}</span> of <span class="fw-bold">{{ totalCount }}</span> products</p>
       
       <base-pagination @start-load="$emit('start-pagination')" @end-load="$emit('end-pagination')">
         <v-icon class="mr-2">mdi-arrow-down</v-icon>

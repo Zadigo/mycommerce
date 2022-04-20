@@ -23,7 +23,7 @@ var _ = require('lodash')
 
 import { mapGetters } from 'vuex'
 
-import fashion from '../../data/fashion.json'
+import fashion from '@/data/fashion.json'
 
 export default {
   name: 'SideFilters',

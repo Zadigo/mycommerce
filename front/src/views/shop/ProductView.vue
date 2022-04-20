@@ -3,8 +3,16 @@
     <div class="container-fluid">
       <div class="row">
         <!-- Breadbumbs -->
-        <div class="col-12">
-          
+        <div class="col-12 d-none">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><router-link :to="{ name: 'home_view' }">{{ $t('Home') }}</router-link></li>
+              <li class="breadcrumb-item"><router-link :to="{ name: 'collection_details_view', params: { collection: currentProduct.category.toLowerCase() } }">{{ currentProduct.category }}</router-link></li>
+              <li class="breadcrumb-item active" aria-current="page">
+                {{ currentProduct.name }}
+              </li>
+            </ol>
+          </nav>
         </div>
 
         <!-- Images -->
@@ -15,7 +23,7 @@
         <div class="col-sm-12 col-md-5 ps-5">
           <div class="row">
             <!-- Tags -->
-            <div id="tags" class="col-12">
+            <div v-show="currentProduct.on_sale || currentProduct.display_new" id="tags" class="col-12">
               <base-tag v-if="currentProduct.on_sale" class="mr-2" background-color="error">
                 <template>
                   {{ $t('Sale') }}
@@ -31,8 +39,8 @@
 
             <!-- Information -->
             <div id="information" class="col-12 pt-0 pb-0">
-              <p class="font-weight-bold font-size-3 m-0">
-                {{ currentProduct.name|capitalizeLetters }} - {{ currentProduct.color }}
+              <p class="fw-bold fs-4 m-0">
+                {{ currentProduct.name|capitalizeLetters }} - <span class="text-muted fw-normal">{{ currentProduct.color }}</span>
               </p>
 
               <p class="my-2 font-weight-bold">
@@ -53,7 +61,7 @@
             <!-- Actions -->
             <actions :product="currentProduct" :product-variants="productVariants" />
 
-            <!-- Additional Information -->
+            <!-- Product Information -->
             <information :product="currentProduct" />
           </div>
         </div>
@@ -62,14 +70,17 @@
       <hr class="my-5">
 
       <div class="row">
+        <!-- More Products -->
         <div class="col-12">
           <more-products :recommended-products="recommendedProducts" :is-loading="isLoading" />
         </div>
 
+        <!-- Recently Viewed -->
         <div class="col-12">
           <recently-viewed :is-loading="isLoading" />
         </div>
 
+        <!-- Reviews -->
         <div class="col-12">
           <reviews :reviews="[]" />
         </div>
@@ -131,10 +142,6 @@ export default {
       } catch (error) {
         return []
       }
-    },
-    
-    numberOfReviews() {
-      return this.reviews.length
     },
 
     breadcrumbs() {

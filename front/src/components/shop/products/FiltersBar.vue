@@ -47,7 +47,7 @@
       <div v-if="showFilters" id="filters" class="d-flex justify-content-center" style="flex-wrap:wrap;">
         <!-- Sizes -->
         <div v-if="selectedFilter == 'sizes'">
-          <v-chip v-for="(size, i) in sizes" :key="i" class="font-weight-bold me-3" style="height:50px;width:50px; border-radius:50%;text-align:center;" link @click="setFilterValue('sizes', size)">
+          <v-chip v-for="(size, i) in sizes" :key="i" class="fw-bold me-3" style="height:50px;width:50px; border-radius:50%;text-align:center;" link @click="setFilterValue('sizes', size)">
             {{ size }}
           </v-chip>
         </div>

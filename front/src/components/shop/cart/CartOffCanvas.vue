@@ -28,10 +28,10 @@
                 <div class="p-1 d-flex justify-content-left">
                   <img :src="item.product.images[0].mid_size|mediaUrl" class="img-fluid" height="100" width="100">
                   <div class="mx-4">
-                    <p class="font-weight-bold mb-1">{{ item.product.name }}</p>
+                    <p class="fw-bold mb-1">{{ item.product.name }}</p>
 
                     <p v-if="!item.product.on_sale">
-                      <span class="font-weight-bold">{{ $n(item.product.unit_price, 'currency', $i18n.locale) }}</span> x 1 ({{ item.default_size }})
+                      <span class="fw-bold">{{ $n(item.product.unit_price, 'currency', $i18n.locale) }}</span> x 1 ({{ item.default_size }})
                     </p>
                     <p v-else>
                       <del>{{ $n(item.product.unit_price, 'currency', $i18n.locale) }}</del> {{ $n(item.product.sale_price, 'currency', $i18n.locale) }} x 1

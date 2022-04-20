@@ -3,7 +3,7 @@
     <div class="row d-flex justify-content-center">
       <div class="col-sm-12 col-md-12">
         <div class="d-flex justify-content-between mt-4 mb-2 ">
-          <h4 class="text-uppercase font-weight-bold">
+          <h4 class="text-uppercase fw-bold">
             {{ $t('You may also like') }}
           </h4>
 

@@ -1,6 +1,6 @@
 <template>
   <div id="size-guide" class="my-3">
-    <a class="text-underline font-size-2 pt-0" @click="showSizeGuide=!showSizeGuide">
+    <a class="text-underline pt-0" @click="showSizeGuide=!showSizeGuide">
       <font-awesome-icon icon="ruler" class="mr-2" />
       {{ $t('Size guide') }}
     </a>

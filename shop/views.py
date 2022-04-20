@@ -1,8 +1,8 @@
 import random
 from collections import OrderedDict
 from hashlib import md5
-from api.serializers.dashboard import ImageSerializer
 
+from api.serializers.dashboard import ImageSerializer
 from api.utils import CustomPagination
 from django.core.cache import cache
 from django.db.models import Avg
@@ -59,9 +59,11 @@ def products_filering_helper(request, queryset):
     # season = request.GET.get('season', [])
     # delivery = request.GET.get('season', False)
     # novelties = request.GET.get('novelties', False)
-    return queryset.filter(
-        Q(color__in=get_items(colors))
+    logic = (
+        Q(color__in=get_items(colors)) |
+        Q(size__name__in=get_items(sizes))
     )
+    return queryset.filter(logic)
 
 
 def build_colors(colors):
@@ -320,11 +322,11 @@ def rename_products_view(request, **kwargs):
     return responses.success_response(serializer=products_serializer)
 
 
-@api_view(['get'])
-def products_view(request, **kwargs):
-    queryset = Product.objects.values('id', 'name', 'active')
-    serializer = ProductSerializer(instance=queryset, many=True)
-    return responses.success_response(serializer=serializer)
+# @api_view(['get'])
+# def products_view(request, **kwargs):
+#     queryset = Product.objects.values('id', 'name', 'active')
+#     serializer = ProductSerializer(instance=queryset, many=True)
+#     return responses.success_response(serializer=serializer)
 
 
 @api_view(['post'])

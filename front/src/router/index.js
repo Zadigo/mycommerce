@@ -8,6 +8,7 @@ import { loadView } from './utils'
 // Routes
 import shop from './shop'
 import dashboard from './dashboard'
+import accounts from './accounts'
 
 // import BaseAccount from '@/layouts/BaseAccount.vue'
 
@@ -30,6 +31,7 @@ var routes = [
     },
     children: [
       ...shop,
+      ...accounts,
 
       {
         path: '/cookie-settings',
@@ -39,7 +41,7 @@ var routes = [
     ]
   },
 
-  ...dashboard
+  ...dashboard,
 ]
 
 var router = new VueRouter({

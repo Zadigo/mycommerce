@@ -25,7 +25,7 @@
 
                 <v-text-field type="number" class="my-5" outlined hide-details></v-text-field>
 
-                <div class="font-weight-bold">
+                <div class="fw-bold">
                   {{ $n(item.price, 'currency', $i18n.locale) }}
                 </div>
 

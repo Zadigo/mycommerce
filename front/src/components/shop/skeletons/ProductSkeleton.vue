@@ -45,7 +45,7 @@
           <div class="row d-flex justify-content-center">
             <div class="col-md-12">
               <div class="d-flex justify-content-between mt-4 mb-2 ">
-                <h4 class="text-uppercase font-weight-bold">
+                <h4 class="text-uppercase fw-bold">
                   {{ $t('You may also like') }}
                 </h4>
                 <b-skeleton width="10%" height="5%" type=" text" animation="fade"></b-skeleton>

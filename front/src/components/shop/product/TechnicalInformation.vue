@@ -1,7 +1,7 @@
 <template>
   <v-expansion-panels class="my-3">
     <v-expansion-panel>
-      <v-expansion-panel-header class="font-weight-bold">
+      <v-expansion-panel-header class="fw-bold">
         Matière et entretien
       </v-expansion-panel-header>
 
@@ -12,7 +12,7 @@
     </v-expansion-panel>
 
     <v-expansion-panel>
-      <v-expansion-panel-header class="font-weight-bold">
+      <v-expansion-panel-header class="fw-bold">
         Détail du produit
       </v-expansion-panel-header>
 
@@ -25,7 +25,7 @@
     </v-expansion-panel>
 
     <v-expansion-panel>
-      <v-expansion-panel-header class="font-weight-bold">
+      <v-expansion-panel-header class="fw-bold">
         Taille et coupe
       </v-expansion-panel-header>
 

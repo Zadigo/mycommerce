@@ -2,8 +2,8 @@
   <div id="actions">
     <!-- Colors -->
     <div id="colors" class="my-3">
-      <p class="mb-2 font-size-2">
-        <span class="font-weight-bold">{{ $t('Color') }}</span>: {{ product.color }}
+      <p class="mb-2">
+        <span class="fw-bold">{{ $t('Color') }}</span>: {{ product.color }}
       </p>
 
       <!-- TODO: Create a swatch reusable component -->
@@ -16,7 +16,7 @@
 
     <!-- Size -->
     <div id="sizes" class="my-2">
-      <p class="mb-2 font-size-2">
+      <p class="mb-2">
         {{ $t('Size') }}
       </p>
 

@@ -10,7 +10,7 @@ urlpatterns = [
     path('api/v1/cart/', include('cart.urls')),
     path('api/v1/collection/', include('collection.urls')),
     
-    path('api/v1/', include('api.urls')),
+    # path('api/v1/', include('api.urls')),
     path('admin/', admin.site.urls),
     
     re_path(r'^$', index_view, name='home')

@@ -16,9 +16,9 @@
                 </div>
 
                 <div class="col-12">
-                  <p class="font-weight-bold">{{ options.firstname }} {{ options.lastname }}</p>
-                  <p class="font-weight-bold">{{ options.address }}, {{ options.zip_code }}</p>
-                  <p class="font-weight-bold">{{ options.city }}</p>
+                  <p class="fw-bold">{{ options.firstname }} {{ options.lastname }}</p>
+                  <p class="fw-bold">{{ options.address }}, {{ options.zip_code }}</p>
+                  <p class="fw-bold">{{ options.city }}</p>
                 </div>
 
                 <button class="btn btn-lg btn-primary">
@@ -39,7 +39,7 @@
 
           <div id="payment-method" class="card mt-2">
             <div class="card-body">
-              <p class="font-weight-bold">
+              <p class="fw-bold">
                 <!-- Choisissez un mode de paiement -->
                 {{ $t('Choose a payment method') }}
               </p>

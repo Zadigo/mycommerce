@@ -7,7 +7,7 @@
       </b-link>
     </div>
 
-    <!-- Additional information -->
+    <!-- Technical Information -->
     <technical-information :product="product" />
 
     <!-- Add to list -->

@@ -6,7 +6,7 @@
           <div class="d-flex justify-content-left">
             <font-awesome-icon icon="user" size="4x" class="mr-6 text-blue darken-1" />
             <div>
-              <p class="font-weight-bold m-0">{{ $t(card.name) }}</p>
+              <p class="fw-bold m-0">{{ $t(card.name) }}</p>
               <p>{{ card.description }}</p>
             </div>
           </div>

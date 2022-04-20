@@ -1,12 +1,11 @@
 <template>
-  <section id="account">
+  <section id="account" class="ecommerce-section">
     <div class="container">
       <div class="row">
         <div class="col-10 offset-md-1">
           <h2>{{ $t('my_account') }}</h2>
-          
-          <router-view />
 
+          <router-view />
         </div>
       </div>
     </div>

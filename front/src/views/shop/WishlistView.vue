@@ -28,7 +28,7 @@
             <v-col cols="12" class="text-center">
               <v-icon class="mb-4" x-large>mdi-heart</v-icon>
 
-              <h1 class="mb-4 font-weight-bold">{{ $t('You have no saved items') }}</h1>
+              <h1 class="mb-4 fw-bold">{{ $t('You have no saved items') }}</h1>
               <p>{{ $t('Sign in to sync your saved items across all your devices') }}</p>
 
               <v-btn :to="{ name: 'login_view', params: { lang: $i18n.locale } }" color="primary" x-large>

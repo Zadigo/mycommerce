@@ -20,7 +20,7 @@
 
       <transition name="slide-transition">
         <div v-if="isHovered" class="mini-cart p-3">
-          <div class="font-weight-bold mb-3 text-uppercase">{{ $t('Add to cart') }}</div>
+          <div class="fw-bold mb-3 text-uppercase">{{ $t('Add to cart') }}</div>
           
           <div id="sizes">
             <div v-if="hasSizes">
@@ -43,11 +43,11 @@
           {{ product.name|capitalizeLetters|truncateFilter }}
         </p>
 
-        <span v-if="product.on_sale" class="font-weight-bold">
+        <span v-if="product.on_sale" class="fw-bold">
           {{ $n(product.sale_price, 'currency', $i18n.locale) }}
         </span>
 
-        <span v-else class="font-weight-bold">
+        <span v-else class="fw-bold">
           {{ $n(product.unit_price, 'currency', $i18n.locale) }}
         </span>
         

@@ -5,7 +5,7 @@
         <!-- Sections -->
         <div class="row">
           <div v-for="(section, x) in items" :key="x" class="col-sm-12 col-md-3">
-            <p class="font-weight-bold text-uppercase">{{ $t(section.name) }}</p>
+            <p class="fw-bold text-uppercase">{{ $t(section.name) }}</p>
 
             <template v-for="(link, y) in section.links">
               <router-link v-if="link.name" :key="y" :to="{ name: link.name, params: { lang: $i18n.locale } }" class="d-block py-1 text-muted text-decoration-none">

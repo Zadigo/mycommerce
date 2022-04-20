@@ -78,7 +78,7 @@
         "name": "My account",
         "links": [
             {
-                "name": "account_home",
+                "name": "account_home_view",
                 "href": null,
                 "text": "Profile"
             },
