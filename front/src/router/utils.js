@@ -6,13 +6,12 @@ function loadLayout(component) {
   return () => import(`@/layouts/${component}.vue`)
 }
 
-function loadComponent(component) {
-  return () => import(`@/components/${component}.vue`)
+function loadComponent(name) {
+  return () => import(`@/components/${name}.vue`)
 }
 
-
 export {
-    loadView,
-    loadLayout,
-    loadComponent
+  loadComponent,
+  loadLayout,
+  loadView
 }

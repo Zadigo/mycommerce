@@ -28,6 +28,7 @@
   "Enter your email": "Saisissez votre addresse email",
   "Filter": "Trier",
   "Help": "Assistance",
+  "help": "Assistance",
   "Home": "Accueil",
   "How to order": "Comment commander",
   "How to track": "Suivre ses commandes",
@@ -127,5 +128,6 @@
   "password1": "Mot de passe",
   "password2": "Confirmez votre mot de passe",
   "name": "Nom",
-  "Find a store": "Trouver une boutique"
+  "Find a store": "Trouver une boutique",
+  "likes_and_lists": "Liste aime"
 }

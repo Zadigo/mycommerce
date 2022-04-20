@@ -1,4 +1,5 @@
-import { loadLayout, loadComponent } from './utils';
+import { loadLayout } from './utils'
+import i18n from '@/i18n'
 
 export default [
     {
@@ -11,7 +12,15 @@ export default [
                 meta: {
                     requiresAuthentication: true
                 },
-                component: loadComponent('shop/account/Home')
+                component: () => import('@/components/shop/account/Home.vue')
+            },
+            {
+                path: 'your-account',
+                name: 'your_account_view',
+                meta: {
+                    pageTitle: i18n.t('your_account')
+                },
+                component: () => import('@/components/shop/account/YourAccount.vue')
             },
         ]
     }

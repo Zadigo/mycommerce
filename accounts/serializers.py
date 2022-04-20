@@ -29,7 +29,7 @@ class LoginUserSerializer(Serializer):
 
         login(request, user)
         token, state = Token.objects.get_or_create(user=user)
-        serializer = UserProfileSerializer(instance=user)
+        serializer = UserSerializer(instance=user)
         return {'token': token.key, 'user': serializer.data}
 
 
@@ -47,9 +47,17 @@ class AccountMixin:
     def get_object(self):
         return get_object_or_404(USER_MODEL, id=self.validated_data['id'])
     
+
+class UserProfileSerializer(AccountMixin, Serializer):
+    id = fields.IntegerField()
+
+    def save(self, request, **kwargs):
+        user = self.get_object()
+
     
 class UserSerializer(AccountMixin, Serializer):
     id = fields.CharField(read_only=True)
+    userprofile = UserProfileSerializer()
     first_name = fields.CharField(allow_null=True)
     last_name = fields.CharField(allow_null=True)
     get_full_name = fields.CharField(required=False)
@@ -68,11 +76,3 @@ class UserSerializer(AccountMixin, Serializer):
         if password is not None:
             user.set_password(user.check_password(password))
             update_session_auth_hash(request, user)
-
-
-class UserProfileSerializer(AccountMixin, Serializer):
-    id = fields.IntegerField()
-    user = UserSerializer()
-    
-    def save(self, request, **kwargs):
-        user = self.get_object()

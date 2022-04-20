@@ -167,12 +167,55 @@ function scrollToSection(elementId) {
     document.getElementById(elementId).scrollIntoView()
 }
 
+function getAutoComplete(fieldName) {
+    var autocomplete = null
+
+    switch (fieldName) {
+        case fieldName === 'password':
+            autocomplete = 'current-password'
+            break
+
+        case fieldName === 'password1':
+        case fieldName === 'password2':
+            autocomplete = 'new-password'
+            break
+    
+        default:
+            autocomplete = fieldName
+            break
+    }
+
+    return autocomplete
+}
+
+function getFieldType(fieldName, defaultType) {
+    var fieldType = null
+
+    switch (fieldType) {
+        case fieldName === 'password1':
+        case fieldName === 'password2':
+            fieldType = 'password'
+            break
+
+        case fieldName === 'telephone':
+            fieldType = 'tel'
+            break    
+
+        default:
+            fieldType = defaultType || 'text'
+            break
+    }
+
+    return fieldType
+}
 
 export {
     buildLimitOffset,
     decreaseIndex,
     getPreviousItemFromList,
     getNextItemFromList,
+    getAutoComplete,
+    getFieldType,
     indexElements,
     increaseIndex,
     incrementLastId,

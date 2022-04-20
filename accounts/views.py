@@ -4,7 +4,7 @@ from mycommerce.responses import simple_api_response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
-from accounts.serializers import LoginUserSerializer, UserProfileSerializer
+from accounts.serializers import LoginUserSerializer, UserSerializer
 
 USER_MODEL = get_user_model()
 
@@ -30,5 +30,5 @@ def signup(request, **kwargs):
 @api_view(['get'])
 @permission_classes([IsAuthenticated])
 def profile_view(request, **kwargs):
-    serializer = UserProfileSerializer(instance=request.user)
+    serializer = UserSerializer(instance=request.user)
     return simple_api_response(serializer)

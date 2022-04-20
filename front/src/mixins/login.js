@@ -38,7 +38,7 @@ export default {
     methods: {
         async login(options) {
             try {
-                var response = await this.axios.post('login', this.loginCredentials)
+                var response = await this.axios.post('accounts/login', this.loginCredentials)
                 var data = response.data
 
                 this.$store.commit('authenticationModule/setUserProfile', data)
@@ -63,14 +63,14 @@ export default {
         },
 
         async logout() {
-            await this.axios.post('logout')
+            await this.axios.post('accounts/logout')
             this.$store.commit('authenticationModule/reset')
             this.$router.push({ name: 'home_view' })
         },
 
         async signup() {
             try {
-                var response = await this.$axios.post('signup', this.signupCredentials)
+                var response = await this.$axios.post('accounts/signup', this.signupCredentials)
                 this.$store.commit('authenticationModule/setUserProfile', response.data)
                 this.showLogin = true
             } catch(error) {

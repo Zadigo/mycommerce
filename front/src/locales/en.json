@@ -23,6 +23,7 @@
   "Enter your mail": "Enter your email",
   "Filter": "filter",
   "Help": "Help and support",
+  "help": "Help and support",
   "Home": "Home",
   "How to order": "How to order",
   "How to track": "How to track",
@@ -129,5 +130,6 @@
   "password1": "Password",
   "password2": "Password confirmation",
   "name": "Name",
-  "Find a store": "Find a store"
+  "Find a store": "Find a store",
+  "likes_and_lists": "Wishlists"
 }
