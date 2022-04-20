@@ -35,11 +35,12 @@
       <size-guide />
     </div>
 
-    <div v-if="noSizeSelected" class="bg-light p-2 rounded">Choississez une taille</div>  
+    <div v-if="noSizeSelected" class="bg-light p-2 rounded">
+      {{ $t('Choose a size') }}      
+    </div>  
 
     <!-- Actions -->
     <div id="cart" class="d-flex justify-content-left my-4">
-      <!-- Add to cart -->
       <button id="btn-add-cart" class="btn btn-lg btn-dark mr-2 font-size-3" @click="addToCart">
         <v-progress-circular v-if="addingToCart" :size="25" class="mr-2" color="white" indeterminate></v-progress-circular>
         {{ $t('Add to cart') }}

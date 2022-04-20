@@ -1,5 +1,5 @@
 <template>
-  <div class="col-12">
+  <div id="information" class="col-12">
     <div>
       <b-link v-b-popover.click.bottom="securedTransactionText">
         <font-awesome-icon icon="lock" class="mr-2" />
@@ -11,7 +11,7 @@
     <technical-information :product="product" />
 
     <!-- Add to list -->
-    <v-menu v-if="isAuthenticated" :close-on-content-click="false" transition="scale-transition">
+    <v-menu v-show="isAuthenticated" :close-on-content-click="false" transition="scale-transition">
       <template v-slot:activator="{ on, attrs }">
         <v-btn class="my-3" v-bind="attrs" v-on="on" @click="getUserLists">
           <font-awesome-icon class="mr-2" icon="star"></font-awesome-icon>
@@ -70,8 +70,6 @@
 </template>
 
 <script>
-var _ = require('lodash')
-
 import { mapGetters, mapState } from 'vuex'
 
 import TechnicalInformation from './TechnicalInformation.vue'
@@ -111,49 +109,35 @@ export default {
 
     hasDescription() {
       return this.product == undefined
-    },
-
-    sizes() {
-      // Return all the size options for the given product
-      return _.filter(this.product.additional_variants, (variant) => {
-        return variant.category === 'Size'
-      })
     }
   },
   
   methods: {
-    goToReviewsSection () {
-      document.getElementById('reviews').scrollIntoView()
+    async addToList (wishlist) {
+      try {
+        await this.axios.post('shop/lists/add', {
+          product: this.product,
+          wishlist: wishlist
+        })
+
+      } catch(error) {
+        this.$store.dispatch('addErrorMessage', error)
+      }
+    },
+    
+    async getUserLists () {
+      try {
+        var response = await this.axios.get('shop/lists')
+
+        this.$store.commit('setUserLists', response.data)
+      } catch(error) {
+        this.$store.dispatch('addErrorMessage', error)
+      }
     },
 
     calculatePaymentFraction (unitPrice) {
       var price = unitPrice * 1
       return Math.floor(price / 4 * 1000) / 1000
-    },
-    
-    addToList (wishlist) {
-      if (!this.isAuthenticated) {
-        this.$store.commit('authenticationModule/loginUser')
-      } else {
-        this.$api.shop.lists.add(this.product, wishlist)
-        .then((response) => {
-          // TODO: Capture an action here with analytics
-          response
-        })
-        .catch((error) => {
-          error
-        })
-      }
-    },
-
-    getUserLists () {
-      this.$api.shop.lists.all()
-      .then((response) => {
-        this.$store.commit('setUserLists', response.data)
-      })
-      .catch((error) => {
-        error
-      })
     }
   }
 }

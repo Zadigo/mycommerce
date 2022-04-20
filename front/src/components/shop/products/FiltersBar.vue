@@ -56,7 +56,7 @@
         <div v-else-if="selectedFilter == 'colors'" class="d-flex justify-content-center">
           <div v-for="(color, i) in colors" :key="i" @click="setFilterValue('colors', color[0])">
             <v-icon v-if="isSelected('colors', color[0])" class="text-white filter-icon" x-large>mdi-check</v-icon>
-            <v-img :src="color[1]" id="color" class="mx-2" height="50px" width="50px"></v-img>
+            <v-img id="color" :src="color[1]" class="mx-2" height="50px" width="50px"></v-img>
           </div>
         </div>
       </div>
@@ -136,6 +136,19 @@ export default {
     }
   },
 
+  beforeMount() {
+    this.sortMethod =  this.$localstorage.retrieve('sort')
+    this.doSort(this.sortMethod)
+  },
+
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll)
+  },
+
+  destroyed() {
+    window.removeEventListener('scroll', this.handleScroll)
+  },
+
   methods: {
     async getFilteredProducts() {
       try {
@@ -194,19 +207,6 @@ export default {
     isSelected(key, value) {
       return this.selectedElements[key].includes(value)
     }
-  },
-
-  beforeMount() {
-    this.sortMethod =  this.$localstorage.retrieve('sort')
-    this.doSort(this.sortMethod)
-  },
-
-  mounted() {
-    window.addEventListener('scroll', this.handleScroll)
-  },
-
-  destroyed() {
-    window.removeEventListener('scroll', this.handleScroll)
   }
 }
 </script>

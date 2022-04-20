@@ -1,5 +1,5 @@
 <template>
-  <div ref="link" :class="{ show: openCart }" class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="Cart">
+  <div id="offcanvasExample" ref="link" :class="{ show: openCart }" class="offcanvas offcanvas-end" tabindex="-1" aria-labelledby="Cart">
     <div class="offcanvas-header">
       <button type="button" class="btn-close text-reset" aria-label="Close" @click="toggleModalCart"></button>
     </div>
@@ -83,15 +83,6 @@ import cartMixin from '@/mixins/cart'
 export default {
   name: 'CartOffCanvas',
   mixins: [cartMixin],
-  watch: {
-    openCart(newValue) {
-      if (newValue) {
-        this.$refs.link.style.visibility = 'visible'
-      } else {
-        this.$refs.link.style.visibility = 'hidden'
-      }
-    }
-  },
   computed: {
     ...mapState({
       cartTotal: (state) => { return state.cachedCartResponse.total },
@@ -103,6 +94,15 @@ export default {
     cartIsEmpty () {
       return this.cart.length == 0
     },
+  },
+  watch: {
+    openCart(newValue) {
+      if (newValue) {
+        this.$refs.link.style.visibility = 'visible'
+      } else {
+        this.$refs.link.style.visibility = 'hidden'
+      }
+    }
   },
   methods: {
     ...mapMutations(['toggleModalCart']),

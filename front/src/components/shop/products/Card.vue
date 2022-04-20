@@ -86,12 +86,12 @@ export default {
   components: {
     BaseTag
   },
-  mixins: [cartMixin],
   filters: {
     truncateFilter(value) {
       return truncate(value)
     }
   },
+  mixins: [cartMixin],
   props: {
     isLoading: {
       type: Boolean,

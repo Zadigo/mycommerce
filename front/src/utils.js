@@ -161,8 +161,12 @@ function searchHelper(search, items, fields) {
     }
 }
 
-window.testA = getNextItemFromList
-window.testB = getPreviousItemFromList
+function scrollToSection(elementId) {
+    // Based on the ID attribute of an element on the
+    // page, scroll to that element
+    document.getElementById(elementId).scrollIntoView()
+}
+
 
 export {
     buildLimitOffset,
@@ -176,6 +180,7 @@ export {
     limitAndOffsetAsParams,
     readFile,
     readMultipleFiles,
+    scrollToSection,
     searchHelper,
     truncate
 }

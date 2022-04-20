@@ -5,7 +5,8 @@
       {{ $t('Size guide') }}
     </a>
 
-    <base-modal :show="showSizeGuide" id="modal-1" :title="$t('Size guide')" size="lg" @modal-close="showSizeGuide=false">
+    <!-- Modal -->
+    <base-modal id="modal-1" :show="showSizeGuide" :title="$t('Size guide')" size="lg" @modal-close="showSizeGuide=false">
       <template>
         <div class="container">
           <div class="row">

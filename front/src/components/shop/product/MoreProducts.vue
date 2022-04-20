@@ -31,6 +31,7 @@ import Card from '@/components/shop/products/Card.vue'
 
 export default {
   name: 'MoreProducts',
+  components: { Card },
   props: {
     isLoading: {
       type: Boolean,
@@ -41,8 +42,6 @@ export default {
       default: () => []
     }
   },
-  components: { Card },
-
   methods: {
     updateProductList() {
       // TODO: When the user changes to another product,
