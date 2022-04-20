@@ -1,5 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 
 class Address(models.Model):
     user_profile = models.ForeignKey(
@@ -28,4 +31,10 @@ class UserProfile(models.Model):
     created_on = models.DateField(auto_now_add=True)
     
     def __str__(self):
-        return self.user
+        return str(self.user)
+    
+
+@receiver(post_save, sender=User)
+def create_profile(instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)

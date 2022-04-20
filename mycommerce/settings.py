@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     
     # 'api',
+    'accounts',
     'collection',
     'shop',
     'variants',
