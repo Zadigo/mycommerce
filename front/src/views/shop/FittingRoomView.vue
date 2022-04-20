@@ -11,11 +11,15 @@
 </template>
 
 <script>
-import HomeComponent from '@/components/fitting_room/HomeComponent.vue'
-import FidelityComponent from '@/components/fitting_room/FidelityComponent.vue'
+import HomeComponent from '@/components/shop/fitting_room/HomeComponent.vue'
+import FidelityComponent from '@/components/shop/fitting_room/FidelityComponent.vue'
 
 export default {
     name: 'FittingRoomView',
+    components: {
+      HomeComponent,
+      FidelityComponent
+    },
     data: () => ({
       cursor: 0,
       componentNames: [
@@ -23,10 +27,6 @@ export default {
         'fidelity-component'
       ]
     }),
-    components: {
-      HomeComponent,
-      FidelityComponent
-    },
     computed: {
       current() {
         return this.componentNames[this.cursor]

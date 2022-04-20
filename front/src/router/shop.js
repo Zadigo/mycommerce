@@ -40,6 +40,14 @@ export default [
         component: loadView('shop/auth/LoginView')
     },
     {
+        path: 'signup',
+        name: 'signup_view',
+        meta: {
+            isFullPage: true
+        },
+        component: loadView('shop/auth/LoginView')
+    },
+    {
         path: 'store-locations',
         name: 'store_locations_view',
         component: loadView('shop/StoreFinderView')

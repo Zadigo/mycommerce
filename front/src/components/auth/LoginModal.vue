@@ -1,5 +1,5 @@
 <template>
-  <base-modal :show="loginModal" :centered="true" id="login" @modal-close="loginModal=false">
+  <base-modal id="login" :show="loginModal" :centered="true" @modal-close="loginModal=false">
     <template>
       <v-container>
         <v-row>
@@ -35,13 +35,13 @@ import loginMixin from '@/mixins/login'
 export default {
   name: 'LoginModal',
   components: { AdditionalLinks, AuthFields, BaseModal },
+  mixins: [loginMixin],
   props: {
       callback: {
           type: Function,
           required: false
       }
   },
-  mixins: [loginMixin],
   computed: {
     loginModal: {
       get() { return this.$store.state.authenticationModule.loginModal },
