@@ -111,7 +111,7 @@ export default {
   name: 'ProductView',
 
   title() {
-    return this.currentProduct.name
+    return 'this.currentProduct.name'
   },
 
   components: {
@@ -142,28 +142,6 @@ export default {
       } catch (error) {
         return []
       }
-    },
-
-    breadcrumbs() {
-      return [
-        {
-          text: this.$t('Home'),
-          to: 'home'
-        },
-        {
-          text: this.$route.params.collection,
-          to: 'collection_details',
-          params: { collection: this.$route.params.collection }
-        },
-        {
-          text: this.currentProduct.name,
-          active: false
-        }
-      ]
-    },
-
-    hasDescription() {
-      return this.product == undefined
     }
   },
 
@@ -244,26 +222,7 @@ export default {
 
     getProduct() {
       return this.$store.getters['getProduct'](this.$route.params.id)
-    },
-
-    sendAnalytics() {
-      var product = this.currentProduct
-      product
-      // this.$analytics.google.viewItem({
-      //   index : this.$store.getters['productIndex'](product),
-      //   item_id: product.id,
-      //   item_name: product.name,
-      //   item_variant: product.color,
-      //   price: product.get_price,
-      //   discount: product.sale_value
-      // })
     }
-
-    // FIXME: Use mapmutations to
-    // set the recently viewed product
-    // methods: {
-    //   ...mapMutations(['addToRecentlyViewed'])
-    // }
   } 
 }
 </script>

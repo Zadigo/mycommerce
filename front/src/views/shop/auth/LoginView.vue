@@ -32,11 +32,11 @@ export default {
    title() {
     return this.$t('Login')
   },
-  mixins: [loginMixin],
   components: { 
     AdditionalLinks,
     AuthFields,
     BaseAuth
-  } 
+  }, 
+  mixins: [loginMixin],
 }
 </script>
