@@ -163,7 +163,7 @@ export default {
     console.log(2, to.params, from.params)
     next(vm => {
       // TODO: Set the name on the page via the product
-      vm.sendAnalytics()
+      // vm.sendAnalytics()
       // TODO: When relaoding (or maybe even accessing the page)
       // this tries to access products/product that is not yet
       // defined. We have to define these to prevent

@@ -4,26 +4,28 @@
       <!-- TODO: Make this and the whishlist a common inherited element -->
       <v-row v-if="likes.length > 0">
         <v-col v-for="product in likes" :key="product.id" cols="3">
-          <v-img :src="product.get_main_image.mid_size|mediaUrl" height="400"></v-img>
+          <div class="card">
+            <v-img :src="product.get_main_image.mid_size|mediaUrl" height="400" class="card-img-top"></v-img>
 
-          <div id="actions">
-            <p class="font-weight-bold">
-              <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }">{{ product.name }}</router-link>
-            </p>
-            <p>{{ product.get_price }}</p>
+            <div class="card-body">
+              <h5 class="card-title">
+                <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }">
+                  {{ product.name }}
+                </router-link>
+              </h5>
+              <p class="card-text">{{ product.get_price }}</p>
 
-            <!-- <v-select :items="items" label="Size" outlined></v-select>
-            <v-select :items="items" label="Variant" outlined></v-select> -->
+              <v-select :items="product.sizes.map((item) => { return item.name })" outlined hide-details></v-select>
 
-            <v-btn block @click="simpleAddToCard(product, 'Unique')">
-              {{ $t('Add to cart') }}
-            </v-btn>
+              <v-btn class="my-2" color="primary" elevation="0" block @click="simpleAddToCard(product, 'Unique')">
+                {{ $t('Add to cart') }}
+              </v-btn>
 
-            <v-btn block @click="removeFromLiked(product)">
-              {{ $t('Remove') }}
-            </v-btn>
+              <v-btn color="danger" elevation="0" block @click="removeFromLiked(product)">
+                {{ $t('Remove') }}
+              </v-btn>
+            </div>
           </div>
-
         </v-col>
       </v-row>
 

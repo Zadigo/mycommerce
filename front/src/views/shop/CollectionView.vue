@@ -44,7 +44,7 @@
           
         <!-- Ad -->
         <div class="col-12 my-6">
-          <router-link :to="{ name: 'home', lang: $i18n.locale }">
+          <router-link :to="{ name: 'home_view', lang: $i18n.locale }">
             <!-- TODO: Emit a PageView when clicking on this section -->
             <v-img src="https://img.ltwebstatic.com/images3_acp/2022/02/25/164578700614872218156e3ff9868de22e7c67a145.webp"></v-img>
           </router-link>
