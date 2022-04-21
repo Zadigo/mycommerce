@@ -154,7 +154,7 @@ export default {
       try {
         this.$emit('loading-products-start')
         
-        var response = await this.axios.get(`/shop/advanced/search${this.searchQuery}`)
+        var response = await this.axios.get(`shop/advanced/search${this.searchQuery}`)
         
         this.$store.commit('setProducts', response.data)
         this.$emit('loading-products-end')
@@ -195,9 +195,7 @@ export default {
 
       this.selectedElements[key] = this.updateList(colorValue, values)
       if (!this.hasFilters) {
-        this.$emit('loading-products-start')
         this.$emit('load-products')
-        this.$emit('loading-products-end')
       } else {
         this.getFilteredProducts()
       }

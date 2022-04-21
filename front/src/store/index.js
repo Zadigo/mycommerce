@@ -63,6 +63,7 @@ export default new Vuex.Store({
     likedProducts: [],
 
     showSearchModal: false,
+    showSubscriptionModal: false,
 
     currentSite: 'base-site'
   },
@@ -78,6 +79,10 @@ export default new Vuex.Store({
 
     toggleSearchModal(state) {
       state.showSearchModal = !state.showSearchModal
+    },
+
+    toggleSubscriptionModal(state) {
+      state.showSubscriptionModal = true
     },
 
     updateCart(state, result) {

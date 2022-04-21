@@ -47,9 +47,9 @@ export default {
           ]
         },
         {
-          name: 'Underwear',
+          name: 'Jupes',
           links: [
-            { name: 'See all', to: 'collection_details_view', params: { collection: 'all' } },
+            { name: 'See all', to: 'collection_details_view', params: { collection: 'jupes' } },
             { name: 'Wired', to: 'collection_details_view', params: { collection: 'all' } },
             { name: 'Non wired', to: 'collection_details_view', params: { collection: 'all' } },
             { name: 'Padded', to: 'collection_details_view', params: { collection: 'all' } },
@@ -59,9 +59,9 @@ export default {
           ]
         },
         {
-          name: 'Apparel',
+          name: 'Culottes',
           links: [
-            { name: 'See all', to: 'collection_details_view', params: { collection: 'all' } },
+            { name: 'See all', to: 'collection_details_view', params: { collection: 'culottes' } },
             { name: 'Leggings sets', to: 'collection_details_view', params: { collection: 'all' } },
           ]
         },

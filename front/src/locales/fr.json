@@ -129,5 +129,7 @@
   "password2": "Confirmez votre mot de passe",
   "name": "Nom",
   "Find a store": "Trouver une boutique",
-  "likes_and_lists": "Liste aime"
+  "likes_and_lists": "Liste aime",
+  "data_processing": "Nous traitons tes données personnelles conformément à notre Politique de Confidentialité. Tu peux retirer ton consentement à tout moment en cliquant sur le lien de désabonnement en bas de nos e-mails",
+  "first_order": "Profitez de {value}% sur votre première commande"
 }

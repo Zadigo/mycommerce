@@ -7,7 +7,7 @@
 
         <div class="col-12">
           <!-- Filters -->
-          <filters-bar @load-products="getProducts" @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" @do-sort="doSort" />
+          <filters-bar @load-products="productsRequest" @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" @do-sort="doSort" />
           
           <!-- Statistics -->
           <p class="text-center text-muted m-0 mt-5">{{ $tc('styles_found', sortedProducts.length) }}</p>
@@ -86,8 +86,8 @@ export default {
   
   data: () => ({
     isLoading: true,
-    multipleGridDisplay: false,
     hideFilters: false,
+    multipleGridDisplay: false,
     sortMethod: null
   }),
   

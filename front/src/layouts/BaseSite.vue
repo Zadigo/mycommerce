@@ -25,7 +25,7 @@
       <!-- <modal-cart /> -->
       <cart-off-canvas />
       <login-modal />
-      <base-subscription-modal />
+      <base-subscription-modal :show-modal="showSubscriptionModal" />
       <modal-language-selection />
     </v-main>
 
@@ -40,6 +40,7 @@ import BaseFooter from '@/components/BaseFooter.vue'
 import ModalLanguageSelection from '@/components/ModalLanguageSelection.vue'
 import ScrollTopButton from '@/components/ScrollTopButton.vue'
 import CartOffCanvas from '@/components/shop/cart/CartOffCanvas.vue'
+import { mapState } from 'vuex'
 
 export default {
   name: 'BaseSite',
@@ -50,6 +51,9 @@ export default {
     CartOffCanvas,
     ModalLanguageSelection,
     ScrollTopButton
+  },
+  computed: {
+    ...mapState(['showSubscriptionModal'])
   }
 }
 </script>

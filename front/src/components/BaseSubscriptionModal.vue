@@ -1,13 +1,15 @@
 <template>
-  <base-modal id="subscription-modal" size="lg" body-class="p-0">
+  <base-modal id="subscription-modal" :show="showModal" size="lg" body-class="p-0">
     <div class="d-flex justify-content-between" style="overflow: hidden;">
       <!-- TODO: Adapt imagee roundness to the modal -->
-      <v-img src="http://via.placeholder.com/400x1200" width="300" height="auto" class="rounded"></v-img>
+      <v-img src="http://via.placeholder.com/400x1200" width="300" height="600" class="rounded"></v-img>
 
       <v-row class="p-5">        
         <v-col cols="12">
           <p class="text-muted text-uppercase">{{ $t('Join the', { value: '#FEMALEFAMILY' }) }}</p>
-          <p class="font-weight-bold fs-22 text-uppercase">Profitez de 10% sur votre première commande</p>
+          <p class="font-weight-bold fs-22 text-uppercase">
+            {{ $t('first_order', { value: 10 }) }}
+          </p>
           <p class="text-muted">
             Oh hey! Il est temps de se mettre à l'aise, car nous vous ouvrons grand les bras et 
             vous accueillons dans notre famille. Inscrivez-vous pour recevoir les communiqués de 
@@ -20,10 +22,8 @@
             {{ $t('Subscribe') }}
           </v-btn>
           
-          <p class="text-muted fs-14">
-            Nous traitons tes données personnelles conformément à notre Politique de 
-            Confidentialité. Tu peux retirer ton consentement à tout moment en cliquant sur 
-            le lien de désabonnement en bas de nos e-mails.
+          <p class="text-muted fs-5">
+            {{ $t('data_processing') }}
           </p>
         </v-col>
       </v-row>
@@ -39,6 +39,11 @@ import BaseModal from '@/layouts/BaseModal.vue'
 export default {
   name: 'BaseSubscriptionModal',
   components: { BaseModal },
-  mixins: [subsriptionMixin]
+  mixins: [subsriptionMixin],
+  props: {
+    showModal: {
+      type: Boolean
+    }
+  }
 }
 </script>

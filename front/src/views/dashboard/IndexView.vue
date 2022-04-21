@@ -1,7 +1,7 @@
 <template>
   <section>
     <!-- Section: Main chart -->
-    <section class="mb-4">
+    <section class="mb-4 d-none">
       <div class="card">
         <div class="card-header py-3">
           <h5 class="mb-0 text-center"><strong>Sales</strong></h5>
@@ -14,7 +14,7 @@
     <!-- Section: Main chart -->
 
     <!--Section: Sales Performance KPIs-->
-    <section class="mb-4">
+    <section class="mb-4 d-none">
       <div class="card">
         <div class="card-header text-center py-3">
           <h5 class="mb-0 text-center">
@@ -117,9 +117,10 @@
                 <div class="align-self-center">
                   <i class="fas fa-pencil-alt text-info fa-3x"></i>
                 </div>
+
                 <div class="text-end">
-                  <h3>278</h3>
-                  <p class="mb-0">New Posts</p>
+                  <h3>{{ statistics.customer_orders.total_count }}</h3>
+                  <p class="mb-0">Customer orders</p>
                 </div>
               </div>
             </div>
@@ -133,8 +134,8 @@
                   <i class="far fa-comment-alt text-warning fa-3x"></i>
                 </div>
                 <div class="text-end">
-                  <h3>156</h3>
-                  <p class="mb-0">New Comments</p>
+                  <h3>{{ statistics.carts.total_count }}</h3>
+                  <p class="mb-0">Unpaid carts</p>
                 </div>
               </div>
             </div>
@@ -440,5 +441,21 @@
 <script>
 export default {
   name: 'IndexView',
+  data: () => ({
+    statistics: {}
+  }),
+  beforeMount() {
+    this.loadStatistics()
+  },  
+  methods: {
+    async loadStatistics() {
+      try {
+        var response = await this.axios.get('shop/dashboard/statistics')
+        this.statistics = response.data
+      } catch(error) {
+        this.$store.dispatch('addErrorMessage', error)
+      }
+    }
+  }
 };
 </script>

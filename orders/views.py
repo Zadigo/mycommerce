@@ -3,8 +3,7 @@ from api.views.responses import success_response
 from cart.models import Cart
 from cart.utils import SessionManager
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from django.views.generic import FormView, ListView, TemplateView
+from django.views.generic import ListView, TemplateView
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response

@@ -1,15 +1,21 @@
+import datetime
 import random
 from collections import OrderedDict
 from hashlib import md5
+from django.utils.timezone import now
 
-from mycommerce.responses import CustomPagination
+
+import pytz
+from cart.models import Cart
 from django.core.cache import cache
 from django.db.models import Avg
+from django.db.models.aggregates import Count
 from django.db.models.expressions import Q
 from django.shortcuts import get_list_or_404, get_object_or_404
 from mycommerce.choices import flatten_choices
 from mycommerce.responses import (CustomPagination, api_response,
                                   error_response, simple_api_response)
+from orders.models import CustomerOrder
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.mixins import ListModelMixin
 from rest_framework.permissions import IsAuthenticated
@@ -383,3 +389,39 @@ class ProductImagesView(GenericViewSet, ListModelMixin):
     serializer_class = DashboardImageSerializer
     permission_classes = []
     pagination_class = CustomPagination
+
+
+@api_view(['get'])
+def shop_statistics(request, **kwargs):
+    customer_orders = CustomerOrder.objects.all()
+    carts = Cart.objects.all()
+    
+    current_date = now()
+    first = datetime.datetime(year=current_date.year, month=current_date.month, day=1)
+    
+    months_logic = (
+        Q(created_on__gte=first) &
+        Q(created_on__lte=now())
+    )
+    
+    customer_orders_for_month = customer_orders.filter(months_logic)
+    
+    total_customer_orders = customer_orders.aggregate(Count('id'))
+    total_customer_orders_for_month = customer_orders_for_month.aggregate(Count('id'))
+    
+    customer_orders = {
+        'total_count': total_customer_orders['id__count'],
+        'month': total_customer_orders_for_month['id__count']
+    }
+    
+    total_unpaid_carts = carts.aggregate(Count('id'))
+    
+    carts = {
+        'total_count': total_unpaid_carts['id__count']
+    }
+        
+    return_response = {
+        'carts': carts,
+        'customer_orders': customer_orders
+    }
+    return simple_api_response(return_response)
