@@ -14,7 +14,7 @@ dashboard_patterns = [
     re_path(r'^products/(?P<pk>\d+)/images/associate', views.associate_images_to_product),
     re_path(r'^products/(?P<pk>\d+)/update', views.update_product_view),
     re_path(r'^products/(?P<pk>\d+)', views.dashboard_product_details_view),
-    re_path(r'^products', views.generic_products_view),
+    re_path(r'^products', views.generic_products_view)
 ]
 
 dashboard_patterns += router.urls

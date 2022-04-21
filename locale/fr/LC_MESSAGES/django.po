@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-18 14:18+0200\n"
+"POT-Creation-Date: 2022-04-21 10:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,8 +19,18 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: .\cart\models.py:14
-msgid "Unique identifier used essentially for anonymous user carts"
+#, fuzzy
+#| msgid "Unique identifier used essentially for anonymous user carts"
+msgid "Unique identifier to identify user's carts"
 msgstr "Identifiant pour les paniers créés par des utilisateurs anonymes"
+
+#: .\cart\models.py:57
+msgid "Cart"
+msgstr "Panier"
+
+#: .\cart\models.py:58
+msgid "Carts"
+msgstr "Paniers"
 
 #: .\collection\choices.py:7 .\shop\choices.py:68
 msgid "Accessories"
@@ -86,6 +96,10 @@ msgstr "Commande client"
 msgid "Customer orders"
 msgstr "Commandes clients"
 
+#: .\reviews\models.py:58
+msgid "Review"
+msgstr "Avis"
+
 #: .\shop\models.py:29
 msgid "Used for the image's alt attribute"
 msgstr "Utilisé pour l'attribut alt the l'image"
@@ -124,7 +138,7 @@ msgstr "Produits"
 
 #: .\shop\models.py:238
 msgid "Like"
-msgstr ""
+msgstr "Liste de préférences"
 
 #: .\shop\models.py:249
 msgid "Wishlist"

@@ -2,8 +2,7 @@ import random
 from collections import OrderedDict
 from hashlib import md5
 
-from api.serializers.dashboard import ImageSerializer
-from api.utils import CustomPagination
+from mycommerce.responses import CustomPagination
 from django.core.cache import cache
 from django.db.models import Avg
 from django.db.models.expressions import Q
@@ -20,7 +19,8 @@ from reviews.serializers import ReviewSerializer
 
 from shop.choices import CategoryChoices
 from shop.models import Image, Like, Product, Wishlist
-from shop.serializers import (ImageAssociationSerializer, LikeSerializer,
+from shop.serializers import (DashboardImageSerializer,
+                              ImageAssociationSerializer, LikeSerializer,
                               ProductSerializer, ProductUpdateValidation,
                               ValidateWishList, VariantSerializer,
                               WishlistSerializer)
@@ -295,6 +295,13 @@ def dashboard_product_details_view(request, pk, **kwargs):
     return simple_api_response(serializer)
 
 
+@api_view(['get'])
+def images_view(request, **kwargs):
+    queryset = Image.objects.all()
+    serializer = DashboardImageSerializer(instance=queryset)
+    paginator = CustomPagination()
+
+
 @api_view(['post'])
 def associate_images_to_product(request, pk, **kwargs):
     """Associate images to a given product"""
@@ -347,13 +354,6 @@ def query_categories(request, **kwargs):
     return simple_api_response(categories)
 
 
-class ProductImagesView(GenericViewSet, ListModelMixin):
-    queryset = Image.objects.all()
-    serializer_class = ImageSerializer
-    permission_classes = []
-    pagination_class = CustomPagination
-
-
 @api_view(['get'])
 @permission_classes([])
 def dashboard_product_view(request, pk, **kwargs):
@@ -376,3 +376,10 @@ def dashboard_toggle_product_state(request, method, **kwargs):
         
     serializer = ProductSerializer(instance=products, many=True)
     return simple_api_response(serializer)
+
+
+class ProductImagesView(GenericViewSet, ListModelMixin):
+    queryset = Image.objects.all()
+    serializer_class = DashboardImageSerializer
+    permission_classes = []
+    pagination_class = CustomPagination

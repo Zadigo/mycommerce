@@ -1,7 +1,6 @@
-from math import prod
 from django.shortcuts import get_object_or_404
 from rest_framework import fields
-from rest_framework.serializers import (Serializer,
+from rest_framework.serializers import (ModelSerializer, Serializer,
                                         raise_errors_on_nested_writes)
 from variants.serializers import SizeSerializer
 
@@ -97,6 +96,14 @@ class LikeSerializer(UserlistSerializer):
 
 
 # Dashboard
+
+class DashboardImageSerializer(ModelSerializer):
+    mid_size = fields.ImageField()
+    
+    class Meta:
+        model = Image
+        fields = ['id', 'name', 'variant', 'mid_size']
+
 
 class ImageAssociationSerializer(Serializer):
     images = fields.ListField()

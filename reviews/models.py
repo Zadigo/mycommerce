@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 from shop.models import Product
@@ -54,6 +55,7 @@ class Review(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     
     class Meta:
+        verbose_name = _('Review')
         ordering = ['-created_on', '-id']
     
     def __str__(self):

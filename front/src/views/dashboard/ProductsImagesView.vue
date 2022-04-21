@@ -210,7 +210,7 @@ export default {
   methods: {
     async loadImages(url) {
       try {
-        var response = await this.axios.get(`/images?${buildLimitOffset(url).toString()}`)
+        var response = await this.axios.get(`shop/dashboard/images?${buildLimitOffset(url).toString()}`)
         var cachedResponse = response.data
 
         this.cachedResponse = cachedResponse
