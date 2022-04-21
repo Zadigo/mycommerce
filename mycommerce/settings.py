@@ -90,7 +90,6 @@ DATABASES = {
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
     'default': {
-        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'mycommerce',
         'USER': 'test_user',
@@ -232,3 +231,18 @@ CACHES = {
         'KEY_PREFIX': 'example'
     }
 }
+
+
+# Emailing
+
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', None)
+
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', None)
+
+EMAIL_USE_TLS = True
+
+EMAIL_PORT = 587
+
+# EMAIL_TIMEOUT = 5000
