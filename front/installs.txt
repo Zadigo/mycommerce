@@ -45,16 +45,16 @@ npm install lodash vue-axios axios bootstrap mdb-ui-kit dayjs vue-i18n@9 vue-rou
     "vue/order-in-components": "warn",
     "vue/this-in-template": "error",
     "vue/component-tags-order": [
-    "error",
-    {
-        "order": [
-        [
-            "template",
-            "script"
-        ],
-        "style"
-        ]
-    }
+        "error",
+        {
+            "order": [
+            [
+                "template",
+                "script"
+            ],
+            "style"
+            ]
+        }
     ]
 }
 

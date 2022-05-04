@@ -27,6 +27,13 @@ module.exports = {
                 // 'src/components/**/*.vue',
                 // 'src/views/**/*.vue'
             ]
+        },
+        {
+            root: './frontend',
+            package: 'package.json',
+            globalComponents: [
+                'src/**/*.vue'
+            ]
         }
     ]
 }
