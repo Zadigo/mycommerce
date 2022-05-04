@@ -1,7 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import fields
-from rest_framework.serializers import (ModelSerializer, Serializer,
-                                        raise_errors_on_nested_writes)
+from rest_framework.serializers import ModelSerializer, Serializer
 from variants.serializers import SizeSerializer
 
 from shop.choices import CategoryChoices

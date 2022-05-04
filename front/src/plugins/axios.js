@@ -1,19 +1,11 @@
 "use strict";
 
-// import Vue from 'vue'
 import axios from "axios"
-
-// TODO: Remove from project
-// import api from '@/plugins/api'
 
 import store from '@/store'
 import router from '@/router'
 import i18n from '../i18n'
 
-// Full config:  https://github.com/axios/axios#request-config
-// axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || ''
-// axios.defaults.headers.common['Authorization'] = `Token ${ store.state.authenticationModule.token }`
-// axios.defaults.headers.common['Accept'] = 'application/json, text/plain, */*'
 axios.defaults.headers.common['Accept'] = 'application/json'
 axios.defaults.headers.common['Accept-Language'] = `${ i18n.locale }, en-US;q=0.8, en;q=0.7`
 axios.defaults.headers.post['Content-Type'] = 'application/json'
@@ -55,21 +47,5 @@ client.interceptors.response.use(
     return Promise.reject(error)
   }
 )
-
-// Register all the API functions that
-// we will be using in Vue
-
-// var axiosPlugin = {
-//   install: (Vue) => {
-//     window.client = client
-//     Vue.prototype.$api = api(client)
-
-//     // TEST: Transform calls directly to the template
-//     // which can help us benefit from async
-//     // Vue.prototype.$axios = client
-//   }
-// }
-
-// Vue.use(axiosPlugin)
 
 export default client

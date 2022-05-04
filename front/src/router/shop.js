@@ -1,4 +1,4 @@
-import { loadView } from '@/router/utils'
+import { loadView } from '@/utils'
 
 export default [
     {
