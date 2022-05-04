@@ -1,12 +1,70 @@
+# Devtools
 npm intall --save @vue/devtools-api
 
+# Vuetify
+npm install vuetify
 npm install @mdi/font -D
 
 # To be able to use process.env
-npm install dotenv-webpack --save-dev
+1. npm install dotenv-webpack --save-dev
+2. vue.config.js:
 
-# Optional
+    const Dotenv = require('dotenv-webpack')
+    module.exports = {
+        configureWebpack: {
+            plugins: [
+            new Dotenv()
+            ]
+        }
+    }
+
+# Session management
 npm i vue-sessionstorage
 
-# To be able to use flags
+# Country flags
 npm install vue-country-flag
+
+npm install vue-axios axios
+npm install bootstrap mdb-ui-kit
+npm install dayjs date-fns
+npm install vue-i18n@9
+npm install vue-router@4
+npm install pinia
+npm install lodash
+
+
+npm install lodash vue-axios axios bootstrap mdb-ui-kit dayjs vue-i18n@9 vue-router@4 pinia lodash
+
+# Rules 
+
+"rules": {
+    "vue/attribute-hyphenation": "error",
+    "vue/html-end-tags": "error",
+    "vue/html-indent": "warn",
+    "vue/attributes-order": "warn",
+    "vue/order-in-components": "warn",
+    "vue/this-in-template": "error",
+    "vue/component-tags-order": [
+    "error",
+    {
+        "order": [
+        [
+            "template",
+            "script"
+        ],
+        "style"
+        ]
+    }
+    ]
+}
+
+# vue.config.js
+module.exports = {
+    ...,
+
+    outputDir: './dist/',
+    assetsDir: 'static'
+}
+
+npm install vitest @vue/test-util@next happy-dom
+npm install @vueuse/core

@@ -38,6 +38,14 @@ function truncate(value) {
     return `${value.slice(0, 28)}...`
 }
 
+function conditionalTruncate(value, limit, k) {
+    if (value.length >= limit) {
+        return truncate(value, k)
+    } else {
+        return value
+    }
+}
+
 function buildLimitOffset(url) {
     // With an url like this http://example.com?limit=100&offset=10,
     // try to rebuild query params with the provided limit
@@ -209,8 +217,21 @@ function getFieldType(fieldName, defaultType) {
     return fieldType
 }
 
+// function loadView(component) {
+//     return () => import(`@/views/${component}.vue`)
+// }
+
+// function loadLayout(component) {
+//     return () => import(`@/layouts/${component}.vue`)
+// }
+
+// function loadComponent(name) {
+//     return () => import(`@/components/${name}.vue`)
+// }
+
 export {
     buildLimitOffset,
+    conditionalTruncate,
     decreaseIndex,
     getPreviousItemFromList,
     getNextItemFromList,

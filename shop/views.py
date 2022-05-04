@@ -2,7 +2,7 @@ import datetime
 import random
 from collections import OrderedDict
 from hashlib import md5
-from django.utils.timezone import now
+from django.utils.timezone import now, make_aware
 
 
 import pytz
@@ -400,7 +400,7 @@ def shop_statistics(request, **kwargs):
     first = datetime.datetime(year=current_date.year, month=current_date.month, day=1)
     
     months_logic = (
-        Q(created_on__gte=first) &
+        Q(created_on__gte=make_aware(first)) &
         Q(created_on__lte=now())
     )
     
