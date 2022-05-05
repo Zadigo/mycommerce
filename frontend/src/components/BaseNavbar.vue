@@ -1,0 +1,125 @@
+<template>
+  <nav ref="link" class="navbar navbar-expand-lg navbar-light bg-white shadow-md border-bottom p-0">
+    <div class="container">
+      <router-link :to="{ name: 'home_view', params: { lang: $i18n.locale } }" class="navbar-brand">
+        <span class="text-uppercase font-weight-bold">
+          {{ myproject.company.legalName }}
+        </span>
+      </router-link>
+
+      <div class="collapse navbar-collapse justify-content-around">
+        <ul class="navbar-nav text-uppercase">
+          <!-- <li class="nav-item" @click="store.changeSite('google')">
+            <a class="nav-link text">
+              Change site testing
+            </a>
+          </li> -->
+
+          <!-- <li class="nav-item" @mouseenter="showMegaMenu">
+            <a class="nav-link text">
+              {{ $t('Shop') }}
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <router-link :to="{ name: 'fitting_room_view' }" class="nav-link text">
+              {{ $t('Fitting room') }}
+            </router-link>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" @click="goToAdmin">
+               {{ $t('Admin') }}
+            </a>
+          </li> -->
+
+          <!-- Mega-menu -->
+          <!-- <ecommerce-megamenu :is-visible="isVisible" @close-megamenu="isVisible=false"></ecommerce-megamenu> -->
+        </ul>
+
+        <ul class="navbar-nav text-uppercase">
+          <!-- <li class="nav-item">
+            <a class="nav-link" @click="toggleSearchModal">
+              <v-icon size="28" class="mr-2">mdi-magnify</v-icon>
+            </a>
+          </li> -->
+          
+          <!-- <li class="nav-item">
+            <router-link :to="{ name: 'wishlists_view', params: { lang: $i18n.locale } }" class="nav-link">
+              <v-icon size="28" class="mr-2">mdi-heart</v-icon>
+            </router-link>
+          </li> -->
+
+          <!-- <li class="nav-item" @click="$store.commit('toggleModalCart')">
+            <a class="nav-link">
+              <v-icon size="28" class="mr-2">mdi-cart</v-icon>
+            </a>
+          </li> -->
+
+          <li class="nav-item">
+            <a class="nav-link" @click="store.logout">
+              <!-- <v-icon size="28" class="mr-2">mdi-account</v-icon> -->
+              <!-- <v-icon v-if="isAuthenticated" size="28" class="mr-2">mdi-logout</v-icon> -->
+              Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<script>
+import { useShop } from '@/store/shop'
+import { useAuthentication } from '@/store/authentication'
+import { mapState } from 'pinia'
+
+// import { mapGetters, mapMutations } from 'vuex'
+
+export default {
+  name: 'BaseNavbar',
+  setup() {
+    var store = useShop()
+    return {
+      store
+    }
+  },
+  data: () => ({
+    isVisible: false
+  }),
+  computed: {
+    ...mapState(useAuthentication, ['isAuthenticated'])
+
+    // ...mapGetters(['cartCount']),
+  },
+
+  methods: {
+  //   ...mapMutations(['toggleSearchModal']),
+  
+  //   logout() {
+  //     this.$store.commit('authenticationModule/logout')
+  //     this.$localstorage.remove('cart')
+  //     this.$router.push({ name: 'home', params: { lang: this.$i18n.locale } })
+  //   },
+
+  //   goToAdmin() {
+  //     this.$store.commit('changeSite', 'dashboard-site')
+  //     this.$router.push({ name: 'dashboard_index_view' })
+  //   },
+
+  //   showMegaMenu() {
+  //     this.isVisible=true
+  //   }
+  }
+}
+</script>
+
+<style scoped>
+.navbar {
+  height: 90px;
+}
+
+.nav-item {
+  font-weight: 600;
+}
+</style>

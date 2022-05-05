@@ -1,0 +1,16 @@
+html, body {
+    font-weight: 300;
+}
+
+section.ecommerce-section {
+    margin-top: 10rem;
+    margin-bottom: 2rem;
+    min-height: 50vh;
+}
+
+.p-absolute {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
