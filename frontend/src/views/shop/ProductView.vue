@@ -8,9 +8,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><router-link :to="{ name: 'home_view' }">{{ $t('Home') }}</router-link></li>
               <li class="breadcrumb-item"><router-link :to="{ name: 'collection_details_view', params: { collection: currentProduct.category.toLowerCase() } }">{{ currentProduct.category }}</router-link></li>
-              <li class="breadcrumb-item active" aria-current="page">
-                {{ currentProduct.name }}
-              </li>
+              <li class="breadcrumb-item active" aria-current="page">{{ currentProduct.name }}</li>
             </ol>
           </nav>
         </div>
@@ -24,16 +22,12 @@
           <div class="row">
             <!-- Tags -->
             <div v-show="currentProduct.on_sale || currentProduct.display_new" id="tags" class="col-12">
-              <base-tag v-if="currentProduct.on_sale" class="mr-2" background-color="error">
-                <template>
-                  {{ $t('Sale') }}
-                </template>
+              <base-tag v-if="currentProduct.on_sale" class="mr-2" background-color="bg-danger">
+                {{ $t('Sale') }}
               </base-tag>
 
-              <base-tag v-if="currentProduct.display_new" background-color="primary">
-                <template>
-                  {{ $t('New') }}
-                </template>
+              <base-tag v-if="currentProduct.display_new" background-color="bg-primary">
+                {{ $t('New') }}
               </base-tag>
             </div>
 
@@ -59,10 +53,10 @@
             </div>
 
             <!-- Actions -->
-            <!-- <actions :product="currentProduct" :product-variants="productVariants" /> -->
+            <product-actions :product="currentProduct" :product-variants="productVariants" />
 
             <!-- Product Information -->
-            <!-- <information :product="currentProduct" /> -->
+            <product-information :product="currentProduct" />
           </div>
         </div>
       </div>
@@ -77,7 +71,7 @@
 
         <!-- Recently Viewed -->
         <div class="col-12">
-          <recently-viewed :is-loading="isLoading" />
+          <!-- <recently-viewed :is-loading="isLoading" /> -->
         </div>
 
         <!-- Reviews -->
@@ -93,17 +87,28 @@
 import { capitalizeLetters } from '@/utils'
 import { useShop } from '@/store/shop'
 import { mapState } from 'pinia'
+
 import BaseTag from '@/layouts/shop/BaseTag.vue'
-// import Actions from '@/components/shop/product/Actions.vue'
-// import Information from '@/components/shop/product/Information.vue'
+import ProductActions from '@/components/shop/product/ProductActions.vue'
+import ProductInformation from '@/components/shop/product/ProductInformation.vue'
 // import MoreProducts from '@/components/shop/product/MoreProducts.vue'
-import RecentlyViewed from '@/components/shop/product/RecentlyViewed.vue'
+// import RecentlyViewed from '@/components/shop/product/RecentlyViewed.vue'
 // import ProductSkeleton from '@/components/shop/skeletons/ProductSkeleton.vue'
 // import Reviews from '@/components/shop/product/reviews/Reviews.vue'
 import TileDisplay from '@/components/shop/product/images/TileDisplay.vue'
 
 export default {
   name: 'ProductView',
+  components: {
+    ProductActions,
+    BaseTag,
+    ProductInformation,
+    // MoreProducts,
+    // ProductSkeleton,
+    // Reviews,
+    TileDisplay,
+    // RecentlyViewed
+  },
   setup() {
     var store = useShop()
 
@@ -121,25 +126,12 @@ export default {
       capitalizeLetters
     }
   },
-
-  components: {
-    // Actions,
-    BaseTag,
-    // Information,
-    // MoreProducts,
-    // ProductSkeleton,
-    // Reviews,
-    TileDisplay,
-    RecentlyViewed
-  },
-
   data: () => ({
     isLoading: true,
     productVariants: [],
     reviews: [],
     recommendedProducts: []
   }),
-  
   computed: {
     ...mapState(useShop, ['currentProduct']),
     productImages() {
@@ -150,7 +142,6 @@ export default {
       }
     }
   },
-
   watch: {
     '$route.params.id'(newValue, oldValue) {
       // When leaving the page, this still triggers
@@ -165,7 +156,6 @@ export default {
       }
     }
   },
-
   beforeMount() {
     // In order to get the currentProduct set,
     // reload the current list of products
@@ -178,14 +168,12 @@ export default {
     this.store.getProduct(this.$route.params.id)
     this.$localstorage.create('recentlyViewedProducts', this.store.recentlyViewedProducts)
   },
-
   mounted () {
     // Get the products with the same name but
     // with a different color variant
     this.requestProductVariants()
     // this.sendAnalytics()
   },
-
   methods: {
     async requestProductVariants() {
       try {

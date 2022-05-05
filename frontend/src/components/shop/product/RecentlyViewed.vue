@@ -20,14 +20,14 @@ import ProductCard from '@/components/shop/products/ProductCard.vue'
 
 export default {
   name: 'RecentlyViewed',
+  components: {
+    ProductCard
+  },
   props: {
     isLoading: {
       type: Boolean,
       default: true
     }
-  },
-  components: {
-    ProductCard
   },
   computed: {
     ...mapState(useShop, ['getRecentlyViewedProducts'])
