@@ -17,7 +17,7 @@
 
         <!-- Images -->
         <div class="col-sm-12 col-md-7">
-          <!-- <tile-display :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" /> -->
+          <tile-display :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" />
         </div>
 
         <div class="col-sm-12 col-md-5 ps-5">
@@ -43,7 +43,7 @@
                 {{ capitalizeLetters(currentProduct.name) }} - <span class="text-muted fw-normal">{{ currentProduct.color }}</span>
               </p>
 
-              <p class="my-2 font-weight-bold">
+              <!-- <p class="my-2 font-weight-bold">
                 <span v-if="currentProduct.on_sale" class="mr-1 text-muted">
                   <del>{{ $n(currentProduct.unit_price, 'currency') }}</del>
                 </span>
@@ -55,7 +55,7 @@
                 <span v-else class="fw-4 fs-24">
                   {{ $n(currentProduct.unit_price, 'currency', $i18n.locale) }}
                 </span>
-              </p>
+              </p> -->
             </div>
 
             <!-- Actions -->
@@ -77,7 +77,7 @@
 
         <!-- Recently Viewed -->
         <div class="col-12">
-          <!-- <recently-viewed :is-loading="isLoading" /> -->
+          <recently-viewed :is-loading="isLoading" />
         </div>
 
         <!-- Reviews -->
@@ -90,38 +90,47 @@
 </template>
 
 <script>
-// import { mapState } from 'vuex'
-
+import { capitalizeLetters } from '@/utils'
+import { useShop } from '@/store/shop'
+import { mapState } from 'pinia'
+import BaseTag from '@/layouts/shop/BaseTag.vue'
 // import Actions from '@/components/shop/product/Actions.vue'
 // import Information from '@/components/shop/product/Information.vue'
 // import MoreProducts from '@/components/shop/product/MoreProducts.vue'
-// import RecentlyViewed from '@/components/shop/product/RecentlyViewed.vue'
+import RecentlyViewed from '@/components/shop/product/RecentlyViewed.vue'
 // import ProductSkeleton from '@/components/shop/skeletons/ProductSkeleton.vue'
 // import Reviews from '@/components/shop/product/reviews/Reviews.vue'
-// import TileDisplay from '@/components/shop/product/images/TileDisplay.vue'
-
-
-// FIXME: When viewing a product and then clicking on a product
-// in the recommended, when we try to return to the previous
-// product by pressing the back button in the browser, we get
-// an error with url http://127.0.0.1:8000/api/v1/shop/products/undefined
-// Seems like the ID is not correctly detected.
+import TileDisplay from '@/components/shop/product/images/TileDisplay.vue'
 
 export default {
   name: 'ProductView',
+  setup() {
+    var store = useShop()
 
-  // title() {
-  //   return 'this.currentProduct.name'
-  // },
+    store.$onAction((name, store, after) => {
+      if (name == 'getProduct') {
+        after(() => {
+          console.info('GetProduct action')
+          this.$localstorage.create('recentlyViewedProducts', store.recentlyViewedProducts)
+        })
+      }
+    })
+
+    return {
+      store,
+      capitalizeLetters
+    }
+  },
 
   components: {
     // Actions,
+    BaseTag,
     // Information,
     // MoreProducts,
     // ProductSkeleton,
     // Reviews,
-    // TileDisplay,
-    // RecentlyViewed
+    TileDisplay,
+    RecentlyViewed
   },
 
   data: () => ({
@@ -132,10 +141,7 @@ export default {
   }),
   
   computed: {
-    // ...mapState({
-    //   currentProduct: (state) => { return state.shopModule.currentProduct }
-    // }),
-    
+    ...mapState(useShop, ['currentProduct']),
     productImages() {
       try {
         return this.currentProduct.images
@@ -147,62 +153,43 @@ export default {
 
   watch: {
     '$route.params.id'(newValue, oldValue) {
-      console.log('watch', newValue, oldValue)
-      if (newValue != oldValue) {
+      // When leaving the page, this still triggers
+      // sending a request with undefined so make sure
+      // that newValue is actually defined
+      if (newValue != undefined && newValue != oldValue) {
         this.isLoading = true
-        this.$store.commit('setCurrentProduct', this.getProduct())
-        this.$store.commit('setRecentlyViewed', newValue)
-        this.$localstorage.create('recentlyViewedProducts', this.$store.getters['recentlyViewedProducts'])
+        this.store.getProduct(newValue)
         this.requestProductVariants()
-        this.sendAnalytics()
+        this.$localstorage.create('recentlyViewedProducts', this.store.recentlyViewedProducts)
+        // this.sendAnalytics()
       }
     }
   },
 
-  beforeRouteEnter (to, from, next) {
-    console.log(2, to.params, from.params)
-    next(vm => {
-      // TODO: Set the name on the page via the product
-      // vm.sendAnalytics()
-      // TODO: When relaoding (or maybe even accessing the page)
-      // this tries to access products/product that is not yet
-      // defined. We have to define these to prevent
-      // sending undefined to the recentlyViewed
-      vm.$store.commit('setRecentlyViewed', to.params.id)
-      vm.$localstorage.create('recentlyViewedProducts', vm.$store.getters['recentlyViewedProducts'])
-    })
-  },
-
-  created() {
-    console.log(1)
+  beforeMount() {
     // In order to get the currentProduct set,
     // reload the current list of products
     // from the session
-    if (!this.$store.getters['hasProducts']) {
-      this.$store.commit('setProducts', this.$session.retrieve('products'))
+    if (this.store.products.length == 0) {
+      this.store.$patch({
+        products: this.$localstorage.retrieve('products')
+      })
     }
-
-    var product = this.getProduct()
-    console.log('product', product, this.$route.params)
-    this.$store.commit('setCurrentProduct', product)
-
-    // if (!product) {
-    //   this.$router.push({ name: 'not_found_view' })
-    // } else {
-    // }
+    this.store.getProduct(this.$route.params.id)
+    this.$localstorage.create('recentlyViewedProducts', this.store.recentlyViewedProducts)
   },
 
   mounted () {
-    console.log(3)
     // Get the products with the same name but
     // with a different color variant
     this.requestProductVariants()
+    // this.sendAnalytics()
   },
 
   methods: {
     async requestProductVariants() {
       try {
-        var response = await this.axios.post(`/shop/products/${ this.currentProduct.id }`)
+        var response = await this.axios.post(`/shop/products/${this.currentProduct.id}`)
 
         this.productVariants = response.data['variants']
         this.reviews = response.data['reviews']
@@ -215,13 +202,8 @@ export default {
           this.isLoading = false
         }, 1000)
       } catch(error) {
-        console.log(error.response.status)
-        this.$store.dispatch('addErrorMessage', 'Could not get the current product')
+        this.store.addErrorMessage('Could not get the current product')
       }
-    },
-
-    getProduct() {
-      return this.$store.getters['getProduct'](this.$route.params.id)
     }
   } 
 }

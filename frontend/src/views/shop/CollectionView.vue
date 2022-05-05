@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-12">
           <!-- Filters -->
-          <filters-bar @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" />          
+          <filters-bar @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" style="z-index:20;" />          
         </div>
 
         <!-- FIXME: This gets displayed before the products are shown
@@ -26,7 +26,7 @@
         </div> -->
 
         <!-- TODO: Add a Suspense -->
-        <async-product-items ref="products" style="z-index:-2;" />
+        <async-product-items ref="products" />
         
         <hr class="mt-5 mb-2">
 

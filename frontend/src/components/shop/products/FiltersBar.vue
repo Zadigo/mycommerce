@@ -77,11 +77,12 @@
 import _ from 'lodash'
 import { mapState } from 'pinia'
 import { useShop } from '@/store/shop'
-import { getVerticalScrollPercentage } from '@/utils'
+import { getVerticalScrollPercentage, listManager } from '@/utils'
 import shopMixin from '@/mixins/shop'
 
 export default {
   name: 'FiltersBar',
+  emits: ['loading-products-start', 'loading-products-end', 'do-sort', 'load-products'],
   mixins: [shopMixin],
   data: () => ({
     items: [],
@@ -206,9 +207,12 @@ export default {
     setFilterValue(key, colorValue) {
       var values = this.selectedElements[key]
 
-      this.selectedElements[key] = this.updateList(colorValue, values)
+      this.selectedElements[key] = listManager(values, colorValue)
       if (!this.hasFilters) {
-        this.$emit('load-products')
+        // If we have no filters, request
+        // all the products
+        // this.$emit('load-products')
+        this.productsRequest()
       } else {
         this.getFilteredProducts()
       }

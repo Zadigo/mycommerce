@@ -69,16 +69,16 @@ function limitAndOffsetAsParams(limit, offset) {
     return new URLSearchParams({ limit: limit, offset: offset })
 }
 
-function listManager(items, itemId) {
+function listManager(items, item) {
     // A helper function that allows managing
     // items in a list by removing or pushing
     // them depending on whether they are in
     // the list or not
-    if (items.includes(itemId)) {
-        var index = _.indexOf(items, itemId)
+    if (items.includes(item)) {
+        var index = _.indexOf(items, item)
         items.splice(index, 1)
     } else {
-        items.push(itemId)
+        items.push(item)
     }
     return items
 }

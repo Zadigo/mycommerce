@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _, { toNumber } from 'lodash'
 import { defineStore } from 'pinia'
 import { useAuthentication } from './authentication'
 
@@ -51,6 +51,11 @@ const useShop = defineStore('shop', {
             } else {
                 this.cart = []
             }
+        },
+        getProduct(productId) {
+            var currentProduct = _.find(this.products, ['id', toNumber(productId)])
+            this.currentProduct = currentProduct ? currentProduct : {}
+            this.recentlyViewed.push(toNumber(productId))
         }
     },
     getters: {
@@ -68,6 +73,13 @@ const useShop = defineStore('shop', {
         },
         displayedProductsCount() {
             return this.products.length
+        },
+        getRecentlyViewedProducts() {
+            var ids = _.uniq(this.recentlyViewed)
+            
+            return _.filter(this.products, (product) => {
+                return ids.includes(product.id)
+            })
         }
     }
 })

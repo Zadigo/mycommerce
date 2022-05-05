@@ -22,12 +22,10 @@ export default {
                 this.store.$patch((state) => {
                     state.originalProductsResponse = response.data
                     state.products = state.originalProductsResponse.results
+                    this.$localstorage.create('products', state.products)
                     // this.$session.create('products', response.data)
                 })
-                // this.$store.commit('setProducts', response.data)
-                // this.$session.create('products', response.data)
             } catch(error) {
-                // this.$store.dispatch('addErrorMessage', this.$t('An error occured'))
                 this.store.addErrorMessage('An error occured')
             }   
         },

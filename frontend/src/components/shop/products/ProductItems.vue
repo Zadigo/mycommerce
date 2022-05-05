@@ -88,7 +88,10 @@ export default {
 
   watch: {
     '$route.params.collection' (newValue, oldValue) {
-      if (newValue !== oldValue) {
+      // When leaving the page, this still triggers
+      // sending a request with undefined so make sure
+      // that newValue is actually defined
+      if (newValue != undefined && newValue !== oldValue) {
         this.getProducts()
       }
     }

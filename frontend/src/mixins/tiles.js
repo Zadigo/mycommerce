@@ -1,9 +1,13 @@
+import { mediaUrl } from '@/utils'
 import VideoTile from '@/components/shop/product/images/tiles/VideoTile.vue'
 
 export default {
     components: {
         VideoTile
     },
+    
+    emits: ['select-image', 'error-message'],
+
     props: {
         images: {
             type: Array,
@@ -28,9 +32,10 @@ export default {
             }
         }
     },
+
     methods: {
         getImageForIndex(index) {
-            return this.$options.filters.mediaUrl(this.images[index].mid_size)
+            return mediaUrl(this.images[index].mid_size)
         },
 
         selectImageWithIndex(index) {
@@ -44,7 +49,8 @@ export default {
                 var items = this.$refs.videoSource.getElementsByTagName('video')
                 items[0].play()
             } catch {
-                this.$store.dispatch('addErrorMessage', 'Could not start video')
+                this.$emit('error-message', 'Could not start video')
+                // this.$store.dispatch('addErrorMessage', 'Could not start video')
             }
         }
     }

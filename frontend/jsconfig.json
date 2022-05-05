@@ -7,6 +7,9 @@
     "paths": {
       "@/*": [
         "src/*"
+      ],
+      "localstorage": [
+        "src/plugins/vue-local-storage"
       ]
     },
     "lib": [
@@ -14,6 +17,9 @@
       "dom",
       "dom.iterable",
       "scripthost"
-    ]
-  }
+    ],
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }
