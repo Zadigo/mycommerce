@@ -230,7 +230,8 @@ function loadComponent(name) {
 }
 
 function capitalizeFirstLetter(value) {
-    return value.name.charAt(0).toUpperCase() + value.slice(1)
+    if (!value) { return value }
+    return value.charAt(0).toUpperCase() + value.slice(1)
 }
 
 function capitalizeLetters(value) {

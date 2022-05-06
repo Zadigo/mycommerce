@@ -1,7 +1,7 @@
 <template>
   <nav ref="link" class="navbar navbar-expand-lg navbar-light bg-white shadow-md border-bottom p-0">
     <div class="container">
-      <router-link :to="{ name: 'home_view', params: { lang: $i18n.locale } }" class="navbar-brand">
+      <router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }" class="navbar-brand">
         <span class="text-uppercase font-weight-bold">
           {{ myproject.company.legalName }}
         </span>
@@ -25,13 +25,13 @@
             <router-link :to="{ name: 'fitting_room_view' }" class="nav-link text">
               {{ $t('Fitting room') }}
             </router-link>
-          </li>
+          </li> -->
 
           <li class="nav-item">
             <a class="nav-link" @click="goToAdmin">
                {{ $t('Admin') }}
             </a>
-          </li> -->
+          </li>
 
           <!-- Mega-menu -->
           <!-- <ecommerce-megamenu :is-visible="isVisible" @close-megamenu="isVisible=false"></ecommerce-megamenu> -->
@@ -102,10 +102,10 @@ export default {
   //     this.$router.push({ name: 'home', params: { lang: this.$i18n.locale } })
   //   },
 
-  //   goToAdmin() {
-  //     this.$store.commit('changeSite', 'dashboard-site')
-  //     this.$router.push({ name: 'dashboard_index_view' })
-  //   },
+    goToAdmin() {
+      this.store.changeSite('dashboard-site')
+      this.$router.push({ name: 'dashboard_index_view' })
+    },
 
   //   showMegaMenu() {
   //     this.isVisible=true

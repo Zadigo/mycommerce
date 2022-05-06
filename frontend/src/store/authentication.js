@@ -11,7 +11,7 @@ const useAuthentication = defineStore('authentication', {
         logout() {
             this.user = {}
             this.token = null
-            this.router.push({ name: 'home_view', params: { lang: 'fr' } })
+            this.router.push({ name: 'shop_view', params: { lang: 'fr' } })
         }
     },
     getters: {

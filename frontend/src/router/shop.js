@@ -3,7 +3,7 @@ import { loadView } from '@/utils'
 export default [
     {
         path: '',
-        name: 'home_view',
+        name: 'shop_view',
         component: loadView('shop/HomeView')
     },
     {

@@ -3,6 +3,10 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
+          <h2 class="text-center w-100 mb-3">
+            {{ capitalizeFirstLetter($route.params.collection) }}
+          </h2>
+
           <!-- Filters -->
           <filters-bar @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" style="z-index:20;" />          
         </div>
@@ -35,7 +39,7 @@
           
         <!-- Ad -->
         <div class="col-12 my-6">
-          <router-link :to="{ name: 'home_view', lang: $i18n.locale }">
+          <router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }">
             <!-- TODO: Emit a PageView when clicking on this section -->
             <img src="https://img.ltwebstatic.com/images3_acp/2022/02/25/164578700614872218156e3ff9868de22e7c67a145.webp" class="img-fluid" />
           </router-link>
@@ -47,6 +51,7 @@
 
 <script>
 import { defineAsyncComponent } from 'vue'
+import { capitalizeFirstLetter } from '@/utils'
 
 import PaginationRow from '@/components/shop/products/PaginationRow.vue'
 import ProductItemsLoadingVue from '@/components/shop/products/ProductItemsLoading.vue'
@@ -65,6 +70,11 @@ export default {
     }),
     FiltersBar,
     PaginationRow
+  },
+  setup() {
+    return {
+      capitalizeFirstLetter
+    }
   },
   computed: {
     searchedProductsCount() {

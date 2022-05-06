@@ -68,3 +68,7 @@ module.exports = {
 
 npm install vitest @vue/test-util@next happy-dom
 npm install @vueuse/core
+
+npm i --save @fortawesome/fontawesome-svg-core
+npm i --save @fortawesome/free-solid-svg-icons
+npm i --save @fortawesome/free-regular-svg-icons

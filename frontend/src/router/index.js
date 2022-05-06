@@ -1,6 +1,8 @@
 // import { h } from "vue"
+import i18n from "@/i18n"
 import { createRouter, createWebHistory } from "vue-router"
 import accounts from "./accounts"
+import dashboard from "./dashboard"
 import shop from "./shop"
 // import { RouterView } from 'vue-router'
 
@@ -8,6 +10,14 @@ const router = createRouter({
     history: createWebHistory(),
     scrollBehavior: () => { window.scroll(0, 0) },
     routes: [
+        {
+            path: '/',
+            component: null,
+            redirect: {
+                name: 'shop_view',
+                params: i18n.global.locale
+            }
+        },
         {
             path: '/:lang',
             // components: {
@@ -18,9 +28,10 @@ const router = createRouter({
             },
             children: [
                 ...shop,
-                ...accounts
+                ...accounts,
             ]
         },
+        ...dashboard,
         {
             path: '/cookie-settings',
             name: 'cookie_settings_view',

@@ -65,7 +65,7 @@ export default {
         async logout() {
             await this.axios.post('accounts/logout')
             this.$store.commit('authenticationModule/reset')
-            this.$router.push({ name: 'home_view' })
+            this.$router.push({ name: 'shop_view', params: { lang: this.$i18n.locale } })
         },
 
         async signup() {

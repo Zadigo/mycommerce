@@ -1,7 +1,7 @@
 <template>
   <div class="col-12">
     <!-- Statistics -->
-    <p class="text-center text-muted m-0 mt-5">{{ $tc('styles_found', sortedProducts.length) }}</p>
+    <p class="text-center text-muted m-0 mt-3 mb-3">{{ $tc('styles_found', sortedProducts.length) }}</p>
 
     <!-- Products -->
     <div class="row">

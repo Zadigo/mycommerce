@@ -1,5 +1,5 @@
 <template>
-  <nav ref="link" class="navbar navbar-expand-lg shadow-none navbar-light mb-2">
+  <nav ref="link" class="navbar navbar-expand-lg shadow-none navbar-light mb-1">
     <div class="collapse navbar-collapse flex-column justify-content-left align-items-start">
       <ul class="navbar-nav w-100 justify-content-center">
         <li class="nav-item font-weight-bold text-uppercase">
@@ -7,7 +7,7 @@
             <v-icon class="mr-2">mdi-tune</v-icon>
             Filtres
           </v-btn> -->
-          <button class="btn btn-outline shadow-none disabled">
+          <button class="btn shadow-none disabled fw-normal">
             Filtres
           </button>
         </li>
@@ -36,7 +36,7 @@
             {{ $t('Size') }}
             <v-icon class="ms-1">mdi-chevron-down</v-icon>
           </v-btn> -->
-          <button class="btn btn-primary shadow-none" @click="openFilters('sizes')">
+          <button class="btn btn-light shadow-none fw-normal" @click="openFilters('sizes')">
             {{ $t('Size') }}
           </button>
         </li>
@@ -47,12 +47,13 @@
             {{ $t('Color') }}
             <v-icon class="ms-1">mdi-chevron-down</v-icon>
           </v-btn> -->
-          <button class="btn btn-primary shadow-none" @click="openFilters('colors')">
+          <button class="btn btn-light shadow-none fw-normal" @click="openFilters('colors')">
             {{ $t('Color') }}
           </button>
         </li>
       </ul>
       
+      <!-- Dropdown -->
       <div v-if="showFilters" id="filters" class="d-flex justify-content-center" style="flex-wrap:wrap;">
         <!-- Sizes -->
         <div v-if="selectedFilter == 'sizes'">
@@ -77,7 +78,7 @@
 import _ from 'lodash'
 import { mapState } from 'pinia'
 import { useShop } from '@/store/shop'
-import { getVerticalScrollPercentage, listManager } from '@/utils'
+import { getVerticalScrollPercentage, listManager, mediaUrl } from '@/utils'
 import shopMixin from '@/mixins/shop'
 
 export default {
@@ -129,7 +130,7 @@ export default {
     colors () {
       var items = ['beige', 'black', 'camel', 'red']
       return _.map(items, (item) => {
-        return [item, this.$options.filters.mediaUrl(`/media/swatches/${ item }.png`)]
+        return [item, mediaUrl(`/media/swatches/${ item }.png`)]
       })
     },
 
@@ -229,6 +230,7 @@ export default {
 <style scoped>
 .navbar {
   transition: all .4s ease-in-out;
+  border-radius: .25rem;
 }
 
 .nav-collapse {
@@ -246,6 +248,7 @@ export default {
   background-color: white;
   padding: .25rem;
   box-shadow: 0 4px 12px 0 rgb(0 0 0 / 7%), 0 2px 4px rgb(0 0 0 / 5%);
+  /* box-shadow: 0 4px 12px 0 rgb(0 0 0 / 7%), 0 2px 4px rgb(0 0 0 / 5%); */
 }
 
 #color {

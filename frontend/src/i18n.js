@@ -38,5 +38,5 @@ const i18n = createI18n({
   messages: loadLocaleMessages(),
   numberFormats
 })
-
+window.translate = i18n
 export default i18n
