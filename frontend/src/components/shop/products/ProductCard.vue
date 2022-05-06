@@ -11,9 +11,6 @@
 
   <!-- TODO: Change .v-application a which makes links blue -->
   <div v-else id="link-product-card" class="product my-1" @click="$emit('product-card-click', product)" @mouseenter="isHovered=true" @mouseleave="isHovered=false">
-    <!-- TODO: Show when a product is marked as new -->
-    <!-- <div class="product-badge">Nouveau</div> -->
-    
     <div id="product-image">
       <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }">
         <img :src="mediaUrl(mainImage.mid_size)" :alt="mainImage.name" class="img-fluid" />
@@ -25,12 +22,12 @@
           
           <div id="sizes">
             <div v-if="hasSizes">
-              <button v-for="size in product.sizes" :key="size.name" type="button" :class="{ disabled: !size.availability }" class="btn btn-outline-dark mr-2" @click="simpleAddToCard(product, size, true)">
+              <button v-for="size in product.sizes" :key="size.name" type="button" :class="{ disabled: !size.availability }" class="btn btn-outline-dark mr-2" @click="quickAddToCart(product, size, true)">
                 {{ size.name }}
               </button>
             </div>
 
-            <button v-else class="btn btn-outline-dark" @click="simpleAddToCard(product, { name: 'Unique' }, true)">
+            <button v-else class="btn btn-outline-dark" @click="quickAddToCart(product, { name: 'Unique' }, true)">
               {{ $t('Unique') }}
             </button>
           </div>
@@ -91,6 +88,7 @@ import BaseTag from '@/layouts/shop/BaseTag.vue'
 
 export default {
   name: 'ProductCard',
+  emits: ['product-card-click'],
   components: {
     BaseTag
   },

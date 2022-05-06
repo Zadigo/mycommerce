@@ -33,7 +33,7 @@ export default {
             }
         },
 
-        async simpleAddToCard(product, size, openOnCreate) {
+        async quickAddToCart(product, size, openOnCreate) {
             try {
                 var details = {
                     product: product.id,

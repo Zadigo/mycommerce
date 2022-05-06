@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <div class="row">
         <!-- Breadbumbs -->
-        <div class="col-12 d-none">
+        <div class="col-12">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><router-link :to="{ name: 'home_view' }">{{ $t('Home') }}</router-link></li>
@@ -18,38 +18,41 @@
           <tile-display :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" />
         </div>
 
-        <div class="col-sm-12 col-md-5 ps-5">
+        <div class="col-sm-12 col-md-5 ps-5 pt-1">
           <div class="row">
             <!-- Tags -->
             <div v-show="currentProduct.on_sale || currentProduct.display_new" id="tags" class="col-12">
-              <base-tag v-if="currentProduct.on_sale" class="mr-2" background-color="bg-danger">
+              <base-tag v-if="currentProduct.on_sale" class="me-2 fw-bold" background-color="bg-danger">
                 {{ $t('Sale') }}
               </base-tag>
 
-              <base-tag v-if="currentProduct.display_new" background-color="bg-primary">
+              <base-tag v-if="currentProduct.display_new" class="fw-bold" background-color="bg-primary">
                 {{ $t('New') }}
               </base-tag>
             </div>
 
             <!-- Information -->
             <div id="information" class="col-12 pt-0 pb-0">
-              <p class="fw-bold fs-4 m-0">
+              <p class="fw-bold fs-3 m-0">
                 {{ capitalizeLetters(currentProduct.name) }} - <span class="text-muted fw-normal">{{ currentProduct.color }}</span>
               </p>
 
-              <!-- <p class="my-2 font-weight-bold">
-                <span v-if="currentProduct.on_sale" class="mr-1 text-muted">
-                  <del>{{ $n(currentProduct.unit_price, 'currency') }}</del>
+              <p class="mb-2 fs-3">
+                <span v-if="currentProduct.on_sale" class="me-2 fs-4 text-muted">
+                  <!-- <del>{{ $n(currentProduct.unit_price, 'currency') }}</del> -->
+                  <del>{{ currentProduct.unit_price }}</del>
                 </span>
 
-                <span v-if="currentProduct.on_sale">
-                  {{ $n(currentProduct.sale_price, 'currency', $i18n.locale) }}
+                <span v-if="currentProduct.on_sale" class="fw-bold fs-4">
+                  <!-- {{ $n(currentProduct.sale_price, 'currency', $i18n.locale) }} -->
+                  {{ currentProduct.sale_price }}
                 </span>
 
-                <span v-else class="fw-4 fs-24">
-                  {{ $n(currentProduct.unit_price, 'currency', $i18n.locale) }}
+                <span v-else class="fw-normal fs-3">
+                  <!-- {{ $n(currentProduct.unit_price, 'currency', $i18n.locale) }} -->
+                  {{ currentProduct.unit_price }}
                 </span>
-              </p> -->
+              </p>
             </div>
 
             <!-- Actions -->
@@ -61,12 +64,12 @@
         </div>
       </div>
 
-      <hr class="my-5">
+      <!-- <hr class="my-5"> -->
 
-      <div class="row">
+      <div class="row mt-5">
         <!-- More Products -->
         <div class="col-12">
-          <!-- <more-products :recommended-products="recommendedProducts" :is-loading="isLoading" /> -->
+          <more-products :recommended-products="recommendedProducts" :is-loading="isLoading" />
         </div>
 
         <!-- Recently Viewed -->
@@ -91,7 +94,7 @@ import { mapState } from 'pinia'
 import BaseTag from '@/layouts/shop/BaseTag.vue'
 import ProductActions from '@/components/shop/product/ProductActions.vue'
 import ProductInformation from '@/components/shop/product/ProductInformation.vue'
-// import MoreProducts from '@/components/shop/product/MoreProducts.vue'
+import MoreProducts from '@/components/shop/product/MoreProducts.vue'
 // import RecentlyViewed from '@/components/shop/product/RecentlyViewed.vue'
 // import ProductSkeleton from '@/components/shop/skeletons/ProductSkeleton.vue'
 // import Reviews from '@/components/shop/product/reviews/Reviews.vue'
@@ -103,7 +106,7 @@ export default {
     ProductActions,
     BaseTag,
     ProductInformation,
-    // MoreProducts,
+    MoreProducts,
     // ProductSkeleton,
     // Reviews,
     TileDisplay,
@@ -112,14 +115,16 @@ export default {
   setup() {
     var store = useShop()
 
-    store.$onAction((name, store, after) => {
-      if (name == 'getProduct') {
-        after(() => {
-          console.info('GetProduct action')
-          this.$localstorage.create('recentlyViewedProducts', store.recentlyViewedProducts)
-        })
-      }
-    })
+    // this.store.$onAction(({ name, store, after }) => {
+    //   store
+    //   console.info(name, this.$localstorage)
+    //   if (name == 'getProduct') {
+    //     after(() => {
+    //       console.info('GetProduct action', this.$localstorage)
+    //       // this.$localstorage.create('recentlyViewedProducts', store.recentlyViewedProducts)
+    //     })
+    //   }
+    // })
 
     return {
       store,
@@ -152,7 +157,6 @@ export default {
         this.store.getProduct(newValue)
         this.requestProductVariants()
         this.$localstorage.create('recentlyViewedProducts', this.store.recentlyViewedProducts)
-        // this.sendAnalytics()
       }
     }
   },
@@ -172,7 +176,6 @@ export default {
     // Get the products with the same name but
     // with a different color variant
     this.requestProductVariants()
-    // this.sendAnalytics()
   },
   methods: {
     async requestProductVariants() {
@@ -201,21 +204,17 @@ export default {
   #more div {
     height: 500px;
     width: 100%;
-    /* background-color: blue; */
     overflow-x: scroll;
     padding: 1rem;
   }
-
   section#product {
     height: auto;
     min-height: 600px;
   }
-
   #tags {
     display: flex;
     justify-content: around;
   }
-
   .v-image__image {
     cursor: pointer;
   }

@@ -12,7 +12,7 @@ export default function ({store}) {
 
     function addErrorMessage(content) {
         var message = this.createMessage('danger', content)
-        this.messages.push(message)
+        store.messages.push(message)
     } 
 
     return {

@@ -35,7 +35,7 @@
     </div>
     <!-- </v-main> -->
 
-    <!-- <base-footer v-show="!$route.meta.isFullPage" /> -->
+    <base-footer v-show="!$route.meta.isFullPage" />
   <!-- </v-app> -->
   </section>
 </template>
@@ -43,7 +43,7 @@
 <script>
 // import BaseSearchModal from '@/components/BaseSearchModal.vue'
 import BaseNavbar from '@/components/BaseNavbar.vue'
-// import BaseFooter from '@/components/BaseFooter.vue'
+import BaseFooter from '@/components/BaseFooter.vue'
 // import ModalLanguageSelection from '@/components/ModalLanguageSelection.vue'
 // import ScrollTopButton from '@/components/ScrollTopButton.vue'
 // import CartOffCanvas from '@/components/shop/cart/CartOffCanvas.vue'
@@ -52,7 +52,7 @@ import BaseNavbar from '@/components/BaseNavbar.vue'
 export default {
   name: 'BaseSite',
   components: { 
-    // BaseFooter,
+    BaseFooter,
     BaseNavbar,
     // BaseSearchModal,
     // CartOffCanvas,

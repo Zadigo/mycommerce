@@ -56,6 +56,12 @@ pinia.use(({ store }) => {
 
     store.router = toRaw(router)
 
+    store.$onAction(({ name, store }) => {
+        if (name == 'getProduct') {
+            console.info('Get Product', store)
+        }
+    })
+
     function changeSite(name) {
         store.$state.currentSite = name
     }

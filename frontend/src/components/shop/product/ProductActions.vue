@@ -9,7 +9,8 @@
       <!-- TODO: Create a swatch reusable component -->
       <div class="swatch">
         <router-link v-for="variant in productVariants" :key="variant.id" :to="{ name: 'product_view', params: { id: variant.id, slug: variant.slug, lang: $i18n.locale } }" :class="{ active: matchesWithRoute(variant) }" class="color">
-          <v-img :src="buildSwatch(variant.color)"></v-img>
+          <!-- <v-img :src="buildSwatch(variant.color)"></v-img> -->
+          <img :src="buildSwatch(variant.color)" class="img-fluid">
         </router-link>
       </div>
     </div>
@@ -21,7 +22,7 @@
       </p>
 
       <div v-if="hasSizes" class="sizes">
-        <button v-for="(size, i) in product.sizes" id="btn-select-size" :key="size.id" :class="{ 'ml-2': i > 0, 'btn-dark': productOptions.default_size == size.name, 'btn-light': !(productOptions.default_size == size.name) }" class="btn btn-md shadow-none border" @click="setSize(size)">
+        <button v-for="(size, i) in product.sizes" id="btn-select-size" :key="size.id" :class="{ 'ms-2': i > 0, 'btn-dark': productOptions.default_size == size.name, 'btn-light': !(productOptions.default_size == size.name) }" class="btn btn-md shadow-none border" @click="setSize(size)">
           {{ size.name }}
         </button>
       </div>
@@ -41,13 +42,13 @@
 
     <!-- Actions -->
     <div id="cart" class="d-flex justify-content-left my-4">
-      <button id="btn-add-cart" class="btn btn-lg btn-dark mr-2 font-size-3" @click="addToCart">
-        <v-progress-circular v-if="addingToCart" :size="25" class="mr-2" color="white" indeterminate></v-progress-circular>
+      <button id="btn-add-cart" class="btn btn-lg btn-dark me-2 fs-4" @click="addToCart">
+        <!-- <v-progress-circular v-if="addingToCart" :size="25" class="mr-2" color="white" indeterminate></v-progress-circular> -->
         {{ $t('Add to cart') }}
       </button>
 
       <!-- Add to like -->
-      <button id="btn-add-like" class="btn btn-md btn-danger" @click="addToLikes">
+      <button id="btn-add-like" class="btn btn-md btn-danger fs-4" @click="addToLikes">
         <v-icon class="text-white">mdi-heart</v-icon>
       </button>
     </div>
@@ -182,11 +183,9 @@ export default {
   .sizes #btn-select-size {
     width: 15%;
   }
-
   .sizes #btn-no-size {
     width: 50%;
   }
-
   .swatch {
     position: relative;
     display: flex;
@@ -194,7 +193,6 @@ export default {
     justify-content: left;
     width: 100%;
   }
-
   .swatch .color {
     display: block;
     overflow: hidden;
@@ -202,12 +200,10 @@ export default {
     min-height: 34px;
     width: 34px;
   }
-
   .swatch .color.active {
     box-shadow: 0 0 0 2px #000;
     border: 2px solid #fff;
   }
-
   .swatch .color:not(:last-child) {
     margin-right: .5rem;
   }

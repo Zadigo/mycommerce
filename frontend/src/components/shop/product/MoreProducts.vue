@@ -8,7 +8,7 @@
           </h4>
 
           <!-- TODO: Put a recommended collection in the backend -->
-          <router-link id="link-recommendations" :to="{ name: 'collection_details', params: { collection: 'all', lang: $i18n.locale } }">
+          <router-link id="link-recommendations" :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }">
             {{ $t('View all') }}
           </router-link>
         </div>
@@ -18,7 +18,7 @@
       <div class="col-md-12">
         <div class="row">
           <div v-for="product in recommendedProducts" :key="product.id" class="col-sm-12 col-md-3">
-            <product-card :product="product" :is-loading="isLoading" @product-card-click="updateProductList" />
+            <product-card :product="product" :is-loading="isLoading" />
           </div>
         </div>
       </div>
