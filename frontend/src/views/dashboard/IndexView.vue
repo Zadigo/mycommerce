@@ -101,6 +101,7 @@ export default {
   name: 'IndexView',
   setup() {
     var store = useDashboard()
+    
     return {
       store
     }

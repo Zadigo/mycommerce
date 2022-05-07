@@ -20,7 +20,7 @@ export default {
   setup() {
     var store = useShop()
     var { currentSite } = storeToRefs(store)
-
+    
     return {
       currentSite
     }

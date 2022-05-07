@@ -9,7 +9,7 @@
         "src/*"
       ],
       "localstorage": [
-        "src/plugins/vue-local-storage"
+        "src/plugins/vue-storages/*"
       ]
     },
     "lib": [

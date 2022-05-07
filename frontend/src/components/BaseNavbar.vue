@@ -89,7 +89,7 @@ export default {
   }),
   computed: {
     ...mapState(useAuthentication, ['isAuthenticated'])
-
+  
     // ...mapGetters(['cartCount']),
   },
 

@@ -7,7 +7,8 @@ import App from './App.vue'
 import { createPinia } from 'pinia'
 import { intro, introMask, introContainer } from './components/hero'
 import { createProjectSetup } from '@/plugins/vue-project'
-import { createLocalStorage } from '@/plugins/vue-local-storage'
+import { createLocalStorage } from '@/plugins/vue-storages/local-storage'
+import { createVueSession } from './plugins/vue-storages/session-storage'
 import FontAwesomeIcon from '@/plugins/fontawesome'
 import VueAxios from 'vue-axios'
 import axios from '@/plugins/axios'
@@ -18,8 +19,8 @@ import messages from './store/messages'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'mdb-ui-kit/css/mdb.min.css'
 import '@/assets/style.css'
-
-const vuelocalstorage = createLocalStorage()
+const VueLocalStorage = createLocalStorage()
+const VueSessionStorage = createVueSession()
 
 const pinia = createPinia()
 const project = createProjectSetup({
@@ -58,8 +59,9 @@ pinia.use(({ store }) => {
     store.currentSite = toRef(store.$state, 'currentSite')
 
     store.router = toRaw(router)
-    // store.localstorage = toRaw(vuelocalstorage)
-
+    store.localstorage = toRaw(VueLocalStorage)
+    store.session = toRaw(VueSessionStorage)
+    
     store.$onAction(({ name, store }) => {
         if (name == 'getProduct') {
             console.info('Get Product', store)
@@ -83,7 +85,8 @@ app.use(pinia)
 app.use(VueAxios, axios)
 app.use(router)
 app.use(project)
-app.use(vuelocalstorage)
+app.use(VueLocalStorage)
+app.use(VueSessionStorage)
 
 app.component('base-intro', intro)
 app.component('intro-container', introContainer)
