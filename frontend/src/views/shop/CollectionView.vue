@@ -30,7 +30,7 @@
         </div> -->
 
         <!-- TODO: Add a Suspense -->
-        <async-product-items ref="products" />
+        <async-product-items />
         
         <hr class="mt-5 mb-2">
 

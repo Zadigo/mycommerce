@@ -9,20 +9,21 @@
     <b-skeleton width="25%" class="mt-3" /> -->
   </div>
 
-  <!-- TODO: Change .v-application a which makes links blue -->
   <div v-else id="link-product-card" class="product my-1" @click="$emit('product-card-click', product)" @mouseenter="isHovered=true" @mouseleave="isHovered=false">
     <div id="product-image">
       <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }">
         <img :src="mediaUrl(mainImage.mid_size)" :alt="mainImage.name" class="img-fluid" />
       </router-link>
 
-      <transition name="slide-transition">
-        <div v-if="isHovered" class="mini-cart p-3">
-          <div class="fw-bold mb-3 text-uppercase">{{ $t('Add to cart') }}</div>
+      <transition name="mini-cart-transition">
+        <div v-if="isHovered" class="mini-cart p-3 d-none">
+          <div class="fw-bold mb-3 text-uppercase">
+            {{ $t('Add to cart') }}
+          </div>
           
           <div id="sizes">
             <div v-if="hasSizes">
-              <button v-for="size in product.sizes" :key="size.name" type="button" :class="{ disabled: !size.availability }" class="btn btn-outline-dark mr-2" @click="quickAddToCart(product, size)">
+              <button v-for="size in product.sizes" :key="size.name" type="button" :class="{ disabled: !size.availability }" class="btn btn-outline-dark me-2" @click="quickAddToCart(product, size)">
                 {{ size.name }}
               </button>
             </div>
@@ -57,7 +58,7 @@
           <div>
             <span v-if="product.on_sale" class="bg-danger p-1 rounded text-white ml-3">
               <!-- {{ formatPercentage(product.sale_value, true) }} -->
-              {{ product.sale_value }}
+              {{ formatAsPercentage(product.sale_value, true) }}
             </span>
           </div>
         </div>
@@ -140,6 +141,10 @@ export default {
   .product {
     position: relative;
   }
+
+  .product a {
+    color: black;
+  }
   
   #product-image {
     position: relative;
@@ -193,32 +198,31 @@ export default {
     transition: all .8s ease-in-out;
   }
   
-  .scale-transition-enter,
+  .scale-transition-enter-from,
   .scale-transition-leave-to {
     opacity: 0;
     transform: scale(.8, .8);
   }
   
   .scale-transition-enter-to,
-  .scale-transition-leave {
+  .scale-transition-leave-from {
     opacity: 1;
     transform: scale(1, 1);
   }
 
-  .slide-transition-enter-active,
-  .slide-transition-leave-active {
-    transition: color .8s ease;
+  .mini-cart-transition-enter-active,
+  .mini-cart-transition-leave-active {
     transition: all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
-  .slide-transition-enter,
-  .slide-transition-leave-to {
+  .mini-cart-transition-enter-from,
+  .mini-cart-transition-leave-to {
     opacity: 0;
     transform: translateY(50px);
   }
   
-  .slide-transition-enter-to,
-  .slide-transition-leave {
+  .mini-cart-transition-enter-to,
+  .mini-cart-transition-leave-from {
     opacity: 1;
     transform: translateY(0px);
   }

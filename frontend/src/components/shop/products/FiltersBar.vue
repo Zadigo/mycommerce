@@ -60,7 +60,7 @@
           <!-- <v-chip v-for="(size, i) in sizes" :key="i" class="fw-bold me-3" style="height:50px;width:50px; border-radius:50%;text-align:center;" link @click="setFilterValue('sizes', size)">
             {{ size }}
           </v-chip> -->
-          <div v-for="(size, i) in sizes" :key="i" class="md-chip fw-bold me-3" @click="setFilterValue('sizes', size)">
+          <div v-for="(size, i) in sizes" :key="i" :class="{ active: selectedElements.sizes.includes(size) }" class="md-chip fw-bold me-3" @click="setFilterValue('sizes', size)">
             {{ size }}
           </div>
         </div>
@@ -170,14 +170,13 @@ export default {
         
         var response = await this.axios.get(`shop/advanced/search${this.searchQuery}`)
         
-        // this.$store.commit('setProducts', response.data)
         this.store.$patch((state) => {
-          state.products = response.data
+          state.products = response.data.results
           this.$emit('loading-products-end')
         })
-      } catch(error) {  
+      } catch(error) {
+        console.log(error)
         this.store.addErrorMessage('An error occured')
-       // this.$store.dispatch('addErrorMessage', 'An error occured')
       }
     },
 
@@ -302,4 +301,12 @@ export default {
   transition: all .3s ease;
 }
 
+.md-chip {
+  border: 1px solid #6c757d;
+}
+.md-chip.active {
+  border: 1px solid white;
+  color: white;
+  background-color: rgba(18, 102, 241, 1);
+}
 </style>
