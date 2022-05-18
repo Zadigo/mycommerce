@@ -7,8 +7,8 @@
             <v-icon class="mr-2">mdi-tune</v-icon>
             Filtres
           </v-btn> -->
-          <button class="btn shadow-none disabled fw-normal">
-            Filtres
+          <button class="btn shadow-none disabled">
+            <span class="fw-normal">Filtres</span>
           </button>
         </li>
         
@@ -60,6 +60,9 @@
           <!-- <v-chip v-for="(size, i) in sizes" :key="i" class="fw-bold me-3" style="height:50px;width:50px; border-radius:50%;text-align:center;" link @click="setFilterValue('sizes', size)">
             {{ size }}
           </v-chip> -->
+          <div v-for="(size, i) in sizes" :key="i" class="md-chip fw-bold me-3" @click="setFilterValue('sizes', size)">
+            {{ size }}
+          </div>
         </div>
 
         <!-- Colors -->
@@ -78,7 +81,7 @@
 import _ from 'lodash'
 import { mapState } from 'pinia'
 import { useShop } from '@/store/shop'
-import { getVerticalScrollPercentage, listManager, mediaUrl } from '@/utils'
+import { getVerticalScrollPercentage, listManager, mediaUrl, scrollToTop } from '@/utils'
 import shopMixin from '@/mixins/shop'
 
 export default {
@@ -217,7 +220,7 @@ export default {
       } else {
         this.getFilteredProducts()
       }
-      this.scrollToTop()
+      scrollToTop()
     },
 
     isSelected(key, value) {

@@ -38,7 +38,7 @@
         <pagination-row :product-count="searchedProductsCount" />
           
         <!-- Ad -->
-        <div class="col-12 my-6">
+        <div class="col-12 my-6 d-none">
           <router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }">
             <!-- TODO: Emit a PageView when clicking on this section -->
             <img src="https://img.ltwebstatic.com/images3_acp/2022/02/25/164578700614872218156e3ff9868de22e7c67a145.webp" class="img-fluid" />
@@ -66,7 +66,9 @@ export default {
     AsyncProductItems: defineAsyncComponent({
       loader: () => import('@/components/shop/products/ProductItems.vue'),
       loadingComponent: ProductItemsLoadingVue,
-      delay: 300
+      delay: 100,
+      errorComponent: ProductItemsLoadingVue,
+      timeout: 4000
     }),
     FiltersBar,
     PaginationRow
@@ -82,6 +84,7 @@ export default {
       // child component as the user filters/sorts, 
       // products, use it's internal count to display 
       // additional information here
+      // console.log(this.$refs.products.sortedProducts)
       // return this.$refs.products.sortedProducts.length
       return 0
     }

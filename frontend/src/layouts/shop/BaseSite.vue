@@ -27,7 +27,7 @@
 
       <!-- <scroll-top-button /> -->
 
-      <!-- <modal-cart /> -->
+      <modal-cart-vue />
       <!-- <cart-off-canvas /> -->
       <!-- <login-modal /> -->
       <!-- <base-subscription-modal :show-modal="showSubscriptionModal" /> -->
@@ -44,6 +44,8 @@
 // import BaseSearchModal from '@/components/BaseSearchModal.vue'
 import BaseNavbar from '@/components/BaseNavbar.vue'
 import BaseFooter from '@/components/BaseFooter.vue'
+import ModalCartVue from '@/components/shop/ModalCart.vue'
+// import CartModal from '@/components/'
 // import ModalLanguageSelection from '@/components/ModalLanguageSelection.vue'
 // import ScrollTopButton from '@/components/ScrollTopButton.vue'
 // import CartOffCanvas from '@/components/shop/cart/CartOffCanvas.vue'
@@ -54,6 +56,7 @@ export default {
   components: { 
     BaseFooter,
     BaseNavbar,
+    ModalCartVue,
     // BaseSearchModal,
     // CartOffCanvas,
     // ModalLanguageSelection,

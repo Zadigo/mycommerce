@@ -22,7 +22,7 @@
           
           <div id="sizes">
             <div v-if="hasSizes">
-              <button v-for="size in product.sizes" :key="size.name" type="button" :class="{ disabled: !size.availability }" class="btn btn-outline-dark mr-2" @click="quickAddToCart(product, size, true)">
+              <button v-for="size in product.sizes" :key="size.name" type="button" :class="{ disabled: !size.availability }" class="btn btn-outline-dark mr-2" @click="quickAddToCart(product, size)">
                 {{ size.name }}
               </button>
             </div>
@@ -37,7 +37,7 @@
 
     <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-decoration-none">
       <div id="product-details" class="mt-2">
-        <p class="fw-normal mb-0">
+        <p class="fw-normal dark-text mb-0">
           {{ truncate(capitalizeLetters(product.name)) }}
         </p>
         
@@ -80,11 +80,12 @@
 
 <script>
 import _ from 'lodash'
-import { truncate, capitalizeLetters, mediaUrl, formatPercentage } from '@/utils'
+import { truncate, capitalizeLetters, mediaUrl, formatAsPercentage } from '@/utils'
 import { useShop } from '@/store/shop'
-import cartMixin from '@/mixins/cart'
+// import cartMixin from '@/mixins/cart'
 
 import BaseTag from '@/layouts/shop/BaseTag.vue'
+import useCartComposable from '@/composables/cart'
 
 export default {
   name: 'ProductCard',
@@ -92,7 +93,7 @@ export default {
   components: {
     BaseTag
   },
-  mixins: [cartMixin],
+  // mixins: [cartMixin],
   props: {
     isLoading: {
       type: Boolean,
@@ -105,12 +106,18 @@ export default {
   },
   setup() {
     var store = useShop()
+    var { addingToCart, productOptions, quickAddToCart, getSessionId } = useCartComposable()
+    
     return {
-      capitalizeLetters,
-      formatPercentage,
-      mediaUrl,
+      addingToCart,
+      productOptions,
       store,
-      truncate
+      formatAsPercentage,
+      capitalizeLetters,
+      mediaUrl,
+      truncate,
+      quickAddToCart,
+      getSessionId
     }
   },
   data: () => ({

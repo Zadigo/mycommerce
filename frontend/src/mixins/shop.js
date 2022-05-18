@@ -16,6 +16,10 @@ export default {
                 if (collectionName == 'all') {
                     response = await this.axios.get('/collection/all')
                 } else {
+                    // FIXME: When reloading thee product page
+                    // the collectionName is undefineed making the
+                    // product page not being able to retrieve the
+                    // variants
                     response = await this.axios.get(`/collection/${collectionName}`)
                 }
                 

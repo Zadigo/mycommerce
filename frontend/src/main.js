@@ -19,6 +19,7 @@ import messages from './store/messages'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'mdb-ui-kit/css/mdb.min.css'
 import '@/assets/style.css'
+
 const VueLocalStorage = createLocalStorage()
 const VueSessionStorage = createVueSession()
 

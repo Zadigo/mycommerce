@@ -133,14 +133,11 @@ class VueLocalStorage {
 
     install(app) {
         setupDevtools(app, this)
-        app.config.globalProperties.$localstorage = self
+        app.config.globalProperties.$localstorage = this
         app.mixin({
             data: () => ({
                 storage: this.data
-            }),
-            // beforeMount() {
-            //     setupDevtools(this, self)
-            // }
+            })
         })
         window.VueLocalStorage = this
     }

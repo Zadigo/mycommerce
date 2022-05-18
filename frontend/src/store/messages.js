@@ -1,22 +1,30 @@
 import { ref, toRef } from 'vue'
 
-export default function ({store}) {
+export default function ({ store }) {
     var messages = ref([])
-    store.messages = messages
 
+    store.messages = messages
     store.messages = toRef(store.$state, 'messages')
 
     function createMessage(type, content) {
-        return { type: type, content: content  }
+        return { type: type, content: content }
     }
 
     function addErrorMessage(content) {
-        var message = this.createMessage('danger', content)
-        store.messages.push(message)
+        store.messages.push(createMessage('danger', content))
+    } 
+    
+    function addSuccessMessage(content) {
+        store.messages.push(createMessage('success', content))
+    } 
+    
+    function addInfoMessage(content) {
+        store.messages.push(createMessage('info', content))
     } 
 
     return {
-        createMessage,
-        addErrorMessage
+        addErrorMessage,
+        addInfoMessage,
+        addSuccessMessage
     }
 }

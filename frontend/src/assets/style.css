@@ -14,3 +14,20 @@ section.ecommerce-section {
     left: 0;
     width: 100%;
 }
+
+.md-chip {
+    display: inline-block;
+    padding: 0;
+    border-radius: 42px;
+    height: 42px;
+    width: 42px;
+    text-align: center;
+    line-height: 2.6;
+    border: 1px solid black;
+    /* box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); */
+    transition: .2s ease-out;
+}
+.md-chip:hover {
+    /* box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15); */
+    cursor: pointer;
+}

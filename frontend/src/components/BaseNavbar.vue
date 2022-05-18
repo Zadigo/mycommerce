@@ -2,13 +2,25 @@
   <nav ref="link" class="navbar navbar-expand-lg navbar-light bg-white shadow-md border-bottom p-0">
     <div class="container">
       <router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }" class="navbar-brand">
-        <span class="text-uppercase font-weight-bold">
+        <span class="text-uppercase fw-bold">
           {{ myproject.company.legalName }}
         </span>
       </router-link>
 
       <div class="collapse navbar-collapse justify-content-around">
         <ul class="navbar-nav text-uppercase">
+          <li class="nav-item">
+            <router-link :to="{ name: 'collection_details_view', params: { lang: $i18n.locale, collection: 'all' } }" class="nav-link text">
+              {{ $t('Shop') }}
+            </router-link>
+          </li>
+
+          <li class="nav-item">
+            <router-link :to="{ name: 'collection_details_view', params: { lang: $i18n.locale, collection: 'shorts' } }" class="nav-link text">
+              Shorts
+            </router-link>
+          </li>
+
           <!-- <li class="nav-item" @click="store.changeSite('google')">
             <a class="nav-link text">
               Change site testing
@@ -26,12 +38,6 @@
               {{ $t('Fitting room') }}
             </router-link>
           </li> -->
-
-          <li class="nav-item">
-            <a class="nav-link" @click="goToAdmin">
-               {{ $t('Admin') }}
-            </a>
-          </li>
 
           <!-- Mega-menu -->
           <!-- <ecommerce-megamenu :is-visible="isVisible" @close-megamenu="isVisible=false"></ecommerce-megamenu> -->
@@ -57,10 +63,24 @@
           </li> -->
 
           <li class="nav-item">
-            <a class="nav-link" @click="store.logout">
+            <a href class="nav-link" @click.prevent="goToAdmin">
+               {{ $t('Admin') }}
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href class="nav-link" @click.prevent="store.logout">
               <!-- <v-icon size="28" class="mr-2">mdi-account</v-icon> -->
               <!-- <v-icon v-if="isAuthenticated" size="28" class="mr-2">mdi-logout</v-icon> -->
               Logout
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href class="nav-link" @click.prevent="store.openCart=true">
+              <!-- <v-icon size="28" class="mr-2">mdi-account</v-icon> -->
+              <!-- <v-icon v-if="isAuthenticated" size="28" class="mr-2">mdi-logout</v-icon> -->
+              Cart
             </a>
           </li>
         </ul>

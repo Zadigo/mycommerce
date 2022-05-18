@@ -49,7 +49,8 @@
 
       <!-- Add to like -->
       <button id="btn-add-like" class="btn btn-md btn-danger fs-4" @click="addToLikes">
-        <v-icon class="text-white">mdi-heart</v-icon>
+        <!-- <v-icon class="text-white">mdi-heart</v-icon> -->
+        heart
       </button>
     </div>
   </div>
@@ -59,7 +60,8 @@
 import { mapState } from 'pinia'
 import { useAuthentication } from '@/store/authentication'
 import { useShop } from '@/store/shop'
-import cartMixin from '@/mixins/cart'
+import useCartComposable from '@/composables/cart'
+// import cartMixin from '@/mixins/cart'
 
 // import SizeGuide from './SizeGuide.vue'
 
@@ -68,7 +70,7 @@ export default {
   components: {
     // SizeGuide
   },
-  mixins: [cartMixin],
+  // mixins: [cartMixin],
   props: {
     product: {
       type: Object
@@ -80,15 +82,21 @@ export default {
   },
   setup() {
     var store = useShop()
+    var { addingToCart, productOptions, getCart, getSessionId } = useCartComposable()
+
     return {
-      store
+      store,
+      addingToCart,
+      productOptions,
+      getCart,
+      getSessionId
     }
   },
   data: () => ({
-    productOptions: {
-      default_size: null
-    },
-    addingToCart: false,
+    // productOptions: {
+    //   default_size: null
+    // },
+    // addingToCart: false,
     noSizeSelected: false
   }),
   computed:{
@@ -134,7 +142,7 @@ export default {
         var response = await this.axios.post('cart/add', options)
         var data = response.data
         
-        this.store.$path((state) => {
+        this.store.$patch((state) => {
           state.cart = data
           this.$localstorage.create('cart', data)
         })
@@ -145,6 +153,7 @@ export default {
           default_size: null
         }
       } catch(error) {
+        console.error(error)
         this.store.addErrorMessage(`${error}: ${error.response}`)
       }
     },
@@ -158,7 +167,8 @@ export default {
           this.$store.commit('addSuccessMessage', 'Added to like')
           this.$localstorage.create('likes', response.data.result)
         } catch(error) {
-          this.$store.dsipatch('addErrorMessage', error)
+          this.store.addErrorMessage('An error occured')
+          // this.$store.dsipatch('addErrorMessage', error)
         }
       }
     },

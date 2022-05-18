@@ -17,23 +17,28 @@ import _ from 'lodash'
 import { useShop } from '@/store/shop'
 import { mapState } from 'pinia'
 import dayjs from '@/plugins/dayjs'
-import shopMixin from '@/mixins/shop'
+// import shopMixin from '@/mixins/shop'
+import useShopComposable from '@/composables/shop'
 
 import ProductCard from "@/components/shop/products/ProductCard.vue"
 
 export default {
   name: 'ProductItems',
-  mixins: [shopMixin],
+  emits: ['start-load', 'end-load'],
+  // mixins: [shopMixin],
   components: {
     ProductCard
   },
   setup() {
-  var store = useShop()
+    var store = useShop()
+    var { productsRequest, getProducts } = useShopComposable()
 
-  return {
-    store
-  }
-},
+    return {
+      store,
+      productsRequest,
+      getProducts
+    }
+  },
   data: () => ({
     isLoading: true,
     hideFilters: false,

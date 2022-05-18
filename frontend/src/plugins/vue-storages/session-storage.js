@@ -185,7 +185,7 @@ class VueSession {
 
     install(app) {
         setupDevtools(app, this)
-        app.config.globalProperties.$sesson = this
+        app.config.globalProperties.$session = this
         app.mixin({
             data: () => ({
                 sessionStorage: this.data
