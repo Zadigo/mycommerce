@@ -4,8 +4,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-FRONT_DIR = Path.joinpath(BASE_DIR, 'front')
-
+# FRONT_DIR = Path.joinpath(BASE_DIR, 'frontend')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -43,6 +42,7 @@ INSTALLED_APPS = [
     'orders',
     'shipments',
     'reviews',
+    'django_vite',
 ]
 
 MIDDLEWARE = [
@@ -64,7 +64,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             Path.joinpath(BASE_DIR, 'templates'),
-            Path.joinpath(FRONT_DIR, 'dist')
+            # Path.joinpath(FRONT_DIR, 'dist')
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -134,13 +134,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
+DJANGO_VITE_ASSETS_PATH = Path.joinpath(BASE_DIR, 'vue_three')
+
+DJANGO_VITE_DEV_MODE = DEBUG
+
 STATIC_URL = 'static/'
 
 STATIC_ROOT = Path.joinpath(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
     Path.joinpath(BASE_DIR, 'static'),
-    Path.joinpath(FRONT_DIR, 'dist', 'static')
+    # Path.joinpath(FRONT_DIR, 'dist'),
+    Path.joinpath(DJANGO_VITE_ASSETS_PATH)
 ]
 
 MEDIA_URL = 'media/'

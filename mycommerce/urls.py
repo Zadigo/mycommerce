@@ -1,9 +1,10 @@
 from django.conf import settings
 from django.conf.urls import include
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, re_path
-from django.conf.urls.static import static
-from mycommerce.views import index_view
+
+from mycommerce import views
 
 urlpatterns = [
     path('api/v1/accounts/', include('accounts.urls')),
@@ -14,7 +15,7 @@ urlpatterns = [
     # path('api/v1/', include('api.urls')),
     path('admin/', admin.site.urls),
     
-    re_path(r'^$', index_view, name='home')
+    re_path(r'^$', views.index_view, name='home')
 ]
 
 
