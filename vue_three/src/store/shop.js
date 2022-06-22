@@ -60,7 +60,7 @@ const useShop = defineStore('shop', {
   },
   getters: {
     cartLength () {
-      return this.cart.length
+      return this.cartItems.length
     },
     minPrice () {
       return _.minBy(this.products, 'get_price')

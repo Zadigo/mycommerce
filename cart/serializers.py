@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from orders.choices import ShipmentChoices
 from rest_framework import fields
 from rest_framework.serializers import Serializer
+from orders.models import CustomerOrder
 from shop.choices import ClotheSizesChoices
 from shop.serializers import ProductSerializer
 
@@ -94,3 +95,4 @@ class ValidateShipment(Serializer):
         ShipmentChoices.choices,
         default=ShipmentChoices.COLISSIMO_STANDARD
     )
+    # token = fields.CharField(validators=[])

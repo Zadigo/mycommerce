@@ -18,13 +18,18 @@ export default [
   },
   {
     path: 'cart',
-    name: 'cart_view'
-    // component: loadView('shop/CartView')
+    name: 'cart_view',
+    component: loadView('shop/CartView')
   },
   {
     path: 'cart/shipment',
-    name: 'shipment_view'
-    // component: loadView('shop/ShipmentView')
+    name: 'shipment_view',
+    component: loadView('shop/ShipmentView')
+  },
+  {
+    path: 'cart/success',
+    name: 'success_page_view',
+    component: loadView('shop/SuccessView')
   },
   {
     path: 'likes',

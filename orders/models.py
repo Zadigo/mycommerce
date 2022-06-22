@@ -43,7 +43,8 @@ class CustomerOrder(models.Model):
     )
     stripe_reference = models.CharField(
         max_length=100,
-        validators=[]
+        validators=[],
+        unique=True
     )
     user = models.ForeignKey(
         USER_MODEL, 

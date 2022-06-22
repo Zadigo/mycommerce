@@ -115,7 +115,7 @@ export default {
   },
   methods: {
     goToPage (name) {
-      this.$store.commit('toggleModalCart')
+      this.store.openCart = false
       this.$router.push({ name: name, params: { lang: this.$i18n.locale } })
     }
   }

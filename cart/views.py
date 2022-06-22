@@ -76,5 +76,11 @@ def payment_view(request, **kwargs):
             
         created_items = ProductHistory.objects.bulk_create(items_to_create)
         customer_order.products.add(*created_items)
-        return simple_api_response({'state': True})
+        return simple_api_response({'state': True, 'reference': customer_order.reference})
     return simple_api_response({'state': False})
+
+
+@api_view(['post'])
+@permission_classes([AllowAny])
+def success_view(request, **kwargs):
+    pass

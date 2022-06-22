@@ -1,6 +1,6 @@
 import i18n from '@/i18n'
 
-import { scrollToTop } from '../utils'
+import { scrollToTop, loadView } from '../utils'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import accounts from './accounts'
@@ -29,8 +29,8 @@ const routes = [
   ...dashboard,
   {
     path: '/cookie-settings',
-    name: 'cookie_settings_view'
-    // component: loadView('CookiesView')
+    name: 'cookie_settings_view',
+    component: loadView('shop/CookiesView')
   },
   {
     path: '/how-to-order',
