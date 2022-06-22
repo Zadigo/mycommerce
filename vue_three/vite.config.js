@@ -13,6 +13,16 @@ export default defineConfig({
   define: {
     'process.env': {}
   },
+  build: {
+    manifest: true,
+    outDir: path.resolve(__dirname, 'static'),
+    assetsDir: ''
+    // rollupOptions: {
+    //   input: {
+    //     main: path.resolve(__dirname, '../../static'),
+    //   }
+    // }
+  },
   resolve: {
     alias: {
       'vue-i18n': 'vue-i18n/dist/vue-i18n.runtime.esm-bundler.js',

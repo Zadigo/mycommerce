@@ -10,7 +10,6 @@ import shop from './shop'
 const routes = [
   {
     path: '/',
-    component: null,
     redirect: {
       name: 'shop_view',
       params: i18n.global.locale
