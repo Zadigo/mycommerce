@@ -78,6 +78,13 @@ export default {
     const app = getCurrentInstance()
     const { cartItems } = storeToRefs(store)
     const { getCart, getSessionId, removeFromCart } = useCartComposable(app)
+
+    store.$subscribe((mutation, state) => {
+      console.log(state)
+      if (mutation.type === 'shop') {
+        console.log(state)
+      }
+    })
     return {
       store,
       cartItems,
@@ -109,10 +116,10 @@ export default {
     const data = this.getCart()
     this.store.updateCart(data)
   },
-  updated () {
-    const data = this.getCart()
-    this.store.updateCart(data)
-  },
+  // updated () {
+  //   const data = this.getCart()
+  //   this.store.updateCart(data)
+  // },
   methods: {
     goToPage (name) {
       this.store.openCart = false

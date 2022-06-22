@@ -114,10 +114,17 @@
 
 <script>
 import CartAsideVue from '../../components/shop/cart/CartAside.vue'
+import { useShop } from '../../store/shop'
 // import { StripeElementCard } from '@vue-stripe/vue-stripe'
 
 export default {
   name: 'ShipmentView',
+  setup () {
+    var store = useShop()
+    return {
+      store
+    }
+  }, 
   components: {
     CartAsideVue
     // StripeElementCard
@@ -156,7 +163,17 @@ export default {
   },
   methods: {
     async completePayment () {
-      this.$router.push({ name: 'success_page_view', query: { token: 'ieeefnoinzoinfino' } })
+      try {
+        const options = { session_id: this.localStorage.cart.session_id, ...this.options }
+        const response = await this.$http.post('cart/payment', options)
+        if (response.data.state) {
+          this.$router.push({ name: 'success_page_view', query: { token: response.data.reference }, params: { lang: this.$i18n.locale } })
+        } else {
+          this.store.addErrorMessage('V-AX-PA: Could not complete payment')
+        }
+      } catch (error) {
+        this.store.addErrorMessage('V-AX-PA: Could not complete payment')
+      }
     },
     changeStep (step) {
       this.currentStep = step

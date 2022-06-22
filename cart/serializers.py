@@ -95,4 +95,3 @@ class ValidateShipment(Serializer):
         ShipmentChoices.choices,
         default=ShipmentChoices.COLISSIMO_STANDARD
     )
-    # token = fields.CharField(validators=[])

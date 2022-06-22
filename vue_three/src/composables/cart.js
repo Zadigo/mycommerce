@@ -31,7 +31,7 @@ export default function useCartComposable (app) {
       const data = response.data
 
       store.$patch((state) => {
-        state.cart = data
+        state.cachedCartResponse = data
         app.appContext.config.globalProperties.$localstorage.create('cart', data)
       })
     } catch (error) {

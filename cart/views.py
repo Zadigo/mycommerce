@@ -1,4 +1,6 @@
 from api.views import responses
+from django.db.models import DecimalField, Value
+from django.utils.crypto import get_random_string
 from mycommerce.responses import simple_api_response
 from orders.models import CustomerOrder, ProductHistory
 from rest_framework.decorators import api_view, permission_classes
@@ -55,13 +57,15 @@ def payment_view(request, **kwargs):
     shipment_serializer.is_valid(raise_exception=True)
     
     # 1. Get the customer's cart
-    queryset = Cart.objects.cart_items(request.data.get('session_id', None))
+    session_id = request.data.get('session_id', None)
+    queryset = Cart.objects.cart_items(session_id)
     
     if queryset.exists():
         # 1. Execute payment with Stripe
         
         # 2. Create an order
         attrs = {
+            'reference': get_random_string(12),
             'stripe_reference': 'some reference',
             'user': request.user if request.user.is_authenticated else None,
             'address': shipment_serializer.validated_data['address'],
@@ -69,14 +73,18 @@ def payment_view(request, **kwargs):
             'zip_code': shipment_serializer.validated_data['zip_code']
         }
         customer_order = CustomerOrder.objects.create(**attrs)
-
+        
+        total = Cart.objects.cart_total(request, session_id=session_id)
+        customer_order.total = Value(total, output_field=DecimalField())
+        customer_order.save()
+        
         items_to_create = []
         for item in queryset:
             items_to_create.append(ProductHistory(product=item.product, unit_price=item.price))
             
         created_items = ProductHistory.objects.bulk_create(items_to_create)
         customer_order.products.add(*created_items)
-        return simple_api_response({'state': True, 'reference': customer_order.reference})
+        return simple_api_response({'state': True, 'reference': customer_order.reference, 'total': total})
     return simple_api_response({'state': False})
 
 
