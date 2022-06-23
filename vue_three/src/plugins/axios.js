@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useAuthentication } from '../store/authentication'
 
 axios.defaults.headers.common['Accept-Language'] = 'fr,en,q=0.9;'
 axios.defaults.headers.common['Content-Type'] = 'application/json'
@@ -11,7 +12,10 @@ const client = axios.create({
 
 client.interceptors.request.use(
   request => {
-    // request.headers['Authorization'] = null
+    const store = useAuthentication()
+    if (store.token) {
+      request.headers.Authorization = `Token ${store.token}`
+    }
     return request
   }
 )

@@ -30,12 +30,12 @@ export default {
       ]
     }
   },
-  render () {
+  render (vm) {
     const options = {
       class: this.computedClass,
       ref: 'container'
     }
 
-    return h('div', options, [])
+    return h('div', options, () => [])
   }
 }

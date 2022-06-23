@@ -24,7 +24,23 @@ const routes = [
     },
     children: [
       ...shop,
-      ...accounts
+      ...accounts,
+      {
+        path: 'login',
+        name: 'login_view',
+        // meta: {
+        //   isFullPage: true
+        // },
+        component: loadView('shop/auth/LoginView')
+      },
+      {
+        path: 'signup',
+        name: 'signup_view',
+        // meta: {
+        //   isFullPage: true
+        // },
+        component: loadView('shop/auth/LoginView')
+      }
     ]
   },
   ...dashboard,

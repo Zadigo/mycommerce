@@ -52,8 +52,8 @@ export default {
       ref: 'intro'
     }
 
-    return h('section', { attrs: { class: ['hero'] } }, [
-      h('div', options, [])
+    return h('section', { class: ['hero'] }, [
+      h('div', options)
     ])
   }
 }

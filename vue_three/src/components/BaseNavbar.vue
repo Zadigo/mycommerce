@@ -68,18 +68,20 @@
             </a>
           </li>
 
-          <li class="nav-item">
-            <a href class="nav-link" @click.prevent="store.logout">
-              <!-- <v-icon size="28" class="mr-2">mdi-account</v-icon> -->
-              <!-- <v-icon v-if="isAuthenticated" size="28" class="mr-2">mdi-logout</v-icon> -->
+          <li v-if="authStore.isAuthenticated" class="nav-item">
+            <a href class="nav-link" @click.prevent="logout">
               Logout
             </a>
           </li>
 
+          <li v-else class="nav-item">
+            <router-link :to="{ name: 'login_view', params: { lang: 'fr' } }" class="nav-link">
+              Login
+            </router-link>
+          </li>
+
           <li class="nav-item">
-            <a href class="nav-link" @click.prevent="store.openCart=true">
-              <!-- <v-icon size="28" class="mr-2">mdi-account</v-icon> -->
-              <!-- <v-icon v-if="isAuthenticated" size="28" class="mr-2">mdi-logout</v-icon> -->
+            <a href class="nav-link" @click.prevent="store.openCart = true">
               Cart
             </a>
           </li>
@@ -93,6 +95,7 @@
 import { useShop } from '@/store/shop'
 import { useAuthentication } from '@/store/authentication'
 import { mapState } from 'pinia'
+import useAuthenicationComposable from '../composables/login'
 
 // import { mapGetters, mapMutations } from 'vuex'
 
@@ -100,8 +103,12 @@ export default {
   name: 'BaseNavbar',
   setup () {
     const store = useShop()
+    const authStore = useAuthentication()
+    const { logout } = useAuthenicationComposable()
     return {
-      store
+      store,
+      authStore,
+      logout
     }
   },
   data: () => ({

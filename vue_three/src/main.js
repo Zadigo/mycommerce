@@ -7,7 +7,9 @@ import { createVueSession } from './plugins/vue-storages/session-storage'
 import { createVueLocalStorage } from './plugins/vue-storages/local-storage'
 import { createAxios } from './plugins/axios'
 import { createCompanyDetails } from './plugins/project'
-import { intro, introContainer, introMask } from './components/hero'
+
+import BaseIntroVue from './layouts/BaseIntro.vue'
+// import { intro, introContainer, introMask } from './components/hero'
 
 import router from './router'
 import i18n from './i18n'
@@ -84,8 +86,8 @@ app.use(localstorage)
 app.use(i18n)
 app.use(pinia)
 
-app.component('base-intro', intro)
-app.component('intro-container', introContainer)
-app.component('intro-mask', introMask)
+app.component('base-intro-vue', BaseIntroVue)
+// app.component('intro-mask', introMask)
+// app.component('intro-container', introContainer)
 
 app.mount('#app')
