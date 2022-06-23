@@ -1,5 +1,5 @@
 <template>
-  <div ref="intro" class="p-5 text-center bg-image rounded-3">
+  <div ref="intro" class="hero p-5 text-center bg-image rounded-3">
     <div ref="mask" class="mask">
       <div class="d-flex justify-content-center align-items-center h-100">
         <slot></slot>
@@ -19,6 +19,10 @@ export default {
     height: {
       type: String,
       default: '400px'
+    },
+    offsetTop: {
+      type: String,
+      default: null
     }
   },
   mounted () {
@@ -29,6 +33,9 @@ export default {
     }
     this.$refs.intro.style.height = this.height
     this.$refs.mask.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
+    if (this.offsetTop) {
+      this.$refs.intro.style.marginTop = this.offsetTop
+    }
   }
 }
 </script>

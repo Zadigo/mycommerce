@@ -59,6 +59,10 @@ function getAutocomplete (key, isLogin = true) {
     }
   } else {
     switch (key) {
+      case 'email':
+        autocomplete = 'email'
+        break
+
       case 'name':
         autocomplete = 'name'
         break
@@ -67,10 +71,6 @@ function getAutocomplete (key, isLogin = true) {
       case 'password1':
       case 'password2':
         autocomplete = 'new-password'
-        break
-
-      case 'email':
-        autocomplete = 'email'
         break
 
       default:
@@ -100,7 +100,7 @@ export default function useAuthenicationComposable () {
   })
 
   const signupFields = computed(() => {
-    return mapKeys(Object.keys(signupCredentials.value))
+    return mapKeys(Object.keys(signupCredentials.value), false)
   })
 
   const store = useAuthentication()

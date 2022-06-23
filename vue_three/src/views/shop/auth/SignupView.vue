@@ -3,7 +3,9 @@
     <template #default>
       <div class="card">
         <div class="card-body">
-          <auth-fields-vue :login-fields="signupFields" :show-login-fields="false" @update-fields="updateFields" />
+          <auth-fields-vue :signup-fields="signupFields" @update-fields="updateFields" />
+
+          <navigation-links-vue :is-login="false" />
 
           <button type="button" class="btn btn-lg btn-primary mt-2" @click="doSignup">
             Signup
@@ -15,20 +17,22 @@
 </template>
 
 <script>
-import useAuthenicationComposable from '../../../composables/login'
-// import AdditionalLinks from '@/components/auth/AdditionalLinks.vue'
+
 import AuthFieldsVue from '@/components/shop/auth/AuthFields.vue'
+import NavigationLinksVue from '@/components/shop/auth/NavigationLinks.vue'
+
+import useAuthenicationComposable from '../../../composables/login'
 
 export default {
   name: 'LoginView',
   components: {
-  //   AdditionalLinks,
-    AuthFieldsVue
+    AuthFieldsVue,
+    NavigationLinksVue
   },
   setup () {
     const { signup, signupFields, updateFields } = useAuthenicationComposable()
     return {
-      login,
+      signup,
       signupFields,
       updateFields
     }
@@ -36,7 +40,7 @@ export default {
   methods: {
     doSignup () {
       this.signup()
-      this.$router.push({ name: 'shop_view', params: { lang: 'fr' } })
+      this.$router.push({ name: 'login_view', params: { lang: 'fr' } })
     }
   }
 }

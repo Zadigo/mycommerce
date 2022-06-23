@@ -5,6 +5,8 @@
         <div class="card-body">
           <auth-fields-vue :login-fields="loginFields" :show-login-fields="true" @update-fields="updateFields" />
 
+          <navigation-links-vue :is-login="true" />
+
           <button type="button" class="btn btn-lg btn-primary mt-2" @click="login">
             Login
           </button>
@@ -17,15 +19,17 @@
 <script>
 import { useRouter } from 'vue-router'
 import { useAuthentication } from '../../../store/authentication'
-import useAuthenicationComposable from '../../../composables/login'
-// import AdditionalLinks from '@/components/auth/AdditionalLinks.vue'
+
 import AuthFieldsVue from '@/components/shop/auth/AuthFields.vue'
+import NavigationLinksVue from '@/components/shop/auth/NavigationLinks.vue'
+
+import useAuthenicationComposable from '../../../composables/login'
 
 export default {
   name: 'LoginView',
   components: {
-  //   AdditionalLinks,
-    AuthFieldsVue
+    AuthFieldsVue,
+    NavigationLinksVue
   },
   setup () {
     const router = useRouter()

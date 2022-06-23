@@ -39,7 +39,7 @@ const routes = [
         // meta: {
         //   isFullPage: true
         // },
-        component: loadView('shop/auth/LoginView')
+        component: loadView('shop/auth/SignupView')
       }
     ]
   },
