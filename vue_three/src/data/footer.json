@@ -3,8 +3,8 @@
         "name": "Company info",
         "links": [
             {
-                "name": null,
-                "href": "/",
+                "name": "about_us_view",
+                "href": null,
                 "text": "About us"
             },
             {

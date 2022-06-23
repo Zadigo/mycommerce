@@ -1,6 +1,6 @@
 <template>
-  <!-- <v-app> -->
   <section>
+    <!-- Header -->
     <header class="fixed-top">
       <!-- Top banner -->
       <!-- <base-top-banner v-show="!$route.meta.isFullPage" /> -->
@@ -15,10 +15,8 @@
       <!-- <base-search-modal /> -->
     </header>
 
-    <!-- <v-main> -->
+    <!-- Main -->
     <div role="main">
-      <!-- <router-view :key="$route.name"/> -->
-
       <router-view v-slot="{ Component }">
         <transition name="opacity" mode="in-out">
           <component :is="Component" />
@@ -33,10 +31,9 @@
       <!-- <base-subscription-modal :show-modal="showSubscriptionModal" /> -->
       <!-- <modal-language-selection /> -->
     </div>
-    <!-- </v-main> -->
 
+    <!-- Footer -->
     <base-footer-vue v-show="!$route.meta.isFullPage" />
-  <!-- </v-app> -->
   </section>
 </template>
 

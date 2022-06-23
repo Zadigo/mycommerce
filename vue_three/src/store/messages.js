@@ -25,10 +25,15 @@ export default function ({ store }) {
     messages.value.push(createMessage('info', content))
   }
 
+  function clearMessages () {
+    messages.value = []
+  }
+
   return {
     messages,
     addErrorMessage,
     addInfoMessage,
-    addSuccessMessage
+    addSuccessMessage,
+    clearMessages
   }
 }

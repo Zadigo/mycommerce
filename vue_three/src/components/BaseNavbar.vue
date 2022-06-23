@@ -50,11 +50,11 @@
             </a>
           </li> -->
           
-          <!-- <li class="nav-item">
-            <router-link :to="{ name: 'wishlists_view', params: { lang: $i18n.locale } }" class="nav-link">
-              <v-icon size="28" class="mr-2">mdi-heart</v-icon>
+          <li class="nav-item">
+            <router-link :to="{ name: 'liked_products_view', params: { lang: $i18n.locale } }" class="nav-link">
+              Liked
             </router-link>
-          </li> -->
+          </li>
 
           <!-- <li class="nav-item" @click="$store.commit('toggleModalCart')">
             <a class="nav-link">

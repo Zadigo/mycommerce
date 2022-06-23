@@ -8,7 +8,7 @@
 
       <!-- TODO: Create a swatch reusable component -->
       <div class="swatch">
-        <router-link v-for="variant in productVariants" :key="variant.id" :to="{ name: 'product_view', params: { id: variant.id, slug: variant.slug, lang: $i18n.locale } }" :class="{ active: matchesWithRoute(variant) }" class="color">
+        <router-link v-for="variant in productVariants" :key="variant.id" :to="{ name: 'product_view', params: { id: variant.id, slug: variant.slug, lang: $i18n.locale } }" class="color">
           <img :src="buildSwatch(variant.color)" class="img-fluid">
         </router-link>
       </div>
@@ -16,9 +16,7 @@
 
     <!-- Size -->
     <div id="sizes" class="my-2">
-      <p class="mb-2">
-        {{ $t('Size') }}
-      </p>
+      <p class="mb-2 fw-bold">{{ $t('Size') }}</p>
 
       <div v-if="hasSizes" class="sizes">
         <button v-for="(size, i) in product.sizes" id="btn-select-size" :key="size.id" :class="{ 'ms-2': i > 0, 'btn-dark': productOptions.default_size == size.name, 'btn-light': !(productOptions.default_size == size.name) }" class="btn btn-md shadow-none border" @click="setSize(size)">
@@ -48,7 +46,6 @@
 
       <!-- Add to like -->
       <button id="btn-add-like" class="btn btn-md btn-danger fs-4" @click="addToLikes">
-        <!-- <v-icon class="text-white">mdi-heart</v-icon> -->
         heart
       </button>
     </div>
@@ -59,9 +56,9 @@
 import { mapState } from 'pinia'
 import { useShop } from '@/store/shop'
 import { useAuthentication } from '@/store/authentication'
-import useCartComposable from '@/composables/cart'
 import { getCurrentInstance } from 'vue'
-// import cartMixin from '@/mixins/cart'
+
+import useCartComposable from '@/composables/cart'
 
 // import SizeGuide from './SizeGuide.vue'
 
@@ -70,7 +67,6 @@ export default {
   components: {
     // SizeGuide
   },
-  // mixins: [cartMixin],
   props: {
     product: {
       type: Object
@@ -84,7 +80,6 @@ export default {
     const store = useShop()
     const app = getCurrentInstance()
     const { addingToCart, productOptions, getCart, getSessionId } = useCartComposable(app)
-
     return {
       store,
       addingToCart,
@@ -160,17 +155,16 @@ export default {
     },
     async addToLikes () {
       // TODO: Create a general function for this
-      if (!this.isAuthenticated) {
-        this.$store.commit('authenticationModule/loginUser')
-      } else {
+      if (this.isAuthenticated) {
         try {
-          const response = await this.axios.post(`shop/products/${this.product.id}/like`)
-          this.$store.commit('addSuccessMessage', 'Added to like')
-          this.$localstorage.create('likes', response.data.result)
+          const response = await this.$http.post(`shop/products/${this.product.id}/like`)
+          this.store.addSuccessMessage('Added to like')
+          this.$localstorage.create('likedProducts', response.data.result)
         } catch (error) {
           this.store.addErrorMessage('An error occured')
-          // this.$store.dsipatch('addErrorMessage', error)
         }
+      } else {
+        // Open login modal
       }
     },
     buildSwatch (color) {
@@ -211,9 +205,18 @@ export default {
     min-height: 34px;
     width: 34px;
   }
-  .swatch .color.active {
-    box-shadow: 0 0 0 2px #000;
-    border: 2px solid #fff;
+  .swatch .router-link-exact-active {
+    border: 1px solid white;
+  }
+  .swatch .color::before {
+    border: 2px solid #222;
+    border-radius: 50%;
+    background: transparent;
+  }
+  .swatch .color::after {
+    border: 2px solid #222;
+    border-radius: 50%;
+    background: transparent;
   }
   .swatch .color:not(:last-child) {
     margin-right: .5rem;

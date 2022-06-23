@@ -33,8 +33,8 @@ export default [
   },
   {
     path: 'likes',
-    name: 'wishlists_view'
-    // component: loadView('shop/LikedProductsView')
+    name: 'liked_products_view',
+    component: loadView('shop/LikedProductsView')
   },
   {
     path: 'store-locations',

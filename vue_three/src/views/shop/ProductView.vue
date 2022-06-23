@@ -6,8 +6,8 @@
         <div class="col-12">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }">{{ $t('Home') }}</router-link></li>
-              <li class="breadcrumb-item"><router-link :to="{ name: 'collection_details_view', params: { collection: currentProduct.category.toLowerCase() } }">{{ currentProduct.category }}</router-link></li>
+              <li class="breadcrumb-item"><router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }" class="text-muted">{{ $t('Home') }}</router-link></li>
+              <li class="breadcrumb-item"><router-link :to="{ name: 'collection_details_view', params: { collection: currentProduct.category.toLowerCase() } }" class="text-muted">{{ currentProduct.category }}</router-link></li>
               <li class="breadcrumb-item active" aria-current="page">{{ currentProduct.name }}</li>
             </ol>
           </nav>
@@ -22,33 +22,33 @@
           <div class="row">
             <!-- Tags -->
             <div v-show="currentProduct.on_sale || currentProduct.display_new" id="tags" class="col-12">
-              <base-tag v-if="currentProduct.on_sale" class="me-2 fw-bold" background-color="bg-danger">
+              <base-tag v-if="currentProduct.on_sale" class="me-2 fw-bold mb-3" background-color="bg-danger">
                 {{ $t('Sale') }}
               </base-tag>
 
-              <base-tag v-if="currentProduct.display_new" class="fw-bold" background-color="bg-primary">
+              <base-tag v-if="currentProduct.display_new" class="fw-bold mb-3" background-color="bg-primary">
                 {{ $t('New') }}
               </base-tag>
             </div>
 
             <!-- Information -->
             <div id="information" class="col-12 pt-0 pb-0">
-              <p class="fw-bold fs-3 m-0">
+              <p class="fw-normal fs-4 m-0">
                 {{ capitalizeLetters(currentProduct.name) }} - <span class="text-muted fw-normal">{{ currentProduct.color }}</span>
               </p>
 
-              <p class="mb-2 fs-3">
-                <span v-if="currentProduct.on_sale" class="me-2 fs-4 text-muted">
+              <p class="mb-1 fs-3">
+                <span v-if="currentProduct.on_sale" class="me-2 fs-4 fw-bolder text-muted">
                   <!-- <del>{{ $n(currentProduct.unit_price, 'currency') }}</del> -->
                   <del>{{ currentProduct.unit_price }}</del>
                 </span>
 
-                <span v-if="currentProduct.on_sale" class="fw-bold fs-4">
+                <span v-if="currentProduct.on_sale" class="fw-bolder fs-4 fw-bold">
                   <!-- {{ $n(currentProduct.sale_price, 'currency', $i18n.locale) }} -->
                   {{ currentProduct.sale_price }}
                 </span>
 
-                <span v-else class="fw-normal fs-3">
+                <span v-else class="fw-normal fs-3 fw-bolder">
                   <!-- {{ $n(currentProduct.unit_price, 'currency', $i18n.locale) }} -->
                   {{ currentProduct.unit_price }}
                 </span>
@@ -193,15 +193,12 @@ export default {
     overflow-x: scroll;
     padding: 1rem;
   }
-  section#product {
-    height: auto;
-    min-height: 600px;
-  }
   #tags {
     display: flex;
     justify-content: around;
   }
-  .v-image__image {
-    cursor: pointer;
+  .breadcrumb a:hover {
+    color: #eee;
+    text-decoration: underline;
   }
 </style>

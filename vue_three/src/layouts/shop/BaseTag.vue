@@ -1,5 +1,5 @@
 <template>
-  <div id="tag" ref="tag" :class="classes" class="darken-1 text-uppercase text-white font-weight-bold rounded mb-5 text-center">
+  <div id="tag" ref="tag" :class="classes" class="darken-1 text-uppercase text-white font-weight-bold rounded text-center">
     <slot></slot>
   </div>
 </template>

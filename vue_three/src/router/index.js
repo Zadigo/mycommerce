@@ -28,17 +28,17 @@ const routes = [
       {
         path: 'login',
         name: 'login_view',
-        // meta: {
-        //   isFullPage: true
-        // },
+        meta: {
+          isFullPage: true
+        },
         component: loadView('shop/auth/LoginView')
       },
       {
         path: 'signup',
         name: 'signup_view',
-        // meta: {
-        //   isFullPage: true
-        // },
+        meta: {
+          isFullPage: true
+        },
         component: loadView('shop/auth/SignupView')
       }
     ]
@@ -63,6 +63,11 @@ const routes = [
     path: '/contact-us',
     name: 'contact_us_view'
     // component: loadView('CookiesView')
+  },
+  {
+    path: '/about-us',
+    name: 'about_us_view',
+    component: loadView('shop/AboutView')
   },
   {
     path: '/payment-methods',
