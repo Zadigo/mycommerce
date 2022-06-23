@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-
+import dynamicImportVars from '@rollup/plugin-dynamic-import-vars'
 const path = require('path')
 import eslint from 'vite-plugin-eslint'
 
@@ -15,13 +15,20 @@ export default defineConfig({
   },
   build: {
     manifest: true,
-    outDir: path.resolve(__dirname, 'static'),
-    assetsDir: ''
-    // rollupOptions: {
-    //   input: {
-    //     main: path.resolve(__dirname, '../../static'),
-    //   }
-    // }
+    // outDir: '../static/dist',
+    outDir: './dist',
+    assetsDir: '',
+    rollupOptions: {
+      plugins: [
+        dynamicImportVars()
+      ],
+      input: path.resolve(__dirname, './src/main.js'),
+      output: {
+        dir: path.resolve(__dirname, 'dist'),
+        format: 'module',
+        name: 'main'
+      }
+    }
   },
   resolve: {
     alias: {

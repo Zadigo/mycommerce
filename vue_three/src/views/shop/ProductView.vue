@@ -121,17 +121,6 @@ export default {
     const app = getCurrentInstance()
     const route = useRoute()
     const { isLoading } = useShopComposable(app, route)
-    // this.store.$onAction(({ name, store, after }) => {
-    //   store
-    //   console.info(name, this.$localstorage)
-    //   if (name == 'getProduct') {
-    //     after(() => {
-    //       console.info('GetProduct action', this.$localstorage)
-    //       // this.$localstorage.create('recentlyViewedProducts', store.recentlyViewedProducts)
-    //     })
-    //   }
-    // })
-
     return {
       store,
       isLoading,
@@ -156,15 +145,14 @@ export default {
     }
   },
   watch: {
-    '$route.params.id' (newValue, oldValue) {
+    '$route.params.id' (current, previous) {
       // When leaving the page, this still triggers
       // sending a request with undefined so make sure
       // that newValue is actually defined
-      if (newValue !== undefined && newValue !== oldValue) {
+      if (current !== undefined && current !== previous) {
         this.isLoading = true
-        this.store.getProduct(newValue)
+        this.store.getProduct(current)
         this.requestProductVariants()
-        this.$localstorage.create('recentlyViewedProducts', this.store.recentlyViewedProducts)
       }
     }
   },
@@ -172,13 +160,12 @@ export default {
     // In order to get the currentProduct set,
     // reload the current list of products
     // from the session
-    if (this.store.products.length === 0) {
-      this.store.$patch({
-        products: this.localStorage.products || []
-      })
-    }
+    // if (this.store.products.length === 0) {
+    //   this.store.$patch({
+    //     products: this.localStorage.products || []
+    //   })
+    // }
     this.store.getProduct(this.$route.params.id)
-    this.$localstorage.create('recentlyViewedProducts', this.store.recentlyViewedProducts)
   },
   mounted () {
     // Get the products with the same name but

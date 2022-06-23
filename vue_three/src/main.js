@@ -18,6 +18,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'mdb-ui-kit/css/mdb.min.css'
 import '@mdi/font/css/materialdesignicons.css'
 
+// import { toNumber } from 'lodash'
+
 const pinia = createPinia()
 const session = createVueSession()
 const localstorage = createVueLocalStorage()
@@ -40,16 +42,9 @@ pinia.use(({ store }) => {
   store.localstorage = toRaw(localstorage)
   store.session = toRaw(session)
 
-  // TODO:
-  // store.$onAction(({ name, store }) => {
-  //   if (name == 'getProduct') {
-  //     console.info('Get Product', store)
-  //   }
-  // })
-
   function changeSite (name) {
     store.$state.currentSite = name
-    // store.localstorage.create('current-site', name)
+    store.localstorage.create('current-site', name)
   }
 
   return {

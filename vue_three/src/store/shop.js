@@ -40,7 +40,7 @@ const useShop = defineStore('shop', {
       store.logout()
     },
     resetProducts () {
-
+      this.localStorage.remove('products')
     },
     updateCart (data) {
       if (data) {
@@ -52,10 +52,26 @@ const useShop = defineStore('shop', {
         this.cart = []
       }
     },
+    reloadProducts () {
+      // Reloads existing products
+      // from the localstorage
+      if (this.products.length === 0) {
+        this.products = this.localstorage.retrieve('products') || []
+      }
+    },
     getProduct (productId) {
+      this.reloadProducts()
       const currentProduct = _.find(this.products, ['id', toNumber(productId)])
       this.currentProduct = currentProduct || {}
       this.recentlyViewed.push(toNumber(productId))
+
+      const existingItems = this.localstorage.retrieve('recentlyViewed')
+      if (existingItems.length > 0) {
+        existingItems.push(toNumber(productId))
+        this.localstorage.create('recentlyViewed', existingItems)
+      } else {
+        this.localstorage.create('recentlyViewed', this.recentlyViewed)
+      }
     }
   },
   getters: {

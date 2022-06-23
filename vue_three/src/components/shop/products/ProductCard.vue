@@ -57,7 +57,6 @@
 
           <div>
             <span v-if="product.on_sale" class="bg-danger p-1 rounded text-white ml-3">
-              <!-- {{ formatPercentage(product.sale_value, true) }} -->
               {{ formatAsPercentage(product.sale_value, true) }}
             </span>
           </div>
@@ -89,6 +88,9 @@ import useCartComposable from '@/composables/cart'
 
 export default {
   name: 'ProductCard',
+  components: {
+    BaseTag
+  },
   props: {
     isLoading: {
       type: Boolean,
@@ -99,13 +101,10 @@ export default {
       required: true
     }
   },
-  components: {
-    BaseTag
-  },
   emits: ['product-card-click'],
   setup () {
     const store = useShop()
-    const { addingToCart, productOptions, quickAddToCart, getSessionId } = useCartComposable()    
+    const { addingToCart, productOptions, quickAddToCart, getSessionId } = useCartComposable()
     return {
       addingToCart,
       productOptions,
@@ -179,11 +178,9 @@ export default {
   min-height: 150px;
   background-color: white;
 }
-
 .mini-cart .btn {
   width: 15%;
 }
-
 .mini-cart .btn.uniqe {
   width: 40%;
 }
@@ -198,18 +195,15 @@ export default {
   opacity: 0;
   transform: scale(.8, .8);
 }
-
 .scale-transition-enter-to,
 .scale-transition-leave-from {
   opacity: 1;
   transform: scale(1, 1);
 }
-
 .mini-cart-transition-enter-active,
 .mini-cart-transition-leave-active {
   transition: all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-
 .mini-cart-transition-enter-from,
 .mini-cart-transition-leave-to {
   opacity: 0;

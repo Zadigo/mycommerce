@@ -12,7 +12,9 @@ const routes = [
     path: '/',
     redirect: {
       name: 'shop_view',
-      params: i18n.global.locale
+      params: {
+        lang: i18n.global.locale
+      }
     }
   },
   {

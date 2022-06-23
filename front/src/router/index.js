@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 
 import i18n from '../i18n'
 import store from '@/store'
-import { loadView } from './utils'
+import { loadView } from '../utils'
 
 // Routes
 import shop from './shop'
