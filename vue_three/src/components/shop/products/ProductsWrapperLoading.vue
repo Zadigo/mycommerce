@@ -14,6 +14,6 @@
 
 <script>
 export default {
-  name: 'ProductItemsLoading'
+  name: 'ProductsWrapperLoading'
 }
 </script>

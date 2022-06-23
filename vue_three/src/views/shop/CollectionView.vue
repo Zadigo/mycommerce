@@ -8,7 +8,7 @@
           </h2>
 
           <!-- Filters -->
-          <filters-bar style="z-index:20;" @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" />
+          <filters-bar style="z-index:20;" @loading-products-start="isLoading = true" @loading-products-end="isLoading = false" />
         </div>
 
         <!-- FIXME: This gets displayed before the products are shown
@@ -29,7 +29,7 @@
           </div>
         </div> -->
 
-        <!-- TODO: Add a Suspense -->
+        <!-- TODO: Prefer Suspense ?? -->
         <async-product-items />
 
         <hr class="mt-5 mb-2">
@@ -55,7 +55,7 @@ import { capitalizeFirstLetter } from '@/utils'
 
 import FiltersBar from '@/components/shop/products/FiltersBar.vue'
 import PaginationRow from '@/components/shop/products/PaginationRow.vue'
-import ProductItemsLoadingVue from '@/components/shop/products/ProductItemsLoading.vue'
+import ProductsWrapperLoadingVue from '@/components/shop/products/ProductsWrapperLoading.vue'
 
 export default {
   name: 'CollectionView',
@@ -64,10 +64,11 @@ export default {
     // on the products to prevent blocking the whole
     // collection page
     AsyncProductItems: defineAsyncComponent({
+      // TODO: Rename ProductItems -> ProductsWrapper
       loader: () => import('@/components/shop/products/ProductItems.vue'),
-      loadingComponent: ProductItemsLoadingVue,
+      loadingComponent: ProductsWrapperLoadingVue,
       delay: 500,
-      errorComponent: ProductItemsLoadingVue,
+      errorComponent: ProductsWrapperLoadingVue,
       timeout: 5000
     }),
     FiltersBar,

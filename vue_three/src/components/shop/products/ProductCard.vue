@@ -1,20 +1,16 @@
 <template>
   <div v-if="isLoading || !mainImage" id="link-product-card" class="product">
     Loading...
-    <!-- <div id="image">
-      <b-skeleton-img height="504px" />
-    </div>
-
-    <b-skeleton width="65%" class="mt-3" />
-    <b-skeleton width="25%" class="mt-3" /> -->
   </div>
 
-  <div v-else id="link-product-card" class="product my-1" @click="$emit('product-card-click', product)" @mouseenter="isHovered=true" @mouseleave="isHovered=false">
+  <article v-else id="link-product-card" class="product my-1" @click="$emit('product-card-click', product)" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
     <div id="product-image">
+      <!-- Image -->
       <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }">
         <img :src="mediaUrl(mainImage.mid_size)" :alt="mainImage.name" class="img-fluid" />
       </router-link>
 
+      <!-- Mini-Cart -->
       <transition name="mini-cart-transition">
         <div v-if="isHovered" class="mini-cart p-3 d-none">
           <div class="fw-bold mb-3 text-uppercase">
@@ -36,6 +32,7 @@
       </transition>
     </div>
 
+    <!-- Information -->
     <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-decoration-none">
       <div id="product-details" class="mt-2">
         <p class="fw-normal dark-text mb-0">
@@ -64,6 +61,7 @@
       </div>
     </router-link>
 
+    <!-- Other -->
     <div class="d-flex justify-content-left p-absolute m-2">
       <base-tag v-if="product.on_sale" :padding="1" :width="30" background-color="bg-primary">
         {{ $t('Sale') }}
@@ -73,7 +71,7 @@
         {{ $t('New') }}
       </base-tag>
     </div>
-  </div>
+  </article>
 </template>
 
 <script>
@@ -123,7 +121,7 @@ export default {
   computed: {
     mainImage () {
       const mainImage = _.find(this.product.images, ['is_main_image', true])
-      return _.isUndefined(mainImage) ? this.product.images[0] : mainImage
+      return mainImage || this.product.images[0]
     },
 
     hasSizes () {

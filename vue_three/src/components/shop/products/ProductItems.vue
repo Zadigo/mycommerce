@@ -43,7 +43,6 @@ export default {
     }
   },
   data: () => ({
-    // isLoading: true,
     hideFilters: false,
     multipleGridDisplay: false,
     sortMethod: null,
@@ -51,11 +50,6 @@ export default {
   }),
   computed: {
     ...mapState(useShop, ['minPrice', 'maxPrice', 'products']),
-
-    // searchedPrice: {
-    //   get () { return this.$store.setSearchedPrices },
-    //   set (value) { this.$store.commit('setSearchedPrices', value) }
-    // },
 
     sortedProducts () {
       // TODO: Determine whether we should send a request
@@ -69,11 +63,11 @@ export default {
           break
 
         case 'Price high to low':
-          products = this.mapPrices('desc')
+          products = this.sortByPrices('desc')
           break
 
         case 'Price low to high':
-          products = this.mapPrices('asc')
+          products = this.sortByPrices('asc')
           break
 
         case 'Alphabetically A-Z':
@@ -93,16 +87,16 @@ export default {
     }
   },
   watch: {
-    '$route.params.collection' (newValue, oldValue) {
-      // When leaving the page, this still triggers
-      // sending a request with undefined so make sure
-      // that newValue is actually defined
-      if (newValue !== undefined && newValue !== oldValue) {
+    '$route.params.collection' (current, previous) {
+      // NOTE: When leaving the page, this triggers
+      // a request with "undefined" as param so make 
+      // sure "current" is actually defined
+      if (current !== undefined && current !== previous) {
         this.getProducts()
       }
     }
-  },  
-  created () {  
+  },
+  created () {
     this.productsRequest()
     this.isLoading = false
   },
@@ -117,10 +111,7 @@ export default {
       this.$localstorage.create('sort', method)
     },
 
-    mapPrices (sortMethod) {
-      // Transform each price into a numeric and
-      // then return the products using the
-      // selected ordering method
+    sortByPrices (sortMethod) {
       const items = _.map(this.products, (item) => {
         item.unit_price = item.unit_price * 1
         item.sale_price = item.sale_price * 1

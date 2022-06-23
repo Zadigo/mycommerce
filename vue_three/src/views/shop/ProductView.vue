@@ -64,7 +64,7 @@
         </div>
       </div>
 
-      <!-- <hr class="my-5"> -->
+      <hr class="my-5">
 
       <div class="row mt-5">
         <!-- More Products -->
@@ -129,7 +129,6 @@ export default {
     }
   },
   data: () => ({
-    // isLoading: true,
     productVariants: [],
     reviews: [],
     recommendedProducts: []
@@ -157,14 +156,6 @@ export default {
     }
   },
   beforeMount () {
-    // In order to get the currentProduct set,
-    // reload the current list of products
-    // from the session
-    // if (this.store.products.length === 0) {
-    //   this.store.$patch({
-    //     products: this.localStorage.products || []
-    //   })
-    // }
     this.store.getProduct(this.$route.params.id)
   },
   mounted () {
