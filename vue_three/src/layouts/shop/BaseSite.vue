@@ -23,9 +23,14 @@
         </transition>
       </router-view>
 
-      <!-- <scroll-top-button /> -->
+      <transition name="opacity">
+        <button type="button" class="btn btn-floating btn-lg btn-dark" @click="scrollToTop">
+          Up
+        </button>
+      </transition>
 
       <modal-cart-vue />
+      <discount-drawer-vue />
       <!-- <cart-off-canvas /> -->
       <!-- <login-modal /> -->
       <!-- <base-subscription-modal :show-modal="showSubscriptionModal" /> -->
@@ -38,31 +43,43 @@
 </template>
 
 <script>
-// import BaseSearchModal from '@/components/BaseSearchModal.vue'
+import { scrollToTop } from '../../utils'
 import BaseMessagesVue from '@/components/BaseMessages.vue'
 import BaseNavbarVue from '@/components/BaseNavbar.vue'
 import BaseFooterVue from '@/components/BaseFooter.vue'
+import DiscountDrawerVue from '../DiscountDrawer.vue'
 import ModalCartVue from '@/components/shop/ModalCart.vue'
 
+// import BaseSearchModal from '@/components/BaseSearchModal.vue'
 // import ModalLanguageSelection from '@/components/ModalLanguageSelection.vue'
 // import ScrollTopButton from '@/components/ScrollTopButton.vue'
 // import CartOffCanvas from '@/components/shop/cart/CartOffCanvas.vue'
-// import { mapState } from 'vuex'
 
 export default {
   name: 'BaseSite',
+  setup () {
+    return {
+      scrollToTop
+    }
+  },
   components: {
     BaseFooterVue,
     BaseMessagesVue,
     BaseNavbarVue,
+    DiscountDrawerVue,
     ModalCartVue
     // BaseSearchModal,
     // CartOffCanvas,
     // ModalLanguageSelection,
     // ScrollTopButton
-  },
-  computed: {
-    // ...mapState(['showSubscriptionModal'])
   }
 }
 </script>
+
+<style scoped>
+.btn-floating {
+  position: fixed;
+  right: 1%;
+  bottom: 1%;
+}
+</style>

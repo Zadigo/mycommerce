@@ -93,9 +93,15 @@ const useShop = defineStore('shop', {
     getRecentlyViewedProducts () {
       const ids = _.uniq(this.recentlyViewed)
 
-      return _.filter(this.products, (product) => {
+      const items = _.filter(this.products, (product) => {
         return ids.includes(product.id)
       })
+
+      if (items.length > 3) {
+        // Return the 4 last items
+        return items.slice(items.length - 4, items.length)
+      }
+      return items
     }
   }
 })
