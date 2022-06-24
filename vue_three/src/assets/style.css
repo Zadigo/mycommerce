@@ -1,5 +1,7 @@
-html, body {
-    font-weight: 300;
+html, body, * {
+    font-family: 'Montserrat', 'Roboto', sans-serif;
+    scroll-behavior: smooth;
+    /* font-weight: 300; */
 }
 
 .opacity-enter-active,
@@ -55,4 +57,15 @@ section.ecommerce-section {
 
 .hero .lead-smaller {
     font-size: 20px;
+}
+
+::-webkit-scrollbar {
+    transition: all .3s ease;
+    background-color: #eee;
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(38, 38, 38, 1);
+    /* border-radius: 1rem; */
 }

@@ -7,7 +7,8 @@
             <i>Icon</i>
             <p class="w-50">Plus que <span class="fw-bold">59,81 €</span> pour profiter de la livraison gratuite</p>
             <div class="progress">
-              <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="15" aria-valuemin="0"
+                aria-valuemax="100">
               </div>
             </div>
           </div>
@@ -53,62 +54,65 @@
           </div>
         </div>
 
-        <div class="col-4">
-          <aside ref="aside" class="card">
-            <div class="card-body">
-              <input type="text" name="coupon" class="form-control p-2 mb-2" placeholder="Coupon">
+        <aside class="col-4">
+          <div ref="aside" class="cart-aside">
+            <div class="card">
+              <div class="card-body">
+                <input type="text" name="coupon" class="form-control p-2 mb-2" placeholder="Coupon">
 
-              <div class="form-check">
-                <input v-model="giftOptions.is_gift" class="form-check-input" type="checkbox" id="gift-wrap">
-                <label class="form-check-label" for="gift-wrap">
-                  {{ $t('Please Gift Wrap my order - $6.00') }}
-                </label>
+                <div class="form-check">
+                  <input id="gift-wrap" v-model="giftOptions.is_gift" class="form-check-input" type="checkbox">
+                  <label class="form-check-label" for="gift-wrap">
+                    {{ $t('Please Gift Wrap my order - $6.00') }}
+                  </label>
+                </div>
+
+                <div class="form-check mt-2">
+                  <input id="donation" v-model="giftOptions.donation" class="form-check-input" type="checkbox">
+                  <label class="form-check-label" for="donation">
+                    {{ $t('Faire un don - 0.5€') }}
+                  </label>
+                </div>
+
+                <hr class="my-6">
+
+                <div class="d-flex justify-content-between fw-bold">
+                  <h5 class="text-uppercase fs-6 fw-bold">Sous-total</h5>
+                  <h5 class="text-uppercase fs-6 fw-bold">25€</h5>
+                </div>
+
+                <div class="d-flex justify-content-between text-muted mt-2 mb-4">
+                  <h5 class="text-uppercase fs-6">Remise</h5>
+                  <h5 class="text-uppercase fs-6">25€</h5>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <h5 class="text-uppercase fw-bold">Total</h5>
+                  <h5 class="fw-bold">{{ $n(grandTotal, 'currency', $i18n.locale) }}</h5>
+                </div>
+
+                <hr class="my-7">
+
+                <router-link :to="{ name: 'shipment_view', params: {  lang: $i18n.locale } }"
+                  class="btn btn-block btn-primary">
+                  {{ $t('Checkout') }}
+                </router-link>
+
+                <router-link
+                  :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
+                  class="btn btn-block btn-light">
+                  {{ $t('Continue shopping') }}
+                </router-link>
               </div>
-
-              <div class="form-check mt-2">
-                <input v-model="giftOptions.donation" class="form-check-input" type="checkbox" id="donation">
-                <label class="form-check-label" for="donation">
-                  {{ $t('Faire un don - 0.5€') }}
-                </label>
-              </div>
-
-              <hr class="my-6">
-
-              <div class="d-flex justify-content-between fw-bold">
-                <h5 class="text-uppercase fs-6 fw-bold">Sous-total</h5>
-                <h5 class="text-uppercase fs-6 fw-bold">25€</h5>
-              </div>
-
-              <div class="d-flex justify-content-between text-muted mt-2 mb-4">
-                <h5 class="text-uppercase fs-6">Remise</h5>
-                <h5 class="text-uppercase fs-6">25€</h5>
-              </div>
-
-              <div class="d-flex justify-content-between">
-                <h5 class="text-uppercase fw-bold">Total</h5>
-                <h5 class="fw-bold">{{ $n(grandTotal, 'currency', $i18n.locale) }}</h5>
-              </div>
-
-              <hr class="my-7">
-
-              <router-link :to="{ name: 'shipment_view', params: {  lang: $i18n.locale } }"
-                class="btn btn-block btn-primary">
-                {{ $t('Checkout') }}
-              </router-link>
-
-              <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
-                class="btn btn-block btn-light">
-                {{ $t('Continue shopping') }}
-              </router-link>
             </div>
-          </aside>
 
-          <aside class="card mt-2">
-            <div class="card-body">
-              payment
+            <div class="card mt-2">
+              <div class="card-body">
+                payment
+              </div>
             </div>
-          </aside>
-        </div>
+          </div>
+        </aside>
       </div>
 
       <div class="row text-center">
@@ -177,17 +181,14 @@ export default {
     }
   },
   mounted () {
-    const section = document.querySelector('#cart')
-    section.addEventListener('scroll', this.asideEventListener)
+    window.addEventListener('scroll', this.asideEventListener)
   },
-  unmounted () {
-    const section = document.querySelector('#cart')
-    section.removeEventListener('scroll', this.asideEventListener)
+  beforeUnmount () {
+    window.removeEventListener('scroll', this.asideEventListener)
   },
   methods: {
-    asideEventListener () {
-      const percentage = getVerticalScrollPercentage(document.querySelector('body'))
-      console.log(percentage)
+    asideEventListener (e) {
+      const percentage = getVerticalScrollPercentage(document.body)
       if (percentage >= 20) {
         this.$refs.aside.classList.add('aside-sticky')
       } else {
@@ -199,6 +200,7 @@ export default {
 </script>
 
 <style scoped>
+
 body {
   background-color: #f6f6f6 !important;
 }
@@ -207,5 +209,9 @@ body {
   position: sticky;
   top:20%;
   left:0;
+}
+
+aside {
+  transition: all .4s ease-in-out;
 }
 </style>

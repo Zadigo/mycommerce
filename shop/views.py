@@ -270,6 +270,34 @@ def liked_products_view(request, **kwargs):
     return api_response(LikeSerializer, queryset=like_list)
 
 
+@api_view(['get'])
+def latest_products(request, **kwargs):
+    limit = request.GET.get('limit')
+    if not limit:
+        limit = 20
+        
+    if limit > 20:
+        limit = 20
+        
+    limit = int(limit)
+    
+    queryset = cache.get('latest_products')
+    
+    if not queryset:
+        last_product = Product.objects.last()
+        fifteen_days_from_now = now() - datetime.timedelta(days=15)
+        
+        queryset = Product.objects.filter(
+            Q(created_on__lte=fifteen_days_from_now.date()) &
+            Q(created_on__gte=last_product.created_on)
+        ).order_by('-created_on')
+        queryset = queryset[:limit]
+        cache.set('latest_products', queryset, 3600)
+    
+    serializer = ProductSerializer(instance=queryset, many=True)
+    return simple_api_response(serializer.data)
+
+
 # Dashboard
 
 @api_view(['get'])
@@ -365,10 +393,10 @@ def dashboard_toggle_product_state(request, method, **kwargs):
     print(method)
     if method == 'activate':
         products.update(active=True)
-    
+
     if method == 'deactivate':
         products.update(active=False)
-        
+
     serializer = ProductSerializer(instance=products, many=True)
     return simple_api_response(serializer)
 
@@ -384,61 +412,35 @@ class ProductImagesView(GenericViewSet, ListModelMixin):
 def shop_statistics(request, **kwargs):
     customer_orders = CustomerOrder.objects.all()
     carts = Cart.objects.all()
-    
+
     current_date = now()
-    first = datetime.datetime(year=current_date.year, month=current_date.month, day=1)
-    
+    first = datetime.datetime(year=current_date.year,
+                              month=current_date.month, day=1)
+
     months_logic = (
         Q(created_on__gte=make_aware(first)) &
         Q(created_on__lte=now())
     )
-    
+
     customer_orders_for_month = customer_orders.filter(months_logic)
-    
+
     total_customer_orders = customer_orders.aggregate(Count('id'))
-    total_customer_orders_for_month = customer_orders_for_month.aggregate(Count('id'))
-    
+    total_customer_orders_for_month = customer_orders_for_month.aggregate(
+        Count('id'))
+
     customer_orders = {
         'total_count': total_customer_orders['id__count'],
         'month': total_customer_orders_for_month['id__count']
     }
-    
+
     total_unpaid_carts = carts.aggregate(Count('id'))
-    
+
     carts = {
         'total_count': total_unpaid_carts['id__count']
     }
-        
+
     return_response = {
         'carts': carts,
         'customer_orders': customer_orders
     }
     return simple_api_response(return_response)
-
-
-@api_view(['get'])
-def latest_products(request, **kwargs):
-    limit = request.GET.get('limit')
-    if not limit:
-        limit = 20
-        
-    if limit > 20:
-        limit = 20
-        
-    limit = int(limit)
-    
-    queryset = cache.get('latest_products')
-    
-    if not queryset:
-        last_product = Product.objects.last()
-        fifteen_days_from_now = now() - datetime.timedelta(days=15)
-        
-        queryset = Product.objects.filter(
-            Q(created_on__lte=fifteen_days_from_now.date()) &
-            Q(created_on__gte=last_product.created_on)
-        ).order_by('-created_on')
-        queryset = queryset[:limit]
-        cache.set('latest_products', queryset, 3600)
-    
-    serializer = ProductSerializer(instance=queryset, many=True)
-    return simple_api_response(serializer.data)

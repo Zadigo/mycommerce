@@ -69,12 +69,12 @@
       <div class="row mt-5">
         <!-- More Products -->
         <div class="col-12">
-          <more-products :recommended-products="recommendedProducts" :is-loading="isLoading" />
+          <more-products-vue :recommended-products="recommendedProducts" :is-loading="isLoading" />
         </div>
 
         <!-- Recently Viewed -->
-        <div class="col-12">
-          <!-- <recently-viewed :is-loading="isLoading" /> -->
+        <div class="col-12 mt-5">
+          <recently-viewed-vue :is-loading="isLoading" />
         </div>
 
         <!-- Reviews -->
@@ -98,8 +98,8 @@ import useShopComposable from '../../composables/shop'
 import BaseTag from '@/layouts/shop/BaseTag.vue'
 import ProductActions from '@/components/shop/product/ProductActions.vue'
 import ProductInformation from '@/components/shop/product/ProductInformation.vue'
-import MoreProducts from '@/components/shop/product/MoreProducts.vue'
-// import RecentlyViewed from '@/components/shop/product/RecentlyViewed.vue'
+import MoreProductsVue from '@/components/shop/product/MoreProducts.vue'
+import RecentlyViewedVue from '@/components/shop/product/RecentlyViewed.vue'
 // import ProductSkeleton from '@/components/shop/skeletons/ProductSkeleton.vue'
 // import Reviews from '@/components/shop/product/reviews/Reviews.vue'
 import TileDisplay from '@/components/shop/product/images/TileDisplay.vue'
@@ -110,11 +110,11 @@ export default {
     ProductActions,
     BaseTag,
     ProductInformation,
-    MoreProducts,
+    MoreProductsVue,
+    RecentlyViewedVue,
+    TileDisplay
     // ProductSkeleton,
     // Reviews,
-    TileDisplay
-    // RecentlyViewed
   },
   setup () {
     const store = useShop()

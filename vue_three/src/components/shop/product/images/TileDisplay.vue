@@ -1,5 +1,5 @@
 <template>
-  <selected-image v-if="selectedImage" :is-new="isNew" :selected-image="selectedImage" @reset-selected-image="selectedImage=undefined" />
+  <selected-image v-if="selectedImage" :is-new="isNew" :selected-image="selectedImage" @reset-selected-image="selectedImage = undefined" />
 
   <div v-else id="tiles">
     <component :is="componentToDisplay" :images="images" :product-video="productVideo" @select-image="selectImage" />

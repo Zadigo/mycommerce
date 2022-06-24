@@ -194,7 +194,7 @@
 							"pm.test('products are either red or blue', () => {\r",
 							"    var result = pm.response.json()['results'].map((product) => {\r",
 							"        // return product['color'] === 'Red' || product['color'] === 'Blue'\r",
-							"        return product['color'] == 'Red'\r",
+							"        return product['color'] === 'Red'\r",
 							"    })\r",
 							"    return result.every((item) => {\r",
 							"        return item == true\r",
@@ -231,7 +231,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/advanced/search?colors=blue,red",
+					"raw": "http://127.0.0.1:8000/api/v1/shop/advanced/search?colors=blue,red&sizes=XS&novelties=1",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -251,6 +251,14 @@
 						{
 							"key": "colors",
 							"value": "blue,red"
+						},
+						{
+							"key": "sizes",
+							"value": "XS"
+						},
+						{
+							"key": "novelties",
+							"value": "1"
 						}
 					]
 				}
@@ -279,6 +287,33 @@
 						"products",
 						"11",
 						"like"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Products - Unlike",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/v1/shop/products/11/unlike",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"shop",
+						"products",
+						"11",
+						"unlike"
 					]
 				}
 			},
@@ -516,7 +551,7 @@
 			"response": []
 		},
 		{
-			"name": "Wishlist",
+			"name": "Wishlist - Details",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -528,7 +563,7 @@
 					"formdata": []
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/wishlists",
+					"raw": "http://127.0.0.1:8000/api/v1/shop/wishlists/1",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -541,7 +576,8 @@
 						"api",
 						"v1",
 						"shop",
-						"wishlists"
+						"wishlists",
+						"1"
 					]
 				}
 			},
@@ -826,8 +862,19 @@
 					}
 				],
 				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"zadigo@gmail.com\",\r\n    \"password\": \"touparet\"\r\n}"
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "zadigo@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "touparet",
+							"type": "text"
+						}
+					]
 				},
 				"url": {
 					"raw": "http://127.0.0.1:8000/api/v1/accounts/login",
@@ -926,23 +973,12 @@
 			"response": []
 		},
 		{
-			"name": "Likes",
+			"name": "Likes - List",
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token f0273d096a15b555fec1f0be56e40ccc0c29b300",
-						"type": "text"
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/likes",
+					"raw": "http://127.0.0.1:8000/api/v1/shop/likes",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -954,6 +990,7 @@
 					"path": [
 						"api",
 						"v1",
+						"shop",
 						"likes"
 					]
 				}
@@ -1078,13 +1115,54 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"session_id\": \"hOYbDmSmBk3p\",\r\n    \"email\": \"zadigo@gmail.com\",\r\n    \"firstname\": \"Lucile\",\r\n    \"lastname\": \"Lopez\",\r\n    \"address\": \"1 rue de Rivoli\",\r\n    \"zip_code\": \"75001\",\r\n    \"city\": \"Paris\",\r\n    \"country\": \"France\",\r\n    \"telephone\": \"0590010102\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "session_id",
+							"value": "{{sessionId}}",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "zadigo@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "firstname",
+							"value": "Lucile",
+							"type": "text"
+						},
+						{
+							"key": "lastname",
+							"value": "Lopez",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "1 rue de Rivoli",
+							"type": "text"
+						},
+						{
+							"key": "zip_code",
+							"value": "75001",
+							"type": "text"
+						},
+						{
+							"key": "city",
+							"value": "Paris",
+							"type": "text"
+						},
+						{
+							"key": "country",
+							"value": "France",
+							"type": "text"
+						},
+						{
+							"key": "telephone",
+							"value": "0590010102",
+							"type": "text"
 						}
-					}
+					]
 				},
 				"url": {
 					"raw": "http://127.0.0.1:8000/api/v1/cart/payment",
@@ -1101,6 +1179,37 @@
 						"v1",
 						"cart",
 						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Products - Latest",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/v1/shop/latest?limit=20",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"shop",
+						"latest"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "20"
+						}
 					]
 				}
 			},
