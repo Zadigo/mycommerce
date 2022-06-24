@@ -83,6 +83,11 @@
                 "text": "Profile"
             },
             {
+                "name": "signup_view",
+                "href": null,
+                "text": "Signup"
+            },
+            {
                 "name": "login_view",
                 "href": null,
                 "text": "Login"

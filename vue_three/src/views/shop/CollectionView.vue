@@ -30,7 +30,8 @@
         </div> -->
 
         <!-- TODO: Prefer Suspense ?? -->
-        <async-product-items />
+        <!-- <async-products-wrapper /> -->
+        <products-wrapper-vue />
 
         <hr class="mt-5 mb-2">
 
@@ -50,27 +51,26 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue'
+// import { defineAsyncComponent } from 'vue'
 import { capitalizeFirstLetter } from '@/utils'
 
 import FiltersBar from '@/components/shop/products/FiltersBar.vue'
 import PaginationRow from '@/components/shop/products/PaginationRow.vue'
-import ProductsWrapperLoadingVue from '@/components/shop/products/ProductsWrapperLoading.vue'
+// import ProductsWrapperLoadingVue from '@/components/shop/products/ProductsWrapperLoading.vue'
+import ProductsWrapperVue from '../../components/shop/products/ProductsWrapper.vue'
 
 export default {
   name: 'CollectionView',
   components: {
-    // Asynchronously load the section that iterates
-    // on the products to prevent blocking the whole
-    // collection page
-    AsyncProductItems: defineAsyncComponent({
-      // TODO: Rename ProductItems -> ProductsWrapper
-      loader: () => import('@/components/shop/products/ProductItems.vue'),
-      loadingComponent: ProductsWrapperLoadingVue,
-      delay: 500,
-      errorComponent: ProductsWrapperLoadingVue,
-      timeout: 5000
-    }),
+    ProductsWrapperVue,
+    // AsyncProductsWrapper: defineAsyncComponent({
+    //   // TODO: Rename ProductItems -> ProductsWrapper
+    //   loader: () => import('@/components/shop/products/ProductsWrapper.vue'),
+    //   loadingComponent: ProductsWrapperLoadingVue,
+    //   delay: 500,
+    //   errorComponent: ProductsWrapperLoadingVue,
+    //   timeout: 5000
+    // }),
     FiltersBar,
     PaginationRow
   },

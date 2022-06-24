@@ -51,8 +51,8 @@ export default [
   },
   {
     path: 'size-guide',
-    name: 'size_guide_view'
-    // component: loadView('shop/SizeGuideView')
+    name: 'size_guide_view',
+    component: loadView('shop/SizeGuideView')
   },
   {
     path: 'delivery-and-returns',

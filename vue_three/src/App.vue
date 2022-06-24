@@ -30,6 +30,7 @@ export default {
 
 <style>
 @import url('./assets/style.css');
+@import url('./assets/skeletons.css');
 
 .site-transition-enter-active {
   transition: all .3s ease-in-out;
