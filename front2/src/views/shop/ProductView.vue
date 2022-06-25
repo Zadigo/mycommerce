@@ -168,6 +168,12 @@ export default {
     // Get the products with the same name but
     // with a different color variant
     this.requestProductVariants()
+
+    const index = this.store.getProductIndex(this.$route.params.id)
+    this.$analytics.google.viewItem({
+      item_name: this.currentProduct.name,
+      price: this.currentProduct.get_price
+    }, this.$route.params.collection, index)
   },
   methods: {
     async requestProductVariants () {

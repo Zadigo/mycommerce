@@ -72,6 +72,9 @@ const useShop = defineStore('shop', {
       } else {
         this.localstorage.create('recentlyViewed', this.recentlyViewed)
       }
+    },
+    getProductIndex (productId) {
+      return _.findIndex(this.products, ['id', toNumber(productId)])
     }
   },
   getters: {

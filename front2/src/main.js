@@ -85,7 +85,7 @@ app.use(session)
 app.use(localstorage)
 app.use(i18n)
 app.use(pinia)
-app.use(createGoogleAnalytics('GTM-MC93PDN', {
+app.use(createGoogleAnalytics('G-256HHCRT7E', {
     currency: 'EUR',
     brand: 'Enterprise'
 }))

@@ -24,8 +24,13 @@ function createProduct (id, name, price, brand, category, index) {
 }
 
 /**
- * Map the fields from the incoming product
- * object to a standard analytics one
+ * Map the fields from incoming products
+ * to a different name example: 
+ * {price: 15} > unit_price > {unit_price: 15}
+ * 
+ * @param {Array} products - List of products
+ * @param {Object} mapping - Fields to map to a new name
+ * @return Products with a new field name
  */
 function mapToFields (products, mapping) {
     return products.map((product) => {

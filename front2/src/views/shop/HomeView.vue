@@ -92,6 +92,7 @@
 </template>
 
 <script>
+import { useAnalytics } from '../../plugins/vue-analytics/google'
 import { useShop } from '../../store/shop'
 import { mediaUrl, truncate } from '../../utils'
 
@@ -99,7 +100,9 @@ export default {
   name: 'HomeView',
   setup () {
     const store = useShop()
+    const { google } = useAnalytics()
     return {
+      google,
       store,
       mediaUrl,
       truncate
@@ -124,6 +127,8 @@ export default {
     const wrapper = element.querySelector('.wrapper')
     const maxScrollablePosition = (wrapper.scrollWidth - wrapper.offsetWidth)
     this.maxScrollablePosition = maxScrollablePosition
+
+    this.google.pageView(this.$route.fullPath, 'Quick Title')
   },
   methods: {
     async getLatestProducts () {
