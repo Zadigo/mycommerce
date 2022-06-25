@@ -16,7 +16,7 @@ class Address(models.Model):
     
     def __str__(self):
         return self.address
-    
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(

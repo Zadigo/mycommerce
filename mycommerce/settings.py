@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    # 'api',
     'legal',
     'accounts',
     'collection',
