@@ -18,6 +18,7 @@ import './plugins/webfontloader'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'mdb-ui-kit/css/mdb.min.css'
 import '@mdi/font/css/materialdesignicons.css'
+import { createGoogleAnalytics } from './plugins/vue-analytics/google'
 
 // import { toNumber } from 'lodash'
 
@@ -84,6 +85,10 @@ app.use(session)
 app.use(localstorage)
 app.use(i18n)
 app.use(pinia)
+app.use(createGoogleAnalytics('GTM-MC93PDN', {
+    currency: 'EUR',
+    brand: 'Enterprise'
+}))
 
 app.component('base-intro-vue', BaseIntroVue)
 // app.component('intro-mask', introMask)
