@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkfront2"]=self["webpackChunkfront2"]||[]).push([[361],{2361:function(n,r,e){e.r(r),e.d(r,{default:function(){return i}});var t=e(3396);const o={id:"error"};function s(n,r){return(0,t.wg)(),(0,t.iD)("section",o," Page does not exist ")}var u=e(89);const c={},f=(0,u.Z)(c,[["render",s]]);var i=f}}]);
+//# sourceMappingURL=361.856f2ca0.js.map

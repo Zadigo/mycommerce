@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkfront2"]=self["webpackChunkfront2"]||[]).push([[216],{5216:function(t,n,e){e.r(n),e.d(n,{default:function(){return f}});var r=e(3396);const o={class:"px-4 py-5 my-5 text-center border-bottom"};function s(t,n,e,s,u,a){return(0,r.wg)(),(0,r.iD)("div",o,[(0,r.WI)(t.$slots,"default")])}var u={name:"BaseJumbotron"},a=e(89);const c=(0,a.Z)(u,[["render",s]]);var f=c}}]);
+//# sourceMappingURL=216.fdb8af32.js.map

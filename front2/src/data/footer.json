@@ -1,0 +1,97 @@
+[
+    {
+        "name": "Company info",
+        "links": [
+            {
+                "name": "about_us_view",
+                "href": null,
+                "text": "About us"
+            },
+            {
+                "name": null,
+                "href": "/",
+                "text": "Privacy policy"
+            },
+            {
+                "name": null,
+                "href": "/",
+                "text": "Terms and conditions"
+            },
+            {
+                "name": null,
+                "href": "/",
+                "text": "Cookie policy"
+            },
+            {
+                "name": null,
+                "href": "/",
+                "text": "Sitemap"
+            },
+            {
+                "name": "cookie_settings_view",
+                "href": "/",
+                "text": "Cookie settings"
+            }
+        ]
+    },
+    {
+        "name": "Help",
+        "links": [
+            {
+                "name": "delivery_and_returns_view",
+                "href": null,
+                "text": "Delivery and returns"
+            },
+            {
+                "name": "how_to_order_view",
+                "href": null,
+                "text": "How to order"
+            },
+            {
+                "name": "how_to_track_view",
+                "href": null,
+                "text": "How to track"
+            },
+            {
+                "name": "size_guide_view",
+                "href": null,
+                "text": "Size guide"
+            },
+            {
+                "name": "contact_us_view",
+                "href": null,
+                "text": "Contact us"
+            },
+            {
+                "name": "store_locations_view",
+                "href": null,
+                "text": "Find a store"
+            },
+            {
+                "name": "payment_methods_view",
+                "href": null,
+                "text": "Payment methods"
+            }
+        ]
+    },
+    {
+        "name": "My account",
+        "links": [
+            {
+                "name": "account_home_view",
+                "href": null,
+                "text": "Profile"
+            },
+            {
+                "name": "signup_view",
+                "href": null,
+                "text": "Signup"
+            },
+            {
+                "name": "login_view",
+                "href": null,
+                "text": "Login"
+            }
+        ]
+    }
+]

@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkfront2"]=self["webpackChunkfront2"]||[]).push([[519],{3519:function(n,t,r){r.r(t),r.d(t,{default:function(){return d}});var e=r(3396);const o={id:"dashboard-content"};function u(n,t,r,u,a,c){const s=(0,e.up)("router-view");return(0,e.wg)(),(0,e.iD)("div",o,[(0,e.Wm)(s)])}var a={name:"DashboardContent"},c=r(89);const s=(0,c.Z)(a,[["render",u]]);var d=s}}]);
+//# sourceMappingURL=519.0200bb5c.js.map
