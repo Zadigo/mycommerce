@@ -65,7 +65,7 @@ const useShop = defineStore('shop', {
       this.currentProduct = currentProduct || {}
       this.recentlyViewed.push(toNumber(productId))
 
-      const existingItems = this.localstorage.retrieve('recentlyViewed')
+      const existingItems = this.localstorage.retrieve('recentlyViewed') || []
       if (existingItems.length > 0) {
         existingItems.push(toNumber(productId))
         this.localstorage.create('recentlyViewed', existingItems)

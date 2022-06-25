@@ -43,7 +43,23 @@
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
-    "rules": {}
+    "rules": {
+      "camelcase": "warn",
+      "no-trailing-spaces": ["warn", { "ignoreComments": true }],
+      "vue/attribute-hyphenation": "error",
+      "vue/attributes-order": "warn",
+      "vue/html-quotes": "warn",
+      "vue/html-indent": "warn",
+      "vue/order-in-components": "warn",
+      "vue/require-explicit-emits": "error",
+      "vue/require-prop-types": "error",
+      "vue/this-in-template": "error",
+      "vue/v-on-style": "warn",
+      "vue/v-bind-style": [
+        "error",
+        "shorthand"
+      ]
+    }
   },
   "browserslist": [
     "> 1%",
