@@ -1,30 +1,39 @@
 import { ref, toRef } from 'vue'
 
+const messages = ref([])
+
 export default function ({ store }) {
-    var messages = ref([])
+  store.messages = messages
+  // if (!Object.prototype.hasOwnProperty(store.$state, 'messages')) {
+  // }
+  store.$state.messages = messages
+  store.messages = toRef(store.$state, 'messages')
 
-    store.messages = messages
-    store.messages = toRef(store.$state, 'messages')
+  function createMessage (type, content) {
+    return { type: type, content: content }
+  }
 
-    function createMessage(type, content) {
-        return { type: type, content: content }
-    }
+  function addErrorMessage (content) {
+    messages.value.push(createMessage('danger', content))
+  }
 
-    function addErrorMessage(content) {
-        store.messages.push(createMessage('danger', content))
-    } 
-    
-    function addSuccessMessage(content) {
-        store.messages.push(createMessage('success', content))
-    } 
-    
-    function addInfoMessage(content) {
-        store.messages.push(createMessage('info', content))
-    } 
+  function addSuccessMessage (content) {
+    messages.value.push(createMessage('success', content))
+  }
 
-    return {
-        addErrorMessage,
-        addInfoMessage,
-        addSuccessMessage
-    }
+  function addInfoMessage (content) {
+    messages.value.push(createMessage('info', content))
+  }
+
+  function clearMessages () {
+    messages.value = []
+  }
+
+  return {
+    messages,
+    addErrorMessage,
+    addInfoMessage,
+    addSuccessMessage,
+    clearMessages
+  }
 }

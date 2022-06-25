@@ -8,8 +8,7 @@
 
       <!-- TODO: Create a swatch reusable component -->
       <div class="swatch">
-        <router-link v-for="variant in productVariants" :key="variant.id" :to="{ name: 'product_view', params: { id: variant.id, slug: variant.slug, lang: $i18n.locale } }" :class="{ active: matchesWithRoute(variant) }" class="color">
-          <!-- <v-img :src="buildSwatch(variant.color)"></v-img> -->
+        <router-link v-for="variant in productVariants" :key="variant.id" :to="{ name: 'product_view', params: { id: variant.id, slug: variant.slug, lang: $i18n.locale } }" class="color">
           <img :src="buildSwatch(variant.color)" class="img-fluid">
         </router-link>
       </div>
@@ -17,9 +16,7 @@
 
     <!-- Size -->
     <div id="sizes" class="my-2">
-      <p class="mb-2">
-        {{ $t('Size') }}
-      </p>
+      <p class="mb-2 fw-bold">{{ $t('Size') }}</p>
 
       <div v-if="hasSizes" class="sizes">
         <button v-for="(size, i) in product.sizes" id="btn-select-size" :key="size.id" :class="{ 'ms-2': i > 0, 'btn-dark': productOptions.default_size == size.name, 'btn-light': !(productOptions.default_size == size.name) }" class="btn btn-md shadow-none border" @click="setSize(size)">
@@ -37,8 +34,8 @@
     </div>
 
     <div v-if="noSizeSelected" class="bg-light p-2 rounded">
-      {{ $t('Choose a size') }}      
-    </div>  
+      {{ $t('Choose a size') }}
+    </div>
 
     <!-- Actions -->
     <div id="cart" class="d-flex justify-content-left my-4">
@@ -49,7 +46,6 @@
 
       <!-- Add to like -->
       <button id="btn-add-like" class="btn btn-md btn-danger fs-4" @click="addToLikes">
-        <!-- <v-icon class="text-white">mdi-heart</v-icon> -->
         heart
       </button>
     </div>
@@ -58,10 +54,11 @@
 
 <script>
 import { mapState } from 'pinia'
-import { useAuthentication } from '@/store/authentication'
 import { useShop } from '@/store/shop'
+import { useAuthentication } from '@/store/authentication'
+import { getCurrentInstance } from 'vue'
+
 import useCartComposable from '@/composables/cart'
-// import cartMixin from '@/mixins/cart'
 
 // import SizeGuide from './SizeGuide.vue'
 
@@ -70,7 +67,6 @@ export default {
   components: {
     // SizeGuide
   },
-  // mixins: [cartMixin],
   props: {
     product: {
       type: Object
@@ -80,10 +76,10 @@ export default {
       default: () => []
     }
   },
-  setup() {
-    var store = useShop()
-    var { addingToCart, productOptions, getCart, getSessionId } = useCartComposable()
-
+  setup () {
+    const store = useShop()
+    const app = getCurrentInstance()
+    const { addingToCart, productOptions, getCart, getSessionId } = useCartComposable(app)
     return {
       store,
       addingToCart,
@@ -99,20 +95,20 @@ export default {
     // addingToCart: false,
     noSizeSelected: false
   }),
-  computed:{
+  computed: {
     ...mapState(useAuthentication, ['isAuthenticated']),
-    hasSizes() {
+    hasSizes () {
       return this.product.sizes.length > 0
     }
   },
   methods: {
     // TODO: Create a general function
-    async addToCart() {
+    async addToCart () {
       try {
         this.addingToCart = true
-        
-        var options = this.productOptions
-        var default_size = this.productOptions['default_size']
+
+        const options = this.productOptions
+        const default_size = this.productOptions.default_size
 
         if (this.hasSizes && default_size == null) {
           this.noSizeSelected = true
@@ -126,22 +122,22 @@ export default {
         // will return an error requiring that
         // the default_size be not null
         if (default_size == null) {
-          options['default_size'] = 'Unique'
+          options.default_size = 'Unique'
         }
 
         try {
           // Try to get a current session_id if the
           // user has already been adding items to
           // his current cart
-          options['session_id'] = this.getSessionId()
-        } catch(error) {
-          options['session_id'] = null
+          options.session_id = this.getSessionId()
+        } catch (error) {
+          options.session_id = null
         }
-        options['product'] = this.product.id
+        options.product = this.product.id
 
-        var response = await this.axios.post('cart/add', options)
-        var data = response.data
-        
+        const response = await this.$http.post('cart/add', options)
+        const data = response.data
+
         this.store.$patch((state) => {
           state.cart = data
           this.$localstorage.create('cart', data)
@@ -152,34 +148,33 @@ export default {
         this.productOptions = {
           default_size: null
         }
-      } catch(error) {
+      } catch (error) {
         console.error(error)
-        this.store.addErrorMessage(`${error}: ${error.response}`)
+        this.store.addErrorMessage(`V-AX-CA: ${error}: ${error.response.message}`)
       }
     },
-    async addToLikes() {
+    async addToLikes () {
       // TODO: Create a general function for this
-      if (!this.isAuthenticated) {
-        this.$store.commit('authenticationModule/loginUser')
-      } else {
+      if (this.isAuthenticated) {
         try {
-          var response = await this.axios.post(`shop/products/${this.product.id}/like`)
-          this.$store.commit('addSuccessMessage', 'Added to like')
-          this.$localstorage.create('likes', response.data.result)
-        } catch(error) {
+          const response = await this.$http.post(`shop/products/${this.product.id}/like`)
+          this.store.addSuccessMessage('Added to like')
+          this.$localstorage.create('likedProducts', response.data.result)
+        } catch (error) {
           this.store.addErrorMessage('An error occured')
-          // this.$store.dsipatch('addErrorMessage', error)
         }
+      } else {
+        // Open login modal
       }
     },
     buildSwatch (color) {
       // From the color of the variant build the
       // url that allows us to get the color's image
-      var url = new URL(`media/swatches/${ color.toLowerCase() }.png`, 'http://127.0.0.1:8000')
+      const url = new URL(`media/swatches/${color.toLowerCase()}.png`, 'http://127.0.0.1:8000')
       return url.toString()
     },
     matchesWithRoute (variant) {
-      return variant.id == this.$route.params.id
+      return variant.id === this.$route.params.id
     },
     setSize (size) {
       this.noSizeSelected = false
@@ -210,9 +205,18 @@ export default {
     min-height: 34px;
     width: 34px;
   }
-  .swatch .color.active {
-    box-shadow: 0 0 0 2px #000;
-    border: 2px solid #fff;
+  .swatch .router-link-exact-active {
+    border: 1px solid white;
+  }
+  .swatch .color::before {
+    border: 2px solid #222;
+    border-radius: 50%;
+    background: transparent;
+  }
+  .swatch .color::after {
+    border: 2px solid #222;
+    border-radius: 50%;
+    background: transparent;
   }
   .swatch .color:not(:last-child) {
     margin-right: .5rem;

@@ -17,10 +17,10 @@ export default {
     BaseSite,
     DashboardSite
   },
-  setup() {
+  setup () {
     var store = useShop()
     var { currentSite } = storeToRefs(store)
-    
+
     return {
       currentSite
     }
@@ -29,28 +29,36 @@ export default {
 </script>
 
 <style>
+@import url('./assets/style.css');
+@import url('./assets/skeletons.css');
+
 .site-transition-enter-active {
   transition: all .3s ease-in-out;
 }
 .site-transition-leave-active {
   transition: all .3s ease-in-out;
 }
+
 .site-transition-enter-from {
   opacity: 0;
   transform: translateX(-50px) scale3d(.9, .9, .9);
 }
+
 .site-transition-enter-to {
   opacity: 1;
   transform: translateX(0px) scale3d(1, 1, 1);
 }
+
 .site-transition-leave-from {
   opacity: 1;
   transform: translateX(0px) scale3d(1, 1, 1);
 }
+
 .site-transition-leave-to {
   opacity: 0;
   transform: translateX(0px) scale3d(.9, .9, .9);
 }
+
 .site-transition-move {
   transition: all .3s ease;
 }

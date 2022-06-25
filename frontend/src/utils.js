@@ -1,7 +1,7 @@
-var _ = require('lodash')
+import _ from 'lodash'
 
-function raiseError(functionName, message) {
-    throw Error(`${functionName} - ${message}`)
+function raiseError (functionName, message) {
+  throw Error(`${functionName} - ${message}`)
 }
 
 /**
@@ -13,16 +13,15 @@ function raiseError(functionName, message) {
  * @throws Error
  * 
  */
-function indexElements(items) {
-    return _.map(items, (item, i) => {
-        if (!(typeof item == 'object')) {
-            throw Error(`indexElements - ${item} should be a dictionnary`)
-        } else {
-            item['id'] = i
-            return item
-        }
-
-    })
+function indexElements (items) {
+  return _.map(items, (item, i) => {
+    if (!(typeof item === 'object')) {
+      throw Error(`indexElements - ${item} should be a dictionnary`)
+    } else {
+      item.id = i
+      return item
+    }
+  })
 }
 
 /**
@@ -34,13 +33,13 @@ function indexElements(items) {
  * @throws Error
  * 
  */
-function incrementLastId(items) {
-    var lastItem = _.last(items)
+function incrementLastId (items) {
+  const lastItem = _.last(items)
 
-    if (!(typeof lastItem === 'object')) {
-        throw Error(`incrementLastId - ${lastItem} should be a dictionnary`)
-    }
-    return lastItem['id'] + 1
+  if (!(typeof lastItem === 'object')) {
+    throw Error(`incrementLastId - ${lastItem} should be a dictionnary`)
+  }
+  return lastItem.id + 1
 }
 
 /**
@@ -50,19 +49,19 @@ function incrementLastId(items) {
  * @returns {String | ArrayBuffer} data url of the file
  *  
  */
-function readFile(file) {
-    var filePreview = null
+function readFile (file) {
+  let filePreview = null
 
-    if (file && file[0]) {
-        let reader = new FileReader
+  if (file && file[0]) {
+    const reader = new FileReader()
 
-        reader.onload = e => {
-            filePreview = e.target.result
-        }
-
-        reader.readAsDataURL(file[0])
+    reader.onload = e => {
+      filePreview = e.target.result
     }
-    return filePreview
+
+    reader.readAsDataURL(file[0])
+  }
+  return filePreview
 }
 
 /**
@@ -72,10 +71,10 @@ function readFile(file) {
  * @returns {Array} data url of the file
  *  
  */
-function readMultipleFiles(files) {
-    return files.map((file) => {
-        return readFile(file)
-    })
+function readMultipleFiles (files) {
+  return files.map((file) => {
+    return readFile(file)
+  })
 }
 
 /**
@@ -86,12 +85,12 @@ function readMultipleFiles(files) {
  * @returns {String} truncated string
  *  
  */
-function truncate(text, k = 28) {
-    if (!(typeof text == 'string')) {
-        raiseError('truncate', `${text} should be a string`)
-    } else {
-        return `${text.slice(0, k)}...`
-    }
+function truncate (text, k = 28) {
+  if (!(typeof text === 'string')) {
+    raiseError('truncate', `${text} should be a string`)
+  } else {
+    return `${text.slice(0, k)}...`
+  }
 }
 
 /**
@@ -103,12 +102,12 @@ function truncate(text, k = 28) {
  * @returns {String} non-truncated or truncated string
  *  
  */
-function conditionalTruncate(text, limit, k) {
-    if (text.length >= limit) {
-        return truncate(text, k)
-    } else {
-        return text
-    }
+function conditionalTruncate (text, limit, k) {
+  if (text.length >= limit) {
+    return truncate(text, k)
+  } else {
+    return text
+  }
 }
 
 /**
@@ -119,16 +118,34 @@ function conditionalTruncate(text, limit, k) {
  * @returns {String} limit and offset query parameters
  *  
  */
-function buildLimitOffset(url, limit = 100, offset = 0) {
-    if (url) {
-        var instance = new URL(url)
-        var potentialLimit = instance.searchParams.get('limit')
-        var potentialOffset = instance.searchParams.get('offset')
+function buildLimitOffset (url, limit = 100, offset = 0) {
+  if (url) {
+    const instance = new URL(url)
+    const potentialLimit = instance.searchParams.get('limit')
+    const potentialOffset = instance.searchParams.get('offset')
 
-        limit = potentialLimit ? potentialLimit : limit
-        offset = potentialOffset ? potentialOffset : offset
-    }
-    return new URLSearchParams({ limit: limit, offset: offset })
+    limit = potentialLimit || limit
+    offset = potentialOffset || offset
+  }
+  return new URLSearchParams({ limit: limit, offset: offset })
+}
+
+/**
+ * From a given url, get the "page"
+ * query parameter
+ * 
+ * @param {String} url - url to parse
+ * @param {Number} page - page number
+ * @returns {String} limit and offset query parameters
+ *  
+ */
+function getPageFromParams (url, page = 1) {
+  if (url) {
+    const instance = new URL(url)
+    const potentialPage = instance.searchParams.get('page')
+    page = potentialPage || 1
+  }
+  return new URLSearchParams({ page: page })
 }
 
 /**
@@ -140,14 +157,15 @@ function buildLimitOffset(url, limit = 100, offset = 0) {
  * @returns {Array} list of items
  * 
  */
-function listManager(items, item) {
-    if (items.includes(item)) {
-        var index = _.indexOf(items, item)
-        items.splice(index, 1)
-    } else {
-        items.push(item)
-    }
-    return items
+function listManager (items, item) {
+  if (items.includes(item)) {
+    const index = _.indexOf(items, item)
+
+    items.splice(index, 1)
+  } else {
+    items.push(item)
+  }
+  return items
 }
 
 /**
@@ -160,17 +178,17 @@ function listManager(items, item) {
  * @returns {Number} updated index
  * 
  */
-function increaseIndex(items, initialIndex) {
-    // Base on a list of items and an initial index,
-    // increase the index by 1. If the new index is
-    // out of bounds, return 0, or, the index of
-    // the first element
-    var newIndex = initialIndex + 1
+function increaseIndex (items, initialIndex) {
+  // Base on a list of items and an initial index,
+  // increase the index by 1. If the new index is
+  // out of bounds, return 0, or, the index of
+  // the first element
+  let newIndex = initialIndex + 1
 
-    if (newIndex > items.length - 1) {
-        newIndex = 0
-    }
-    return newIndex
+  if (newIndex > items.length - 1) {
+    newIndex = 0
+  }
+  return newIndex
 }
 
 /**
@@ -183,17 +201,17 @@ function increaseIndex(items, initialIndex) {
  * @returns {Number} updated index
  * 
  */
-function decreaseIndex(items, initialIndex) {
-    // Base on a list of items and an initial index,
-    // increase the index by 1. If the new index is
-    // out of bounds, return the index of the last
-    // item of the list
-    var newIndex = initialIndex - 1
+function decreaseIndex (items, initialIndex) {
+  // Base on a list of items and an initial index,
+  // increase the index by 1. If the new index is
+  // out of bounds, return the index of the last
+  // item of the list
+  let newIndex = initialIndex - 1
 
-    if (newIndex < 0) {
-        newIndex = items.length - 1
-    }
-    return newIndex
+  if (newIndex < 0) {
+    newIndex = items.length - 1
+  }
+  return newIndex
 }
 
 /**
@@ -207,13 +225,13 @@ function decreaseIndex(items, initialIndex) {
  * @returns {Object} the dictionnary corresponding to the index
  * 
  */
-function getPreviousItemFromList(items, initialItem, field) {
-    // Returns the previous item from a given list based on the position
-    // of an initial element
-    var index = _.findIndex(items, [field, initialItem[field]])
-    var newIndex = decreaseIndex(items, index)
+function getPreviousItemFromList (items, initialItem, field) {
+  // Returns the previous item from a given list based on the position
+  // of an initial element
+  const index = _.findIndex(items, [field, initialItem[field]])
+  const newIndex = decreaseIndex(items, index)
 
-    return items[newIndex]
+  return items[newIndex]
 }
 
 /**
@@ -227,11 +245,11 @@ function getPreviousItemFromList(items, initialItem, field) {
  * @returns {Object} the dictionnary corresponding to the index
  * 
  */
-function getNextItemFromList(items, initialItem, field) {
-    var index = _.findIndex(items, [field, initialItem[field]])
-    var newIndex = increaseIndex(items, index)
+function getNextItemFromList (items, initialItem, field) {
+  const index = _.findIndex(items, [field, initialItem[field]])
+  const newIndex = increaseIndex(items, index)
 
-    return items[newIndex]
+  return items[newIndex]
 }
 
 /**
@@ -244,33 +262,33 @@ function getNextItemFromList(items, initialItem, field) {
  * @returns {Array} list of matching items
  * 
  */
-function searchHelper(search, items, fields) {
-    if (search) {
-        return _.filter(items, (item) => {
-            var truthArray = _.map(fields, (field) => {
-                var itemValue = item[field]
+function searchHelper (search, items, fields) {
+  if (search) {
+    return _.filter(items, (item) => {
+      const truthArray = _.map(fields, (field) => {
+        const itemValue = item[field]
 
-                if (typeof itemValue === 'boolean') {
-                    return itemValue === search
-                }
+        if (typeof itemValue === 'boolean') {
+          return itemValue === search
+        }
 
-                if (typeof itemValue === 'string') {
-                    var lowercasedItem = item[field].toLowerCase()
+        if (typeof itemValue === 'string') {
+          const lowercasedItem = item[field].toLowerCase()
 
-                    return itemValue === search || itemValue.includes(search) || lowercasedItem.includes(search) || lowercasedItem === search
-                }
+          return itemValue === search || itemValue.includes(search) || lowercasedItem.includes(search) || lowercasedItem === search
+        }
 
-                if (typeof itemValue === 'number') {
-                    return itemValue === search || itemValue.includes(search)
-                }
+        if (typeof itemValue === 'number') {
+          return itemValue === search || itemValue.includes(search)
+        }
 
-                return false
-            })
-            return _.every(truthArray)
-        })
-    } else {
-        return items
-    }
+        return false
+      })
+      return _.every(truthArray)
+    })
+  } else {
+    return items
+  }
 }
 
 /**
@@ -280,58 +298,58 @@ function searchHelper(search, items, fields) {
  * @param {String} elementId - id of the element on the page
  * 
  */
-function scrollToSection(elementId) {
-    document.getElementById(elementId).scrollIntoView()
+function scrollToSection (elementId) {
+  document.getElementById(elementId).scrollIntoView()
 }
 
 /**
  * Scroll to the top of a page
  * 
  */
-function scrollToTop() {
-    window.scroll(0, 0)
+function scrollToTop () {
+  window.scroll(0, 0)
 }
 
-function getAutoComplete(fieldName) {
-    var autocomplete = null
+function getAutoComplete (fieldName) {
+  let autocomplete = null
 
-    switch (fieldName) {
-        case fieldName === 'password':
-            autocomplete = 'current-password'
-            break
+  switch (fieldName) {
+    case fieldName === 'password':
+      autocomplete = 'current-password'
+      break
 
-        case fieldName === 'password1':
-        case fieldName === 'password2':
-            autocomplete = 'new-password'
-            break
+    case fieldName === 'password1':
+    case fieldName === 'password2':
+      autocomplete = 'new-password'
+      break
 
-        default:
-            autocomplete = fieldName
-            break
-    }
+    default:
+      autocomplete = fieldName
+      break
+  }
 
-    return autocomplete
+  return autocomplete
 }
 
-function getFieldType(fieldName, defaultType) {
-    var fieldType = null
+function getFieldType (fieldName, defaultType) {
+  let fieldType = null
 
-    switch (fieldType) {
-        case fieldName === 'password1':
-        case fieldName === 'password2':
-            fieldType = 'password'
-            break
+  switch (fieldType) {
+    case fieldName === 'password1':
+    case fieldName === 'password2':
+      fieldType = 'password'
+      break
 
-        case fieldName === 'telephone':
-            fieldType = 'tel'
-            break
+    case fieldName === 'telephone':
+      fieldType = 'tel'
+      break
 
-        default:
-            fieldType = defaultType || 'text'
-            break
-    }
+    default:
+      fieldType = defaultType || 'text'
+      break
+  }
 
-    return fieldType
+  return fieldType
 }
 
 /**
@@ -340,8 +358,8 @@ function getFieldType(fieldName, defaultType) {
  * @param {String} component - component path
  * 
  */
-function loadView(component) {
-    return () => import(`@/views/${component}.vue`)
+function loadView (component) {
+  return () => import(`./views/${component}.vue`)
 }
 
 /**
@@ -350,8 +368,8 @@ function loadView(component) {
  * @param {String} component - component path
  * 
  */
-function loadLayout(component) {
-    return () => import(`@/layouts/${component}.vue`)
+function loadLayout (component) {
+  return () => import(`./layouts/${component}.vue`)
 }
 
 /**
@@ -360,8 +378,8 @@ function loadLayout(component) {
  * @param {String} component - component path
  * 
  */
-function loadComponent(component) {
-    return () => import(`@/components/${component}.vue`)
+function loadComponent (component) {
+  return () => import(`./components/${component}.vue`)
 }
 
 /**
@@ -371,9 +389,9 @@ function loadComponent(component) {
  * @returns {String} capitalized text
  * 
  */
-function capitalizeFirstLetter(value) {
-    if (!value) { return value }
-    return value.charAt(0).toUpperCase() + value.slice(1)
+function capitalizeFirstLetter (value) {
+  if (!value) { return value }
+  return value.charAt(0).toUpperCase() + value.slice(1)
 }
 
 /**
@@ -384,13 +402,13 @@ function capitalizeFirstLetter(value) {
  * @returns {String} capitalized text
  * 
  */
-function capitalizeLetters(value) {
-    var tokens = value.split(" ")
-    var result = tokens.map((token) => {
-        return capitalizeFirstLetter(token)
-    })
+function capitalizeLetters (value) {
+  const tokens = value.split(' ')
+  const result = tokens.map((token) => {
+    return capitalizeFirstLetter(token)
+  })
 
-    return result.join(" ")
+  return result.join(' ')
 }
 
 /**
@@ -402,8 +420,8 @@ function capitalizeLetters(value) {
  * @returns {String} formated text
  * 
  */
-function formatAsPercentage(value, negative = false) {
-    return negative ? `-${value}%` : `${value}%`
+function formatAsPercentage (value, negative = false) {
+  return negative ? `-${value}%` : `${value}%`
 }
 
 /**
@@ -413,9 +431,9 @@ function formatAsPercentage(value, negative = false) {
  * @returns {String} url
  * 
  */
-function mediaUrl(path) {
-    var rootUrl = process.env.rootUrl || 'http://127.0.0.1:8000'
-    return new URL(path, rootUrl).toString()
+function mediaUrl (path) {
+  const rootUrl = process.env.rootUrl || 'http://127.0.0.1:8000'
+  return new URL(path, rootUrl).toString()
 }
 
 /**
@@ -426,9 +444,9 @@ function mediaUrl(path) {
  * @returns {Number} - percentage scrolled
  * 
  */
-function getVerticalScrollPercentage(el) {
-    var parent = el.parentNode
-    return (el.scrollTop || parent.scrollTop) / (parent.scrollHeight - parent.clientHeight) * 100
+function getVerticalScrollPercentage (el) {
+  const parent = el.parentNode
+  return (el.scrollTop || parent.scrollTop) / (parent.scrollHeight - parent.clientHeight) * 100
 }
 
 /**
@@ -438,10 +456,10 @@ function getVerticalScrollPercentage(el) {
  * @returns {Array} sorted list of a items
  * 
  */
-function quickSort(items) {
-    return items.sort((a, b) => {
-        return a - b
-    })
+function quickSort (items) {
+  return items.sort((a, b) => {
+    return a - b
+  })
 }
 
 /**
@@ -451,9 +469,9 @@ function quickSort(items) {
  * @returns {String} ws:// or wss://
  * 
  */
-function getWebsocketProtocole() {
-    var protocol = window.location.protocol
-    return protocol === 'https' ? 'wss://' : 'ws://'
+function getWebsocketProtocole () {
+  const protocol = window.location.protocol
+  return protocol === 'https' ? 'wss://' : 'ws://'
 }
 
 /**
@@ -462,10 +480,10 @@ function getWebsocketProtocole() {
  * @returns {String} url
  * 
  */
-function websocketRootAddress(path) {
-    var protocol = getWebsocketProtocole()
-    var host = process.env.HOST_ADDRESS || '127.0.0.1:8000'
-    return new URL(path, protocol + host).toString()
+function websocketRootAddress (path) {
+  const protocol = getWebsocketProtocole()
+  const host = process.env.HOST_ADDRESS || '127.0.0.1:8000'
+  return new URL(path, protocol + host).toString()
 }
 
 /**
@@ -477,16 +495,15 @@ function websocketRootAddress(path) {
  * @returns {WebSocket} websocket instance
  * 
  */
-function createWebsocket(path, listeners = {}) {
-    console.log(websocketRootAddress(path))
-    var socket = new WebSocket(websocketRootAddress(path))
+function createWebsocket (path, listeners = {}) {
+  const socket = new WebSocket(websocketRootAddress(path))
 
-    socket.onopen = listeners['onopen']
-    socket.onclose = listeners['onclose']
-    socket.onmessage = listeners['onmessage']
-    socket.onerror = listeners['onerror']
+  socket.onopen = listeners.onopen
+  socket.onclose = listeners.onclose
+  socket.onmessage = listeners.onmessage
+  socket.onerror = listeners.onerror
 
-    return socket
+  return socket
 }
 
 /**
@@ -497,8 +514,8 @@ function createWebsocket(path, listeners = {}) {
  * @returns {String} url
  * 
  */
-function socketSendMessage(type, items = {}) {
-    return JSON.stringify({ type: type, ...items })
+function socketSendMessage (type, items = {}) {
+  return JSON.stringify({ type: type, ...items })
 }
 
 /**
@@ -508,9 +525,9 @@ function socketSendMessage(type, items = {}) {
  * @returns {String} url
  * 
  */
-function rebuildPath(path) {
-    var instance = new URL(path, window.location.href)
-    return instance.toString()
+function rebuildPath (path) {
+  const instance = new URL(path, window.location.href)
+  return instance.toString()
 }
 
 /**
@@ -520,14 +537,14 @@ function rebuildPath(path) {
  * @returns {Boolean} true or false
  * 
  */
-function hasNull(items) {
-    if (typeof items == 'object') {
-        items = Object.values(items)
-    }
+function hasNull (items) {
+  if (typeof items === 'object') {
+    items = Object.values(items)
+  }
 
-    return _.some(items, (item) => {
-        return item == null || item == undefined || item == ""
-    })
+  return _.some(items, (item) => {
+    return item === null || item === undefined || item === ''
+  })
 }
 
 /**
@@ -536,80 +553,81 @@ function hasNull(items) {
  * @returns {Object} install object
  * 
  */
-function createUtils() {
-    return {
-        install: (app) => {
-            app.mixin({
-                methods: {
-                    buildLimitOffset,
-                    capitalizeFirstLetter,
-                    capitalizeLetters,
-                    conditionalTruncate,
-                    createWebsocket,
-                    decreaseIndex,
-                    formatAsPercentage,
-                    getVerticalScrollPercentage,
-                    getPreviousItemFromList,
-                    getNextItemFromList,
-                    getAutoComplete,
-                    getFieldType,
-                    hasNull,
-                    indexElements,
-                    increaseIndex,
-                    incrementLastId,
-                    listManager,
-                    loadView,
-                    loadLayout,
-                    loadComponent,
-                    mediaUrl,
-                    readFile,
-                    readMultipleFiles,
-                    rebuildPath,
-                    scrollToSection,
-                    searchHelper,
-                    scrollToTop,
-                    socketSendMessage,
-                    truncate,
-                    websocketRootAddress,
-                    quickSort
-                }
-            })
+function createUtils () {
+  return {
+    install: (app) => {
+      app.mixin({
+        methods: {
+          buildLimitOffset,
+          capitalizeFirstLetter,
+          capitalizeLetters,
+          conditionalTruncate,
+          createWebsocket,
+          decreaseIndex,
+          formatAsPercentage,
+          getVerticalScrollPercentage,
+          getPreviousItemFromList,
+          getNextItemFromList,
+          getAutoComplete,
+          getFieldType,
+          hasNull,
+          indexElements,
+          increaseIndex,
+          incrementLastId,
+          listManager,
+          loadView,
+          loadLayout,
+          loadComponent,
+          mediaUrl,
+          readFile,
+          readMultipleFiles,
+          rebuildPath,
+          scrollToSection,
+          searchHelper,
+          scrollToTop,
+          socketSendMessage,
+          truncate,
+          websocketRootAddress,
+          quickSort
         }
+      })
     }
+  }
 }
 
 export {
-    buildLimitOffset,
-    capitalizeFirstLetter,
-    capitalizeLetters,
-    conditionalTruncate,
-    createWebsocket,
-    decreaseIndex,
-    formatAsPercentage,
-    getVerticalScrollPercentage,
-    getPreviousItemFromList,
-    getNextItemFromList,
-    getAutoComplete,
-    getFieldType,
-    hasNull,
-    indexElements,
-    increaseIndex,
-    incrementLastId,
-    listManager,
-    loadView,
-    loadLayout,
-    loadComponent,
-    mediaUrl,
-    readFile,
-    readMultipleFiles,
-    rebuildPath,
-    scrollToSection,
-    searchHelper,
-    scrollToTop,
-    socketSendMessage,
-    truncate,
-    websocketRootAddress,
-    quickSort,
+  buildLimitOffset,
+  capitalizeFirstLetter,
+  capitalizeLetters,
+  conditionalTruncate,
+  createWebsocket,
+  decreaseIndex,
+  formatAsPercentage,
+  getVerticalScrollPercentage,
+  getPreviousItemFromList,
+  getNextItemFromList,
+  getAutoComplete,
+  getFieldType,
+  getPageFromParams,
+  hasNull,
+  indexElements,
+  increaseIndex,
+  incrementLastId,
+  listManager,
+  loadView,
+  loadLayout,
+  loadComponent,
+  mediaUrl,
+  readFile,
+  readMultipleFiles,
+  rebuildPath,
+  scrollToSection,
+  searchHelper,
+  scrollToTop,
+  socketSendMessage,
+  truncate,
+  websocketRootAddress,
+  quickSort,
 
-    createUtils
+  createUtils
 }

@@ -1,5 +1,23 @@
-html, body {
-    font-weight: 300;
+html, body, * {
+    font-family: 'Montserrat', 'Roboto', sans-serif;
+    scroll-behavior: smooth;
+    /* font-weight: 300; */
+}
+
+.opacity-enter-active,
+.opacity-leave-active {
+    transition: all .3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.opacity-enter-from,
+.opacity-leave-to {
+    opacity: 0;
+    transform: scale(1.05, 1.05);
+}
+
+.opacity-enter-to,
+.opacity-leave-from {
+    opacity: 1;
+    transform: scale(1, 1);
 }
 
 section.ecommerce-section {
@@ -30,4 +48,24 @@ section.ecommerce-section {
 .md-chip:hover {
     /* box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15); */
     cursor: pointer;
+}
+
+.hero .lead {
+    font-size: 52px;
+    font-weight: 600;
+}
+
+.hero .lead-smaller {
+    font-size: 20px;
+}
+
+::-webkit-scrollbar {
+    transition: all .3s ease;
+    background-color: #eee;
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(38, 38, 38, 1);
+    /* border-radius: 1rem; */
 }

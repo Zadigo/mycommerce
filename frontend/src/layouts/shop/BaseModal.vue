@@ -37,13 +37,13 @@ export default {
       type: Boolean
     }
   },
-  mounted() {
+  mounted () {
     if (this.show) {
       this.diplayModal()
     }
   },
   watch: {
-    show(newValue) {
+    show (newValue) {
       if (newValue) {
         this.diplayModal()
       } else {
@@ -52,22 +52,22 @@ export default {
     }
   },
   computed: {
-    modalClasses() {
+    modalClasses () {
       return [
-        this.show ? 'show':null,
+        this.show ? 'show' : null,
         'fade'
       ]
     }
   },
   methods: {
-    diplayModal() {
+    diplayModal () {
       this.$refs.link.style.display = 'block'
-      var html = document.querySelector('html')
+      const html = document.querySelector('html')
       html.style.overflow = 'hidden'
     },
-    hideModal() {
+    hideModal () {
       this.$refs.link.style.display = 'none'
-      var html = document.querySelector('html')
+      const html = document.querySelector('html')
       html.style.overflow = 'scroll'
     }
   }

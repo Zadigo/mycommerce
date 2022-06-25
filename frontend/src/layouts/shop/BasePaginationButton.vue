@@ -5,10 +5,21 @@
 </template>
 
 <script>
-import shopMixin from '@/mixins/shop'
+import { getCurrentInstance } from 'vue'
+import { useRoute } from 'vue-router'
+
+import useShopComposable from '../../composables/shop'
 
 export default {
   name: 'BasePaginationButton',
-  mixins: [shopMixin]
+  emits: ['start-load', 'end-load'],
+  setup () {
+    const app = getCurrentInstance()
+    const route = useRoute()
+    const { getProducts } = useShopComposable(app, route)
+    return {
+      getProducts
+    }
+  }
 }
 </script>

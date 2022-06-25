@@ -1,5 +1,5 @@
 <template>
-  <div id="tag" ref="tag" :class="classes" class="darken-1 text-uppercase text-white font-weight-bold rounded mb-5 text-center">
+  <div id="tag" ref="tag" :class="classes" class="darken-1 text-uppercase text-white font-weight-bold rounded text-center">
     <slot></slot>
   </div>
 </template>
@@ -19,7 +19,7 @@ export default {
       type: Boolean
     },
     left: {
-      type: Number, 
+      type: Number,
       default: 0
     },
     padding: {
@@ -35,8 +35,7 @@ export default {
       default: 20
     }
   },
-
-  setup() {
+  setup () {
     return {
       formatAsPercentage
     }
@@ -47,13 +46,13 @@ export default {
       return [
         this.backgroundColor,
         {
-          [`p-${ this.padding }`]: true
+          [`p-${this.padding}`]: true
         }
       ]
     }
   },
 
-  mounted() {
+  mounted () {
     this.$refs.tag.style.width = this.formatAsPercentage(this.width)
     this.positionItem()
   },

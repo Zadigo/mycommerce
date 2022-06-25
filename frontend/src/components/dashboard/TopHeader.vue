@@ -4,8 +4,8 @@
 
     <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top" >
       <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation" >
-          <i class="fas fa-bars"></i>
+        <button class="navbar-toggler" type="button" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation" >
+          <i class="fas fa-bars" />
         </button>
 
         <!-- Brand -->
@@ -15,7 +15,7 @@
 
         <!-- Search form -->
         <form class="d-none d-md-flex input-group w-auto my-auto">
-          <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search (ctrl + "/" to focus)' style="min-width: 225px" />
+          <input autocomplete="off" type="search" class="form-control rounded" placeholder="Search (ctrl + '/' to focus)" style="min-width: 225px" />
           <span class="input-group-text border-0">
             <!-- <v-icon class="mr-2">mdi-magnify</v-icon> -->
           </span>
@@ -58,7 +58,7 @@
 
           <!-- Avatar -->
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" aria-expanded="false" >
+            <a id="navbarDropdownMenuLink" class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" role="button" aria-expanded="false" >
               <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt="some user" loading="lazy" />
             </a>
 
@@ -83,23 +83,23 @@ export default {
   components: {
     SideBar
   },
-  setup() {
+  setup () {
     var store = useDashboard()
     return {
       store
     }
   },
   methods: {
-    goToSite() {
+    goToSite () {
       this.store.changeSite('base-site')
       this.$router.push({ name: 'shop_view', params: { lang: 'fr' } })
     },
 
-    openMenu(e) {
+    openMenu (e) {
       console.log(e)
       // el.classList.add('show')
     },
-    closeMenu(e) {
+    closeMenu (e) {
       console.log(e)
       // el.classList.remove('show')
     }

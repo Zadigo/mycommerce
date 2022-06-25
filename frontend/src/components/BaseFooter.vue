@@ -1,7 +1,7 @@
 <template>
   <footer v-if="!$route.meta.fullPage" class="bg-dark text-light text-lg-start mt-6">
     <div class="container">
-      <div class="py-5 text-left">        
+      <div class="py-5 text-left">
         <!-- Sections -->
         <div class="row">
           <div v-for="(section, x) in items" :key="x" class="col-sm-12 col-md-3">
@@ -59,12 +59,12 @@ export default {
     subscriptionEmail: null
   }),
   methods: {
-    async subscribeUser() {
+    async subscribeUser () {
       try {
         await this.axios.post('/subscribe', { email: this.subscriptionEmail })
 
         this.subscriptionEmail = null
-      } catch(error) {
+      } catch (error) {
         this.store.addErrorMessage(error.response.statusText)
       }
     }

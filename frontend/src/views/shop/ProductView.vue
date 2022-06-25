@@ -6,8 +6,8 @@
         <div class="col-12">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }">{{ $t('Home') }}</router-link></li>
-              <li class="breadcrumb-item"><router-link :to="{ name: 'collection_details_view', params: { collection: currentProduct.category.toLowerCase() } }">{{ currentProduct.category }}</router-link></li>
+              <li class="breadcrumb-item"><router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }" class="text-muted">{{ $t('Home') }}</router-link></li>
+              <li class="breadcrumb-item"><router-link :to="{ name: 'collection_details_view', params: { collection: currentProduct.category.toLowerCase() } }" class="text-muted">{{ currentProduct.category }}</router-link></li>
               <li class="breadcrumb-item active" aria-current="page">{{ currentProduct.name }}</li>
             </ol>
           </nav>
@@ -22,33 +22,33 @@
           <div class="row">
             <!-- Tags -->
             <div v-show="currentProduct.on_sale || currentProduct.display_new" id="tags" class="col-12">
-              <base-tag v-if="currentProduct.on_sale" class="me-2 fw-bold" background-color="bg-danger">
+              <base-tag v-if="currentProduct.on_sale" class="me-2 fw-bold mb-3" background-color="bg-danger">
                 {{ $t('Sale') }}
               </base-tag>
 
-              <base-tag v-if="currentProduct.display_new" class="fw-bold" background-color="bg-primary">
+              <base-tag v-if="currentProduct.display_new" class="fw-bold mb-3" background-color="bg-primary">
                 {{ $t('New') }}
               </base-tag>
             </div>
 
             <!-- Information -->
             <div id="information" class="col-12 pt-0 pb-0">
-              <p class="fw-bold fs-3 m-0">
+              <p class="fw-normal fs-4 m-0">
                 {{ capitalizeLetters(currentProduct.name) }} - <span class="text-muted fw-normal">{{ currentProduct.color }}</span>
               </p>
 
-              <p class="mb-2 fs-3">
-                <span v-if="currentProduct.on_sale" class="me-2 fs-4 text-muted">
+              <p class="mb-1 fs-3">
+                <span v-if="currentProduct.on_sale" class="me-2 fs-4 fw-bolder text-muted">
                   <!-- <del>{{ $n(currentProduct.unit_price, 'currency') }}</del> -->
                   <del>{{ currentProduct.unit_price }}</del>
                 </span>
 
-                <span v-if="currentProduct.on_sale" class="fw-bold fs-4">
+                <span v-if="currentProduct.on_sale" class="fw-bolder fs-4 fw-bold">
                   <!-- {{ $n(currentProduct.sale_price, 'currency', $i18n.locale) }} -->
                   {{ currentProduct.sale_price }}
                 </span>
 
-                <span v-else class="fw-normal fs-3">
+                <span v-else class="fw-normal fs-3 fw-bolder">
                   <!-- {{ $n(currentProduct.unit_price, 'currency', $i18n.locale) }} -->
                   {{ currentProduct.unit_price }}
                 </span>
@@ -64,17 +64,17 @@
         </div>
       </div>
 
-      <!-- <hr class="my-5"> -->
+      <hr class="my-5">
 
       <div class="row mt-5">
         <!-- More Products -->
         <div class="col-12">
-          <more-products :recommended-products="recommendedProducts" :is-loading="isLoading" />
+          <more-products-vue :recommended-products="recommendedProducts" :is-loading="isLoading" />
         </div>
 
         <!-- Recently Viewed -->
-        <div class="col-12">
-          <!-- <recently-viewed :is-loading="isLoading" /> -->
+        <div class="col-12 mt-5">
+          <recently-viewed-vue :is-loading="isLoading" />
         </div>
 
         <!-- Reviews -->
@@ -90,12 +90,16 @@
 import { capitalizeLetters } from '@/utils'
 import { useShop } from '@/store/shop'
 import { mapState } from 'pinia'
+import { getCurrentInstance } from 'vue'
+import { useRoute } from 'vue-router'
+
+import useShopComposable from '../../composables/shop'
 
 import BaseTag from '@/layouts/shop/BaseTag.vue'
 import ProductActions from '@/components/shop/product/ProductActions.vue'
 import ProductInformation from '@/components/shop/product/ProductInformation.vue'
-import MoreProducts from '@/components/shop/product/MoreProducts.vue'
-// import RecentlyViewed from '@/components/shop/product/RecentlyViewed.vue'
+import MoreProductsVue from '@/components/shop/product/MoreProducts.vue'
+import RecentlyViewedVue from '@/components/shop/product/RecentlyViewed.vue'
 // import ProductSkeleton from '@/components/shop/skeletons/ProductSkeleton.vue'
 // import Reviews from '@/components/shop/product/reviews/Reviews.vue'
 import TileDisplay from '@/components/shop/product/images/TileDisplay.vue'
@@ -106,40 +110,32 @@ export default {
     ProductActions,
     BaseTag,
     ProductInformation,
-    MoreProducts,
+    MoreProductsVue,
+    RecentlyViewedVue,
+    TileDisplay
     // ProductSkeleton,
     // Reviews,
-    TileDisplay,
-    // RecentlyViewed
   },
-  setup() {
-    var store = useShop()
-
-    // this.store.$onAction(({ name, store, after }) => {
-    //   store
-    //   console.info(name, this.$localstorage)
-    //   if (name == 'getProduct') {
-    //     after(() => {
-    //       console.info('GetProduct action', this.$localstorage)
-    //       // this.$localstorage.create('recentlyViewedProducts', store.recentlyViewedProducts)
-    //     })
-    //   }
-    // })
-
+  setup () {
+    const store = useShop()
+    const app = getCurrentInstance()
+    const route = useRoute()
+    const { isLoading } = useShopComposable(app, route)
     return {
       store,
+      isLoading,
       capitalizeLetters
+      // requestProductVariants
     }
   },
   data: () => ({
-    isLoading: true,
     productVariants: [],
     reviews: [],
     recommendedProducts: []
   }),
   computed: {
     ...mapState(useShop, ['currentProduct']),
-    productImages() {
+    productImages () {
       try {
         return this.currentProduct.images
       } catch (error) {
@@ -148,29 +144,19 @@ export default {
     }
   },
   watch: {
-    '$route.params.id'(newValue, oldValue) {
+    '$route.params.id' (current, previous) {
       // When leaving the page, this still triggers
       // sending a request with undefined so make sure
       // that newValue is actually defined
-      if (newValue != undefined && newValue != oldValue) {
+      if (current !== undefined && current !== previous) {
         this.isLoading = true
-        this.store.getProduct(newValue)
+        this.store.getProduct(current)
         this.requestProductVariants()
-        this.$localstorage.create('recentlyViewedProducts', this.store.recentlyViewedProducts)
       }
     }
   },
-  beforeMount() {
-    // In order to get the currentProduct set,
-    // reload the current list of products
-    // from the session
-    if (this.store.products.length == 0) {
-      this.store.$patch({
-        products: this.$localstorage.retrieve('products')
-      })
-    }
+  beforeMount () {
     this.store.getProduct(this.$route.params.id)
-    this.$localstorage.create('recentlyViewedProducts', this.store.recentlyViewedProducts)
   },
   mounted () {
     // Get the products with the same name but
@@ -178,25 +164,25 @@ export default {
     this.requestProductVariants()
   },
   methods: {
-    async requestProductVariants() {
+    async requestProductVariants () {
       try {
-        var response = await this.axios.post(`/shop/products/${this.currentProduct.id}`)
+        const response = await this.$http.post(`/shop/products/${this.currentProduct.id}`)
 
-        this.productVariants = response.data['variants']
-        this.reviews = response.data['reviews']
+        this.productVariants = response.data.variants
+        this.reviews = response.data.reviews
 
         // TODO: If the recommended products is below 1, maybe propose
         // and alternative set of items to the user
-        this.recommendedProducts = response.data['recommended_products']
+        this.recommendedProducts = response.data.recommended_products
 
         setTimeout(() => {
           this.isLoading = false
         }, 1000)
-      } catch(error) {
-        this.store.addErrorMessage('Could not get the current product')
+      } catch (error) {
+        this.store.addErrorMessage('Could not return variants for the current product')
       }
     }
-  } 
+  }
 }
 </script>
 
@@ -207,15 +193,12 @@ export default {
     overflow-x: scroll;
     padding: 1rem;
   }
-  section#product {
-    height: auto;
-    min-height: 600px;
-  }
   #tags {
     display: flex;
     justify-content: around;
   }
-  .v-image__image {
-    cursor: pointer;
+  .breadcrumb a:hover {
+    color: #eee;
+    text-decoration: underline;
   }
 </style>

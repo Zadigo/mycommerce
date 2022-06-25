@@ -1,59 +1,62 @@
 <template>
   <div id="images" class="row">
     <div class="col-6 p-1">
-      <img :src="getImageForIndex(0)" @click="selectedImage=selectImageWithIndex(0)" class="img-fluid" />
-      <!-- <v-img :src="getImageForIndex(0)" @click="selectImageWithIndex(0)"></v-img> -->
+      <img :src="getImageForIndex(0)" class="img-fluid" @click="selectedImage = selectImageWithIndex(0)" />
     </div>
 
     <div class="col-6 p-1">
-      <img :src="getImageForIndex(1)" @click="selectedImage=selectImageWithIndex(1)" class="img-fluid" />
-      <!-- <v-img :src="getImageForIndex(1)" @click="selectImageWithIndex(1)"></v-img> -->
+      <img :src="getImageForIndex(1)" class="img-fluid" @click="selectedImage = selectImageWithIndex(1)" />
     </div>
 
     <div class="col-8 p-1">
-      <!-- <div v-if="hasVideo" class="video-action" @click="doPlay">
-        <v-img :src="getImageForIndex(0)"></v-img>
-        <v-icon :x-large="true" color="white">mdi-play</v-icon>
-      </div> -->
-
       <div v-if="hasVideo" class="video-wrapper">
         <video :poster="getImageForIndex(1)" playsinline autoplay controls loop>
           <source :src="mediaUrl(productVideo.content)" type="video/mp4" muted>
         </video>
-        <!-- <b-embed ref="videoSource" :poster="getImageForIndex(0)" type="video" controls>
-        </b-embed> -->
       </div>
 
-      <img :src="getImageForIndex(2)" @click="selectedImage=selectImageWithIndex(2)" class="img-fluid" />
-      <!-- <v-img v-else :src="getImageForIndex(2)" @click="selectImageWithIndex(2)"></v-img> -->
-
+      <img :src="getImageForIndex(2)" class="img-fluid" @click="selectedImage = selectImageWithIndex(2)" />
     </div>
-
 
     <div class="col-4 p-1">
       <div v-if="hasVideo" class="col-12 pt-0 p-1">
-        <img :src="getImageForIndex(2)" @click="selectedImage=selectImageWithIndex(2)" class="img-fluid" />
-        <!-- <v-img :src="getImageForIndex(2)" @click="selectImageWithIndex(2)"></v-img> -->
+        <img :src="getImageForIndex(2)" class="img-fluid" @click="selectedImage = selectImageWithIndex(2)" />
       </div>
 
       <div :class="{ 'pt-0': !hasVideo }" class="col-12 p-1">
-        <img :src="getImageForIndex(3)" @click="selectedImage=selectImageWithIndex(3)" class="img-fluid" />
-        <!-- <v-img :src="getImageForIndex(3)" @click="selectImageWithIndex(3)"></v-img> -->
+        <img :src="getImageForIndex(3)" class="img-fluid" @click="selectedImage = selectImageWithIndex(3)" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import tilesMixin from '@/mixins/tiles'
 import { mediaUrl } from '@/utils'
+import { getCurrentInstance } from 'vue'
+import useTileComposable from '../../../../../composables/tiles'
+
 export default {
   // Component for showing images of a product
   // that contains more than 3 images
   name: 'MultipleImages',
-  mixins: [tilesMixin],
-  setup() {
+  props: {
+    images: {
+      type: Array,
+      required: true
+    },
+    productVideo: {
+      type: Object,
+      default: () => {}
+    }
+  },
+  setup () {
+    const app = getCurrentInstance()
+    const { hasVideo, getImageForIndex, selectImageWithIndex, selectedImage } = useTileComposable(app)
     return {
+      selectedImage,
+      getImageForIndex,
+      selectImageWithIndex,
+      hasVideo,
       mediaUrl
     }
   }
@@ -68,7 +71,6 @@ export default {
 }
 video {
   width: 100%;
-  /* height: 100%; */
   object-fit: cover;
 }
 </style>

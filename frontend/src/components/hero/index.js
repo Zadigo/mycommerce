@@ -5,7 +5,7 @@ import introContainer from './src/intro-container'
 import './css/hero.css'
 
 export {
-    intro,
-    introMask,
-    introContainer
+  intro,
+  introMask,
+  introContainer
 }

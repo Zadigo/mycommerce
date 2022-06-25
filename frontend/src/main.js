@@ -1,97 +1,93 @@
 // import { createApp } from 'vue'
-// TODO: Guess how to use h() within the router
-// in order to able to render the router
-import { createApp, ref, toRef, toRaw } from 'vue/dist/vue.esm-bundler'
+import { createApp, markRaw, ref, toRef, toRaw } from 'vue/dist/vue.esm-bundler'
 import App from './App.vue'
 
 import { createPinia } from 'pinia'
-import { intro, introMask, introContainer } from './components/hero'
-import { createProjectSetup } from '@/plugins/vue-project'
-import { createLocalStorage } from '@/plugins/vue-storages/local-storage'
 import { createVueSession } from './plugins/vue-storages/session-storage'
-import FontAwesomeIcon from '@/plugins/fontawesome'
-import VueAxios from 'vue-axios'
-import axios from '@/plugins/axios'
-import i18n from '@/i18n'
-import router from '@/router'
-import messages from './store/messages'
+import { createVueLocalStorage } from './plugins/vue-storages/local-storage'
+import { createAxios } from './plugins/axios'
+import { createCompanyDetails } from './plugins/project'
 
+import BaseIntroVue from './layouts/BaseIntro.vue'
+// import { intro, introContainer, introMask } from './components/hero'
+
+import router from './router'
+import i18n from './i18n'
+import messagesPlugin from './store/messages'
+
+import './plugins/webfontloader'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'mdb-ui-kit/css/mdb.min.css'
-import '@/assets/style.css'
+import '@mdi/font/css/materialdesignicons.css'
 
-const VueLocalStorage = createLocalStorage()
-const VueSessionStorage = createVueSession()
+// import { toNumber } from 'lodash'
 
 const pinia = createPinia()
-const project = createProjectSetup({
-    company: {
-        legalName: 'Example',
-        urls: [
-            {
-                name: 'default',
-                url: 'http://example.com'
-            }
-        ],
-        socials: [
-            {
-                name: 'YouTube',
-                url: 'https://www.youtube.com/channel/UC5CF7mLQZhvx8O5GODZAhdA'
-            },
-            {
-                name: 'Facebook',
-                url: 'https://www.facebook.com/mdbootstrap'
-            },
-            {
-                name: 'Twitter',
-                url: 'https://twitter.com/MDBootstrap'
-            }
-        ]
-    },
-})
+const session = createVueSession()
+const localstorage = createVueLocalStorage()
 
 const currentSite = ref('base-site')
 
-pinia.use(messages)
 pinia.use(({ store }) => {
-    store.$state.currentSite = currentSite
-    store.currentSite = currentSite
+  store.$localStorage = markRaw(localstorage)
+  store.$session = markRaw(session)
+})
 
-    store.currentSite = toRef(store.$state, 'currentSite')
+pinia.use(messagesPlugin)
+pinia.use(({ store }) => {
+  store.$state.currentSite = currentSite
+  store.currentSite = currentSite
 
-    store.router = toRaw(router)
-    store.localstorage = toRaw(VueLocalStorage)
-    store.session = toRaw(VueSessionStorage)
-    
-    store.$onAction(({ name, store }) => {
-        if (name == 'getProduct') {
-            console.info('Get Product', store)
-        }
-    })
+  store.currentSite = toRef(store.$state, 'currentSite')
 
-    function changeSite(name) {
-        store.$state.currentSite = name
-        // store.localstorage.create('current-site', name)
-    }
+  store.router = toRaw(router)
+  store.localstorage = toRaw(localstorage)
+  store.session = toRaw(session)
 
-    return {
-        changeSite
-    }
+  function changeSite (name) {
+    store.$state.currentSite = name
+    store.localstorage.create('current-site', name)
+  }
+
+  return {
+    changeSite
+  }
 })
 
 const app = createApp(App)
 
+app.use(createCompanyDetails({
+  legalName: 'Example',
+  urls: [
+    {
+      name: 'default',
+      url: 'http://example.com'
+    }
+  ],
+  socials: [
+    {
+      name: 'YouTube',
+      url: 'https://www.youtube.com/channel/UC5CF7mLQZhvx8O5GODZAhdA'
+    },
+    {
+      name: 'Facebook',
+      url: 'https://www.facebook.com/mdbootstrap'
+    },
+    {
+      name: 'Twitter',
+      url: 'https://twitter.com/MDBootstrap'
+    }
+  ]
+}))
+app.use(router)
+app.use(createAxios())
+app.use(session)
+app.use(localstorage)
 app.use(i18n)
 app.use(pinia)
-app.use(VueAxios, axios)
-app.use(router)
-app.use(project)
-app.use(VueLocalStorage)
-app.use(VueSessionStorage)
 
-app.component('base-intro', intro)
-app.component('intro-container', introContainer)
-app.component('intro-mask', introMask)
-app.component('font-awesomeIcon', FontAwesomeIcon)
+app.component('base-intro-vue', BaseIntroVue)
+// app.component('intro-mask', introMask)
+// app.component('intro-container', introContainer)
 
 app.mount('#app')

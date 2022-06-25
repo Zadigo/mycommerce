@@ -1,14 +1,8 @@
 <template>
-  <selected-image v-if="selectedImage" :is-new="isNew" :selected-image="selectedImage" @reset-selected-image="selectedImage=undefined" />
+  <selected-image v-if="selectedImage" :is-new="isNew" :selected-image="selectedImage" @reset-selected-image="selectedImage = undefined" />
 
   <div v-else id="tiles">
     <component :is="componentToDisplay" :images="images" :product-video="productVideo" @select-image="selectImage" />
-    
-    <!-- <two-images v-if="numberOfImages == 2" :images="images" :product-video="productVideo" @select-image="selectImage" />
-
-    <three-images v-if="numberOfImages == 3" :images="images" :product-video="productVideo" @select-image="selectImage" />
-    
-    <multiple-images v-if="numberOfImages > 3" :images="images" :product-video="productVideo" @select-image="selectImage" /> -->
   </div>
 </template>
 
@@ -19,7 +13,7 @@ import ThreeImages from './tiles/ThreeImages.vue'
 import TwoImages from './tiles/TwoImages.vue'
 
 export default {
-  name: 'TileImages',
+  name: 'TileDisplay',
   components: {
     MultipleImages,
     SelectedImage,
@@ -39,9 +33,25 @@ export default {
       default: () => {}
     }
   },
+  computed: {
+    numberOfImages () {
+      return this.images.length
+    },
+    componentToDisplay () {
+      if (this.numberOfImages === 2) {
+        return 'two-images'
+      } else if (this.numberOfImages === 3) {
+        return 'three-images'
+      } else if (this.numberOfImages > 3) {
+        return 'multiple-images'
+      } else {
+        return 'multiple-images'
+      }
+    }
+  },
   watch: {
-    '$route.params.id' (newValue, oldValue) {
-      if (newValue !== oldValue) {
+    '$route.params.id' (current, previous) {
+      if (current !== previous) {
         this.selectedImage = null
       }
     }
@@ -50,27 +60,8 @@ export default {
     selectedImage: null,
     playVideo: false
   }),
-  computed: {
-    numberOfImages() {
-      return this.images.length
-    },
-    componentToDisplay() {
-      if (this.numberOfImages == 2) {
-        return 'two-images'
-      }
-
-      if (this.numberOfImages == 3) {
-        return 'three-images'
-      }
-
-      if (this.numberOfImages > 3) {
-        return 'multiple-images'
-      }
-      return 'multiple-images'
-    }
-  },
   methods: {
-    selectImage(url) {
+    selectImage (url) {
       this.selectedImage = url
     }
   }

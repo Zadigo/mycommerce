@@ -1,29 +1,29 @@
 import { createI18n } from 'vue-i18n'
 
 function loadLocaleMessages () {
-  const locales = require.context('./', true, /[A-Za-z0-9-_,\s]+\.json$/i)
   const messages = {}
+  // const locales = require.context('./', true, /[A-Za-z0-9-_,\s]+\.json$/i)
 
-  locales.keys().forEach(key => {
-    const matched = key.match(/([A-Za-z0-9-_]+)\./i)
-  
-    if (matched && matched.length > 1) {
-      const locale = matched[1]
-      messages[locale] = locales(key)
-    }
-  })
+  // locales.keys().forEach(key => {
+  //   const matched = key.match(/([A-Za-z0-9-_]+)\./i)
+  //   if (matched && matched.length > 1) {
+  //     const locale = matched[1]
+  //     messages[locale] = locales(key)
+  //   }
+  // })
+
   return messages
 }
 
 const numberFormats = {
-  'en': {
+  en: {
     currency: {
       style: 'currency',
       currency: 'USD',
       currencyDisplay: 'symbol'
     }
   },
-  'fr': {
+  fr: {
     currency: {
       style: 'currency',
       currency: 'EUR',
@@ -33,10 +33,14 @@ const numberFormats = {
 }
 
 const i18n = createI18n({
-  locale: process.env.VUE_APP_I18N_LOCALE || 'en',
-  fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
+  locale: import.meta.env.VITE_I18N_LOCALE || 'en',
+  fallbackLocale: import.meta.env.VITE_FALLBACK_I18N_LOCALE || 'en',
   messages: loadLocaleMessages(),
   numberFormats
 })
-window.translate = i18n
+
+if (import.meta.env.DEV) {
+  window.translate = i18n
+}
+
 export default i18n

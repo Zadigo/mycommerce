@@ -63,8 +63,8 @@
 
     <div class="card bg-light shadow-none my-2">
       <div class="card-body">
-        Nos prix incluent l'éco-participation sur tous les 
-        produits concernés. Vous voulez recycler votre appareil 
+        Nos prix incluent l'éco-participation sur tous les
+        produits concernés. Vous voulez recycler votre appareil
         électrique ou électronique gratuitement ? <a>En apprendre plus</a>
       </div>
     </div>
@@ -79,11 +79,9 @@ import { useAuthentication } from '@/store/authentication'
 
 export default {
   name: 'ProductInformation',
-
   components: {
     // TechnicalInformation
   },
-
   props: {
     product: {
       type: Object,
@@ -98,21 +96,18 @@ export default {
       default: () => []
     }
   },
-
   data: () => ({
-    returnPolicy: "Les retours gratuits sont disponibles pour l'adresse d'expédition que vous avez choisie. Vous pouvez retourner l'article pour n'importe quelle raison dans son état neuf et inutilisé, sans frais de retour.",
-    securedTransactionText: "Nous nous efforçons de protéger votre sécurité et votre vie privée. Notre système de paiement sécurisé chiffre vos données lors de la transmission. Nous ne partageons pas les détails de votre carte de crédit avec les vendeurs tiers, et nous ne vendons pas vos données personnelles à autrui. En savoir plus"
+    returnPolicy: 'Les retours gratuits sont disponibles pour ladresse dexpédition que vous avez choisie. Vous pouvez retourner larticle pour nimporte quelle raison dans son état neuf et inutilisé, sans frais de retour.',
+    securedTransactionText: 'Nous nous efforçons de protéger votre sécurité et votre vie privée. Notre système de paiement sécurisé chiffre vos données lors de la transmission. Nous ne partageons pas les détails de votre carte de crédit avec les vendeurs tiers, et nous ne vendons pas vos données personnelles à autrui. En savoir plus'
   }),
-
   computed: {
     ...mapState(useShop, ['userLists']),
     ...mapState(useAuthentication, ['isAuthenticated']),
 
-    hasDescription() {
-      return this.product == undefined
+    hasDescription () {
+      return this.product === undefined
     }
-  },
-  
+  }, 
   methods: {
     async addToList (wishlist) {
       try {
@@ -120,24 +115,23 @@ export default {
           product: this.product,
           wishlist: wishlist
         })
-
-      } catch(error) {
+      } catch (error) {
         this.$store.dispatch('addErrorMessage', error)
       }
     },
-    
+
     async getUserLists () {
       try {
-        var response = await this.axios.get('shop/lists')
+        const response = await this.axios.get('shop/lists')
 
         this.$store.commit('setUserLists', response.data)
-      } catch(error) {
+      } catch (error) {
         this.$store.dispatch('addErrorMessage', error)
       }
     },
 
     calculatePaymentFraction (unitPrice) {
-      var price = unitPrice * 1
+      const price = unitPrice * 1
       return Math.floor(price / 4 * 1000) / 1000
     }
   }

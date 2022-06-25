@@ -8,7 +8,8 @@
           </h2>
 
           <!-- Filters -->
-          <filters-bar @loading-products-start="isLoading=true" @loading-products-end="isLoading=false" style="z-index:20;" />          
+          <filters-bar style="z-index:20;" @loading-products-start="isLoading = true"
+            @loading-products-end="isLoading = false" />
         </div>
 
         <!-- FIXME: This gets displayed before the products are shown
@@ -29,19 +30,28 @@
           </div>
         </div> -->
 
-        <!-- TODO: Add a Suspense -->
-        <async-product-items />
+        <!-- TODO: Prefer Suspense ?? -->
+        <!-- <async-products-wrapper /> -->
+        <suspense>
+          <products-wrapper-vue />
+
+          <template #fallback>
+            <collection-view1 />
+          </template>
+        </suspense>
         
         <hr class="mt-5 mb-2">
 
         <!-- Pagination -->
         <pagination-row :product-count="searchedProductsCount" />
-          
+
         <!-- Ad -->
         <div class="col-12 my-6 d-none">
           <router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }">
             <!-- TODO: Emit a PageView when clicking on this section -->
-            <img src="https://img.ltwebstatic.com/images3_acp/2022/02/25/164578700614872218156e3ff9868de22e7c67a145.webp" class="img-fluid" />
+            <img
+              src="https://img.ltwebstatic.com/images3_acp/2022/02/25/164578700614872218156e3ff9868de22e7c67a145.webp"
+              class="img-fluid" />
           </router-link>
         </div>
       </div>
@@ -50,36 +60,38 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue'
+// import { defineAsyncComponent } from 'vue'
 import { capitalizeFirstLetter } from '@/utils'
 
-import PaginationRow from '@/components/shop/products/PaginationRow.vue'
-import ProductItemsLoadingVue from '@/components/shop/products/ProductItemsLoading.vue'
 import FiltersBar from '@/components/shop/products/FiltersBar.vue'
+import PaginationRow from '@/components/shop/products/PaginationRow.vue'
+// import ProductsWrapperLoadingVue from '@/components/shop/products/ProductsWrapperLoading.vue'
+import ProductsWrapperVue from '../../components/shop/products/ProductsWrapper.vue'
+import CollectionView1 from '../../components/skeletons/CollectionView.vue'
 
 export default {
   name: 'CollectionView',
   components: {
-    // Asynchronously load the section that iterates
-    // on the products to prevent blocking the whole
-    // collection page
-    AsyncProductItems: defineAsyncComponent({
-      loader: () => import('@/components/shop/products/ProductItems.vue'),
-      loadingComponent: ProductItemsLoadingVue,
-      delay: 100,
-      errorComponent: ProductItemsLoadingVue,
-      timeout: 4000
-    }),
+    ProductsWrapperVue,
+    // AsyncProductsWrapper: defineAsyncComponent({
+    //   // TODO: Rename ProductItems -> ProductsWrapper
+    //   loader: () => import('@/components/shop/products/ProductsWrapper.vue'),
+    //   loadingComponent: ProductsWrapperLoadingVue,
+    //   delay: 500,
+    //   errorComponent: ProductsWrapperLoadingVue,
+    //   timeout: 5000
+    // }),
     FiltersBar,
-    PaginationRow
+    PaginationRow,
+    CollectionView1
   },
-  setup() {
+  setup () {
     return {
       capitalizeFirstLetter
     }
   },
   computed: {
-    searchedProductsCount() {
+    searchedProductsCount () {
       // Since the product count will change in the
       // child component as the user filters/sorts, 
       // products, use it's internal count to display 

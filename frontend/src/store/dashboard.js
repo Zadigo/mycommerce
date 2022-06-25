@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
 
 const useDashboard = defineStore('dashboard', {
-    state: () => ({
-        
-    })
+  state: () => ({
+
+  })
 })
 
 export {
-    useDashboard
+  useDashboard
 }

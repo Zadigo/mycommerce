@@ -1,13 +1,10 @@
 <template>
-  <base-modal-vue :show="store.openCart" id="modal-cart" :title="$t('Cart')" size="md" scrollable hide-footer @close-modal="openCart=false" @close="openCart=false">
+  <base-modal-vue id="modal-cart" :show="store.openCart" :title="$t('Cart')" size="md" scrollable hide-footer @close-modal="openCart=false" @close="openCart=false">
     <div class="container">
-      
-      <div class="row" v-if="cartIsEmpty">
+      <div v-if="cartIsEmpty" class="row">
         <div class="col-12">
           <p>{{ $t('Your cart is currently empty') }}</p>
-
           <hr>
-
           <button class="btn btn-primary btn-lg btn-block" @click="openCart=false">
             {{ $t('Continue shopping') }}
           </button>
@@ -35,7 +32,7 @@
           </div>
           <hr>
         </div>
-        
+
         <div class="col-12">
           <div class="p-1 d-flex justify-content-between">
             <span>Total:</span>
@@ -43,7 +40,6 @@
           </div>
         </div>
       </div>
-    
     </div>
 
     <div class="w-100">
@@ -62,24 +58,33 @@
 
 <script>
 import _ from 'lodash'
+
 import { useShop } from '@/store/shop'
-import { mapState, mapWritableState, storeToRefs } from 'pinia'
 import { mediaUrl } from '@/utils'
+import { toNumber } from '@vue/shared'
+import { getCurrentInstance } from 'vue'
+import { mapState, mapWritableState, storeToRefs } from 'pinia'
+
 import BaseModalVue from '@/layouts/shop/BaseModal.vue'
 import useCartComposable from '@/composables/cart'
-import { toNumber } from '@vue/shared'
-// import cartMixin from '@/mixins/cart'
 
 export default {
   name: 'ModalCart',
-  // mixins: [cartMixin],
   components: {
     BaseModalVue
   },
-  setup() {
-    var store = useShop()
-    var { cartItems } = storeToRefs(store)
-    var { getCart, getSessionId, removeFromCart } = useCartComposable()
+  setup () {
+    const store = useShop()
+    const app = getCurrentInstance()
+    const { cartItems } = storeToRefs(store)
+    const { getCart, getSessionId, removeFromCart } = useCartComposable(app)
+
+    store.$subscribe((mutation, state) => {
+      console.log(state)
+      if (mutation.type === 'shop') {
+        console.log(state)
+      }
+    })
     return {
       store,
       cartItems,
@@ -88,11 +93,10 @@ export default {
       removeFromCart,
       getSessionId
     }
-  },  
-  
+  },
   computed: {
     ...mapState(useShop, ['cartItems']),
-    cartTotal() {
+    cartTotal () {
       return _.sum(_.map(this.cartItems, (product) => {
         return toNumber(product.price)
       }))
@@ -105,28 +109,20 @@ export default {
     // }),
 
     cartIsEmpty () {
-      return this.cartItems.length == 0
-    },
-    
-    // showModalCart: {
-    //   get () { return this.$store.state.openCart },
-    //   set () { this.$store.commit('toggleModalCart') }
-    // }
+      return this.cartItems.length === 0
+    }
   },
-
-  beforeMount() {
-    var data = this.getCart()
+  beforeMount () {
+    const data = this.getCart()
     this.store.updateCart(data)
   },
-
-  updated() {
-    var data = this.getCart()
-    this.store.updateCart(data)
-  },
-
+  // updated () {
+  //   const data = this.getCart()
+  //   this.store.updateCart(data)
+  // },
   methods: {
-    goToPage(name) {
-      this.$store.commit('toggleModalCart')
+    goToPage (name) {
+      this.store.openCart = false
       this.$router.push({ name: name, params: { lang: this.$i18n.locale } })
     }
   }

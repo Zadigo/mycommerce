@@ -11,7 +11,7 @@
             <span class="fw-normal">Filtres</span>
           </button>
         </li>
-        
+
         <!-- Sort method -->
         <li class="nav-item mx-1">
           <!-- <v-menu :close-on-content-click="true" :open-on-hover="false" :rounded="false" transition="scale-transition">
@@ -52,7 +52,7 @@
           </button>
         </li>
       </ul>
-      
+
       <!-- Dropdown -->
       <div v-if="showFilters" id="filters" class="d-flex justify-content-center" style="flex-wrap:wrap;">
         <!-- Sizes -->
@@ -79,15 +79,18 @@
 
 <script>
 import _ from 'lodash'
+
 import { mapState } from 'pinia'
 import { useShop } from '@/store/shop'
+import { useRoute } from 'vue-router'
+import { getCurrentInstance } from 'vue'
 import { getVerticalScrollPercentage, listManager, mediaUrl, scrollToTop } from '@/utils'
-import shopMixin from '@/mixins/shop'
+
+import useShopComposable from '../../../composables/shop'
 
 export default {
   name: 'FiltersBar',
   emits: ['loading-products-start', 'loading-products-end', 'do-sort', 'load-products'],
-  mixins: [shopMixin],
   data: () => ({
     items: [],
     sortMethod: 'Latest',
@@ -103,27 +106,32 @@ export default {
     selectedFilter: 'sizes',
 
     selectedElements: {
-        sizes: [],
-        colors: [],
-        // brand: {},
-        // material: {},
-        // cut: {},
-        // season: {},
-        // novelties: {},
-        // delivery: {}
+      sizes: [],
+      colors: []
+      // brand: {},
+      // material: {},
+      // cut: {},
+      // season: {},
+      // novelties: {},
+      // delivery: {}
     },
 
     sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
   }),
-  setup() {
-    var store = useShop()
+  setup () {
+    const store = useShop()
+    const app = getCurrentInstance()
+    const route = useRoute()
+    const { getProducts, productsRequest } = useShopComposable(app, route)
     return {
-      store
+      store,
+      getProducts,
+      productsRequest
     }
   },
   computed: {
     ...mapState(useShop, {
-      productNames(store) {
+      productNames (store) {
         return _.map(store.products, (product) => {
           return product.name
         })
@@ -131,61 +139,60 @@ export default {
     }),
 
     colors () {
-      var items = ['beige', 'black', 'camel', 'red']
+      const items = ['beige', 'black', 'camel', 'red']
       return _.map(items, (item) => {
-        return [item, mediaUrl(`/media/swatches/${ item }.png`)]
+        return [item, mediaUrl(`/media/swatches/${item}.png`)]
       })
     },
 
-    searchQuery() {
-        var items = new URLSearchParams({...this.selectedElements})
-        return `?${items}`
+    searchQuery () {
+      const items = new URLSearchParams({ ...this.selectedElements })
+      return `?${items}`
     },
 
-    hasFilters() {
-      var truthArray = _.map(Object.keys(this.selectedElements), (key) => {
+    hasFilters () {
+      const truthArray = _.map(Object.keys(this.selectedElements), (key) => {
         return this.selectedElements[key].length > 0
       })
-      return truthArray.some((value) => { return value == true })
+      return truthArray.some((value) => { return value === true })
     }
   },
 
-  beforeMount() {
-    this.sortMethod =  this.$localstorage.retrieve('sort')
-    this.doSort(this.sortMethod)
+  beforeMount () {
+    this.sortMethod = this.localStorage.sort
+    this.doSort(this.sortMethod || 'Latest')
   },
 
-  mounted() {
+  mounted () {
     window.addEventListener('scroll', this.handleScroll)
   },
 
-  unmounted() {
+  unmounted () {
     window.removeEventListener('scroll', this.handleScroll)
   },
 
   methods: {
-    async getFilteredProducts() {
+    async getFilteredProducts () {
       try {
         this.$emit('loading-products-start')
         
-        var response = await this.axios.get(`shop/advanced/search${this.searchQuery}`)
+        const response = await this.$http.get(`shop/advanced/search${this.searchQuery}`)
         
         this.store.$patch((state) => {
           state.products = response.data.results
           this.$emit('loading-products-end')
         })
-      } catch(error) {
-        console.log(error)
-        this.store.addErrorMessage('An error occured')
+      } catch (error) {
+        this.store.addErrorMessage('Could not resolve filter request (V-AX-FB)')
       }
     },
 
-    doSort(method) {
+    doSort (method) {
       this.sortMethod = method
       this.$emit('do-sort', method)
     },
 
-    openFilters(method) {
+    openFilters (method) {
       if (method !== this.selectedFilter && this.showFilters) {
         this.showFilters = true
       } else {
@@ -194,21 +201,20 @@ export default {
       this.selectedFilter = method
     },
 
-    handleScroll() {
-      var scrollPercentage = getVerticalScrollPercentage(document.body)
+    handleScroll () {
+      const scrollPercentage = getVerticalScrollPercentage(document.body)
 
       if (scrollPercentage >= 5) {
         this.$refs.link.classList.add('scrolled')
       }
 
-      if (scrollPercentage >= 90 || scrollPercentage == 0) {
+      if (scrollPercentage >= 90 || scrollPercentage === 0) {
         this.$refs.link.classList.remove('scrolled')
       }
-
     },
 
-    setFilterValue(key, colorValue) {
-      var values = this.selectedElements[key]
+    setFilterValue (key, colorValue) {
+      const values = this.selectedElements[key]
 
       this.selectedElements[key] = listManager(values, colorValue)
       if (!this.hasFilters) {
@@ -222,7 +228,7 @@ export default {
       scrollToTop()
     },
 
-    isSelected(key, value) {
+    isSelected (key, value) {
       return this.selectedElements[key].includes(value)
     }
   }

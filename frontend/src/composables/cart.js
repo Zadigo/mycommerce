@@ -6,100 +6,140 @@
 
 import { ref } from 'vue'
 
-export default function useCartComposable() {
-    const addingToCart = ref(false)
-    const productOptions = ref({ default_size: 'Unique' })
+import { client } from '../plugins/axios'
+import { useShop } from '../store/shop'
 
-    /**
-     * Function allows us to remove a product
-     * from the cart
-     * 
-     * @param {Object} product - product to remove
-     * 
-     */
-    async function removeFromCart(product) {
-        try {
-            var options = {
-                product: product.id,
-                session_id: this.getSessionId()
-            }
-            var response = await this.axios.post('cart/remove', options)
-            var data = response.data
+export default function useCartComposable (app) {
+  const addingToCart = ref(false)
+  const productOptions = ref({ default_size: 'Unique' })
 
-            this.store.$patch((state) => {
-                state.cart = data
-                this.$localstorage.create('cart', data)
-            })
-        } catch (error) {
-            console.error(error)
-            this.store.addErrorMessage(error)
-        }
+  /**
+   * Function allows us to remove a product
+   * from the cart
+   * 
+   * @param {Object} product - product to remove
+   */
+  async function removeFromCart (product) {
+    const store = useShop()
+
+    try {
+      const options = {
+        product: product.id,
+        session_id: this.getSessionId()
+      }
+      const response = await client.post('cart/remove', options)
+      const data = response.data
+
+      store.$patch((state) => {
+        state.cachedCartResponse = data
+        app.appContext.config.globalProperties.$localstorage.create('cart', data)
+      })
+    } catch (error) {
+      console.error(error)
+      this.store.addErrorMessage(error)
     }
+  }
 
-    /**
-     * Function that adds a product to the cart
-     * rapidly
-     * 
-     * @param {Object} product - product to add
-     * @param {String} size - the product's size
-     */
-    async function quickAddToCart(product, size) {
-        try {
-            console.info(this.axios)
-            var details = {
-                product: product.id,
-                default_size: size.name,
-                // NOTE: Check here
-                session_id: this.getSessionId()
-            }
-            var response = await this.axios.post('cart/add', details)
-            var data = response.data
+  /**
+   * Function that adds a product to the cart
+   * rapidly
+   * 
+   * @param {Object} product - product to add
+   * @param {String} size - the product's size
+   */
+  async function quickAddToCart (product, size) {
+    const store = useShop()
+    try {
+      // console.info(this.axios)
+      const details = {
+        product: product.id,
+        default_size: size.name,
+        // NOTE: Check here
+        session_id: this.getSessionId()
+      }
+      const response = await client.post('cart/add', details)
+      const data = response.data
 
-            this.store.updateCart(data)
-            this.$localstorage.create('cart', data)
+      store.updateCart(data)
+      app.appContext.config.globalProperties.$localstorage.create('cart', data)
 
-            // this.runCallback(openOnCreate)
-        } catch (error) {
-            console.log(error)
-            this.store.addErrorMessage(error)
-        }
+      // this.runCallback(openOnCreate)
+    } catch (error) {
+      console.log(error)
+      this.store.addErrorMessage(error)
     }
+  }
 
-    // function runCallback(openOnCreate) {
-    //     if (openOnCreate) {
-    //         this.$store.commit('toggleModalCart')
-    //     }
-    // }
+  // TODO: Implement
+  async function addToCart (product, options) {
+    try {
+      addingToCart.value = true
 
-    /**
-     * Return the user cart
-     * 
-     * @returns Cart
-     * 
-     */
-    function getCart() {
-        return this.$localstorage.retrieve('cart')
+      const defaultSize = options.default_size
+
+      // When the size is unique, and since
+      // we initially set the default size
+      // as null, set it to Unique or this
+      // will return an error requiring that
+      // the default_size be not null
+      if (!defaultSize) {
+        options.default_size = 'Unique'
+      }
+
+      try {
+        // Try to get a current session_id if the
+        // user has already been adding items to
+        // his current cart
+        options.session_id = getSessionId()
+      } catch (error) {
+        options.session_id = null
+      }
+      options.product = product.id
+
+      const response = await this.$http.post('cart/add', options)
+      const data = response.data
+
+      this.store.$patch((state) => {
+        state.cart = data
+        app.appContext.config.globalProperties.$localstorage.create('cart', data)
+      })
+
+      addingToCart.value = false
+    } catch (error) {
+      console.error(error)
+      this.store.addErrorMessage(`V-AX-CA: ${error}: ${error.response.message}`)
     }
-    
-    function getSessionId() {
-        try {
-            return this.getCart()['session_id']
-        } catch {
-            return null
-        }
-    }
+  }
 
-    // onBeforeMount(() => {
-    //     var cart = getCart()
-    //     this.store.update(cart)
-    // })
+  /**
+   * Return the user cart
+   * 
+   * @returns Cart
+   */
+  function getCart () {
+    return app.appContext.config.globalProperties.$localstorage.retrieve('cart')
+  }
 
-    return {
-        addingToCart,
-        productOptions,
-        removeFromCart,
-        quickAddToCart,
-        getCart,
-        getSessionId
+  function getSessionId () {
+    try {
+      return getCart().session_id
+    } catch {
+      return null
     }
+  }
+
+  // onBeforeMount(() => {
+  //     var cart = getCart()
+  //     this.store.update(cart)
+  // })
+
+  return {
+    addToCart,
+    addingToCart,
+    productOptions,
+    removeFromCart,
+    quickAddToCart,
+    getCart,
+    getSessionId
+  }
 }

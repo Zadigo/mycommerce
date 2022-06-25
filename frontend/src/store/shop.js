@@ -9,81 +9,103 @@ import { useAuthentication } from './authentication'
 // })
 
 const useShop = defineStore('shop', {
-    state: () => ({
-        cachedCartResponse: {},
-        cartSessionId: null,
-        cartItems: [],
-        cart: [],
-        
-        openCart: false,
-        showSearchModal: false,
-        showSubscriptionModal: false,
-        
-        likedProducts: [],
-        recentlyViewed: [],
-        
-        originalProductsResponse: {},
-        products: [],
-        currentProduct: {},
-        currentProductReviews: [],
+  state: () => ({
+    cachedCartResponse: {},
+    cartSessionId: null,
+    cartItems: [],
+    cart: [],
 
-        previousUrl: null,
-        nextUrl: null,
+    openCart: false,
+    showSearchModal: false,
+    showSubscriptionModal: false,
 
-        searchedPrice: [],
+    likedProducts: [],
+    recentlyViewed: [],
 
-        userLists: []
-    }),
-    actions: {
-        logout() {
-            var store = useAuthentication()
-            store.logout()
-        },
-        resetProducts() {
-            
-        },
-        updateCart(data) {
-            if (data) {
-                this.cachedCartResponse = data
-                this.cartSessionId = data.session_id
-                this.cartItems = data.results
-                this.cart = data.statistics
-            } else {
-                this.cart = []
-            }
-        },
-        getProduct(productId) {
-            var currentProduct = _.find(this.products, ['id', toNumber(productId)])
-            this.currentProduct = currentProduct ? currentProduct : {}
-            this.recentlyViewed.push(toNumber(productId))
-        }
+    originalProductsResponse: {},
+    products: [],
+    currentProduct: {},
+    currentProductReviews: [],
+
+    previousUrl: null,
+    nextUrl: null,
+
+    searchedPrice: [],
+
+    userLists: []
+  }),
+  actions: {
+    logout () {
+      const store = useAuthentication()
+      store.logout()
     },
-    getters: {
-        cartLength() {
-            return this.cart.length
-        },
-        minPrice() {
-            return _.minBy(this.products, 'get_price')
-        },
-        maxPrice() {
-            return _.maxBy(this.products, 'get_price')
-        },
-        hasProducts() {
-            return this.products.length > 0
-        },
-        displayedProductsCount() {
-            return this.products.length
-        },
-        getRecentlyViewedProducts() {
-            var ids = _.uniq(this.recentlyViewed)
-            
-            return _.filter(this.products, (product) => {
-                return ids.includes(product.id)
-            })
-        }
+    resetProducts () {
+      this.localStorage.remove('products')
+    },
+    updateCart (data) {
+      if (data) {
+        this.cachedCartResponse = data
+        this.cartSessionId = data.session_id
+        this.cartItems = data.results
+        this.cart = data.statistics
+      } else {
+        this.cart = []
+      }
+    },
+    reloadProducts () {
+      // Reloads existing products
+      // from the localstorage
+      if (this.products.length === 0) {
+        this.products = this.localstorage.retrieve('products') || []
+      }
+    },
+    getProduct (productId) {
+      this.reloadProducts()
+      const currentProduct = _.find(this.products, ['id', toNumber(productId)])
+      this.currentProduct = currentProduct || {}
+      this.recentlyViewed.push(toNumber(productId))
+
+      const existingItems = this.localstorage.retrieve('recentlyViewed')
+      if (existingItems.length > 0) {
+        existingItems.push(toNumber(productId))
+        this.localstorage.create('recentlyViewed', existingItems)
+      } else {
+        this.localstorage.create('recentlyViewed', this.recentlyViewed)
+      }
     }
+  },
+  getters: {
+    cartLength () {
+      return this.cartItems.length
+    },
+    minPrice () {
+      return _.minBy(this.products, 'get_price')
+    },
+    maxPrice () {
+      return _.maxBy(this.products, 'get_price')
+    },
+    hasProducts () {
+      return this.products.length > 0
+    },
+    displayedProductsCount () {
+      return this.products.length
+    },
+    getRecentlyViewedProducts () {
+      const ids = _.uniq(this.recentlyViewed)
+
+      const items = _.filter(this.products, (product) => {
+        return ids.includes(product.id)
+      })
+
+      if (items.length > 3) {
+        // Return the 4 last items
+        return items.slice(items.length - 4, items.length)
+      }
+      return items
+    }
+  }
 })
 
 export {
-    useShop
+  useShop
 }

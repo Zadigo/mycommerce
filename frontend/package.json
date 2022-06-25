@@ -1,76 +1,42 @@
 {
   "name": "frontend",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "build": "vite build",
+    "test:unit": "vitest",
+    "lint": "vue-cli-service lint",
+    "dev": "vite",
+    "preview": "vite preview",
+    "test": "vitest"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.1.1",
-    "@fortawesome/free-regular-svg-icons": "^6.1.1",
-    "@fortawesome/free-solid-svg-icons": "^6.1.1",
-    "@fortawesome/vue-fontawesome": "^2.0.6",
-    "@vue/devtools-api": "^6.1.4",
+    "@mdi/font": "^6.7.96",
+    "@vue-stripe/vue-stripe": "^4.4.2",
     "axios": "^0.27.2",
     "bootstrap": "^5.1.3",
-    "core-js": "^3.8.3",
-    "dayjs": "^1.11.1",
+    "dayjs": "^1.11.3",
+    "happy-dom": "^5.3.1",
     "lodash": "^4.17.21",
-    "mdb-ui-kit": "^4.0.0",
-    "pinia": "^2.0.13",
-    "vue": "^3.2.13",
-    "vue-axios": "^3.4.1",
+    "mdb-ui-kit": "^4.2.0",
+    "pinia": "^2.0.14",
+    "vitest": "^0.15.1",
+    "vue": "^3.2.25",
     "vue-i18n": "^9.1.10",
-    "vue-router": "^4.0.15"
+    "vue-router": "^4.0.16",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {
-      "vue/attribute-hyphenation": "error",
-      "vue/html-end-tags": "error",
-      "vue/html-indent": "warn",
-      "vue/attributes-order": "warn",
-      "vue/order-in-components": "warn",
-      "vue/this-in-template": "error",
-      "vue/component-tags-order": [
-        "error",
-        {
-          "order": [
-            [
-              "template",
-              "script"
-            ],
-            "style"
-          ]
-        }
-      ]
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ]
+    "@rollup/plugin-dynamic-import-vars": "^1.4.3",
+    "@vitejs/plugin-vue": "^2.3.3",
+    "@vue/cli-plugin-eslint": "^5.0.4",
+    "@vue/eslint-config-standard": "^6.1.0",
+    "eslint": "^8.17.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "vite": "^2.9.9",
+    "vite-plugin-eslint": "^1.6.1"
+  }
 }

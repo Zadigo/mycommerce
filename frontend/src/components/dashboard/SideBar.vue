@@ -6,13 +6,12 @@
           <router-link v-for="route in dashboardRoutes" :key="route.name" :to="{ name: route.name }" :aria-current="route.name === $route.name" class="list-group-item list-group-item-action py-2 ripple">
             <!-- <font-awesome-icon :icon="route.meta.icon" class="mr-2"></font-awesome-icon> -->
             <span>{{ route.meta.text }}</span>
-          </router-link>        
+          </router-link>
         </div>
       </div>
     </nav>
   </keep-alive>
 </template>
-
 
 <script>
 import _ from 'lodash'
@@ -25,8 +24,7 @@ export default {
       return _.filter(this.$router.getRoutes(), (route) => {
         return route.meta.adminLink
       })
-    },
-
+    }
   }
 }
 </script>

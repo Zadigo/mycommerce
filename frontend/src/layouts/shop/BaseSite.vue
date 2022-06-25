@@ -1,69 +1,85 @@
 <template>
-  <!-- <v-app> -->
   <section>
+    <!-- Header -->
     <header class="fixed-top">
       <!-- Top banner -->
       <!-- <base-top-banner v-show="!$route.meta.isFullPage" /> -->
 
       <!-- Navbar -->
-      <base-navbar v-show="!$route.meta.isFullPage" />
+      <base-navbar-vue v-show="!$route.meta.isFullPage" />
 
       <!-- Messages -->
-      <!-- <base-messages /> -->
+      <base-messages-vue />
 
       <!-- Search -->
       <!-- <base-search-modal /> -->
     </header>
-    
-    <!-- <v-main> -->
-    <div role="main">
-      <router-view :key="$route.name"/>
 
-      <!-- <router-view v-slot="{ Component }">
-        <transition :key="$route.name">
+    <!-- Main -->
+    <div role="main">
+      <router-view v-slot="{ Component }">
+        <transition name="opacity" mode="in-out">
           <component :is="Component" />
         </transition>
-      </router-view> -->
+      </router-view>
 
-      <!-- <scroll-top-button /> -->
+      <transition name="opacity">
+        <button type="button" class="btn btn-floating btn-lg btn-dark" @click="scrollToTop">
+          Up
+        </button>
+      </transition>
 
       <modal-cart-vue />
+      <discount-drawer-vue />
       <!-- <cart-off-canvas /> -->
       <!-- <login-modal /> -->
       <!-- <base-subscription-modal :show-modal="showSubscriptionModal" /> -->
       <!-- <modal-language-selection /> -->
     </div>
-    <!-- </v-main> -->
 
-    <base-footer v-show="!$route.meta.isFullPage" />
-  <!-- </v-app> -->
+    <!-- Footer -->
+    <base-footer-vue v-show="!$route.meta.isFullPage" />
   </section>
 </template>
 
 <script>
-// import BaseSearchModal from '@/components/BaseSearchModal.vue'
-import BaseNavbar from '@/components/BaseNavbar.vue'
-import BaseFooter from '@/components/BaseFooter.vue'
+import { scrollToTop } from '../../utils'
+import BaseMessagesVue from '@/components/BaseMessages.vue'
+import BaseNavbarVue from '@/components/BaseNavbar.vue'
+import BaseFooterVue from '@/components/BaseFooter.vue'
+import DiscountDrawerVue from '../DiscountDrawer.vue'
 import ModalCartVue from '@/components/shop/ModalCart.vue'
-// import CartModal from '@/components/'
+
+// import BaseSearchModal from '@/components/BaseSearchModal.vue'
 // import ModalLanguageSelection from '@/components/ModalLanguageSelection.vue'
 // import ScrollTopButton from '@/components/ScrollTopButton.vue'
 // import CartOffCanvas from '@/components/shop/cart/CartOffCanvas.vue'
-// import { mapState } from 'vuex'
 
 export default {
   name: 'BaseSite',
-  components: { 
-    BaseFooter,
-    BaseNavbar,
-    ModalCartVue,
+  setup () {
+    return {
+      scrollToTop
+    }
+  },
+  components: {
+    BaseFooterVue,
+    BaseMessagesVue,
+    BaseNavbarVue,
+    DiscountDrawerVue,
+    ModalCartVue
     // BaseSearchModal,
     // CartOffCanvas,
     // ModalLanguageSelection,
     // ScrollTopButton
-  },
-  computed: {
-    // ...mapState(['showSubscriptionModal'])
   }
 }
 </script>
+
+<style scoped>
+.btn-floating {
+  position: fixed;
+  right: 1%;
+  bottom: 1%;
+}
+</style>

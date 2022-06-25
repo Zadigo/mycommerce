@@ -5,10 +5,14 @@ import { VueSession, createVueSession } from './session-storage'
 declare type DictionnaryKey = string
 
 /**
- * Creates a VueLocalStorage instance that can be used by a Vue app
- *
+ * Creates a VueLocalStorage instance
  */
 export declare function createLocalStorage(): VueLocalStorage
+
+/**
+ * Creates a VueSessionStorage instance
+ */
+export declare function createVueSession(): CreateVueSession
 
 /**
  * VueLocalStorage instance

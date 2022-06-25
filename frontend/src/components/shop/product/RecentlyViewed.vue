@@ -1,6 +1,12 @@
 <template>
   <div class="container">
     <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <h4 class="text-uppercase fw-bold">
+          {{ $t('Recently viewed') }}
+        </h4>
+      </div>
+
       <div class=" col-sm-12 col-md-12">
         <div class="row">
           <div v-for="product in getRecentlyViewedProducts" :key="product.id" class="col-3">

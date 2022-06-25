@@ -1,19 +1,10 @@
 <template>
   <div class="col-12 selected-image">
-    <div ref="link" :class="{ zoom: isZoomed }" class="img-container" @mousemove="zoomEvent($event)">
-      <img :src="mediaUrl(selectedImage)" class="img-fluid" @click="zoomImage($event)">
+    <div ref="link" :class="{ zoom: isZoomed }" class="img-container" @click="zoomImage($event)" @mousemove="imageEventListener">
+      <img :src="mediaUrl(selectedImage)" class="img-fluid">
     </div>
 
-    <v-btn id="btn-close" icon>
-      close
-      <!-- <v-icon @click="$emit('reset-selected-image')">mdi-close</v-icon> -->
-    </v-btn>
-
-    <!-- <base-tag v-if="isNew" :is-absolute="true" :top="3" :left="5" :padding="2" background-color="primary">
-      <template>
-        {{ $t('New') }}
-      </template>
-    </base-tag> -->
+    <button type="button" class="btn-close" id="btn-close" @click="$emit('reset-selected-image')"></button>
   </div>
 </template>
 
@@ -22,6 +13,7 @@ import { mediaUrl } from '@/utils'
 
 export default {
   name: 'SelectedImage',
+  emits: ['reset-selected-image'],
   props: {
     selectedImage: {
       type: String,
@@ -31,7 +23,7 @@ export default {
       type: Boolean
     }
   },
-  setup() {
+  setup () {
     return {
       mediaUrl
     }
@@ -40,41 +32,67 @@ export default {
     isZoomed: false
   }),
   methods: {
-    zoomImage(e) {
+    zoomImage () {
       this.isZoomed = !this.isZoomed
-
-      var image = this.$refs.link.querySelector('img')
-      var mouseX = e.pageX
-      var mouseY = e.pageY
-      var totalX = this.$refs.link.clientWidth
-      var totalY = this.$refs.link.clientHeight
-      var centerX = totalX / mouseX
-      var centerY = totalY / mouseY
-      var shiftX = centerX - mouseX
-      var shiftY = centerY - mouseY
-
-      // image.style.right = `${shiftX}px`
-      // image.style.top = `${shiftY}px`
-      image.transform = `translate(${shiftX}px, ${shiftY}px)`
-    },
-
-    zoomEvent(e) {
       if (this.isZoomed) {
-        var image = this.$refs.link.querySelector('img')
-        var mouseX = e.pageX
-        var mouseY = e.pageY
-        var totalX = this.$refs.link.clientWidth
-        var totalY = this.$refs.link.clientHeight
-        var centerX = totalX / mouseX
-        var centerY = totalY / mouseY
-        var shiftX = centerX - mouseX
-        var shiftY = centerY - mouseY
-  
-        // image.style.left = `${shiftX}px`
-        // image.style.top = `${shiftY}px`
-        image.transform = `translate(${shiftX}px, ${shiftY}px)`
+        this.$refs.link.style.cursor = 'crosshair'
+      } else {
+        this.$refs.link.style.cursor = 'zoom-in'
+        const image = this.$refs.link.querySelector('img')
+        image.style.transform = 'translate(0px, 0px)'
+      }
+    },
+    imageEventListener (e) {
+      if (this.isZoomed) {
+        const container = this.$refs.link
+
+        const mousePositionX = e.clientX
+        const mousePositionY = e.clientY
+        const containerWidth = container.clientWidth
+        const containerHeight = container.clientHeight
+        const centerX = containerWidth / mousePositionX * 100
+        const centerY = containerHeight / mousePositionY * 100
+        
+        const image = this.$refs.link.querySelector('img')
+        image.style.transform = 'scale(5, 5)'
+        image.style.transform = `translate(${centerX}px, ${centerY}px)`
       }
     }
+    // zoomImage (e) {
+    //   this.isZoomed = !this.isZoomed
+
+    //   const image = this.$refs.link.querySelector('img')
+    //   const mouseX = e.pageX
+    //   const mouseY = e.pageY
+    //   const totalX = this.$refs.link.clientWidth
+    //   const totalY = this.$refs.link.clientHeight
+    //   const centerX = totalX / mouseX
+    //   const centerY = totalY / mouseY
+    //   const shiftX = centerX - mouseX
+    //   const shiftY = centerY - mouseY
+
+    //   // image.style.right = `${shiftX}px`
+    //   // image.style.top = `${shiftY}px`
+    //   image.transform = `translate(${shiftX}px, ${shiftY}px)`
+    // },
+
+    // zoomEvent (e) {
+    //   if (this.isZoomed) {
+    //     const image = this.$refs.link.querySelector('img')
+    //     const mouseX = e.pageX
+    //     const mouseY = e.pageY
+    //     const totalX = this.$refs.link.clientWidth
+    //     const totalY = this.$refs.link.clientHeight
+    //     const centerX = totalX / mouseX
+    //     const centerY = totalY / mouseY
+    //     const shiftX = centerX - mouseX
+    //     const shiftY = centerY - mouseY
+        
+    //     // image.style.left = `${shiftX}px`
+    //     // image.style.top = `${shiftY}px`
+    //     image.transform = `translate(${shiftX}px, ${shiftY}px)`
+    //   }
+    // }
   }
 }
 </script>
@@ -82,14 +100,14 @@ export default {
 <style scoped>
 .selected-image {
   position: relative;
+  cursor: zoom-in;
 }
 
-#btn-close {
+.btn-close {
   position: absolute;
   top: 2%;
-  right: 5%;
+  right: 15%;
 }
-
 .img-container {
   position: relative;
   overflow: hidden;
@@ -97,12 +115,10 @@ export default {
   height: 100%;
   min-height: 800px;
 }
-
 .img-container.zoom img {
   position: absolute;
   top: 0%;
   left: 0%;
   transform: scale(2.5, 2.5);
 }
-
 </style>
