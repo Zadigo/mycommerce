@@ -289,7 +289,8 @@ def latest_products(request, **kwargs):
         
         queryset = Product.objects.filter(
             Q(created_on__lte=fifteen_days_from_now.date()) &
-            Q(created_on__gte=last_product.created_on)
+            Q(created_on__gte=last_product.created_on),
+            active=True
         ).order_by('-created_on')
         queryset = queryset[:limit]
         cache.set('latest_products', queryset, 3600)

@@ -36,9 +36,8 @@
 
     <!-- Socials -->
     <div v-if="myproject.company.socials.length > 0" class="text-center py-4 align-items-center">
-      <a v-for="social in myproject.company.socials" :key="social.name" :href="social.url" :aria-label="social.name" class="btn btn-primary m-1" role="button" rel="nofollow" target="_blank">
-        <!-- <i class="fab fa-youtube"></i> -->
-        {{ social.name }}
+      <a v-for="social in myproject.company.socials" :key="social.name" :href="social.url" :aria-label="social.name" class="btn btn-transparent shadow-light text-light shadow-none m-1" role="button" rel="nofollow" target="_blank">
+        <font-awesome-icon :icon="'fa-brands ' + social.icon" size="2x" />
       </a>
     </div>
 

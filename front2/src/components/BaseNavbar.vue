@@ -22,7 +22,7 @@
               Shorts
             </router-link>
           </li>
-          
+
           <!-- <li class="nav-item" @mouseenter="showMegaMenu">
             <a class="nav-link text">
               {{ $t('Shop') }}
@@ -48,7 +48,7 @@
 
           <li class="nav-item">
             <router-link :to="{ name: 'liked_products_view', params: { lang: $i18n.locale } }" class="nav-link">
-              Liked
+              <font-awesome-icon icon="fa-solid fa-heart" />
             </router-link>
           </li>
 
@@ -60,19 +60,19 @@
 
           <li v-else class="nav-item">
             <router-link :to="{ name: 'login_view', params: { lang: 'fr' } }" class="nav-link">
-              {{ $t('Login') }}
+              <font-awesome-icon icon="fa-solid fa-right-to-bracket" />
             </router-link>
           </li>
 
           <li class="nav-item">
             <a href class="nav-link" @click.prevent="store.openCart = true">
-              {{ $t('Cart') }}
+              <font-awesome-icon icon="fa-solid fa-cart-shopping" />
             </a>
           </li>
 
           <li class="nav-item">
             <a href class="nav-link" @click.prevent="goToAdmin">
-              {{ $t('Admin') }}
+              Admin
             </a>
           </li>
         </ul>

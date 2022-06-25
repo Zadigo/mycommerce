@@ -7,6 +7,8 @@ import { createVueSession } from './plugins/vue-storages/session-storage'
 import { createVueLocalStorage } from './plugins/vue-storages/local-storage'
 import { createAxios } from './plugins/axios'
 import { createCompanyDetails } from './plugins/project'
+import { createGoogleAnalytics } from './plugins/vue-analytics/google'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import BaseIntroVue from './layouts/BaseIntro.vue'
 
@@ -18,7 +20,7 @@ import './plugins/webfontloader'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'mdb-ui-kit/css/mdb.min.css'
 import '@mdi/font/css/materialdesignicons.css'
-import { createGoogleAnalytics } from './plugins/vue-analytics/google'
+import '@/plugins/fontawesome'
 
 // import { toNumber } from 'lodash'
 
@@ -67,14 +69,17 @@ app.use(createCompanyDetails({
     socials: [
         {
             name: 'YouTube',
+            icon: 'fa-youtube',
             url: 'https://www.youtube.com/channel/UC5CF7mLQZhvx8O5GODZAhdA'
         },
         {
             name: 'Facebook',
+            icon: 'fa-facebook',
             url: 'https://www.facebook.com/mdbootstrap'
         },
         {
             name: 'Twitter',
+            icon: 'fa-twitter',
             url: 'https://twitter.com/MDBootstrap'
         }
     ]
@@ -91,6 +96,7 @@ app.use(createGoogleAnalytics('G-256HHCRT7E', {
 }))
 
 app.component('base-intro-vue', BaseIntroVue)
+app.component('font-awesome-icon', FontAwesomeIcon)
 // app.component('intro-mask', introMask)
 // app.component('intro-container', introContainer)
 

@@ -35,8 +35,8 @@
           <div class="row">
             <div class="col-12">
               <div class="row">
-                <div class="col-2">
-                  truck
+                <div class="col-auto text-center">
+                  <font-awesome-icon icon="fa-solid fa-truck-fast" />
                 </div>
 
                 <div class="col-10">
@@ -45,11 +45,10 @@
               </div>
             </div>
 
-            <div class="col-12">
+            <div class="col-12 mt-3">
               <div class="row">
-                <div class="col-2">
-                  clock
-                  <!-- <v-icon class="mr-4">mdi-clock-time-nine</v-icon> -->
+                <div class="col-auto text-center">
+                  <font-awesome-icon icon="fa-solid fa-clock" />
                 </div>
                 <div class="col-10">
                   {{ $t('express_delivery_fee', { value: $n(50, 'currency'), fee: $n(10, 'currency') }) }}

@@ -39,19 +39,18 @@
     <!-- TODO: Create a unique component for this -->
     <section ref="productSelection" class="product-selection">
       <div class="wrapper">
-        <div v-for="product in latestProducts" :key="product.id" class="card">
+        <article v-for="product in latestProducts" :key="product.id" class="card">
           <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-dark">
-            {{ product.get_main_image }}
-            <!-- <img :src="mediaUrl(product.get_main_image.mid_size)" class="card-img-top" alt=""> -->
+            <img :src="mediaUrl(product.get_main_image.mid_size)" class="card-img-top" alt="">
           </router-link>
 
           <div class="card-body">
             <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-dark">
-              <h4>{{ truncate(product.name, 20) }}</h4>
-              <p class="fw-bold">{{ product.get_price }}</p>
+              <p class="fw-normal dark-text mb-0">{{ truncate(product.name, 20) }}</p>
+              <p class="fw-bold">{{ $n(product.get_price * 1, 'currency', $i18n.locale) }}</p>
             </router-link>
           </div>
-        </div>
+        </article>
       </div>
       <transition name="scale">
         <button v-if="currentPosition >= 250 || currentPosition === maxScrollablePosition" id="left" type="button" class="btn btn-floating bg-white" @click="scrollItem('left')">

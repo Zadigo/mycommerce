@@ -25,7 +25,7 @@
 
       <transition name="opacity">
         <button type="button" class="btn btn-floating btn-lg btn-dark" @click="scrollToTop">
-          Up
+          <font-awesome-icon icon="fa-solid fa-arrow-up" />
         </button>
       </transition>
 

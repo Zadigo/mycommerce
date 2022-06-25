@@ -1,5 +1,5 @@
 <template>
-  <base-intro-vue height="100vh" image="/hero4.jpg">
+  <base-intro-vue :image="require('@/assets/hero4.jpg')" height="100vh">
     <template #default>
       <div class="card">
         <div class="card-body">
@@ -8,6 +8,7 @@
           <navigation-links-vue :is-login="true" />
 
           <button type="button" class="btn btn-lg btn-primary mt-2" @click="login">
+            <font-awesome-icon icon="fa-solid fa-right-to-bracket" class="me-2" />
             {{ $t('Login') }}
           </button>
         </div>
