@@ -29,12 +29,14 @@
     "@vue/cli-service": "~5.0.0",
     "dotenv-webpack": "^7.1.0",
     "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3"
+    "eslint-plugin-vue": "^8.0.3",
+    "eslint-webpack-plugin": "^3.2.0"
   },
   "eslintConfig": {
     "root": true,
     "env": {
-      "node": true
+      "node": true,
+      "browser": true
     },
     "extends": [
       "plugin:vue/vue3-essential",
@@ -45,7 +47,14 @@
     },
     "rules": {
       "camelcase": "warn",
-      "no-trailing-spaces": ["warn", { "ignoreComments": true }],
+      "no-undef": "error",
+      "no-irregular-whitespace": "error",
+      "no-trailing-spaces": [
+        "warn",
+        {
+          "ignoreComments": true
+        }
+      ],
       "vue/attribute-hyphenation": "error",
       "vue/attributes-order": "warn",
       "vue/html-quotes": "warn",
