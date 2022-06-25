@@ -1,18 +1,16 @@
 from typing import Tuple
 
-from api.utils import get_product_model
 from django.db.models import Count, QuerySet, Sum
 from django.shortcuts import get_object_or_404
 from orders.choices import ShipmentChoices
+from orders.models import CustomerOrder
 from rest_framework import fields
 from rest_framework.serializers import Serializer
-from orders.models import CustomerOrder
 from shop.choices import ClotheSizesChoices
+from shop.models import Product
 from shop.serializers import ProductSerializer
 
 from cart.models import Cart
-
-PRODUCT_MODEL = get_product_model()
 
 
 def cart_statistics(queryset):
@@ -65,7 +63,7 @@ class ValidateCart(Serializer):
     def create(self, validated_data, request=None):
         data = validated_data.copy()
         product_id = data.pop('product')
-        product = get_object_or_404(PRODUCT_MODEL, id=product_id)
+        product = get_object_or_404(Product, id=product_id)
         return Cart.objects.rest_api_add_to_cart(request, product, **data)
 
     def save(self, request, **kwargs) -> Tuple[str, QuerySet]:

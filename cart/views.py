@@ -1,4 +1,3 @@
-from api.views import responses
 from django.db.models import DecimalField, Value
 from django.utils.crypto import get_random_string
 from mycommerce.responses import simple_api_response

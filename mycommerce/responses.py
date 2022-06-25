@@ -10,7 +10,7 @@ from rest_framework.serializers import ListSerializer, Serializer
 class CustomPagination(LimitOffsetPagination):
     default_limit = 100
     max_limit = 100
-
+    
 
 def api_response(serializer: Serializer=None, data: Union[list, dict]=None, queryset: QuerySet=None, has_many: bool=False):
     if serializer is not None:
