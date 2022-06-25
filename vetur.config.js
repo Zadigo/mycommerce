@@ -1,19 +1,12 @@
 /** @type {import('vls').VeturConfig} */
 module.exports = {
-    // **optional** default: `{}`
-    // override vscode settings
-    // Notice: It only affects the settings used by Vetur.
-    // settings: {
-    //     "vetur.useWorkspaceDependencies": true,
-    //     "vetur.experimental.templateInterpolationService": true
-    // },
     projects: [
         './',
         {
             // **required**
             // Where is your project?
             // It is relative to `vetur.config.js`.
-            root: './front',
+            root: './frontend',
             // **optional** default: `'package.json'`
             // Where is `package.json` in the project?
             // We use it to determine the version of vue.
@@ -22,15 +15,6 @@ module.exports = {
             // **optional** default: `'./.vscode/vetur/snippets'`
             // Where is vetur custom snippets folders?
             // snippetFolder: './.vscode/vetur/snippets',
-            globalComponents: [
-                'src/**/*.vue'
-                // 'src/components/**/*.vue',
-                // 'src/views/**/*.vue'
-            ]
-        },
-        {
-            root: './frontend',
-            package: 'package.json',
             globalComponents: [
                 'src/**/*.vue'
             ]
