@@ -9,7 +9,7 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "monthly"
-  - package-ecosysem: "npm"
+  - package-ecosystem: "npm"
     directory: "/front2"
     schedule:
       interval: "monthly"
