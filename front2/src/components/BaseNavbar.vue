@@ -49,7 +49,7 @@
               <v-icon size="28" class="mr-2">mdi-magnify</v-icon>
             </a>
           </li> -->
-          
+
           <li class="nav-item">
             <router-link :to="{ name: 'liked_products_view', params: { lang: $i18n.locale } }" class="nav-link">
               Liked
@@ -116,13 +116,13 @@ export default {
   }),
   computed: {
     ...mapState(useAuthentication, ['isAuthenticated'])
-  
+
     // ...mapGetters(['cartCount']),
   },
 
   methods: {
     //   ...mapMutations(['toggleSearchModal']),
-    
+
     //   logout () {
     //     this.$store.commit('authenticationModule/logout')
     //     this.$localstorage.remove('cart')

@@ -42,6 +42,7 @@
       "plugin:vue/vue3-essential",
       "eslint:recommended"
     ],
+    "ignorePatterns": ["**/node_modules/*"],
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
@@ -49,6 +50,7 @@
       "camelcase": "warn",
       "no-undef": "error",
       "no-irregular-whitespace": "error",
+      "space-before-function-paren": "error",
       "no-trailing-spaces": [
         "warn",
         {

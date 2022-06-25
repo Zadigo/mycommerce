@@ -7,7 +7,7 @@
           <h5 class="mb-4 lead-smaller">Craquez pour nos nouveautés signées Lounge</h5>
 
           <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale  } }"
-            class="btn btn-dark btn-lg btn-rounded" role="button">
+                       class="btn btn-dark btn-lg btn-rounded" role="button">
             {{ $t('Discover') }}
           </router-link>
         </div>
@@ -44,7 +44,7 @@
             {{ product.get_main_image }}
             <!-- <img :src="mediaUrl(product.get_main_image.mid_size)" class="card-img-top" alt=""> -->
           </router-link>
-          
+
           <div class="card-body">
             <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-dark">
               <h4>{{ truncate(product.name, 20) }}</h4>
@@ -54,12 +54,12 @@
         </div>
       </div>
       <transition name="scale">
-        <button v-if="currentPosition >= 250 || currentPosition === maxScrollablePosition" type="button" id="left" class="btn btn-floating bg-white" @click="scrollItem('left')">
+        <button v-if="currentPosition >= 250 || currentPosition === maxScrollablePosition" id="left" type="button" class="btn btn-floating bg-white" @click="scrollItem('left')">
           Left
         </button>
       </transition>
       <transition name="scale">
-        <button v-if="currentPosition !== maxScrollablePosition" type="button" id="right" class="btn btn-floating bg-white" @click="scrollItem('right')">
+        <button v-if="currentPosition !== maxScrollablePosition" id="right" type="button" class="btn btn-floating bg-white" @click="scrollItem('right')">
           Right
         </button>
       </transition>

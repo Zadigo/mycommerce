@@ -17,7 +17,7 @@ export default {
     BaseSite,
     DashboardSite
   },
-  setup() {
+  setup () {
     var store = useShop()
     var { currentSite } = storeToRefs(store)
 

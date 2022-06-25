@@ -91,6 +91,17 @@ import useShopComposable from '../../../composables/shop'
 export default {
   name: 'FiltersBar',
   emits: ['loading-products-start', 'loading-products-end', 'do-sort', 'load-products'],
+  setup () {
+    const store = useShop()
+    const app = getCurrentInstance()
+    const route = useRoute()
+    const { getProducts, productsRequest } = useShopComposable(app, route)
+    return {
+      store,
+      getProducts,
+      productsRequest
+    }
+  },
   data: () => ({
     items: [],
     sortMethod: 'Latest',
@@ -98,7 +109,7 @@ export default {
       'Latest',
       'Alphabetically A-Z',
       'Alphabetically Z-A',
-      'Price high to low', 
+      'Price high to low',
       'Price low to high'
     ],
 
@@ -118,17 +129,6 @@ export default {
 
     sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
   }),
-  setup () {
-    const store = useShop()
-    const app = getCurrentInstance()
-    const route = useRoute()
-    const { getProducts, productsRequest } = useShopComposable(app, route)
-    return {
-      store,
-      getProducts,
-      productsRequest
-    }
-  },
   computed: {
     ...mapState(useShop, {
       productNames (store) {
@@ -175,9 +175,9 @@ export default {
     async getFilteredProducts () {
       try {
         this.$emit('loading-products-start')
-        
+
         const response = await this.$http.get(`shop/advanced/search${this.searchQuery}`)
-        
+
         this.store.$patch((state) => {
           state.products = response.data.results
           this.$emit('loading-products-end')

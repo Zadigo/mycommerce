@@ -57,11 +57,6 @@ import ModalCartVue from '@/components/shop/ModalCart.vue'
 
 export default {
   name: 'BaseSite',
-  setup () {
-    return {
-      scrollToTop
-    }
-  },
   components: {
     BaseFooterVue,
     BaseMessagesVue,
@@ -72,6 +67,11 @@ export default {
     // CartOffCanvas,
     // ModalLanguageSelection,
     // ScrollTopButton
+  },
+  setup () {
+    return {
+      scrollToTop
+    }
   }
 }
 </script>

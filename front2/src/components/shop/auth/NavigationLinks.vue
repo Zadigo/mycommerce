@@ -19,11 +19,11 @@
 <script>
 export default {
   name: 'NavigationLinks',
-  emits: ['signup-fields', 'login-fields'],
   props: {
     isLogin: {
       type: Boolean
     }
-  }
+  },
+  emits: ['signup-fields', 'login-fields']
 }
 </script>

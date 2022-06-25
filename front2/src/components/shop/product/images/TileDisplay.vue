@@ -33,6 +33,10 @@ export default {
       default: () => {}
     }
   },
+  data: () => ({
+    selectedImage: null,
+    playVideo: false
+  }),
   computed: {
     numberOfImages () {
       return this.images.length
@@ -56,10 +60,6 @@ export default {
       }
     }
   },
-  data: () => ({
-    selectedImage: null,
-    playVideo: false
-  }),
   methods: {
     selectImage (url) {
       this.selectedImage = url

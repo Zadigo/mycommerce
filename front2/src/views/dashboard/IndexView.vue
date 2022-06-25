@@ -99,9 +99,9 @@ import { useDashboard } from '@/store/dashboard'
 
 export default {
   name: 'IndexView',
-  setup() {
+  setup () {
     var store = useDashboard()
-    
+
     return {
       store
     }
@@ -109,11 +109,11 @@ export default {
   data: () => ({
     statistics: {}
   }),
-  beforeMount() {    
+  beforeMount () {
     this.loadStatistics()
   },
   methods: {
-    async loadStatistics() {
+    async loadStatistics () {
       try {
         var response = await this.axios.get('shop/dashboard/statistics')
 

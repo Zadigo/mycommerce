@@ -9,7 +9,7 @@
 
           <!-- Filters -->
           <filters-bar style="z-index:20;" @loading-products-start="isLoading = true"
-            @loading-products-end="isLoading = false" />
+                       @loading-products-end="isLoading = false" />
         </div>
 
         <!-- FIXME: This gets displayed before the products are shown
@@ -39,7 +39,7 @@
             <collection-view1 />
           </template>
         </suspense>
-        
+
         <hr class="mt-5 mb-2">
 
         <!-- Pagination -->

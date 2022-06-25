@@ -4,19 +4,19 @@
       <div class="card-body">
         <div v-if="showActions">
           <div class="form-check">
-            <input v-model="is_gift" id="gift-wrap" class="form-check-input" type="checkbox" @click="$emit('update-total', 'is_gift')">
+            <input id="gift-wrap" v-model="is_gift" class="form-check-input" type="checkbox" @click="$emit('update-total', 'is_gift')">
             <label class="form-check-label" for="gift-wrap">
               {{ $t('Please Gift Wrap my order - $6.00') }}
             </label>
           </div>
-  
+
           <div class="form-check mt-2">
-            <input v-model="donation" id="donation" class="form-check-input" type="checkbox" @click="$emit('update-total', 'donation')">
+            <input id="donation" v-model="donation" class="form-check-input" type="checkbox" @click="$emit('update-total', 'donation')">
             <label class="form-check-label" for="donation">
               {{ $t('Faire un don - 0.5€') }}
             </label>
           </div>
-  
+
           <hr class="my-6">
         </div>
 
@@ -34,17 +34,17 @@
           <h5 class="text-uppercase fw-bold">Total</h5>
           <h5 class="fw-bold">{{ $n(grandTotal, 'currency', $i18n.locale) }}</h5>
         </div>
-  
+
         <div v-if="showActions" class="actions">
           <hr class="my-7">
 
           <router-link :to="{ name: 'shipment_view', params: {  lang: $i18n.locale } }"
-            class="btn btn-block btn-primary">
+                       class="btn btn-block btn-primary">
             {{ $t('Checkout') }}
           </router-link>
-  
+
           <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
-            class="btn btn-block btn-light">
+                       class="btn btn-block btn-light">
             {{ $t('Continue shopping') }}
           </router-link>
         </div>
@@ -62,7 +62,6 @@
 <script>
 export default {
   name: 'CartAside',
-  emits: ['update-total'],
   props: {
     showActions: {
       type: Boolean,
@@ -73,6 +72,7 @@ export default {
       required: true
     }
   },
+  emits: ['update-total'],
   data: () => ({
     is_gift: false,
     donation: false

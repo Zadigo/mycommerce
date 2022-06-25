@@ -7,7 +7,7 @@ export default function useLanguage () {
         doc.setAttribute('lang', i18n.global.locale)
     })
 
-    function changeLanguage(value) {
+    function changeLanguage (value) {
         i18n.global.locale = value
     }
 

@@ -8,7 +8,7 @@
               <div :title="$t('Login')" class="card" style="background-color:rgba(255, 255, 255, 0.3)">
                 <slot></slot>
               </div>
-              
+
               <slot name="additional-actions"></slot>
             </div>
           </div>

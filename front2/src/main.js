@@ -9,7 +9,6 @@ import { createAxios } from './plugins/axios'
 import { createCompanyDetails } from './plugins/project'
 
 import BaseIntroVue from './layouts/BaseIntro.vue'
-// import { intro, introContainer, introMask } from './components/hero'
 
 import router from './router'
 import i18n from './i18n'
@@ -44,7 +43,7 @@ pinia.use(({ store }) => {
     store.localstorage = toRaw(localstorage)
     store.session = toRaw(session)
 
-    function changeSite(name) {
+    function changeSite (name) {
         store.$state.currentSite = name
         store.localstorage.create('current-site', name)
     }

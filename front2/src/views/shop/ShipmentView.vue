@@ -27,7 +27,7 @@
               <div class="card-body">
                 <div v-for="field in fields" :key="field.name" :class="`col-${field.col}`">
                   <input v-model="options[field.name]" :type="field.type" :autocomplete="field.autocomplete"
-                    :placeholder="field.name" class="form-control p-2 mb-2">
+                         :placeholder="field.name" class="form-control p-2 mb-2">
                 </div>
 
                 <button class="btn btn-lg btn-primary mt-2" @click="changeStep(2)">
@@ -44,8 +44,8 @@
                 </p>
 
                 <a v-for="(delivery, i) in deliveryMethods" :key="i" href
-                  :class="{ 'border': delivery === options.delivery_mode }" class="card shadow-sm text-dark my-2"
-                  @click.prevent="options.delivery_mode = delivery">
+                   :class="{ 'border': delivery === options.delivery_mode }" class="card shadow-sm text-dark my-2"
+                   @click.prevent="options.delivery_mode = delivery">
                   <div class="card-body">
                     <p class="fw-bold d-flex justify-content-between">
                       <span>{{ delivery }}</span>
@@ -119,15 +119,15 @@ import { useShop } from '../../store/shop'
 
 export default {
   name: 'ShipmentView',
+  components: {
+    CartAsideVue
+    // StripeElementCard
+  },
   setup () {
     var store = useShop()
     return {
       store
     }
-  }, 
-  components: {
-    CartAsideVue
-    // StripeElementCard
   },
   data: () => ({
     currentStep: 1,
@@ -158,7 +158,7 @@ export default {
     ]
     fields.forEach((field) => {
       this.options[field.name] = null
-    })    
+    })
     this.fields = fields
   },
   methods: {

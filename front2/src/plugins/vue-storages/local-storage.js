@@ -52,7 +52,7 @@ class VueLocalStorage {
     this.DEFAULT_KEY_NAME = 'vue_local'
     this.storage = localStorage
   }
-  
+
   /**
     * Returns all items saved in the localStorage
     *

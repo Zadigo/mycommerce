@@ -12,11 +12,11 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-  
+
           <div class="modal-body">
             <slot />
           </div>
-          
+
           <!-- <div class="modal-footer">
             <button type="button" class="btn btn-primary">Save changes</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -31,15 +31,18 @@
 
 export default {
   name: 'BaseModal',
-  emits: ['close-modal'],
   props: {
     show: {
       type: Boolean
     }
   },
-  mounted () {
-    if (this.show) {
-      this.diplayModal()
+  emits: ['close-modal'],
+  computed: {
+    modalClasses () {
+      return [
+        this.show ? 'show' : null,
+        'fade'
+      ]
     }
   },
   watch: {
@@ -51,12 +54,9 @@ export default {
       }
     }
   },
-  computed: {
-    modalClasses () {
-      return [
-        this.show ? 'show' : null,
-        'fade'
-      ]
+  mounted () {
+    if (this.show) {
+      this.diplayModal()
     }
   },
   methods: {

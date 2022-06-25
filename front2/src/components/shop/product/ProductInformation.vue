@@ -107,7 +107,7 @@ export default {
     hasDescription () {
       return this.product === undefined
     }
-  }, 
+  },
   methods: {
     async addToList (wishlist) {
       try {
