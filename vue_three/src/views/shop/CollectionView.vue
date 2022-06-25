@@ -8,7 +8,8 @@
           </h2>
 
           <!-- Filters -->
-          <filters-bar style="z-index:20;" @loading-products-start="isLoading = true" @loading-products-end="isLoading = false" />
+          <filters-bar style="z-index:20;" @loading-products-start="isLoading = true"
+            @loading-products-end="isLoading = false" />
         </div>
 
         <!-- FIXME: This gets displayed before the products are shown
@@ -31,8 +32,14 @@
 
         <!-- TODO: Prefer Suspense ?? -->
         <!-- <async-products-wrapper /> -->
-        <products-wrapper-vue />
+        <suspense>
+          <products-wrapper-vue />
 
+          <template #fallback>
+            <collection-view1 />
+          </template>
+        </suspense>
+        
         <hr class="mt-5 mb-2">
 
         <!-- Pagination -->
@@ -42,7 +49,9 @@
         <div class="col-12 my-6 d-none">
           <router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }">
             <!-- TODO: Emit a PageView when clicking on this section -->
-            <img src="https://img.ltwebstatic.com/images3_acp/2022/02/25/164578700614872218156e3ff9868de22e7c67a145.webp" class="img-fluid" />
+            <img
+              src="https://img.ltwebstatic.com/images3_acp/2022/02/25/164578700614872218156e3ff9868de22e7c67a145.webp"
+              class="img-fluid" />
           </router-link>
         </div>
       </div>
@@ -58,6 +67,7 @@ import FiltersBar from '@/components/shop/products/FiltersBar.vue'
 import PaginationRow from '@/components/shop/products/PaginationRow.vue'
 // import ProductsWrapperLoadingVue from '@/components/shop/products/ProductsWrapperLoading.vue'
 import ProductsWrapperVue from '../../components/shop/products/ProductsWrapper.vue'
+import CollectionView1 from '../../components/skeletons/CollectionView.vue'
 
 export default {
   name: 'CollectionView',
@@ -72,7 +82,8 @@ export default {
     //   timeout: 5000
     // }),
     FiltersBar,
-    PaginationRow
+    PaginationRow,
+    CollectionView1
   },
   setup () {
     return {

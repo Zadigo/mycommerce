@@ -10,6 +10,7 @@ export default [
     path: 'collections/:collection([a-z-]+)',
     name: 'collection_details_view',
     component: loadView('shop/CollectionView')
+    // component: loadComponent('skeletons/CollectionView')
   },
   {
     path: 'products/:id(\\d+)/:slug([a-z-]+)',

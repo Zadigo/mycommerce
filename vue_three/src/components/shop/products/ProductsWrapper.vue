@@ -30,11 +30,13 @@ export default {
   components: {
     ProductCard
   },
-  setup () {
+  async setup () {
     const store = useShop()
     const app = getCurrentInstance()
     const route = useRoute()
     const { isLoading, productsRequest, getProducts } = useShopComposable(app, route)
+
+    // await productsRequest()
     return {
       store,
       isLoading,
