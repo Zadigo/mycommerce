@@ -21,7 +21,7 @@
         </div>
 
         <div class="d-flex justify-content-between fw-bold">
-          <h5 class="text-uppercase fs-6 fw-bold">Sous-total</h5>
+          <h5 class="text-uppercase fs-6 fw-bold">{{ $t('Subtotal') }}</h5>
           <h5 class="text-uppercase fs-6 fw-bold">25€</h5>
         </div>
 
@@ -31,7 +31,7 @@
         </div>
 
         <div class="d-flex justify-content-between">
-          <h5 class="text-uppercase fw-bold">Total</h5>
+          <h5 class="text-uppercase fw-bold">{{ $t('Total') }}</h5>
           <h5 class="fw-bold">{{ $n(grandTotal, 'currency', $i18n.locale) }}</h5>
         </div>
 

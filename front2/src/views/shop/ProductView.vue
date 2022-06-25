@@ -18,6 +18,7 @@
           <tile-display :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" />
         </div>
 
+        <!-- Product information -->
         <div class="col-sm-12 col-md-5 ps-5 pt-1">
           <div class="row">
             <!-- Tags -->
@@ -38,19 +39,23 @@
               </p>
 
               <p class="mb-1 fs-3">
-                <span v-if="currentProduct.on_sale" class="me-2 fs-4 fw-bolder text-muted">
-                  <!-- <del>{{ $n(currentProduct.unit_price, 'currency') }}</del> -->
-                  <del>{{ currentProduct.unit_price }}</del>
+                <!-- Original price -->
+                <span v-if="currentProduct.on_sale" class="me-2 fs-5 fw-bolder text-muted">
+                  <del>{{ $n(currentProduct.unit_price * 1, 'currency', $i18n.locale) }}</del>
                 </span>
 
+                <!-- Discounted price -->
                 <span v-if="currentProduct.on_sale" class="fw-bolder fs-4 fw-bold">
-                  <!-- {{ $n(currentProduct.sale_price, 'currency', $i18n.locale) }} -->
-                  {{ currentProduct.sale_price }}
+                  {{ $n(currentProduct.sale_price * 1, 'currency', $i18n.locale) }}
                 </span>
 
-                <span v-else class="fw-normal fs-3 fw-bolder">
-                  <!-- {{ $n(currentProduct.unit_price, 'currency', $i18n.locale) }} -->
-                  {{ currentProduct.unit_price }}
+                <!-- Original price -->
+                <span v-else :class="{ 'text-danger': currentProduct.on_sale }" class="fw-normal fs-3 fw-bolder">
+                  {{ $n(currentProduct.unit_price * 1, 'currency', $i18n.locale) }}
+                </span>
+
+                <span v-if="currentProduct.on_sale" class="p-1 bg-danger text-white ms-2 rounded fs-5 fw-bold">
+                  {{ formatAsPercentage(currentProduct.sale_value, true) }}
                 </span>
               </p>
             </div>
@@ -87,7 +92,7 @@
 </template>
 
 <script>
-import { capitalizeLetters } from '@/utils'
+import { capitalizeLetters, formatAsPercentage } from '@/utils'
 import { useShop } from '@/store/shop'
 import { mapState } from 'pinia'
 import { getCurrentInstance } from 'vue'
@@ -124,7 +129,8 @@ export default {
     return {
       store,
       isLoading,
-      capitalizeLetters
+      capitalizeLetters,
+      formatAsPercentage
       // requestProductVariants
     }
   },

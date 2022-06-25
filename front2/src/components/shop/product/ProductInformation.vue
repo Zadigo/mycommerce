@@ -37,10 +37,10 @@
               <div class="row">
                 <div class="col-2">
                   truck
-                  <!-- <v-icon class="mr-4">mdi-truck-delivery</v-icon> -->
                 </div>
+
                 <div class="col-10">
-                  {{ $t('delivery_conditions', { value: $n(50, 'currency') }) }}
+                  {{ $t('Free shipping', { value: $n(50, 'currency', $i18n.locale) }) }}
                 </div>
               </div>
             </div>

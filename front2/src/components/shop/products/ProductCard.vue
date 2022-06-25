@@ -42,13 +42,11 @@
         <div class="d-flex justify-content-between">
           <div>
             <span v-if="product.on_sale" class="me-2 text-red">
-              <!-- <del>{{ $n(product.unit_price, 'currency', $i18n.locale) }}</del> -->
-              <del>{{ product.unit_price }}</del>
+              <del>{{ $n(product.unit_price * 1, 'currency', $i18n.locale) }}</del>
             </span>
 
-            <span class="fw-bold">
-              <!-- {{ $n(product.get_price, 'currency', $i18n.locale) }} -->
-              {{ product.on_sale ? product.sale_price : product.unit_price }}
+            <span :class="{ 'text-danger': product.on_sale }" class="fw-bold">
+              {{ $n(product.get_price * 1, 'currency', $i18n.locale) }}
             </span>
           </div>
 

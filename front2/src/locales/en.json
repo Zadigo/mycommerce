@@ -5,6 +5,7 @@
     "Bestsellers": "Bestsellers",
     "Brand": "Brand",
     "Cart": "Cart",
+    "Logout": "Logout",
     "Continue shopping": "Continue shopping",
     "Summary": "Summary",
     "Checkout": "Checkout",
@@ -67,7 +68,6 @@
     "View all": "View all",
     "View basket": "View basket",
     "Write new review": "Write a customer review",
-    "You cart is currently empty": "You cart is currently empty",
     "You may also like": "You may also like",
     "advantages": "Prime",
     "body_measurements": "Body measurements",
@@ -133,5 +133,15 @@
     "Find a store": "Find a store",
     "likes_and_lists": "Wishlists",
     "data_processing": "We process your personal data as stated in our Privacy Policy. You may withdraw your consent at any time by clicking the unsubscribe link at the bottom of any of our emails",
-    "first_order": "Enjoy {value}% off your first order"
+    "first_order": "Enjoy {value}% off your first order",
+    "Recently viewed": "Recently viewed",
+    "Get discount": "Get {value} off",
+    "Reviews": "Reviews",
+    "Free shipping": "Free express shipping on orders over {value} 8-20 Business Days",
+    "Subtotal": "Subtotal",
+    "Total": "Total",
+    "Change": "Change",
+    "Coupon": "Coupon",
+    "Delivery between": "Entrega entre las {date1} del {date2}",
+    "Choose a payment method": "Choose a payment method"
 }

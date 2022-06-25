@@ -148,10 +148,10 @@ def product_details_view(request, pk, **kwargs):
             )
     else:
         other_similar_products = products.filter(name__icontains=product.name).exclude(id=product.id)
-        liked_products = Like.objects.all()
+        liked_products = products.filter(like__user=request.user)
         queryset = other_similar_products.union(liked_products)
         recommended_products_serializer = ProductSerializer(
-            instance=recommended_products,
+            instance=queryset,
             many=True
         )
         

@@ -8,7 +8,7 @@
           <navigation-links-vue :is-login="true" />
 
           <button type="button" class="btn btn-lg btn-primary mt-2" @click="login">
-            Login
+            {{ $t('Login') }}
           </button>
         </div>
       </div>

@@ -23,6 +23,13 @@ const numberFormats = {
       currencyDisplay: 'symbol'
     }
   },
+  es: {
+    currency: {
+      style: 'currency',
+      currency: 'EUR',
+      currencyDisplay: 'symbol'
+    }
+  },
   fr: {
     currency: {
       style: 'currency',

@@ -10,23 +10,19 @@
       <div class="collapse navbar-collapse justify-content-around">
         <ul class="navbar-nav text-uppercase">
           <li class="nav-item">
-            <router-link :to="{ name: 'collection_details_view', params: { lang: $i18n.locale, collection: 'all' } }" class="nav-link text">
+            <router-link :to="{ name: 'collection_details_view', params: { lang: $i18n.locale, collection: 'all' } }"
+              class="nav-link text">
               {{ $t('Shop') }}
             </router-link>
           </li>
 
           <li class="nav-item">
-            <router-link :to="{ name: 'collection_details_view', params: { lang: $i18n.locale, collection: 'shorts' } }" class="nav-link text">
+            <router-link :to="{ name: 'collection_details_view', params: { lang: $i18n.locale, collection: 'shorts' } }"
+              class="nav-link text">
               Shorts
             </router-link>
           </li>
-
-          <!-- <li class="nav-item" @click="store.changeSite('google')">
-            <a class="nav-link text">
-              Change site testing
-            </a>
-          </li> -->
-
+          
           <!-- <li class="nav-item" @mouseenter="showMegaMenu">
             <a class="nav-link text">
               {{ $t('Shop') }}
@@ -56,33 +52,27 @@
             </router-link>
           </li>
 
-          <!-- <li class="nav-item" @click="$store.commit('toggleModalCart')">
-            <a class="nav-link">
-              <v-icon size="28" class="mr-2">mdi-cart</v-icon>
-            </a>
-          </li> -->
-
-          <li class="nav-item">
-            <a href class="nav-link" @click.prevent="goToAdmin">
-              {{ $t('Admin') }}
-            </a>
-          </li>
-
           <li v-if="authStore.isAuthenticated" class="nav-item">
             <a href class="nav-link" @click.prevent="logout">
-              Logout
+              {{ $t('Logout') }}
             </a>
           </li>
 
           <li v-else class="nav-item">
             <router-link :to="{ name: 'login_view', params: { lang: 'fr' } }" class="nav-link">
-              Login
+              {{ $t('Login') }}
             </router-link>
           </li>
 
           <li class="nav-item">
             <a href class="nav-link" @click.prevent="store.openCart = true">
-              Cart
+              {{ $t('Cart') }}
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href class="nav-link" @click.prevent="goToAdmin">
+              {{ $t('Admin') }}
             </a>
           </li>
         </ul>

@@ -10,6 +10,7 @@ import { storeToRefs } from 'pinia'
 
 import BaseSite from '@/layouts/shop/BaseSite.vue'
 import DashboardSite from '@/layouts/dashboard/DashboardSite.vue'
+import useLanguage from './composables/language'
 
 export default {
   name: 'App',
@@ -19,6 +20,7 @@ export default {
   },
   setup () {
     var store = useShop()
+    useLanguage()
     var { currentSite } = storeToRefs(store)
 
     return {
