@@ -1,7 +1,11 @@
 <template>
   <div ref="link" :class="{ active: opened }" class="drawer">
-    <div class="action-button" @click="opened = !opened">
-      Réduction de 3€
+    <div class="action-button d-flex justify-content-center" @click="opened = !opened">
+      <font-awesome-icon v-if="opened" icon="fa-solid fa-circle-arrow-right" class="mb-3" />
+      <font-awesome-icon v-else icon="fa-solid fa-circle-arrow-left" class="mb-3" />
+      <h4 class="fw-bold m-0">
+        {{ $t('Get discount', { value: $n(3, 'currency', $i18n.locale) }) }}
+      </h4>
     </div>
     <div class="wrapper">
       Some wrapper
@@ -29,7 +33,15 @@ export default {
   height: auto;
   display: flex;
   justify-content: space-between;
-  transform: translateX(calc(600px - 42px));
+  transform: translateX(calc(600px - 44px));
+  z-index: 1000;
+}
+
+@media (min-width: 360px) {
+  .drawer {
+    width: 300px;
+    transform: translateX(calc(300px - 44px));
+  }
 }
 
 .drawer.active {
@@ -37,7 +49,7 @@ export default {
 }
 
 .action-button {
-  width: 43px;
+  width: 44px;
   background-color: rgba(0, 0, 0, 1);
   cursor: pointer;
   padding: .5rem;

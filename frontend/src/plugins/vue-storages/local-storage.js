@@ -52,7 +52,7 @@ class VueLocalStorage {
     this.DEFAULT_KEY_NAME = 'vue_local'
     this.storage = localStorage
   }
-  
+
   /**
     * Returns all items saved in the localStorage
     *
@@ -138,9 +138,9 @@ class VueLocalStorage {
       })
     })
 
-    if (import.meta.env.DEV) {
-      window.VueLocalStorage = this
-    }
+    window.VueLocalStorage = this
+    // if (import.meta.env.DEV) {
+    // }
   }
 }
 

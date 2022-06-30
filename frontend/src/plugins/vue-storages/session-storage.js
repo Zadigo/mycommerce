@@ -1,6 +1,6 @@
 import { setupDevtoolsPlugin } from '@vue/devtools-api'
 
-function setupDevtools (app, storage) {
+function setupDevtools (app) {
   // let trackId = 0
   // let devtoolsApi
   const devtools = {}
@@ -219,9 +219,9 @@ class VueSession {
       })
     })
 
-    if (import.meta.env.DEV) {
-      window.VueSession = this
-    }
+    window.VueSession = this
+    // if (import.meta.env.DEV) {
+    // }
   }
 }
 

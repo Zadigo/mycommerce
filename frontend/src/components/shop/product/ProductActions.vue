@@ -40,13 +40,15 @@
     <!-- Actions -->
     <div id="cart" class="d-flex justify-content-left my-4">
       <button id="btn-add-cart" class="btn btn-lg btn-dark me-2 fs-4" @click="addToCart">
-        <!-- <v-progress-circular v-if="addingToCart" :size="25" class="mr-2" color="white" indeterminate></v-progress-circular> -->
+        <div v-if="addingToCart" class="spinner-border text-light me-2" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
         {{ $t('Add to cart') }}
       </button>
 
       <!-- Add to like -->
       <button id="btn-add-like" class="btn btn-md btn-danger fs-4" @click="addToLikes">
-        heart
+        <font-awesome-icon icon="fa-solid fa-heart" />
       </button>
     </div>
   </div>
@@ -89,10 +91,6 @@ export default {
     }
   },
   data: () => ({
-    // productOptions: {
-    //   default_size: null
-    // },
-    // addingToCart: false,
     noSizeSelected: false
   }),
   computed: {
@@ -185,6 +183,7 @@ export default {
 </script>
 
 <style scoped>
+
   .sizes #btn-select-size {
     width: 15%;
   }
@@ -220,5 +219,11 @@ export default {
   }
   .swatch .color:not(:last-child) {
     margin-right: .5rem;
+  }
+
+  .spinner-border {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-width: .2em;
   }
 </style>

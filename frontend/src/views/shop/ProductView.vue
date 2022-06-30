@@ -3,11 +3,18 @@
     <div class="container-fluid">
       <div class="row">
         <!-- Breadbumbs -->
-        <div class="col-12">
+        <div v-if="breakpoints.isGreater('sm')" class="col-12">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }" class="text-muted">{{ $t('Home') }}</router-link></li>
-              <li class="breadcrumb-item"><router-link :to="{ name: 'collection_details_view', params: { collection: currentProduct.category.toLowerCase() } }" class="text-muted">{{ currentProduct.category }}</router-link></li>
+              <li class="breadcrumb-item">
+                <router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }" class="text-muted">{{
+                  $t('Home') }}</router-link>
+              </li>
+              <li class="breadcrumb-item">
+                <router-link
+                  :to="{ name: 'collection_details_view', params: { collection: currentProduct.category.toLowerCase() } }"
+                  class="text-muted">{{ currentProduct.category }}</router-link>
+              </li>
               <li class="breadcrumb-item active" aria-current="page">{{ currentProduct.name }}</li>
             </ol>
           </nav>
@@ -15,10 +22,12 @@
 
         <!-- Images -->
         <div class="col-sm-12 col-md-7">
-          <tile-display :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" />
+          <tile-display :is-new="currentProduct.display_new" :images="productImages"
+            :product-video="currentProduct.video" />
         </div>
 
-        <div class="col-sm-12 col-md-5 ps-5 pt-1">
+        <!-- Product information -->
+        <div :class="{ 'ps-5': breakpoints.isGreater('sm') }" class="col-sm-12 col-md-5 pt-1">
           <div class="row">
             <!-- Tags -->
             <div v-show="currentProduct.on_sale || currentProduct.display_new" id="tags" class="col-12">
@@ -34,23 +43,28 @@
             <!-- Information -->
             <div id="information" class="col-12 pt-0 pb-0">
               <p class="fw-normal fs-4 m-0">
-                {{ capitalizeLetters(currentProduct.name) }} - <span class="text-muted fw-normal">{{ currentProduct.color }}</span>
+                {{ capitalizeLetters(currentProduct.name) }} - <span class="text-muted fw-normal">{{
+                  currentProduct.color }}</span>
               </p>
 
               <p class="mb-1 fs-3">
-                <span v-if="currentProduct.on_sale" class="me-2 fs-4 fw-bolder text-muted">
-                  <!-- <del>{{ $n(currentProduct.unit_price, 'currency') }}</del> -->
-                  <del>{{ currentProduct.unit_price }}</del>
+                <!-- Original price -->
+                <span v-if="currentProduct.on_sale" class="me-2 fs-5 fw-bolder text-muted">
+                  <del>{{ $n(currentProduct.unit_price * 1, 'currency', $i18n.locale) }}</del>
                 </span>
 
+                <!-- Discounted price -->
                 <span v-if="currentProduct.on_sale" class="fw-bolder fs-4 fw-bold">
-                  <!-- {{ $n(currentProduct.sale_price, 'currency', $i18n.locale) }} -->
-                  {{ currentProduct.sale_price }}
+                  {{ $n(currentProduct.sale_price * 1, 'currency', $i18n.locale) }}
                 </span>
 
-                <span v-else class="fw-normal fs-3 fw-bolder">
-                  <!-- {{ $n(currentProduct.unit_price, 'currency', $i18n.locale) }} -->
-                  {{ currentProduct.unit_price }}
+                <!-- Original price -->
+                <span v-else :class="{ 'text-danger': currentProduct.on_sale }" class="fw-normal fs-3 fw-bolder">
+                  {{ $n(currentProduct.unit_price * 1, 'currency', $i18n.locale) }}
+                </span>
+
+                <span v-if="currentProduct.on_sale" class="p-1 bg-danger text-white ms-2 rounded fs-5 fw-bold">
+                  {{ formatAsPercentage(currentProduct.sale_value, true) }}
                 </span>
               </p>
             </div>
@@ -87,11 +101,12 @@
 </template>
 
 <script>
-import { capitalizeLetters } from '@/utils'
+import { capitalizeLetters, formatAsPercentage } from '@/utils'
 import { useShop } from '@/store/shop'
 import { mapState } from 'pinia'
 import { getCurrentInstance } from 'vue'
 import { useRoute } from 'vue-router'
+import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
 
 import useShopComposable from '../../composables/shop'
 
@@ -121,10 +136,13 @@ export default {
     const app = getCurrentInstance()
     const route = useRoute()
     const { isLoading } = useShopComposable(app, route)
+    const breakpoints = useBreakpoints(breakpointsTailwind)
     return {
       store,
       isLoading,
-      capitalizeLetters
+      capitalizeLetters,
+      formatAsPercentage,
+      breakpoints
       // requestProductVariants
     }
   },
@@ -162,6 +180,12 @@ export default {
     // Get the products with the same name but
     // with a different color variant
     this.requestProductVariants()
+
+    const index = this.store.getProductIndex(this.$route.params.id)
+    this.$analytics.google.viewItem({
+      item_name: this.currentProduct.name,
+      price: this.currentProduct.get_price
+    }, this.$route.params.collection, index)
   },
   methods: {
     async requestProductVariants () {

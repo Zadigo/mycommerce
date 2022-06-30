@@ -8,32 +8,30 @@
             <p class="w-50">Plus que <span class="fw-bold">59,81 €</span> pour profiter de la livraison gratuite</p>
             <div class="progress">
               <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="15" aria-valuemin="0"
-                aria-valuemax="100">
+                   aria-valuemax="100">
               </div>
             </div>
           </div>
 
           <div class="card">
             <div class="card-body">
-              <h1 class="fw-bold">Cart</h1>
+              <h1 class="fw-bold">{{ $t('Cart') }}</h1>
               <p class="fs-5">{{ cartLength }} {{ $tc('product', cartLength) }}</p>
             </div>
           </div>
 
           <article v-for="item in cartItems" :key="item.id" :aria-label="item.product.name" class="card my-2">
             <div class="card-body d-flex justify-content-left p-1">
-              <router-link
-                :to="{ name: 'product_view', params: { id: item.product.id, slug: item.product.slug, lang: $i18n.locale } }">
+              <router-link :to="{ name: 'product_view', params: { id: item.product.id, slug: item.product.slug, lang: $i18n.locale } }">
                 <div class="p-3">
-                  <img :src=" mediaUrl(item.product.images[0].mid_size)" :alt="item.name" class="img-fluid rounded"
-                    width="150">
+                  <img :src=" mediaUrl(item.product.images[0].mid_size)" :alt="item.name" class="img-fluid rounded" width="150">
                 </div>
               </router-link>
 
               <div class="p-3">
-                <router-link
-                  :to="{ name: 'product_view', params: { id: item.product.id, slug: item.product.slug, lang: $i18n.locale } }">
-                  <p class="fw-bold fs-4">{{ truncate(item.product.name, 30) }}</p>
+                <router-link :to="{ name: 'product_view', params: { id: item.product.id, slug: item.product.slug, lang: $i18n.locale } }" class="text-dark">
+                  <p class="fw-bold fs-4 m-0">{{ truncate(item.product.name, 30) }}</p>
+                  <p class="fw-bold mb-2">{{ $n(item.product.get_price * 1, 'currency', $i18n.locale) }} x 1</p>
                 </router-link>
                 <input type="number" class="form-control p-2 w-50">
                 <button type="button" class="btn btn-info my-2">
@@ -47,7 +45,7 @@
             <div class="card-body text-center">
               <h4 class="text-center display-4">{{ $t('Your cart is empty') }}</h4>
               <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
-                type="button" class="btn btn-lg btn-primary mt-3">
+                           type="button" class="btn btn-lg btn-primary mt-3">
                 {{ $t('Continue shopping') }}
               </router-link>
             </div>
@@ -58,7 +56,7 @@
           <div ref="aside" class="cart-aside">
             <div class="card">
               <div class="card-body">
-                <input type="text" name="coupon" class="form-control p-2 mb-2" placeholder="Coupon">
+                <input :placeholder="$t('Coupon')" type="text" name="coupon" class="form-control p-2 mb-2">
 
                 <div class="form-check">
                   <input id="gift-wrap" v-model="giftOptions.is_gift" class="form-check-input" type="checkbox">
@@ -77,7 +75,7 @@
                 <hr class="my-6">
 
                 <div class="d-flex justify-content-between fw-bold">
-                  <h5 class="text-uppercase fs-6 fw-bold">Sous-total</h5>
+                  <h5 class="text-uppercase fs-6 fw-bold">{{ $t('Subtotal') }}</h5>
                   <h5 class="text-uppercase fs-6 fw-bold">25€</h5>
                 </div>
 
@@ -87,14 +85,14 @@
                 </div>
 
                 <div class="d-flex justify-content-between">
-                  <h5 class="text-uppercase fw-bold">Total</h5>
+                  <h5 class="text-uppercase fw-bold">{{ $t('Total') }}</h5>
                   <h5 class="fw-bold">{{ $n(grandTotal, 'currency', $i18n.locale) }}</h5>
                 </div>
 
                 <hr class="my-7">
 
                 <router-link :to="{ name: 'shipment_view', params: {  lang: $i18n.locale } }"
-                  class="btn btn-block btn-primary">
+                             class="btn btn-block btn-primary">
                   {{ $t('Checkout') }}
                 </router-link>
 
@@ -187,7 +185,7 @@ export default {
     window.removeEventListener('scroll', this.asideEventListener)
   },
   methods: {
-    asideEventListener (e) {
+    asideEventListener () {
       const percentage = getVerticalScrollPercentage(document.body)
       if (percentage >= 20) {
         this.$refs.aside.classList.add('aside-sticky')

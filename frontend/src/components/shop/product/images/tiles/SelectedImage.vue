@@ -4,7 +4,7 @@
       <img :src="mediaUrl(selectedImage)" class="img-fluid">
     </div>
 
-    <button type="button" class="btn-close" id="btn-close" @click="$emit('reset-selected-image')"></button>
+    <button id="btn-close" type="button" class="btn-close" @click="$emit('reset-selected-image')"></button>
   </div>
 </template>
 
@@ -13,7 +13,6 @@ import { mediaUrl } from '@/utils'
 
 export default {
   name: 'SelectedImage',
-  emits: ['reset-selected-image'],
   props: {
     selectedImage: {
       type: String,
@@ -23,6 +22,7 @@ export default {
       type: Boolean
     }
   },
+  emits: ['reset-selected-image'],
   setup () {
     return {
       mediaUrl
@@ -52,7 +52,7 @@ export default {
         const containerHeight = container.clientHeight
         const centerX = containerWidth / mousePositionX * 100
         const centerY = containerHeight / mousePositionY * 100
-        
+
         const image = this.$refs.link.querySelector('img')
         image.style.transform = 'scale(5, 5)'
         image.style.transform = `translate(${centerX}px, ${centerY}px)`
@@ -87,7 +87,7 @@ export default {
     //     const centerY = totalY / mouseY
     //     const shiftX = centerX - mouseX
     //     const shiftY = centerY - mouseY
-        
+
     //     // image.style.left = `${shiftX}px`
     //     // image.style.top = `${shiftY}px`
     //     image.transform = `translate(${shiftX}px, ${shiftY}px)`

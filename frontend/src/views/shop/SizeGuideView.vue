@@ -1,22 +1,20 @@
 <template>
-  <section id="size-guide" class="my-5">
+  <section id="size-guide" class="ecommerce-section">
     <BaseJumbotronVue>
       <template #default>
-        <img class="d-block mx-auto mb-4" src="/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
-        
-        <h1 class="display-5 fw-bold">Centered hero</h1>
-        
+        <h1 class="display-5 fw-bold">
+          {{ $t('Size guide') }}
+        </h1>
+
         <div class="col-lg-6 mx-auto">
           <p class="lead mb-4">
-            Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most
-            popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system,
-            extensive prebuilt components, and powerful JavaScript plugins.
+            {{ $t('Size guide lead') }}
           </p>
-          
-          <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+
+          <!-- <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
             <button type="button" class="btn btn-primary btn-lg px-4 gap-3">Primary button</button>
             <button type="button" class="btn btn-outline-secondary btn-lg px-4">Secondary</button>
-          </div>
+          </div> -->
         </div>
       </template>
     </BaseJumbotronVue>
@@ -47,6 +45,35 @@
             ensembles ne correspondent pas à notre plus grande taille de bonnet, mais nous nous efforçons d'élargir
             notre offre le plus rapidement possible afin que tout le monde puisse profiter d’un moment de détente !
           </p>
+
+          <div class="row">
+            <div class="col-12">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">Lounge Taille</th>
+                    <th scope="col">FR</th>
+                    <th scope="col">UK</th>
+                    <th scope="col">US</th>
+                    <th scope="col">EU</th>
+                    <th scope="col">AUS</th>
+                    <th scope="col">IT</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">80A</th>
+                    <td>80A</td>
+                    <td>30A</td>
+                    <td>30A</td>
+                    <td>65A</td>
+                    <td>8A</td>
+                    <td>0A</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@
           <!-- Shipment -->
           <div v-if="currentStep >= 2" class="card mb-2">
             <div class="card-body">
-              <p class="fw-bold mb-1">Livraison prévue entre le 24/06/22 et le 27/06/22</p>
+              <p class="fw-bold mb-1">{{ $t('Delivery between', { date1: '24/06/22', date2: '27/06/22' }) }}</p>
               <p class="fw-bold">Colissimo - Livraison standard</p>
 
               <p class="m-0">Lucile Pauline</p>
@@ -16,7 +16,7 @@
               <p class="m-0">lucile@gmail.com</p>
 
               <button type="button" class="btn btn-info btn-sm mt-4" @click="changeStep(1)">
-                Modifier
+                {{ $t('Change') }}
               </button>
             </div>
           </div>
@@ -51,7 +51,7 @@
                       <span>{{ delivery }}</span>
                       <span>4.90€</span>
                     </p>
-                    <p>Livraison prévue entre le 24/06/22 et le 27/06/22</p>
+                    <p>{{ $t('Delivery between', { date1: '24/06/22', date2: '27/06/22' }) }}</p>
                   </div>
                 </a>
 
@@ -119,15 +119,15 @@ import { useShop } from '../../store/shop'
 
 export default {
   name: 'ShipmentView',
+  components: {
+    CartAsideVue
+    // StripeElementCard
+  },
   setup () {
     var store = useShop()
     return {
       store
     }
-  }, 
-  components: {
-    CartAsideVue
-    // StripeElementCard
   },
   data: () => ({
     currentStep: 1,
@@ -158,7 +158,7 @@ export default {
     ]
     fields.forEach((field) => {
       this.options[field.name] = null
-    })    
+    })
     this.fields = fields
   },
   methods: {
