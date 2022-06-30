@@ -21,7 +21,7 @@ html, body, * {
 }
 
 section.ecommerce-section {
-    margin-top: 8rem;
+    margin-top: calc(8rem + 35px);
     margin-bottom: 2rem;
     min-height: 50vh;
 }

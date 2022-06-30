@@ -37,6 +37,13 @@ export default {
   z-index: 1000;
 }
 
+@media (min-width: 360px) {
+  .drawer {
+    width: 300px;
+    transform: translateX(calc(300px - 44px));
+  }
+}
+
 .drawer.active {
   transform: translateX(0px);
 }

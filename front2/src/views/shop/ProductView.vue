@@ -3,11 +3,18 @@
     <div class="container-fluid">
       <div class="row">
         <!-- Breadbumbs -->
-        <div class="col-12">
+        <div v-if="breakpoints.isGreater('sm')" class="col-12">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }" class="text-muted">{{ $t('Home') }}</router-link></li>
-              <li class="breadcrumb-item"><router-link :to="{ name: 'collection_details_view', params: { collection: currentProduct.category.toLowerCase() } }" class="text-muted">{{ currentProduct.category }}</router-link></li>
+              <li class="breadcrumb-item">
+                <router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }" class="text-muted">{{
+                  $t('Home') }}</router-link>
+              </li>
+              <li class="breadcrumb-item">
+                <router-link
+                  :to="{ name: 'collection_details_view', params: { collection: currentProduct.category.toLowerCase() } }"
+                  class="text-muted">{{ currentProduct.category }}</router-link>
+              </li>
               <li class="breadcrumb-item active" aria-current="page">{{ currentProduct.name }}</li>
             </ol>
           </nav>
@@ -15,11 +22,12 @@
 
         <!-- Images -->
         <div class="col-sm-12 col-md-7">
-          <tile-display :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" />
+          <tile-display :is-new="currentProduct.display_new" :images="productImages"
+            :product-video="currentProduct.video" />
         </div>
 
         <!-- Product information -->
-        <div class="col-sm-12 col-md-5 ps-5 pt-1">
+        <div :class="{ 'ps-5': breakpoints.isGreater('sm') }" class="col-sm-12 col-md-5 pt-1">
           <div class="row">
             <!-- Tags -->
             <div v-show="currentProduct.on_sale || currentProduct.display_new" id="tags" class="col-12">
@@ -35,7 +43,8 @@
             <!-- Information -->
             <div id="information" class="col-12 pt-0 pb-0">
               <p class="fw-normal fs-4 m-0">
-                {{ capitalizeLetters(currentProduct.name) }} - <span class="text-muted fw-normal">{{ currentProduct.color }}</span>
+                {{ capitalizeLetters(currentProduct.name) }} - <span class="text-muted fw-normal">{{
+                  currentProduct.color }}</span>
               </p>
 
               <p class="mb-1 fs-3">
@@ -97,6 +106,7 @@ import { useShop } from '@/store/shop'
 import { mapState } from 'pinia'
 import { getCurrentInstance } from 'vue'
 import { useRoute } from 'vue-router'
+import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
 
 import useShopComposable from '../../composables/shop'
 
@@ -126,11 +136,13 @@ export default {
     const app = getCurrentInstance()
     const route = useRoute()
     const { isLoading } = useShopComposable(app, route)
+    const breakpoints = useBreakpoints(breakpointsTailwind)
     return {
       store,
       isLoading,
       capitalizeLetters,
-      formatAsPercentage
+      formatAsPercentage,
+      breakpoints
       // requestProductVariants
     }
   },

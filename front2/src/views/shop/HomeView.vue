@@ -7,7 +7,7 @@
           <h5 class="mb-4 lead-smaller">Craquez pour nos nouveautés signées Lounge</h5>
 
           <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale  } }"
-                       class="btn btn-dark btn-lg btn-rounded" role="button">
+            class="btn btn-dark btn-lg btn-rounded" role="button">
             {{ $t('Discover') }}
           </router-link>
         </div>
@@ -40,12 +40,16 @@
     <section ref="productSelection" class="product-selection">
       <div class="wrapper">
         <article v-for="product in latestProducts" :key="product.id" class="card">
-          <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-dark">
+          <router-link
+            :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }"
+            class="text-dark">
             <img :src="mediaUrl(product.get_main_image.mid_size)" class="card-img-top" alt="">
           </router-link>
 
           <div class="card-body">
-            <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-dark">
+            <router-link
+              :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }"
+              class="text-dark">
               <p class="fw-normal dark-text mb-0">{{ truncate(product.name, 20) }}</p>
               <p class="fw-bold">{{ $n(product.get_price * 1, 'currency', $i18n.locale) }}</p>
             </router-link>
@@ -53,18 +57,20 @@
         </article>
       </div>
       <transition name="scale">
-        <button v-if="currentPosition >= 250 || currentPosition === maxScrollablePosition" id="left" type="button" class="btn btn-floating bg-white" @click="scrollItem('left')">
+        <button v-if="currentPosition >= 250 || currentPosition === maxScrollablePosition" id="left" type="button"
+          class="btn btn-floating bg-white" @click="scrollItem('left')">
           Left
         </button>
       </transition>
       <transition name="scale">
-        <button v-if="currentPosition !== maxScrollablePosition" id="right" type="button" class="btn btn-floating bg-white" @click="scrollItem('right')">
+        <button v-if="currentPosition !== maxScrollablePosition" id="right" type="button"
+          class="btn btn-floating bg-white" @click="scrollItem('right')">
           Right
         </button>
       </transition>
     </section>
 
-    <section class="ecommerce-section d-flex justify-content-around">
+    <section :class="{ 'flex-column flex-column-center': breakpoints.isSmaller('sm'), 'justify-content-around': !breakpoints.isSmaller('sm') }" class="ecommerce-section d-flex">
       <div class="card mx-2">
         <img src="http://via.placeholder.com/600x600" class="card-img-top" alt="">
         <div class="card-body text-center">
@@ -72,6 +78,7 @@
           <button class="btn btn-lg btn-dark btn-rounded">Press</button>
         </div>
       </div>
+
       <div class="card mx-2">
         <img src="http://via.placeholder.com/600x600" class="card-img-top" alt="">
         <div class="card-body text-center">
@@ -79,6 +86,7 @@
           <button class="btn btn-lg btn-dark btn-rounded">Press</button>
         </div>
       </div>
+
       <div class="card mx-2">
         <img src="http://via.placeholder.com/600x600" class="card-img-top" alt="">
         <div class="card-body text-center">
@@ -91,6 +99,7 @@
 </template>
 
 <script>
+import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
 import { useAnalytics } from '../../plugins/vue-analytics/google'
 import { useShop } from '../../store/shop'
 import { mediaUrl, truncate } from '../../utils'
@@ -100,7 +109,9 @@ export default {
   setup () {
     const store = useShop()
     const { google } = useAnalytics()
+    const breakpoints = useBreakpoints(breakpointsTailwind)
     return {
+      breakpoints,
       google,
       store,
       mediaUrl,

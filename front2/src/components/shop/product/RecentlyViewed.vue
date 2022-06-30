@@ -9,7 +9,7 @@
 
       <div class=" col-sm-12 col-md-12">
         <div class="row">
-          <div v-for="product in getRecentlyViewedProducts" :key="product.id" class="col-3">
+          <div v-for="product in getRecentlyViewedProducts" :key="product.id" class="col-sm-12 col-md-3">
             <product-card :product="product" :is-loading="isLoading" />
           </div>
         </div>

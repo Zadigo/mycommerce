@@ -3,7 +3,7 @@
     <!-- Header -->
     <header class="fixed-top">
       <!-- Top banner -->
-      <!-- <base-top-banner v-show="!$route.meta.isFullPage" /> -->
+      <base-top-banner-vue v-show="!$route.meta.isFullPage" />
 
       <!-- Navbar -->
       <base-navbar-vue v-show="!$route.meta.isFullPage" />
@@ -24,7 +24,8 @@
       </router-view>
 
       <transition name="opacity">
-        <button type="button" class="btn btn-floating btn-lg btn-dark" @click="scrollToTop">
+        <button v-if="scrollY > 100" type="button" class="btn btn-floating btn-lg btn-dark"
+          @click="scrollToTop">
           <font-awesome-icon icon="fa-solid fa-arrow-up" />
         </button>
       </transition>
@@ -44,11 +45,15 @@
 
 <script>
 import { scrollToTop } from '../../utils'
+import { useScroll } from '@vueuse/core'
+
 import BaseMessagesVue from '@/components/BaseMessages.vue'
 import BaseNavbarVue from '@/components/BaseNavbar.vue'
 import BaseFooterVue from '@/components/BaseFooter.vue'
+import BaseTopBannerVue from '@/components/BaseTopBanner.vue'
 import DiscountDrawerVue from '../DiscountDrawer.vue'
 import ModalCartVue from '@/components/shop/ModalCart.vue'
+import { ref } from 'vue'
 
 // import BaseSearchModal from '@/components/BaseSearchModal.vue'
 // import ModalLanguageSelection from '@/components/ModalLanguageSelection.vue'
@@ -58,6 +63,7 @@ import ModalCartVue from '@/components/shop/ModalCart.vue'
 export default {
   name: 'BaseSite',
   components: {
+    BaseTopBannerVue,
     BaseFooterVue,
     BaseMessagesVue,
     BaseNavbarVue,
@@ -69,9 +75,17 @@ export default {
     // ScrollTopButton
   },
   setup () {
+    const target = ref(null)
+    const { y, directions } = useScroll(target)
     return {
+      target,
+      directions,
+      scrollY: y,
       scrollToTop
     }
+  },
+  mounted () {
+    this.target = window.document
   }
 }
 </script>
