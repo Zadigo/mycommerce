@@ -1,6 +1,6 @@
-import { faRightToBracket, faCartShopping, faHeart, faTruckFast, faClock, faArrowUp, faCircleArrowLeft, faCircleArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { faRightToBracket, faCartShopping, faHeart, faTruckFast, faClock, faArrowUp, faCircleArrowLeft, faCircleArrowRight, faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faFacebook, faTwitter, faYoutube, faGoogle } from '@fortawesome/free-brands-svg-icons'
+import { faFacebook, faTwitter, faYoutube, faGoogle, faCcVisa, faCcPaypal, faCcApplePay, faCcMastercard } from '@fortawesome/free-brands-svg-icons'
 
 
 library.add(faRightToBracket)
@@ -15,3 +15,9 @@ library.add(faTwitter)
 library.add(faCircleArrowLeft)
 library.add(faCircleArrowRight)
 library.add(faGoogle)
+library.add(faArrowLeft)
+library.add(faArrowRight)
+library.add(faCcVisa)
+library.add(faCcMastercard)
+library.add(faCcPaypal)
+library.add(faCcApplePay)

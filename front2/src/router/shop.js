@@ -57,7 +57,7 @@ export default [
   },
   {
     path: 'delivery-and-returns',
-    name: 'delivery_and_returns_view'
-    // component: loadView('shop/customer_care/DeliveryAndReturnsView')
+    name: 'delivery_and_returns_view',
+    component: loadView('shop/care/DeliveryAndReturnsView')
   }
 ]

@@ -14,13 +14,20 @@
       </template>
     </base-intro-vue>
 
+    <!-- TODO: Create a unique component for this -->
+    <section id="latest-products">
+      <h4 class="fw-bold">Faire ses achats</h4>
+      <base-products-ribbon-vue />
+    </section>
+
     <section class="two-images">
       <div class="image">
         <div class="title">
           <h3 class="p-2 text-white text-uppercase fw-bold">-20% sur les sous-vêtements</h3>
-          <button type="button" class="btn btn-lg btn-rounded btn-dark">
+          <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
+            type="button" class="btn btn-lg btn-rounded btn-dark">
             Le top de nos soldes
-          </button>
+          </router-link>
         </div>
       </div>
 
@@ -29,48 +36,29 @@
           <h3 class="p-2 text-white text-uppercase fw-bold">
             -20% de réduction sur les vêtements
           </h3>
-          <button type="button" class="btn btn-lg btn-rounded btn-dark">
+          <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
+            type="button" class="btn btn-lg btn-rounded btn-dark">
             Le top de nos soldes
-          </button>
+          </router-link>
         </div>
       </div>
     </section>
 
-    <!-- TODO: Create a unique component for this -->
-    <section ref="productSelection" class="product-selection">
-      <div class="wrapper">
-        <article v-for="product in latestProducts" :key="product.id" class="card">
-          <router-link
-            :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }"
-            class="text-dark">
-            <img :src="mediaUrl(product.get_main_image.mid_size)" class="card-img-top" alt="">
+    <section class="one-image">
+      <div class="image">
+        <div class="title text-center">
+          <h3 class="p-2 text-white text-uppercase fw-bold">-20% sur les sous-vêtements</h3>
+          <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
+            type="button" class="btn btn-lg btn-rounded btn-dark">
+            Le top de nos soldes
           </router-link>
-
-          <div class="card-body">
-            <router-link
-              :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }"
-              class="text-dark">
-              <p class="fw-normal dark-text mb-0">{{ truncate(product.name, 20) }}</p>
-              <p class="fw-bold">{{ $n(product.get_price * 1, 'currency', $i18n.locale) }}</p>
-            </router-link>
-          </div>
-        </article>
+        </div>
       </div>
-      <transition name="scale">
-        <button v-if="currentPosition >= 250 || currentPosition === maxScrollablePosition" id="left" type="button"
-          class="btn btn-floating bg-white" @click="scrollItem('left')">
-          Left
-        </button>
-      </transition>
-      <transition name="scale">
-        <button v-if="currentPosition !== maxScrollablePosition" id="right" type="button"
-          class="btn btn-floating bg-white" @click="scrollItem('right')">
-          Right
-        </button>
-      </transition>
     </section>
 
-    <section :class="{ 'flex-column flex-column-center': breakpoints.isSmaller('sm'), 'justify-content-around': !breakpoints.isSmaller('sm') }" class="ecommerce-section d-flex">
+    <section
+      :class="{ 'flex-column flex-column-center': breakpoints.isSmaller('sm'), 'justify-content-around': !breakpoints.isSmaller('sm') }"
+      class="ecommerce-section d-flex">
       <div class="card mx-2">
         <img src="http://via.placeholder.com/600x600" class="card-img-top" alt="">
         <div class="card-body text-center">
@@ -103,9 +91,13 @@ import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
 import { useAnalytics } from '../../plugins/vue-analytics/google'
 import { useShop } from '../../store/shop'
 import { mediaUrl, truncate } from '../../utils'
+import BaseProductsRibbonVue from '@/layouts/BaseProductsRibbon.vue'
 
 export default {
   name: 'HomeView',
+  components: {
+    BaseProductsRibbonVue
+  },
   setup () {
     const store = useShop()
     const { google } = useAnalytics()
@@ -116,56 +108,6 @@ export default {
       store,
       mediaUrl,
       truncate
-    }
-  },
-  data: () => ({
-    currentPosition: 0,
-    maxScrollablePosition: 0,
-    latestProducts: []
-  }),
-  beforeMount () {
-    const latestProducts = this.$session.retrieve('latestProducts')
-    if (!latestProducts) {
-      this.getLatestProducts()
-    } else {
-      this.store.products = latestProducts
-      this.latestProducts = latestProducts
-    }
-  },
-  mounted () {
-    const element = this.$refs.productSelection
-    const wrapper = element.querySelector('.wrapper')
-    const maxScrollablePosition = (wrapper.scrollWidth - wrapper.offsetWidth)
-    this.maxScrollablePosition = maxScrollablePosition
-
-    this.google.pageView(this.$route.fullPath, 'Quick Title')
-  },
-  methods: {
-    async getLatestProducts () {
-      try {
-        const response = await this.$http.get('shop/latest', { limit: 10 })
-        this.latestProducts = response.data
-        this.store.products = response.data
-        this.$localstorage.create('latestProducts', response.data)
-      } catch (error) {
-        this.store.addErrorMessage(`V-AX-LAT: An error occured: ${error}`)
-      }
-    },
-    scrollItem (method) {
-      const element = this.$refs.productSelection
-      const wrapper = element.querySelector('.wrapper')
-      const currentPosition = wrapper.scrollLeft
-      // if (currentPosition === 0 || currentPosition === maxScrollablePosition) {
-      //   return
-      // }
-
-      if (method === 'right') {
-        wrapper.scrollLeft += 250
-      }
-      if (method === 'left') {
-        wrapper.scrollLeft -= 250
-      }
-      this.currentPosition = currentPosition
     }
   }
 }
@@ -181,6 +123,16 @@ export default {
   margin-bottom: 1rem;
 }
 
+.one-image .image {
+  position: relative;
+  height: 600px;
+  width: auto;
+  overflow: hidden;
+  background-image: url('../../assets/side1.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .two-images .image {
   position: relative;
   height: 500px;
@@ -189,6 +141,15 @@ export default {
   background-image: url('../../assets/side1.jpg');
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.one-image .image .title {
+  position: absolute;
+  width: 100%;
+  padding: 2rem;
+  bottom: 10%;
+  left: 0;
+  z-index: 1;
 }
 
 .two-images .image .title {
@@ -200,6 +161,7 @@ export default {
   z-index: 1;
 }
 
+.one-image .image::after,
 .two-images .image::after {
   content: "";
   position: absolute;
@@ -222,49 +184,6 @@ export default {
   overflow: hidden;
 }
 
-.product-selection {
-  position: relative;
-  padding: 2rem;
-}
-
-.product-selection .wrapper {
-  display: flex;
-  padding: 1rem;
-  overflow-x: scroll;
-  scroll-behavior: smooth;
-}
-
-.product-selection .wrapper::-webkit-scrollbar {
-  transition: all .3s ease;
-  scroll-behavior: smooth;
-  background-color: white;
-  height: 5px;
-}
-.product-selection .wrapper::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, .2);
-  border-radius: .5rem;
-}
-
-.product-selection .wrapper .card {
-  margin: .5rem;
-  min-width: 300px;
-}
-.product-selection .btn#right {
-  position: absolute;
-  right: 3%;
-  top: 40%;
-  bottom: 50%;
-  width: 3rem;
-  height: 3rem;
-}
-.product-selection .btn#left {
-  position: absolute;
-  left: 3%;
-  top: 40%;
-  bottom: 50%;
-  width: 3rem;
-  height: 3rem;
-}
 .scale-enter-active,
 .scale-leave-active {
   transition: all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
