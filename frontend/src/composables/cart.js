@@ -14,6 +14,25 @@ export default function useCartComposable (app) {
   const productOptions = ref({ default_size: 'Unique' })
 
   /**
+   * Return the user cart
+   * 
+   * @returns Cart
+   */
+  function getCart () {
+    return app.appContext.config.globalProperties.$localstorage.retrieve('cart')
+  }
+
+
+
+  function getSessionId () {
+    try {
+      return getCart().session_id
+    } catch {
+      return null
+    }
+  }
+
+  /**
    * Function allows us to remove a product
    * from the cart
    * 
@@ -110,28 +129,6 @@ export default function useCartComposable (app) {
       this.store.addErrorMessage(`V-AX-CA: ${error}: ${error.response.message}`)
     }
   }
-
-  /**
-   * Return the user cart
-   * 
-   * @returns Cart
-   */
-  function getCart () {
-    return app.appContext.config.globalProperties.$localstorage.retrieve('cart')
-  }
-
-  function getSessionId () {
-    try {
-      return getCart().session_id
-    } catch {
-      return null
-    }
-  }
-
-  // onBeforeMount(() => {
-  //     var cart = getCart()
-  //     this.store.update(cart)
-  // })
 
   return {
     addToCart,

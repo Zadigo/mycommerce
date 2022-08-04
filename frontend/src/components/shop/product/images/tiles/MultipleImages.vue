@@ -40,10 +40,10 @@ export default {
   // that contains more than 3 images
   name: 'MultipleImages',
   props: {
-    images: {
-      type: Array,
-      required: true
-    },
+    // images: {
+    //   type: Array,
+    //   required: true
+    // },
     productVideo: {
       type: Object,
       default: () => {}

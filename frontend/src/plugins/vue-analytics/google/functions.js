@@ -38,12 +38,12 @@ const DEFAULT_DIMENSIONS = [
  * @param {Object} item - Incoming item
  */
 function checkItemFields (item) {
-    if (typeof item != 'object') {
+    if (typeof item !== 'object') {
         throw new Error('Item is not an object')
     }
 
-    var fields = Object.keys(item)
-    var cleanedItem = {}
+    const fields = Object.keys(item)
+    const cleanedItem = {}
 
     // var regex = /^item_category_\d+$/g
 
@@ -72,7 +72,7 @@ function cleanItems (items) {
     items.forEach((item, i) => {
         var cleanedItem = checkItemFields(item)
 
-        cleanedItem['index'] = i
+        cleanedItem.index = i
         container.push(cleanedItem)
     })
     return container

@@ -24,6 +24,9 @@ export default {
       type: Boolean
     }
   },
-  emits: ['signup-fields', 'login-fields']
+  emits: {
+    'signup-fields': () => true,
+    'login-fields': () => true
+  }
 }
 </script>

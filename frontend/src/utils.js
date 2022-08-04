@@ -21,6 +21,7 @@ function indexElements (items) {
       item.id = i
       return item
     }
+
   })
 }
 
@@ -34,7 +35,7 @@ function indexElements (items) {
  * 
  */
 function incrementLastId (items) {
-  const lastItem = _.last(items)
+  var lastItem = _.last(items)
 
   if (!(typeof lastItem === 'object')) {
     throw Error(`incrementLastId - ${lastItem} should be a dictionnary`)
@@ -50,10 +51,10 @@ function incrementLastId (items) {
  *  
  */
 function readFile (file) {
-  let filePreview = null
+  var filePreview = null
 
   if (file && file[0]) {
-    const reader = new FileReader()
+    const reader = new FileReader
 
     reader.onload = e => {
       filePreview = e.target.result
@@ -88,6 +89,7 @@ function readMultipleFiles (files) {
 function truncate (text, k = 28) {
   if (!(typeof text === 'string')) {
     raiseError('truncate', `${text} should be a string`)
+    return ''
   } else {
     return `${text.slice(0, k)}...`
   }
@@ -119,15 +121,19 @@ function conditionalTruncate (text, limit, k) {
  *  
  */
 function buildLimitOffset (url, limit = 100, offset = 0) {
+  let defaultLimit = 100
+  let defaultOffset = 0
+
   if (url) {
     const instance = new URL(url)
     const potentialLimit = instance.searchParams.get('limit')
     const potentialOffset = instance.searchParams.get('offset')
 
-    limit = potentialLimit || limit
-    offset = potentialOffset || offset
+    defaultLimit = potentialLimit || limit
+    defaultOffset = potentialOffset || offset
   }
-  return new URLSearchParams({ limit: limit, offset: offset })
+
+  return new URLSearchParams({ limit: defaultLimit, offset: defaultOffset })
 }
 
 /**
@@ -140,12 +146,14 @@ function buildLimitOffset (url, limit = 100, offset = 0) {
  *  
  */
 function getPageFromParams (url, page = 1) {
+  let defaultPage = 1
+
   if (url) {
     const instance = new URL(url)
     const potentialPage = instance.searchParams.get('page')
-    page = potentialPage || 1
+    defaultPage = potentialPage || page
   }
-  return new URLSearchParams({ page: page })
+  return new URLSearchParams({ page: defaultPage })
 }
 
 /**
@@ -160,7 +168,6 @@ function getPageFromParams (url, page = 1) {
 function listManager (items, item) {
   if (items.includes(item)) {
     const index = _.indexOf(items, item)
-
     items.splice(index, 1)
   } else {
     items.push(item)
@@ -183,7 +190,7 @@ function increaseIndex (items, initialIndex) {
   // increase the index by 1. If the new index is
   // out of bounds, return 0, or, the index of
   // the first element
-  let newIndex = initialIndex + 1
+  var newIndex = initialIndex + 1
 
   if (newIndex > items.length - 1) {
     newIndex = 0
@@ -206,7 +213,7 @@ function decreaseIndex (items, initialIndex) {
   // increase the index by 1. If the new index is
   // out of bounds, return the index of the last
   // item of the list
-  let newIndex = initialIndex - 1
+  var newIndex = initialIndex - 1
 
   if (newIndex < 0) {
     newIndex = items.length - 1
@@ -228,8 +235,8 @@ function decreaseIndex (items, initialIndex) {
 function getPreviousItemFromList (items, initialItem, field) {
   // Returns the previous item from a given list based on the position
   // of an initial element
-  const index = _.findIndex(items, [field, initialItem[field]])
-  const newIndex = decreaseIndex(items, index)
+  var index = _.findIndex(items, [field, initialItem[field]])
+  var newIndex = decreaseIndex(items, index)
 
   return items[newIndex]
 }
@@ -246,8 +253,8 @@ function getPreviousItemFromList (items, initialItem, field) {
  * 
  */
 function getNextItemFromList (items, initialItem, field) {
-  const index = _.findIndex(items, [field, initialItem[field]])
-  const newIndex = increaseIndex(items, index)
+  var index = _.findIndex(items, [field, initialItem[field]])
+  var newIndex = increaseIndex(items, index)
 
   return items[newIndex]
 }
@@ -265,8 +272,8 @@ function getNextItemFromList (items, initialItem, field) {
 function searchHelper (search, items, fields) {
   if (search) {
     return _.filter(items, (item) => {
-      const truthArray = _.map(fields, (field) => {
-        const itemValue = item[field]
+      var truthArray = _.map(fields, (field) => {
+        var itemValue = item[field]
 
         if (typeof itemValue === 'boolean') {
           return itemValue === search
@@ -311,7 +318,7 @@ function scrollToTop () {
 }
 
 function getAutoComplete (fieldName) {
-  let autocomplete = null
+  var autocomplete = null
 
   switch (fieldName) {
     case fieldName === 'password':
@@ -332,7 +339,7 @@ function getAutoComplete (fieldName) {
 }
 
 function getFieldType (fieldName, defaultType) {
-  let fieldType = null
+  var fieldType = null
 
   switch (fieldType) {
     case fieldName === 'password1':
@@ -359,7 +366,7 @@ function getFieldType (fieldName, defaultType) {
  * 
  */
 function loadView (component) {
-  return () => import(`./views/${component}.vue`)
+  return () => import(`@/views/${component}.vue`)
 }
 
 /**
@@ -369,7 +376,7 @@ function loadView (component) {
  * 
  */
 function loadLayout (component) {
-  return () => import(`./layouts/${component}.vue`)
+  return () => import(`@/layouts/${component}.vue`)
 }
 
 /**
@@ -379,7 +386,7 @@ function loadLayout (component) {
  * 
  */
 function loadComponent (component) {
-  return () => import(`./components/${component}.vue`)
+  return () => import(`@/components/${component}.vue`)
 }
 
 /**
@@ -390,7 +397,9 @@ function loadComponent (component) {
  * 
  */
 function capitalizeFirstLetter (value) {
-  if (!value) { return value }
+  if (!value) {
+    return value
+  }
   return value.charAt(0).toUpperCase() + value.slice(1)
 }
 
@@ -403,12 +412,12 @@ function capitalizeFirstLetter (value) {
  * 
  */
 function capitalizeLetters (value) {
-  const tokens = value.split(' ')
-  const result = tokens.map((token) => {
+  var tokens = value.split(" ")
+  var result = tokens.map((token) => {
     return capitalizeFirstLetter(token)
   })
 
-  return result.join(' ')
+  return result.join(" ")
 }
 
 /**
@@ -432,7 +441,7 @@ function formatAsPercentage (value, negative = false) {
  * 
  */
 function mediaUrl (path) {
-  const rootUrl = process.env.rootUrl || 'http://127.0.0.1:8000'
+  var rootUrl = process.env.rootUrl || 'http://127.0.0.1:8000'
   return new URL(path, rootUrl).toString()
 }
 
@@ -445,7 +454,7 @@ function mediaUrl (path) {
  * 
  */
 function getVerticalScrollPercentage (el) {
-  const parent = el.parentNode
+  var parent = el.parentNode
   return (el.scrollTop || parent.scrollTop) / (parent.scrollHeight - parent.clientHeight) * 100
 }
 
@@ -470,7 +479,7 @@ function quickSort (items) {
  * 
  */
 function getWebsocketProtocole () {
-  const protocol = window.location.protocol
+  var protocol = window.location.protocol
   return protocol === 'https' ? 'wss://' : 'ws://'
 }
 
@@ -481,8 +490,8 @@ function getWebsocketProtocole () {
  * 
  */
 function websocketRootAddress (path) {
-  const protocol = getWebsocketProtocole()
-  const host = process.env.HOST_ADDRESS || '127.0.0.1:8000'
+  var protocol = getWebsocketProtocole()
+  var host = process.env.HOST_ADDRESS || '127.0.0.1:8000'
   return new URL(path, protocol + host).toString()
 }
 
@@ -526,7 +535,7 @@ function socketSendMessage (type, items = {}) {
  * 
  */
 function rebuildPath (path) {
-  const instance = new URL(path, window.location.href)
+  var instance = new URL(path, window.location.href)
   return instance.toString()
 }
 
@@ -538,12 +547,14 @@ function rebuildPath (path) {
  * 
  */
 function hasNull (items) {
+  let itemsValues = []
+
   if (typeof items === 'object') {
-    items = Object.values(items)
+    itemsValues = Object.values(items)
   }
 
-  return _.some(items, (item) => {
-    return item === null || item === undefined || item === ''
+  return _.some(itemsValues, (item) => {
+    return item === null || item === ""
   })
 }
 

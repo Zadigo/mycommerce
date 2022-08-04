@@ -34,7 +34,9 @@ import { mediaUrl, truncate } from '../utils'
 
 export default {
   name: 'BaseProductsRibbon',
-  emits: ['product-click'],
+  emits: {
+    'product-click': () => true
+  },
   setup () {
     const target = ref(null)
     const store = useShop()

@@ -7,13 +7,12 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item">
-                <router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }" class="text-muted">{{
-                  $t('Home') }}</router-link>
+                <router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }" class="text-muted">
+                  {{ $t('Home') }}
+                </router-link>
               </li>
               <li class="breadcrumb-item">
-                <router-link
-                  :to="{ name: 'collection_details_view', params: { collection: currentProduct.category.toLowerCase() } }"
-                  class="text-muted">{{ currentProduct.category }}</router-link>
+                <router-link :to="{ name: 'collection_details_view', params: { collection: currentProduct.category.toLowerCase() } }" class="text-muted">{{ currentProduct.category }}</router-link>
               </li>
               <li class="breadcrumb-item active" aria-current="page">{{ currentProduct.name }}</li>
             </ol>
@@ -22,8 +21,7 @@
 
         <!-- Images -->
         <div class="col-sm-12 col-md-7">
-          <tile-display :is-new="currentProduct.display_new" :images="productImages"
-            :product-video="currentProduct.video" />
+          <tile-display :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" />
         </div>
 
         <!-- Product information -->
@@ -43,8 +41,7 @@
             <!-- Information -->
             <div id="information" class="col-12 pt-0 pb-0">
               <p class="fw-normal fs-4 m-0">
-                {{ capitalizeLetters(currentProduct.name) }} - <span class="text-muted fw-normal">{{
-                  currentProduct.color }}</span>
+                {{ capitalizeLetters(currentProduct.name) }} - <span class="text-muted fw-normal">{{ currentProduct.color }}</span>
               </p>
 
               <p class="mb-1 fs-3">
@@ -166,7 +163,7 @@ export default {
       // When leaving the page, this still triggers
       // sending a request with undefined so make sure
       // that newValue is actually defined
-      if (current !== undefined && current !== previous) {
+      if (current && current !== previous) {
         this.isLoading = true
         this.store.getProduct(current)
         this.requestProductVariants()
@@ -211,18 +208,20 @@ export default {
 </script>
 
 <style scoped>
-  #more div {
-    height: 500px;
-    width: 100%;
-    overflow-x: scroll;
-    padding: 1rem;
-  }
-  #tags {
-    display: flex;
-    justify-content: around;
-  }
-  .breadcrumb a:hover {
-    color: #eee;
-    text-decoration: underline;
-  }
+#more div {
+  height: 500px;
+  width: 100%;
+  overflow-x: scroll;
+  padding: 1rem;
+}
+
+#tags {
+  display: flex;
+  justify-content: around;
+}
+
+.breadcrumb a:hover {
+  color: #eee;
+  text-decoration: underline;
+}
 </style>

@@ -132,14 +132,14 @@ export default {
       type: Object,
       required: true
     },
-    numberOfReviews: {
-      type: Number,
-      default: 0
-    },
-    productVariants: {
-      type: Array,
-      default: () => []
-    }
+    // numberOfReviews: {
+    //   type: Number,
+    //   default: 0
+    // },
+    // productVariants: {
+    //   type: Array,
+    //   default: () => []
+    // }
   },
   data: () => ({
     expanded: false,
@@ -151,7 +151,7 @@ export default {
     ...mapState(useAuthentication, ['isAuthenticated']),
 
     hasDescription () {
-      return this.product === undefined
+      return this.product
     }
   },
   methods: {

@@ -93,7 +93,7 @@ export default {
       // NOTE: When leaving the page, this triggers
       // a request with "undefined" as param so make 
       // sure "current" is actually defined
-      if (current !== undefined && current !== previous) {
+      if (current && current !== previous) {
         this.getProducts()
       }
     }

@@ -15,14 +15,11 @@
             <p class="fw-bold text-uppercase">{{ $t(section.name) }}</p>
 
             <template v-for="(link, y) in section.links">
-              <router-link v-if="link.name" :key="`link-1-${y}`"
-                :to="{ name: link.name, params: { lang: $i18n.locale } }"
-                class="d-block py-1 text-muted text-decoration-none">
+              <router-link v-if="link.name" :key="`link-1-${y}`" :to="{ name: link.name, params: { lang: $i18n.locale } }" class="d-block py-1 text-muted text-decoration-none">
                 {{ $t(link.text) }}
               </router-link>
 
-              <router-link v-else :key="`link-2-${y}`" :to="link.href"
-                class="d-block py-1 text-muted text-decoration-none">
+              <router-link v-else :key="`link-2-${y}`" :to="link.href" class="d-block py-1 text-muted text-decoration-none">
                 {{ $t(link.text) }}
               </router-link>
             </template>
@@ -36,8 +33,7 @@
               {{ $t('newsletter_phrase', { company: myproject.company.legalName }) }}
               <!-- Inscrivez-vous pour connaître les dates de sortie de nouveaux produits, les meilleures offres et les actus Lounge. -->
             </p>
-            <input v-model="subscriptionEmail" type="email" class="form-control" :placeholder="$t('Enter your email')"
-              @keypress.enter="subscribeUser" />
+            <input v-model="subscriptionEmail" type="email" class="form-control" :placeholder="$t('Enter your email')" @keypress.enter="subscribeUser" />
           </div>
         </div>
       </div>
@@ -47,9 +43,7 @@
 
     <!-- Socials -->
     <div v-if="myproject.company.socials.length > 0" class="text-center py-4 align-items-center">
-      <a v-for="social in myproject.company.socials" :key="social.name" :href="social.url" :aria-label="social.name"
-        class="btn btn-transparent shadow-light text-light shadow-none m-1" role="button" rel="nofollow"
-        target="_blank">
+      <a v-for="social in myproject.company.socials" :key="social.name" :href="social.url" :aria-label="social.name" class="btn btn-transparent shadow-light text-light shadow-none m-1" role="button" target="_blank" rel="noopener noreferrer">
         <font-awesome-icon :icon="'fa-brands ' + social.icon" size="2x" />
       </a>
     </div>

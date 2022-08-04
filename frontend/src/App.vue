@@ -20,8 +20,9 @@ export default {
   },
   setup () {
     var store = useShop()
-    useLanguage()
     var { currentSite } = storeToRefs(store)
+    
+    useLanguage()
 
     return {
       currentSite

@@ -10,36 +10,6 @@ import { useAuthentication } from '../store/authentication'
 import { client } from '../plugins/axios'
 import i18n from '../i18n'
 
-function mapKeys (keys, isLogin = true) {
-  return _.map(keys, (key) => {
-    const autocomplete = getAutocomplete(key, isLogin)
-    const fieldType = checkFieldType(key)
-    return { name: capitalizeFirstLetter(i18n.global.t(key)), key: key, autocomplete: autocomplete, type: fieldType }
-  })
-}
-
-function checkFieldType (key) {
-  let fieldType = null
-
-  switch (key) {
-    case 'password':
-    case 'password1':
-    case 'password2':
-      fieldType = 'password'
-      break
-
-    case 'email':
-      fieldType = 'email'
-      break
-
-    default:
-      fieldType = 'text'
-      break
-  }
-
-  return fieldType
-}
-
 function getAutocomplete (key, isLogin = true) {
   let autocomplete
 
@@ -79,6 +49,36 @@ function getAutocomplete (key, isLogin = true) {
     }
   }
   return autocomplete
+}
+
+function checkFieldType (key) {
+  let fieldType = null
+
+  switch (key) {
+    case 'password':
+    case 'password1':
+    case 'password2':
+      fieldType = 'password'
+      break
+
+    case 'email':
+      fieldType = 'email'
+      break
+
+    default:
+      fieldType = 'text'
+      break
+  }
+
+  return fieldType
+}
+
+function mapKeys (keys, isLogin = true) {
+  return _.map(keys, (key) => {
+    const autocomplete = getAutocomplete(key, isLogin)
+    const fieldType = checkFieldType(key)
+    return { name: capitalizeFirstLetter(i18n.global.t(key)), key: key, autocomplete: autocomplete, type: fieldType }
+  })
 }
 
 export default function useAuthenicationComposable () {

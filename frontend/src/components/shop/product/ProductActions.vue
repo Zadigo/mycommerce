@@ -19,13 +19,13 @@
       <p class="mb-2 fw-bold">{{ $t('Size') }}</p>
 
       <div v-if="hasSizes" class="sizes">
-        <button v-for="(size, i) in product.sizes" id="btn-select-size" :key="size.id" :class="{ 'ms-2': i > 0, 'btn-dark': productOptions.default_size == size.name, 'btn-light': !(productOptions.default_size == size.name) }" class="btn btn-md shadow-none border" @click="setSize(size)">
+        <button v-for="(size, i) in product.sizes" id="btn-select-size" :key="size.id" :class="{ 'ms-2': i > 0, 'btn-dark': productOptions.default_size == size.name, 'btn-light': !(productOptions.default_size == size.name) }" type="button" class="btn btn-md shadow-none border" @click="setSize(size)">
           {{ size.name }}
         </button>
       </div>
 
       <div v-else id="sizes">
-        <button id="btn-no-size" class="btn btn-md btn-outline-dark shadow-none border disabled">
+        <button id="btn-no-size" type="button" class="btn btn-md btn-outline-dark shadow-none border disabled">
           {{ $t('Unique size') }}
         </button>
       </div>
@@ -39,7 +39,7 @@
 
     <!-- Actions -->
     <div id="cart" class="d-flex justify-content-left my-4">
-      <button id="btn-add-cart" class="btn btn-lg btn-dark me-2 fs-4" @click="addToCart">
+      <button id="btn-add-cart" type="button" class="btn btn-lg btn-dark me-2 fs-4" @click="addToCart">
         <div v-if="addingToCart" class="spinner-border text-light me-2" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
@@ -47,7 +47,7 @@
       </button>
 
       <!-- Add to like -->
-      <button id="btn-add-like" class="btn btn-md btn-danger fs-4" @click="addToLikes">
+      <button id="btn-add-like" type="button" class="btn btn-md btn-danger fs-4" @click="addToLikes">
         <font-awesome-icon icon="fa-solid fa-heart" />
       </button>
     </div>
@@ -108,7 +108,7 @@ export default {
         const options = this.productOptions
         const default_size = this.productOptions.default_size
 
-        if (this.hasSizes && default_size == null) {
+        if (this.hasSizes && default_size === null) {
           this.noSizeSelected = true
           this.addingToCart = false
           return
@@ -119,7 +119,7 @@ export default {
         // as null, set it to Unique or this
         // will return an error requiring that
         // the default_size be not null
-        if (default_size == null) {
+        if (default_size === null) {
           options.default_size = 'Unique'
         }
 

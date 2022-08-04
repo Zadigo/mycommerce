@@ -53,6 +53,7 @@ export default {
         return this.$router.push({ name: 'collection_details_view', params: { collection: 'all', lang: this.$i18n.locale } })
       } else {
         // pass
+        return false
       }
     }
   }

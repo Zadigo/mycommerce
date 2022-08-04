@@ -115,8 +115,7 @@ export default {
   methods: {
     async loadStatistics () {
       try {
-        var response = await this.axios.get('shop/dashboard/statistics')
-
+        const response = await this.axios.get('shop/dashboard/statistics')
         this.statistics = response.data
       } catch(error) {
         this.store.addErrorMessage(error)

@@ -4,26 +4,24 @@
       <div v-if="likedProducts.length > 0" class="row">
         <article v-for="product in likedProducts" :key="product.id" class="col-3">
           <div class="card">
-            <router-link
-              :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }">
+            <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }">
               <img :src="mediaUrl(product.get_main_image.mid_size)" :alt="likedProducts.name" class="card-img-top">
             </router-link>
 
             <div class="card-body">
               <h5 class="card-title">
-                <router-link
-                  :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }">
+                <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }">
                   {{ truncate(product.name, 20) }}
                 </router-link>
               </h5>
 
               <p class="card-text">{{ product.get_price }}</p>
 
-              <button class="btn btn-block btn-primary">
+              <button type="button" class="btn btn-block btn-primary">
                 {{ $t('Add to cart') }}
               </button>
 
-              <button class="btn btn-block btn-primary" @click="removeFromLiked(product)">
+              <button type="button" class="btn btn-block btn-primary" @click="removeFromLiked(product)">
                 {{ $t('Remove') }}
               </button>
             </div>
@@ -37,8 +35,7 @@
           <h1 class="mb-4 fw-bold">{{ $t('You have no saved items') }}</h1>
 
           <div v-if="authStore.isAuthenticated" class="my-2">
-            <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
-              class="btn btn-lg btn-primary">
+            <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }" class="btn btn-lg btn-primary">
               {{ $t('Continue shopping') }}
             </router-link>
           </div>

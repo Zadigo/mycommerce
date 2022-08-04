@@ -51,7 +51,7 @@ function mapToFields (products, mapping) {
  * @param {Object} options - Options for the instance
  */
 function createGoogleAnalytics (tag, options) {
-    let { currency, brand } = options
+    const { currency, brand } = options
     
     functions.DEFAULT_CURRENCY = currency || functions.DEFAULT_CURRENCY
     functions.DEFAULT_BRAND = brand

@@ -18,16 +18,16 @@ export default {
   // Component for showing images of a product
   // that contains more than 2 images
   name: 'TwoImages',
-  props: {
-    images: {
-      type: Array,
-      required: true
-    },
-    productVideo: {
-      type: Object,
-      default: () => {}
-    }
-  },
+  // props: {
+  //   images: {
+  //     type: Array,
+  //     required: true
+  //   },
+  //   productVideo: {
+  //     type: Object,
+  //     default: () => {}
+  //   }
+  // },
   setup () {
     const app = getCurrentInstance()
     const { selectedImage, getImageForIndex } = useTileComposable(app)

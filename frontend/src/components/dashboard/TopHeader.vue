@@ -2,9 +2,9 @@
   <header>
     <side-bar />
 
-    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top" >
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
       <div class="container-fluid">
-        <button class="navbar-toggler" type="button" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation" >
+        <button class="navbar-toggler" type="button" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
           <i class="fas fa-bars" />
         </button>
 
@@ -25,7 +25,7 @@
         <ul class="navbar-nav ms-auto d-flex flex-row">
           <!-- Notifications -->
           <li class="nav-item dropdown">
-            <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#"  role="button" aria-expanded="false">
+            <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" role="button" aria-expanded="false">
               <!-- <v-icon class="mr-2">mdi-bell</v-icon> -->
               <span class="badge rounded-pill badge-notification bg-danger">1</span>
             </a>
@@ -58,11 +58,11 @@
 
           <!-- Avatar -->
           <li class="nav-item dropdown">
-            <a id="navbarDropdownMenuLink" class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" role="button" aria-expanded="false" >
+            <a id="navbarDropdownMenuLink" class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" role="button" aria-expanded="false">
               <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22" alt="some user" loading="lazy" />
             </a>
 
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink" >
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
               <li><a class="dropdown-item" href="#">My profile</a></li>
               <li><a class="dropdown-item" href="#">Settings</a></li>
               <li><a class="dropdown-item" href="#">Logout</a></li>

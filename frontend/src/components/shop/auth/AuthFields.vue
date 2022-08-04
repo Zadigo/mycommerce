@@ -26,7 +26,9 @@ export default {
       default: () => []
     }
   },
-  emits: ['update-fields'],
+  emits: {
+    'update-fields': () => true
+  },
   methods: {
     updateLoginFields (e, field) {
       this.$emit('update-fields', ['login', { [`${field.key}`]: e.target.value }])

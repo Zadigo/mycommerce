@@ -36,7 +36,9 @@ export default {
       type: Boolean
     }
   },
-  emits: ['close-modal'],
+  emits: {
+    'close-modal': () => true
+  },
   computed: {
     modalClasses () {
       return [

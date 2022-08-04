@@ -24,8 +24,7 @@
       </router-view>
 
       <transition name="opacity">
-        <button v-if="scrollY > 100" type="button" class="btn btn-floating btn-lg btn-dark"
-          @click="scrollToTop">
+        <button v-if="scrollY > 100" type="button" class="btn btn-floating btn-lg btn-dark" @click="scrollToTop">
           <font-awesome-icon icon="fa-solid fa-arrow-up" />
         </button>
       </transition>

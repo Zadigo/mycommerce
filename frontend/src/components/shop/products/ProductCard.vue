@@ -24,7 +24,7 @@
               </button>
             </div>
 
-            <button v-else class="btn btn-outline-dark" @click="quickAddToCart(product, { name: 'Unique' }, true)">
+            <button v-else class="btn btn-outline-dark" type="button" @click="quickAddToCart(product, { name: 'Unique' }, true)">
               {{ $t('Unique') }}
             </button>
           </div>
@@ -97,7 +97,9 @@ export default {
       required: true
     }
   },
-  emits: ['product-card-click'],
+  emits: {
+    'product-card-click': () => true
+  },
   setup () {
     const store = useShop()
     const { addingToCart, productOptions, quickAddToCart, getSessionId } = useCartComposable()

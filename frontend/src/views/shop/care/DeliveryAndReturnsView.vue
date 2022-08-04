@@ -100,7 +100,7 @@
     </div>
   </section>
 
-  <section ref="link" v-else id="returns" class="ecommerce-section">
+  <section v-else id="returns" ref="link" class="ecommerce-section">
     <base-jumbotron-vue class="mt-0 bg-image text-white" style="height: 100vh;">
       <template #default>
         <h1 class="display-5 fw-bold">Voici une méthode de retour plus efficace...</h1>
@@ -127,12 +127,12 @@ import BaseJumbotronVue from '../../../layouts/BaseJumbotron.vue'
 
 export default {
   name: 'DeliveryAndReturnsView',
-  data: () => ({
-    showDelivery: true
-  }),
   components: {
     BaseJumbotronVue
   },
+  data: () => ({
+    showDelivery: true
+  }),
   // mounted () {
   //   this.$refs.link.style.backgroundImage = `url(${require('@/assets/hero4.jpg')})`
   // }

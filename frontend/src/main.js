@@ -95,8 +95,8 @@ app.use(createGoogleAnalytics('G-256HHCRT7E', {
     brand: 'Enterprise'
 }))
 
-app.component('base-intro-vue', BaseIntroVue)
-app.component('font-awesome-icon', FontAwesomeIcon)
+app.component('BaseIntroVue', BaseIntroVue)
+app.component('FontAwesomeIcon', FontAwesomeIcon)
 // app.component('intro-mask', introMask)
 // app.component('intro-container', introContainer)
 

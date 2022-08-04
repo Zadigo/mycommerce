@@ -38,13 +38,11 @@
         <div v-if="showActions" class="actions">
           <hr class="my-7">
 
-          <router-link :to="{ name: 'shipment_view', params: {  lang: $i18n.locale } }"
-                       class="btn btn-block btn-primary">
+          <router-link :to="{ name: 'shipment_view', params: { lang: $i18n.locale } }" class="btn btn-block btn-primary">
             {{ $t('Checkout') }}
           </router-link>
 
-          <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
-                       class="btn btn-block btn-light">
+          <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }" class="btn btn-block btn-light">
             {{ $t('Continue shopping') }}
           </router-link>
         </div>
@@ -72,7 +70,9 @@ export default {
       required: true
     }
   },
-  emits: ['update-total'],
+  emits: {
+    'update-total': () => true
+  },
   data: () => ({
     is_gift: false,
     donation: false

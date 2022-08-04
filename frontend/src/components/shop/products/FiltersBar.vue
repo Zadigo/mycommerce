@@ -7,7 +7,7 @@
             <v-icon class="mr-2">mdi-tune</v-icon>
             Filtres
           </v-btn> -->
-          <button class="btn shadow-none disabled">
+          <button type="button" class="btn shadow-none disabled">
             <span class="fw-normal">Filtres</span>
           </button>
         </li>
@@ -154,7 +154,9 @@ export default {
       const truthArray = _.map(Object.keys(this.selectedElements), (key) => {
         return this.selectedElements[key].length > 0
       })
-      return truthArray.some((value) => { return value === true })
+      return truthArray.some((value) => {
+        return value === true
+      })
     }
   },
 

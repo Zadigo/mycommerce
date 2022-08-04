@@ -28,7 +28,7 @@ const useAuthentication = defineStore('authentication', {
   getters: {
     isAuthenticated () {
       this.loadUserSession()
-      return this.token != null
+      return this.token !== null
     }
   }
 })

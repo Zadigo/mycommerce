@@ -10,15 +10,13 @@
       <div class="collapse navbar-collapse justify-content-around">
         <ul class="navbar-nav text-uppercase">
           <li class="nav-item">
-            <router-link :to="{ name: 'collection_details_view', params: { lang: $i18n.locale, collection: 'all' } }"
-              class="nav-link text">
+            <router-link :to="{ name: 'collection_details_view', params: { lang: $i18n.locale, collection: 'all' } }" class="nav-link text">
               {{ $t('Shop') }}
             </router-link>
           </li>
 
           <li class="nav-item">
-            <router-link :to="{ name: 'collection_details_view', params: { lang: $i18n.locale, collection: 'shorts' } }"
-              class="nav-link text">
+            <router-link :to="{ name: 'collection_details_view', params: { lang: $i18n.locale, collection: 'shorts' } }" class="nav-link text">
               Shorts
             </router-link>
           </li>

@@ -1,3 +1,8 @@
+<doc>
+  Allows the user to review the current items within
+  his actual cart
+</doc>
+
 <template>
   <section id="cart" class="ecommerce-section">
     <div class="container">
@@ -7,8 +12,7 @@
             <i>Icon</i>
             <p class="w-50">Plus que <span class="fw-bold">59,81 €</span> pour profiter de la livraison gratuite</p>
             <div class="progress">
-              <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="15" aria-valuemin="0"
-                   aria-valuemax="100">
+              <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">
               </div>
             </div>
           </div>
@@ -91,8 +95,7 @@
 
                 <hr class="my-7">
 
-                <router-link :to="{ name: 'shipment_view', params: {  lang: $i18n.locale } }"
-                             class="btn btn-block btn-primary">
+                <router-link :to="{ name: 'shipment_view', params: { lang: $i18n.locale } }" class="btn btn-block btn-primary">
                   {{ $t('Checkout') }}
                 </router-link>
 

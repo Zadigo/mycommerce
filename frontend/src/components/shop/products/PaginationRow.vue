@@ -28,7 +28,10 @@ export default {
       default: 0
     }
   },
-  emits: ['start-pagination', 'end-pagination'],
+  emits: {
+    'start-pagination': () => true,
+    'end-pagination': () => true
+  },
   computed: {
     ...mapState(useShop, ['displayedProductsCount'])
   }

@@ -17,12 +17,14 @@ export default {
     selectedImage: {
       type: String,
       required: true
-    },
-    isNew: {
-      type: Boolean
     }
+    // isNew: {
+    //   type: Boolean
+    // }
   },
-  emits: ['reset-selected-image'],
+  emits: {
+    'reset-selected-image': () => true
+  },
   setup () {
     return {
       mediaUrl

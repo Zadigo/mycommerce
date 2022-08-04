@@ -5,7 +5,7 @@
         <div class="col-12">
           <p>{{ $t('Your cart is currently empty') }}</p>
           <hr>
-          <button class="btn btn-primary btn-lg btn-block" @click="openCart=false">
+          <button type="button" class="btn btn-primary btn-lg btn-block" @click="openCart=false">
             {{ $t('Continue shopping') }}
           </button>
         </div>
@@ -25,7 +25,7 @@
                 <del>{{ $n(item.product.unit_price, 'currency', $i18n.locale) }}</del> {{ $n(item.product.sale_price, 'currency', $i18n.locale) }} x 1
               </p> -->
 
-              <button class="btn btn-sm btn-info" @click="removeFromCart(item)">
+              <button type="button" class="btn btn-sm btn-info" @click="removeFromCart(item)">
                 {{ $t('Remove') }}
               </button>
             </div>
@@ -44,11 +44,11 @@
 
     <div class="w-100">
       <div class="d-flex justify-content-around col-12">
-        <button class="btn btn-md btn-primary mx-2" size="lg" @click="goToPage('cart_view')">
+        <button type="button" class="btn btn-md btn-primary mx-2" size="lg" @click="goToPage('cart_view')">
           {{ $t('View basket') }}
         </button>
 
-        <button class="btn btn-md btn-primary " style="width:174px;" @click="goToPage('shipment_view')">
+        <button type="button" class="btn btn-md btn-primary " style="width:174px;" @click="goToPage('shipment_view')">
           {{ $t('Checkout') }}
         </button>
       </div>

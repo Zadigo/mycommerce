@@ -22,16 +22,16 @@ export default {
   // Component for showing images of a product
   // that contains more than 3 images
   name: 'ThreeImages',
-  props: {
-    images: {
-      type: Array,
-      required: true
-    },
-    productVideo: {
-      type: Object,
-      default: () => {}
-    }
-  },
+  // props: {
+  //   images: {
+  //     type: Array,
+  //     required: true
+  //   },
+  //   productVideo: {
+  //     type: Object,
+  //     default: () => {}
+  //   }
+  // },
   setup () {
     const app = getCurrentInstance()
     const { getImageForIndex, selectedImage } = useTileComposable(app)

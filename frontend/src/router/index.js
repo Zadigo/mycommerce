@@ -87,8 +87,13 @@ router.beforeEach((to, from, next) => {
   // const supportedLanguages = process.env.LANGUAGES.split(',')
   const supportedLanguages = ['en', 'es', 'fr']
 
-  if (!supportedLanguages.includes(localeLanguage)) { next('en') }
-  if (i18n.global.locale !== localeLanguage) { i18n.global.locale = localeLanguage }
+  if (!supportedLanguages.includes(localeLanguage)) {
+    next('en')
+  }
+  
+  if (i18n.global.locale !== localeLanguage) {
+    i18n.global.locale = localeLanguage
+  }
 
   next()
 })

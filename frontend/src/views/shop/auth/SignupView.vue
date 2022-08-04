@@ -6,11 +6,11 @@
           <h4 class="fw-bold mb-2">{{ $t('Register with') }}...</h4>
 
           <div class="mb-1">
-            <button class="btn btn-block btn-primary">
+            <button type="button" class="btn btn-block btn-primary">
               <font-awesome-icon icon="fa-brands fa-google" size="2x" />
             </button>
 
-            <button class="btn btn-block btn-primary">
+            <button type="button" class="btn btn-block btn-primary">
               <font-awesome-icon icon="fa-brands fa-facebook" size="2x" />
             </button>
           </div>

@@ -1,8 +1,8 @@
 import { setupDevtoolsPlugin } from '@vue/devtools-api'
 
-function setupDevtools (app) {
+function setupDevtools (app, storage) {
   // let trackId = 0
-  // let devtoolsApi
+  let devtoolsApi
   const devtools = {}
 
   setupDevtoolsPlugin({
@@ -14,8 +14,8 @@ function setupDevtools (app) {
     enableEarlyProxy: true,
     app
   }, api => {
-    // devtoolsApi = api
-
+    devtoolsApi = api
+    devtoolsApi
     api.addInspector({
       id: 'vue-session-storage',
       label: 'Vue Session Storage',
@@ -27,178 +27,154 @@ function setupDevtools (app) {
         payload.rootNodes = [
           {
             id: 'storage',
-            label: 'Storage'
+            label: 'Storage',
+            tags: [
+              {
+                label: `sessionId: ${storage.DEFAULT_KEY_NAME}`,
+                textColor: 0x000000,
+                backgroundColor: 0xFF984F
+              }
+            ]
           }
         ]
       }
     })
+
+    api.on.getInspectorState(payload => {
+      if (payload.inspectorId === 'vue-session-storage') {
+        payload.state = {
+          'state': [
+            {
+              key: 'data',
+              value: storage.data
+            }
+          ]
+        }
+      }
+    })
+
+    api.addTimelineLayer({
+      id: 'vue-session-storage',
+      label: 'VueSession',
+      color: 0x92A2BF
+    })
+
+    // api.sendInspectorState('vue-session-storage')
   })
 
   return devtools
 }
 
 class VueSession {
-  constructor (options) {
-    if (!options) { options = {} }
+  constructor(options) {
+    const defaultOptions = options || {}
+    const { sessionKey, persistent, initial } = defaultOptions
 
-    const { persistent, initial } = options
-
-    this.VUE_SESSION_KEY = 'vue-session'
     this.storage = sessionStorage
-
     this._history = []
+
+    this.DEFAULT_KEY_NAME = sessionKey || 'vue-session'
 
     // TODO: Implement functionnalities for persistence
     // and for implementing initial data
     this.isPersistent = persistent || false
-    if (initial && typeof initial !== 'object') {
-      throw new Error('Initial should be a dictionnary')
+    this.initial = initial || {}
+
+    const existingItems = this.storage.getItem(this.DEFAULT_KEY_NAME)
+    if (!existingItems) {
+      const data = { sessionId: Date.now(), ...this.initial }
+      this.storage.setItem(this.DEFAULT_KEY_NAME, JSON.stringify(data))
     }
-    this.initial = initial
   }
 
-  /**
-   * Returns all items saved in the sessionStorage
-   *
-   * @returns dictionnary
-   */
   get data () {
-    return JSON.parse(this.storage.getItem(this.VUE_SESSION_KEY))
+    return JSON.parse(this.storage.getItem(this.DEFAULT_KEY_NAME))
   }
 
   _precheck () {
     // Ensures that the session key above
     // is always present before doing any
     // operations
-    if (!(this.VUE_SESSION_KEY in this.storage)) {
-      const sessionData = { 'session-id': Date.now() }
-      this.storage.setItem(this.VUE_SESSION_KEY, JSON.stringify(sessionData))
+    if (!(this.DEFAULT_KEY_NAME in this.storage)) {
+      const sessionData = { sessionId: Date.now() }
+      this.storage.setItem(this.DEFAULT_KEY_NAME, JSON.stringify(sessionData))
     }
   }
 
   _save (data) {
+    // Internal method that saves the stringified
+    // data to the storage
     this._precheck()
-    this.storage.setItem(this.VUE_SESSION_KEY, JSON.stringify(data))
     this._history.push(['save', data])
+    this.storage.setItem(this.DEFAULT_KEY_NAME, JSON.stringify(data))
   }
 
-  * iter () {
-    yield * Object.values(this.data)
-  }
-
-  /**
-   * Creates a new record under the given global key
-   *
-   * @param key - key under which to save the element
-   * @param value - string, array or dictionnary
-   * @returns null
-   */
   create (key, value) {
-    this._precheck()
+    // this._precheck()
     const storedData = this.data
     storedData[key] = value
     this._save(storedData)
   }
 
-  /**
-   * Returns the value store under a given key
-   *
-   * @param key - key to use
-   * @returns an object, a string or an array
-   */
   retrieve (key) {
-    this._precheck()
+    // this._precheck()
     return this.data[key]
   }
 
-  /**
-   * Removes an element stored under a given key
-   *
-   * @param key key of the element to remove
-   * @returns null
-   */
   remove (key) {
-    const storedData = this.data
+    var storedData = this.data
     delete storedData[key]
     this._save(storedData)
   }
 
-  /**
-   * Renews the session key
-   */
   renew () {
     // Fails silently if there is no
     // session in the storage
     try {
       const storedData = this.data
-      storedData['session-id'] = Date.now()
-      this.storage.setItem(this.VUE_SESSION_KEY, JSON.stringify(storedData))
+      storedData.sessionId = Date.now()
+      this.storage.setItem(this.DEFAULT_KEY_NAME, JSON.stringify(storedData))
+      return true
     } catch {
       return false
     }
   }
 
-  /**
-   * Clears all data stored under the global key
-   */
   clear () {
     // Fails silently if there is no
     // session in the storage
     try {
-      const sessionId = this.data['session-id']
-      this.storage.setItem(this.VUE_SESSION_KEY, JSON.stringify({ 'session-id': sessionId }))
+      const sessionId = this.data.sessionId
+      this.storage.setItem(this.DEFAULT_KEY_NAME, JSON.stringify({ 'sessionId': sessionId }))
+      return true
     } catch {
       return false
     }
   }
 
-  /**
-   * Checks whether a key exists in the storage
-   *
-   * @param key key of the element to remove
-   * @returns Boolean
-   */
   contains (key) {
     return this.data ? key in this.data : false
   }
 
-  /**
-   * Destroys the session
-   */
   destroy () {
     this.storage.clear()
   }
 
-  /**
-   * Tries to get a key and eventually creates
-   * a new record with the given value if it
-   * does not exist
-   *
-   * @param key - key of the element to remove
-   * @param defaultValue - key of the element to remove
-   * @returns any
-   */
   getOrCreate (key, defaultValue) {
-    this._precheck()
+    // this._precheck()
 
     const storedData = this.data
+    const initialValue = defaultValue || ''
 
     if (!(key in storedData)) {
-      this.create(key, defaultValue)
+      this.create(key, initialValue)
     }
 
     return storedData[key]
   }
 
-  /**
-   * Tries to push the incoming an array
-   * stored under a given key
-   *
-   * @param key - key of the element to remove
-   * @param value - value to add
-   */
   updateArray (key, value) {
-    this._precheck()
+    // this._precheck()
 
     let result = this.data[key]
 
@@ -206,8 +182,18 @@ class VueSession {
       result = []
     }
     result.push(value)
-
     this.create(key, result)
+  }
+
+  toggle (key) {
+    // this._precheck()
+
+    const storedData = this.data
+    const result = storedData[key]
+    if (typeof result === 'boolean') {
+      storedData[key] = !result
+      this._save(storedData)
+    }
   }
 
   install (app) {
@@ -218,10 +204,7 @@ class VueSession {
         sessionStorage: this.data
       })
     })
-
     window.VueSession = this
-    // if (import.meta.env.DEV) {
-    // }
   }
 }
 
