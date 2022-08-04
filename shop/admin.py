@@ -1,5 +1,5 @@
 from django.contrib import admin
-from jsonschema import ValidationError
+from django.core.exceptions import ValidationError
 
 from shop.models import (Image, Like, Product, Video,
                          Wishlist)

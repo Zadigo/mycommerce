@@ -4,7 +4,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-FRONT_DIR = Path.joinpath(BASE_DIR, 'front2')
+FRONT_DIR = Path.joinpath(BASE_DIR, 'frontend')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     'django_extensions',
     'corsheaders',
     'rest_framework',
@@ -135,7 +135,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = Path.joinpath(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
     Path.joinpath(BASE_DIR, 'static'),

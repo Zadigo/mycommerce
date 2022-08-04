@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+autopep8 = "*"
 djangorestframework = "*"
 django-extensions = "*"
 django-cors-headers = "*"
@@ -12,6 +13,7 @@ stripe = "*"
 django-imagekit = "*"
 pillow = "*"
 psycopg2 = "*"
+matplotlib = "*"
 
 [dev-packages]
 
