@@ -5,6 +5,28 @@
         <div class="card shadow-none">
           <div class="card-body">
             <div id="cookie-parameters" class="col-12 py-5 border-bottom" aria-label="Paramètres de cookies">
+              <div class="row">
+                <div class="col-12 mb-4">
+                  <p>
+                    Lorsque vous consultez un site Web, des données peuvent être stockées dans votre 
+                    navigateur ou récupérées à partir de celui-ci, généralement sous la forme de cookies. 
+                    Ces informations peuvent porter sur vous, sur vos préférences ou sur votre appareil 
+                    et sont principalement utilisées pour s'assurer que le site Web fonctionne correctement. 
+                    Les informations ne permettent généralement pas de vous identifier directement, 
+                    mais peuvent vous permettre de bénéficier d'une expérience Web personnalisée. 
+                    Parce que nous respectons votre droit à la vie privée, nous vous donnons la possibilité 
+                    de ne pas autoriser certains types de cookies. Cliquez sur les différentes catégories 
+                    pour obtenir plus de détails sur chacune d'entre elles, et modifier les paramètres par défaut. 
+                    Toutefois, si vous bloquez certains types de cookies, votre expérience de navigation 
+                    et les services que nous sommes en mesure de vous offrir peuvent être impactés.
+                  </p>
+
+                  <button type="button" class="btn btn-lg btn-primary btn-rounded" @click="acceptAll">
+                    {{ $t('Tout accepter') }}
+                  </button>
+                </div>
+              </div>
+
               <h2>Paramètres des cookies</h2>
 
               <div class="row">
@@ -121,13 +143,14 @@ export default {
   name: 'CookiesView',
   data: () => ({
     cookies: {
-      parameters: true,
-      preferences: true,
-      advertising: true
+      parameters: false,
+      preferences: false,
+      advertising: false
     }
   }),
   watch: {
     cookies (current) {
+      console.info(current)
       this.$localstorage.create('cookies', current)
     }
   },
@@ -136,6 +159,13 @@ export default {
       this.$localstorage.create('cookies', this.cookies)
     } else {
       this.cookies = this.localStorage.cookies
+    }
+  },
+  methods: {
+    acceptAll () {
+      this.cookies.parameters = true
+      this.cookies.preferences = true
+      this.cookies.advertising = true
     }
   }
 }
