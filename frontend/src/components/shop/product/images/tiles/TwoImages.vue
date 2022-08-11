@@ -1,11 +1,16 @@
+<doc>
+  Component for showing images of a product that contains
+  more exactly two images
+</doc>
+
 <template>
   <div id="images" class="row">
     <div class="col-6 p-1">
-      <img :src="getImageForIndex(0)" class="img-fluid" @click="selectedImage = selectImageWithIndex(0)" />
+      <img :src="getImageForIndex(images, 0)" class="img-fluid" @click="selectedImage = selectImageWithIndex(0)" />
     </div>
 
     <div class="col-6 p-1">
-      <img :src="getImageForIndex(1)" class="img-fluid" @click="selectedImage = selectImageWithIndex(1)" />
+      <img :src="getImageForIndex(images, 1)" class="img-fluid" @click="selectedImage = selectImageWithIndex(1)" />
     </div>
   </div>
 </template>
@@ -15,14 +20,13 @@ import { getCurrentInstance } from 'vue'
 import useTileComposable from '../../../../../composables/tiles'
 
 export default {
-  // Component for showing images of a product
-  // that contains more than 2 images
   name: 'TwoImages',
-  // props: {
-  //   images: {
-  //     type: Array,
-  //     required: true
-  //   },
+  props: {
+    images: {
+      type: Array,
+      required: true
+    }
+  },
   //   productVideo: {
   //     type: Object,
   //     default: () => {}

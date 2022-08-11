@@ -1,3 +1,12 @@
+<doc>
+  Shows specific details of a product:
+    - Images
+    - Price (discount)
+    - Description
+    - Recommended products
+    - Reviews
+</doc>
+
 <template>
   <section id="product" class="ecommerce-section">
     <div class="container-fluid">
@@ -11,6 +20,7 @@
                   {{ $t('Home') }}
                 </router-link>
               </li>
+
               <li class="breadcrumb-item">
                 <router-link :to="{ name: 'collection_details_view', params: { collection: currentProduct.category.toLowerCase() } }" class="text-muted">{{ currentProduct.category }}</router-link>
               </li>

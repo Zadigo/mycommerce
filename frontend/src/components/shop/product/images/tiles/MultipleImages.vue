@@ -1,30 +1,35 @@
+<doc>
+  Component for showing images of a product that contains
+  more than three images
+</doc>
+
 <template>
   <div id="images" class="row">
     <div class="col-6 p-1">
-      <img :src="getImageForIndex(0)" class="img-fluid" @click="selectedImage = selectImageWithIndex(0)" />
+      <img :src="getImageForIndex(images, 0)" class="img-fluid" @click="selectedImage = selectImageWithIndex(0)" />
     </div>
 
     <div class="col-6 p-1">
-      <img :src="getImageForIndex(1)" class="img-fluid" @click="selectedImage = selectImageWithIndex(1)" />
+      <img :src="getImageForIndex(images, 1)" class="img-fluid" @click="selectedImage = selectImageWithIndex(1)" />
     </div>
 
     <div class="col-8 p-1">
       <div v-if="hasVideo" class="video-wrapper">
-        <video :poster="getImageForIndex(1)" playsinline autoplay controls loop>
+        <video :poster="getImageForIndex(images, 1)" playsinline autoplay controls loop>
           <source :src="mediaUrl(productVideo.content)" type="video/mp4" muted>
         </video>
       </div>
 
-      <img :src="getImageForIndex(2)" class="img-fluid" @click="selectedImage = selectImageWithIndex(2)" />
+      <img :src="getImageForIndex(images, 2)" class="img-fluid" @click="selectedImage = selectImageWithIndex(2)" />
     </div>
 
     <div class="col-4 p-1">
       <div v-if="hasVideo" class="col-12 pt-0 p-1">
-        <img :src="getImageForIndex(2)" class="img-fluid" @click="selectedImage = selectImageWithIndex(2)" />
+        <img :src="getImageForIndex(images, 2)" class="img-fluid" @click="selectedImage = selectImageWithIndex(2)" />
       </div>
 
       <div :class="{ 'pt-0': !hasVideo }" class="col-12 p-1">
-        <img :src="getImageForIndex(3)" class="img-fluid" @click="selectedImage = selectImageWithIndex(3)" />
+        <img :src="getImageForIndex(images, 3)" class="img-fluid" @click="selectedImage = selectImageWithIndex(3)" />
       </div>
     </div>
   </div>
@@ -40,10 +45,10 @@ export default {
   // that contains more than 3 images
   name: 'MultipleImages',
   props: {
-    // images: {
-    //   type: Array,
-    //   required: true
-    // },
+    images: {
+      type: Array,
+      required: true
+    },
     productVideo: {
       type: Object,
       default: () => {}

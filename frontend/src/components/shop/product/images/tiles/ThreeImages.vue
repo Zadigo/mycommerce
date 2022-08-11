@@ -1,15 +1,21 @@
+<doc>
+  Component for showing images of a product that contains
+  more exactly three images
+</doc>
+
+
 <template>
   <div id="images" class="row">
     <div class="col-6 p-1">
-      <img :src="getImageForIndex(0)" class="img-fluid" @click="selectedImage = selectImageWithIndex(0)" />
+      <img :src="getImageForIndex(images, 0)" class="img-fluid" @click="selectedImage = selectImageWithIndex(0)" />
     </div>
 
     <div class="col-6 p-1">
-      <img :src="getImageForIndex(1)" class="img-fluid" @click="selectedImage = selectImageWithIndex(1)" />
+      <img :src="getImageForIndex(images, 1)" class="img-fluid" @click="selectedImage = selectImageWithIndex(1)" />
     </div>
 
     <div class="col-12 p-1">
-      <img :src="getImageForIndex(2)" class="img-fluid" @click="selectedImage = selectImageWithIndex(2)" />
+      <img :src="getImageForIndex(images, 2)" class="img-fluid" @click="selectedImage = selectImageWithIndex(2)" />
     </div>
   </div>
 </template>
@@ -22,11 +28,12 @@ export default {
   // Component for showing images of a product
   // that contains more than 3 images
   name: 'ThreeImages',
-  // props: {
-  //   images: {
-  //     type: Array,
-  //     required: true
-  //   },
+  props: {
+    images: {
+      type: Array,
+      required: true
+    }
+  },
   //   productVideo: {
   //     type: Object,
   //     default: () => {}

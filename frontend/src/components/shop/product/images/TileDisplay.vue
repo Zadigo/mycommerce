@@ -1,6 +1,13 @@
+<doc>
+  Allows the user to switch between the image tiles and a
+  specific image detail
+</doc>
+
 <template>
+  <!-- Image details -->
   <selected-image v-if="selectedImage" :is-new="isNew" :selected-image="selectedImage" @reset-selected-image="selectedImage = undefined" />
 
+  <!-- Images -->
   <div v-else id="tiles">
     <component :is="componentToDisplay" :images="images" :product-video="productVideo" @select-image="selectImage" />
   </div>
