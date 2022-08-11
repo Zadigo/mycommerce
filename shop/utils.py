@@ -103,6 +103,8 @@ def remove_special_characters(value: str):
 
 
 def process_file_name(value: str):
+    """Changes the initial file name to a
+    random more standard string"""
     basename, ext = value.split('.')
     return basename, ext, get_random_string(12)
     
