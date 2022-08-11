@@ -30,7 +30,7 @@
       </transition>
 
       <modal-cart-vue />
-      <discount-drawer-vue />
+      <discount-drawer-vue v-if="!$route.meta.isFullPage" />
       <!-- <cart-off-canvas /> -->
       <!-- <login-modal /> -->
       <!-- <base-subscription-modal :show-modal="showSubscriptionModal" /> -->

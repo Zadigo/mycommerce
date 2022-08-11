@@ -1,61 +1,58 @@
 <template>
-  <base-intro-vue :image="require('@/assets/hero4.jpg')" height="100vh">
-    <template #default>
-      <div class="card">
-        <div class="card-body">
-          <h4 class="fw-bold mb-2">{{ $t('Register with') }}...</h4>
-
-          <div class="mb-1">
-            <button type="button" class="btn btn-block btn-primary">
-              <font-awesome-icon icon="fa-brands fa-google" size="2x" />
-            </button>
-
-            <button type="button" class="btn btn-block btn-primary">
-              <font-awesome-icon icon="fa-brands fa-facebook" size="2x" />
-            </button>
-          </div>
-
-          <h4 class="fw-bold my-3">{{ $t('Or register with') }}</h4>
-
-          <auth-fields-vue :signup-fields="signupFields" @update-fields="updateFields" />
-
-          <navigation-links-vue :is-login="false" />
-
-          <button type="button" class="btn btn-lg btn-primary mt-2" @click="doSignup">
-            <font-awesome-icon icon="fa-solid fa-right-to-bracket" class="me-2" />
-            {{ $t('Signup') }}
-          </button>
-        </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12">
+        <form @submit.prevent>
+          <input v-model="signupCredentials.username" type="text" autocomplete="username" placeholder="Username" class="form-control p-2 my-2">
+          <input v-model="signupCredentials.firstname" type="text" autocomplete="family-name" placeholder="Family name" class="form-control p-2 my-2">
+          <input v-model="signupCredentials.lastname" type="text" autocomplete="given-name" placeholder="Given name" class="form-control p-2 my-2">
+          <input v-model="signupCredentials.email" type="email" autocomplete="email" placeholder="Email" class="form-control p-2 my-2">
+          <input v-model="signupCredentials.password1" type="password" autocomplete="new-password" placeholder="Password 1" class="form-control p-2 my-2">
+          <input v-model="signupCredentials.password2" type="password" autocomplete="new-password" placeholder="Password 2" class="form-control p-2 my-2">
+        </form>
       </div>
-    </template>
-  </base-intro-vue>
+
+      <!-- <base-privacy-text-vue /> -->
+
+      <!-- <div class="col-12">
+        <auth-navigation-vue />
+      </div> -->
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <button type="button" class="btn btn-primary" @click="signup">
+      {{ $t("Signup") }}
+    </button>
+  </div>
 </template>
 
 <script>
+// import AuthNavigationVue from './AuthNavigation.vue'
 
-import AuthFieldsVue from '@/components/shop/auth/AuthFields.vue'
-import NavigationLinksVue from '@/components/shop/auth/NavigationLinks.vue'
-
-import useAuthenicationComposable from '../../../composables/login'
+// import BasePrivacyTextVue from '@/components/BasePrivacyText.vue'
+import useAuthenticationComposable from '@/composables/authentication'
 
 export default {
-  name: 'LoginView',
+  name: 'SignupView',
   components: {
-    AuthFieldsVue,
-    NavigationLinksVue
+    // AuthNavigationVue,
+    // BasePrivacyTextVue
   },
   setup () {
-    const { signup, signupFields, updateFields } = useAuthenicationComposable()
+    const { signupCredentials, performSignup } = useAuthenticationComposable()
     return {
-      signup,
-      signupFields,
-      updateFields
+      signupCredentials,
+      performSignup
     }
   },
   methods: {
-    doSignup () {
-      this.signup()
-      this.$router.push({ name: 'login_view', params: { lang: 'fr' } })
+    signup () {
+      this.performSignup(() => {
+        this.$router.push({ name: 'login_view', params: { lang: this.$i18n.locale } })
+      }, (error) => {
+        console.error(error)
+      })
     }
   }
 }

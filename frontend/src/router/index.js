@@ -1,6 +1,6 @@
 import i18n from '@/i18n'
 
-import { scrollToTop, loadView } from '../utils'
+import { scrollToTop, loadView, loadLayout } from '../utils'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import accounts from './accounts'
@@ -26,20 +26,50 @@ const routes = [
       ...shop,
       ...accounts,
       {
-        path: 'login',
-        name: 'login_view',
-        meta: {
-          isFullPage: true
-        },
-        component: loadView('shop/auth/LoginView')
-      },
-      {
-        path: 'signup',
-        name: 'signup_view',
-        meta: {
-          isFullPage: true
-        },
-        component: loadView('shop/auth/SignupView')
+        path: 'accounts',
+        component: loadLayout('BaseRegistration'),
+        children: [
+          {
+            path: 'login',
+            name: 'login_view',
+            meta: {
+              isFullPage: true
+            },
+            components: {
+              content: loadView('shop/auth/LoginView')
+            }
+          },
+          {
+            path: 'signup',
+            name: 'signup_view',
+            meta: {
+              isFullPage: true
+            },
+            components: {
+              content: loadView('shop/auth/SignupView')
+            }
+          },
+          {
+            path: 'forgot-password',
+            name: 'forgot_passoword_view',
+            meta: {
+              isFullPage: true
+            },
+            components: {
+              content: loadView('shop/auth/ForgotPasswordView')
+            }
+          },
+          {
+            path: 'verify',
+            name: 'verify_view',
+            meta: {
+              isFullPage: true
+            },
+            components: {
+              content: loadView('shop/auth/VerifyAccountView')
+            }
+          }
+        ]
       }
     ]
   },

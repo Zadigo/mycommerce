@@ -70,7 +70,7 @@
 
           <li class="nav-item">
             <a href class="nav-link" @click.prevent="goToAdmin">
-              Admin
+              <font-awesome-icon icon="fa-solid fa-lock" />
             </a>
           </li>
         </ul>
@@ -83,7 +83,8 @@
 import { useShop } from '@/store/shop'
 import { useAuthentication } from '@/store/authentication'
 import { mapState } from 'pinia'
-import useAuthenicationComposable from '../composables/login'
+
+import useAuthenicationComposable from '../composables/authentication'
 
 // import { mapGetters, mapMutations } from 'vuex'
 
@@ -92,11 +93,11 @@ export default {
   setup () {
     const store = useShop()
     const authStore = useAuthentication()
-    const { logout } = useAuthenicationComposable()
+    const { performLogout } = useAuthenicationComposable()
     return {
       store,
       authStore,
-      logout
+      performLogout
     }
   },
   data: () => ({
@@ -111,11 +112,16 @@ export default {
   methods: {
     //   ...mapMutations(['toggleSearchModal']),
 
-    //   logout () {
-    //     this.$store.commit('authenticationModule/logout')
-    //     this.$localstorage.remove('cart')
-    //     this.$router.push({ name: 'home', params: { lang: this.$i18n.locale } })
-    //   },
+    logout () {
+      this.performLogout(() => {
+        this.authStore.logoutUser()
+        this.$localstorage.remove('cart')
+        this.$session.remove('auth')
+        this.$router.push({ name: 'shop_view', params: { lang: this.$i18n.locale } })
+      }, (errors) => {
+        console.error(errors)
+      })
+    },
 
     goToAdmin () {
       this.store.changeSite('dashboard-site')
