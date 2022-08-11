@@ -52,7 +52,7 @@
 
           <li v-if="authStore.isAuthenticated" class="nav-item">
             <a href class="nav-link" @click.prevent="logout">
-              {{ $t('Logout') }}
+              <font-awesome-icon icon="fa-solid fa-right-from-bracket" />
             </a>
           </li>
 

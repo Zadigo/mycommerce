@@ -1,4 +1,4 @@
-import { faRightToBracket, faCartShopping, faHeart, faTruckFast, faClock, faArrowUp, faCircleArrowLeft, faCircleArrowRight, faArrowLeft, faArrowRight, faLeaf } from '@fortawesome/free-solid-svg-icons'
+import { faRightToBracket, faCartShopping, faHeart, faTruckFast, faClock, faArrowUp, faCircleArrowLeft, faCircleArrowRight, faArrowLeft, faArrowRight, faLeaf, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFacebook, faTwitter, faYoutube, faGoogle, faCcVisa, faCcPaypal, faCcApplePay, faCcMastercard } from '@fortawesome/free-brands-svg-icons'
 
@@ -22,3 +22,4 @@ library.add(faCcMastercard)
 library.add(faCcPaypal)
 library.add(faCcApplePay)
 library.add(faLeaf)
+library.add(faRightFromBracket)
