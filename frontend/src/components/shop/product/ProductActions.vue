@@ -81,13 +81,13 @@ export default {
   setup () {
     const store = useShop()
     const app = getCurrentInstance()
-    const { addingToCart, productOptions, getCart, getSessionId } = useCartComposable(app)
+    const { addingToCart, addToCart, productOptions, cartCache } = useCartComposable(app)
     return {
       store,
       addingToCart,
       productOptions,
-      getCart,
-      getSessionId
+      addToCart,
+      cartCache
     }
   },
   data: () => ({
@@ -100,57 +100,68 @@ export default {
     }
   },
   methods: {
-    // TODO: Create a general function
-    async addToCart () {
-      try {
-        this.addingToCart = true
-
-        const options = this.productOptions
-        const default_size = this.productOptions.default_size
-
-        if (this.hasSizes && default_size === null) {
-          this.noSizeSelected = true
-          this.addingToCart = false
-          return
-        }
-
-        // When the size is unique, and since
-        // we initially set the default size
-        // as null, set it to Unique or this
-        // will return an error requiring that
-        // the default_size be not null
-        if (default_size === null) {
-          options.default_size = 'Unique'
-        }
-
-        try {
-          // Try to get a current session_id if the
-          // user has already been adding items to
-          // his current cart
-          options.session_id = this.getSessionId()
-        } catch (error) {
-          options.session_id = null
-        }
-        options.product = this.product.id
-
-        const response = await this.$http.post('cart/add', options)
-        const data = response.data
-
-        this.store.$patch((state) => {
-          state.cart = data
-          this.$localstorage.create('cart', data)
-        })
-
+    async doAddToCart () {
+      const default_size = this.productOptions.default_size
+      if (this.hasSizes && default_size === null) {
+        this.noSizeSelected = true
         this.addingToCart = false
-        this.noSizeSelected = false
-        this.productOptions = {
-          default_size: null
-        }
-      } catch (error) {
-        console.error(error)
-        this.store.addErrorMessage(`V-AX-CA: ${error}: ${error.response.message}`)
+      } else {
+        this.addToCart(this.product, function success (data) {
+          console.log(data)
+        })
       }
     },
+    // TODO: Create a general function
+    // async addToCart () {
+    //   try {
+    //     this.addingToCart = true
+
+    //     const options = this.productOptions
+    //     const default_size = this.productOptions.default_size
+
+    //     if (this.hasSizes && default_size === null) {
+    //       this.noSizeSelected = true
+    //       this.addingToCart = false
+    //       return
+    //     }
+
+    //     // When the size is unique, and since
+    //     // we initially set the default size
+    //     // as null, set it to Unique or this
+    //     // will return an error requiring that
+    //     // the default_size be not null
+    //     if (default_size === null) {
+    //       options.default_size = 'Unique'
+    //     }
+
+    //     try {
+    //       // Try to get a current session_id if the
+    //       // user has already been adding items to
+    //       // his current cart
+    //       options.session_id = this.getSessionId()
+    //     } catch (error) {
+    //       options.session_id = null
+    //     }
+    //     options.product = this.product.id
+
+    //     const response = await this.$http.post('cart/add', options)
+    //     const data = response.data
+
+    //     this.store.$patch((state) => {
+    //       state.cart = data
+    //       this.$localstorage.create('cart', data)
+    //     })
+
+    //     this.addingToCart = false
+    //     this.noSizeSelected = false
+    //     this.productOptions = {
+    //       default_size: null
+    //     }
+    //   } catch (error) {
+    //     console.error(error)
+    //     this.store.addErrorMessage(`V-AX-CA: ${error}: ${error.response.message}`)
+    //   }
+    // },
     async addToLikes () {
       // TODO: Create a general function for this
       if (this.isAuthenticated) {

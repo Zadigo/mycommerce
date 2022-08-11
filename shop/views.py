@@ -281,19 +281,20 @@ def latest_products(request, **kwargs):
         
     limit = int(limit)
     
-    queryset = cache.get('latest_products')
+    queryset = cache.get('latest_products', None)
     
-    if not queryset:
+    if queryset is None:
         last_product = Product.objects.last()
-        fifteen_days_from_now = now() - datetime.timedelta(days=15)
-        
-        queryset = Product.objects.filter(
-            Q(created_on__lte=fifteen_days_from_now.date()) &
-            Q(created_on__gte=last_product.created_on),
-            active=True
-        ).order_by('-created_on')
-        queryset = queryset[:limit]
-        cache.set('latest_products', queryset, 3600)
+        if last_product:
+            fifteen_days_from_now = now() - datetime.timedelta(days=15)
+            
+            queryset = Product.objects.filter(
+                Q(created_on__lte=fifteen_days_from_now.date()) &
+                Q(created_on__gte=last_product.created_on),
+                active=True
+            ).order_by('-created_on')
+            queryset = queryset[:limit]
+            cache.set('latest_products', queryset, 3600)
     
     serializer = ProductSerializer(instance=queryset, many=True)
     return simple_api_response(serializer.data)

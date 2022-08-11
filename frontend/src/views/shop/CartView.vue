@@ -11,6 +11,7 @@
           <div class="alert alert-info d-flex justify-content-around">
             <i>Icon</i>
             <p class="w-50">Plus que <span class="fw-bold">59,81 €</span> pour profiter de la livraison gratuite</p>
+            
             <div class="progress">
               <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">
               </div>

@@ -77,10 +77,10 @@ export default {
     const store = useShop()
     const app = getCurrentInstance()
     const { cartItems } = storeToRefs(store)
-    const { getCart, getSessionId, removeFromCart } = useCartComposable(app)
+    const { cartCache, getSessionId, removeFromCart } = useCartComposable(app)
 
     store.$subscribe((mutation, state) => {
-      console.log(state)
+      console.log('store modal cart', state)
       if (mutation.type === 'shop') {
         console.log(state)
       }
@@ -89,7 +89,7 @@ export default {
       store,
       cartItems,
       mediaUrl,
-      getCart,
+      cartCache,
       removeFromCart,
       getSessionId
     }
@@ -113,7 +113,8 @@ export default {
     }
   },
   beforeMount () {
-    const data = this.getCart()
+    const data = this.cartCache()
+    console.log('modal cart items', data)
     this.store.updateCart(data)
   },
   // updated () {

@@ -1,3 +1,8 @@
+<doc>
+  A wrapper component which contains the iteration
+  for each available products
+</doc>
+
 <template>
   <div class="col-12">
     <!-- Statistics -->
@@ -9,6 +14,12 @@
         <product-card :key="product.id" :product="product" :is-loading="isLoading" />
       </div>
     </div>
+
+    <!-- <div v-show="sortedProducts.lenght === 0" class="row">
+      <div class="col-12">
+        <h4>There are no available products</h4>
+      </div>
+    </div> -->
   </div>
 </template>
 
@@ -26,11 +37,11 @@ import ProductCard from '@/components/shop/products/ProductCard.vue'
 import useShopComposable from '@/composables/shop'
 
 export default {
-  name: 'ProductItems',
+  name: 'ProductWrapper',
   components: {
     ProductCard
   },
-  async setup () {
+  setup () {
     const store = useShop()
     const app = getCurrentInstance()
     const route = useRoute()

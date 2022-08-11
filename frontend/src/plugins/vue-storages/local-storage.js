@@ -1,5 +1,7 @@
 import { setupDevtoolsPlugin } from '@vue/devtools-api'
 
+let LOCALSTORAGE_INSTANCE = null
+
 function setupDevtools (app, storage) {
   // let devtoolsApi = null
   const devtools = {}
@@ -145,10 +147,12 @@ class VueLocalStorage {
 }
 
 function createVueLocalStorage () {
-  return new VueLocalStorage()
+  LOCALSTORAGE_INSTANCE = new VueLocalStorage()
+  return LOCALSTORAGE_INSTANCE
 }
 
 export {
   createVueLocalStorage,
+  LOCALSTORAGE_INSTANCE,
   VueLocalStorage
 }

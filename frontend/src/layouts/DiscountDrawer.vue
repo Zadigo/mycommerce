@@ -1,5 +1,5 @@
 <template>
-  <div ref="link" :class="{ active: opened }" class="drawer">
+  <div id="discount-drawer" ref="link" :class="{ active: opened }" class="drawer">
     <div class="action-button d-flex justify-content-center" @click="opened = !opened">
       <font-awesome-icon v-if="opened" icon="fa-solid fa-circle-arrow-right" class="mb-3" />
       <font-awesome-icon v-else icon="fa-solid fa-circle-arrow-left" class="mb-3" />
@@ -7,6 +7,7 @@
         {{ $t('Get discount', { value: $n(3, 'currency', $i18n.locale) }) }}
       </h4>
     </div>
+
     <div class="wrapper">
       Some wrapper
     </div>
@@ -14,11 +15,25 @@
 </template>
 
 <script>
+import { onClickOutside } from '@vueuse/core'
+import { ref } from 'vue'
+
 export default {
-  name: 'DiscountDrawr',
-  data: () => ({
-    opened: false
-  })
+  name: 'DiscountDrawer',
+  setup () {
+    const target = null
+    const opened = ref(false)
+    onClickOutside(target, () => {
+      opened.value = false
+    })
+    return {
+      opened,
+      target
+    }
+  },
+  mounted () {
+    this.target = this.$refs.link
+  }
 }
 </script>
 

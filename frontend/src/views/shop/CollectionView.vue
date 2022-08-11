@@ -1,3 +1,7 @@
+<doc>
+  Shows the list of poducts available in the shop
+</doc>
+
 <template>
   <section id="collection" class="ecommerce-section">
     <div class="container-fluid">
@@ -8,8 +12,7 @@
           </h2>
 
           <!-- Filters -->
-          <filters-bar style="z-index:20;" @loading-products-start="isLoading = true"
-                       @loading-products-end="isLoading = false" />
+          <filters-bar style="z-index:20;" @loading-products-start="isLoading = true" @loading-products-end="isLoading = false" />
         </div>
 
         <!-- FIXME: This gets displayed before the products are shown
@@ -31,14 +34,14 @@
         </div> -->
 
         <!-- TODO: Prefer Suspense ?? -->
-        <!-- <async-products-wrapper /> -->
-        <suspense>
-          <products-wrapper-vue />
+        <!-- <products-wrapper-vue /> -->
+        <async-products-wrapper-vue />
+        <!-- <suspense>
 
           <template #fallback>
             <collection-view1 />
           </template>
-        </suspense>
+        </suspense> -->
 
         <hr class="mt-5 mb-2">
 
@@ -46,12 +49,10 @@
         <pagination-row :product-count="searchedProductsCount" />
 
         <!-- Ad -->
-        <div class="col-12 my-6 d-none">
+        <div class="col-12 my-6">
           <router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }">
             <!-- TODO: Emit a PageView when clicking on this section -->
-            <img
-              src="https://img.ltwebstatic.com/images3_acp/2022/02/25/164578700614872218156e3ff9868de22e7c67a145.webp"
-              class="img-fluid" />
+            <img src="https://img.ltwebstatic.com/images3_acp/2022/02/25/164578700614872218156e3ff9868de22e7c67a145.webp" class="img-fluid" />
           </router-link>
         </div>
       </div>
@@ -60,30 +61,30 @@
 </template>
 
 <script>
-// import { defineAsyncComponent } from 'vue'
+import { defineAsyncComponent } from 'vue'
 import { capitalizeFirstLetter } from '@/utils'
 
 import FiltersBar from '@/components/shop/products/FiltersBar.vue'
 import PaginationRow from '@/components/shop/products/PaginationRow.vue'
 // import ProductsWrapperLoadingVue from '@/components/shop/products/ProductsWrapperLoading.vue'
-import ProductsWrapperVue from '../../components/shop/products/ProductsWrapper.vue'
-import CollectionView1 from '../../components/skeletons/CollectionView.vue'
+// import ProductsWrapperVue from '../../components/shop/products/ProductsWrapper.vue'
+// import CollectionView1 from '../../components/skeletons/CollectionView.vue'
 
 export default {
   name: 'CollectionView',
   components: {
-    ProductsWrapperVue,
-    // AsyncProductsWrapper: defineAsyncComponent({
-    //   // TODO: Rename ProductItems -> ProductsWrapper
-    //   loader: () => import('@/components/shop/products/ProductsWrapper.vue'),
-    //   loadingComponent: ProductsWrapperLoadingVue,
-    //   delay: 500,
-    //   errorComponent: ProductsWrapperLoadingVue,
-    //   timeout: 5000
-    // }),
+    // ProductsWrapperVue,
+    AsyncProductsWrapperVue: defineAsyncComponent({
+      // TODO: Rename ProductItems -> ProductsWrapper
+      loader: () => import('@/components/shop/products/ProductsWrapper.vue'),
+      // loadingComponent: ProductsWrapperLoadingVue,
+      delay: 500
+      // errorComponent: ProductsWrapperLoadingVue,
+      // timeout: 5000
+    }),
     FiltersBar,
-    PaginationRow,
-    CollectionView1
+    PaginationRow
+    // CollectionView1
   },
   setup () {
     return {
