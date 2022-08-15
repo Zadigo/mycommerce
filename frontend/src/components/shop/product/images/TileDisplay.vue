@@ -5,7 +5,10 @@
 
 <template>
   <!-- Image details -->
-  <selected-image v-if="selectedImage" :is-new="isNew" :selected-image="selectedImage" @reset-selected-image="selectedImage = undefined" />
+  <div v-if="selectedImage" class="zoom-container">
+    <inner-image-zoom :src="selectedImage" :zoom-src="selectedImage" :zoom-scale="3" zoom-type="hover"></inner-image-zoom>
+  </div>
+  <!-- <selected-image v-if="selectedImage" :is-new="isNew" :selected-image="selectedImage" @reset-selected-image="selectedImage = undefined" /> -->
 
   <!-- Images -->
   <div v-else id="tiles">
@@ -15,22 +18,24 @@
 
 <script>
 import MultipleImages from './tiles/MultipleImages.vue'
-import SelectedImage from './tiles/SelectedImage.vue'
+// import SelectedImage from './tiles/SelectedImage.vue'
 import ThreeImages from './tiles/ThreeImages.vue'
 import TwoImages from './tiles/TwoImages.vue'
+import InnerImageZoom from 'vue-inner-image-zoom'
 
 export default {
   name: 'TileDisplay',
   components: {
     MultipleImages,
-    SelectedImage,
+    InnerImageZoom,
+    // SelectedImage,
     ThreeImages,
     TwoImages
   },
   props: {
-    isNew: {
-      type: Boolean
-    },
+    // isNew: {
+    //   type: Boolean
+    // },
     images: {
       type: Array,
       required: true
@@ -95,22 +100,7 @@ export default {
   cursor: pointer;
 }
 
-.tiles {
-  cursor: pointer;
+.tiles img {
+  cursor: zoom-in;
 }
-
-/* .zoom-transition-enter-active
-.zoom-transition-leave-active {
-  transition: all .3s ease-in-out;
-}
-
-.zoom-transition-enter
-.zoom-transition-leave-to {
-  transform: scale(1.2, 1.2) translateX(-10px);
-}
-
-.zoom-transition-leave
-.zoom-transition-enter-to {
-  transform: scale(1, 1) translateX(0px);
-} */
 </style>

@@ -17,6 +17,7 @@ import i18n from './i18n'
 import messagesPlugin from './store/messages'
 
 import './plugins/webfontloader'
+import 'vue-inner-image-zoom/lib/vue-inner-image-zoom.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'mdb-ui-kit/css/mdb.min.css'
 import '@mdi/font/css/materialdesignicons.css'

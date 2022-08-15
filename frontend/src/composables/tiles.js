@@ -10,12 +10,16 @@ export default function useTileComposable (app) {
     return Object.keys(app.props.productVideo || {}).length > 0
   })
 
+  /** Returns the image url */
   function getImageForIndex (images, index) {
     return mediaUrl(images[index].mid_size)
   }
 
+  /** Returns the image url. Emits to parent components */
   function selectImageWithIndex (images, index) {
-    app.emit('select-image', getImageForIndex(index))
+    const image = getImageForIndex(images, index)
+    selectedImage.value = image
+    app.emit('select-image', image)
   }
 
   function doPlay () {

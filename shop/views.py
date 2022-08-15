@@ -40,20 +40,21 @@ def products_view(request, **kwargs):
     if queryset is None:
         queryset = Product.objects.filter(active=True)
         cache.set('products', queryset, timeout=10)
-        
+
     total_product_count = queryset.count()
-    
+
     pagination_instance = CustomProductPagination()
     result = pagination_instance.paginate_queryset(queryset, request)
-    
+
     # We're passing the paginated data through the
     # serializer and need to call is_valid still
     serializer = ProductSerializer(data=result, many=True)
     serializer.is_valid()
-    
+
     # Implement the filters that will be used
     # to filter the products on the collection page
-    colors = queryset.order_by('color').distinct().values_list('color', flat=True)
+    colors = queryset.order_by(
+        'color').distinct().values_list('color', flat=True)
     additional_infos = {
         'total_count':  queryset.count(),
         'filters': {
@@ -96,47 +97,47 @@ def product_details_view(request, pk, **kwargs):
     Returns additional information of the current product
     that was initially partially retrieved on
     the products page
-    
+
         * variants: products which carry the same name 
                     but have a different color variant
-                    
+
         * reviews: the reviews on the current product
                    including the average rating 
     """
     product = get_object_or_404(Product, id=pk)
-    
+
     # 1. This section gets and return exactly the same
     # product but with a different variant
     products = Product.objects.filter(active=True)
     variants = products.filter(name__exact=product.name)
     variant_serializer = VariantSerializer(instance=variants, many=True)
-    
-    
+
     # 2. Get the reviews on the given product and since
     # these does not change on a regular basis, cache
     cache_key = md5(product.slug.encode('utf-8')).hexdigest()
-    
+
     reviews = cache.get(cache_key, None)
     if reviews is None:
         queryset = product.review_set.all()
-        
+
         reviews_serializer = ReviewSerializer(instance=queryset, many=True)
 
         data = {'reviews': reviews_serializer.data}
         data = data | queryset.aggregate(average_rating=Avg('rating'))
         cache.set(cache_key, data, 3600)
-        
+
         reviews = data
-    
+
     # 3. Finally, get all the products that could be recommended
     # to the customer - use the current product information,
     # previous information from consulted products and likes
     if request.user.is_anonymous:
-        recommended_products = products.filter(name__icontains=product.name).exclude(id=product.id)
-        
+        recommended_products = products.filter(
+            name__icontains=product.name).exclude(id=product.id)
+
         if len(recommended_products) <= 3:
             other_products = products.exclude(id=product.id)
-            
+
             recommended_products_serializer = ProductSerializer(
                 instance=random.choices(other_products, k=4),
                 many=True
@@ -147,20 +148,21 @@ def product_details_view(request, pk, **kwargs):
                 many=True
             )
     else:
-        other_similar_products = products.filter(name__icontains=product.name).exclude(id=product.id)
+        other_similar_products = products.filter(
+            name__icontains=product.name).exclude(id=product.id)
         liked_products = products.filter(like__user=request.user)
         queryset = other_similar_products.union(liked_products)
         recommended_products_serializer = ProductSerializer(
             instance=queryset,
             many=True
         )
-        
+
     return_response = {
         'variants': variant_serializer.data,
         'recommended_products': recommended_products_serializer.data,
         **reviews
     }
-    
+
     return api_response(data=return_response)
 
 
@@ -189,10 +191,10 @@ def add_to_list_view(request, pk, **kwargs):
     """Adds a product to a given wishlist"""
     wishlist = get_object_or_404(Wishlist, pk=pk)
     product = get_object_or_404(Product, id=request.data.get('product', None))
-    
+
     if not product.active:
         return simple_api_response({'state': False, 'message': 'Not active'})
-    
+
     products = wishlist.products.filter(id=product.id)
     if products.exists():
         return simple_api_response({'state': False, 'message': 'Already liked'})
@@ -208,10 +210,10 @@ def remove_from_list_view(request, pk, **kwargs):
     """Get a specific whishlist"""
     wishlist = get_object_or_404(Wishlist, pk=pk)
     product = get_object_or_404(Product, id=request.data.get('product', None))
-    
+
     wishlist.products.remove(product)
     serializer = WishlistSerializer(instance=wishlist)
-    
+
     return simple_api_response(serializer)
 
 
@@ -232,16 +234,17 @@ def like_product_view(request, pk, **kwargs):
     queryset = product.like_set.filter(user=request.user)
 
     response_data = {'status': False}
-    
+
     if not queryset.exists():
         instance, state = Like.objects.get_or_create(user=request.user)
         instance.products.add(product)
-        
+
         response_data['status'] = True
-        
-        serializer = ProductSerializer(instance=instance.products.all(), many=True)
+
+        serializer = ProductSerializer(
+            instance=instance.products.all(), many=True)
         response_data['result'] = serializer.data
-    
+
     return simple_api_response(response_data)
 
 
@@ -251,10 +254,10 @@ def remove_liked_product_view(request, **kwargs):
     """Return all the products liked by a given user"""
     like_list = get_object_or_404(Like, user=request.user)
     product = request.data.get('product', None)
-    
+
     if not product:
         return error_response()
-    
+
     product = get_object_or_404(Product, id=product)
     like_list.products.remove(product)
     # TODO: Make this the regular return way for all like
@@ -275,27 +278,37 @@ def latest_products(request, **kwargs):
     limit = request.GET.get('limit')
     if not limit:
         limit = 20
-        
+
     if limit > 20:
         limit = 20
-        
+
     limit = int(limit)
-    
+
     queryset = cache.get('latest_products', None)
-    
+
     if queryset is None:
         last_product = Product.objects.last()
         if last_product:
             fifteen_days_from_now = now() - datetime.timedelta(days=15)
-            
+
             queryset = Product.objects.filter(
                 Q(created_on__lte=fifteen_days_from_now.date()) &
                 Q(created_on__gte=last_product.created_on),
                 active=True
             ).order_by('-created_on')
-            queryset = queryset[:limit]
+
+            # In some case, if products are created on
+            # the exact same day, then there cannot be
+            # items between now and 15 days ago, this
+            # solution resolves that
+            if not queryset.exists():
+                queryset = Product.objects.all()
+                queryset = queryset[len(queryset)-limit:len(queryset)]
+            else:
+                queryset = queryset[:limit]
+            print(queryset)
             cache.set('latest_products', queryset, 3600)
-    
+
     serializer = ProductSerializer(instance=queryset, many=True)
     return simple_api_response(serializer.data)
 

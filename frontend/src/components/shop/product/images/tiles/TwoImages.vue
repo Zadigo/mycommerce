@@ -6,11 +6,11 @@
 <template>
   <div id="images" class="row">
     <div class="col-6 p-1">
-      <img :src="getImageForIndex(images, 0)" class="img-fluid" @click="selectedImage = selectImageWithIndex(0)" />
+      <img :src="getImageForIndex(images, 0)" class="img-fluid" @click="selectImageWithIndex(images, 0)" />
     </div>
 
     <div class="col-6 p-1">
-      <img :src="getImageForIndex(images, 1)" class="img-fluid" @click="selectedImage = selectImageWithIndex(1)" />
+      <img :src="getImageForIndex(images, 1)" class="img-fluid" @click="selectImageWithIndex(images, 1)" />
     </div>
   </div>
 </template>
@@ -34,9 +34,9 @@ export default {
   // },
   setup () {
     const app = getCurrentInstance()
-    const { selectedImage, getImageForIndex } = useTileComposable(app)
+    const { selectImageWithIndex, getImageForIndex } = useTileComposable(app)
     return {
-      selectedImage,
+      selectImageWithIndex,
       getImageForIndex
     }
   }

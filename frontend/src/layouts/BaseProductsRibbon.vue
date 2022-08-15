@@ -1,9 +1,10 @@
 <template>
-  <div ref="link" class="product-selection">    
+  <div ref="link" class="product-selection">
     <div class="wrapper">
       <article v-for="product in latestProducts" :key="product.id" class="card">
         <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-dark" @click="$emit('product-click', product)">
-          <img :src="mediaUrl(product.get_main_image.mid_size)" :alt="product.name" class="card-img-top">
+          <img v-if="product.get_main_image" :src="mediaUrl(product.get_main_image.mid_size)" :alt="product.name" class="card-img-top">
+          <img v-else src="https://via.placeholder.com/300x300" :alt="product.name">
         </router-link>
 
         <div class="card-body">
@@ -18,7 +19,7 @@
     <button v-if="!arrivedState.left" id="left" type="button" class="btn btn-floating bg-white" @click="scrollItem('left')">
       <font-awesome-icon icon="fa-solid fa-arrow-left" />
     </button>
-    
+
     <button v-if="!arrivedState.right" id="right" type="button" class="btn btn-floating bg-white" @click="scrollItem('right')">
       <font-awesome-icon icon="fa-solid fa-arrow-right" />
     </button>
