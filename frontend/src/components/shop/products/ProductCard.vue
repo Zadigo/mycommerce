@@ -39,23 +39,8 @@
           {{ truncate(capitalizeLetters(product.name)) }}
         </p>
 
-        <div class="d-flex justify-content-between">
-          <div>
-            <span v-if="product.on_sale" class="me-2 fw-light">
-              <del>{{ $n(product.unit_price * 1, 'currency', $i18n.locale) }}</del>
-            </span>
-
-            <span :class="{ 'text-danger': product.on_sale }" class="fw-bold">
-              {{ $n(product.get_price * 1, 'currency', $i18n.locale) }}
-            </span>
-          </div>
-
-          <div>
-            <span v-if="product.on_sale" class="bg-danger p-1 rounded text-white ml-3">
-              {{ formatAsPercentage(product.sale_value, true) }}
-            </span>
-          </div>
-        </div>
+        <!-- Prices -->
+        <base-price-display :product="product" />
       </div>
     </router-link>
 
@@ -75,17 +60,19 @@
 <script>
 import _ from 'lodash'
 
-import BaseTag from '@/layouts/shop/BaseTag.vue'
-
 import { useShop } from '@/store/shop'
 import { useUrls, useUtilities } from '@/composables/utils'
 import useCartComposable from '@/composables/cart'
 
+import BaseTag from '@/layouts/shop/BaseTag.vue'
+import BasePriceDisplay from '@/layouts/shop/BasePriceDisplay.vue'
+
 export default {
   name: 'ProductCard',
   components: {
-    BaseTag
-  },
+    BaseTag,
+    BasePriceDisplay
+},
   props: {
     isLoading: {
       type: Boolean,

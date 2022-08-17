@@ -1,7 +1,7 @@
 <template>
-  <base-modal-vue id="modal-cart" :show="store.openCart" :title="$t('Cart')" size="md" scrollable hide-footer @close-modal="openCart=false" @close="openCart=false">
+  <base-modal-vue id="modal-cart" :show="openCart" :title="$t('Cart')" size="md" scrollable hide-footer @close-modal="openCart = false" @close="openCart = false">
     <div class="container">
-      <div v-if="cartIsEmpty" class="row">
+      <div v-if="store.isEmpty" class="row">
         <div class="col-12">
           <p>{{ $t('Your cart is currently empty') }}</p>
           <hr>
@@ -17,14 +17,8 @@
             <img :src="mediaUrl(item.product.images[0].mid_size)" class="img-fluid" width="100">
 
             <div class="mx-4">
-              <p class="font-weight-bold mb-1">{{ item.product.name }}</p>
-              <!-- <p v-if="!item.product.on_sale">
-                <span class="font-weight-bold">{{ $n(item.product.unit_price, 'currency', $i18n.locale) }}</span> x 1 ({{ item.default_size }})
-              </p>
-              <p v-else>
-                <del>{{ $n(item.product.unit_price, 'currency', $i18n.locale) }}</del> {{ $n(item.product.sale_price, 'currency', $i18n.locale) }} x 1
-              </p> -->
-
+              <p class="fw-bold mb-1">{{ item.product.name }}</p>
+              <base-price-display :product="item.product" display-classes="justify-content-start my-3" />
               <button type="button" class="btn btn-sm btn-info" @click="removeFromCart(item)">
                 {{ $t('Remove') }}
               </button>
@@ -36,7 +30,7 @@
         <div class="col-12">
           <div class="p-1 d-flex justify-content-between">
             <span>Total:</span>
-            <span class="font-weight-bold">{{ $n(cartTotal, 'currency', $i18n.locale) }}</span>
+            <span class="fw-bold">{{ $n(total, 'currency', $i18n.locale) }}</span>
           </div>
         </div>
       </div>
@@ -57,71 +51,49 @@
 </template>
 
 <script>
-import _ from 'lodash'
-
-import { useShop } from '@/store/shop'
-import { toNumber } from '@vue/shared'
 import { getCurrentInstance } from 'vue'
 import { mapState, mapWritableState, storeToRefs } from 'pinia'
+import { useUrls } from '@/composables/utils'
+import useCartComposable from '@/composables/cart'
+import { useCart } from '@/store/cart'
 
 import BaseModalVue from '@/layouts/shop/BaseModal.vue'
-import useCartComposable from '@/composables/cart'
-import { useUrls } from '@/composables/utils'
+import BasePriceDisplay from '@/layouts/shop/BasePriceDisplay.vue'
 
 export default {
   name: 'ModalCart',
   components: {
-    BaseModalVue
+    BaseModalVue,
+    BasePriceDisplay
   },
   setup () {
-    const store = useShop()
-    const app = getCurrentInstance()
+    const store = useCart()
     const { cartItems } = storeToRefs(store)
+    const app = getCurrentInstance()
+    const { removeFromCart } = useCartComposable(app)
     const { mediaUrl } = useUrls()
-    const { cartCache, getSessionId, removeFromCart } = useCartComposable(app)
 
-    store.$subscribe((mutation, state) => {
-      console.log('store modal cart', state)
-      if (mutation.type === 'shop') {
-        console.log(state)
-      }
-    })
+    // store.$subscribe((mutation, state) => {
+    //   console.log('store modal cart', state)
+    //   if (mutation.type === 'shop') {
+    //     console.log(state)
+    //   }
+    // })
+
     return {
       store,
       cartItems,
       mediaUrl,
-      cartCache,
-      removeFromCart,
-      getSessionId
+      removeFromCart
     }
   },
   computed: {
-    ...mapState(useShop, ['cartItems']),
-    cartTotal () {
-      return _.sum(_.map(this.cartItems, (product) => {
-        return toNumber(product.price)
-      }))
-    },
-    ...mapWritableState(useShop, ['openCart']),
-    // ...mapState({
-    //   cartTotal: (state) => { return state.cachedCartResponse.total },
-    //   cartItems: (state) => { return state.cartItems },
-    //   cart: (state) => { return state.cart }
-    // }),
-
-    cartIsEmpty () {
-      return this.cartItems.length === 0
-    }
+    ...mapWritableState(useCart, ['openCart']),
+    ...mapState(useCart, ['total', 'cachedCart']),
   },
   beforeMount () {
-    const data = this.cartCache()
-    console.log('modal cart items', data)
-    this.store.updateCart(data)
+    this.store.reloadCache()
   },
-  // updated () {
-  //   const data = this.getCart()
-  //   this.store.updateCart(data)
-  // },
   methods: {
     goToPage (name) {
       this.store.openCart = false

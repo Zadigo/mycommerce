@@ -1,10 +1,11 @@
 import { client } from "@/plugins/axios"
 import { useShop } from "@/store/shop"
-import { reactive } from "vue"
+import { ref } from "vue"
 
 export default function useShopComposable (app, route) {
-  const isLoading = reactive(true)
+  const isLoading = ref(true)
 
+  // TODO: Create a utils
   function runCallback (func, response) {
     if (func && typeof func === 'function') {
       try {

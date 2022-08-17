@@ -90,6 +90,7 @@
     "novelties": "Novelties",
     "price": "Price",
     "product": "product | products",
+    "product_count": "{count} product | {count} products",
     "product_measurements": "Product measurements",
     "report_abuse": "Report abuse",
     "review": "review | reviews",

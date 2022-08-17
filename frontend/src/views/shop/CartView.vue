@@ -11,7 +11,7 @@
           <div class="alert alert-info d-flex justify-content-around">
             <i>Icon</i>
             <p class="w-50">Plus que <span class="fw-bold">59,81 €</span> pour profiter de la livraison gratuite</p>
-            
+
             <div class="progress">
               <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">
               </div>
@@ -21,22 +21,25 @@
           <div class="card">
             <div class="card-body">
               <h1 class="fw-bold">{{ $t('Cart') }}</h1>
-              <p class="fs-5">{{ cartLength }} {{ $tc('product', cartLength) }}</p>
+              <p class="fs-5">{{ $tc('product_count', count) }}</p>
             </div>
           </div>
 
+          <!-- Products -->
           <article v-for="item in cartItems" :key="item.id" :aria-label="item.product.name" class="card my-2">
             <div class="card-body d-flex justify-content-left p-1">
               <router-link :to="{ name: 'product_view', params: { id: item.product.id, slug: item.product.slug, lang: $i18n.locale } }">
                 <div class="p-3">
-                  <img :src=" mediaUrl(item.product.images[0].mid_size)" :alt="item.name" class="img-fluid rounded" width="150">
+                  <img :src="mediaUrl(item.product.images[0].mid_size)" :alt="item.name" class="img-fluid rounded" width="150">
                 </div>
               </router-link>
 
               <div class="p-3">
                 <router-link :to="{ name: 'product_view', params: { id: item.product.id, slug: item.product.slug, lang: $i18n.locale } }" class="text-dark">
                   <p class="fw-bold fs-4 m-0">{{ truncate(item.product.name, 30) }}</p>
-                  <p class="fw-bold mb-2">{{ $n(item.product.get_price * 1, 'currency', $i18n.locale) }} x 1</p>
+                  <!-- Prices -->
+                  <!-- <p class="fw-bold mb-2">{{ $n(item.product.get_price * 1, 'currency', $i18n.locale) }} x 1</p> -->
+                  <base-price-display :product="item.product" display-classes="justify-content-start my-3" />
                 </router-link>
                 <input type="number" class="form-control p-2 w-50">
                 <button type="button" class="btn btn-info my-2">
@@ -46,11 +49,11 @@
             </div>
           </article>
 
-          <div v-if="!hasItems" class="card">
+          <!-- Empty -->
+          <div v-if="isEmpty" class="card">
             <div class="card-body text-center">
               <h4 class="text-center display-4">{{ $t('Your cart is empty') }}</h4>
-              <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
-                           type="button" class="btn btn-lg btn-primary mt-3">
+              <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }" type="button" class="btn btn-lg btn-primary mt-3">
                 {{ $t('Continue shopping') }}
               </router-link>
             </div>
@@ -81,7 +84,9 @@
 
                 <div class="d-flex justify-content-between fw-bold">
                   <h5 class="text-uppercase fs-6 fw-bold">{{ $t('Subtotal') }}</h5>
-                  <h5 class="text-uppercase fs-6 fw-bold">25€</h5>
+                  <h5 class="text-uppercase fs-6 fw-bold">
+                    {{ $n(grandTotal, 'currency', $i18n.locale) }}
+                  </h5>
                 </div>
 
                 <div class="d-flex justify-content-between text-muted mt-2 mb-4">
@@ -100,9 +105,7 @@
                   {{ $t('Checkout') }}
                 </router-link>
 
-                <router-link
-                  :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
-                  class="btn btn-block btn-light">
+                <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }" class="btn btn-block btn-light">
                   {{ $t('Continue shopping') }}
                 </router-link>
               </div>
@@ -153,22 +156,29 @@
 
 <script>
 import _ from 'lodash'
-import { useUrls, useUtilities } from '@/composables/utils'
+
 import { mapState } from 'pinia'
-import { useShop } from '../../store/shop'
+import { useCart } from '@/store/cart'
+import { useUrls, useUtilities } from '@/composables/utils'
+import useCartComposable from '@/composables/cart'
+
+import BasePriceDisplay from '@/layouts/shop/BasePriceDisplay.vue'
 
 export default {
   name: 'CartView',
+  components: { BasePriceDisplay },
   setup () {
-    const store = useShop()
-    const { truncate, getVerticalScrollPercentage } = useUtilities()
-    const { mediaUrl } = useUrls()
+    const store = useCart();
+    const { truncate, getVerticalScrollPercentage } = useUtilities();
+    const { removeFromCart } = useCartComposable();
+    const { mediaUrl } = useUrls();
     return {
       store,
       getVerticalScrollPercentage,
+      removeFromCart,
       mediaUrl,
       truncate
-    }
+    };
   },
   data: () => ({
     giftOptions: {
@@ -177,27 +187,25 @@ export default {
     }
   }),
   computed: {
-    ...mapState(useShop, ['cartItems', 'cartLength', 'cachedCartResponse']),
-    hasItems () {
-      return this.cartLength > 0
-    },
+    ...mapState(useCart, ['cartItems', 'count', 'total', 'cachedCartResponse']),
     grandTotal () {
-      return _.sum([this.cachedCartResponse.total, this.giftOptions.is_gift ? 6 : 0, this.giftOptions.donation ? 0.5 : 0])
+      return _.sum([this.total, this.giftOptions.is_gift ? 6 : 0, this.giftOptions.donation ? 0.5 : 0]);
     }
   },
   mounted () {
-    window.addEventListener('scroll', this.asideEventListener)
+    this.store.reloadCache();
+    window.addEventListener("scroll", this.asideEventListener);
   },
   beforeUnmount () {
-    window.removeEventListener('scroll', this.asideEventListener)
+    window.removeEventListener("scroll", this.asideEventListener);
   },
   methods: {
     asideEventListener () {
-      const percentage = this.getVerticalScrollPercentage(document.body)
+      const percentage = this.getVerticalScrollPercentage(document.body);
       if (percentage >= 20) {
-        this.$refs.aside.classList.add('aside-sticky')
+        this.$refs.aside.classList.add("aside-sticky");
       } else {
-        this.$refs.aside.classList.remove('aside-remove')
+        this.$refs.aside.classList.remove("aside-remove");
       }
     }
   }
@@ -205,15 +213,14 @@ export default {
 </script>
 
 <style scoped>
-
 body {
   background-color: #f6f6f6 !important;
 }
 
 .aside-sticky {
   position: sticky;
-  top:20%;
-  left:0;
+  top: 20%;
+  left: 0;
 }
 
 aside {

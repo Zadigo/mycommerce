@@ -41,8 +41,8 @@
     <div id="cart" class="d-flex justify-content-left my-4">
       <!-- FIXME: There is an issue with addToLikes which does not pass the product
       in the funcion but instead passes $event (PointerEvent) -->
-      <button id="btn-add-cart" type="button" class="btn btn-lg btn-dark me-2 fs-6" @click="addToCart">
-        <div v-if="addingToCart" class="spinner-border text-light me-2" role="status">
+      <button id="btn-add-cart" type="button" class="btn btn-lg btn-dark me-2 fs-6" @click="doAddToCart">
+        <div v-if="isSending" class="spinner-border text-light me-2" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
         {{ $t('Add to cart') }}
@@ -83,13 +83,13 @@ export default {
   setup () {
     const store = useShop()
     const app = getCurrentInstance()
-    const { addingToCart, addToCart, productOptions, cartCache } = useCartComposable(app)
+    const { isSending, addToCart, setProductOption, enforceSize } = useCartComposable(app)
     return {
       store,
-      addingToCart,
-      productOptions,
-      addToCart,
-      cartCache
+      isSending,
+      enforceSize,
+      setProductOption,
+      addToCart
     }
   },
   data: () => ({
@@ -103,67 +103,18 @@ export default {
   },
   methods: {
     doAddToCart () {
-      const default_size = this.productOptions.default_size
-      if (this.hasSizes && default_size === null) {
+      if (this.hasSizes && this.enforceSize()) {
         this.noSizeSelected = true
         this.addingToCart = false
       } else {
         this.addToCart(this.product, (data) => {
-          console.log(data)
+          this.store.$patch((state) => {
+            state.cart = data
+            this.$localstorage.create('cart', data)
+          })
         })
       }
     },
-    // TODO: Create a general function
-    // async addToCart () {
-    //   try {
-    //     this.addingToCart = true
-
-    //     const options = this.productOptions
-    //     const default_size = this.productOptions.default_size
-
-    //     if (this.hasSizes && default_size === null) {
-    //       this.noSizeSelected = true
-    //       this.addingToCart = false
-    //       return
-    //     }
-
-    //     // When the size is unique, and since
-    //     // we initially set the default size
-    //     // as null, set it to Unique or this
-    //     // will return an error requiring that
-    //     // the default_size be not null
-    //     if (default_size === null) {
-    //       options.default_size = 'Unique'
-    //     }
-
-    //     try {
-    //       // Try to get a current session_id if the
-    //       // user has already been adding items to
-    //       // his current cart
-    //       options.session_id = this.getSessionId()
-    //     } catch (error) {
-    //       options.session_id = null
-    //     }
-    //     options.product = this.product.id
-
-    //     const response = await this.$http.post('cart/add', options)
-    //     const data = response.data
-
-    //     this.store.$patch((state) => {
-    //       state.cart = data
-    //       this.$localstorage.create('cart', data)
-    //     })
-
-    //     this.addingToCart = false
-    //     this.noSizeSelected = false
-    //     this.productOptions = {
-    //       default_size: null
-    //     }
-    //   } catch (error) {
-    //     console.error(error)
-    //     this.store.addErrorMessage(`V-AX-CA: ${error}: ${error.response.message}`)
-    //   }
-    // },
     async addToLikes () {
       // TODO: Create a general function for this
       if (this.isAuthenticated) {
@@ -189,7 +140,7 @@ export default {
     },
     setSize (size) {
       this.noSizeSelected = false
-      this.productOptions.default_size = size.name
+      this.setProductOption('default_size', size)
     }
   }
 }

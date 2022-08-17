@@ -63,7 +63,7 @@
           </li>
 
           <li class="nav-item">
-            <a href class="nav-link" @click.prevent="store.openCart = true">
+            <a href class="nav-link" @click.prevent="cartStore.openCart = true">
               <font-awesome-icon icon="fa-solid fa-cart-shopping" />
             </a>
           </li>
@@ -85,6 +85,7 @@ import { useAuthentication } from '@/store/authentication'
 import { mapState } from 'pinia'
 
 import useAuthenicationComposable from '../composables/authentication'
+import { useCart } from '@/store/cart'
 
 // import { mapGetters, mapMutations } from 'vuex'
 
@@ -92,10 +93,12 @@ export default {
   name: 'BaseNavbar',
   setup () {
     const store = useShop()
+    const cartStore = useCart()
     const authStore = useAuthentication()
     const { performLogout } = useAuthenicationComposable()
     return {
       store,
+      cartStore,
       authStore,
       performLogout
     }

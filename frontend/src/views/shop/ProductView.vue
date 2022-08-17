@@ -114,7 +114,7 @@ import { getCurrentInstance } from 'vue'
 import { useRoute } from 'vue-router'
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
 
-import useShopComposable from '../../composables/shop'
+import useShopComposable from '@/composables/shop'
 
 import BaseTag from '@/layouts/shop/BaseTag.vue'
 import ProductActions from '@/components/shop/product/ProductActions.vue'
@@ -181,6 +181,7 @@ export default {
     }
   },
   beforeMount () {
+    this.store.reloadProducts()
     this.store.getProduct(this.$route.params.id)
   },
   mounted () {

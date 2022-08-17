@@ -87,6 +87,7 @@
     "novelties": "Nouveautés",
     "price": "Prix",
     "product": "produit | produits",
+    "product_count": "{count} produit | {count} produits",
     "product_measurements": "Mesures produits",
     "report_abuse": "Signaler un abus",
     "review": "évaluation | évaluations",

@@ -40,6 +40,7 @@ class ProductSerializer(Serializer):
     id = fields.IntegerField()
     name = fields.CharField(required=False)
     unit_price = fields.DecimalField(5, 2, required=False)
+    usd_unit_price = fields.DecimalField(5, 2, required=False)
 
     color = fields.CharField()
     category = fields.CharField()
@@ -81,7 +82,7 @@ class WishlistSerializer(UserlistSerializer):
 
 class ValidateWishList(Serializer):
     name = fields.CharField()
-    
+
     def save(self, request, **kwargs):
         data = self.validated_data.copy()
         data['user'] = request.user
@@ -98,7 +99,7 @@ class LikeSerializer(UserlistSerializer):
 
 class DashboardImageSerializer(ModelSerializer):
     mid_size = fields.ImageField()
-    
+
     class Meta:
         model = Image
         fields = ['id', 'name', 'variant', 'mid_size']
@@ -107,23 +108,23 @@ class DashboardImageSerializer(ModelSerializer):
 class ImageAssociationSerializer(Serializer):
     images = fields.ListField()
     replace_existing_images = fields.BooleanField(default=False)
-    
+
     def get_object(self, produt_id):
         return get_object_or_404(Product, id=produt_id)
-    
+
     def get_images(self):
         return Image.objects.filter(id__in=self.validated_data['images'])
-        
+
     def save(self, product_id, **kwargs):
         product = self.get_object(product_id)
-        
+
         if self.validated_data['replace_existing_images']:
             product.images.set(self.get_images())
         else:
             product.images.add(*self.get_images())
         product.refresh_from_db(fields=['images'])
         return ProductSerializer(instance=product)
-        
+
     def remove(self, product_id, **kwargs):
         product = self.get_object(product_id)
         product.images.remove(*self.get_images())

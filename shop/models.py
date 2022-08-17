@@ -38,7 +38,7 @@ class Image(models.Model):
         source='original',
         format='JPEG',
         options={'quality': 90},
-        processors = [ResizeToFill(689, 1100)]
+        processors=[ResizeToFill(689, 1100)]
     )
     thumbnail = ImageSpecField(
         source='original',
@@ -51,11 +51,11 @@ class Image(models.Model):
 
     class Meta:
         ordering = ['-created_on', 'name']
-        
+
     def __str__(self):
         return self.name
-    
-    
+
+
 class Video(models.Model):
     """Video showcasing the product"""
     name = models.CharField(
@@ -68,11 +68,11 @@ class Video(models.Model):
         validators=[validate_video_file_extension]
     )
     created_on = models.DateField(auto_now=True)
-    
+
     def __str__(self):
         return self.name
-    
-    
+
+
 # class AdditionalVariant(models.Model):
 #     """Variants for size..."""
 #     reference = models.CharField(
@@ -95,14 +95,14 @@ class Video(models.Model):
 #         blank=True,
 #         null=True
 #     )
-    
+
 #     in_stock = models.BooleanField(default=True)
 #     active = models.BooleanField(default=True)
 
 #     def __str__(self):
 #         return f"{self.name} - {self.pk}"
-    
-    
+
+
 class AbstractProduct(models.Model):
     name = models.CharField(max_length=100)
     color = models.CharField(
@@ -117,9 +117,9 @@ class AbstractProduct(models.Model):
         blank=True,
         null=True
     )
-    
+
     # additional_variants = models.ManyToManyField(
-    #     AdditionalVariant, 
+    #     AdditionalVariant,
     #     blank=True,
     #     help_text=_('Declination in size, patterns...')
     # )
@@ -138,7 +138,7 @@ class AbstractProduct(models.Model):
         blank=True,
         null=True
     )
-    
+
     unit_price = models.DecimalField(
         max_digits=5,
         decimal_places=2,
@@ -146,7 +146,7 @@ class AbstractProduct(models.Model):
         help_text=_('Cost value of the product'),
         validators=[price_validator]
     )
-    
+
     sale_value = models.PositiveIntegerField(default=0)
     sale_price = models.DecimalField(
         max_digits=5,
@@ -154,17 +154,17 @@ class AbstractProduct(models.Model):
         default=0
     )
     on_sale = models.BooleanField(default=False)
-    
+
     display_new = models.BooleanField(
         default=False,
         help_text=_('Explicitly mark a product as being new')
     )
     slug = models.SlugField(max_length=100, unique=True)
     active = models.BooleanField(default=False)
-    
+
     modified_on = models.DateField(auto_now_add=True)
     created_on = models.DateField(auto_now=True)
-    
+
     class Meta:
         abstract = True
         ordering = ['name', '-created_on']
@@ -172,12 +172,13 @@ class AbstractProduct(models.Model):
             models.Index(fields=['name', 'sku', 'category'])
         ]
         constraints = [
-            UniqueConstraint(fields=['name', 'color'], name='unique_name_with_color')
+            UniqueConstraint(fields=['name', 'color'],
+                             name='unique_name_with_color')
         ]
-        
+
     def __str__(self):
         return self.name
-        
+
     @property
     def get_main_image(self):
         queryset = self.images.filter(is_main_image=True)
@@ -190,28 +191,34 @@ class AbstractProduct(models.Model):
         if self.on_sale and self.sale_price > 0:
             return self.sale_price
         return self.unit_price
-    
+
+    @property
+    def usd_unit_price(self):
+        price = float(self.get_price)
+        return price * 1.02
+
     @property
     def sizes(self):
         return self.size_set.all()
-    
+
     def clean(self):
         if self.on_sale:
             if self.sale_value == 0:
-                raise ValidationError({'sale_value': _("A product on sale cannot have a sale value of 0")})
+                raise ValidationError(
+                    {'sale_value': _("A product on sale cannot have a sale value of 0")})
             self.sale_price = calculate_sale(self.unit_price, self.sale_value)
-            
+
         if not self.sku:
             color = self.color[:3]
             numbers = map(lambda _: random.choice(string.digits), range(10))
             self.sku = f"{color.upper()}{''.join(numbers)}"
-        
 
-class Product(AbstractProduct):    
+
+class Product(AbstractProduct):
     class Meta(AbstractProduct.Meta):
         verbose_name = _('Product')
         verbose_name_plural = _('Products')
-    
+
 
 class AbstractUserList(models.Model):
     """Base model for user lists"""
@@ -224,10 +231,10 @@ class AbstractUserList(models.Model):
         on_delete=models.CASCADE
     )
     created_on = models.DateField(auto_now=True)
-    
+
     class Meta:
         abstract = True
-        
+
     def __str__(self):
         return str(self.user)
 
@@ -239,16 +246,17 @@ class Like(AbstractUserList):
         constraints = [
             UniqueConstraint(fields=['user'], name='one_list_per_user')
         ]
-        
-    
+
+
 class Wishlist(AbstractUserList):
     """User's wishlists"""
     name = models.CharField(max_length=100)
-    
+
     class Meta:
         verbose_name = _('Wishlist')
         constraints = [
-            UniqueConstraint(fields=['name', 'user'], name='unique_list_name_per_user')
+            UniqueConstraint(fields=['name', 'user'],
+                             name='unique_list_name_per_user')
         ]
 
 
@@ -271,7 +279,7 @@ def delete_image(sender, instance, **kwargs):
                 os.remove(instance.original.path)
     else:
         instance.url.delete(save=False)
-        
+
 
 @receiver(pre_save, sender=Image)
 def delete_image_on_update(sender, instance, **kwargs):

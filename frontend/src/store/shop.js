@@ -2,18 +2,12 @@ import _, { toNumber } from 'lodash'
 import { defineStore } from 'pinia'
 import { useAuthentication } from './authentication'
 
-// const useCart = defineStore('cart', {
-//     state: () => ({
-//         cart: []
-//     })
-// })
-
 const useShop = defineStore('shop', {
   state: () => ({
     cachedCartResponse: {},
     cartSessionId: null,
-    cartItems: [],
-    cart: [],
+    // cartItems: [],
+    // cart: [],
 
     openCart: false,
     showSearchModal: false,
@@ -42,23 +36,23 @@ const useShop = defineStore('shop', {
     resetProducts () {
       this.localStorage.remove('products')
     },
-    updateCart (data) {
-      if (data) {
-        this.cachedCartResponse = data
-        this.cartSessionId = data.session_id
-        this.cartItems = data.results
-        this.cart = data.statistics
-      } else {
-        this.cart = []
-      }
-    },
+    // updateCart (data) {
+    //   if (data) {
+    //     this.cachedCartResponse = data
+    //     this.cartSessionId = data.session_id
+    //     this.cartItems = data.results
+    //     this.cart = data.statistics
+    //   } else {
+    //     this.cart = []
+    //   }
+    // },
     reloadProducts () {
       // Reloads existing products
       // from the localstorage
       if (this.products.length === 0) {
-        const items = this.localstorage.retrieve('products') || {}
+        const items = this.session.retrieve('products') || {}
         this.originalProductsResponse = items
-        this.products = items.products
+        this.products = items.results
       }
     },
     getProduct (productId) {
