@@ -153,16 +153,19 @@
 
 <script>
 import _ from 'lodash'
+import { useUrls, useUtilities } from '@/composables/utils'
 import { mapState } from 'pinia'
 import { useShop } from '../../store/shop'
-import { mediaUrl, truncate, getVerticalScrollPercentage } from '../../utils'
 
 export default {
   name: 'CartView',
   setup () {
     const store = useShop()
+    const { truncate, getVerticalScrollPercentage } = useUtilities()
+    const { mediaUrl } = useUrls()
     return {
       store,
+      getVerticalScrollPercentage,
       mediaUrl,
       truncate
     }
@@ -190,7 +193,7 @@ export default {
   },
   methods: {
     asideEventListener () {
-      const percentage = getVerticalScrollPercentage(document.body)
+      const percentage = this.getVerticalScrollPercentage(document.body)
       if (percentage >= 20) {
         this.$refs.aside.classList.add('aside-sticky')
       } else {

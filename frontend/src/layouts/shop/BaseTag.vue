@@ -1,15 +1,14 @@
 <template>
-  <div id="tag" ref="tag" :class="classes" class="darken-1 text-uppercase text-white font-weight-bold rounded text-center">
+  <div id="tag" ref="tag" :class="classes" class="text-uppercase text-white fw-bold rounded text-center">
     <slot></slot>
   </div>
 </template>
 
 <script>
-import { formatAsPercentage } from '@/utils'
+import { useUtilities } from '@/composables/utils'
 
 export default {
   name: 'BaseTag',
-
   props: {
     backgroundColor: {
       type: String,
@@ -24,7 +23,7 @@ export default {
     },
     padding: {
       type: Number,
-      default: 3
+      default: 1
     },
     top: {
       type: Number,
@@ -32,15 +31,15 @@ export default {
     },
     width: {
       type: Number,
-      default: 20
+      default: 30
     }
   },
   setup () {
+    const { formatAsPercentage } = useUtilities()
     return {
       formatAsPercentage
     }
   },
-
   computed: {
     classes () {
       return [
@@ -51,16 +50,13 @@ export default {
       ]
     }
   },
-
   mounted () {
     this.$refs.tag.style.width = this.formatAsPercentage(this.width)
     this.positionItem()
   },
-
   updated () {
     this.positionItem()
   },
-
   methods: {
     positionItem () {
       if (this.isAbsolute) {

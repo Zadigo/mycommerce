@@ -55,14 +55,16 @@
 
 <script>
 import { useAuthentication } from '../../store/authentication'
-import { mediaUrl, truncate } from '../../utils'
 import useCartComposable from '../../composables/cart'
+import { useUrls, useUtilities } from '@/composables/utils'
 
 export default {
   name: 'LikedProductsView',
   setup () {
     const authStore = useAuthentication()
     const { addToCart } = useCartComposable()
+    const { truncate } = useUtilities()
+    const { mediaUrl } = useUrls()
     return {
       authStore,
       mediaUrl,
@@ -78,6 +80,14 @@ export default {
       this.getLikedProducts()
       this.likedProducts = this.localStorage.likedProducts || []
     }
+  },
+  beforeUnmount () {
+    // TODO: Products the customer has liked 
+    // would have not necessarily been loaded
+    // from the product's page. We have to load
+    // and cache all products from the database
+    // to ensure that when visiting a liked product
+    // that it can actually be displayed correctly
   },
   methods: {
     async getLikedProducts () {

@@ -2,21 +2,21 @@
   <div id="actions">
     <!-- Colors -->
     <div id="colors" class="my-3">
-      <p class="mb-2">
+      <p class="mb-2 fs-6">
         <span class="fw-bold">{{ $t('Color') }}</span>: {{ product.color }}
       </p>
 
       <!-- TODO: Create a swatch reusable component -->
       <div class="swatch">
         <router-link v-for="variant in productVariants" :key="variant.id" :to="{ name: 'product_view', params: { id: variant.id, slug: variant.slug, lang: $i18n.locale } }" class="color">
-          <img :src="buildSwatch(variant.color)" class="img-fluid">
+          <img :src="buildSwatch(variant.color)" :alt="variant.slug" class="img-fluid">
         </router-link>
       </div>
     </div>
 
     <!-- Size -->
     <div id="sizes" class="my-2">
-      <p class="mb-2 fw-bold">{{ $t('Size') }}</p>
+      <p class="mb-2 fw-bold fs-6">{{ $t('Size') }}</p>
 
       <div v-if="hasSizes" class="sizes">
         <button v-for="(size, i) in product.sizes" id="btn-select-size" :key="size.id" :class="{ 'ms-2': i > 0, 'btn-dark': productOptions.default_size == size.name, 'btn-light': !(productOptions.default_size == size.name) }" type="button" class="btn btn-md shadow-none border" @click="setSize(size)">
@@ -39,7 +39,9 @@
 
     <!-- Actions -->
     <div id="cart" class="d-flex justify-content-left my-4">
-      <button id="btn-add-cart" type="button" class="btn btn-lg btn-dark me-2 fs-4" @click="addToCart">
+      <!-- FIXME: There is an issue with addToLikes which does not pass the product
+      in the funcion but instead passes $event (PointerEvent) -->
+      <button id="btn-add-cart" type="button" class="btn btn-lg btn-dark me-2 fs-6" @click="addToCart">
         <div v-if="addingToCart" class="spinner-border text-light me-2" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
@@ -100,13 +102,13 @@ export default {
     }
   },
   methods: {
-    async doAddToCart () {
+    doAddToCart () {
       const default_size = this.productOptions.default_size
       if (this.hasSizes && default_size === null) {
         this.noSizeSelected = true
         this.addingToCart = false
       } else {
-        this.addToCart(this.product, function success (data) {
+        this.addToCart(this.product, (data) => {
           console.log(data)
         })
       }
@@ -194,7 +196,6 @@ export default {
 </script>
 
 <style scoped>
-
   .sizes #btn-select-size {
     width: 15%;
   }
@@ -206,19 +207,23 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: left;
+    height: auto;
     width: 100%;
   }
   .swatch .color {
     display: block;
     overflow: hidden;
     border-radius: 50%;
-    min-height: 34px;
-    width: 34px;
+    height: 25px;
+    min-height: 25px;
+    width: 25px;
+    border: 1px solid transparent;
+    transition: transform .6s cubic-bezier(.5, 1.6, .45, .7);
   }
-  .swatch .router-link-exact-active {
-    border: 1px solid white;
-  }
-  .swatch .color::before {
+  /* .swatch .router-link-exact-active {
+    border: 1px solid black;
+  } */
+  /* .swatch .color::before {
     border: 2px solid #222;
     border-radius: 50%;
     background: transparent;
@@ -227,7 +232,7 @@ export default {
     border: 2px solid #222;
     border-radius: 50%;
     background: transparent;
-  }
+  } */
   .swatch .color:not(:last-child) {
     margin-right: .5rem;
   }

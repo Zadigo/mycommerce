@@ -31,7 +31,7 @@ import { ref } from 'vue'
 import { useAnalytics } from '@/plugins/vue-analytics/google'
 import { useScroll } from '@vueuse/core'
 import { useShop } from '../store/shop'
-import { mediaUrl, truncate } from '../utils'
+import { useUrls, useUtilities } from '@/composables/utils'
 
 export default {
   name: 'BaseProductsRibbon',
@@ -43,6 +43,8 @@ export default {
     const store = useShop()
     const { x, directions, arrivedState } = useScroll(target)
     const { google } = useAnalytics()
+    const { truncate } = useUtilities()
+    const { mediaUrl } = useUrls()
     return {
       google,
       scrollX: x,

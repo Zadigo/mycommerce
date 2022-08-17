@@ -1,5 +1,5 @@
 html, body, * {
-    font-family: Montserrat, Roboto, sans-serif;
+    font-family: Oswald, Raleway, Roboto, sans-serif;
     scroll-behavior: smooth;
     /* font-weight: 300; */
 }
@@ -68,4 +68,12 @@ section.ecommerce-section {
 ::-webkit-scrollbar-thumb {
     background-color: rgba(38, 38, 38, 1);
     /* border-radius: 1rem; */
+}
+
+.fs-7 {
+    font-size: 0.9rem;
+}
+
+.fs-8 {
+    font-size: 0.8rem;
 }

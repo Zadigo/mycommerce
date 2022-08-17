@@ -61,11 +61,11 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue'
-import { capitalizeFirstLetter } from '@/utils'
-
 import FiltersBar from '@/components/shop/products/FiltersBar.vue'
 import PaginationRow from '@/components/shop/products/PaginationRow.vue'
+
+import { defineAsyncComponent } from 'vue'
+import { useUtilities } from '@/composables/utils'
 // import ProductsWrapperLoadingVue from '@/components/shop/products/ProductsWrapperLoading.vue'
 // import ProductsWrapperVue from '../../components/shop/products/ProductsWrapper.vue'
 // import CollectionView1 from '../../components/skeletons/CollectionView.vue'
@@ -87,6 +87,7 @@ export default {
     // CollectionView1
   },
   setup () {
+    const { capitalizeFirstLetter } = useUtilities()
     return {
       capitalizeFirstLetter
     }

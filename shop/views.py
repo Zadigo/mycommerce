@@ -43,7 +43,7 @@ def products_view(request, **kwargs):
 
     total_product_count = queryset.count()
 
-    pagination_instance = CustomProductPagination()
+    pagination_instance = CustomPagination()
     result = pagination_instance.paginate_queryset(queryset, request)
 
     # We're passing the paginated data through the

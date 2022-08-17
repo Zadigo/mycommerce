@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { mediaUrl } from '@/utils'
+import { useUrls } from '@/composables/utils'
 
 export default {
   name: 'SelectedImage',
@@ -26,6 +26,7 @@ export default {
     'reset-selected-image': () => true
   },
   setup () {
+    const { mediaUrl } = useUrls()
     return {
       mediaUrl
     }

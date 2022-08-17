@@ -60,13 +60,13 @@
 import _ from 'lodash'
 
 import { useShop } from '@/store/shop'
-import { mediaUrl } from '@/utils'
 import { toNumber } from '@vue/shared'
 import { getCurrentInstance } from 'vue'
 import { mapState, mapWritableState, storeToRefs } from 'pinia'
 
 import BaseModalVue from '@/layouts/shop/BaseModal.vue'
 import useCartComposable from '@/composables/cart'
+import { useUrls } from '@/composables/utils'
 
 export default {
   name: 'ModalCart',
@@ -77,6 +77,7 @@ export default {
     const store = useShop()
     const app = getCurrentInstance()
     const { cartItems } = storeToRefs(store)
+    const { mediaUrl } = useUrls()
     const { cartCache, getSessionId, removeFromCart } = useCartComposable(app)
 
     store.$subscribe((mutation, state) => {

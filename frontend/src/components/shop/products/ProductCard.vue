@@ -41,7 +41,7 @@
 
         <div class="d-flex justify-content-between">
           <div>
-            <span v-if="product.on_sale" class="me-2 text-red">
+            <span v-if="product.on_sale" class="me-2 fw-light">
               <del>{{ $n(product.unit_price * 1, 'currency', $i18n.locale) }}</del>
             </span>
 

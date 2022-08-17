@@ -38,30 +38,30 @@
         <div :class="{ 'ps-5': breakpoints.isGreater('sm') }" class="col-sm-12 col-md-5 pt-1">
           <div class="row">
             <!-- Tags -->
-            <div v-show="currentProduct.on_sale || currentProduct.display_new" id="tags" class="col-12">
-              <base-tag v-if="currentProduct.on_sale" class="me-2 fw-bold mb-3" background-color="bg-danger">
+            <div v-show="currentProduct.on_sale || currentProduct.display_new" id="tags" class="col-12 d-flex justify-content-start w-100">
+              <base-tag v-if="currentProduct.on_sale" class="me-2 mb-3" background-color="bg-danger">
                 {{ $t('Sale') }}
               </base-tag>
 
-              <base-tag v-if="currentProduct.display_new" class="fw-bold mb-3" background-color="bg-primary">
+              <base-tag v-if="currentProduct.display_new" class="mb-3" background-color="bg-primary">
                 {{ $t('New') }}
               </base-tag>
             </div>
 
             <!-- Information -->
             <div id="information" class="col-12 pt-0 pb-0">
-              <p class="fw-normal fs-4 m-0">
-                {{ capitalizeLetters(currentProduct.name) }} - <span class="text-muted fw-normal">{{ currentProduct.color }}</span>
+              <p class="fw-bold fs-5 m-1">
+                {{ capitalizeLetters(currentProduct.name) }} - <span class="text-muted">{{ currentProduct.color }}</span>
               </p>
 
-              <p class="mb-1 fs-3">
+              <p class="mb-1 fs-4">
                 <!-- Original price -->
-                <span v-if="currentProduct.on_sale" class="me-2 fs-5 fw-bolder text-muted">
+                <span v-if="currentProduct.on_sale" class="me-2 fs-6 fw-light text-muted">
                   <del>{{ $n(currentProduct.unit_price * 1, 'currency', $i18n.locale) }}</del>
                 </span>
 
                 <!-- Discounted price -->
-                <span v-if="currentProduct.on_sale" class="fw-bolder fs-4 fw-bold">
+                <span v-if="currentProduct.on_sale" class="fw-bold fs-4">
                   {{ $n(currentProduct.sale_price * 1, 'currency', $i18n.locale) }}
                 </span>
 
@@ -108,7 +108,6 @@
 </template>
 
 <script>
-import { capitalizeLetters, formatAsPercentage } from '@/utils'
 import { useShop } from '@/store/shop'
 import { mapState } from 'pinia'
 import { getCurrentInstance } from 'vue'
@@ -125,6 +124,7 @@ import RecentlyViewedVue from '@/components/shop/product/RecentlyViewed.vue'
 // import ProductSkeleton from '@/components/shop/skeletons/ProductSkeleton.vue'
 // import Reviews from '@/components/shop/product/reviews/Reviews.vue'
 import TileDisplay from '@/components/shop/product/images/TileDisplay.vue'
+import { useUtilities } from '@/composables/utils'
 
 export default {
   name: 'ProductView',
@@ -144,6 +144,7 @@ export default {
     const route = useRoute()
     const { isLoading } = useShopComposable(app, route)
     const breakpoints = useBreakpoints(breakpointsTailwind)
+    const { formatAsPercentage, capitalizeLetters } = useUtilities()
     return {
       store,
       isLoading,
@@ -224,11 +225,11 @@ export default {
   overflow-x: scroll;
   padding: 1rem;
 }
-
+/* 
 #tags {
   display: flex;
-  justify-content: around;
-}
+  justify-content: left;
+} */
 
 .breadcrumb a:hover {
   color: #eee;

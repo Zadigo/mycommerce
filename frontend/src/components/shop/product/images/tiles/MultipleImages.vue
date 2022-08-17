@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { mediaUrl } from '@/utils'
+import { useUrls } from '@/composables/utils'
 import { getCurrentInstance } from 'vue'
 import useTileComposable from '../../../../../composables/tiles'
 
@@ -57,6 +57,7 @@ export default {
   setup () {
     const app = getCurrentInstance()
     const { hasVideo, getImageForIndex, selectImageWithIndex } = useTileComposable(app)
+    const { mediaUrl } = useUrls()
     return {
       getImageForIndex,
       selectImageWithIndex,

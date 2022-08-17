@@ -43,7 +43,6 @@
 </template>
 
 <script>
-import { scrollToTop } from '../../utils'
 import { useScroll } from '@vueuse/core'
 
 import BaseMessagesVue from '@/components/BaseMessages.vue'
@@ -53,6 +52,7 @@ import BaseTopBannerVue from '@/components/BaseTopBanner.vue'
 import DiscountDrawerVue from '../DiscountDrawer.vue'
 import ModalCartVue from '@/components/shop/ModalCart.vue'
 import { ref } from 'vue'
+import { useUtilities } from '@/composables/utils'
 
 // import BaseSearchModal from '@/components/BaseSearchModal.vue'
 // import ModalLanguageSelection from '@/components/ModalLanguageSelection.vue'
@@ -76,6 +76,7 @@ export default {
   setup () {
     const target = ref(null)
     const { y, directions } = useScroll(target)
+    const { scrollToTop } = useUtilities()
     return {
       target,
       directions,

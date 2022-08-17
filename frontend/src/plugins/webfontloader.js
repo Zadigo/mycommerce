@@ -2,6 +2,6 @@ import WebFontLoader from 'webfontloader'
 
 WebFontLoader.load({
   google: {
-    families: ['Montserrat']
+    families: ['Raleway', 'Merriweather', 'Oswald']
   }
 })

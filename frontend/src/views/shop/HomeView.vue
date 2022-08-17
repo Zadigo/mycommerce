@@ -81,11 +81,12 @@
 </template>
 
 <script>
+import BaseProductsRibbonVue from '@/layouts/BaseProductsRibbon.vue'
+
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
 import { useAnalytics } from '../../plugins/vue-analytics/google'
 import { useShop } from '../../store/shop'
-import { mediaUrl, truncate } from '../../utils'
-import BaseProductsRibbonVue from '@/layouts/BaseProductsRibbon.vue'
+import { useUrls, useUtilities } from '@/composables/utils'
 
 export default {
   name: 'HomeView',
@@ -96,6 +97,8 @@ export default {
     const store = useShop()
     const { google } = useAnalytics()
     const breakpoints = useBreakpoints(breakpointsTailwind)
+    const { mediaUrl } = useUrls()
+    const { truncate } = useUtilities()
     return {
       breakpoints,
       google,

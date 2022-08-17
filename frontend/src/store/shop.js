@@ -56,7 +56,9 @@ const useShop = defineStore('shop', {
       // Reloads existing products
       // from the localstorage
       if (this.products.length === 0) {
-        this.products = this.localstorage.retrieve('products') || []
+        const items = this.localstorage.retrieve('products') || {}
+        this.originalProductsResponse = items
+        this.products = items.products
       }
     },
     getProduct (productId) {

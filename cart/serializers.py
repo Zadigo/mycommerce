@@ -43,13 +43,13 @@ class ValidateVariants(Serializer):
         ClotheSizesChoices.sizes,
         default=ClotheSizesChoices.default('S')
     )
-    
+
 
 class ValidateCart(Serializer):
     """Validates the data used create a
     cart item in the database"""
-    
-    product = fields.IntegerField(allow_null=True)
+
+    product = fields.IntegerField()
     default_size = fields.ChoiceField(
         ClotheSizesChoices.choices(),
         default=ClotheSizesChoices.default('S')
@@ -72,7 +72,7 @@ class ValidateCart(Serializer):
         if self.instance is not None:
             return self.update(self.instance, validated_data)
         return self.create(validated_data, request=request)
-    
+
     def delete(self, request, **kwargs):
         product_id = self.validated_data['product']
         session_id = self.validated_data['session_id']

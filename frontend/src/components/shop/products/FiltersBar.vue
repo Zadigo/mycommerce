@@ -36,7 +36,7 @@
             {{ $t('Size') }}
             <v-icon class="ms-1">mdi-chevron-down</v-icon>
           </v-btn> -->
-          <button class="btn btn-light shadow-none fw-normal" @click="openFilters('sizes')">
+          <button type="button" class="btn btn-light shadow-none fw-normal" @click="openFilters('sizes')">
             {{ $t('Size') }}
           </button>
         </li>
@@ -47,7 +47,7 @@
             {{ $t('Color') }}
             <v-icon class="ms-1">mdi-chevron-down</v-icon>
           </v-btn> -->
-          <button class="btn btn-light shadow-none fw-normal" @click="openFilters('colors')">
+          <button type="button" class="btn btn-light shadow-none fw-normal" @click="openFilters('colors')">
             {{ $t('Color') }}
           </button>
         </li>
@@ -84,22 +84,33 @@ import { mapState } from 'pinia'
 import { useShop } from '@/store/shop'
 import { useRoute } from 'vue-router'
 import { getCurrentInstance } from 'vue'
-import { getVerticalScrollPercentage, listManager, mediaUrl, scrollToTop } from '@/utils'
 
 import useShopComposable from '../../../composables/shop'
+import { useUrls, useUtilities } from '@/composables/utils'
 
 export default {
   name: 'FiltersBar',
-  emits: ['loading-products-start', 'loading-products-end', 'do-sort', 'load-products'],
+  emits: {
+    'loading-products-start': () => true,
+    'loading-products-end': () => true,
+    'do-sort': () => true,
+    'load-products': () => true
+  },
   setup () {
     const store = useShop()
     const app = getCurrentInstance()
     const route = useRoute()
     const { getProducts, productsRequest } = useShopComposable(app, route)
+    const { getVerticalScrollPercentage, listManager, scrollToTop } = useUtilities()
+    const { mediaUrl } = useUrls()
     return {
       store,
+      mediaUrl,
       getProducts,
-      productsRequest
+      productsRequest,
+      getVerticalScrollPercentage,
+      listManager,
+      scrollToTop
     }
   },
   data: () => ({
@@ -141,7 +152,7 @@ export default {
     colors () {
       const items = ['beige', 'black', 'camel', 'red']
       return _.map(items, (item) => {
-        return [item, mediaUrl(`/media/swatches/${item}.png`)]
+        return [item, this.mediaUrl(`/media/swatches/${item}.png`)]
       })
     },
 
@@ -204,7 +215,7 @@ export default {
     },
 
     handleScroll () {
-      const scrollPercentage = getVerticalScrollPercentage(document.body)
+      const scrollPercentage = this.getVerticalScrollPercentage(document.body)
 
       if (scrollPercentage >= 5) {
         this.$refs.link.classList.add('scrolled')
@@ -218,7 +229,7 @@ export default {
     setFilterValue (key, colorValue) {
       const values = this.selectedElements[key]
 
-      this.selectedElements[key] = listManager(values, colorValue)
+      this.selectedElements[key] = this.listManager(values, colorValue)
       if (!this.hasFilters) {
         // If we have no filters, request
         // all the products
@@ -227,7 +238,7 @@ export default {
       } else {
         this.getFilteredProducts()
       }
-      scrollToTop()
+      this.scrollToTop()
     },
 
     isSelected (key, value) {

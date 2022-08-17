@@ -13,7 +13,11 @@ import { client } from '@/plugins/axios'
 export default function useCartComposable () {
   const addingToCart = ref(false)
   const store = useShop()
-  const productOptions = ref({ default_size: 'Unique' })
+  const productOptions = ref({ 
+    default_size: 'Unique',
+    product: null,
+    session_id: null
+  })
 
   function cartCache () {
     return LOCALSTORAGE_INSTANCE.retrieve('cart')
@@ -35,10 +39,17 @@ export default function useCartComposable () {
     try {
       addingToCart.value = true
       
-      productOptions.value.product = product.id
-      productOptions.value.default_size = productOptions.value.default_size || 'Unique'
+      const options = {}
+      Object.assign(options, productOptions.value)
+      options.product = product.id
+      options.session_id = sessionId()
+      console.log('addToCart', options, product)
+      // productOptions.value.product = product.id
+      // productOptions.value.default_size = productOptions.value.default_size || 'Unique'
+      // productOptions.value.sesssion_id = LOCALSTORAGE_INSTANCE.retrieve('cart')?.session_id
+      // console.log(productOptions.value)
 
-      const response = await client.post('cart/add', productOptions.value)
+      const response = await client.post('cart/add', options)
       const data = response.data
       
       store.$patch((state) => {
@@ -54,7 +65,7 @@ export default function useCartComposable () {
       }
       
     } catch (error) {
-      store.addErrorMessage(`V-AX-CA: ${error}: ${error.response.message}`)
+      store.addErrorMessage(`V-AX-CA: ${error}: ${error}`)
     }
   }
 
