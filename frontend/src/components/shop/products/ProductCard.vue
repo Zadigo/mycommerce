@@ -75,11 +75,10 @@
 <script>
 import _ from 'lodash'
 
-import { truncate, capitalizeLetters, mediaUrl, formatAsPercentage } from '@/utils'
-import { useShop } from '@/store/shop'
-
 import BaseTag from '@/layouts/shop/BaseTag.vue'
 
+import { useShop } from '@/store/shop'
+import { useUrls, useUtilities } from '@/composables/utils'
 import useCartComposable from '@/composables/cart'
 
 export default {
@@ -103,6 +102,8 @@ export default {
   setup () {
     const store = useShop()
     const { addingToCart, productOptions, quickAddToCart, getSessionId } = useCartComposable()
+    const { mediaUrl } = useUrls()
+    const { capitalizeLetters, formatAsPercentage, truncate } = useUtilities()
     return {
       addingToCart,
       productOptions,

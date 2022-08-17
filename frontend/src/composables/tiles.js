@@ -1,4 +1,4 @@
-import { mediaUrl } from '@/utils'
+import { useUrls } from '@/composables/utils'
 import { computed, ref } from 'vue'
 import { useShop } from '../store/shop'
 
@@ -12,6 +12,7 @@ export default function useTileComposable (app) {
 
   /** Returns the image url */
   function getImageForIndex (images, index) {
+    const { mediaUrl } = useUrls()
     return mediaUrl(images[index].mid_size)
   }
 

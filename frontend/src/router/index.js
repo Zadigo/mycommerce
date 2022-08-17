@@ -1,6 +1,7 @@
 import i18n from '@/i18n'
 
-import { scrollToTop, loadView, loadLayout } from '../utils'
+// import { scrollToTop, loadView, loadLayout } from '../utils'
+import { loadView, loadLayout, scrollToTop } from '@/composables/utils'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import accounts from './accounts'

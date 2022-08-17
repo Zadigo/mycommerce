@@ -86,7 +86,7 @@ import { useRoute } from 'vue-router'
 import { getCurrentInstance } from 'vue'
 
 import useShopComposable from '../../../composables/shop'
-import { useUrls, useUtilities } from '@/composables/utils'
+import { useUrls, useUtilities, scrollToTop } from '@/composables/utils'
 
 export default {
   name: 'FiltersBar',
@@ -101,7 +101,7 @@ export default {
     const app = getCurrentInstance()
     const route = useRoute()
     const { getProducts, productsRequest } = useShopComposable(app, route)
-    const { getVerticalScrollPercentage, listManager, scrollToTop } = useUtilities()
+    const { getVerticalScrollPercentage, listManager } = useUtilities()
     const { mediaUrl } = useUrls()
     return {
       store,

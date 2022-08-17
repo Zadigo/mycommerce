@@ -17,6 +17,10 @@ export function loadComponent (name) {
   return () => import(`@/components/${name}.vue`)
 }
 
+export function scrollToTop () {
+  window.scroll(0, 0)
+}
+
 export function useUtilities () {
   function hasNull (items) {
     let itemsValues = []
@@ -119,10 +123,6 @@ export function useUtilities () {
 
   function scrollToSection (elementId) {
     document.getElementById(elementId).scrollIntoView()
-  }
-
-  function scrollToTop () {
-    window.scroll(0, 0)
   }
 
   function capitalizeFirstLetter (value) {

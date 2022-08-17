@@ -13,6 +13,8 @@ declare function loadView (name: string): Promise<any>
 declare function loadLayout (name: string): Promise<any>
 /** Load component from "components" folder */ 
 declare function loadComponent (name: string): Promise<any>
+/** Scroll to the top of a page */
+declare function scrollToTop (): void
 
 /** Utilities for sockets */ 
 declare function useSocket (): {
@@ -46,8 +48,6 @@ declare function useUtilities (): {
     listManager (items: [], item: object): []
     /** Based on the ID attribute of an element on the page, scroll to that element */
     scrollToSection (elementId: string): void
-    /** Scroll to the top of a page */
-    scrollToTop (): void
     /** Capitalize the first letter of a string */
     capitalizeFirstLetter (value): string
     /** Capitalize the first letters of a string */

@@ -1,4 +1,4 @@
-import { loadView } from '@/utils'
+import { loadView } from '@/composables/utils'
 
 export default [
   {
