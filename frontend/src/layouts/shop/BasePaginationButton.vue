@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="btn btn-lg btn-secondary" @click="getProducts">
+  <button type="button" class="btn btn-lg btn-secondary" @click="getAllProducts">
     <slot></slot>
   </button>
 </template>
@@ -19,9 +19,9 @@ export default {
   setup () {
     const app = getCurrentInstance()
     const route = useRoute()
-    const { getProducts } = useShopComposable(app, route)
+    const { getAllProducts } = useShopComposable(app, route)
     return {
-      getProducts
+      getAllProducts
     }
   }
 }

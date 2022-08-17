@@ -37,7 +37,7 @@ import ProductCard from '@/components/shop/products/ProductCard.vue'
 import useShopComposable from '@/composables/shop'
 
 export default {
-  name: 'ProductWrapper',
+  name: 'ProductsWrapper',
   components: {
     ProductCard
   },
@@ -45,14 +45,12 @@ export default {
     const store = useShop()
     const app = getCurrentInstance()
     const route = useRoute()
-    const { isLoading, productsRequest, getProducts } = useShopComposable(app, route)
+    const { isLoading, getAllProducts } = useShopComposable(app, route)
 
-    // await productsRequest()
     return {
       store,
       isLoading,
-      productsRequest,
-      getProducts
+      getAllProducts
     }
   },
   data: () => ({
@@ -105,12 +103,12 @@ export default {
       // a request with "undefined" as param so make 
       // sure "current" is actually defined
       if (current && current !== previous) {
-        this.getProducts()
+        this.getAllProducts()
       }
     }
   },
   created () {
-    this.productsRequest()
+    this.getAllProducts()
     this.isLoading = false
   },
   methods: {

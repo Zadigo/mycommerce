@@ -77,6 +77,10 @@ const useShop = defineStore('shop', {
     },
     getProductIndex (productId) {
       return _.findIndex(this.products, ['id', toNumber(productId)])
+    },
+    setProducts (response) {
+      this.originalProductsResponse = response.data
+      this.products = response.data.results
     }
   },
   getters: {

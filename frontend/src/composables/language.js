@@ -1,5 +1,5 @@
 import i18n from '@/i18n'
-import { onMounted, watch, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 export default function useLanguage () {
     const language = ref(i18n.global.locale)
@@ -15,10 +15,9 @@ export default function useLanguage () {
         changeLanguage(language.value)
     })
     
-    watch(language, (current) => {
-        changeLanguage(current)
-    })
-
+    // watch(language, (current) => {
+    //     changeLanguage(current)
+    // })
 
     return {
         changeLanguage

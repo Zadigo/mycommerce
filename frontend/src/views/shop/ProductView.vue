@@ -151,7 +151,6 @@ export default {
       capitalizeLetters,
       formatAsPercentage,
       breakpoints
-      // requestProductVariants
     }
   },
   data: () => ({

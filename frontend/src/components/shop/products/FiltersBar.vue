@@ -100,14 +100,13 @@ export default {
     const store = useShop()
     const app = getCurrentInstance()
     const route = useRoute()
-    const { getProducts, productsRequest } = useShopComposable(app, route)
+    const { getAllProducts } = useShopComposable(app, route)
     const { getVerticalScrollPercentage, listManager } = useUtilities()
     const { mediaUrl } = useUrls()
     return {
       store,
       mediaUrl,
-      getProducts,
-      productsRequest,
+      getAllProducts,
       getVerticalScrollPercentage,
       listManager,
       scrollToTop
@@ -199,12 +198,10 @@ export default {
         this.store.addErrorMessage('Could not resolve filter request (V-AX-FB)')
       }
     },
-
     doSort (method) {
       this.sortMethod = method
       this.$emit('do-sort', method)
     },
-
     openFilters (method) {
       if (method !== this.selectedFilter && this.showFilters) {
         this.showFilters = true
@@ -213,7 +210,6 @@ export default {
       }
       this.selectedFilter = method
     },
-
     handleScroll () {
       const scrollPercentage = this.getVerticalScrollPercentage(document.body)
 
@@ -225,22 +221,18 @@ export default {
         this.$refs.link.classList.remove('scrolled')
       }
     },
-
     setFilterValue (key, colorValue) {
       const values = this.selectedElements[key]
 
       this.selectedElements[key] = this.listManager(values, colorValue)
+
       if (!this.hasFilters) {
-        // If we have no filters, request
-        // all the products
-        // this.$emit('load-products')
-        this.productsRequest()
+        this.getAllProducts()
       } else {
         this.getFilteredProducts()
       }
       this.scrollToTop()
     },
-
     isSelected (key, value) {
       return this.selectedElements[key].includes(value)
     }
