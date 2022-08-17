@@ -18,7 +18,6 @@
 
 <script>
 import MultipleImages from './tiles/MultipleImages.vue'
-// import SelectedImage from './tiles/SelectedImage.vue'
 import ThreeImages from './tiles/ThreeImages.vue'
 import TwoImages from './tiles/TwoImages.vue'
 import InnerImageZoom from 'vue-inner-image-zoom'
@@ -26,9 +25,8 @@ import InnerImageZoom from 'vue-inner-image-zoom'
 export default {
   name: 'TileDisplay',
   components: {
-    MultipleImages,
     InnerImageZoom,
-    // SelectedImage,
+    MultipleImages,
     ThreeImages,
     TwoImages
   },
