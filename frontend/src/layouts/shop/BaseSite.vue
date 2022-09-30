@@ -31,6 +31,7 @@
 
       <modal-cart-vue />
       <discount-drawer-vue v-if="!$route.meta.isFullPage" />
+      <modal-language />
       <!-- <cart-off-canvas /> -->
       <!-- <login-modal /> -->
       <!-- <base-subscription-modal :show-modal="showSubscriptionModal" /> -->
@@ -43,7 +44,9 @@
 </template>
 
 <script>
+import { ref } from 'vue'
 import { useScroll } from '@vueuse/core'
+import { scrollToTop } from '@/composables/utils'
 
 import BaseMessagesVue from '@/components/BaseMessages.vue'
 import BaseNavbarVue from '@/components/BaseNavbar.vue'
@@ -51,8 +54,7 @@ import BaseFooterVue from '@/components/BaseFooter.vue'
 import BaseTopBannerVue from '@/components/BaseTopBanner.vue'
 import DiscountDrawerVue from '../DiscountDrawer.vue'
 import ModalCartVue from '@/components/shop/ModalCart.vue'
-import { ref } from 'vue'
-import { scrollToTop } from '@/composables/utils'
+import ModalLanguage from '@/components/shop/ModalLanguage.vue'
 
 // import BaseSearchModal from '@/components/BaseSearchModal.vue'
 // import ModalLanguageSelection from '@/components/ModalLanguageSelection.vue'
@@ -67,7 +69,8 @@ export default {
     BaseMessagesVue,
     BaseNavbarVue,
     DiscountDrawerVue,
-    ModalCartVue
+    ModalCartVue,
+    ModalLanguage
     // BaseSearchModal,
     // CartOffCanvas,
     // ModalLanguageSelection,

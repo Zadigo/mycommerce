@@ -9,15 +9,18 @@ export default function useLanguage () {
 
         const doc = document.querySelector('html')
         doc.setAttribute('lang', language.value)
+
+        localStorage.setItem('language', value)
     }
     
     onMounted(() => {
-        changeLanguage(language.value)
+        const userLanguage = localStorage.getItem('language')
+        if (userLanguage) {
+            changeLanguage(userLanguage)
+        } else {
+            changeLanguage(language.value)
+        }
     })
-    
-    // watch(language, (current) => {
-    //     changeLanguage(current)
-    // })
 
     return {
         changeLanguage

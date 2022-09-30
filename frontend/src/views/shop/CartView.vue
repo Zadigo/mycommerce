@@ -42,7 +42,7 @@
                   <base-price-display :product="item.product" display-classes="justify-content-start my-3" />
                 </router-link>
                 <input type="number" class="form-control p-2 w-50">
-                <button type="button" class="btn btn-info my-2">
+                <button type="button" class="btn btn-info my-2" @click="removeFromCart(item.product)">
                   {{ $t('Remove') }}
                 </button>
               </div>
@@ -160,6 +160,7 @@ import _ from 'lodash'
 import { mapState } from 'pinia'
 import { useCart } from '@/store/cart'
 import { useUrls, useUtilities } from '@/composables/utils'
+import { getCurrentInstance } from 'vue'
 import useCartComposable from '@/composables/cart'
 
 import BasePriceDisplay from '@/layouts/shop/BasePriceDisplay.vue'
@@ -168,17 +169,17 @@ export default {
   name: 'CartView',
   components: { BasePriceDisplay },
   setup () {
-    const store = useCart();
-    const { truncate, getVerticalScrollPercentage } = useUtilities();
-    const { removeFromCart } = useCartComposable();
-    const { mediaUrl } = useUrls();
+    const store = useCart()
+    const { truncate, getVerticalScrollPercentage } = useUtilities()
+    const { removeFromCart } = useCartComposable(getCurrentInstance())
+    const { mediaUrl } = useUrls()
     return {
       store,
       getVerticalScrollPercentage,
       removeFromCart,
       mediaUrl,
       truncate
-    };
+    }
   },
   data: () => ({
     giftOptions: {
@@ -189,23 +190,23 @@ export default {
   computed: {
     ...mapState(useCart, ['cartItems', 'count', 'total', 'cachedCartResponse']),
     grandTotal () {
-      return _.sum([this.total, this.giftOptions.is_gift ? 6 : 0, this.giftOptions.donation ? 0.5 : 0]);
+      return _.sum([this.total, this.giftOptions.is_gift ? 6 : 0, this.giftOptions.donation ? 0.5 : 0])
     }
   },
   mounted () {
-    this.store.reloadCache();
-    window.addEventListener("scroll", this.asideEventListener);
+    this.store.reloadCache(),
+    window.addEventListener("scroll", this.asideEventListener)
   },
   beforeUnmount () {
-    window.removeEventListener("scroll", this.asideEventListener);
+    window.removeEventListener("scroll", this.asideEventListener)
   },
   methods: {
     asideEventListener () {
-      const percentage = this.getVerticalScrollPercentage(document.body);
+      const percentage = this.getVerticalScrollPercentage(document.body)
       if (percentage >= 20) {
-        this.$refs.aside.classList.add("aside-sticky");
+        this.$refs.aside.classList.add("aside-sticky")
       } else {
-        this.$refs.aside.classList.remove("aside-remove");
+        this.$refs.aside.classList.remove("aside-remove")
       }
     }
   }

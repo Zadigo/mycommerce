@@ -1,89 +1,207 @@
 <template>
-  <div class="modal-wrapper">
-    <div v-show="show" class="dropdown-backdrop" @click="$emit('close-modal')" />
-    <div ref="link" :class="modalClasses" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              Cart
+  <div ref="link" class="modal-wrapper">
+    <!-- <transition appear name="custom-classes" mode="out-in" enter-active-class="modal-animation dialog-fade-in-down" leave-active-class="modal-animation dialog-fade-out-up"> -->
+    <!-- <transition name="slide" mode="out-in"> -->
+    <div v-if="show" :id="id" :class="modalClasses" :aria-modal="show" class="modal" role="dialog" tabindex="-1">
+      <div :class="modalDialogClasses" class="modal-dialog">
+        <div :class="modalContentClasses" class="modal-content">
+          <div v-if="!isFrame" class="modal-header">
+            <h5 v-if="title" class="modal-title">
+              {{ title }}
             </h5>
-            <button type="button" class="btn-close close" aria-hidden="true" aria-label="Close" @click="$emit('close-modal')">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn-close" aria-label="Close" @click="$emit('close')"></button>
           </div>
 
           <div class="modal-body">
-            <slot />
+            <slot></slot>
           </div>
 
-          <!-- <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Save changes</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div> -->
+          <slot name="footer"></slot>
         </div>
       </div>
     </div>
+    <!-- </transition> -->
+
+    <transition appear name="custom-classes" mode="out-in" enter-active-class="modal-animation dialog-fade-in" leave-active-class="modal-animation dialog-fade-out">
+      <div v-if="show && !nonInvasive" :class="{show}" class="modal-backdrop"></div>
+    </transition>
   </div>
 </template>
 
 <script>
+import { inject } from 'vue'
 
 export default {
   name: 'BaseModal',
   props: {
+    centered: {
+      type: Boolean
+    },
+    id: {
+      type: String,
+      required: true
+    },
+    nonInvasive: {
+      type: Boolean
+    },
+    position: {
+      type: String,
+      default: null
+    },
+    scrollable: {
+      type: Boolean
+    },
+    size: {
+      type: String,
+      default: 'lg'
+    },
     show: {
       type: Boolean
+    },
+    staticBackdrop: {
+      type: Boolean
+    },
+    title: {
+      type: String
     }
   },
   emits: {
-    'close-modal': () => true
+    close () {
+      return true
+    }
+  },
+  setup () {
+    const darkMode = inject('darkMode', false)
+    return {
+      darkMode
+    }
   },
   computed: {
     modalClasses () {
+      let position = this.position
+      switch (this.position) {
+        case 'top-left':
+        case 'bottom-left':
+          position = 'left'
+          break
+
+        case 'top-right':
+        case 'bottom-right':
+          position = 'right'
+          break
+
+        default:
+          break
+      }
       return [
+        // 'fade',
         this.show ? 'show' : null,
-        'fade'
+        position
       ]
+    },
+    modalDialogClasses () {
+      if (this.hasPositionX) {
+        return [
+          {
+            [`modal-side modal-${this.position}`]: true
+          }
+        ]
+      }
+
+      if (this.hasPositionY) {
+        return [
+          {
+            [`modal-frame modal-${this.position}`]: true
+          }
+        ]
+      }
+
+      return [
+        {
+          [`modal-${this.size}`]: true
+        },
+        this.centered ? 'modal-dialog-centered' : null,
+        this.scrollable ? 'modal-dialog-scrollable' : null
+      ]
+    },
+    modalContentClasses () {
+      return [
+        this.hasPositionY ? 'rounded-0' : null,
+        this.darkMode ? 'bg-dark text-light' : 'bg-white text-dark'
+      ]
+    },
+    hasPositionX () {
+      const positions = ['right', 'left', 'top-right', 'top-left', 'bottom-left', 'bottom-right']
+      return this.position && positions.includes(this.position)
+    },
+    hasPositionY () {
+      return this.position && this.position === 'top' || this.position === 'bottom'
+    },
+    isFrame () {
+      return ['top', 'bottom'].includes(this.position)
     }
   },
   watch: {
-    show (newValue) {
-      if (newValue) {
-        this.diplayModal()
+    show (current) {
+      this.toggleHtmlBody()
+
+      if (current) {
+        this.$refs.link.scrollTop
       } else {
-        this.hideModal()
+        this.reflow()
       }
     }
   },
   mounted () {
-    if (this.show) {
-      this.diplayModal()
-    }
+    const body = this.getBody()
+    body.addEventListener('click', this.backdropClick)
+  },
+  beforeUnmount () {
+    const body = this.getBody()
+    body.removeEventListener('click', this.backdropClick)
   },
   methods: {
-    diplayModal () {
-      this.$refs.link.style.display = 'block'
-      const html = document.querySelector('html')
-      html.style.overflow = 'hidden'
+    toggleHtmlBody () {
+      const body = this.getBody()
+
+      if (body.classList.contains('modal-open')) {
+        body.classList.remove('modal-open')
+        // body.style.overflow = null
+      } else {
+        body.classList.add('modal-open')
+        // body.style.overflow = 'hidden'
+      }
     },
-    hideModal () {
-      this.$refs.link.style.display = 'none'
-      const html = document.querySelector('html')
-      html.style.overflow = 'scroll'
+    getBody () {
+      return document.querySelector('body')
+    },
+    backdropClick (e) {
+      if (e.target.classList.contains('modal')) {
+        if (this.staticBackdrop) {
+          e.target.classList.add('modal-static')
+
+          setTimeout(() => {
+            e.target.classList.remove('modal-static')
+          }, 300)
+        } else {
+          this.$emit('close')
+        }
+      }
+    },
+    reflow () {
+      this.$refs.link.offsetHeight
     }
   }
 }
 </script>
 
 <style scoped>
-.dropdown-backdrop {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 1035;
+.modal.show {
+  display: block;
+  overflow-y: auto;
+}
+
+.modal-backdrop.show {
+  opacity: .5;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <base-modal-vue id="modal-cart" :show="openCart" :title="$t('Cart')" size="md" scrollable hide-footer @close-modal="openCart = false" @close="openCart = false">
+  <base-modal-vue id="modal-cart" :show="openCart" :title="$t('Cart')" size="md" scrollable hide-footer @close="openCart = false">
     <div class="container">
       <div v-if="store.isEmpty" class="row">
         <div class="col-12">
@@ -54,8 +54,8 @@
 import { getCurrentInstance } from 'vue'
 import { mapState, mapWritableState, storeToRefs } from 'pinia'
 import { useUrls } from '@/composables/utils'
-import useCartComposable from '@/composables/cart'
 import { useCart } from '@/store/cart'
+import useCartComposable from '@/composables/cart'
 
 import BaseModalVue from '@/layouts/shop/BaseModal.vue'
 import BasePriceDisplay from '@/layouts/shop/BasePriceDisplay.vue'

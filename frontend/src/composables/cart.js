@@ -71,7 +71,8 @@ export default function useCartComposable (app) {
 
       isSending.value = false
     } catch (error) {
-      store.addErrorMessage(`V-RM-CA: ${error}: ${error}`)
+      console.log(error)
+      store.addErrorMessage(`V-RM-CA: ${error}: ${error.response}`)
     }
   }
 

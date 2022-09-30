@@ -4,7 +4,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-FRONT_DIR = Path.joinpath(BASE_DIR, 'frontend')
+FRONT_DIR = BASE_DIR / 'frontend'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -61,8 +61,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            Path.joinpath(BASE_DIR, 'templates'),
-            Path.joinpath(FRONT_DIR, 'dist')
+            BASE_DIR / 'templates',
+            FRONT_DIR / 'dist'
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -138,13 +138,13 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
-    Path.joinpath(BASE_DIR, 'static'),
-    Path.joinpath(FRONT_DIR, 'dist/static')
+    BASE_DIR / 'static',
+    FRONT_DIR / 'dist/static'
 ]
 
 MEDIA_URL = 'media/'
 
-MEDIA_ROOT = Path.joinpath(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type
@@ -211,7 +211,7 @@ REST_FRAMEWORK = {
 # Locales
 
 LOCALE_PATHS = [
-    Path.joinpath(BASE_DIR, 'locale')
+    BASE_DIR / 'locale'
 ]
 
 LANGUAGE_CODE = 'fr'
@@ -222,7 +222,7 @@ LANGUAGE_CODE = 'fr'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': Path.joinpath(BASE_DIR, 'cache'),
+        'LOCATION': BASE_DIR / 'cache'
     },
     'redis': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',

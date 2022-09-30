@@ -12,6 +12,7 @@ const useShop = defineStore('shop', {
     openCart: false,
     showSearchModal: false,
     showSubscriptionModal: false,
+    showLanguageModal: false,
 
     likedProducts: [],
     recentlyViewed: [],
