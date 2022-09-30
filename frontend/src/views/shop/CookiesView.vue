@@ -1,5 +1,5 @@
 <template>
-  <section id="cookies" class="ecommerce-section">
+  <section id="cookies" class="cookies">
     <div class="container">
       <div class="row">
         <div class="card shadow-none">
@@ -141,16 +141,17 @@
 <script>
 export default {
   name: 'CookiesView',
-  data: () => ({
-    cookies: {
-      parameters: false,
-      preferences: false,
-      advertising: false
+  data () {
+    return {
+      cookies: {
+        parameters: false,
+        preferences: false,
+        advertising: false
+      }
     }
-  }),
+  },
   watch: {
     cookies (current) {
-      console.info(current)
       this.$localstorage.create('cookies', current)
     }
   },

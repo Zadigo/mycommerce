@@ -24,7 +24,7 @@
     "Non padded": "Non rembourré",
     "Underwear": "Sous-Vêtements",
     "Delivery": "Livraison",
-    "Delivery and returns": "Retours et livraisons",
+    "Delivery and returns": "Envíos y devoluciones",
     "Enter your email": "Saisissez votre addresse email",
     "Filter": "Trier",
     "Help": "Información y ayuda",
@@ -147,5 +147,6 @@
     "Delivery between": "Entrega entre las {date1} del {date2}",
     "Choose a payment method": "Tipo de pago",
     "Size guide lead": "¿No sabes cuál es tu talla? ¡Nuestra guía de tallas te ayudará a encontrar la que mejor te queda!",
-    "Details": "Détails"
+    "Details": "Détails",
+    "Language": "Lengua"
 }
