@@ -57,7 +57,7 @@ import { useUrls } from '@/composables/utils'
 import { useCart } from '@/store/cart'
 import useCartComposable from '@/composables/cart'
 
-import BaseModalVue from '@/layouts/shop/BaseModal.vue'
+import BaseModalVue from '@/layouts/bootstrap/BaseModal.vue'
 import BasePriceDisplay from '@/layouts/shop/BasePriceDisplay.vue'
 
 export default {

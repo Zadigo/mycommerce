@@ -19,7 +19,7 @@ import { inject } from 'vue'
 export default {
   name: 'BaseCardReveal',
   setup (props, { slots }) {
-    const darkMode = inject('darkMode', false)
+    const darkMode = inject('darkMode')
     const cardHeight = 0
     const hasReveal = !!slots.reveal
     return {

@@ -83,9 +83,9 @@
 import { useShop } from '@/store/shop'
 import { useAuthentication } from '@/store/authentication'
 import { mapState } from 'pinia'
+import { useCart } from '@/store/cart'
 
 import useAuthenicationComposable from '../composables/authentication'
-import { useCart } from '@/store/cart'
 
 // import { mapGetters, mapMutations } from 'vuex'
 
@@ -103,9 +103,11 @@ export default {
       performLogout
     }
   },
-  data: () => ({
-    isVisible: false
-  }),
+  data () {
+    return {
+      isVisible: false
+    }
+  },
   computed: {
     ...mapState(useAuthentication, ['isAuthenticated'])
 

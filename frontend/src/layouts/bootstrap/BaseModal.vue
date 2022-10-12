@@ -89,7 +89,7 @@ export default {
         case 'bottom-right':
           position = 'right'
           break
-
+      
         default:
           break
       }
@@ -128,7 +128,7 @@ export default {
       return [
         this.hasPositionY ? 'rounded-0' : null,
         this.darkMode ? 'bg-dark text-light' : 'bg-white text-dark'
-      ]
+      ]  
     },
     hasPositionX () {
       const positions = ['right', 'left', 'top-right', 'top-left', 'bottom-left', 'bottom-right']
@@ -204,4 +204,68 @@ export default {
 .modal-backdrop.show {
   opacity: .5;
 }
+
+/* .modal-animation {
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}
+
+.dialog-fade-in-down {
+  animation: fade-in-down;
+}
+
+.dialog-fade-out-up {
+  animation: fade-out-up;
+}
+
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -10%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fade-out-up {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, -10%, 0);
+  }
+}
+
+.dialog-fade-in {
+  animation-name: fade-in;
+}
+
+.dialog-fade-out {
+  animation-name: fade-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 0.5;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 0.5;
+  }
+
+  to {
+    opacity: 0;
+  }
+} */
 </style>

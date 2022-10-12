@@ -15,7 +15,7 @@ import useLanguage from '@/composables/language'
 import { useShop } from '@/store/shop'
 import { storeToRefs } from 'pinia'
 
-import BaseModalVue from '@/layouts/shop/BaseModal.vue'
+import BaseModalVue from '@/layouts/bootstrap/BaseModal.vue'
 
 export default {
   name: 'ModalLanguage',

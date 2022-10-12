@@ -113,8 +113,10 @@ import { mapState } from 'pinia'
 import { getCurrentInstance } from 'vue'
 import { useRoute } from 'vue-router'
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
+import { useUtilities } from '@/composables/utils'
 
 import useShopComposable from '@/composables/shop'
+
 
 import BaseTag from '@/layouts/shop/BaseTag.vue'
 import ProductActions from '@/components/shop/product/ProductActions.vue'
@@ -124,7 +126,6 @@ import RecentlyViewedVue from '@/components/shop/product/RecentlyViewed.vue'
 // import ProductSkeleton from '@/components/shop/skeletons/ProductSkeleton.vue'
 // import Reviews from '@/components/shop/product/reviews/Reviews.vue'
 import TileDisplay from '@/components/shop/product/images/TileDisplay.vue'
-import { useUtilities } from '@/composables/utils'
 
 export default {
   name: 'ProductView',
