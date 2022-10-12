@@ -34,8 +34,8 @@
         </div> -->
 
         <!-- TODO: Prefer Suspense ?? -->
-        <!-- <products-wrapper-vue /> -->
-        <async-products-wrapper-vue />
+        <products-wrapper-vue />
+        <!-- <async-products-wrapper-vue /> -->
         <!-- <suspense>
 
           <template #fallback>
@@ -64,24 +64,24 @@
 import FiltersBar from '@/components/shop/products/FiltersBar.vue'
 import PaginationRow from '@/components/shop/products/PaginationRow.vue'
 
-import { defineAsyncComponent } from 'vue'
+// import { defineAsyncComponent } from 'vue'
 import { useUtilities } from '@/composables/utils'
 // import ProductsWrapperLoadingVue from '@/components/shop/products/ProductsWrapperLoading.vue'
-// import ProductsWrapperVue from '../../components/shop/products/ProductsWrapper.vue'
+import ProductsWrapperVue from '../../components/shop/products/ProductsWrapper.vue'
 // import CollectionView1 from '../../components/skeletons/CollectionView.vue'
 
 export default {
   name: 'CollectionView',
   components: {
-    // ProductsWrapperVue,
-    AsyncProductsWrapperVue: defineAsyncComponent({
-      // TODO: Rename ProductItems -> ProductsWrapper
-      loader: () => import('@/components/shop/products/ProductsWrapper.vue'),
-      // loadingComponent: ProductsWrapperLoadingVue,
-      delay: 500
-      // errorComponent: ProductsWrapperLoadingVue,
-      // timeout: 5000
-    }),
+    ProductsWrapperVue,
+    // AsyncProductsWrapperVue: defineAsyncComponent({
+    //   // TODO: Rename ProductItems -> ProductsWrapper
+    //   loader: () => import('@/components/shop/products/ProductsWrapper.vue'),
+    //   // loadingComponent: ProductsWrapperLoadingVue,
+    //   delay: 500
+    //   // errorComponent: ProductsWrapperLoadingVue,
+    //   // timeout: 5000
+    // }),
     FiltersBar,
     PaginationRow
     // CollectionView1

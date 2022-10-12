@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import BaseTemplateCardVue from './bootstrap/cards/BaseTemplateCard.vue';
+import BaseTemplateCardVue from './bootstrap/cards/BaseTemplateCard.vue'
 import BaseIntroVue from './BaseIntro.vue'
 
 export default {

@@ -247,6 +247,9 @@ export function useUrls () {
 
   function mediaUrl (path) {
     var rootUrl = process.env.rootUrl || 'http://127.0.0.1:8000'
+    // if (!path && useDefault) {
+    //   return require('@/assets/placeholder.png')
+    // }
     return new URL(path, rootUrl).toString()
   }
 

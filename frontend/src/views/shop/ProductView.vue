@@ -31,7 +31,8 @@
 
         <!-- Images -->
         <div class="col-sm-12 col-md-7">
-          <tile-display :is-new="currentProduct.display_new" :images="productImages" :product-video="currentProduct.video" />
+          <tile-display v-if="productImages.length > 0" :images="productImages" :product-video="currentProduct.video" />
+          <img v-else :src="require('@/assets/placeholder.png')" class="img-fluid" alt="Image">
         </div>
 
         <!-- Product information -->

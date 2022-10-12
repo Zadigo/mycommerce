@@ -1,13 +1,14 @@
 <template>
-  <div v-if="isLoading || !mainImage" id="link-product-card" class="product">
+  <!-- <div v-if="isLoading || !mainImage" id="link-product-card" class="product">
     Loading...
-  </div>
-
-  <article v-else id="link-product-card" class="product my-1" @click="$emit('product-card-click', product)" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
+  </div> -->
+  <!-- v-else -->
+  <article id="link-product-card" class="product my-1" @click="$emit('product-card-click', product)" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
     <div id="product-image">
       <!-- Image -->
       <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }">
-        <img :src="mediaUrl(mainImage.mid_size)" :alt="mainImage.name" class="img-fluid" />
+        <img v-if="product.length > 0" :src="mediaUrl(mainImage.mid_size)" :alt="mainImage.name" class="img-fluid" />
+        <img v-else :src="require('@/assets/placeholder.png')" alt="Image" class="img-fluid" />
       </router-link>
 
       <!-- Mini-Cart -->
@@ -72,12 +73,12 @@ export default {
   components: {
     BaseTag,
     BasePriceDisplay
-},
+  },
   props: {
-    isLoading: {
-      type: Boolean,
-      default: false
-    },
+    // isLoading: {
+    //   type: Boolean,
+    //   default: false
+    // },
     product: {
       type: Object,
       required: true
@@ -103,9 +104,11 @@ export default {
       getSessionId
     }
   },
-  data: () => ({
-    isHovered: false
-  }),
+  data () {
+    return {
+      isHovered: false
+    }
+  },
   computed: {
     mainImage () {
       const mainImage = _.find(this.product.images, ['is_main_image', true])

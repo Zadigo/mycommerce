@@ -72,12 +72,15 @@ def products_view(request, **kwargs):
 def search_view(request, **kwargs):
     """Search for items in the database"""
     search = request.GET.get('q')
-    products = Product.objects.filter(
-        Q(name__icontains=search) |
-        Q(category__icontains=search) |
-        Q(color__icontains=search),
-        active=True
-    )
+    print(search)
+    products = []
+    if search is not None:
+        products = Product.objects.filter(
+            Q(name__icontains=search) |
+            Q(category__icontains=search) |
+            Q(color__icontains=search),
+            active=True
+        )
     return api_response(ProductSerializer, queryset=products, has_many=True)
 
 

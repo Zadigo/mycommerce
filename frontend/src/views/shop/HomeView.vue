@@ -54,7 +54,7 @@
 
     <section :class="{ 'flex-column flex-column-center': breakpoints.isSmaller('sm'), 'justify-content-around': !breakpoints.isSmaller('sm') }" class="ecommerce-section d-flex">
       <div class="card mx-2">
-        <img src="http://via.placeholder.com/600x600" class="card-img-top" alt="">
+        <img :src="require('@/assets/placeholder.png')" class="card-img-top" alt="">
         <div class="card-body text-center">
           <p>Some item</p>
           <button type="button" class="btn btn-lg btn-dark btn-rounded">Press</button>
@@ -62,7 +62,7 @@
       </div>
 
       <div class="card mx-2">
-        <img src="http://via.placeholder.com/600x600" class="card-img-top" alt="">
+        <img :src="require('@/assets/placeholder.png')" class="card-img-top" alt="">
         <div class="card-body text-center">
           <p>Some item</p>
           <button type="button" class="btn btn-lg btn-dark btn-rounded">Press</button>
@@ -70,7 +70,7 @@
       </div>
 
       <div class="card mx-2">
-        <img src="http://via.placeholder.com/600x600" class="card-img-top" alt="">
+        <img :src="require('@/assets/placeholder.png')" class="card-img-top" alt="">
         <div class="card-body text-center">
           <p>Some item</p>
           <button type="button" class="btn btn-lg btn-dark btn-rounded">Press</button>

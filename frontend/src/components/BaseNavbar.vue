@@ -38,11 +38,11 @@
         </ul>
 
         <ul class="navbar-nav text-uppercase">
-          <!-- <li class="nav-item">
-            <a class="nav-link" @click="toggleSearchModal">
-              <v-icon size="28" class="mr-2">mdi-magnify</v-icon>
+          <li class="nav-item">
+            <a class="nav-link" @click="store.showSearchModal = true">
+              <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
             </a>
-          </li> -->
+          </li>
 
           <li class="nav-item">
             <router-link :to="{ name: 'liked_products_view', params: { lang: $i18n.locale } }" class="nav-link">

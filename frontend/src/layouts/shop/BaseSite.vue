@@ -1,18 +1,14 @@
 <template>
   <section>
-    <!-- Header -->
     <header class="fixed-top">
       <!-- Top banner -->
-      <base-top-banner-vue v-show="!$route.meta.isFullPage" />
+      <base-top-banner-vue v-show="!$route.meta.isFullPage || scrollY < 400" />
 
       <!-- Navbar -->
       <base-navbar-vue v-show="!$route.meta.isFullPage" />
 
       <!-- Messages -->
       <base-messages-vue />
-
-      <!-- Search -->
-      <!-- <base-search-modal /> -->
     </header>
 
     <!-- Main -->
@@ -32,10 +28,11 @@
       <modal-cart-vue />
       <discount-drawer-vue v-if="!$route.meta.isFullPage" />
       <modal-language />
+      <modal-language />
+      <modal-search />
       <!-- <cart-off-canvas /> -->
       <!-- <login-modal /> -->
       <!-- <base-subscription-modal :show-modal="showSubscriptionModal" /> -->
-      <!-- <modal-language-selection /> -->
     </div>
 
     <!-- Footer -->
@@ -53,25 +50,25 @@ import BaseNavbarVue from '@/components/BaseNavbar.vue'
 import BaseFooterVue from '@/components/BaseFooter.vue'
 import BaseTopBannerVue from '@/components/BaseTopBanner.vue'
 import DiscountDrawerVue from '../DiscountDrawer.vue'
+import ModalSearch from '@/components/shop/ModalSearch.vue'
 import ModalCartVue from '@/components/shop/ModalCart.vue'
 import ModalLanguage from '@/components/shop/ModalLanguage.vue'
 
-// import BaseSearchModal from '@/components/BaseSearchModal.vue'
-// import ModalLanguageSelection from '@/components/ModalLanguageSelection.vue'
 // import ScrollTopButton from '@/components/ScrollTopButton.vue'
 // import CartOffCanvas from '@/components/shop/cart/CartOffCanvas.vue'
 
 export default {
   name: 'BaseSite',
   components: {
+    // BaseNavHeader,
     BaseTopBannerVue,
     BaseFooterVue,
     BaseMessagesVue,
     BaseNavbarVue,
     DiscountDrawerVue,
     ModalCartVue,
-    ModalLanguage
-    // BaseSearchModal,
+    ModalLanguage,
+    ModalSearch
     // CartOffCanvas,
     // ModalLanguageSelection,
     // ScrollTopButton

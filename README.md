@@ -2,13 +2,19 @@
 
 A fullstack SPA fashion ecommerce website created with Vue and Django.
 
+## How to test
+
+First download the image folder on [Dropbox](https://www.dropbox.com/sh/hqll9tutdy7wji0/AACsJSeDAqyr-Oeic44OXSL9a?dl=0). Create a `project.ini` file with a `images_folder` variable under the default section and copy the path to its location. Open the `init.ipynb` and run all the cells. The final result should be a set of products created in your local database. You can then move to the __Getting tarted__ section.
+
 ## Getting started
 
-Run `python manage.py migrate` then go to `./frontend` and run `npm install`. To sync Vue's staticfiles with the main Django website run `npm build` then `python manage.py collectstatic.`
+Run `python manage.py migrate` then move to `./frontend` and run `npm install`. To sync Vue's staticfiles with the main Django application run `npm build` then `python manage.py collectstatic.`
+
+You can finally do `npm run serve` and `python manage.py runserver`. Your website should be running under `http://17.0.0.1:8000`.
 
 ### Features
 
-This project comes with full translation for spanish, english and french, with scripts for quick implementation with Google, Facebook and Microsoft Analytics and full API endpoints.
+This project comes with a full translation for spanish, english and french, with scripts for quick implementation with Google, Facebook and Microsoft Analytics and finally full API endpoints.
 
 ## Dependencies
 

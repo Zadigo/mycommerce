@@ -14,12 +14,6 @@
         <product-card :key="product.id" :product="product" :is-loading="isLoading" />
       </div>
     </div>
-
-    <!-- <div v-show="sortedProducts.lenght === 0" class="row">
-      <div class="col-12">
-        <h4>There are no available products</h4>
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -53,12 +47,14 @@ export default {
       getAllProducts
     }
   },
-  data: () => ({
-    hideFilters: false,
-    multipleGridDisplay: false,
-    sortMethod: null,
-    searchedPrice: []
-  }),
+  data () {
+    return {
+      hideFilters: false,
+      multipleGridDisplay: false,
+      sortMethod: null,
+      searchedPrice: []
+    }
+  },
   computed: {
     ...mapState(useShop, ['minPrice', 'maxPrice', 'products']),
 
@@ -108,20 +104,19 @@ export default {
     }
   },
   created () {
-    this.getAllProducts()
-    this.isLoading = false
+    this.getAllProducts(() => {
+      this.isLoading = false
+    })
   },
   methods: {
     changeGrid () {
       this.multipleGridDisplay = !this.multipleGridDisplay
       this.$localstorage.create('grid', this.multipleGridDisplay)
     },
-
     doSort (method) {
       this.sortMethod = method
       this.$localstorage.create('sort', method)
     },
-
     sortByPrices (sortMethod) {
       const items = _.map(this.products, (item) => {
         item.unit_price = item.unit_price * 1
@@ -133,7 +128,6 @@ export default {
       const method = sortMethod || 'desc'
       return _.orderBy(items, ['get_price'], [method])
     },
-
     sortByDates () {
       return this.products.sort((a, b) => {
         return dayjs(a.created_on) - dayjs(b.created_on)

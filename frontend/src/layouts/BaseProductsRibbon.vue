@@ -4,7 +4,7 @@
       <article v-for="product in latestProducts" :key="product.id" class="card">
         <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }" class="text-dark" @click="$emit('product-click', product)">
           <img v-if="product.get_main_image" :src="mediaUrl(product.get_main_image.mid_size)" :alt="product.name" class="card-img-top">
-          <img v-else src="https://via.placeholder.com/300x300" :alt="product.name">
+          <img v-else :src="require('@/assets/placeholder.png')" :alt="product.name" class="card-img-top">
         </router-link>
 
         <div class="card-body">

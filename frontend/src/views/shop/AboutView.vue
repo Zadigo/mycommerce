@@ -66,7 +66,7 @@
 
           <div class="col-5">
             <div class="card my-3">
-              <img src="http://via.placeholder.com/500x600" class="card-img-top" alt="">
+              <img :src="require('@/assets/placeholder.png')" class="card-img-top" alt="">
             </div>
           </div>
         </div>
