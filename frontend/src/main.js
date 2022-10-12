@@ -49,7 +49,7 @@ pinia.use(({ store }) => {
 
     function changeSite (name) {
         store.$state.currentSite = name
-        store.localstorage.create('current-site', name)
+        store.localstorage.create('currentSite', name)
     }
 
     return {

@@ -7,6 +7,7 @@
             <strong>Sales Performance KPIs</strong>
           </h5>
         </div>
+
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-hover text-nowrap">
@@ -106,9 +107,11 @@ export default {
       store
     }
   },
-  data: () => ({
-    statistics: {}
-  }),
+  data () {
+    return {
+      statistics: {}
+    }
+  },
   beforeMount () {
     this.loadStatistics()
   },
@@ -122,5 +125,5 @@ export default {
       }
     }
   }
-};
+}
 </script>

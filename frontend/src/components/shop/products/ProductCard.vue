@@ -7,7 +7,7 @@
     <div id="product-image">
       <!-- Image -->
       <router-link :to="{ name: 'product_view', params: { id: product.id, slug: product.slug, lang: $i18n.locale } }">
-        <img v-if="product.length > 0" :src="mediaUrl(mainImage.mid_size)" :alt="mainImage.name" class="img-fluid" />
+        <img v-if="product.images.length > 0" :src="mediaUrl(mainImage.mid_size)" :alt="mainImage.name" class="img-fluid" />
         <img v-else :src="require('@/assets/placeholder.png')" alt="Image" class="img-fluid" />
       </router-link>
 

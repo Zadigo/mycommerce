@@ -2,7 +2,7 @@ import { loadView, loadLayout } from '@/composables/utils'
 
 export default [
   {
-    path: '/dashboard',
+    path: 'dashboard',
     component: loadLayout('dashboard/DashboardContent'),
     children: [
       {
@@ -24,8 +24,8 @@ export default [
           icon: 'table',
           adminLink: true,
           forAdmin: true
-        }
-        // component: loadView('dashboard/ProductsView')
+        },
+        component: loadView('dashboard/ProductsView')
       },
       {
         path: 'products/:id',
@@ -42,11 +42,11 @@ export default [
         name: 'dashboard_images_view',
         meta: {
           text: 'Images',
-          icon: 'images',
+          icon: 'image',
           adminLink: true,
           forAdmin: true
-        }
-        // component: loadView('dashboard/ProductsImagesView')
+        },
+        component: loadView('dashboard/ProductsImagesView')
       },
       {
         path: 'images/:id(\\d+)',

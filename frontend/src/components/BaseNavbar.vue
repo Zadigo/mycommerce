@@ -110,13 +110,10 @@ export default {
   },
   computed: {
     ...mapState(useAuthentication, ['isAuthenticated'])
-
     // ...mapGetters(['cartCount']),
   },
 
   methods: {
-    //   ...mapMutations(['toggleSearchModal']),
-
     logout () {
       this.performLogout(() => {
         this.authStore.logoutUser()
@@ -127,15 +124,10 @@ export default {
         console.error(errors)
       })
     },
-
     goToAdmin () {
       this.store.changeSite('dashboard-site')
-      this.$router.push({ name: 'dashboard_index_view' })
+      this.$router.push({ name: 'dashboard_index_view', params: { lang: this.$i18n.locale } })
     }
-
-    //   showMegaMenu() {
-    //     this.isVisible=true
-    //   }
   }
 }
 </script>
