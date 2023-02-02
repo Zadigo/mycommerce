@@ -8,8 +8,8 @@
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                  <router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }" class="text-muted">{{
-                    $t('Home') }}
+                  <router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }" class="text-muted">
+                    {{ $t('Home') }}
                   </router-link>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">

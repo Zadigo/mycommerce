@@ -7,8 +7,7 @@
             <i>Icon</i>
             <p class="w-50">Plus que <span class="fw-bold">59,81 €</span> pour profiter de la livraison gratuite</p>
             <div class="progress">
-              <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="15" aria-valuemin="0"
-                   aria-valuemax="100">
+              <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">
               </div>
             </div>
           </div>
@@ -24,7 +23,7 @@
             <div class="card-body d-flex justify-content-left p-1">
               <router-link :to="{ name: 'product_view', params: { id: item.product.id, slug: item.product.slug, lang: $i18n.locale } }">
                 <div class="p-3">
-                  <img :src=" mediaUrl(item.product.images[0].mid_size)" :alt="item.name" class="img-fluid rounded" width="150">
+                  <img :src="mediaUrl(item.product.images[0].mid_size)" :alt="item.name" class="img-fluid rounded" width="150">
                 </div>
               </router-link>
 
@@ -44,8 +43,7 @@
           <div v-if="!hasItems" class="card">
             <div class="card-body text-center">
               <h4 class="text-center display-4">{{ $t('Your cart is empty') }}</h4>
-              <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
-                           type="button" class="btn btn-lg btn-primary mt-3">
+              <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }" type="button" class="btn btn-lg btn-primary mt-3">
                 {{ $t('Continue shopping') }}
               </router-link>
             </div>
@@ -91,14 +89,11 @@
 
                 <hr class="my-7">
 
-                <router-link :to="{ name: 'shipment_view', params: {  lang: $i18n.locale } }"
-                             class="btn btn-block btn-primary">
+                <router-link :to="{ name: 'shipment_view', params: { lang: $i18n.locale } }" class="btn btn-block btn-primary">
                   {{ $t('Checkout') }}
                 </router-link>
 
-                <router-link
-                  :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
-                  class="btn btn-block btn-light">
+                <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }" class="btn btn-block btn-light">
                   {{ $t('Continue shopping') }}
                 </router-link>
               </div>
@@ -198,15 +193,14 @@ export default {
 </script>
 
 <style scoped>
-
 body {
   background-color: #f6f6f6 !important;
 }
 
 .aside-sticky {
   position: sticky;
-  top:20%;
-  left:0;
+  top: 20%;
+  left: 0;
 }
 
 aside {

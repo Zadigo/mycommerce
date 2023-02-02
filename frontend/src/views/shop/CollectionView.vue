@@ -8,8 +8,7 @@
           </h2>
 
           <!-- Filters -->
-          <filters-bar style="z-index:20;" @loading-products-start="isLoading = true"
-                       @loading-products-end="isLoading = false" />
+          <filters-bar style="z-index:20;" @loading-products-start="isLoading = true" @loading-products-end="isLoading = false" />
         </div>
 
         <!-- FIXME: This gets displayed before the products are shown
@@ -49,9 +48,7 @@
         <div class="col-12 my-6 d-none">
           <router-link :to="{ name: 'shop_view', params: { lang: $i18n.locale } }">
             <!-- TODO: Emit a PageView when clicking on this section -->
-            <img
-              src="https://img.ltwebstatic.com/images3_acp/2022/02/25/164578700614872218156e3ff9868de22e7c67a145.webp"
-              class="img-fluid" />
+            <img src="https://img.ltwebstatic.com/images3_acp/2022/02/25/164578700614872218156e3ff9868de22e7c67a145.webp" class="img-fluid" />
           </router-link>
         </div>
       </div>

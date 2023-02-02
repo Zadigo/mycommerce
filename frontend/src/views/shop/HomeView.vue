@@ -6,8 +6,7 @@
           <h1 class="mb-3 lead">Assouvis tes ardents désir</h1>
           <h5 class="mb-4 lead-smaller">Craquez pour nos nouveautés signées Lounge</h5>
 
-          <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale  } }"
-            class="btn btn-dark btn-lg btn-rounded" role="button">
+          <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }" class="btn btn-dark btn-lg btn-rounded" role="button">
             {{ $t('Discover') }}
           </router-link>
         </div>
@@ -24,8 +23,7 @@
       <div class="image">
         <div class="title">
           <h3 class="p-2 text-white text-uppercase fw-bold">-20% sur les sous-vêtements</h3>
-          <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
-            type="button" class="btn btn-lg btn-rounded btn-dark">
+          <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }" type="button" class="btn btn-lg btn-rounded btn-dark">
             Le top de nos soldes
           </router-link>
         </div>
@@ -36,8 +34,7 @@
           <h3 class="p-2 text-white text-uppercase fw-bold">
             -20% de réduction sur les vêtements
           </h3>
-          <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
-            type="button" class="btn btn-lg btn-rounded btn-dark">
+          <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }" type="button" class="btn btn-lg btn-rounded btn-dark">
             Le top de nos soldes
           </router-link>
         </div>
@@ -48,17 +45,14 @@
       <div class="image">
         <div class="title text-center">
           <h3 class="p-2 text-white text-uppercase fw-bold">-20% sur les sous-vêtements</h3>
-          <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }"
-            type="button" class="btn btn-lg btn-rounded btn-dark">
+          <router-link :to="{ name: 'collection_details_view', params: { collection: 'all', lang: $i18n.locale } }" type="button" class="btn btn-lg btn-rounded btn-dark">
             Le top de nos soldes
           </router-link>
         </div>
       </div>
     </section>
 
-    <section
-      :class="{ 'flex-column flex-column-center': breakpoints.isSmaller('sm'), 'justify-content-around': !breakpoints.isSmaller('sm') }"
-      class="ecommerce-section d-flex">
+    <section :class="{ 'flex-column flex-column-center': breakpoints.isSmaller('sm'), 'justify-content-around': !breakpoints.isSmaller('sm') }" class="ecommerce-section d-flex">
       <div class="card mx-2">
         <img src="http://via.placeholder.com/600x600" class="card-img-top" alt="">
         <div class="card-body text-center">
@@ -188,10 +182,12 @@ export default {
 .scale-leave-active {
   transition: all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
 .scale-enter-from,
 .scale-leave-to {
   transform: scale(.95, .95);
 }
+
 .scale-enter-to,
 .scale-leave-from {
   transform: scale(1, 1);

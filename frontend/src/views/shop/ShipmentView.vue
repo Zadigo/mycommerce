@@ -26,8 +26,7 @@
             <div v-if="currentStep === 1" id="shipment-infos" class="card">
               <div class="card-body">
                 <div v-for="field in fields" :key="field.name" :class="`col-${field.col}`">
-                  <input v-model="options[field.name]" :type="field.type" :autocomplete="field.autocomplete"
-                    :placeholder="field.name" class="form-control p-2 mb-2">
+                  <input v-model="options[field.name]" :type="field.type" :autocomplete="field.autocomplete" :placeholder="field.name" class="form-control p-2 mb-2">
                 </div>
 
                 <button class="btn btn-lg btn-primary mt-2" @click="changeStep(2)">
@@ -43,9 +42,7 @@
                   {{ $t('Choose your delivery method') }}
                 </p>
 
-                <a v-for="(delivery, i) in deliveryMethods" :key="i" href
-                  :class="{ 'border': delivery === options.delivery_mode }" class="card shadow-sm text-dark my-2"
-                  @click.prevent="options.delivery_mode = delivery">
+                <a v-for="(delivery, i) in deliveryMethods" :key="i" href :class="{ 'border': delivery === options.delivery_mode }" class="card shadow-sm text-dark my-2" @click.prevent="options.delivery_mode = delivery">
                   <div class="card-body">
                     <p class="fw-bold d-flex justify-content-between">
                       <span>{{ delivery }}</span>
