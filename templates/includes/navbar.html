@@ -1,0 +1,67 @@
+{% load i18n %}
+
+<nav ref="link" class="navbar navbar-expand-lg navbar-light bg-white shadow-md border-bottom p-0">
+  <div class="container">
+    <a href="/" class="navbar-brand">
+      <span class="text-uppercase fw-bold">
+        {% trans "Shop" %}
+      </span>
+    </a>
+
+    <div class="collapse navbar-collapse justify-content-around">
+      <ul class="navbar-nav text-uppercase">
+        {% comment %}
+        <li class="nav-item">
+          <a href="{% url 'collection:detail' 'shop' %}" class="nav-link text">
+            {% trans "Shop" %}
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{% url 'collection:detail' 'shorts' %}" class="nav-link text">
+            {% trans "Shorts" %}
+          </a>
+        </li>
+        {% endcomment %}
+      </ul>
+
+      <ul class="navbar-nav text-uppercase">
+        <li class="nav-item">
+          <a class="nav-link">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href class="nav-link">
+            <i class="fa-solid fa-heart"></i>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href class="nav-link">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href class="nav-link">
+            <i class="fa-solid fa-right-to-bracket"></i>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href class="nav-link">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href class="nav-link">
+            <i class="fa-solid fa-lock"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

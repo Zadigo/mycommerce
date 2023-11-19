@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
+
 from mycommerce.choices import CityChoices, CountryChoices
 from shop.models import Product
 
@@ -10,10 +11,11 @@ USER_MODEL = get_user_model()
 
 class ProductHistory(models.Model):
     """A model that stores a product at the state
-    at which it was bought by the customer. In other
-    words if the initial product's price for example
-    changes, then the price in the order would 
-    only reflect the initial state"""
+    at which it was bought by a customer.
+    
+    This is useful for when the product's price 
+    changes. The price in the order would stay 
+    the same as when the customer bought it"""
     product = models.ForeignKey(
         Product,
         on_delete=models.SET_NULL,
@@ -27,8 +29,8 @@ class ProductHistory(models.Model):
     created_on = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name = _('Product history')
-        verbose_name_plural = _('Product histories')
+        verbose_name = _('product history')
+        verbose_name_plural = _('product histories')
         ordering = ['created_on']
     
     def __str__(self):
@@ -43,6 +45,7 @@ class CustomerOrder(models.Model):
     )
     stripe_reference = models.CharField(
         max_length=100,
+        help_text=_('The stripe order rederence e.g. cus_1234'),
         validators=[],
         unique=True
     )
@@ -75,8 +78,8 @@ class CustomerOrder(models.Model):
     created_on = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name = _('Customer order')
-        verbose_name_plural = _('Customer orders')
+        verbose_name = _('customer order')
+        verbose_name_plural = _('customer orders')
         ordering = ['created_on']
 
     def __str__(self):

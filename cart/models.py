@@ -11,11 +11,12 @@ USER_MODEL = get_user_model()
 class AbstractCart(models.Model):
     session_id = models.CharField(
         max_length=100,
-        help_text=_("Unique identifier to identify user's carts")
+        help_text=_("Unique session identifier for the user's carts")
     )
     user = models.ForeignKey(
         USER_MODEL,
         on_delete=models.CASCADE,
+        help_text=_('Identifies a logged in user'),
         blank=True,
         null=True
     )

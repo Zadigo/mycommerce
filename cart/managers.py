@@ -17,27 +17,27 @@ class CartManager(QuerySet):
             cart_instance.save()
             cart_instance.refresh_from_db()
             return cart_instance
-        
+
     def cart_items(self, session_id):
         """Return all the items in the user's cart
         using the cart_session_id"""
         session_id = str(session_id)
         return self.filter(session_id=session_id, is_paid_for=False)
-    
+
     def cart_total(self, request, session_id=None):
         if request.user.is_authenticated:
             queryset = self.filter(user=request.user)
         else:
             queryset = self.filter(session_id=session_id)
         return queryset.aggregate(Sum('price'))
-    
+
     def remove_from_cart(self, request, product_id, session_id):
         logic = Q(session_id__iexact=session_id)
         if request.user.is_authenticated:
             logic = logic & Q(user=request.user.id)
-            
+
         queryset = self.filter(logic)
-        
+
         try:
             product = queryset.get(id=product_id)
         except:
@@ -46,16 +46,14 @@ class CartManager(QuerySet):
             product.delete()
         finally:
             return self.filter(logic)
-                
+
     def _add_to_cart(self, request, session_id, product, **kwargs):
         if not product.active:
             raise ProductActiveError('Product is not active')
-        
-        if product.on_sale:
-            price = product.sale_price
-        else:
-            price = product.unit_price
-        
+
+        # TODO: product.get_price
+        price = product.sale_price if product.on_sale else product.unit_price
+
         params = {
             'session_id': session_id,
             'product': product,
@@ -69,18 +67,19 @@ class CartManager(QuerySet):
 
         instance = self.create(**params)
         queryset = self.filter(session_id__iexact=session_id)
-        
+
         if request.user.is_authenticated:
-            # If the user is authenticated but has cart from a previous
-            # session where he was not authenticated, implement
-            # the user on the foreign key of the anonymous carts
+            # If the user is now authenticated but had items from 
+            # a previous session where he was not authenticated, 
+            # implement the user object on the foreign key of 
+            # the anonymous cart items
             for item in queryset:
                 item.user = request.user
                 item.is_anonymous = False
                 item.save()
-                        
+
         return queryset
-    
+
     def rest_api_add_to_cart(self, request, product, session_id=None, **kwargs):
         # NOTE: In this function, we should be receiving the
         # session_id for the cart from the frontend if a new
@@ -89,19 +88,19 @@ class CartManager(QuerySet):
             session_id = SessionManager.create_session_key()
         queryset = self._add_to_cart(request, session_id, product, **kwargs)
         return session_id, queryset
-    
+
     def add_to_cart(self, request, product, **kwargs):
-        # NOTE: Works in combination with session backends. When 
+        # NOTE: Works in combination with session backends. When
         # using rest API, the session does not actively persist
         # which turns out having a new cart creation every time
         session_manager = SessionManager(request)
         session_id = session_manager.get_or_create()
         return self._add_to_cart(request, session_id, product, **kwargs)
-            
+
     def increase_quantity(self, cart_session_id):
         queryset = self.get_cart_products(cart_session_id)
         return self._update_quantity(queryset, F('quantity') + 1)
-    
+
     def decrease_quantity(self, cart_session_id):
         queryset = self.get_cart_products(cart_session_id)
         return self._update_quantity(queryset, F('quantity') - 1)

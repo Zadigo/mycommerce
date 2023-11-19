@@ -1,7 +1,5 @@
 from django.db.models import DecimalField, Value
 from django.utils.crypto import get_random_string
-from mycommerce.responses import simple_api_response
-from orders.models import CustomerOrder, ProductHistory
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -9,6 +7,8 @@ from rest_framework.response import Response
 from cart.models import Cart
 from cart.serializers import (ValidateCart, ValidateShipment,
                               build_cart_response)
+from mycommerce.responses import simple_api_response
+from orders.models import CustomerOrder, ProductHistory
 
 
 @api_view(['post'])

@@ -1,10 +1,14 @@
 import os
+import dotenv
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 FRONT_DIR = BASE_DIR / 'frontend'
+
+dotenv.load_dotenv(BASE_DIR / '.env')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -29,9 +33,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_extensions',
+    'django.contrib.sitemaps',
+    'django.contrib.sites',
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
+    'debug_toolbar',
+
     'legal',
     'accounts',
     'collection',
@@ -52,7 +60,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
 ROOT_URLCONF = 'mycommerce.urls'
@@ -84,10 +93,6 @@ WSGI_APPLICATION = 'mycommerce.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'mycommerce',
@@ -199,12 +204,8 @@ SITE = 1
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication'
+        'rest_framework.authentication.TokenAuthentication'
     ]
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ]
 }
 
 
@@ -248,3 +249,8 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 
 # EMAIL_TIMEOUT = 5000
+
+
+# Sites
+
+SITE_ID = 1

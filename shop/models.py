@@ -9,15 +9,15 @@ from django.db.models import UniqueConstraint
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
 from django.forms import ValidationError
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
 from shop.choices import CategoryChoices, ColorChoices
-from shop.utils import (calculate_sale, create_product_slug, image_path,
-                        video_path)
+from shop.utils import calculate_sale, create_slug, image_path, video_path
 from shop.validators import price_validator, validate_video_file_extension
-
+from mycommerce.choices import SubCategoryChoices
 USER_MODEL = get_user_model()
 
 
@@ -109,27 +109,22 @@ class AbstractProduct(models.Model):
         max_length=100,
         choices=ColorChoices.choices,
         default=ColorChoices.BLACK,
-        help_text=_('Defines a declination of a main product in color')
+        help_text=_('Product available colors')
     )
     sku = models.CharField(
         max_length=100,
         unique=True,
         blank=True,
-        null=True
+        null=True,
+        help_text=_('Stock Keeping Unit')
     )
-
-    # additional_variants = models.ManyToManyField(
-    #     AdditionalVariant,
-    #     blank=True,
-    #     help_text=_('Declination in size, patterns...')
-    # )
-    # TODO: When creating a product in the admin,
-    # this wants the translated product name as
-    # opposed to the english one set in Choices
     category = models.CharField(
         max_length=100,
-        choices=CategoryChoices.choices,
-        default=CategoryChoices.SHORTS
+        choices=SubCategoryChoices.choices(),
+        default=SubCategoryChoices.default('Not attributed'),
+        # choices=CategoryChoices.choices,
+        # default=CategoryChoices.SHORTS,
+        help_text=_("The product's main category")
     )
     images = models.ManyToManyField(Image, blank=True)
     video = models.ForeignKey(
@@ -147,7 +142,10 @@ class AbstractProduct(models.Model):
         validators=[price_validator]
     )
 
-    sale_value = models.PositiveIntegerField(default=0)
+    sale_value = models.PositiveIntegerField(
+        default=0,
+        help_text=_('The current sale value for the product')
+    )
     sale_price = models.DecimalField(
         max_digits=5,
         decimal_places=2,
@@ -157,9 +155,13 @@ class AbstractProduct(models.Model):
 
     display_new = models.BooleanField(
         default=False,
-        help_text=_('Explicitly mark a product as being new')
+        help_text=_('Show the product as new')
     )
-    slug = models.SlugField(max_length=100, unique=True)
+    slug = models.SlugField(
+        max_length=200,
+        unique=True,
+        blank=True
+    )
     active = models.BooleanField(default=False)
 
     modified_on = models.DateField(auto_now_add=True)
@@ -172,8 +174,10 @@ class AbstractProduct(models.Model):
             models.Index(fields=['name', 'sku', 'category'])
         ]
         constraints = [
-            UniqueConstraint(fields=['name', 'color'],
-                             name='unique_name_with_color')
+            UniqueConstraint(
+                fields=['name', 'color'],
+                name='unique_name_with_color'
+            )
         ]
 
     def __str__(self):
@@ -181,37 +185,65 @@ class AbstractProduct(models.Model):
 
     @property
     def get_main_image(self):
+        """Returns the main image for the
+        current product"""
         queryset = self.images.filter(is_main_image=True)
         if queryset.exists():
             return queryset.first()
         return self.images.first()
 
     @property
+    def has_multiple_images(self):
+        return self.images.all().count() > 1
+
+    @property
     def get_price(self):
+        """Returns the current price
+        for the given product"""
         if self.on_sale and self.sale_price > 0:
             return self.sale_price
         return self.unit_price
 
     @property
     def usd_unit_price(self):
+        """Converts the current price
+        from EUR to USD"""
         price = float(self.get_price)
         return price * 1.02
 
     @property
     def sizes(self):
+        """Returns all the available
+        sizes for the given product"""
         return self.size_set.all()
+
+    @property
+    def has_variants(self):
+        """Checks if there are available
+        sizes for the given product"""
+        return any([
+            self.size_set.all().exists()
+        ])
 
     def clean(self):
         if self.on_sale:
             if self.sale_value == 0:
                 raise ValidationError(
-                    {'sale_value': _("A product on sale cannot have a sale value of 0")})
+                    {
+                        'sale_value': _("A product on sale cannot have a sale value of 0")
+                    }
+                )
             self.sale_price = calculate_sale(self.unit_price, self.sale_value)
 
         if not self.sku:
             color = self.color[:3]
             numbers = map(lambda _: random.choice(string.digits), range(10))
             self.sku = f"{color.upper()}{''.join(numbers)}"
+
+    def get_absolute_url(self):
+        return reverse('shop:product', kwargs={
+            'slug': self.slug
+        })
 
 
 class Product(AbstractProduct):
@@ -255,14 +287,16 @@ class Wishlist(AbstractUserList):
     class Meta:
         verbose_name = _('Wishlist')
         constraints = [
-            UniqueConstraint(fields=['name', 'user'],
-                             name='unique_list_name_per_user')
+            UniqueConstraint(
+                fields=['name', 'user'],
+                name='unique_list_name_per_user'
+            )
         ]
 
 
 @receiver(pre_save, sender=Product)
-def create_slug(instance, **kwargs):
-    instance.slug = create_product_slug(instance.name, instance.color)
+def create_product_slug(instance, **kwargs):
+    instance.slug = create_slug(instance.name, instance.color)
 
 
 @receiver(post_delete, sender=Image)

@@ -1,0 +1,21 @@
+{% extends "base_site.html" %}
+
+{% block container %}
+    <section id="collection" style="margin-top:190px; margin-bottom: 2rem;">
+        <div class="row">
+            <div class="col-12">
+                {% for category in categories %}
+                    <div class="card">
+                        <div class="card-body">
+                            <a href="{% url 'collection:sub_category' 'my-collection' category %}">
+                                {{ category }}
+                            </a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <h1>No collections to show</h1>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

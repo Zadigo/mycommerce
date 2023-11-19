@@ -55,8 +55,8 @@ export default [
           text: 'Image',
           icon: 'image',
           forAdmin: true
-        }
-        // component: loadView('dashboard/ProductImageView')
+        },
+        component: loadView('dashboard/ProductImageView')
       }
     ]
   }

@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+class DiscountAdmin(admin.ModelAdmin):
+    list_display = ['name', 'start_date', 'end_date']
+    date_hierarchy = 'created_on'

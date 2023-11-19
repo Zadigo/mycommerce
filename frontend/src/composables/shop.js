@@ -1,8 +1,9 @@
+import _ from 'lodash'
 import { client } from "@/plugins/axios"
 import { useShop } from "@/store/shop"
 import { ref } from "vue"
 
-export default function useShopComposable (app, route) {
+export function useShopComposable (app, route) {
   const isLoading = ref(true)
 
   // TODO: Create a utils
@@ -46,5 +47,45 @@ export default function useShopComposable (app, route) {
   return {
     isLoading,
     getAllProducts
+  }
+}
+
+export function navigationComposable () {
+  const items = ref([])
+  
+  function runCallback (func, newIndex) {
+    try {
+      func(items.value[newIndex])
+    } catch (error) {
+      console.log(error)
+    }
+  } 
+
+  function previousItem (id, onafter = () => { }) {
+    const index = _.findIndex(items.value, ['id', id * 1])
+    let newIndex = index - 1
+    if (newIndex < 0) {
+      newIndex = 0
+    }
+    runCallback(onafter, newIndex)
+    // var image = this.images['results'][newIndex]
+    // this.$router.push({ name: 'dashboard_image_view', params: { id: image.id } })
+  }
+
+  function nextItem (id, onafter = () => { }) {
+    const index = _.findIndex(items.value, ['id', id * 1])
+    let newIndex = index + 1
+    if (newIndex > items.value.length) {
+      newIndex = 0
+    }
+    runCallback(onafter, newIndex)
+    // var image = this.images['results'][newIndex]
+    // this.$router.push({ name: 'dashboard_image_view', params: { id: image.id } })
+  }
+
+  return {
+    items,
+    previousItem,
+    nextItem
   }
 }

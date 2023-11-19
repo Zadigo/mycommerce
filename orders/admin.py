@@ -14,4 +14,24 @@ class ProductHistoryAdmin(admin.ModelAdmin):
 class CustomerOrderAdmin(admin.ModelAdmin):
     list_display = ['reference', 'user', 'total']
     search_fields = ['reference', 'products__name']
+    fieldsets = [
+        ['References', {'fields': ['reference', 'stripe_reference']}],
+        ['Order', {'fields': ['total', 'products']}],
+        ['User information', {'fields': [
+            'user', 'address', 'city', 'zip_code', 'country']}],
+    ]
+    actions = ['send_email_confirmation', 'download_pdf', 'download_csv', 'send_order_cancelled_email']
+    filter_horizontal = ['products']
     date_hiearchy = 'created_on'
+
+    def send_email_confirmation(self):
+        pass
+
+    def download_pdf(self):
+        pass
+
+    def download_csv(self):
+        pass
+
+    def send_order_cancelled_email(self):
+        pass

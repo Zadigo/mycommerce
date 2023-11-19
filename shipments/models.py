@@ -60,3 +60,6 @@ class Shipment(models.Model):
     
     def __str__(self):
         return self.transporter
+
+    def get_absolute_url(self):
+        pass

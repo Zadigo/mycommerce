@@ -1,0 +1,119 @@
+{% extends "base_site.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Welcome" %}{% endblock %}
+
+{% block style %}
+{{ block.super }}
+
+<style>
+    .hero {
+        background-image: url("{% static 'images/hero4.jpg' %}");
+    }
+    
+    .one-image .image {
+        position: relative;
+        height: 600px;
+        width: auto;
+        overflow: hidden;
+        background-image: url("{% static 'images/side1.jpg' %}");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .two-images .image {
+        position: relative;
+        height: 500px;
+        width: auto;
+        overflow: hidden;
+        background-image: url("{% static 'images/side1.jpg' %}");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+{% endblock %}
+
+{% block main_content %}
+<section id="home">
+    <!-- Intro -->
+    <div class="intro p-5 text-center hero bg-image">
+        <div ref="mask" class="mask">
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <div class="text-white">
+                    <h1 class="mb-3 lead">{% trans "Assouvis tes ardents désir" %}</h1>
+                    <h5 class="mb-4 lead-smaller">{% trans "Craquez pour nos nouveautés signées Lounge" %}</h5>
+                
+                    <a href="{% url 'collection:sub_category' 'my-collection' 'bikini' %}" class="btn btn-dark btn-lg btn-rounded" role="button">
+                        {% trans "Discover" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section id="latest-products">
+        <h4 class="fw-bold">{% trans "Faire ses achats" %}</h4>
+        <base-products-ribbon-vue />
+    </section>
+
+    <section class="two-images">
+        <div class="image">
+            <div class="title">
+                <h3 class="p-2 text-white text-uppercase fw-bold">{% trans "-20% sur les sous-vêtements" %}</h3>
+                <a href type="button" class="btn btn-lg btn-rounded btn-dark">
+                    {% trans "Le top de nos soldes" %}
+                </a>
+            </div>
+        </div>
+
+        <div class="image">
+            <div class="title">
+                <h3 class="p-2 text-white text-uppercase fw-bold">
+                    {% trans "-20% de réduction sur les vêtements" %}
+                </h3>
+                <a href="{% url 'collection:detail' 'my-collection' %}" type="button" class="btn btn-lg btn-rounded btn-dark">
+                    {% trans "Le top de nos soldes" %}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="one-image">
+        <div class="image">
+            <div class="title text-center">
+                <h3 class="p-2 text-white text-uppercase fw-bold">{% trans "-20% sur les sous-vêtements" %}</h3>
+                <a href type="button" class="btn btn-lg btn-rounded btn-dark">
+                    {% trans "Le top de nos soldes" %}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- <section :class="{ 'flex-column flex-column-center': breakpoints.isSmaller('sm'), 'justify-content-around': !breakpoints.isSmaller('sm') }" class="ecommerce-section d-flex"> -->
+    <section class="ecommerce-section d-flex justify-content-around">
+        <div class="card mx-2">
+            <img src="https://placehold.co/600x600" class="card-img-top" alt="">
+            <div class="card-body text-center">
+                <p>Some item</p>
+                <button type="button" class="btn btn-lg btn-dark btn-rounded">Press</button>
+            </div>
+        </div>
+
+        <div class="card mx-2">
+            <img src="https://placehold.co/600x600" class="card-img-top" alt="">
+            <div class="card-body text-center">
+                <p>Some item</p>
+                <button type="button" class="btn btn-lg btn-dark btn-rounded">Press</button>
+            </div>
+        </div>
+
+        <div class="card mx-2">
+            <img src="https://placehold.co/600x600" class="card-img-top" alt="">
+            <div class="card-body text-center">
+                <p>Some item</p>
+                <button type="button" class="btn btn-lg btn-dark btn-rounded">Press</button>
+            </div>
+        </div>
+    </section>
+</section>
+{% endblock %}

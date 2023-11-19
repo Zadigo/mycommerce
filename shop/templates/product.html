@@ -1,0 +1,284 @@
+{% extends "base_site.html" %}
+{% load static %}
+
+{% block main_content %}
+    <section id="product" style="margin-top:190px; margin-bottom: 2rem;">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Breadbumbs -->
+                <div class="col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'home' %}">Home</a>
+                            </li>
+        
+                            <li class="breadcrumb-item">
+                                <a href=""></a>    
+                            </li>
+                            
+                            <li class="breadcrumb-item active" aria-current="page">
+                                {{ product.name }}
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+        
+                <!-- Images -->
+                <div class="col-sm-12 col-md-7">
+                    <!-- <tile-display v-if="productImages.length > 0" :images="productImages" :product-video="product.video" />
+                    <img v-else :src="require('@/assets/placeholder.png')" class="img-fluid" alt="Image"> -->
+                    
+                    {% if product.has_multiple_images %}
+                        Nothing
+                    {% else %}
+                        <img src="/media/{{ product.get_main_image.original }}" class="img-fluid" alt="{{ product.name }}">                        
+                    {% endif %}
+
+                </div>
+        
+                <!-- Product information -->
+                <div class="col-sm-12 col-md-5 pt-1 ps-5">
+                    <div class="row">
+                        <!-- Tags -->
+                        <div id="tags" class="col-12 d-flex justify-content-start w-100">
+                            {% if product.on_sale %}
+                                <div id="sale" class="p-1 text-uppercase text-white fw-bold rounded text-center">
+                                    Sale
+                                </div>
+                            {% endif %}
+                                
+                            {% if product.display_new %}
+                                <div id="new" class="p-1 text-uppercase text-white fw-bold rounded text-center">
+                                    New
+                                </div>
+                            {% endif %}
+                        </div>                            
+        
+                        <!-- Information -->
+                        <div id="information" class="col-12 pt-0 pb-0">
+                            <h1 class="fw-bold fs-5 m-1 h5">
+                                {{ product.name }} - <span class="text-muted">{{ product.color }}</span>
+                            </h1>
+        
+                            <p class="mb-1 fs-4">
+                                <!-- Original price -->
+                                {% if product.on_sale %}
+                                    <span class="me-2 fs-6 fw-light text-muted">
+                                        <del>{{ product.unit_price }}</del>
+                                    </span>
+
+                                    <!-- Discounted price -->
+                                    <span class="fw-bold fs-4 text-danger">
+                                        {{ product.sale_price }}
+                                    </span>
+                                {% else %}
+                                    <!-- Original price -->
+                                    <span class="fw-normal fs-3 fw-bolder">
+                                        {{ product.unit_price }}
+                                    </span>
+                                {% endif %}
+                                
+                                {% if product.on_sale %}
+                                    <span class="p-1 bg-danger text-white ms-2 rounded fs-5 fw-bold">
+                                        {{ product.sale_value }}
+                                    </span>
+                                {% endif %}
+                            </p>
+                        </div>
+        
+                        <!-- Actions -->
+                        <div id="actions">
+                            <!-- Colors -->
+                            <div id="colors" class="my-3">
+                                <p class="mb-2 fs-6">
+                                    <span class="fw-bold">Color</span>: {{ product.color }}
+                                </p>
+                        
+                                <!-- TODO: Create a swatch reusable component -->
+                                <div class="swatch">
+                                    <!-- <router-link v-for="variant in productVariants" :key="variant.id" :to="{ name: 'product_view', params: { id: variant.id, slug: variant.slug, lang: $i18n.locale } }" class="color">
+                                        <img :src="buildSwatch(variant.color)" :alt="variant.slug" class="img-fluid">
+                                    </router-link> -->
+                                </div>
+                            </div>
+                        
+                            <!-- Size -->
+                            <div id="sizes" class="my-2">
+                                <p class="mb-2 fw-bold fs-6">Size</p>
+                                
+                                <div class="sizes">
+                                    {% for size in product.sizes %}
+                                        <button id="btn-select-size-{{ size.name }}" data-size="{{ size.name }}" type="button" class="btn btn-md shadow-none border">
+                                            {{ size.name }}
+                                        </button>
+                                    {% empty %}
+                                        <button id="btn-no-size" type="button" class="btn btn-md btn-outline-dark shadow-none border disabled">
+                                            Unique size
+                                        </button>
+                                    {% endfor %}
+                                </div>
+                                <!-- <size-guide /> -->
+                            </div>
+                        
+                            <div class="bg-light p-2 rounded">
+                                Choose a size
+                            </div>
+                        
+                            <!-- Actions -->
+                            <product-component />
+                        </div>
+        
+                        <!-- Product Information -->
+                        <div id="information" class="col-12">
+                            <!-- Reassurance -->
+                            <div class="card shadow-none border">
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="row">
+                                                    <div class="col-auto text-center">
+                                                        <i class="fa-solid fa-truck-fast"></i>
+                                                    </div>
+                        
+                                                    <div class="col-10">
+                                                        Free shipping
+                                                    </div>
+                                                </div>
+                                            </div>
+                        
+                                            <div class="col-12 mt-3">
+                                                <div class="row">
+                                                    <div class="col-auto text-center">
+                                                        <i class="fa-solid fa-clock"></i>
+                                                    </div>
+                                                    <div class="col-10">
+                                                        50€
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <!-- Details -->
+                            <div class="card shadow-none">
+                                <div class="card-body fw-light" style="overflow: hidden;">
+                                    <h6 class="card-title text-uppercase fw-bold">Details</h6>
+                                    <ul>
+                                        <li>
+                                            Soutien-gorge à armatures, sans rembourrage.
+                                        </li>
+                                        <li>
+                                            Mesh stretch brodé de fleurs et d’élastiques décoratifs.
+                                        </li>
+                                        <li>
+                                            Bretelles à deux élastiques aux épaules et à la taille.
+                                        </li>
+                                        <li>
+                                            Noeuds décoratifs et pendentif Lounge en or rose.
+                                        </li>
+                                        <li>
+                                            Fermeture par crochets et œillets.
+                                        </li>
+                                        <li>
+                                            Ensemble soutien-gorge et string assorti.
+                                        </li>
+                                        <li>
+                                            Élément métallique gravé Lounge en or rose.
+                                        </li>
+                                        <li>
+                                            60% polyester, 34% polyester recyclé, 6% élasthanne.
+                                        </li>
+                                    </ul>
+                                    <p>
+                                        C'est le moment de vous épanouir dans notre ensemble Sheer Floral Balcony. Avec sa maille extensible brodée de
+                                        fleurs, ses doubles élastiques, ses délicats nœuds délicats et ses éléments gravées en or rose, préparez-vous
+                                        à
+                                        vous prélasser cet été.
+                                    </p>
+                                </div>
+                        
+                                <div class="card-footer text-center border-0">
+                                    <a href class="fw-bold text-dark fs-6">
+                                        <span>Show less</span>
+                                        <span>Show more</span>
+                                    </a>
+                                </div>
+                            </div>
+                        
+                            <div class="card bg-light shadow-none d-none">
+                                <div class="card-body">
+                                    Nos prix incluent l'éco-participation sur tous les
+                                    produits concernés. Vous voulez recycler votre appareil
+                                    électrique ou électronique gratuitement ? <a>En apprendre plus</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <hr class="my-5">
+        
+            <div class="row mt-5">
+                <!-- More Products -->
+                <div class="col-12">
+                </div>
+        
+                <!-- Recently Viewed -->
+                <div class="col-12 mt-5">
+                </div>
+        
+                <!-- Reviews -->
+                <div class="col-12">
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block vuejs_components %}
+<script id="product" type="text/x-template">
+    <div id="cart" class="d-flex justify-content-left my-4">
+        <button id="btn-add-cart" type="button" class="btn btn-lg btn-dark me-2 fs-6" @click="handleAddToCart">
+            <div v-if="addingToCart" class="spinner-border spinner-border-sm text-light me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <i v-else class="fas fa-cart-shopping me-2 text-light"></i>
+            Add to cart
+        </button>
+
+        <!-- Add to like -->
+        <button id="btn-add-like" :disabled="isLiked" type="button" class="btn btn-md btn-danger fs-4" @click="handleLike">
+            <i class="fas fa-heart text-light"></i>
+        </button>
+    </div>
+</script>
+
+<script>
+    const ProductComponent = {
+        name: 'ProductComponent',
+        template: '#product',
+        data () {
+            return {
+                selectedSize: null,
+                expanded: false,
+                addingToCart: false,
+                isLiked: false
+            }
+        },
+        methods: {
+            async handleAddToCart () {
+                this.addingToCart = true
+            },
+            async handleLike () {
+                this.isLiked = true
+            }
+        }
+    }
+    app.component('ProductComponent', ProductComponent)
+</script>
+{% endblock %}

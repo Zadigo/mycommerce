@@ -1,49 +1,124 @@
-from math import prod
+import json
 
-from django.db.models.expressions import Q
-from django.shortcuts import get_object_or_404, render
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from shop.models import Product
-from shop.serializers import ProductSerializer
+from django.db.models.functions import Lower
+from django.http.response import Http404
+from django.shortcuts import render
+from django.views.generic import DetailView, ListView, View
 
 from collection.models import Collection
-from collection.serializers import CollectionSerializer, paginate_data
 
 
-def build_colors(colors):
-    def build_color(name):
-        return {'name': name, 'image': f"/media/{name.lower()}.png"}
-    return map(build_color, colors)
+class CollectionsView(ListView):
+    """List of collections available on
+    the current shop"""
+
+    model = Collection
+    context_object_name = 'collections'
+    queryset = Collection.objects.all()
+    template_name = 'collections.html'
+
+    # @method_decorator(cache_page(60 * 15))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
 
-@api_view(['get'])
-def collecion_view(request, name, **kwargs):
-    queryset = Product.objects.filter(active=True)
-        
-    if name == 'all':
-        _, _, response = paginate_data(request, queryset, ProductSerializer, has_many=True)
-        return response
-    elif name == 'novelties':
-        queryset = queryset.filter(display_new=True)
-        _, _, response = paginate_data(request, queryset, ProductSerializer, has_many=True)
-        return response
-    else:
-        collection = get_object_or_404(Collection, name__iexact=name)
-        serializer = CollectionSerializer(instance=collection)
-        # Since it's kinda complicated to paginate the
-        # nested products, we integrate them afterwards after
-        # having serialized the collection
-        collection_data = serializer.data
-        
-        products = Product.objects.filter(collection__name__iexact=name, active=True).order_by('-created_on')
-        
-        instance, serializer_instance, _ = paginate_data(request, products, ProductSerializer, has_many=True)
-        paginated_products = instance.get_response_dict(serializer_instance.data)
-        
-        data_to_return = {**paginated_products, **collection_data}
-    
-        data_to_return['infos'] = {
-            'total_count': products.count()
+# class CollectionView(TemplateView):
+#     """Show the products present in a
+#     given collection"""
+
+#     template_name = 'index.html'
+
+
+class CollectionView(DetailView):
+    """Shows all the sub-categories of a
+    given collection (using the categories
+    of the products)"""
+
+    model = Collection
+    pk_url_kwarg = 'slug'
+    slug_url_kwarg = 'sub_category'
+    context_object_name = 'collection'
+    queryset = Collection.objects.all()
+    template_name = 'collection.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        collection = self.get_object()
+        categories_queryset = collection.products.annotate(
+            lowered_category=Lower('category')
+        )
+        categories = categories_queryset.values_list(
+            'lowered_category',
+            flat=True
+        )
+        context['categories'] = list(set(categories))
+        return context
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        collection_slug = self.kwargs.get('slug')
+
+        if collection_slug is None:
+            raise AttributeError(("Generic detail view must be called"
+                                  "with both a slug and sub-category"))
+
+        queryset = queryset.filter(slug=collection_slug)
+
+        try:
+            obj = queryset.get()
+        except:
+            raise Http404("Collection does not exist")
+        return obj
+
+
+class CollectionSubcategoryView(View):
+    """Shows the products available under
+    the given sub-category"""
+
+    model = Collection
+    queryset = Collection.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        collection = self.get_object()
+        sub_category = self.kwargs.get('sub_category')
+
+        if sub_category is None:
+            raise ValueError()
+
+        products = collection.products.filter(
+            active=True,
+            category=sub_category.title()
+        )
+        context = self.get_context_object(products=products)
+        return render(request, 'collection_subcategory.html', context)
+
+    def get_context_object(self, **kwargs):
+        collection = self.get_object()
+
+        products = kwargs.get('products')
+        if products is None:
+            products = collection.products
+
+        serialized_products = json.dumps(list(products.values('id', 'name')))
+        context = {
+            'collections': self.queryset,
+            'collection': collection,
+            'serialized_products': serialized_products
         }
-        return Response(data=data_to_return)
+        return context | kwargs
+
+    def get_object(self):
+        slug = self.kwargs.get('slug')
+
+        if slug is None:
+            raise AttributeError()
+
+        queryset = self.queryset.filter(slug=slug)
+        try:
+            obj = queryset.get()
+        except:
+            raise Http404('Collection does not exist')
+        return obj

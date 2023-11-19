@@ -46,7 +46,7 @@ class ValidateVariants(Serializer):
 
 
 class ValidateCart(Serializer):
-    """Validates the data used create a
+    """Validates the data used to create a
     cart item in the database"""
 
     product = fields.IntegerField()
