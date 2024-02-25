@@ -4,7 +4,9 @@
       <q-card class="q-mb-sm">
         <q-card-section>
           <h1 class="text-h4 q-ma-none">
-            <router-link :to="{ name: 'home_view' }" class="text-blue-5">Home</router-link> /
+            <router-link id="home-title" :to="{ name: 'home_view' }" class="text-blue-5 text-weight-bold">
+              {{ $t('Home') }}
+            </router-link> /
             <span>{{ pageName }}</span>
           </h1>
         </q-card-section>
@@ -28,3 +30,8 @@ export default {
   }
 }
 </script>
+
+<style lang="sass">
+#home-title
+  text-decoration: none
+</style>

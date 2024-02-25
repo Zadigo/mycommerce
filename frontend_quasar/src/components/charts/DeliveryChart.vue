@@ -10,6 +10,7 @@ import { Bubble } from 'vue-chartjs'
 ChartJS.register(LinearScale, PointElement, Tooltip, Legend)
 
 export default {
+  name: 'DeliveryChart',
   components: {
     Bubble
   },

@@ -14,13 +14,14 @@
               <q-space />
 
               <q-btn :to="{ name: 'images_view' }" color="primary" icon="fas fa-image" label="Images" unelevated rounded />
+              <q-btn :to="{ name: 'product_view', params: { id: 1 } }" color="primary" icon="fas fa-plus" label="Create" unelevated rounded />
               <q-btn color="primary" :disable="loading" label="Add row" unelevated rounded />
               <q-btn class="q-ml-sm" color="primary" :disable="loading" label="Remove row" unelevated rounded />
             </template>
 
             <template v-slot:body-cell-id="props">
               <q-td :props="props">
-                <router-link :to="{ name: 'product_view', params: { id: props.row.id } }">
+                <router-link :to="{ name: 'product_view', params: { id: props.row.id }, query: { id: props.row.id } }">
                   {{ props.row.id }}
                 </router-link>
               </q-td>

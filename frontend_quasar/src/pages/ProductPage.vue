@@ -8,11 +8,11 @@
               <q-card-section>
                 <div class="flex justify-between align-center">
                   <div class="flex justify-left">
-                    <q-btn :to="{ name: 'product_view', params: { id: previousProductId.id }}" class="q-mr-sm text-black" color="grey-1" round unelevated>
+                    <q-btn :to="{ name: 'product_view', params: { id: previousProductId.id }, query: { id: previousProductId.id } }" class="q-mr-sm text-black" color="grey-1" round unelevated>
                       <q-icon size="1em" name="fas fa-arrow-left"></q-icon>
                     </q-btn>
                     
-                    <q-btn :to="{ name: 'product_view', params: { id: nextProductId.id }}" class=" text-black" color="grey-1" round unelevated>
+                    <q-btn :to="{ name: 'product_view', params: { id: nextProductId.id }, query: { id: nextProductId.id } }" class=" text-black" color="grey-1" round unelevated>
                       <q-icon size="1em" name="fas fa-arrow-right"></q-icon>
                     </q-btn>
                   </div>
@@ -87,18 +87,25 @@ export default {
     }
   },
   computed: {
-    ...mapState(useShop, ['previousProductId', 'nextProductId'])
+    ...mapState(useShop, ['previousProductId', 'nextProductId']),
+    isForUpdate () {
+      // Indicates that we are going to currently
+      // update an existing product
+      return this.$route.query.id !== null
+    }
   },
   watch: {
     '$route.params.id' (n, o) {
       if (n !== o) {
         this.store.setCurrentProduct(this.$route.params.id)
+        // this.store.setCurrentProduct(this.$route.query.id)
         Object.assign(this.requestData, this.store.currentProduct)
       }
     }
   },
   created () {
     this.store.setCurrentProduct(this.$route.params.id)
+    // this.store.setCurrentProduct(this.$route.query.id)
     Object.assign(this.requestData, this.store.currentProduct)
   },
   methods: {

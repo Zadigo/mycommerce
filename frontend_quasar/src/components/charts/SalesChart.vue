@@ -10,6 +10,7 @@ import { Bar } from 'vue-chartjs'
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 export default {
+  name: 'SalesChart',
   components: {
     Bar
   },

@@ -10,6 +10,7 @@ import { Line as LineChart } from 'vue-chartjs'
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 export default {
+  name: 'CartsChart',
   components: {
     LineChart
   },
