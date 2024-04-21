@@ -7,7 +7,7 @@
             <div v-for="i in 6" :key="i" class="col-sm-12 col-md-4 my-1">
               <router-link :to="{ name: 'shop_products_collection', params: { id: 'my-collection'} }">
                 <article class="card shadow-none" aria-label="">
-                  <img src="../../assets/img3.jpeg" alt="" class="card-img">
+                  <img src="../../assets/img3.jpeg" alt="" class="card-img" />
                   <h1 class="text-white text-center">Collection name</h1>
                 </article>
               </router-link>

@@ -10,9 +10,6 @@
           <div v-if="requiresSizeItems" class="size-items">
             <p class="fw-bold">Sélectionne la taille</p>
             <div class="d-flex justify-content-around flex-wrap gap-1">
-              <!-- <v-btn v-for="size in product.sizes" :key="size.id" variant="tonal" rounded>
-                {{ size.name }}
-              </v-btn> -->
               <base-size-button v-for="size in product.sizes" :key="size.id" :size="size" @update:selected-size="handleSelectedSize" />
             </div>
           </div>

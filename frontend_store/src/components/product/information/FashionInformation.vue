@@ -4,6 +4,7 @@
     <base-size-button v-for="size in sizes" :key="size.id" v-model:selectedSize="selectedSize" :size="size" @click="handleSizeSelection(size)" />
   </div>
 
+  <!-- Size Guide -->
   <p class="mt-4 d-flex justify-content-start gap-3">
     <a href class="fw-bold" @click.prevent="$emit('show-size-guide-drawer')">
       {{ $t('Guide des tailles') }}
