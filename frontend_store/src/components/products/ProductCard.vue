@@ -10,13 +10,14 @@
           <div v-if="requiresSizeItems" class="size-items">
             <p class="fw-bold">Sélectionne la taille</p>
             <div class="d-flex justify-content-around flex-wrap gap-1">
-              <v-btn v-for="size in product.sizes" :key="size.id" variant="tonal" rounded>
+              <!-- <v-btn v-for="size in product.sizes" :key="size.id" variant="tonal" rounded>
                 {{ size.name }}
-              </v-btn>
+              </v-btn> -->
+              <base-size-button v-for="size in product.sizes" :key="size.id" :size="size" @update:selected-size="handleSelectedSize" />
             </div>
           </div>
 
-          <v-btn v-else variant="text" block>
+          <v-btn v-else variant="text" block rounded>
             {{ $t('Ajouter au panier') }}
           </v-btn>
         </div>
@@ -44,8 +45,13 @@
 import { ref } from 'vue'
 import { useShopComposable } from 'composables/shop'
 
+import BaseSizeButton from '../BaseSizeButton.vue'
+
 export default {
   name: 'ProductCard',
+  components: {
+    BaseSizeButton
+  },
   props: {
     product: {
       type: Object,
@@ -74,6 +80,9 @@ export default {
   methods: {
     imageOrPlaceholder (image) {
       return image || 'https://placehold.co/280x400'
+    },
+    handleSelectedSize (size) {
+      console.log(size)
     }
   }
 }
