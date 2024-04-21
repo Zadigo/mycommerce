@@ -1,0 +1,46 @@
+{
+  "name": "frontend_store",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/free-brands-svg-icons": "^6.1.1",
+    "@fortawesome/free-regular-svg-icons": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "@fortawesome/vue-fontawesome": "^3.0.1",
+    "@intlify/unplugin-vue-i18n": "^4.0.0",
+    "@mdi/font": "^6.7.96",
+    "@vueuse/core": "^10.9.0",
+    "autoprefixer": "^10.4.2",
+    "axios": "^1.6.8",
+    "bootstrap": "^5.3.3",
+    "dayjs": "^1.11.10",
+    "eslint-plugin-vue": "^9.22.0",
+    "lodash": "^4.17.21",
+    "mdb-ui-kit": "^7.2.0",
+    "pinia": "^2.1.7",
+    "unhead": "^1.9.5",
+    "vue": "^3.4.21",
+    "vue-i18n": "^9.13.0",
+    "vue-image-zoomer": "^2.2.3",
+    "vue-router": "^4.3.0",
+    "vuetify": "^3.3.23",
+    "webfontloader": "^1.6.28"
+  },
+  "devDependencies": {
+    "@unhead/addons": "^1.9.7",
+    "@unhead/schema-org": "^1.9.5",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "postcss": "^8.4.14",
+    "vite": "^5.2.0",
+    "vite-plugin-eslint": "^1.8.1"
+  }
+}

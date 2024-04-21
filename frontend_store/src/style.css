@@ -1,0 +1,16 @@
+:root {
+  /* font-family: "Oswald", "Roboto", system-ui, Avenir, Helvetica, Arial, sans-serif; */
+  font-family: Roboto, Arial, sans-serif;
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.list-group-item.router-link-exact-active {
+  z-index: 2;
+  color: var(--mdb-list-group-active-color);
+  background-color: var(--mdb-list-group-active-bg);
+  border-color: var(--mdb-list-group-active-border-color);
+}

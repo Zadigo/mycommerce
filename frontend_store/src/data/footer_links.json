@@ -1,0 +1,61 @@
+[
+    {
+        "section": "Aide",
+        "links": [
+            {
+                "to": "shop_products",
+                "params": null,
+                "name": "Acheter en ligne"
+            },
+            {
+                "to": "shop_products",
+                "name": "Paiement"
+            },
+            {
+                "to": "shop_products",
+                "params": null,
+                "name": "Livraison"
+            },
+            {
+                "to": "shop_products",
+                "params": null,
+                "name": "Retour"
+            },
+            {
+                "to": "shop_products",
+                "params": null,
+                "name": "Achat en tant qu'invité"
+            },
+            {
+                "to": "shop_products",
+                "params": null,
+                "name": "Me désabonner"
+            }
+        ]
+    },
+    {
+        "section": "Collections",
+        "links": [
+            {
+                "to": "shop_products_collection",
+                "params": "robes",
+                "name": "Robes"
+            },
+            {
+                "to": "shop_products_collection",
+                "params": "robes",
+                "name": "Tops"
+            },
+            {
+                "to": "shop_products_collection",
+                "params": "robes",
+                "name": "Chemises"
+            },
+            {
+                "to": "shop_products_collection",
+                "params": "robes",
+                "name": "Pantalons"
+            }
+        ]
+    }
+]
