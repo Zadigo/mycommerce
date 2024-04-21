@@ -1,5 +1,4 @@
-from django.urls import include, re_path
-from rest_framework.routers import DefaultRouter
+from django.urls import re_path
 
 from shop import views
 

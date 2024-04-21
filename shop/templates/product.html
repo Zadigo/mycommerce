@@ -1,8 +1,26 @@
 {% extends "base_site.html" %}
-{% load static %}
+{% load i18n static currency %}
+
+{% block style %}
+<style>
+    section {
+        position: relative;
+        margin-top:190px; 
+        margin-bottom: 2rem;
+    }
+
+    #product-information-section {
+        position: sticky;
+        top: 0;
+        right: 0;
+    }
+</style>
+{% endblock %}
+
+{% block title %}{{ product.name }}{% endblock %}
 
 {% block main_content %}
-    <section id="product" style="margin-top:190px; margin-bottom: 2rem;">
+    <section id="product">
         <div class="container-fluid">
             <div class="row">
                 <!-- Breadbumbs -->
@@ -14,7 +32,7 @@
                             </li>
         
                             <li class="breadcrumb-item">
-                                <a href=""></a>    
+                                <a href="{{ product.product_collection.get_subcategory_absolute_url }}">{{ product.product_collection }}</a>    
                             </li>
                             
                             <li class="breadcrumb-item active" aria-current="page">
@@ -25,20 +43,28 @@
                 </div>
         
                 <!-- Images -->
-                <div class="col-sm-12 col-md-7">
+                <div class="col-sm-12 col-md-5">
                     <!-- <tile-display v-if="productImages.length > 0" :images="productImages" :product-video="product.video" />
                     <img v-else :src="require('@/assets/placeholder.png')" class="img-fluid" alt="Image"> -->
                     
                     {% if product.has_multiple_images %}
                         Nothing
                     {% else %}
-                        <img src="/media/{{ product.get_main_image.original }}" class="img-fluid" alt="{{ product.name }}">                        
+                        <img src="{% get_media_prefix %}{{ product.get_main_image.original }}" class="img-fluid" alt="{{ product.name }}">                        
                     {% endif %}
 
                 </div>
+
+                <div class="col-sm-12 col-md-auto">
+                    <div class="d-flex flex-column justify-content-end align-items-start gap-2">
+                        <img src="{% get_media_prefix %}{{ product.get_main_image.original }}" height="100" width="100" class="img-fluid" alt="{{ product.name }}">
+                        <img src="{% get_media_prefix %}{{ product.get_main_image.original }}" height="100" width="100" class="img-fluid" alt="{{ product.name }}">
+                        <img src="{% get_media_prefix %}{{ product.get_main_image.original }}" height="100" width="100" class="img-fluid" alt="{{ product.name }}">
+                    </div>
+                </div>
         
                 <!-- Product information -->
-                <div class="col-sm-12 col-md-5 pt-1 ps-5">
+                <div id="product-information-section" class="col-sm-12 col-md-5 pt-1 ps-5">
                     <div class="row">
                         <!-- Tags -->
                         <div id="tags" class="col-12 d-flex justify-content-start w-100">
@@ -56,7 +82,7 @@
                         </div>                            
         
                         <!-- Information -->
-                        <div id="information" class="col-12 pt-0 pb-0">
+                        <div id="product-information" class="col-12 pt-0 pb-0">
                             <h1 class="fw-bold fs-5 m-1 h5">
                                 {{ product.name }} - <span class="text-muted">{{ product.color }}</span>
                             </h1>
@@ -65,17 +91,17 @@
                                 <!-- Original price -->
                                 {% if product.on_sale %}
                                     <span class="me-2 fs-6 fw-light text-muted">
-                                        <del>{{ product.unit_price }}</del>
+                                        <del>{{ product.unit_price|euro }}</del>
                                     </span>
 
                                     <!-- Discounted price -->
                                     <span class="fw-bold fs-4 text-danger">
-                                        {{ product.sale_price }}
+                                        {{ product.sale_price|euro }}
                                     </span>
                                 {% else %}
                                     <!-- Original price -->
                                     <span class="fw-normal fs-3 fw-bolder">
-                                        {{ product.unit_price }}
+                                        {{ product.unit_price|euro }}
                                     </span>
                                 {% endif %}
                                 
@@ -85,6 +111,9 @@
                                     </span>
                                 {% endif %}
                             </p>
+                            
+                            <!-- Rating -->
+                            {% product_rating 2 %}
                         </div>
         
                         <!-- Actions -->
@@ -117,21 +146,31 @@
                                             Unique size
                                         </button>
                                     {% endfor %}
+                                    
+                                    <div class="bg-light p-2 rounded">
+                                        {% trans "Please choose a size" %}
+                                    </div>
                                 </div>
+                                
                                 <!-- <size-guide /> -->
+                                <div id="size-guide" class="mt-3">
+                                    <a href class="fw-bold link-underline-dark" data-bs-toggle="modal" data-bs-target="#size-guide-modal">
+                                        {% trans "guide des tailles" %}
+                                    </a>
+                                </div>
+
+                                <p class="text-body-tertiary fw-bold mt-2">
+                                    <i class="fas fa-info-circle"></i>
+                                    La mannequin mesure 1m73 et porte la taille S
+                                </p>
                             </div>
-                        
-                            <div class="bg-light p-2 rounded">
-                                Choose a size
-                            </div>
-                        
+                            
                             <!-- Actions -->
                             <product-component />
                         </div>
         
-                        <!-- Product Information -->
-                        <div id="information" class="col-12">
-                            <!-- Reassurance -->
+                        <!-- Product Reassurance -->
+                        <div id="product-reassurance" class="col-12">
                             <div class="card shadow-none border">
                                 <div class="card-body">
                                     <div class="container">
@@ -163,7 +202,7 @@
                                 </div>
                             </div>
                         
-                            <!-- Details -->
+                            <!-- Material -->
                             <div class="card shadow-none">
                                 <div class="card-body fw-light" style="overflow: hidden;">
                                     <h6 class="card-title text-uppercase fw-bold">Details</h6>
@@ -237,18 +276,37 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modals -->
+        <div id="size-guide-modal" class="modal fade" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Modal body text goes here.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 {% endblock %}
 
 {% block vuejs_components %}
-<script id="product" type="text/x-template">
+<script id="product-actions" type="text/x-template">
     <div id="cart" class="d-flex justify-content-left my-4">
         <button id="btn-add-cart" type="button" class="btn btn-lg btn-dark me-2 fs-6" @click="handleAddToCart">
             <div v-if="addingToCart" class="spinner-border spinner-border-sm text-light me-2" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
             <i v-else class="fas fa-cart-shopping me-2 text-light"></i>
-            Add to cart
+            {% trans "Add to cart" %}
         </button>
 
         <!-- Add to like -->
@@ -258,10 +316,24 @@
     </div>
 </script>
 
+<script id="size-guide-component" type="text/x-template">
+    
+</script>
+
 <script>
     const ProductComponent = {
         name: 'ProductComponent',
-        template: '#product',
+        template: '#product-actions',
+        setup () {
+            const requestData = ref({
+                product: '{{ product.id }}',
+                default_size: 'Unique',
+                session_id: null
+            })
+            return {
+                requestData
+            }
+        },
         data () {
             return {
                 selectedSize: null,
@@ -272,13 +344,32 @@
         },
         methods: {
             async handleAddToCart () {
-                this.addingToCart = true
+                try {
+                    this.addingToCart = true
+                    const response = await this.$http.post("{% url 'cart_api:add_to_cart' %}", this.requestData)
+                    console.log(response)
+                    setTimeout(() => {
+                        this.addingToCart = false
+                    }, 1000)
+                } catch (e) {
+                    console.log(e)
+                }
             },
             async handleLike () {
-                this.isLiked = true
+                try {
+                    this.isLiked = true
+                    const response = await this.$http.post("{% url 'cart_api:add_to_cart' %}")
+                    console.log(response)
+                    setTimeout(() => {
+                        this.isLiked = false
+                    }, 1000);
+                } catch (e) {
+                    console.log(e)
+                }
             }
         }
     }
+    
     app.component('ProductComponent', ProductComponent)
 </script>
 {% endblock %}

@@ -1,0 +1,12 @@
+<div class="fw-bold d-flex align-items-center justify-content-start mb-4">
+    <span class="me-2">{{ rating_value }}</span>
+    <div class="me-2">
+        {% for i in rating %}
+            <i class="fas fa-star"></i>
+        {% endfor %}
+        {% for i in remaining %}
+            <i class="fas fa-star text-body-tertiary"></i>
+        {% endfor %}
+    </div>
+    <span class="fw-light text-body-secondary">(134 avis)</span>
+</div>

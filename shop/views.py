@@ -8,8 +8,10 @@ from shop.models import Product
 
 
 class ProductView(DetailView):
+    """Shows the details for a
+    specific given product"""
+
     model = Product
     queryset = Product.objects.filter(active=True)
     template_name = 'product.html'
     context_object_name = 'product'
-    

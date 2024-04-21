@@ -1,4 +1,5 @@
 import os
+import pathlib
 import random
 import string
 
@@ -14,15 +15,18 @@ from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
+from mycommerce.choices import SubCategoryChoices
 from shop.choices import CategoryChoices, ColorChoices
 from shop.utils import calculate_sale, create_slug, image_path, video_path
 from shop.validators import price_validator, validate_video_file_extension
-from mycommerce.choices import SubCategoryChoices
+
 USER_MODEL = get_user_model()
 
 
 class Image(models.Model):
-    """Images showcasing the product"""
+    """Stores images that are related 
+    to the given product"""
+
     name = models.CharField(
         max_length=100,
         unique=True,
@@ -33,7 +37,9 @@ class Image(models.Model):
         blank=True,
         null=True
     )
-    original = models.ImageField(upload_to=image_path)
+    original = models.ImageField(
+        upload_to=image_path
+    )
     mid_size = ImageSpecField(
         source='original',
         format='JPEG',
@@ -46,8 +52,12 @@ class Image(models.Model):
         options={'quality': 70},
         processors=[ResizeToFill(200, 200)]
     )
-    is_main_image = models.BooleanField(default=False)
-    created_on = models.DateField(auto_now_add=True)
+    is_main_image = models.BooleanField(
+        default=False
+    )
+    created_on = models.DateField(
+        auto_now_add=True
+    )
 
     class Meta:
         ordering = ['-created_on', 'name']
@@ -57,7 +67,9 @@ class Image(models.Model):
 
 
 class Video(models.Model):
-    """Video showcasing the product"""
+    """Stores videos related to the
+    given product"""
+
     name = models.CharField(
         max_length=100,
         unique=True,
@@ -113,27 +125,27 @@ class AbstractProduct(models.Model):
     )
     sku = models.CharField(
         max_length=100,
+        help_text=_('Stock Keeping Unit'),
         unique=True,
         blank=True,
-        null=True,
-        help_text=_('Stock Keeping Unit')
+        null=True
     )
     category = models.CharField(
         max_length=100,
         choices=SubCategoryChoices.choices(),
         default=SubCategoryChoices.default('Not attributed'),
-        # choices=CategoryChoices.choices,
-        # default=CategoryChoices.SHORTS,
         help_text=_("The product's main category")
     )
-    images = models.ManyToManyField(Image, blank=True)
+    images = models.ManyToManyField(
+        Image, 
+        blank=True
+    )
     video = models.ForeignKey(
         Video,
         on_delete=models.CASCADE,
         blank=True,
         null=True
     )
-
     unit_price = models.DecimalField(
         max_digits=5,
         decimal_places=2,
@@ -141,7 +153,6 @@ class AbstractProduct(models.Model):
         help_text=_('Cost value of the product'),
         validators=[price_validator]
     )
-
     sale_value = models.PositiveIntegerField(
         default=0,
         help_text=_('The current sale value for the product')
@@ -151,8 +162,9 @@ class AbstractProduct(models.Model):
         decimal_places=2,
         default=0
     )
-    on_sale = models.BooleanField(default=False)
-
+    on_sale = models.BooleanField(
+        default=False
+    )
     display_new = models.BooleanField(
         default=False,
         help_text=_('Show the product as new')
@@ -162,10 +174,15 @@ class AbstractProduct(models.Model):
         unique=True,
         blank=True
     )
-    active = models.BooleanField(default=False)
-
-    modified_on = models.DateField(auto_now_add=True)
-    created_on = models.DateField(auto_now=True)
+    active = models.BooleanField(
+        default=False
+    )
+    modified_on = models.DateField(
+        auto_now_add=True
+    )
+    created_on = models.DateField(
+        auto_now=True
+    )
 
     class Meta:
         abstract = True
@@ -181,7 +198,7 @@ class AbstractProduct(models.Model):
         ]
 
     def __str__(self):
-        return self.name
+        return f'Product: {self.name}'
 
     @property
     def get_main_image(self):
@@ -225,6 +242,12 @@ class AbstractProduct(models.Model):
             self.size_set.all().exists()
         ])
 
+    @property
+    def product_collection(self):
+        """Get the first collection in which the
+        active product was classified in"""
+        return self.collection_set.first()
+
     def clean(self):
         if self.on_sale:
             if self.sale_value == 0:
@@ -253,7 +276,9 @@ class Product(AbstractProduct):
 
 
 class AbstractUserList(models.Model):
-    """Base model for user lists"""
+    """Base abstract model for lists that were
+    created or automatically created for the user"""
+
     products = models.ManyToManyField(
         Product,
         blank=True
@@ -270,9 +295,13 @@ class AbstractUserList(models.Model):
     def __str__(self):
         return str(self.user)
 
-
+# TODO: Remove this model which redundant
+# with the wishlist
 class Like(AbstractUserList):
-    """Liked products"""
+    """Stores products that were liked
+    by the user and added to a specific
+    liked products list"""
+
     class Meta:
         verbose_name = _('Like')
         constraints = [
@@ -281,7 +310,9 @@ class Like(AbstractUserList):
 
 
 class Wishlist(AbstractUserList):
-    """User's wishlists"""
+    """Products that were added
+    into the user's wishlist"""
+
     name = models.CharField(max_length=100)
 
     class Meta:
@@ -301,27 +332,18 @@ def create_product_slug(instance, **kwargs):
 
 @receiver(post_delete, sender=Image)
 def delete_image(sender, instance, **kwargs):
-    # is_s3_backend = False
-    # try:
-    #     is_s3_backend = settings.USE_S3
-    # except:
-    #     pass
     is_s3_backend = getattr(settings, 'USE_S3', False)
     if not is_s3_backend:
         if instance.original:
-            if os.path.isfile(instance.original.path):
-                os.remove(instance.original.path)
+            path = pathlib.Path(instance.original.path)
+            if path.isfile():
+                path.unlink()
     else:
         instance.url.delete(save=False)
 
 
 @receiver(pre_save, sender=Image)
 def delete_image_on_update(sender, instance, **kwargs):
-    # is_s3_backend = False
-    # try:
-    #     is_s3_backend = settings.USE_S3
-    # except:
-    #     pass
     is_s3_backend = getattr(settings, 'USE_S3', False)
     if not is_s3_backend:
         if instance.pk:
@@ -332,8 +354,9 @@ def delete_image_on_update(sender, instance, **kwargs):
             else:
                 new_image = instance.original
                 if old_image and old_image != new_image:
-                    if os.path.isfile(old_image.original.path):
-                        os.remove(old_image.original.path)
+                    path = pathlib.Path(old_image.original.path)
+                    if path.is_file():
+                        path.unlink()
     else:
         instance.original.delete(save=False)
 
@@ -343,5 +366,8 @@ def delete_images(sender, instance, **kwargs):
     images = instance.images.all()
     for image in images:
         if image.url:
-            if os.path.isfile(image.original.path):
-                os.remove(image.url.path)
+            path = pathlib.Path(image.url.path)
+            if path.isfile():
+                path.unlink()
+            # if os.path.isfile(image.original.path):
+            #     os.remove(image.url.path)

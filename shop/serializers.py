@@ -37,6 +37,8 @@ class VideoSerializer(Serializer):
 
 
 class ProductSerializer(Serializer):
+    """Serializer for the product model"""
+
     id = fields.IntegerField()
     name = fields.CharField(required=False)
     unit_price = fields.DecimalField(5, 2, required=False)
