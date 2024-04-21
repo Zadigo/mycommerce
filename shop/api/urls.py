@@ -7,5 +7,6 @@ urlpatterns = [
     re_path(r'^like$', views.like_product_view, name='like'),
     re_path(r'^filter-images$', views.filter_images),
     re_path(r'^images$', views.images),
-    re_path(r'^products$', views.products)
+    re_path(r'^products/(?P<pk>\d+)$', views.get_product),
+    re_path(r'^products$', views.list_products)
 ]

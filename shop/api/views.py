@@ -1,23 +1,62 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from shop.api import serializers
+from shop.api.serializers import CustomPagination
 from shop.models import Image, Product
 
 
 @api_view(['get'])
-def products(request, **kwargs):
+def list_products(request, **kwargs):
+    """Returns all the products that are
+    present in the shop regardless of if
+    they are active or not"""
     queryset = Product.objects.all()
+    
+    is_admin = request.GET.get('admin', False)
 
-    product_name = request.GET.get('name')
-    if product_name:
-        queryset = queryset.filter(name__icontains=product_name)
+    serializer = None
+    if is_admin == 'true':
+        product_name = request.GET.get('name')
+        if product_name:
+            queryset = queryset.filter(name__icontains=product_name)
 
-    serializer = serializers.ProductSerializer(
-        instance=queryset,
-        many=True
-    )
+        serializer = serializers.AdminProductSerializer(
+            instance=queryset,
+            many=True
+        )
+        return Response(serializer.data)
+    else:
+        paginator = CustomPagination()
+        items = paginator.paginate_queryset(queryset, request)
+
+        serializer = serializers.ProductSerializer(
+            data=items,
+            many=True
+        )
+        serializer.is_valid()
+        return paginator.get_paginated_response(serializer.data)
+
+
+@api_view(['get'])
+def get_product(request, pk, **kwargs):
+    """Returns the details for a specific given 
+    product present in the shop"""
+    product = get_object_or_404(Product, pk=pk)
+
+    is_admin = request.GET.get('admin', False)
+    if is_admin == 'true':
+        serializer = serializers.AdminProductSerializer
+    else:
+        serializer = serializers.ProductSerializer
+    serializer = serializer(instance=product)
     return Response(serializer.data)
+
+
+# ###### #
+#  Admin #
+# ###### #
 
 
 @api_view(['get'])

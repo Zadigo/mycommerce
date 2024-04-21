@@ -1,11 +1,32 @@
-import pandas
 import json
+
+import pandas
 from rest_framework import fields
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.serializers import Serializer
-from shop.models import Product, Image
+
+from shop.models import Image, Product
+
+
+class CustomPagination(LimitOffsetPagination):
+    default_limit = 34
+    max_limit = 34
 
 
 class ProductSerializer(Serializer):
+    """Serializer used for sending data
+    to agents that require displaying all
+    the product information"""
+
+    id = fields.IntegerField()
+    name = fields.CharField()
+    category = fields.CharField()
+    unit_price = fields.DecimalField(5, 2)
+    get_price = fields.DecimalField(5, 2)
+    active = fields.BooleanField()
+
+
+class AdminProductSerializer(Serializer):
     id = fields.IntegerField()
     name = fields.CharField()
     unit_price = fields.DecimalField(5, 2)

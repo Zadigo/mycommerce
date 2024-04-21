@@ -85,36 +85,6 @@ class Video(models.Model):
         return self.name
 
 
-# class AdditionalVariant(models.Model):
-#     """Variants for size..."""
-#     reference = models.CharField(
-#         max_length=100,
-#         default=get_random_string(12),
-#         unique=True
-#     )
-#     category = models.CharField(
-#         max_length=100,
-#         choices=VariantChoices.choices,
-#         default=VariantChoices.SIZE
-#     )
-#     sub_category = models.CharField(
-#         max_length=100,
-#         choices=VariantSubcategoryChoices.choices,
-#         default=VariantSubcategoryChoices.NOT_ATTRIBUTED
-#     )
-#     name = models.CharField(
-#         max_length=100,
-#         blank=True,
-#         null=True
-#     )
-
-#     in_stock = models.BooleanField(default=True)
-#     active = models.BooleanField(default=True)
-
-#     def __str__(self):
-#         return f"{self.name} - {self.pk}"
-
-
 class AbstractProduct(models.Model):
     name = models.CharField(max_length=100)
     color = models.CharField(
@@ -137,7 +107,7 @@ class AbstractProduct(models.Model):
         help_text=_("The product's main category")
     )
     images = models.ManyToManyField(
-        Image, 
+        Image,
         blank=True
     )
     video = models.ForeignKey(
