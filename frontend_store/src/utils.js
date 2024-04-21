@@ -3,10 +3,31 @@ function createMockupProducts (s = 30) {
     id: v + 1,
     name: `Soutien-gorge corbeille ${v + 1}`,
     description: 'Discover how to use Schema.org',
-    sizes: [ 'XS', 'S', 'M' ],
+    // sizes: [ 'XS', 'S', 'M' ],
+    sizes: [
+      {
+        id: 1,
+        name: 'XS',
+        sub_category: 'Clothe size',
+        availability: true
+      },
+      {
+        id: 2,
+        name: 'S',
+        sub_category: 'Clothe size',
+        availability: true
+      },
+      {
+        id: 3,
+        name: 'M',
+        sub_category: 'Clothe size',
+        availability: false
+      }
+    ],
     variants: [1, 2],
     get_main_image: '/assets/img8.jpeg',
     slug: `soutien-gorge-corbeille-${ v + 1}`,
+    get_price: 45.93,
     price: 45.93
   }))
   return products

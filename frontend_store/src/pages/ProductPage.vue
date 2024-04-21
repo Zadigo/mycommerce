@@ -108,13 +108,15 @@
         <!-- More Products -->
         <!-- TODO: Make this a component: ProductsRecommentation.vue -->
         <div id="more-products" ref="moreProductsIntersect" class="col-12 mt-5">
-          <h2 class="h4 text-center mb-4">Cela peut t'intéresser</h2>
-
-          <div class="row gx-1">
+          <!-- <h2 class="h4 text-center mb-4">Cela peut t'intéresser</h2>
+          <div class="row g-1">
             <div v-for="product in moreProducts" :key="product" class="col-sm-6 col-md-3">
               <product-card :product="product" />
             </div>
-          </div>
+          </div> -->
+          <suspense>
+            <async-recommendation-block :quantity="30" />
+          </suspense>
         </div>
       </div>
 
@@ -173,7 +175,7 @@
 </template>
 
 <script>
-import { ref, inject } from 'vue'
+import { ref, inject, defineAsyncComponent } from 'vue'
 import { mapActions, storeToRefs } from 'pinia'
 import { useSeoMeta } from 'unhead'
 import { useCart } from 'src/stores/cart'
@@ -183,20 +185,23 @@ import { useSchemaOrg, defineProduct, defineBreadcrumb } from '@unhead/schema-or
 import { VueImageZoomer } from 'vue-image-zoomer'
 import { useShopComposable } from 'composables/shop'
 import { useIntersectionObserver } from '@vueuse/core'
-import { createMockupProducts, createMockupProduct } from 'src/utils'
+import { createMockupProduct } from 'src/utils'
 // import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
 
 import 'vue-image-zoomer/dist/style.css'
 
 import FashionInformation from 'src/components/product/information/FashionInformation.vue'
-import ProductCard from 'components/products/ProductCard.vue'
+// import ProductCard from 'components/products/ProductCard.vue'
 
 export default {
   components: {
     FashionInformation,
-    ProductCard,
-    VueImageZoomer
+    // ProductCard,
+    VueImageZoomer,
+    AsyncRecommendationBlock: defineAsyncComponent({
+      loader: async () => import('components/RecommendationsBlock.vue')
+    })
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
@@ -229,11 +234,6 @@ export default {
     const { showAddedProductDrawer } = storeToRefs(cartStore)
 
     const sizeGuideDrawer = ref(false)
-
-    const moreProducts = ref([])
-    // TODO: Remove - For testing
-    moreProducts.value = createMockupProducts(30)
-
     const showSizeSelectionWarning = ref(false)
 
     const currentProduct = ref({})
@@ -289,7 +289,6 @@ export default {
       sizeGuideDrawer,
       showAddedProductDrawer,
       productData,
-      moreProducts,
       currentProduct,
       authenticationStore,
       isLiked,

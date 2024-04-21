@@ -43,7 +43,7 @@
           <div class="container">
             <div class="row g-1">
               <div class="col-12">
-                <v-text-field v-model="requestData.search" type="Search" placeholder="Ecris les produits à rechercher" variant="outlined">
+                <v-text-field v-model="search" type="Search" placeholder="Ecris les produits à rechercher" variant="outlined" @keypress="searchProducts">
                   <template #prepend>
                     <v-icon name="search"></v-icon>
                   </template>
@@ -51,12 +51,15 @@
               </div>
 
               <!-- TODO: Make this a component: ProductsRecommentation.vue -->
-              <h2 class="h4 text-center">Cela peut t'intéresser</h2>
+              <suspense>
+                <async-recommendations-block />
+              </suspense>
+              <!-- <h2 class="h4 text-center">Cela peut t'intéresser</h2>
               <div class="row products-wrapper">
                 <div v-for="searchedProduct in searchedProducts" :key="searchedProduct" class="col-3">
                   <product-card :product="searchedProduct" />
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         </v-card-text>
@@ -247,23 +250,30 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import { ref } from 'vue'
+import { whenever } from '@vueuse/core'
 import { storeToRefs, mapState } from 'pinia'
 import { useShop } from 'src/stores/shop'
 import { useCart } from 'src/stores/cart'
 import { useAuthenticationComposable } from 'composables/authentication'
 import { useAuthentication } from 'stores/authentication'
+import { createMockupProducts } from 'src/utils'
+import { defineAsyncComponent } from 'vue'
 
 import BaseNavbar from 'components/BaseNavbar.vue'
 import BaseFooter from 'components/BaseFooter.vue'
-import ProductCard from 'components/products/ProductCard.vue'
+// import ProductCard from 'components/products/ProductCard.vue'
 
 export default {
   name: 'ShopLayout',
   components: {
     BaseNavbar,
     BaseFooter,
-    ProductCard
+    // ProductCard,
+    AsyncRecommendationsBlock: defineAsyncComponent({
+      loader: async () => import('components/RecommendationsBlock.vue')
+    })
   },
   setup () {
     const { email, password, login } = useAuthenticationComposable()
@@ -275,8 +285,16 @@ export default {
     const { showCartDrawer, showAddedProductDrawer, showEditProductDrawer } = storeToRefs(cartStore)
 
     const showSearchModal = ref(false)
-    const requestData = ref({ search: null })
-    const searchedProducts = ref(Array.from({ length: 20 }, (k, v) => v + 1))
+    const search = ref(null)
+    const canShowSearch = ref(false)
+    const searchedProducts = ref(createMockupProducts(30))
+
+    whenever(searchedProducts, (items) => {
+      if (items.length > 0) {
+        // Do something
+        canShowSearch.value = true
+      }
+    })
 
     const changedProduct = ref({
       quantity: 1
@@ -293,7 +311,7 @@ export default {
       showAddedProductDrawer,
       showEditProductDrawer,
       showCartDrawer,
-      requestData,
+      search,
       searchedProducts,
       showSearchModal
     }
@@ -313,6 +331,21 @@ export default {
         this.authenticationStore.showLoginDrawer = false
       })
     },
+    searchProducts: _.debounce(async function () {
+      // Allows the user to search for products
+      try {
+        if (this.search && this.search !== "") {
+          const response = await this.$http.get('shop/search', {
+            params: {
+              q: this.search
+            }
+          })
+          console.log(response.data)
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }, 6000),
     handleNotAuthenticatedOrdering () {
       // Handles the situation where the user tries
       // to go to the cart but is not logged in

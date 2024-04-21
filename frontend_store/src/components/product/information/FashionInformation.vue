@@ -1,9 +1,7 @@
 <template>
   <!-- Sizes -->
   <div id="sizes" class="d-flex justify-content-start gap-1" aria-label="Product sizes">
-    <button v-for="size in sizes" :key="size" type="button" :class="{ 'btn-outline-secondary': !sizeSelected(size), 'btn-secondary': sizeSelected(size) }" class="btn btn-floating" @click="handleSizeSelection(size)">
-      {{ size }}
-    </button>
+    <base-size-button v-for="size in sizes" :key="size.id" v-model:selectedSize="selectedSize" :size="size" @click="handleSizeSelection(size)" />
   </div>
 
   <p class="mt-4 d-flex justify-content-start gap-3">
@@ -28,8 +26,13 @@
 import { ref } from 'vue'
 import { useRefHistory } from '@vueuse/core'
 
+import BaseSizeButton from '../../BaseSizeButton.vue'
+
 export default {
   name: 'FashionInformation',
+  components: {
+    BaseSizeButton
+  },
   props: {
     sizes: {
       type: Array,
@@ -54,13 +57,8 @@ export default {
     }
   },
   methods: {
-    sizeSelected (size) {
-      // Checks if the size was selected or not
-      return size === this.selectedSize
-    },
-    handleSizeSelection (size) {
-      this.selectedSize = size
-      this.$emit('update-size', size)
+    handleSizeSelection () {
+      this.$emit('update-size', this.selectedSize)
     }
   }
 }

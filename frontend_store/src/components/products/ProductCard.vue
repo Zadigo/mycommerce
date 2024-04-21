@@ -10,8 +10,8 @@
           <div v-if="requiresSizeItems" class="size-items">
             <p class="fw-bold">Sélectionne la taille</p>
             <div class="d-flex justify-content-around flex-wrap gap-1">
-              <v-btn v-for="size in product.sizes" :key="size" variant="tonal" rounded>
-                {{ size }}
+              <v-btn v-for="size in product.sizes" :key="size.id" variant="tonal" rounded>
+                {{ size.name }}
               </v-btn>
             </div>
           </div>
@@ -33,7 +33,8 @@
     <router-link :to="{ name: 'shop_product', params: { id: product.id } }" class="link-dark">
       <div class="card-body pt-0 px-0 pb-0">
         <p class="mb-0 mt-1 fw-light" :aria-label="product.name">{{ product.name }}</p>
-        <p class="fw-bold">{{ $n(product.price, 'currency') }}</p>
+        <!-- <p class="fw-bold">{{ $n(product.get_price, 'currency') }}</p> -->
+        <p class="fw-bold">{{ product.get_price }}</p>
       </div>
     </router-link>
   </article>
