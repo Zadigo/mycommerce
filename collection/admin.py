@@ -11,7 +11,7 @@ class CollectionAdmin(admin.ModelAdmin):
         ['Details', {'fields': ['name', 'description', 'illustration']}],
         ['Cateogries', {'fields': ['category', 'sub_category']}],
         ['Products', {'fields': ['products']}],
-        ['Other', {'fields': ['tags', 'slug']}]
+        ['Other', {'fields': ['tags', 'slug', 'subcategory_slug']}]
     ]
     date_hiearchy = 'created_on'
     filter_horizontal = ['products']
