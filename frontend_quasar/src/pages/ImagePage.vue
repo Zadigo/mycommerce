@@ -5,15 +5,16 @@
         <div class="row">
           <div class="col-6 q-pr-sm">
             <q-card>
-              <q-img src="https://placehold.co/400x600"></q-img>
+              <!-- <q-img src="https://placehold.co/400x600"></q-img> -->
+              <q-img :src="`http://127.0.0.1:8000${store.currentImage.mid_size}`"></q-img>
             </q-card>
           </div>
 
           <div class="col-6">
             <q-card class="q-mb-sm">
               <q-card-section>
-                <q-input class="q-mb-sm" outlined></q-input>
-                <q-select label="Product name" outlined use-input @keypress="requestProducts"></q-select>
+                <q-input v-model="store.currentImage.name" class="q-mb-sm" outlined></q-input>
+                <q-select v-model="searchedData.name" :options="searchedProducts" label="Product name" outlined use-input @filter="filterSelection" @filter-abort="abortFilterFn"></q-select>
                 <q-btn color="secondary" class="q-mt-sm" unelevated rounded @click="showProductModal = true">
                   <q-icon class="q-mr-sm" size="1em" name="fas fa-arrow-up-right-from-square"></q-icon>
                   Product
@@ -71,8 +72,8 @@
                     </div>
 
                     <p class="q-my">
-                      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugiat 
-                      ipsum nihil ullam perspiciatis accusantium harum soluta repudiandae quam 
+                      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugiat
+                      ipsum nihil ullam perspiciatis accusantium harum soluta repudiandae quam
                       numquam, quod repellendus corporis sapiente, provident eum. A aspernatur sunt at incidunt.
                     </p>
 
@@ -90,22 +91,66 @@
 
 <script>
 import _ from 'lodash'
+import { useShop } from 'src/stores/shop';
 import { ref } from 'vue';
 
 export default {
   name: 'ImagePage',
   setup () {
+    const store = useShop()
     const showProductModal = ref(false)
     const maximizedToggle = ref(true)
+    const searchedProducts = ref([])
+    const searchedData = ref({
+      name: null
+    })
     return {
+      store,
+      searchedData,
+      searchedProducts,
       maximizedToggle,
       showProductModal
     }
   },
+  created () {
+    this.store.setCurrentImage(this.$route.params.id)
+  },
   methods: {
-    requestProducts: _.debounce(async function () {
-      // pass
-    }, 1000)
+    filterSelection (val, update, abort) {
+      if (this.searchedProducts.value !== null) {
+        update()
+        return
+      }
+
+      update(() => {
+        this.requestProducts()
+      })
+      // setTimeout(() => {
+      // }, 2000)
+    },
+    abortFilterFn () {
+      // console.log('delayed filter aborted')
+    },
+    async requestProducts () {
+      try {
+        const response = await this.$api.get('shop/products', {
+          params: this.searchedData
+        })
+        this.searchedProducts = response.data
+      } catch (e) {
+        console.log(e)
+      }
+    }
+    // requestProducts: _.debounce(async function () {
+    //   try {
+    //     const response = await this.$api.get('shop/products', {
+    //       params: this.searchedData
+    //     })
+    //     this.searchedProducts = response.data
+    //   } catch (e) {
+    //     console.log(e)
+    //   }
+    // }, 1000)
   }
 }
 </script>

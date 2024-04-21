@@ -3,54 +3,57 @@ import { defineStore } from 'pinia'
 
 export const useShop = defineStore('shop', {
   state: () => ({
-    products: [
-      {
-        id: 1,
-        produdct_id: 'prod_zenfzeino',
-        name: "Blazer Strapped",
-        color: "Red",
-        unit_price: 302,
-        active: true,
-        display_new: false,
-        slug: "blazer-strapped",
-        category: "Panties",
-        created_on: "2022-03-18",
-        modified_on: "2022-03-18",
-        sale_value: 36,
-        on_sale: true
-      },
-      {
-        id: 2,
-        produdct_id: 'prod_zenfzeino',
-        name: "Blazer Strapped 2",
-        color: "Red",
-        unit_price: 302,
-        active: true,
-        display_new: false,
-        slug: "blazer-strapped",
-        category: "Panties",
-        created_on: "2022-03-18",
-        modified_on: "2022-03-18",
-        sale_value: 36,
-        on_sale: true
-      },
-      {
-        id: 3,
-        produdct_id: 'prod_zenfzeino',
-        name: "Blazer Strapped 3",
-        color: "Red",
-        unit_price: 302,
-        active: true,
-        display_new: false,
-        slug: "blazer-strapped",
-        category: "Panties",
-        created_on: "2022-03-18",
-        modified_on: "2022-03-18",
-        sale_value: 36,
-        on_sale: true
-      }
-    ],
-    currentProduct: {}
+    products: [],
+    images: [],
+    // products: [
+    //   {
+    //     id: 1,
+    //     produdct_id: 'prod_zenfzeino',
+    //     name: "Blazer Strapped",
+    //     color: "Red",
+    //     unit_price: 302,
+    //     active: true,
+    //     display_new: false,
+    //     slug: "blazer-strapped",
+    //     category: "Panties",
+    //     created_on: "2022-03-18",
+    //     modified_on: "2022-03-18",
+    //     sale_value: 36,
+    //     on_sale: true
+    //   },
+    //   {
+    //     id: 2,
+    //     produdct_id: 'prod_zenfzeino',
+    //     name: "Blazer Strapped 2",
+    //     color: "Red",
+    //     unit_price: 302,
+    //     active: true,
+    //     display_new: false,
+    //     slug: "blazer-strapped",
+    //     category: "Panties",
+    //     created_on: "2022-03-18",
+    //     modified_on: "2022-03-18",
+    //     sale_value: 36,
+    //     on_sale: true
+    //   },
+    //   {
+    //     id: 3,
+    //     produdct_id: 'prod_zenfzeino',
+    //     name: "Blazer Strapped 3",
+    //     color: "Red",
+    //     unit_price: 302,
+    //     active: true,
+    //     display_new: false,
+    //     slug: "blazer-strapped",
+    //     category: "Panties",
+    //     created_on: "2022-03-18",
+    //     modified_on: "2022-03-18",
+    //     sale_value: 36,
+    //     on_sale: true
+    //   }
+    // ],
+    currentProduct: {},
+    currentImage: {}
   }),
   getters: {
     previousProductId () {
@@ -76,7 +79,9 @@ export const useShop = defineStore('shop', {
   actions: {
     setCurrentProduct (id) {
       this.currentProduct = _.find(this.products, { id: id * 1 })
-      this.currentProductIndex = _.findIndex(this.products, { id: id * 1 })
+    },
+    setCurrentImage (id) {
+      this.currentImage = _.find(this.images, { id: id * 1 })
     }
   }
 })

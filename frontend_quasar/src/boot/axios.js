@@ -9,7 +9,7 @@ import { useAuthentication } from 'src/stores/authentication'
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({ 
-  baseURL: 'https://api.example.com',
+  baseURL: 'http://127.0.0.1:8000/api/v1/',
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
   timeout: 1000
@@ -21,7 +21,7 @@ api.interceptors.response.use(
     if (response.status === 403) {
       store
     }
-    return request
+    return response
   }
 )
 

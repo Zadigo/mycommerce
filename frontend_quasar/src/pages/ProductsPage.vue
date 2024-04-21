@@ -96,6 +96,7 @@ export default {
   },
   computed: {
     searchedProducts () {
+      // Allows us to search products in the database
       if (this.search === null || this.search === "") {
         return this.products
       } else {
@@ -105,6 +106,22 @@ export default {
             product.name.includes(this.search)
           )
         })
+      }
+    }
+  },
+  beforeMount () {
+    this.requestProducts()
+  },
+  methods: {
+    async requestProducts () {
+      try {
+        const response = await this.$api.get('shop/products')
+        this.products = response.data
+        setTimeout(() => {
+          this.loading = false
+        }, 1000);
+      } catch (e) {
+        console.log(e)
       }
     }
   }
