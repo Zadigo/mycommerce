@@ -7,8 +7,10 @@ from variants.choices import ClotheSizesChoices, VariantSubcategoryChoices
 
 
 class AbstractVariant(models.Model):
-    """Track product availability or global state
-    per variant"""
+    """Model which allows us to track variant 
+    availability independently from the global 
+    state"""
+
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE
@@ -21,7 +23,12 @@ class AbstractVariant(models.Model):
 
 
 class Size(AbstractVariant):
-    """Variant for a product size"""
+    """Model used to store data on the different
+    available sizes for a product. This model
+    allows us to also track size availability
+    or active state independently from from
+    the main product state"""
+
     name = models.CharField(
         max_length=100,
         help_text=_('Variant human readable name'),
@@ -34,7 +41,7 @@ class Size(AbstractVariant):
         choices=VariantSubcategoryChoices.choices,
         default=VariantSubcategoryChoices.CLOTHE_SIZE
     )
-    
+
     class Meta:
         verbose_name = _('Size')
         verbose_name_plural = _('Sizes')
@@ -44,6 +51,6 @@ class Size(AbstractVariant):
                 name='unique_size_per_product'
             )
         ]
-    
+
     def __str__(self):
         return self.product.name
