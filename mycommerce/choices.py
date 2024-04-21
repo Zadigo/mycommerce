@@ -1,9 +1,10 @@
 import itertools
 
 from django.db.models import Choices
+from django.db.models.functions import Lower
 
 from mycommerce.constants import SUB_CATEGORIES
-from django.db.models.functions import Lower
+
 
 class CityChoices(Choices):
     LILLE = 'Lille'
@@ -24,6 +25,9 @@ def flatten_choices(choices):
 
 
 class SubCategoryChoices:
+    """Returns a list of product 
+    sub-categories"""
+
     sub_categories = []
 
     @classmethod

@@ -16,14 +16,16 @@ urlpatterns = [
         name='django.contrib.sitemaps.views.sitemap'
     ),
     path('__debug__/', include('debug_toolbar.urls')),
+
     path('api/v1/accounts/', include('accounts.urls')),
-    path('api/v1/shop/', include('shop.api_urls')),
-    path('api/v1/cart/', include('cart.urls')),
-    path('api/v1/collection/', include('collection.api_urls')),
+    path('api/v1/shop/', include('shop.api.urls')),
+    path('api/v1/cart/', include('cart.api.urls')),
+    path('api/v1/collection/', include('collection.api.urls')),
+
     path('collection/', include('collection.urls')),
-    
     path('shop/', include('shop.urls')),
     path('admin/', admin.site.urls),
+    path('cart/', include('cart.urls')),
     path('legal/', include('legal.urls')),
     re_path(r'^$', views.HomeView.as_view(), name='home')
 ]

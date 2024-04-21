@@ -81,7 +81,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'libraries': {}
+            'libraries': {
+                'currency': 'shop.templatetags.currency'
+            }
         },
     },
 ]
@@ -182,16 +184,14 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
     'http://localhost:3000',
-]
-
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r'http\:\/\/192\.168\.1\.\d+\:8080',
-    'http://localhost:3000'
+    'http://localhost:9000',
+    'http://localhost:5173'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8080',
     'http://localhost:3000',
+    'http://localhost:5173'
 ]
 
 
