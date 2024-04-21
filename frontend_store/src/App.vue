@@ -11,7 +11,7 @@
 <script>
 import { useI18n } from "vue-i18n"
 import { ref, provide, watch } from 'vue'
-import { useMediaQuery, useScreenOrientation } from "@vueuse/core"
+import { useDocumentVisibility, useMediaQuery, useScreenOrientation } from "@vueuse/core"
 import { useSchemaOrg, defineOrganization } from '@unhead/schema-org'
 
 export default {
@@ -43,9 +43,11 @@ export default {
 
     const { value } = useMediaQuery('(min-width: 320px)')
     const { isSupported } = useScreenOrientation()
+    const documentVisible = useDocumentVisibility()
 
     provide('isMobile', value)
-    provide('screenOrientation', isSupported)    
+    provide('screenOrientation', isSupported)
+    provide('documentVisible', documentVisible)
   },
   beforeMount () {
     this.currentLanguage = this.sessionStorage.language || 'fr'

@@ -21,6 +21,7 @@
 
 <script>
 import { useHead } from 'unhead'
+import { ref } from 'vue'
 
 export default {
   name: 'CollectionPage',
@@ -28,10 +29,13 @@ export default {
     useHead({
       title: 'Soutien-gorge'
     })
+    const collections = ref([])
     return {
+      collections
     }
   },
   mounted () {
+    this.requestCollectionNames()
     // TODO: Analytics does not work
     this.$analytics('event', 'page_view', {
       page_title: 'Soutien-Gorge',
@@ -40,6 +44,19 @@ export default {
     })
   },
   methods: {
+    async requestCollectionNames () {
+      try {
+        const collections = this.$session.getOrCreate('collections', [])
+        const exists = collections[0]
+        if (!exists) {
+          const response = await this.$http.get('collection')
+          this.$session.create('collections', response.data)
+        }
+        this.collections = collections
+      } catch (e) {
+        console.log(e)
+      }
+    },
     handleGridSize (size) {
       this.currentGridSize = size
     }

@@ -173,7 +173,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import { mapActions, storeToRefs } from 'pinia'
 import { useSeoMeta } from 'unhead'
 import { useCart } from 'src/stores/cart'
@@ -204,6 +204,8 @@ export default {
     })
   },
   setup () {
+    const documentVisible = inject('documentVisible')
+
     // const { t } = useI18n()
     const router = useRouter()
     const route = useRoute()
@@ -280,6 +282,7 @@ export default {
     }, 300)
 
     return {
+      documentVisible,
       intersectionTarget,
       cartStore,
       shopStore,
@@ -298,11 +301,26 @@ export default {
     '$route.params.id' (n, o) {
       if (n !== o) {
         this.requestProduct()
+        this.addToHistory(this.currentProduct)
+      }
+    },
+    documentVisible (n) {
+      // Instead of sending each visited product
+      // statistics at once, wait for when the user
+      // either changes page or refreshes the page
+      // to send these statistics at once
+      if (n !== 'visible') {
+        this.handleSendingStatistics()
       }
     }
   },
   beforeMount () {
     this.requestProduct()
+    // As with the "documentVisible" watcher function,
+    // listen for when the user refreshes the page
+    // or closes the tab to send statistics related
+    // to products that he has visited
+    // window.addEventListener('beforeunload', this.handleSendingStatistics)
   },
   mounted () {
     this.intersectionTarget = this.$refs.moreProductsIntersect
@@ -341,6 +359,9 @@ export default {
       })
     ])
   },
+  beforeUnmount () {
+    // window.removeEventListener('beforeunload', this.handleSendingStatistics)
+  },
   methods: {
     ...mapActions(useShop, ['addToHistory']),
     async requestProduct () {
@@ -350,6 +371,13 @@ export default {
       // requests the product details on each page just
       // like would do a static page
       this.currentProduct = createMockupProduct(this.$route.params.id)
+
+      try {
+        const response = await this.$http.get(`shop/products/${this.$route.params.id}`)
+        console.log(response.data)
+      } catch (e) {
+        console.log(e)
+      }
     },
     async handleAddToCart () {
       // Handles the action of adding a product
@@ -368,6 +396,15 @@ export default {
       // of the products that were viewed by
       // the user during his session
       this.addToHistory(this.currentProduct)
+    },
+    async handleSendingStatistics () {
+      // TODO: We need to send these statistics ONLY if
+      // if there are products to be sent and ONLY IF there's
+      // a change the existing visited products array that we
+      // have stored in the session
+      if (this.sessionStorage.visitedProducts.length > 0) {
+        console.log('User left the screen send visitedPages statistics')
+      }
     }
   }
 }

@@ -19,7 +19,7 @@ const useCart = defineStore('cart', {
     
     showAddedProductDrawer: false,
     showEditProductDrawer: false,
-    showCartDrawer: true,
+    showCartDrawer: false,
   }),
   getters: {
     hasProducts () {

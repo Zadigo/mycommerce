@@ -1,3 +1,10 @@
+/*!
+ * vuesession v1.0.0
+ * (c) 2024 John Pendenque
+ * @license MIT
+ */
+import { ref } from 'vue'
+import { watchDeep } from '@vueuse/core'
 import { setupDevtoolsPlugin } from '@vue/devtools-api'
 
 function setupDevtools (app, storage) {
@@ -213,7 +220,7 @@ class VueSession {
     this._save(storedData)
   }
 
-  exists (key) {
+  keyExists (key) {
     const storedData = this.data
     return Object.keys(storedData).includes(key)
   }
@@ -276,7 +283,7 @@ class VueSession {
   }
 
   getOrCreate (key, value) {
-    const result = this.exists(key)
+    const result = this.keyExists(key)
     let returnValue = null
     let returnArray
     if (result) {
@@ -305,7 +312,7 @@ class VueSession {
   }
 
   defaultList (key, value) {
-    if (this.exists(key)) {
+    if (this.keyExists(key)) {
       this.listPush(key, value)
     } else {
       this.create(key, [value])
@@ -420,7 +427,13 @@ class VueSession {
 
 const session = new VueSession()
 
-function createVueSession () {
+function createVueSession (options = {}) {
+  const afterMountFunction = options.afterMount
+
+  if (typeof afterMountFunction === 'function') {
+    afterMountFunction.call(session)
+  }
+
   return {
     install: (app) => {
       session.setup(app)
@@ -428,8 +441,22 @@ function createVueSession () {
   }
 }
 
+function useVueSession () {
+  const currentSessionData = ref(session.data)
+
+  watchDeep(session.data, (updated) => {
+    console.log(updated)
+  })
+
+  return {
+    currentSessionData,
+    session
+  }
+}
+
 export {
   session,
+  useVueSession,
   createVueSession,
   VueSession
 }

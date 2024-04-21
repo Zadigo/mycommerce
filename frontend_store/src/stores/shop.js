@@ -8,6 +8,9 @@ const useShop = defineStore('shop', {
   }),
   actions: {
     addToHistory (product) {
+      // Adds the product to the list of
+      // products that were historically
+      // visited by the user
       this.visitedProducts.push(product)
     },
     addToWishlist (product) {

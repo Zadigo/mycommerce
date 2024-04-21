@@ -8,7 +8,19 @@ import _ from 'lodash'
 import dayjs from 'dayjs'
 import i18n from './i18n.js'
 
-const sessionPlugin = createVueSession()
+const sessionPlugin = createVueSession({
+  afterMount () {
+    // TODO: Check if the "if" is necessary
+    if (!this.keyExists('visitedProducts')) {
+      this.create('visitedProducts', [])
+    }
+    
+    if (!this.keyExists('likedProducts')) {
+      this.create('likedProducts', [])
+      this.getOrCreate('google', 'sting')
+    }
+  }
+})
 
 if (import.meta.env.DEV) {
   window.dayjs = dayjs

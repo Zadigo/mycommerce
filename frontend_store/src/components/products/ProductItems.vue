@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-// import { client } from '../../plugins/axios'
+import { ref, computed } from 'vue'
+import { client } from 'src/plugins/axios'
 import { createMockupProducts } from '../../utils.js'
 
 import ProductCard from './ProductCard.vue'
@@ -35,16 +35,32 @@ export default {
     }
   },
   async setup () {
+    const cachedResponse = ref({})
     const products = ref([])
 
     async function requestProducts () {
-      // client
       products.value = createMockupProducts(30)
+      try {
+        const response = await client.get(`collection/all`)
+        cachedResponse.value = response.data
+        // products.value = cachedResponse.value.results
+        console.log(response.data)
+      } catch (e) {
+        console.error(e)
+      }
     }
     await requestProducts()
 
+    const nextPageUrl = computed(() => {
+      // Independently save the url for
+      // retrieving the data for the
+      // next page
+      return cachedResponse.value.next
+    })
+
     return {
-      products
+      products,
+      nextPageUrl
     }
   },
   computed: {

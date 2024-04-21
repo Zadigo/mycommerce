@@ -1,20 +1,16 @@
 import { App, ComponentCustomProperties, Ref } from 'vue'
+import { VueSession } from './session-storage'
 
 // declare type DictionnaryKey = { key: string }
+export type DictSetResult = [success: boolean, data: Record<string, any>]
 
-/** Creates a VueLocalStorage instance that can be used by a Vue app */
-export function createVueLocalStorage(options: BaseOptions | undefined): VueLocalStorage
-
-/** Creates a VueSession instance that can be used by a Vue app */
-export function createVueSession(options?: VueSessionOptions): VueSession
-
-export const session: VueSession
-
-export declare interface BaseOptions {
+export interface BaseOptions {
     /** The default session key (default: vue-session) */
     sessionKey?: number
     /** Initial values with which to initialize the storage */
-    initial?: object
+    initial?: Record<string, any>,
+    /** A function to run after the storage is initialized */
+    afterMount?: ((this: VueSession, ...args: any[]) => void) | null
 }
 
 /** 
@@ -53,7 +49,7 @@ export declare interface VueLocalStorage {
      * @param key - key under which to save the element
      * @returns boolean
      */ 
-    exists(key: string): boolean
+    keyExists(key: string): boolean
     /**
      * Gets a value and immediately deletes it
      * 
@@ -105,7 +101,7 @@ export declare interface VueLocalStorage {
      * @param value - number, array or dictionnary
      * @returns any
      */
-    getOrCreate (key: string, value: any): dictSetResult
+    getOrCreate (key: string, value: any): DictSetResult
     /**
      * Pushes a value in a list
      *
@@ -168,7 +164,7 @@ export declare interface VueSessionOptions extends BaseOptions {
  * data easily in the base Window session storage
  */
 export declare interface VueSession {
-    dictSetResult: [boolean, object]
+    // dictSetResult: [boolean, object]
 
     /** The default session key (defaults: vue-session) */
     readonly DEFAULT_KEY_NAME: string
@@ -406,12 +402,38 @@ export declare interface VueSession {
     setup(app: App): void
 }
 
+/** Creates a VueLocalStorage instance that can be used by a Vue app */
+export function createVueLocalStorage(options: BaseOptions | undefined): VueLocalStorage
+
+/** Creates a VueSession instance that can be used by a Vue app */
+export function createVueSession(options?: VueSessionOptions): VueSession
+
+export const session: VueSession
+
+/**
+ * Represents a composable that provides access 
+ * to a Vue session data
+ * 
+ */
+export declare function useVueSession (): {
+    /**
+     * Reference to the application storage 
+     * containing session data
+     */
+    currentSessionData: Ref<object>
+    /**
+     * Instance of VueSession for managing 
+     * session data
+     */
+    session: VueSession
+}
+
 declare module '@vue/runtime-core' {
     export interface ComponentCustomProperties {
         /** Current data saved under the VUE_SESSION_KEY */
-        localStorage: object
+        localStorage: Record<string, any>
         /** Current data saved under VUE_SESSION_KEY */
-        sessionStorage: object
+        sessionStorage: Record<string, any>
         /** The VueLocalStorage instance */
         $localstorage: VueLocalStorage
         /** The VueSession instance */
