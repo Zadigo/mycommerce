@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "test": "vitest",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -43,6 +44,7 @@
     "eslint-config-prettier": "^9.1.0",
     "postcss": "^8.4.14",
     "vite": "^5.2.0",
-    "vite-plugin-eslint": "^1.8.1"
+    "vite-plugin-eslint": "^1.8.1",
+    "vitest": "^1.5.0"
   }
 }

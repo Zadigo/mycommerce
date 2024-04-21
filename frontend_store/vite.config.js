@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig, loadEnv } from 'vite'
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
@@ -38,6 +39,16 @@ export default defineConfig(({ mode }) => {
         fullInstall: false,
         compositionOnly: true,
       })
-    ]
+    ],
+    test: {
+      alias: {
+        // '@/': new URL('./src/', import.meta.url).pathname,
+        // 'src': resolve(__dirname, './src'),
+      },
+      browser: {
+        enabled: true,
+        name: 'chrome'
+      }
+    }
   }
 })
