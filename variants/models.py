@@ -53,4 +53,4 @@ class Size(AbstractVariant):
         ]
 
     def __str__(self):
-        return self.product.name
+        return f'Variant: {self.product.name}'
