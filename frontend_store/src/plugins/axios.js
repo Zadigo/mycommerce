@@ -1,3 +1,7 @@
+import { useVueSession } from './vue-storages'
+import { useAuthentication } from 'src/stores/authentication'
+import { useCookies } from '@vueuse/integrations/useCookies'
+
 import axios from 'axios'
 
 /**
@@ -21,6 +25,31 @@ const client = axios.create({
   withCredentials: true,
   timeout: 10000
 })
+
+client.interceptors.request.use(
+  config => {
+    const store = useAuthentication()
+
+    if (store.isAuthenticated) {
+      config.headers.Authorization = `Token ${store.token}`
+    }
+
+    return config
+  }
+)
+
+client.interceptors.response.use(
+  response => {
+    if (response.status === 401) {
+      const cookies = useCookies()
+      const { session } = useVueSession()
+      
+      session.remove('authentication')
+      cookies.remove('token')
+    }
+    return response
+  }
+)
 
 export {
   client

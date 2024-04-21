@@ -51,6 +51,13 @@ export declare interface VueLocalStorage {
      */ 
     keyExists(key: string): boolean
     /**
+     * Checks if a value is null or undefined
+     * 
+     * @param key - key under which to check the value
+     * @returns boolean
+     */ 
+    isEmpty(key: string): boolean
+    /**
      * Gets a value and immediately deletes it
      * 
      * @param key - key under which to save the element

@@ -1,5 +1,6 @@
 import { client } from './axios.js'
-import { createVueSession, session } from './vue-storages/index.js'
+import { createVueSession, useVueSession } from './vue-storages/index.js'
+import cookies from 'universal-cookie'
 
 import './fontawesome.js'
 import './webfontloader.js'
@@ -10,6 +11,7 @@ import i18n from './i18n.js'
 
 const sessionPlugin = createVueSession({
   afterMount () {
+    this.create('collections', [])
     // TODO: Check if the "if" is necessary
     if (!this.keyExists('visitedProducts')) {
       this.create('visitedProducts', [])
@@ -25,7 +27,7 @@ const sessionPlugin = createVueSession({
 if (import.meta.env.DEV) {
   window.dayjs = dayjs
   window.lodash = _
-  window.VueSession = session
+  window.UniversalCookie = cookies
 }
 
 export default function installPlugins () {
@@ -33,6 +35,8 @@ export default function installPlugins () {
     install: (app) => {
       app.use(sessionPlugin)
       app.use(i18n)
+
+      const { session } = useVueSession()
 
       app.config.globalProperties.$http = client
       app.config.globalProperties.$date = dayjs()

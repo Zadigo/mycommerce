@@ -3,5 +3,8 @@
     "Taille porté": "Taille porté : {size}",
     "Taille du mannequin": "Taille du mannequin : {height}cm",
     "Guide des tailles": "Guide des tailles",
-    "Ajouter au panier": "Ajouter au panier"
+    "Ajouter au panier": "Ajouter au panier",
+    "Livraison gratuite offerte": "Il te manque {n} pour profiter de la",
+    "Se connecter": "Se connecter",
+    "Conservations des favoris": "Tes favoris seront conservés pour une durée limitée"
 }

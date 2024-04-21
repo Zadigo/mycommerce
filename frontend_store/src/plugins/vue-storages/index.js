@@ -1,11 +1,7 @@
-import { VueSession, createVueSession, session } from './session-storage'
-// import { VueCookie } from './cookie-storage'
-
-// const session = new VueSession()
-// const cookie = new VueCookie()
+import { VueSession, createVueSession, useVueSession } from './session-storage'
 
 export { 
-  session,
   VueSession,
+  useVueSession,
   createVueSession
  }

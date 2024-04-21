@@ -46,15 +46,16 @@ export default {
   methods: {
     async requestCollectionNames () {
       try {
-        const collections = this.$session.getOrCreate('collections', [])
-        const exists = collections[0]
-        if (!exists) {
+        const numberOfItems = this.$session.listCount('collections')
+
+        if (numberOfItems === 0) {
           const response = await this.$http.get('collection')
           this.$session.create('collections', response.data)
         }
-        this.collections = collections
+
+        this.collections = this.$session.retrieve('collections')
       } catch (e) {
-        console.log(e)
+        console.error('CollectionPage', e)
       }
     },
     handleGridSize (size) {

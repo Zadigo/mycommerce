@@ -11,6 +11,7 @@
 <script>
 import { useI18n } from "vue-i18n"
 import { ref, provide, watch } from 'vue'
+import { useAuthentication } from "./stores/authentication"
 import { useDocumentVisibility, useMediaQuery, useScreenOrientation } from "@vueuse/core"
 import { useSchemaOrg, defineOrganization } from '@unhead/schema-org'
 
@@ -48,6 +49,14 @@ export default {
     provide('isMobile', value)
     provide('screenOrientation', isSupported)
     provide('documentVisible', documentVisible)
+
+    const authenticationStore = useAuthentication()
+    return {
+      authenticationStore
+    }
+  },
+  created () {
+    this.authenticationStore.loadFromCache()
   },
   beforeMount () {
     this.currentLanguage = this.sessionStorage.language || 'fr'

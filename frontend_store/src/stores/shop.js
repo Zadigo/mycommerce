@@ -1,10 +1,11 @@
 import _ from "lodash"
-import { defineStore } from "pinia"
+import { defineStore } from 'pinia'
+import { createMockupProducts } from "src/utils"
 
 const useShop = defineStore('shop', {
   state: () => ({
     visitedProducts: [],
-    likedProducts: [{ id: 1 }]
+    likedProducts: createMockupProducts(2)
   }),
   actions: {
     addToHistory (product) {

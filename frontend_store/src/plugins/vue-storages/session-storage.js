@@ -74,6 +74,8 @@ function setupDevtools (app, storage) {
 
 class VueSession {
   constructor(options) {
+    console.debug('Vue session class called VueSession')
+
     const defaultOptions = options || {}
     const { sessionKey, persistent, initial } = defaultOptions
 
@@ -223,6 +225,20 @@ class VueSession {
   keyExists (key) {
     const storedData = this.data
     return Object.keys(storedData).includes(key)
+  }
+
+  isEmpty (key) {
+    if (!this.keyExists(key)) {
+      throw new Error(`Key "${key}" does not exists`)
+    } else {
+      const data = this.retrieve(key)
+      if (data === null || typeof data === 'undefined') {
+        return true
+      } else {
+        return false
+      }
+
+    }
   }
 
   getDelete (key) {
@@ -425,13 +441,18 @@ class VueSession {
   }
 }
 
-const session = new VueSession()
+// const session = new VueSession()
 
 function createVueSession (options = {}) {
+  const session = new VueSession()
   const afterMountFunction = options.afterMount
 
   if (typeof afterMountFunction === 'function') {
     afterMountFunction.call(session)
+  }
+
+  if (import.meta.env.DEV) {
+    window.VueSession = session
   }
 
   return {
@@ -442,9 +463,10 @@ function createVueSession (options = {}) {
 }
 
 function useVueSession () {
+  const session = new VueSession()
   const currentSessionData = ref(session.data)
 
-  watchDeep(session.data, (updated) => {
+  watchDeep(currentSessionData, (updated) => {
     console.log(updated)
   })
 
@@ -455,7 +477,6 @@ function useVueSession () {
 }
 
 export {
-  session,
   useVueSession,
   createVueSession,
   VueSession

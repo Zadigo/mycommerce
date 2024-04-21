@@ -1,20 +1,24 @@
 <template>
   <shop-layout>
-    <section class="container my-5">
+    <section id="wishlist" class="container my-5">
       <div class="row g-1">
         <div v-if="!authenticationStore.isAuthenticated" class="col-4">
           <div class="card shadow-sm" style="height: 557px;">
             <div class="card-body text-center p-5 d-flex flex-column justify-content-center">
               <div class="information">
                 <font-awesome-icon :icon="['fas', 'star']" class="text-warning mb-4" size="4x" />
-                <h1 class="card-title h6">Tes favoris seront conservés pour une durée limitée</h1>
+                <h1 class="card-title h6">
+                  {{ $t('Conservation des favoris') }}
+                </h1>
                 <p class="fw-light">
                   Crée un compte ou connecte-toi si tu en as déjà un et
                   nous conserverons tes favoris pour que tu puisses les voir
                   sur des dispositifs différents.
                 </p>
 
-                <v-btn @click="showLoginDrawer = true">Se connecter</v-btn>
+                <v-btn @click="showLoginDrawer = true">
+                  {{ $t('Se connecter') }}
+                </v-btn>
               </div>
             </div>
           </div>
@@ -30,9 +34,10 @@
 
 <script>
 import { storeToRefs } from 'pinia'
-import ProductCard from 'components/products/ProductCard.vue'
-import { useAuthentication } from 'src/stores/authentication'
 import { useShop } from 'src/stores/shop'
+import { useAuthentication } from 'src/stores/authentication'
+
+import ProductCard from 'components/products/ProductCard.vue'
 
 export default {
   name: 'WishlistPage',

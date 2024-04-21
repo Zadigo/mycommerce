@@ -7,7 +7,7 @@ import { createPinia } from 'pinia'
 import { createVuetify } from 'vuetify'
 import { createHead } from 'unhead'
 // import { CapoPlugin } from 'unhead'
-import { session } from './plugins/vue-storages'
+import { useVueSession } from './plugins/vue-storages'
 
 import router from './router'
 
@@ -35,6 +35,8 @@ const head = createHead({
 
 const pinia = createPinia()
 pinia.use(({ store }) => {
+  const { session } = useVueSession()
+
   store.$router = toRaw(router)
   store.$session = toRaw(session)
 

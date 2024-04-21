@@ -19,8 +19,8 @@
               <h3 class="h5">Connecte-toi ou crée un compte</h3>
 
               <v-form id="form-login" @submit.prevent>
-                <v-text-field variant="outlined" type="email" placeholder="Email" autocomplete="email"></v-text-field>
-                <v-text-field variant="outlined" type="password" placeholder="Password" autocomplete="current-password"></v-text-field>
+                <v-text-field v-model="email" variant="outlined" type="email" placeholder="Email" autocomplete="email"></v-text-field>
+                <v-text-field v-model="password" variant="outlined" type="password" placeholder="Password" autocomplete="current-password"></v-text-field>
 
                 <v-btn color="primary" block @click="handleLogin">Se connecter</v-btn>
               </v-form>
@@ -251,6 +251,7 @@ import { ref } from 'vue'
 import { storeToRefs, mapState } from 'pinia'
 import { useShop } from 'src/stores/shop'
 import { useCart } from 'src/stores/cart'
+import { useAuthenticationComposable } from 'composables/authentication'
 import { useAuthentication } from 'stores/authentication'
 
 import BaseNavbar from 'components/BaseNavbar.vue'
@@ -265,6 +266,8 @@ export default {
     ProductCard
   },
   setup () {
+    const { email, password, login } = useAuthenticationComposable()
+
     const shopStore = useShop()
     const authenticationStore = useAuthentication()
 
@@ -280,6 +283,9 @@ export default {
     })
 
     return {
+      login,
+      email,
+      password,
       shopStore,
       cartStore,
       changedProduct,
@@ -303,8 +309,9 @@ export default {
   },
   methods: {
     async handleLogin () {
-      this.authenticationStore.showLoginDrawer = false
-      this.authenticationStore.login()
+      this.login(() => {
+        this.authenticationStore.showLoginDrawer = false
+      })
     },
     handleNotAuthenticatedOrdering () {
       // Handles the situation where the user tries

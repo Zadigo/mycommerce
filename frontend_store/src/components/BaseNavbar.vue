@@ -18,7 +18,7 @@
             <font-awesome-icon :icon="['fas', 'user']" />
           </router-link>
 
-          <v-btn class="nav-link" @click="logout">
+          <v-btn class="nav-link" @click="handleLogout">
             <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
           </v-btn>
 
@@ -48,7 +48,8 @@
 </template>
 
 <script>
-import { mapActions, storeToRefs } from 'pinia'
+import { storeToRefs } from 'pinia'
+import { useAuthenticationComposable } from 'src/composables/authentication';
 import { useAuthentication } from 'src/stores/authentication';
 import { useCart } from 'src/stores/cart';
 
@@ -59,6 +60,8 @@ export default {
     }
   },
   setup () {
+    const { logout } = useAuthenticationComposable()
+
     const authenticationStore = useAuthentication()
     const { showLoginDrawer } = storeToRefs(authenticationStore)
 
@@ -66,13 +69,20 @@ export default {
     const { showCartDrawer } = storeToRefs(cartStore)
 
     return {
+      logout,
       showLoginDrawer,
       showCartDrawer,
       authenticationStore
     }
   },
   methods: {
-    ...mapActions(useAuthentication, ['logout'])
+    handleLogout () {
+      this.logout(() => {
+        this.$router.push({
+          name: 'shop_products'
+        })
+      })
+    }
   }
 }
 </script>
