@@ -78,13 +78,13 @@
 
             <div class="row">
               <div class="col-4">
-                <img src="../assets/img8.jpeg" class="img-fluid" alt="">
+                <v-img :src="buildImagePath(cartStore.lastAddedProduct.product.get_main_image.original)" :lazy-:src="buildImagePath(cartStore.lastAddedProduct.product.get_main_image.original)" :alt="cartStore.lastAddedProduct.product.name" />
               </div>
 
               <div class="col-8">
-                <p class="fw-bold mb-1">34,34€</p>
-                <p class="mb-2">Une mini-jupe de genre</p>
-                <p class="text-body-secondary">Taille: M</p>
+                <p class="fw-bold mb-1">{{ $n(parseFloat(cartStore.lastAddedProduct.product.get_price), 'currency') }}</p>
+                <p class="mb-2">{{ cartStore.lastAddedProduct.product.name }}</p>
+                <p class="text-body-secondary">Taille: {{ cartStore.lastAddedProduct.size }}</p>
               </div>
             </div>
 
@@ -94,7 +94,7 @@
                   Passer commande
                 </v-btn>
 
-                <v-btn class="mt-2" variant="text" block @click="showAddedProductDrawer = false, showAddedProductDrawer = false, showCartDrawer = true">
+                <v-btn class="mt-2" variant="text" block @click="showAddedProductDrawer = false, showCartDrawer = true">
                   Voir le panier
                 </v-btn>
               </div>
@@ -116,7 +116,7 @@
     <!-- Cart -->
     <v-navigation-drawer id="dialog-cart" v-model="showCartDrawer" location="right" width="400" temporary>
       <v-toolbar class="border-bottom" color="white">
-        <v-toolbar-title class="fw-bold">Panier ({{ cartStore.cart.length }})</v-toolbar-title>
+        <v-toolbar-title class="fw-bold">Panier ({{ cartStore.numberOfProducts }})</v-toolbar-title>
 
         <v-spacer></v-spacer>
 
@@ -132,6 +132,7 @@
             <div class="card shadow-sm">
               <div class="card-body">
                 <p v-if="cartStore.freeDeliveryTarget > 0" class="fw-light">
+                  {{ cartTotal }}
                   {{ $t('Livraison gratuite offerte', { n: $n(cartStore.freeDeliveryTarget, 'currency') }) }}
                   <!-- Il te manque 19,02 € pour profiter de la -->
                   <span class="fw-bold text-primary text-uppercase">
@@ -152,23 +153,29 @@
             </div>
           </div>
 
-          <div v-if="cartStore.hasProducts" class="col-12">
-            <article v-for="product in cartStore.cart" :key="product.id" class="card shadow-none border" aria-label="">
+          <div v-if="cartStore.hasProducts" class="col-12 my-3">
+            <article v-for="item in cartStore.products" :key="item.product.id" class="card shadow-none border mb-1" :aria-label="item.product.name">
               <div class="card-body p-2">
-                <div class="d-flex justify-content-between gap-2">
-                  <router-link :to="{ name: 'shop_product', params: { id: product.id } }" @click="showCartDrawer = false">
-                    <img src="../assets/img9.jpeg" class="img-fluid" width="90" alt="">
-                  </router-link>
+                <div class="d-flex justify-content-start gap-2">
+                  <div class="col-auto">
+                    <v-img :src="buildImagePath(item.product.get_main_image.original)" :lazy-src="buildImagePath(item.product.get_main_image.original)" :alt="item.product.name" :width="150" :height="150" />
+                  </div>
 
                   <div class="infos">
-                    <div class="fw-bold">{{ $n(product.product.price, 'currency') }}</div>
-                    <p>{{ product.product.name }}</p>
+                    <router-link :to="{ name: 'shop_product', params: { id: item.product.id } }" class="link-dark" @click="showCartDrawer = false">
+                      <p class="mb-1">{{ item.product.name }}</p>
+                      <div class="fw-bold">{{ $n(parseFloat(item.product.get_price), 'currency') }}</div>
+                      <div class="fs-light fs-6 mb-1 d-flex justify-content-start align-items-center gap-3">
+                        <span>{{ item.size }}</span>
+                        <span>{{ item.quantity }}x</span>
+                      </div>
+                    </router-link>
 
-                    <v-btn class="me-2" variant="tonal" rounded @click="showCartDrawer = false, showEditProductDrawer = true">
+                    <v-btn class="me-2" size="x-small" variant="tonal" rounded @click="handleProductEdition('open', item)">
                       <font-awesome-icon :icon="['fas', 'pen']" />
                     </v-btn>
 
-                    <v-btn variant="tonal" rounded>
+                    <v-btn variant="tonal" size="x-small" rounded>
                       <font-awesome-icon :icon="['fas', 'trash']" />
                     </v-btn>
                   </div>
@@ -176,14 +183,15 @@
               </div>
             </article>
 
-            <div class="d-flex justify-content-between align-items-center">
+            <!-- <div class="d-flex justify-content-between align-items-center">
               <span>Total (TVA comprise)</span>
               <span class="fw-bold">{{ $n(cartTotal, 'currency') }}</span>
-            </div>
+            </div> -->
 
             <v-btn v-if="authenticationStore.isAuthenticated" :to="{ name: 'shop_payment_home' }" color="primary" block>
               Passer commande
             </v-btn>
+
             <v-btn v-else color="primary" block @click="showCartDrawer = false, authenticationStore.showLoginDrawer = true">
               Passer commande
             </v-btn>
@@ -206,7 +214,7 @@
     <!-- Edit Product -->
     <v-navigation-drawer id="dialog-edit-product" v-model="showEditProductDrawer" location="right" width="400" temporary>
       <v-toolbar class="border-bottom" color="white">
-        <v-btn variant="text" rounded @click="showEditProductDrawer = false, showCartDrawer = true">
+        <v-btn variant="text" rounded @click="handleProductEdition('close')">
           <font-awesome-icon :icon="['fas', 'angle-left']" />
         </v-btn>
 
@@ -216,7 +224,8 @@
       <div class="container my-5">
         <div class="row">
           <div class="col-12">
-            <img src="../assets/img8.jpeg" class="img-fluid" alt="">
+            <v-img :src="buildImagePath('placeholder.svg', false, true)" />
+            <!-- <v-img :src="buildImagePath(currentEditedProduct.product.get_main_image.original)" :lazy-src="buildImagePath(currentEditedProduct.product.get_main_image.original)" :alt="currentEditedProduct.product.name" /> -->
           </div>
 
           <div class="col-12">
@@ -241,7 +250,9 @@
               <v-text-field v-model="changedProduct.quantity" type="number" min="1" max="999" variant="outlined" style="width:50%;"></v-text-field>
             </div>
 
-            <v-btn color="primary" block @click="handleProductEdition">Enregistrer</v-btn>
+            <v-btn color="primary" block @click="handleProductEdition('close')">
+              Enregistrer
+            </v-btn>
           </div>
         </div>
       </div>
@@ -257,8 +268,9 @@ import { storeToRefs, mapState } from 'pinia'
 import { useShop } from 'src/stores/shop'
 import { useCart } from 'src/stores/cart'
 import { useAuthenticationComposable } from 'composables/authentication'
+// import { useUtilities } from 'composables/shop'
 import { useAuthentication } from 'stores/authentication'
-import { createMockupProducts } from 'src/utils'
+import { createMockupProducts, buildImagePath } from 'src/utils'
 import { defineAsyncComponent } from 'vue'
 
 import BaseNavbar from 'components/BaseNavbar.vue'
@@ -278,6 +290,8 @@ export default {
   setup () {
     const { email, password, login } = useAuthenticationComposable()
 
+    // const { translatePrice } = useUtilities()
+
     const shopStore = useShop()
     const authenticationStore = useAuthentication()
 
@@ -288,6 +302,7 @@ export default {
     const search = ref(null)
     const canShowSearch = ref(false)
     const searchedProducts = ref(createMockupProducts(30))
+    const currentEditedProduct = ref({})
 
     whenever(searchedProducts, (items) => {
       if (items.length > 0) {
@@ -306,6 +321,9 @@ export default {
       password,
       shopStore,
       cartStore,
+      currentEditedProduct,
+      // translatePrice,
+      buildImagePath,
       changedProduct,
       authenticationStore,
       showAddedProductDrawer,
@@ -323,7 +341,7 @@ export default {
     // Preload the cart from the session if we actually
     // have the data. This allows us then to dynamically
     // calculate the items that the user has selected
-    this.cartStore.cart = this.sessionStorage?.cart || []
+    this.cartStore.loadFromCache()
   },
   methods: {
     async handleLogin () {
@@ -370,9 +388,24 @@ export default {
         }
       })
     },
-    handleProductEdition () {
-      this.showEditProductDrawer = false
-      this.showCartDrawer = true
+    handleProductEdition (action, product = {}) {
+      // Handle the opening or the closing of
+      // the product edition dialog
+      this.currentEditedProduct = product
+      switch (action) {
+        case 'open':
+          this.showCartDrawer = false
+          this.showEditProductDrawer = true
+          break
+        
+        case 'close':
+          this.showEditProductDrawer = false
+          this.showCartDrawer = true
+          break
+      
+        default:
+          break
+      }
     }
   }
 }

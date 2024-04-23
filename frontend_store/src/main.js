@@ -39,15 +39,20 @@ pinia.use(({ store }) => {
 
   store.$router = toRaw(router)
   store.$session = toRaw(session)
-
+  
   // Intercept actions on adding a product in 
   // the cart so that the items can be stored
   // in the user's session
-  store.$subscribe((mutation, state) => {
-    if (mutation.storeId === 'cart') {
-      session.create('cart', state.cart)
+  store.$onAction(({ name, store, after }) => {
+    if (name === 'addToCart' && store.$id === 'cart') {
+      console.log('Setting addToCart')
+      after(() => {
+        session.create('cart', store.$state.products)
+      })
     }
-    
+  })
+
+  store.$subscribe((mutation, state) => {
     // Intercept actions such as addToWishlist, removeFromWishlist
     // and addToHistory so that we can automatically commit the
     // registered products in the store in the user session
@@ -56,7 +61,6 @@ pinia.use(({ store }) => {
       session.create('visitedProducts', state.visitedProducts)
     }
   })
-
 })
 
 const plugins = installPlugins()

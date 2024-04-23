@@ -19,7 +19,6 @@ const sessionPlugin = createVueSession({
     
     if (!this.keyExists('likedProducts')) {
       this.create('likedProducts', [])
-      this.getOrCreate('google', 'sting')
     }
   }
 })

@@ -6,10 +6,10 @@
         <div id="product-image" class="col-12">
           <div class="row">
             <div id="product-image" class="col-6">
-              <vue-image-zoomer regular="../assets/img4.jpeg" zoom="../assets/img4.jpeg" @on-zoom="() => {}">
+              <!-- <vue-image-zoomer regular="../assets/img4.jpeg" zoom="../assets/img4.jpeg" @on-zoom="() => {}">
                 <img src="../assets/img4.jpeg" class="img-fluid" alt="">
-              </vue-image-zoomer>
-              <!-- <img src="../assets/img4.jpeg" class="img-fluid" alt=""> -->
+              </vue-image-zoomer> -->
+              <v-img :src="buildImagePath(currentProduct.get_main_image?.original)" :lazy-src="buildImagePath(currentProduct.get_main_image?.original)" :alt="currentProduct.name" />
             </div>
 
             <!-- TODO: Detect which sections can be reusable components -->
@@ -35,7 +35,10 @@
               <p class="fw-light text-body-secondary" aria-label="Product reference">Ref. 3970/623/800</p>
 
               <!-- Price -->
-              <p class="h5 fw-bold" aria-label="Product price">{{ $n(currentProduct.price, 'currency') }}</p>
+              <!-- {{ $n(currentProduct.get_price, 'currency') }} -->
+              <p class="h5 fw-bold" aria-label="Product price">
+                {{ $n(parseFloat(currentProduct.get_price), 'currency') }}
+              </p>
 
               <!-- Reviews -->
               <div class="fw-bold d-flex justify-content-start gap-1">
@@ -58,7 +61,7 @@
               </div>
 
               <!-- Sizes -->
-              <fashion-information :sizes="currentProduct.sizes" @update-size="(size) => { productData.size = size }" @show-size-guide-drawer="sizeGuideDrawer = true" />
+              <fashion-information :sizes="currentProduct.sizes" @update-size="(size) => { userSelection.size = size }" @show-size-guide-drawer="sizeGuideDrawer = true" />
 
               <transition id="choose-size" tag="div" name="opacity">
                 <p v-if="showSizeSelectionWarning" class="text-danger fs-6 fw-light mb-1">Tu dois sélectionner une taille</p>
@@ -95,13 +98,15 @@
 
         <!-- More Product Images -->
         <div id="product-images" class="col-12">
-          <div class="row g-1">
-            <div class="col-4"><img src="../assets/img5.jpeg" class="img-fluid" alt=""></div>
-            <div class="col-4"><img src="../assets/img6.jpeg" class="img-fluid" alt=""></div>
-            <div class="col-4"><img src="../assets/img7.jpeg" class="img-fluid" alt=""></div>
-            <div class="col-4"><img src="../assets/img8.jpeg" class="img-fluid" alt=""></div>
-            <div class="col-4"><img src="../assets/img9.jpeg" class="img-fluid" alt=""></div>
-            <div class="col-4"><img src="../assets/img10.jpeg" class="img-fluid" alt=""></div>
+          <div v-if="currentProduct.images" class="row g-1">
+            <div v-for="image in currentProduct.images" :key="image.id" class="col-4">
+              <v-img :src="buildImagePath(image.original)" :lazy-src="buildImagePath(image.original)" :alt="image.name" />
+            </div>
+          </div>
+          <div v-else class="row g-1">
+            <div v-for="image in 6" :key="image.id" class="col-4">
+              <v-img :src="buildImagePath('placeholder.svg', false, true)" :lazy-src="buildImagePath('placeholder.svg', false, true)" alt="Boutique" />
+            </div>
           </div>
         </div>
 
@@ -182,12 +187,13 @@ import { useCart } from 'src/stores/cart'
 import { useAuthentication } from 'stores/authentication'
 import { useShop } from  'stores/shop'
 import { useSchemaOrg, defineProduct, defineBreadcrumb } from '@unhead/schema-org'
-import { VueImageZoomer } from 'vue-image-zoomer'
+// import { VueImageZoomer } from 'vue-image-zoomer'
 import { useShopComposable } from 'composables/shop'
 import { useIntersectionObserver } from '@vueuse/core'
-import { createMockupProduct } from 'src/utils'
+// import { createMockupProduct } from 'src/utils'
 // import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
+import { buildImagePath } from 'src/utils'
 
 import 'vue-image-zoomer/dist/style.css'
 
@@ -198,7 +204,7 @@ export default {
   components: {
     FashionInformation,
     // ProductCard,
-    VueImageZoomer,
+    // VueImageZoomer,
     AsyncRecommendationBlock: defineAsyncComponent({
       loader: async () => import('components/RecommendationsBlock.vue')
     })
@@ -237,11 +243,9 @@ export default {
     const showSizeSelectionWarning = ref(false)
 
     const currentProduct = ref({})
-    const productData = ref({
-      id: 1,
+    const userSelection = ref({
       size: null,
       quantity: 1,
-      product: currentProduct
     })
 
     
@@ -282,13 +286,14 @@ export default {
     }, 300)
 
     return {
+      buildImagePath,
       documentVisible,
       intersectionTarget,
       cartStore,
       shopStore,
       sizeGuideDrawer,
       showAddedProductDrawer,
-      productData,
+      userSelection,
       currentProduct,
       authenticationStore,
       isLiked,
@@ -369,11 +374,11 @@ export default {
       // that were preloaded in the products page but
       // requests the product details on each page just
       // like would do a static page
-      this.currentProduct = createMockupProduct(this.$route.params.id)
+      // this.currentProduct = createMockupProduct(this.$route.params.id)
 
       try {
         const response = await this.$http.get(`shop/products/${this.$route.params.id}`)
-        console.log(response.data)
+        this.currentProduct = response.data
       } catch (e) {
         console.log(e)
       }
@@ -381,12 +386,10 @@ export default {
     async handleAddToCart () {
       // Handles the action of adding a product
       // to the current user's cart
-      if (this.productData.size === null) {
+      if (this.userSelection.size === null) {
         this.showSizeSelectionWarning = true
       } else {
-        this.productData.id = this.currentProduct.id
-        this.cartStore.addToCart(this.productData)
-        // this.cartStore.cart.push(this.productData)
+        this.cartStore.addToCart(this.currentProduct, this.userSelection)
         this.showAddedProductDrawer = true
       }
     },

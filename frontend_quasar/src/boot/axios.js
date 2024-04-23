@@ -2,6 +2,15 @@ import axios from 'axios'
 import { boot } from 'quasar/wrappers'
 import { useAuthentication } from 'src/stores/authentication'
 
+console.log(process.env)
+function getAPIUrl () {
+  if (process.env.DEV) {
+    return process.env.DEVELOPMENT_API_URL
+  } else {
+    return process.env.PRODUCTION_API_URL
+  }
+}
+
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
 // If any client changes this (global) instance, it might be a
@@ -9,10 +18,10 @@ import { useAuthentication } from 'src/stores/authentication'
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({ 
-  baseURL: 'http://127.0.0.1:8000/api/v1/',
-  headers: { 'Content-Type': 'application/json' },
+  baseURL: getAPIUrl(),
+  // headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
-  timeout: 1000
+  timeout: 20000
 })
 
 api.interceptors.response.use(

@@ -148,7 +148,7 @@ export declare interface VueLocalStorage {
      * @param key - key under which to merge the elements
      * @returns number
      */
-    listCount (key: string): number
+    listCount (key: string, raiseError: boolean = true): number
     /**
      * Toggles a value under a given key
      *

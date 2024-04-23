@@ -1,7 +1,7 @@
 <template>
   <article :aria-label="product.name" class="card shadow-none rounded-0" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
     <router-link :to="{ name: 'shop_product', params: { id: product.id } }" class="link-dark">
-      <img src="../../assets/img10.jpeg" class="card-img-top rounded-0" alt="">
+      <v-img :src="buildImagePath(product.get_main_image?.original)" :lazy-:src="buildImagePath(product.get_main_image?.original)" :alt="product.name" />
     </router-link>
 
     <div v-if="isHovered" class="card-cover p-4">
@@ -20,8 +20,6 @@
         </div>
       </div>
     </div>
-    <!-- <transition name="card-cover">
-    </transition> -->
 
     <button v-if="showLikeButton" id="btn-like-product" type="button" class="btn btn-light btn-floating" aria-label="Like product" @click="handleLike(product)">
       <font-awesome-icon v-if="isLiked" :icon="['fas', 'heart']" />
@@ -31,8 +29,7 @@
     <router-link :to="{ name: 'shop_product', params: { id: product.id } }" class="link-dark">
       <div class="card-body pt-0 px-0 pb-0">
         <p class="mb-0 mt-1 fw-light" :aria-label="product.name">{{ product.name }}</p>
-        <!-- <p class="fw-bold">{{ $n(product.get_price, 'currency') }}</p> -->
-        <p class="fw-bold">{{ product.get_price }}</p>
+        <p class="fw-bold">{{ $n(parseFloat(product.get_price), 'currency') }}</p>
       </div>
     </router-link>
   </article>
@@ -40,6 +37,7 @@
 
 <script>
 import { ref } from 'vue'
+import { buildImagePath } from 'src/utils'
 import { useShopComposable } from 'composables/shop'
 
 import BaseSizeButton from '../BaseSizeButton.vue'
@@ -66,6 +64,7 @@ export default {
     return {
       isLiked,
       isHovered,
+      buildImagePath,
       handleLike
     }
   },
@@ -75,9 +74,6 @@ export default {
     }
   },
   methods: {
-    imageOrPlaceholder (image) {
-      return image || 'https://placehold.co/280x400'
-    },
     handleSelectedSize (size) {
       console.log(size)
     }

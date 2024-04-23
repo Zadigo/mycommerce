@@ -30,7 +30,7 @@
             <template v-slot:body-cell-active="props">
               <q-td :props="props">
                 <q-badge v-if="props.row.active" color="green-3" label="Active"></q-badge>
-                <q-badge v-else color="red-3" label="Active"></q-badge>
+                <q-badge v-else color="red-3" label="Inactive"></q-badge>
               </q-td>
             </template>
           </q-table>
@@ -115,7 +115,7 @@ export default {
   methods: {
     async requestProducts () {
       try {
-        const response = await this.$api.get('shop/products')
+        const response = await this.$api.get('shop/products?admin=true')
         this.products = response.data
         setTimeout(() => {
           this.loading = false

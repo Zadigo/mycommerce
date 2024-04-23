@@ -14,7 +14,7 @@
 <script>
 import { ref, computed } from 'vue'
 import { client } from 'src/plugins/axios'
-import { createMockupProducts } from '../../utils.js'
+// import { createMockupProducts } from '../../utils.js'
 
 import ProductCard from './ProductCard.vue'
 
@@ -39,12 +39,11 @@ export default {
     const products = ref([])
 
     async function requestProducts () {
-      products.value = createMockupProducts(30)
+      // products.value = createMockupProducts(30)
       try {
         const response = await client.get(`collection/all`)
         cachedResponse.value = response.data
-        // products.value = cachedResponse.value.results
-        console.log(response.data)
+        products.value = cachedResponse.value.results
       } catch (e) {
         console.error(e)
       }

@@ -13,7 +13,7 @@
 import { ref } from 'vue'
 import { client } from '../plugins/axios'
 import { getCurrentInstance } from 'vue'
-import { createMockupProducts } from 'src/utils'
+// import { createMockupProducts } from 'src/utils'
 import { useVueSession } from 'src/plugins/vue-storages'
 
 import ProductCard from 'components/products/ProductCard.vue'
@@ -50,8 +50,8 @@ export default {
             q: app.props.quantity
           }
         })
-        recommendations.value = createMockupProducts(app.props.quantity)
-        // recommendations.value = response.data
+        // recommendations.value = createMockupProducts(app.props.quantity)
+        recommendations.value = response.data
         session.expire('recommendations', response.data, 100)
       } catch (e) {
         console.log(e)

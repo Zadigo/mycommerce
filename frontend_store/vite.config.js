@@ -25,7 +25,8 @@ export default defineConfig(({ mode }) => {
         'pages': resolve(__dirname, './src/pages'),
         'stores': resolve(__dirname, './src/stores'),
         'data': resolve(__dirname, './src/data'),
-        'composables': resolve(__dirname, './src/composables')
+        'composables': resolve(__dirname, './src/composables'),
+        'assets': resolve(__dirname, './src/assets')
       }
     },
     plugins: [

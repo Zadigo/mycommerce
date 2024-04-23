@@ -141,7 +141,7 @@ class VueSession {
     var storedData = this.data
     const result = storedData[key]
     if (!Array.isArray(result)) {
-      throw new Error('Object is not an array')
+      throw new Error(`Object with key "${key}" is not an array`)
     }
     return result
   }
@@ -347,9 +347,16 @@ class VueSession {
     this.create(key, newList)
   }
 
-  listCount (key) {
-    const result = this._getList(key)
-    return result.length
+  listCount (key, raiseError = true) {
+    try {
+      const result = this._getList(key)
+      return result.length
+    } catch (e) {
+      if (raiseError) {
+        console.error(e)
+      }
+      return 0
+    }
   }
 
   toggle (key) {
