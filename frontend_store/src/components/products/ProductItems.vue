@@ -34,7 +34,7 @@ export default {
       return true
     }
   },
-  async setup () {
+  setup () {
     const cachedResponse = ref({})
     const products = ref([])
 
@@ -48,7 +48,7 @@ export default {
         console.error(e)
       }
     }
-    await requestProducts()
+    requestProducts()
 
     const nextPageUrl = computed(() => {
       // Independently save the url for

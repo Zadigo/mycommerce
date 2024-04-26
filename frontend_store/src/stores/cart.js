@@ -47,7 +47,7 @@ const useCart = defineStore('cart', {
       // the amount of similar products that were added
       // to the cart multiplied by their respected prices
       if (this.hasProducts) {
-        return _.sum(_.map(this.products, product => product.quantity * product.product.price))
+        return _.sum(_.map(this.products, item => item.quantity * item.product.get_price))
       } else {
         return 0
       }

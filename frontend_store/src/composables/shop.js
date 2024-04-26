@@ -38,8 +38,32 @@ export function useUtilities () {
    * django /media/ backend folder for
    * images that require this construction 
    */
-  function djangoMediaPath (path) {
-    path
+  function djangoMediaPath (path, local = false, mediaPrefix = false) {
+    let url
+
+    if (path === null || typeof path === 'undefined') {
+      const image = new URL(`./assets/placeholder.svg`, import.meta.url)
+      return image.toString()
+    }
+
+    if (local) {
+      const image = new URL(`./assets/${path}`, import.meta.url)
+      return image.toString()
+    }
+
+    if (import.meta.env.DEV) {
+      url = import.meta.env.VITE_DEVELOPMENT_URL
+    } else {
+      url = import.meta.env.VITE_PRODUCTION_URL
+    }
+
+    if (mediaPrefix) {
+      url += '/media/'
+    }
+
+
+    const finalUrl = new URL(path, url)
+    return finalUrl.toString()
   }
 
   /**
@@ -49,6 +73,11 @@ export function useUtilities () {
    */
   function translatePrice (price) {
     const { n } = useI18n()
+
+    if (!price || typeof price === 'undefined') {
+      return n(0, 'currency')
+    }
+    
     const priceNumber = parseFloat(price)
     return n(priceNumber, 'currency')
   }

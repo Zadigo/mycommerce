@@ -25,17 +25,17 @@
         <div class="card shadow-sm">
           <div class="card-body">
             <div class="list-group">
-              <article v-for="product in cart" :key="product.id" class="list-group-item d-flex justify-content-start align-items-top gap-4" aria-label="">
+              <article v-for="item in products" :key="item.id" :aria-label="item.product.name" class="list-group-item d-flex justify-content-start align-items-top gap-4">
                 <div class="col-auto">
-                  <router-link :to="{ name: 'shop_product', params: { id: product.id } }">
-                    <img src="../assets/img8.jpeg" class="img-fluid rounded-1" width="100" height="100" alt="">
+                  <router-link :to="{ name: 'shop_product', params: { id: item.id } }">
+                    <v-img :src="djangoMediaPath(item.product.get_main_image.original)" :lazy-src="djangoMediaPath(item.product.get_main_image.original)" :width="100" :alt="item.product.name" />
                   </router-link>
                 </div>
 
                 <div class="col">
-                  <router-link :to="{ name: 'shop_product', params: { id: product.id } }" class="link-dark">
-                    <p class="h6 mb-1">{{ product.product.name }}</p>
-                    <p class="fw-light fs-6">Taille : {{ product.size }}</p>
+                  <router-link :to="{ name: 'shop_product', params: { id: item.product.id } }" class="link-dark">
+                    <p class="h6 mb-1">{{ item.product.name }}</p>
+                    <p class="fw-light fs-6">Taille : {{ item.size }}</p>
                   </router-link>
 
                   <v-btn v-show="$route.name === 'shop_payment_home'" rounded color="secondary" flat>
@@ -54,40 +54,24 @@
 <script>
 import { storeToRefs } from 'pinia'
 import { useCart } from 'src/stores/cart'
+import { useUtilities }  from 'composables/shop'
 
 export default {
   name: 'PaymentLayout',
   setup () {
     const cartStore = useCart()
-    const { cart } = storeToRefs(cartStore)
+    const { products } = storeToRefs(cartStore)
+    const { djangoMediaPath } = useUtilities()
+
     return {
+      djangoMediaPath,
       cartStore,
-      cart
-    }
-  },
-  data () {
-    return {
-      // paymentLinks: [
-      //   {
-      //     title: 'Delivery',
-      //     disabled: false,
-      //     href: 'shop_payment_home',
-      //   },
-      //   {
-      //     title: 'Shipment',
-      //     disabled: true,
-      //     href: 'shop_shipment',
-      //   },
-      //   {
-      //     title: 'Payment',
-      //     disabled: true,
-      //     href: 'shop_payment',
-      //   }
-      // ]
+      products
     }
   },
   computed: {
     isSuccessPage () {
+      // Checks if the user has reached the success page
       return this.$route.name === 'shop_payment_success'
     },
     paymentLinks () {
@@ -120,7 +104,7 @@ export default {
     // Preload the cart from the session if we actually
     // have the data. This allows us then to dynamically
     // calculate the items that the user has selected
-    this.cartStore.cart = this.sessionStorage?.cart || []
+    this.cartStore.products = this.sessionStorage?.cart || []
   },
 }
 </script>

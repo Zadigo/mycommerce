@@ -256,7 +256,7 @@ export default {
         description: currentProduct.value.description,
         ogTitle: currentProduct.value.name,
         ogDescription: currentProduct.value.description,
-        ogImage: 'https://example.com/image.png',
+        ogImage: buildImagePath(currentProduct.value.get_main_image.original),
         twitterCard: 'summary_large_image',
         ogSiteName: 'Ma Boutique'
       })
@@ -268,7 +268,9 @@ export default {
           brand: 'My Brand',
           logo: '',
           description: currentProduct.value.description,
-          image: ['https://example.com/photos/16x9/photo.jpg'],
+          image: [
+            buildImagePath(currentProduct.value.get_main_image.original)
+          ],
           offers: [
             { 
               price: currentProduct.value.price
@@ -283,7 +285,7 @@ export default {
           ],
         })
       ])
-    }, 300)
+    }, 400)
 
     return {
       buildImagePath,
@@ -335,7 +337,7 @@ export default {
       description: this.currentProduct.description,
       ogTitle: this.currentProduct.name,
       ogDescription: this.currentProduct.description,
-      ogImage: 'https://example.com/image.png',
+      ogImage: this.currentProduct.get_main_image.original,
       twitterCard: 'summary_large_image',
       ogSiteName: 'Ma Boutique'
     })

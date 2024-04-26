@@ -22,7 +22,7 @@
         </div>
 
         <button type="button" class="btn btn-block btn-primary btn-rounded shadow-none fs-5 fw-bold" @click="handlePayment">
-          Payer ({{ $n(cartStore.cartTotal, 'currency') }})
+          Payer ({{ translatePrice(cartStore.cartTotal) }})
         </button>
       </div>
       <div v-else-if="hasSelectedPaymentMethod && selectedPaymentMethod === 'Klarna'" id="klarna-payments-container"></div>
@@ -35,6 +35,7 @@ import { ref } from 'vue'
 import { useCart } from 'src/stores/cart'
 import { computed } from 'vue'
 import { useScript } from 'unhead'
+import { useUtilities } from 'src/composables/shop'
 
 const paymentMethods = [
   {
@@ -44,11 +45,11 @@ const paymentMethods = [
   {
     name: 'Visa',
     icon: 'cc-visa'
-  },
-  {
-    name: 'Klarna',
-    icon: 'klarna'
   }
+  // {
+  //   name: 'Klarna',
+  //   icon: 'klarna'
+  // }
 ]
 
 export default {
@@ -58,6 +59,8 @@ export default {
     useScript({ src: 'https://x.klarnacdn.net/kp/lib/v1/api.js' })
 
     const cartStore = useCart()
+
+    const { translatePrice } = useUtilities()
     
     const selectedPaymentMethod = ref(null)
 
@@ -66,16 +69,17 @@ export default {
     })
 
     return {
+      translatePrice,
       cartStore,
       hasSelectedPaymentMethod,
       selectedPaymentMethod,
       paymentMethods,
     }
   },
-  mounted () {
-  },
   methods: {
     async handlePayment () {
+      // Executes card tokenization and initiates the
+      // payment on the backend side
       this.$router.push({ name: 'shop_payment_success' })
     },
     handlePaymentType (cardType) {

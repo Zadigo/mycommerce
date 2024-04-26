@@ -29,7 +29,12 @@
 
         <div class="col-12">
           <suspense>
-            <async-product-items :grid-size="currentGridSize" @update-products="handleSEO" />
+            <template #default>
+              <async-product-items :grid-size="currentGridSize" @update-products="handleSEO" />
+            </template>
+            <template #fallback>
+              <loading-product-items />
+            </template>
           </suspense>
         </div>
       </div>
@@ -51,11 +56,11 @@ export default {
   name: 'ProductsPage',
   components: {
     DefaultFiltering,
+    LoadingProductItems,
     AsyncProductItems: defineAsyncComponent({
       loader: async () => import('components/products/ProductItems.vue'),
-      errorComponent: null,
-      loadingComponent: LoadingProductItems,
-      delay: 5000
+      // loadingComponent: LoadingProductItems,
+      timeout: 10000
     })
   },
   setup () {
