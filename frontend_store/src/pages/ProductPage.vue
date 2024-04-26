@@ -169,13 +169,22 @@
 
             <div class="col-12 mt-4">
               <p class="fs-6 fw-bold mb-1">Tour de Poitrine</p>
-              <p class="fw-light text-body-secondary mb-4">Pour mesurer la circonférence de ta poitrine, utilise un mètre ruban et place-le autour de la partie la plus large de ta poitrine.</p>
+              <p class="fw-light text-body-secondary mb-4">
+                Pour mesurer la circonférence de ta poitrine, utilise un mètre 
+                ruban et place-le autour de la partie la plus large de ta poitrine.
+              </p>
 
               <p class="fs-6 fw-bold mb-1">Tour de Taille</p>
-              <p class="fw-light text-body-secondary mb-4">Place le mètre ruban autour de la partie la plus étroite de ta taille.</p>
+              <p class="fw-light text-body-secondary mb-4">
+                Place le mètre ruban autour de la partie la plus 
+                étroite de ta taille.
+              </p>
 
               <p class="fs-6 fw-bold mb-1">Tour de Hanches</p>
-              <p class="fw-light text-body-secondary mb-4">Mets tes pieds l'un contre l'autre et place le mètre ruban autour de la partie la plus large de ton tour de hanche.</p>
+              <p class="fw-light text-body-secondary mb-4">
+                Mets tes pieds l'un contre l'autre et place le mètre ruban 
+                autour de la partie la plus large de ton tour de hanche.
+              </p>
             </div>
           </div>
         </div>
