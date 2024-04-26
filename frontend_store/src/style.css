@@ -1,11 +1,21 @@
-:root {
-  /* font-family: "Oswald", "Roboto", system-ui, Avenir, Helvetica, Arial, sans-serif; */
+/* font-family: "Oswald", "Roboto", system-ui, Avenir, Helvetica, Arial, sans-serif; */
+/* :root {
   font-family: Roboto, Arial, sans-serif;
   color-scheme: light dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+} */
+
+* {
+  font-family: Roboto, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+html {
+  /* font-synthesis: none; */
+  text-rendering: optimizeSpeed;
+  color-scheme: light;
 }
 
 .list-group-item.router-link-exact-active {

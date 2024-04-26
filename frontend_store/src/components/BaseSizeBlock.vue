@@ -3,17 +3,6 @@
   <div id="sizes" class="d-flex justify-content-start gap-1" aria-label="Product sizes">
     <base-size-button v-for="size in sizes" :key="size.id" v-model:selectedSize="selectedSize" :size="size" @click="handleSizeSelection(size)" />
   </div>
-
-  <!-- Size Guide -->
-  <p class="mt-4 d-flex justify-content-start gap-3">
-    <a href class="fw-bold" @click.prevent="$emit('show-size-guide-drawer')">
-      {{ $t('Guide des tailles') }}
-    </a>
-
-    <span class="fw-light">
-      {{ $t('Taille porté', { size: 'S' }) }} | {{ $t('Taille du mannequin', { heigth: 176 }) }}
-    </span>
-  </p>
 </template>
 
 <script>
@@ -27,10 +16,10 @@
 import { ref } from 'vue'
 import { useRefHistory } from '@vueuse/core'
 
-import BaseSizeButton from '../../BaseSizeButton.vue'
+import BaseSizeButton from './BaseSizeButton.vue'
 
 export default {
-  name: 'FashionInformation',
+  name: 'BaseSizeBlock',
   components: {
     BaseSizeButton
   },
@@ -41,9 +30,6 @@ export default {
     }
   },
   emits: {
-    'show-size-guide-drawer' () {
-      return true
-    },
     'update-size' () {
       return true
     }

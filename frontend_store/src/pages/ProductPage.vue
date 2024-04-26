@@ -60,13 +60,25 @@
               </div>
 
               <!-- Sizes -->
-              <fashion-information :sizes="currentProduct.sizes" @update-size="(size) => { userSelection.size = size }" @show-size-guide-drawer="sizeGuideDrawer = true" />
+              <base-size-block :sizes="currentProduct.sizes" @update-size="(size) => { userSelection.size = size }" @show-size-guide-drawer="sizeGuideDrawer = true" />
+
+              <!-- Size Guide -->
+              <p class="mt-4 d-flex justify-content-start gap-3">
+                <a href class="fw-bold" @click.prevent="sizeGuideDrawer = true">
+                  {{ $t('Guide des tailles') }}
+                </a>
+
+                <span class="fw-light">
+                  {{ $t('Taille porté', { size: 'S' }) }} | {{ $t('Taille du mannequin', { heigth: 176 }) }}
+                </span>
+              </p>
 
               <transition id="choose-size" tag="div" name="opacity">
                 <p v-if="showSizeSelectionWarning" class="text-danger fs-6 fw-light mb-1">Tu dois sélectionner une taille</p>
               </transition>
 
               <div class="actions d-flex justify-content-start gap-1">
+                <!-- TODO: Make as a reusable component -->
                 <button id="btn-add-to-cart" type="button" class="btn btn-primary btn-lg shadow-none btn-rounded" aria-label="Add to cart" @click="handleAddToCart">
                   Ajouter au panier
                 </button>
@@ -145,9 +157,10 @@
         <div class="container my-4">
           <div class="row g-1">
             <div class="col-12">
-              <p class="fs-6 fw-bold">Sélectionne une taille</p>
+              <p class="fs-6 fw-bold mb-1">Sélectionne une taille</p>
+              <base-size-block :sizes="currentProduct.sizes" @update-size="(size) => { userSelection.size = size }" @show-size-guide-drawer="sizeGuideDrawer = true" />
 
-              <p class="fs-6 fw-bold">Mensurations</p>
+              <p class="fs-6 fw-bold mt-4 mb-1">Mensurations</p>
               <p class="fw-light text-body-secondary text-uppercase">Corps</p>
 
               <div class="sizes">
@@ -159,30 +172,32 @@
             </div>
 
             <div class="col-12 mt-4">
-              <v-btn color="primary" block>Ajouter au panier</v-btn>
+              <v-btn color="primary" block @click="handleAddToCart">
+                Ajouter au panier
+              </v-btn>
             </div>
 
             <div class="col-12 mt-4">
               <p class="fs-6 fw-bold">Comprendre tes mesures ?</p>
-              <v-img src="../assets/size-guide.jpg" lazy-src="../assets/size-guide.jpg" width="300"></v-img>
+              <v-img :src="localImagePath('size-guide.jpg')" :lazy-src="localImagePath('size-guide.jpg')" :width="300"></v-img>
             </div>
 
             <div class="col-12 mt-4">
               <p class="fs-6 fw-bold mb-1">Tour de Poitrine</p>
               <p class="fw-light text-body-secondary mb-4">
-                Pour mesurer la circonférence de ta poitrine, utilise un mètre 
+                Pour mesurer la circonférence de ta poitrine, utilise un mètre
                 ruban et place-le autour de la partie la plus large de ta poitrine.
               </p>
 
               <p class="fs-6 fw-bold mb-1">Tour de Taille</p>
               <p class="fw-light text-body-secondary mb-4">
-                Place le mètre ruban autour de la partie la plus 
+                Place le mètre ruban autour de la partie la plus
                 étroite de ta taille.
               </p>
 
               <p class="fs-6 fw-bold mb-1">Tour de Hanches</p>
               <p class="fw-light text-body-secondary mb-4">
-                Mets tes pieds l'un contre l'autre et place le mètre ruban 
+                Mets tes pieds l'un contre l'autre et place le mètre ruban
                 autour de la partie la plus large de ton tour de hanche.
               </p>
             </div>
@@ -205,6 +220,7 @@ import { useShopComposable } from 'composables/shop'
 import { useIntersectionObserver } from '@vueuse/core'
 import { useRouter, useRoute } from 'vue-router'
 import { buildImagePath } from 'src/utils'
+import { useUtilities } from 'src/composables/shop'
 
 // import { VueImageZoomer } from 'vue-image-zoomer'
 // import { createMockupProduct } from 'src/utils'
@@ -212,14 +228,14 @@ import { buildImagePath } from 'src/utils'
 
 import 'vue-image-zoomer/dist/style.css'
 
-import FashionInformation from 'src/components/product/information/FashionInformation.vue'
+import BaseSizeBlock from 'src/components/BaseSizeBlock.vue'
 import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
 // import ProductCard from 'components/products/ProductCard.vue'
 
 export default {
   name: 'ProductPage',
   components: {
-    FashionInformation,
+    BaseSizeBlock,
     LoadingRecommendationsBlock,
     // ProductCard,
     // VueImageZoomer,
@@ -242,6 +258,8 @@ export default {
     // down to the the "more-products" section of
     // the product page
     const intersectionTarget = ref(null)
+
+    const { localImagePath } = useUtilities()
 
     const { isLiked, handleLike } = useShopComposable()
 
@@ -296,7 +314,7 @@ export default {
           ],
         })
       ])
-    }, 400)
+    }, 800)
 
     useIntersectionObserver(intersectionTarget, ([{ isIntersecting }], observerElement) => {
       observerElement
@@ -314,6 +332,7 @@ export default {
       currentProduct,
       authenticationStore,
       isLiked,
+      localImagePath,
       handleLike,
       buildImagePath,
       showSizeSelectionWarning

@@ -14,7 +14,7 @@
             </div>
           </div>
 
-          <v-btn v-else variant="text" block rounded>
+          <v-btn v-else variant="text" block rounded @click="handleSelectedNoSize">
             {{ $t('Ajouter au panier') }}
           </v-btn>
         </div>
@@ -41,6 +41,7 @@ import { buildImagePath } from 'src/utils'
 import { useShopComposable } from 'composables/shop'
 
 import BaseSizeButton from '../BaseSizeButton.vue'
+import { useCartComposable } from 'src/composables/cart'
 
 export default {
   name: 'ProductCard',
@@ -58,12 +59,15 @@ export default {
     }
   },
   setup () {
+    const { quickAddToCart, quickAddToCartNoSize } = useCartComposable()
     const { isLiked, handleLike } = useShopComposable()
     const isHovered = ref(false)
 
     return {
       isLiked,
       isHovered,
+      quickAddToCart,
+      quickAddToCartNoSize,
       buildImagePath,
       handleLike
     }
@@ -75,7 +79,14 @@ export default {
   },
   methods: {
     handleSelectedSize (size) {
-      console.log(size)
+      this.quickAddToCart(this.product, size, () => {
+        this.isHovered = false
+      })
+    },
+    handleSelectedNoSize () {
+      this.quickAddToCartNoSize(this.product, () => {
+        this.isHovered = false
+      })
     }
   }
 }

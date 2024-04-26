@@ -20,6 +20,10 @@ export default {
     selectedSize: {
       type: String,
       default: null
+    },
+    selectable: {
+      type: Boolean,
+      default: true
     }
   },
   emits: {
@@ -43,7 +47,7 @@ export default {
         'btn-rounded',
         { 
           'btn-outline-secondary': !this.isSelected,
-          'btn-secondary': this.isSelected
+          'btn-secondary': this.isSelected && this.selectable
         }
       ]
     }

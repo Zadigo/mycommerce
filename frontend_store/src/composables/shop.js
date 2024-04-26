@@ -38,16 +38,11 @@ export function useUtilities () {
    * django /media/ backend folder for
    * images that require this construction 
    */
-  function djangoMediaPath (path, local = false, mediaPrefix = false) {
+  function djangoMediaPath (path, mediaPrefix = false) {
     let url
 
     if (path === null || typeof path === 'undefined') {
       const image = new URL(`./assets/placeholder.svg`, import.meta.url)
-      return image.toString()
-    }
-
-    if (local) {
-      const image = new URL(`./assets/${path}`, import.meta.url)
       return image.toString()
     }
 
@@ -61,9 +56,22 @@ export function useUtilities () {
       url += '/media/'
     }
 
-
     const finalUrl = new URL(path, url)
     return finalUrl.toString()
+  }
+
+  function localImagePath(path) {
+    const image = new URL(`./assets/${path}`, import.meta.url)
+    return image.toString()
+  }
+
+  function conditionalImagePath (path, fallback = 'placeholder.svg') {
+    const result  = djangoMediaPath(path)
+    if (!result) {
+      return localImagePath(fallback)
+    } else {
+      return result
+    }
   }
 
   /**
@@ -83,7 +91,9 @@ export function useUtilities () {
   }
 
   return {
+    conditionalImagePath,
     djangoMediaPath,
+    localImagePath,
     translatePrice
   }
 }

@@ -1,4 +1,4 @@
-import { client } from 'src/plugins/axios'
+// import { client } from 'src/plugins/axios'
 import { useCart } from 'src/stores/cart'
 import { getCurrentInstance, ref } from 'vue'
 
@@ -15,26 +15,56 @@ export function useCartComposable () {
 
   const showSizeSelectionWarning = ref(false)
 
+  async function requestAddToCart (data) {
+    data
+    // try {
+    //   // const response = await client.post('cart', data)
+    //   // return response
+    // } catch (e) {
+    //   console.error(e)
+    // }
+  }
+
   /**
    * Adds a product to the customer's cart. Useful
-   * for the product page
+   * for the product page - This requires a size
+   * selection. For no size see
+   * @something
    */
   async function addToCart (product, callback) {
     try {
       if (userSelection.value.size === null) {
         showSizeSelectionWarning.value = true
       } else {
-        cartStore.addToCart(product, userSelection)
+        cartStore.addToCart(product, userSelection.value)
 
-        const response = await client.post('cart', userSelection.value)
+        const response = await requestAddToCart(userSelection.value)
+        response
 
         if (typeof callback === 'function') {
-          callback.call(app, response.value)
+          callback.call(app, {})
         }
       }
 
     } catch (e) {
       console.log(e)
+    }
+  }
+
+  /**
+    * Adds a product to the customer's cart for items
+    * that do not require a size selection
+    */
+  async function addToCartNoSize (product, callback) {
+    try {
+      cartStore.addToCart(product, userSelection.value)
+      const response = await requestAddToCart(userSelection.value)
+      response
+      if (typeof callback === 'function') {
+        callback.call(app, {})
+      }
+    } catch (e) {
+      console.error(e)
     }
   }
 
@@ -50,9 +80,17 @@ export function useCartComposable () {
     await addToCart(product, callback)
   }
 
+  async function quickAddToCartNoSize (product, callback) {
+    userSelection.value.id = product.id
+    userSelection.value.product = product
+    await addToCartNoSize(product, callback)
+  }
+
   return {
     userSelection,
     showSizeSelectionWarning,
+    addToCartNoSize,
+    quickAddToCartNoSize,
     addToCart,
     quickAddToCart
   }
