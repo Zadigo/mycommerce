@@ -7,7 +7,7 @@
       <v-text-field v-model="requestData.address_line" variant="outlined" autocomplete="street-address"></v-text-field>
 
       <div class="d-flex justify-content-between gap-1">
-        <v-text-field v-modal="requestData.zip_code" :rules="[ rules.postalCode ]" placeholder="Zip code" variant="outlined" autocomplete="postal-code"></v-text-field>
+        <v-text-field v-model="requestData.zip_code" :rules="[ rules.postalCode ]" placeholder="Zip code" variant="outlined" autocomplete="postal-code"></v-text-field>
         <v-text-field v-model="requestData.country" variant="outlined" autocomplete="country"></v-text-field>
       </div>
 

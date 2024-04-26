@@ -86,10 +86,19 @@ export function useCartComposable () {
     await addToCartNoSize(product, callback)
   }
 
+  async function deleteFromCart (product) {
+    try {
+      cartStore.removeFromCart(product)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   return {
     userSelection,
     showSizeSelectionWarning,
     addToCartNoSize,
+    deleteFromCart,
     quickAddToCartNoSize,
     addToCart,
     quickAddToCart

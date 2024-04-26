@@ -44,8 +44,7 @@ pinia.use(({ store }) => {
   // the cart so that the items can be stored
   // in the user's session
   store.$onAction(({ name, store, after }) => {
-    if (name === 'addToCart' && store.$id === 'cart') {
-      console.log('Setting addToCart')
+    if ((name === 'addToCart' || name === 'removeFromCart') && store.$id === 'cart') {
       after(() => {
         session.create('cart', store.$state.products)
       })

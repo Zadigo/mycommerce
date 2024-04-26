@@ -22,10 +22,14 @@
       </div>
 
       <div class="col-6">
-        <div class="card shadow-sm">
-          <div class="card-body">
+        <div class="card shadow-none bg-light">
+          <div class="card-header border-none">
+            <h1 class="fs-5 fw-bold my-2">Résumé ({{ cartStore.numberOfProducts }})</h1>
+          </div>
+
+          <div id="products" class="card-body">
             <div class="list-group">
-              <article v-for="item in products" :key="item.id" :aria-label="item.product.name" class="list-group-item d-flex justify-content-start align-items-top gap-4">
+              <article v-for="item in products" :key="item.id" :aria-label="item.product.name" class="list-group-item d-flex justify-content-start align-items-top gap-4 border-none ps-0">
                 <div class="col-auto">
                   <router-link :to="{ name: 'shop_product', params: { id: item.id } }">
                     <v-img :src="djangoMediaPath(item.product.get_main_image.original)" :lazy-src="djangoMediaPath(item.product.get_main_image.original)" :width="100" :alt="item.product.name" />
@@ -34,11 +38,12 @@
 
                 <div class="col">
                   <router-link :to="{ name: 'shop_product', params: { id: item.product.id } }" class="link-dark">
+                    <p class="fw-bold mb-1">{{ translatePrice(item.product.get_price) }}</p>
                     <p class="h6 mb-1">{{ item.product.name }}</p>
-                    <p class="fw-light fs-6">Taille : {{ item.size }}</p>
+                    <p class="fw-light fs-6">{{ item.size }} {{ item.quantity }}x {{ item.product.get_price }}</p>
                   </router-link>
 
-                  <v-btn v-show="$route.name === 'shop_payment_home'" rounded color="secondary" flat>
+                  <v-btn v-show="$route.name === 'shop_payment_home'" size="small" rounded color="secondary" flat @click="removeFromCart(item)">
                     <font-awesome-icon :icon="['fas', 'trash']" />
                   </v-btn>
                 </div>
@@ -52,9 +57,10 @@
 </template>
 
 <script>
-import { storeToRefs } from 'pinia'
+import { mapActions, storeToRefs } from 'pinia'
 import { useCart } from 'src/stores/cart'
 import { useUtilities }  from 'composables/shop'
+import { useRefHistory } from '@vueuse/core'
 
 export default {
   name: 'PaymentLayout',
@@ -63,7 +69,13 @@ export default {
     const { products } = storeToRefs(cartStore)
     const { djangoMediaPath } = useUtilities()
 
+    const { translatePrice } = useUtilities()
+
+    const { history } = useRefHistory(products)
+
     return {
+      translatePrice,
+      cartHistory: history,
       djangoMediaPath,
       cartStore,
       products
@@ -106,5 +118,15 @@ export default {
     // calculate the items that the user has selected
     this.cartStore.products = this.sessionStorage?.cart || []
   },
+  methods: {
+    ...mapActions(useCart, ['removeFromCart'])
+  }
 }
 </script>
+
+<style scoped>
+#products {
+  overflow-y: scroll;
+  height: 400px;
+}
+</style>

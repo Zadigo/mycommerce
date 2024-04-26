@@ -1,7 +1,9 @@
 <template>
   <div class="card shadow-sm">
     <div class="card-body">
-      <h2 class="card-title h5">Delivery method</h2>
+      <h2 class="card-title h5">
+        Choisis un mode d'expédition
+      </h2>
 
       <v-radio-group v-model="store.requestData.delivery">
         <v-radio v-for="delivery in deliveryMethods" :key="delivery" :label="delivery" :value="delivery"></v-radio>

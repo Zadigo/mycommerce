@@ -59,6 +59,11 @@ export default {
 </script>
 
 <style>
+* {
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+}
+
 .opacity-enter-active,
 .opacity-leave-active {
   transition: all .3s ease-in-out;
@@ -77,4 +82,13 @@ export default {
 .opacity-move {
   transition: all .2s ease-in-out;
 }
+
+/* ::-webkit-scrollbar {
+} */
+/* ::-webkit-scrollbar-track {
+  height: 10px;
+} */
+/* ::-webkit-scrollbar-thumb {
+  scrollbar-width: thin;
+} */
 </style>

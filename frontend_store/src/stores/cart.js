@@ -69,8 +69,6 @@ const useCart = defineStore('cart', {
       this.products = this.$session.retrieve('cart') || []
     },
     addToCart (product, userSelection) {
-      // TODO: This does not work since it keeps
-      // adding different products to the same exact one
       // TODO: Build functions depending on clothes or
       // types of productst that do not specifically
       // require size etc
@@ -93,6 +91,10 @@ const useCart = defineStore('cart', {
       } else {
         existingProduct.quantity += 1
       }
+    },
+    removeFromCart (product) {
+      const index = _.findIndex(this.products, { id: product.id })
+      this.products.splice(index, 1)
     }
   }
 })
