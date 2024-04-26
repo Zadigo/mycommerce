@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <router-view v-slot="{ Component }">
-      <transition>
+      <transition name="opacity">
         <component :is="Component" />
       </transition>
     </router-view>
@@ -22,7 +22,13 @@ export default {
   setup () {
     const i18n = useI18n()
     const currentLanguage = ref('fr')
-
+    
+    const { value } = useMediaQuery('(min-width: 320px)')
+    const { isSupported } = useScreenOrientation()
+    const documentVisible = useDocumentVisibility()
+    
+    const authenticationStore = useAuthentication()
+    
     provide('currentLanguage', currentLanguage)
     
     watch(currentLanguage, (n) => {
@@ -31,19 +37,14 @@ export default {
       immediate: true
     })
 
-    const { value } = useMediaQuery('(min-width: 320px)')
-    const { isSupported } = useScreenOrientation()
-    const documentVisible = useDocumentVisibility()
-
     provide('isMobile', value)
     provide('screenOrientation', isSupported)
     provide('documentVisible', documentVisible)
 
-    const authenticationStore = useAuthentication()
-    
     useSchemaOrg([
       defineOrganization(organization)
     ])
+
     return {
       authenticationStore
     }
@@ -60,16 +61,20 @@ export default {
 <style>
 .opacity-enter-active,
 .opacity-leave-active {
-  transition: all .10s ease-in-out;
+  transition: all .3s ease-in-out;
 }
 
 .opacity-enter-to,
 .opacity-leave-from {
-  opacity: .9
+  opacity: .9;
 }
 
 .opacity-enter-from,
 .opacity-leave-to {
-  opacity: 1
+  opacity: 1;
+}
+
+.opacity-move {
+  transition: all .2s ease-in-out;
 }
 </style>
