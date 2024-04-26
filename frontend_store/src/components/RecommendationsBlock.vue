@@ -19,6 +19,7 @@ import { useVueSession } from 'src/plugins/vue-storages'
 import ProductCard from 'components/products/ProductCard.vue'
 
 export default {
+  name: 'RecommendationsBlock',
   components: {
     ProductCard
   },

@@ -35,7 +35,6 @@
               <p class="fw-light text-body-secondary" aria-label="Product reference">Ref. 3970/623/800</p>
 
               <!-- Price -->
-              <!-- {{ $n(currentProduct.get_price, 'currency') }} -->
               <p class="h5 fw-bold" aria-label="Product price">
                 {{ $n(parseFloat(currentProduct.get_price), 'currency') }}
               </p>
@@ -120,7 +119,13 @@
             </div>
           </div> -->
           <suspense>
-            <async-recommendation-block :quantity="30" />
+            <template #default>
+              <async-recommendation-block :quantity="30" />
+            </template>
+
+            <template #fallback>
+              <loading-recommendations-block :quantity="30" />
+            </template>
           </suspense>
         </div>
       </div>
@@ -187,22 +192,26 @@ import { useCart } from 'src/stores/cart'
 import { useAuthentication } from 'stores/authentication'
 import { useShop } from  'stores/shop'
 import { useSchemaOrg, defineProduct, defineBreadcrumb } from '@unhead/schema-org'
-// import { VueImageZoomer } from 'vue-image-zoomer'
 import { useShopComposable } from 'composables/shop'
 import { useIntersectionObserver } from '@vueuse/core'
-// import { createMockupProduct } from 'src/utils'
-// import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
 import { buildImagePath } from 'src/utils'
+
+// import { VueImageZoomer } from 'vue-image-zoomer'
+// import { createMockupProduct } from 'src/utils'
+// import { useI18n } from 'vue-i18n'
 
 import 'vue-image-zoomer/dist/style.css'
 
 import FashionInformation from 'src/components/product/information/FashionInformation.vue'
+import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
 // import ProductCard from 'components/products/ProductCard.vue'
 
 export default {
+  name: 'ProductPage',
   components: {
     FashionInformation,
+    LoadingRecommendationsBlock,
     // ProductCard,
     // VueImageZoomer,
     AsyncRecommendationBlock: defineAsyncComponent({
@@ -217,19 +226,13 @@ export default {
   setup () {
     const documentVisible = inject('documentVisible')
 
-    // const { t } = useI18n()
     const router = useRouter()
     const route = useRoute()
-
+    
     // Interceptor to check that the user has moved
     // down to the the "more-products" section of
     // the product page
     const intersectionTarget = ref(null)
-    useIntersectionObserver(intersectionTarget, ([{ isIntersecting }], observerElement) => {
-      // console.log(isIntersecting, observerElement)
-      observerElement
-      isIntersecting
-    })
 
     const { isLiked, handleLike } = useShopComposable()
 
@@ -248,7 +251,6 @@ export default {
       quantity: 1,
     })
 
-    
     const productPath = router.resolve({ name: 'shop_product', params: { id: route.params.id } })
     setTimeout(() => {
       useSeoMeta({
@@ -287,8 +289,12 @@ export default {
       ])
     }, 400)
 
+    useIntersectionObserver(intersectionTarget, ([{ isIntersecting }], observerElement) => {
+      observerElement
+      isIntersecting
+    })
+
     return {
-      buildImagePath,
       documentVisible,
       intersectionTarget,
       cartStore,
@@ -300,6 +306,7 @@ export default {
       authenticationStore,
       isLiked,
       handleLike,
+      buildImagePath,
       showSizeSelectionWarning
     }
   },
