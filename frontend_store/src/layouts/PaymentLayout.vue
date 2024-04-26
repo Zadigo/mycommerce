@@ -1,53 +1,84 @@
 <template>
-  <section class="container">
-    <div v-if="isSuccessPage" class="row my-5">
-      <div class="col-8 offset-md-2">
-        <router-view></router-view>
-      </div>
-    </div>
+  <section id="payment">
+    <header>
+      <nav class="navbar fixed-top navbar-dark bg-white d-flex justify-content-center shadow-none text-uppercase">
+        <router-link :to="{ name: 'shop_products'}" class="link-dark">
+          <h1 class="h2 fw-bold">Boutique</h1>
+        </router-link>
+      </nav>
+    </header>
 
-    <div v-else class="row my-5">
-      <div class="col-12">
-        <nav aria-label="breadcrumb">
-          <v-breadcrumbs :items="paymentLinks">
-            <template #divider>
-              <v-icon icon="mdi-chevron-right"></v-icon>
-            </template>
-          </v-breadcrumbs>
-        </nav>
+    <div class="container">
+      <div v-if="isSuccessPage" class="row my-5">
+        <div class="col-8 offset-md-2">
+          <router-view></router-view>
+        </div>
       </div>
 
-      <div class="col-6">
-        <router-view></router-view>
-      </div>
+      <div v-else class="row my-5">
+        <div class="col-12">
+          <nav aria-label="breadcrumb">
+            <v-breadcrumbs :items="paymentLinks">
+              <template #divider>
+                <v-icon icon="mdi-chevron-right"></v-icon>
+              </template>
+            </v-breadcrumbs>
+          </nav>
+        </div>
 
-      <div class="col-6">
-        <div class="card shadow-none bg-light">
-          <div class="card-header border-none">
-            <h1 class="fs-5 fw-bold my-2">Résumé ({{ cartStore.numberOfProducts }})</h1>
-          </div>
+        <div class="col-6">
+          <router-view></router-view>
+        </div>
 
-          <div id="products" class="card-body">
-            <div class="list-group">
-              <article v-for="item in products" :key="item.id" :aria-label="item.product.name" class="list-group-item d-flex justify-content-start align-items-top gap-4 border-none ps-0">
-                <div class="col-auto">
-                  <router-link :to="{ name: 'shop_product', params: { id: item.id } }">
-                    <v-img :src="djangoMediaPath(item.product.get_main_image.original)" :lazy-src="djangoMediaPath(item.product.get_main_image.original)" :width="100" :alt="item.product.name" />
-                  </router-link>
-                </div>
+        <div class="col-6">
+          <div class="card shadow-none bg-light">
+            <div class="card-header border-none">
+              <h1 class="fs-5 fw-bold my-2">Résumé ({{ cartStore.numberOfProducts }})</h1>
+            </div>
 
-                <div class="col">
-                  <router-link :to="{ name: 'shop_product', params: { id: item.product.id } }" class="link-dark">
-                    <p class="fw-bold mb-1">{{ translatePrice(item.product.get_price) }}</p>
-                    <p class="h6 mb-1">{{ item.product.name }}</p>
-                    <p class="fw-light fs-6">{{ item.size }} {{ item.quantity }}x {{ item.product.get_price }}</p>
-                  </router-link>
+            <div id="products" class="card-body">
+              <div class="list-group">
+                <article v-for="item in products" :key="item.id" :aria-label="item.product.name" class="list-group-item d-flex justify-content-start align-items-top gap-4 border-none ps-0">
+                  <div class="col-auto">
+                    <router-link :to="{ name: 'shop_product', params: { id: item.id } }">
+                      <v-img :src="djangoMediaPath(item.product.get_main_image.original)" :lazy-src="djangoMediaPath(item.product.get_main_image.original)" :width="100" :alt="item.product.name" />
+                    </router-link>
+                  </div>
 
-                  <v-btn v-show="$route.name === 'shop_payment_home'" size="small" rounded color="secondary" flat @click="removeFromCart(item)">
-                    <font-awesome-icon :icon="['fas', 'trash']" />
-                  </v-btn>
-                </div>
-              </article>
+                  <div class="col">
+                    <router-link :to="{ name: 'shop_product', params: { id: item.product.id } }" class="link-dark">
+                      <p class="fw-bold mb-1">{{ translatePrice(calculateItemTotalCost(item.product.get_price, item.quantity)) }}</p>
+                      <p class="h6 mb-1">{{ item.product.name }}</p>
+                      <div class="d-flex justify-content-start align-items-center gap-2 fw-light fs-6">
+                        <span>{{ item.size }}</span>
+                        <span>{{ item.quantity }}x</span>
+                        <span>{{ translatePrice(item.product.get_price) }}</span>
+                      </div>
+                    </router-link>
+
+                    <v-btn v-show="$route.name === 'shop_payment_home'" size="small" rounded color="secondary" flat @click="removeFromCart(item)">
+                      <font-awesome-icon :icon="['fas', 'trash']" />
+                    </v-btn>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <div class="card-footer border-none">
+              <div class="price d-flex justify-content-between">
+                <span>Sous-total</span>
+                <span class="fw-bold">{{ translatePrice(cartStore.cartTotal) }}</span>
+              </div>
+
+              <div class="delivery d-flex justify-content-between my-2">
+                <span>Frais d'envoi</span>
+                <span class="fw-bold text-uppercase text-success">Gratuit</span>
+              </div>
+
+              <div class="total d-flex justify-content-between">
+                <span>Total (TVA comprise)</span>
+                <span class="fw-bold">{{ translatePrice(cartStore.cartTotal) }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -119,7 +150,12 @@ export default {
     this.cartStore.products = this.sessionStorage?.cart || []
   },
   methods: {
-    ...mapActions(useCart, ['removeFromCart'])
+    ...mapActions(useCart, ['removeFromCart']),
+    calculateItemTotalCost (price, quantity) {
+      // Calculate the individual price for the given
+      // product with price and quantity variables
+      return price * quantity
+    }
   }
 }
 </script>
