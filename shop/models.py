@@ -168,7 +168,7 @@ class AbstractProduct(models.Model):
         ]
 
     def __str__(self):
-        return f'Product: {self.name}'
+        return f'Product - {self.pk}: {self.name}'
 
     @property
     def get_main_image(self):
@@ -267,6 +267,8 @@ class AbstractUserList(models.Model):
 
 # TODO: Remove this model which redundant
 # with the wishlist
+
+
 class Like(AbstractUserList):
     """Stores products that were liked
     by the user and added to a specific
@@ -306,7 +308,7 @@ def delete_image(sender, instance, **kwargs):
     if not is_s3_backend:
         if instance.original:
             path = pathlib.Path(instance.original.path)
-            if path.isfile():
+            if path.is_file():
                 path.unlink()
     else:
         instance.url.delete(save=False)
@@ -337,7 +339,7 @@ def delete_images(sender, instance, **kwargs):
     for image in images:
         if image.url:
             path = pathlib.Path(image.url.path)
-            if path.isfile():
+            if path.is_file():
                 path.unlink()
             # if os.path.isfile(image.original.path):
             #     os.remove(image.url.path)

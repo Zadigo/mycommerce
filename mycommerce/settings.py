@@ -184,7 +184,6 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
     'http://localhost:3000',
-    'http://localhost:9000',
     'http://localhost:5173'
 ]
 
@@ -220,20 +219,20 @@ LANGUAGE_CODE = 'fr'
 
 # Caching
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': BASE_DIR / 'cache'
-    },
-    'redis': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://username:password@127.0.0.1:6379',
-        'OPTIONS': {
-            'CLIENT_CLASS': "django_redis.client.DefaultClient"
-        },
-        'KEY_PREFIX': 'example'
-    }
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+#         'LOCATION': BASE_DIR / 'cache'
+#     },
+#     'redis': {
+#         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+#         'LOCATION': 'redis://username:password@127.0.0.1:6379',
+#         'OPTIONS': {
+#             'CLIENT_CLASS': "django_redis.client.DefaultClient"
+#         },
+#         'KEY_PREFIX': 'example'
+#     }
+# }
 
 
 # Emailing

@@ -2,15 +2,15 @@ from typing import Tuple
 
 from django.db.models import Count, QuerySet, Sum
 from django.shortcuts import get_object_or_404
-from orders.choices import ShipmentChoices
-from orders.models import CustomerOrder
 from rest_framework import fields
 from rest_framework.serializers import Serializer
+
+from cart.models import Cart
+from orders.choices import ShipmentChoices
+from orders.models import CustomerOrder
 from shop.choices import ClotheSizesChoices
 from shop.models import Product
 from shop.serializers import ProductSerializer
-
-from cart.models import Cart
 
 
 def cart_statistics(queryset):
@@ -31,6 +31,8 @@ def build_cart_response(queryset, session_id):
 
 
 class CartSerializer(Serializer):
+    """Serializes the cart objects"""
+    
     id = fields.IntegerField()
     product = ProductSerializer()
     default_size = fields.CharField()
@@ -60,18 +62,20 @@ class ValidateCart(Serializer):
         session_id = self.validated_data['session_id']
         return Cart.objects.cart_items(session_id=session_id)
 
-    def create(self, validated_data, request=None):
+    def create(self, validated_data):
         data = validated_data.copy()
         product_id = data.pop('product')
         product = get_object_or_404(Product, id=product_id)
-        return Cart.objects.rest_api_add_to_cart(request, product, **data)
+        return Cart.objects.rest_api_add_to_cart(self.request, product, **data)
 
-    def save(self, request, **kwargs) -> Tuple[str, QuerySet]:
-        validated_data = {**self.validated_data, **kwargs}
+    def save(self, request, **kwargs):
+        setattr(self, 'request', request)
+        return super().save(**kwargs)
+        # validated_data = {**self.validated_data, **kwargs}
 
-        if self.instance is not None:
-            return self.update(self.instance, validated_data)
-        return self.create(validated_data, request=request)
+        # if self.instance is not None:
+        #     return self.update(self.instance, validated_data)
+        # return self.create(validated_data, request=request)
 
     def delete(self, request, **kwargs):
         product_id = self.validated_data['product']

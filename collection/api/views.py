@@ -1,12 +1,13 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from collection import serializers
-from django.db.models import Q
+from collection.api import serializers
 from collection.models import Collection
+from mycommerce.utils import pagination_helper
+from shop.api.serializers import ProductSerializer
 from shop.models import Product
-from shop.serializers import ProductSerializer
 
 
 def build_colors(colors):
@@ -16,27 +17,15 @@ def build_colors(colors):
 
 
 @api_view(['get'])
-def collection_view(request, name, **kwargs):
+def get_collection(request, name, **kwargs):
     """Returns a specific collection"""
     queryset = Product.objects.filter(active=True)
 
     if name == 'all':
-        _, _, response = serializers.paginate_data(
-            request,
-            queryset,
-            ProductSerializer,
-            has_many=True
-        )
-        return response
+        return pagination_helper(request, queryset, ProductSerializer)
     elif name == 'novelties':
         queryset = queryset.filter(display_new=True)
-        _, _, response = serializers.paginate_data(
-            request,
-            queryset,
-            ProductSerializer,
-            has_many=True
-        )
-        return response
+        return pagination_helper(request, queryset, ProductSerializer)
     else:
         collection = get_object_or_404(Collection, slug__iexact=name)
         serializer = serializers.CollectionSerializer(instance=collection)
@@ -51,11 +40,11 @@ def collection_view(request, name, **kwargs):
         )
         products = products.order_by('-created_on')
 
-        paginator, serializer_instance, _ = serializers.paginate_data(
+        paginator, serializer_instance, _ = pagination_helper(
             request,
             products,
             ProductSerializer,
-            has_many=True
+            response_only=False
         )
         paginated_products = paginator.get_response_dict(
             serializer_instance.data
@@ -65,9 +54,10 @@ def collection_view(request, name, **kwargs):
         return Response(data=data_to_return)
 
 
-@api_view(['GET'])
-def collection_names_view(request, **kwargs):
-    """Returns all created collections"""
+@api_view(['get'])
+def list_collection_names(request, **kwargs):
+    """Returns the names of all the collections
+    that exist in the shop"""
     queryset = Collection.objects.all()
     serializer = serializers.CollectionNameSerializer(
         instance=queryset,
@@ -76,8 +66,8 @@ def collection_names_view(request, **kwargs):
     return Response(data=serializer.data)
 
 
-@api_view(['POST'])
-def search_view(request, pk, **kwargs):
+@api_view(['post'])
+def search_collection(request, pk, **kwargs):
     collection = get_object_or_404(Collection, id=pk)
     serializer = serializers.CollectionSerializer(instance=collection)
     collection_data = serializer.data
@@ -97,7 +87,7 @@ def search_view(request, pk, **kwargs):
     products = search_serializer.search_color(are_on_sale)
 
     products_serializer = ProductSerializer(instance=products, many=True)
-    paginator, serializer, _ = serializers.paginate_data(
+    paginator, serializer, _ = serializers.pagination_helper(
         request,
         products,
         ProductSerializer,

@@ -14,7 +14,7 @@ class ProductAdmin(admin.ModelAdmin):
     filter_horizontal = ['images']
     list_filter = ['active']
     date_hiearchy = 'created_on'
-    search_fields = ['name', 'slug']
+    search_fields = ['name', 'id', 'slug']
     fieldsets = [
         ['General', {'fields': ['name', 'sku']}],
         ['Variant', {'fields': ['color', 'category']}],

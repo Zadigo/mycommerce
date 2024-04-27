@@ -1,10 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from mycommerce.responses import simple_api_response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from accounts.serializers import LoginUserSerializer, UserSerializer
+from mycommerce.responses import simple_api_response
 
 USER_MODEL = get_user_model()
 
@@ -18,9 +19,10 @@ def login_view(request, **kwargs):
 
 @api_view(['post'])
 def logout_view(request, **kwargs):
+    """Used to log the user out"""
     user = get_object_or_404(USER_MODEL, id=request.user.id)
     user.auth_token.delete()
-    return simple_api_response({'state': True})
+    return Response({'state': True})
 
 
 def signup(request, **kwargs):

@@ -8,40 +8,16 @@ from django.db.models import Q
 from rest_framework.serializers import Serializer
 
 
-class CommaSeperatedField(fields.Field):
-    def to_internal_value(self, data):
-        result = re.match(r'(\w+)\,', data)
-        if result:
-            return list(result.groups())
-        self.fail('invalid', input=data)
+# DELETE
+# class CommaSeperatedField(fields.Field):
+#     def to_internal_value(self, data):
+#         result = re.match(r'(\w+)\,', data)
+#         if result:
+#             return list(result.groups())
+#         self.fail('invalid', input=data)
 
-    def to_representation(self, value):
-        tokens = value
-
-
-class CustomPagination(LimitOffsetPagination):
-    default_limit = 100
-
-    def get_response_dict(self, data):
-        """Custom view that returns just the dictionnary
-        to be sent via the Response class"""
-        return OrderedDict([
-            ('count', self.count),
-            ('next', self.get_next_link()),
-            ('previous', self.get_previous_link()),
-            ('results', data)
-        ])
-
-
-def paginate_data(request, queryset, serializer, has_many=False):
-    """Paginates a list of items using the
-    CustomPagination class"""
-    paginator = CustomPagination()
-    result = paginator.paginate_queryset(queryset, request)
-    serializer_instance = serializer(instance=result, many=has_many)
-    response = paginator.get_paginated_response(serializer_instance.data)
-    return paginator, serializer_instance, response
-
+#     def to_representation(self, value):
+#         tokens = value
 
 class CollectionNameSerializer(Serializer):
     id = fields.IntegerField()

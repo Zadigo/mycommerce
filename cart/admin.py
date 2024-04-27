@@ -9,4 +9,3 @@ class CartAdmin(admin.ModelAdmin):
     search_fields = ['session_id', 'product__name']
     date_hiearchy = 'created_on'
     list_filter = ['is_anonymous', 'is_paid_for']
-    

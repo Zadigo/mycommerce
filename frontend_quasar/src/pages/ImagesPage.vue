@@ -110,12 +110,17 @@
           <q-separator />
 
           <q-card-section>
-            <q-form @submit.prevent>
+            <!-- <q-form @submit.prevent>
               <div v-for="(file, i) in requestData.files" :key="i" class="flex justify-start align-center q-gutter-sm q-mb-sm">
                 <q-file v-model="file.content" label="Select file" outlined />
                 <q-input v-model="file.name" placeholder="File name" outlined></q-input>
                 <q-btn color="secondary" variant="text" @click="handleAddImage"><q-icon name="add"></q-icon></q-btn>
               </div>
+            </q-form> -->
+
+            <q-form @submit.prevent>
+              <q-input v-model="selectedFilesBaseName" class="q-mb-sm" placeholder="File names" outlined />
+              <q-file v-model="selectedFiles" :multiple="true" label="Select files" clearable outlined />
             </q-form>
           </q-card-section>
 
@@ -124,7 +129,11 @@
               Cancel
             </q-btn>
 
-            <q-btn flat @click="handleUploadImages">
+            <!-- <q-btn flat @click="handleUploadImages">
+              Upload
+            </q-btn> -->
+            <q-btn color="primary" flat @click="handleUploadImages2">
+              <q-icon name="upload" class="q-mr-sm"></q-icon>
               Upload
             </q-btn>
           </q-card-actions>
@@ -195,6 +204,13 @@ export default {
       ]
     })
 
+    const selectedFiles = ref([])
+    const selectedFilesBaseName = ref(null)
+
+    whenever(selectedFiles, (items) => {
+      console.log('whenever', items)
+    })
+
     const selectedImages = ref([])
     const enableProductAssociationButton = ref(false)
     const showProductAssociationDialog = ref(false)
@@ -212,7 +228,9 @@ export default {
     })
 
     return {
+      selectedFilesBaseName,
       notify,
+      selectedFiles,
       searchedProducts,
       productToAssociate,
       enableProductAssociationButton,
@@ -250,6 +268,27 @@ export default {
           name: null,
           content: null
         }]
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async handleUploadImages2 () {
+      try {
+        const formData = new FormData()
+
+        this.selectedFiles.forEach((file, i) => {
+          formData.append('files', file, file.name)
+          formData.append('name', `${this.selectedFilesBaseName} ${i}`)
+        })
+
+        const response = await this.$api.post('shop/images/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        this.images = response.data
+        this.selectedFiles = []
+        this.selectedFilesBaseName = null
       } catch (e) {
         console.log(e)
       }

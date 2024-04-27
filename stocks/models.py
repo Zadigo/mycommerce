@@ -15,6 +15,7 @@ class Isle(models.Model):
     """Represents an isle for a given product. An
     isle has dimensions which gives us the amount of
     products stored per shelf"""
+
     shortname = models.CharField(
         max_length=5,
         validators=[]
@@ -35,6 +36,7 @@ class Isle(models.Model):
 class Stock(models.Model):
     """Represents the current stock
     for the given product or collection"""
+
     reference = models.UUIDField(default=uuid4)
     product = models.ForeignKey(
         PRODUCT_MODEL,
@@ -51,8 +53,9 @@ class Stock(models.Model):
         blank=True,
         null=True
     )
-
-    quantity = models.PositiveIntegerField(default=20)
+    quantity = models.PositiveIntegerField(
+        default=20
+    )
     unit_price = models.DecimalField(
         max_digits=5,
         decimal_places=2,
@@ -63,10 +66,15 @@ class Stock(models.Model):
         decimal_places=2,
         help_text=_('The total value of the stock')
     )
-    
-    is_active = models.BooleanField(default=True)
-    in_stock = models.BooleanField(default=True)
-    almost_sold_out = models.BooleanField(default=False)
+    is_active = models.BooleanField(
+        default=True
+    )
+    in_stock = models.BooleanField(
+        default=True
+    )
+    almost_sold_out = models.BooleanField(
+        default=False
+    )
     
     class Meta:
         indexes = [

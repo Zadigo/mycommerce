@@ -13,6 +13,7 @@
 
               <q-space />
 
+              <q-btn @click="uploadProductsFile">Upload file</q-btn>
               <q-btn :to="{ name: 'images_view' }" color="primary" icon="fas fa-image" label="Images" unelevated rounded />
               <q-btn :to="{ name: 'product_view', params: { id: 1 } }" color="primary" icon="fas fa-plus" label="Create" unelevated rounded />
               <q-btn color="primary" :disable="loading" label="Add row" unelevated rounded />
@@ -36,6 +37,35 @@
           </q-table>
         </q-card-section>
       </q-card>
+
+      <!-- Modals -->
+
+      <q-dialog v-model="showUploadProductsFile">
+        <q-card style="width: 400px;">
+          <q-card-section>
+
+          </q-card-section>
+
+          <q-separator></q-separator>
+
+          <q-card-section>
+            <q-form @submit.prevent>
+              <q-file v-model="productsFile" outlined label="Outlined" accept=".json, .csv" />
+            </q-form>
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn flat>
+              Cancel
+            </q-btn>
+
+            <q-btn color="primary" @click="uploadProductsFile">
+              <q-spinner-cube size="xs" color="white" class="q-mr-sm" />
+              Upload
+            </q-btn>
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </table-page-component>
   </q-page>
 </template>
@@ -46,6 +76,34 @@ import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useShop } from '../stores/shop'
 import TablePageComponent from '../components/TablePageComponent.vue'
+
+
+const productColumns = [
+  {
+    name: 'id',
+    label: 'ID',
+    field: row => row.id,
+    sortable: true
+  },
+  {
+    name: 'name',
+    label: 'Name',
+    field: row => row.name,
+    sortable: true
+  },
+  {
+    name: 'unit_price',
+    label: 'Unit price',
+    field: row => row.unit_price,
+    sortable: true
+  },
+  {
+    name: 'active',
+    label: 'Active',
+    field: row => row.active,
+    sortable: true
+  }
+]
 
 export default {
   name: 'ProductsPage',
@@ -60,36 +118,16 @@ export default {
     const requestData = ref({
       selected: []
     })
-    const productColumns = [
-      {
-        name: 'id',
-        label: 'ID',
-        field: row => row.id,
-        sortable: true
-      },
-      {
-        name: 'name',
-        label: 'Name',
-        field: row => row.name,
-        sortable: true
-      },
-      {
-        name: 'unit_price',
-        label: 'Unit price',
-        field: row => row.unit_price,
-        sortable: true
-      },
-      {
-        name: 'active',
-        label: 'Active',
-        field: row => row.active,
-        sortable: true
-      }
-    ]
+
+    const showUploadProductsFile = ref(true)
+    const productsFile = ref(null)
+    
     return {
       search,
       loading,
       requestData,
+      productsFile,
+      showUploadProductsFile,
       productColumns,
       products
     }
@@ -114,12 +152,24 @@ export default {
   },
   methods: {
     async requestProducts () {
+      // Get all the products from the database
       try {
         const response = await this.$api.get('shop/products?admin=true')
+        
         this.products = response.data
+        this.$session.create('products', this.products)
+
         setTimeout(() => {
           this.loading = false
-        }, 1000);
+        }, 1000)
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async uploadProductsFile () {
+      try {
+        const response = await this.$api.post('shop/products/upload')
+        response
       } catch (e) {
         console.log(e)
       }

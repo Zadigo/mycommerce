@@ -1,5 +1,6 @@
 import re
 import unidecode
+import unicodedata
 from typing import Any
 
 from django.db.models import Value
@@ -10,13 +11,20 @@ def remove_accents(text):
     return unidecode.unidecode(text)
 
 
+def clean_text(text):
+    if text is None:
+        return None
+    
+    text = str(text)
+    text = unicodedata.normalize('NFKD', text)
+
+    tokens = text.split(' ')
+    text = ' '.join(filter(lambda x: x != '', tokens))
+    return text.strip().lower().capitalize()
+
+
 def create_image_slug(name: str, reverse: bool = False):
     """Create an image slug
-
-    Example
-    -------
-
-        an_image_slug.jpg
 
     Parameters
     ----------

@@ -9,6 +9,7 @@ from shop.models import Product
 class Discount(models.Model):
     """References discounts that could be
     applied to a product or a set of given products"""
+    
     reference = models.CharField(
         default=get_random_string(12)
     )
@@ -26,9 +27,15 @@ class Discount(models.Model):
         default=0,
         validators=[validate_percentage]
     )
-    start_date = models.DateField(default=timezone.now)
-    end_date = models.DateField(default=timezone.now)
-    created_on = models.DateField(auto_now_add=True)
+    start_date = models.DateField(
+        default=timezone.now
+    )
+    end_date = models.DateField(
+        default=timezone.now
+    )
+    created_on = models.DateField(
+        auto_now_add=True
+    )
     
     def __str__(self):
         return self.reference

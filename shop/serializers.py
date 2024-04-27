@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import fields
 from rest_framework.serializers import ModelSerializer, Serializer
-from variants.serializers import SizeSerializer
+from variants.api.serializers import SizeSerializer
 
 from shop.choices import CategoryChoices
 from shop.models import Image, Product, Wishlist
