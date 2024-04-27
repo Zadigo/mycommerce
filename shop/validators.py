@@ -7,7 +7,7 @@ CLOTHE_SIZES = ['XS', 'S', 'M', 'L', 'XL']
 
 def validate_video_file_extension(name):
     instance = FileExtensionValidator(allowed_extensions=['mp4'])
-    return instance(name)
+    instance(name)
 
 
 def price_validator(value):

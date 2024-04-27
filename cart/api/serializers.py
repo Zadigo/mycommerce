@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from django.db.models import Count, QuerySet, Sum
 from django.shortcuts import get_object_or_404
 from rest_framework import fields

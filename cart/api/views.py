@@ -104,9 +104,3 @@ def payment(request, **kwargs):
         customer_order.products.add(*created_items)
         return simple_api_response({'state': True, 'reference': customer_order.reference, 'total': total})
     return simple_api_response({'state': False})
-
-
-# @api_view(['post'])
-# @permission_classes([AllowAny])
-# def success_view(request, **kwargs):
-#     pass

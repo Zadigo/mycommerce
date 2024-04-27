@@ -3,6 +3,7 @@ from django.test.client import Client, RequestFactory
 
 from shop import views
 
+
 class TestShopApi(TestCase):
     fixtures = ['products.json']
     
