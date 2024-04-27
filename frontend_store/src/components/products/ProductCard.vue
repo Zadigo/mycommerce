@@ -1,7 +1,7 @@
 <template>
   <article :data-id="product.id" :aria-label="product.name" class="card shadow-none rounded-0" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
     <router-link :to="{ name: 'shop_product', params: { id: product.id } }" class="link-dark">
-      <v-img :src="buildImagePath(product.get_main_image?.original)" :lazy-:src="buildImagePath(product.get_main_image?.original)" :alt="product.name" />
+      <v-img :src="parseMainImage(product)" :lazy-:src="parseMainImage(product)" :alt="product.name" />
     </router-link>
 
     <div v-if="isHovered" class="card-cover p-4">
@@ -37,8 +37,8 @@
 
 <script>
 import { ref } from 'vue'
-import { buildImagePath } from 'src/utils'
-import { useShopComposable } from 'composables/shop'
+// import { buildImagePath } from 'src/utils'
+import { useShopComposable, useUtilities } from 'composables/shop'
 
 import BaseSizeButton from '../BaseSizeButton.vue'
 import { useCartComposable } from 'src/composables/cart'
@@ -59,6 +59,7 @@ export default {
     }
   },
   setup () {
+    const { parseMainImage } = useUtilities()
     const { quickAddToCart, quickAddToCartNoSize } = useCartComposable()
     const { isLiked, handleLike } = useShopComposable()
     const isHovered = ref(false)
@@ -68,7 +69,7 @@ export default {
       isHovered,
       quickAddToCart,
       quickAddToCartNoSize,
-      buildImagePath,
+      parseMainImage,
       handleLike
     }
   },

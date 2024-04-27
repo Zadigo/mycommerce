@@ -9,7 +9,7 @@
               <!-- <vue-image-zoomer regular="../assets/img4.jpeg" zoom="../assets/img4.jpeg" @on-zoom="() => {}">
                 <img src="../assets/img4.jpeg" class="img-fluid" alt="">
               </vue-image-zoomer> -->
-              <v-img :src="buildImagePath(currentProduct.get_main_image?.original)" :lazy-src="buildImagePath(currentProduct.get_main_image?.original)" :alt="currentProduct.name" />
+              <v-img :src="parseMainImage(currentProduct)" :lazy-src="parseMainImage(currentProduct)" :alt="currentProduct.name" />
             </div>
 
             <!-- TODO: Detect which sections can be reusable components -->
@@ -36,15 +36,17 @@
 
               <!-- Price -->
               <p class="h5 fw-bold" aria-label="Product price">
-                {{ $n(parseFloat(currentProduct.get_price), 'currency') }}
+                <!-- {{ $n(parseFloat(currentProduct.get_price), 'currency') }} -->
               </p>
 
               <!-- Reviews -->
               <div class="fw-bold d-flex justify-content-start gap-1">
                 <a href="#" class="link-dark me-2">3 stars</a>
+
                 <div class="stars">
                   <font-awesome-icon v-for="i in 5" :key="i" :icon="['fas', 'star']" />
                 </div>
+
                 <span class="fs-6 fw-light text-body-secondary">
                   ({{ $t('avis', { n: 45 }) }})
                 </span>
@@ -52,9 +54,9 @@
 
               <!-- Variants -->
               <div id="variants" class="d-flex justify-content-start align-items-center gap-1 my-4">
-                <div v-for="product in currentProduct.variants" :key="product" class="variant">
-                  <router-link :to="{ name: 'shop_product', params: { id: product } }">
-                    <img src="../assets/img8.jpeg" class="img-fluid" width="50" height="50" alt="">
+                <div v-for="variant in currentProduct.variants" :key="variant.id" class="variant">
+                  <router-link :to="{ name: 'shop_product', params: { id: variant.id } }" :aria-label="`${variant.name} ${variant.color}`">
+                    <v-img :src="parseMainImage(variant, 'original')" :lazy-src="parseMainImage(variant, 'original')" :alt="variant.color" width="50" />
                   </router-link>
                 </div>
               </div>
@@ -111,14 +113,15 @@
         <div id="product-images" class="col-12">
           <div v-if="currentProduct.images" class="row g-1">
             <div v-for="image in currentProduct.images" :key="image.id" class="col-4">
-              <v-img :src="buildImagePath(image.original)" :lazy-src="buildImagePath(image.original)" :alt="image.name" />
+              <v-img :src="djangoMediaPath(image.original)" :lazy-src="djangoMediaPath(image.original)" :alt="image.name" />
             </div>
           </div>
-          <div v-else class="row g-1">
+
+          <!-- <div v-else class="row g-1">
             <div v-for="image in 6" :key="image.id" class="col-4">
               <v-img :src="buildImagePath('placeholder.svg', false, true)" :lazy-src="buildImagePath('placeholder.svg', false, true)" alt="Boutique" />
             </div>
-          </div>
+          </div> -->
         </div>
 
         <!-- More Products -->
@@ -211,14 +214,14 @@
 <script>
 import { ref, inject, defineAsyncComponent } from 'vue'
 import { mapActions, storeToRefs } from 'pinia'
-import { useSeoMeta } from 'unhead'
+// import { useSeoMeta } from 'unhead'
 import { useCart } from 'src/stores/cart'
 import { useAuthentication } from 'stores/authentication'
 import { useShop } from  'stores/shop'
-import { useSchemaOrg, defineProduct, defineBreadcrumb } from '@unhead/schema-org'
+// import { useSchemaOrg, defineProduct, defineBreadcrumb } from '@unhead/schema-org'
 import { useShopComposable } from 'composables/shop'
 import { useIntersectionObserver } from '@vueuse/core'
-import { useRouter, useRoute } from 'vue-router'
+// import { useRouter, useRoute } from 'vue-router'
 import { buildImagePath } from 'src/utils'
 import { useUtilities } from 'src/composables/shop'
 
@@ -251,15 +254,15 @@ export default {
   setup () {
     const documentVisible = inject('documentVisible')
 
-    const router = useRouter()
-    const route = useRoute()
+    // const router = useRouter()
+    // const route = useRoute()
     
     // Interceptor to check that the user has moved
     // down to the the "more-products" section of
     // the product page
     const intersectionTarget = ref(null)
 
-    const { localImagePath } = useUtilities()
+    const { localImagePath, parseMainImage, djangoMediaPath } = useUtilities()
 
     const { isLiked, handleLike } = useShopComposable()
 
@@ -278,43 +281,45 @@ export default {
       quantity: 1,
     })
 
-    const productPath = router.resolve({ name: 'shop_product', params: { id: route.params.id } })
-    setTimeout(() => {
-      useSeoMeta({
-        title: currentProduct.value.name,
-        description: currentProduct.value.description,
-        ogTitle: currentProduct.value.name,
-        ogDescription: currentProduct.value.description,
-        ogImage: buildImagePath(currentProduct.value.get_main_image.original),
-        twitterCard: 'summary_large_image',
-        ogSiteName: 'Ma Boutique'
-      })
+    // const productPath = router.resolve({ name: 'shop_product', params: { id: route.params.id } })
+    // setTimeout(() => {
+    //   useSeoMeta({
+    //     title: currentProduct.value.name,
+    //     description: currentProduct.value.description,
+    //     ogTitle: currentProduct.value.name,
+    //     ogDescription: currentProduct.value.description,
+    //     ogImage: buildImagePath(currentProduct.value.get_main_image.original),
+    //     twitterCard: 'summary_large_image',
+    //     ogSiteName: 'Ma Boutique'
+    //   })
 
-      useSchemaOrg([
-        defineProduct({
-          name: currentProduct.value.name,
-          itemCondition: 'NewCondition',
-          brand: 'My Brand',
-          logo: '',
-          description: currentProduct.value.description,
-          image: [
-            buildImagePath(currentProduct.value.get_main_image.original)
-          ],
-          offers: [
-            { 
-              price: currentProduct.value.price
-            }
-          ]
-        }),
-        defineBreadcrumb({
-          itemListElement: [
-            { name: 'Boutique', item: '/' },
-            { name: 'Soutien-Gorge', item: productPath.fullPath },
-            { name: currentProduct.value.name },
-          ],
-        })
-      ])
-    }, 800)
+    //   useSchemaOrg([
+    //     defineProduct({
+    //       name: currentProduct.value.name,
+    //       itemCondition: 'NewCondition',
+    //       brand: 'My Brand',
+    //       logo: '',
+    //       description: currentProduct.value.description,
+    //       image: [
+    //         buildImagePath(currentProduct.value.get_main_image.original)
+    //       ],
+    //       offers: [
+    //         { 
+    //           price: currentProduct.value.price
+    //         }
+    //       ]
+    //     }),
+    //     defineBreadcrumb({
+    //       itemListElement: [
+    //         { name: 'Boutique', item: '/' },
+    //         { name: 'Soutien-Gorge', item: productPath.fullPath },
+    //         { name: currentProduct.value.name },
+    //       ],
+    //     })
+    //   ])
+    // }, 800)
+
+    const productVariants = ref([])
 
     useIntersectionObserver(intersectionTarget, ([{ isIntersecting }], observerElement) => {
       observerElement
@@ -332,6 +337,9 @@ export default {
       currentProduct,
       authenticationStore,
       isLiked,
+      productVariants,
+      djangoMediaPath,
+      parseMainImage,
       localImagePath,
       handleLike,
       buildImagePath,
@@ -367,38 +375,38 @@ export default {
     this.intersectionTarget = this.$refs.moreProductsIntersect
   },
   beforeUpdate () {
-    useSeoMeta({
-      title: this.currentProduct.name,
-      description: this.currentProduct.description,
-      ogTitle: this.currentProduct.name,
-      ogDescription: this.currentProduct.description,
-      ogImage: this.currentProduct.get_main_image.original,
-      twitterCard: 'summary_large_image',
-      ogSiteName: 'Ma Boutique'
-    })
+    // useSeoMeta({
+    //   title: this.currentProduct.name,
+    //   description: this.currentProduct.description,
+    //   ogTitle: this.currentProduct.name,
+    //   ogDescription: this.currentProduct.description,
+    //   ogImage: this.currentProduct.get_main_image.original,
+    //   twitterCard: 'summary_large_image',
+    //   ogSiteName: 'Ma Boutique'
+    // })
 
-    useSchemaOrg([
-      defineProduct({
-        name: this.currentProduct.name,
-        itemCondition: 'NewCondition',
-        brand: 'My Brand',
-        logo: '',
-        description: this.currentProduct.description,
-        image: ['https://example.com/photos/16x9/photo.jpg'],
-        offers: [
-          {
-            price: this.currentProduct.price
-          }
-        ]
-      }),
-      defineBreadcrumb({
-        itemListElement: [
-          { name: 'Boutique', item: '/' },
-          { name: 'Soutien-Gorge', item: this.$route.fullPath },
-          { name: this.currentProduct.name },
-        ],
-      })
-    ])
+    // useSchemaOrg([
+    //   defineProduct({
+    //     name: this.currentProduct.name,
+    //     itemCondition: 'NewCondition',
+    //     brand: 'My Brand',
+    //     logo: '',
+    //     description: this.currentProduct.description,
+    //     image: ['https://example.com/photos/16x9/photo.jpg'],
+    //     offers: [
+    //       {
+    //         price: this.currentProduct.price
+    //       }
+    //     ]
+    //   }),
+    //   defineBreadcrumb({
+    //     itemListElement: [
+    //       { name: 'Boutique', item: '/' },
+    //       { name: 'Soutien-Gorge', item: this.$route.fullPath },
+    //       { name: this.currentProduct.name },
+    //     ],
+    //   })
+    // ])
   },
   beforeUnmount () {
     // window.removeEventListener('beforeunload', this.handleSendingStatistics)
@@ -426,12 +434,14 @@ export default {
     },
     async handleAddToCart () {
       // Handles the action of adding a product
-      // to the current user's cart
-      if (this.userSelection.size === null) {
+      // to the current user's cart. Products that
+      // require a size will force the user to
+      // select a size before handling the action
+      if (this.userSelection.size === null && this.currentProduct.has_size) {
         this.showSizeSelectionWarning = true
       } else {
-        this.cartStore.addToCart(this.currentProduct, this.userSelection)
         this.showAddedProductDrawer = true
+        this.cartStore.addToCart(this.currentProduct, this.userSelection)
       }
     },
     async handleViewingHistory () {

@@ -54,12 +54,6 @@
               <suspense>
                 <async-recommendations-block />
               </suspense>
-              <!-- <h2 class="h4 text-center">Cela peut t'intéresser</h2>
-              <div class="row products-wrapper">
-                <div v-for="searchedProduct in searchedProducts" :key="searchedProduct" class="col-3">
-                  <product-card :product="searchedProduct" />
-                </div>
-              </div> -->
             </div>
           </div>
         </v-card-text>
@@ -78,7 +72,7 @@
 
             <div class="row">
               <div class="col-4">
-                <v-img :src="buildImagePath(cartStore.lastAddedProduct.product.get_main_image.original)" :lazy-:src="buildImagePath(cartStore.lastAddedProduct.product.get_main_image.original)" :alt="cartStore.lastAddedProduct.product.name" />
+                <v-img :src="parseMainImage(cartStore.lastAddedProduct.product)" :lazy-:src="parseMainImage(cartStore.lastAddedProduct.product)" :alt="cartStore.lastAddedProduct.product.name" />
               </div>
 
               <div class="col-8">
@@ -158,7 +152,7 @@
               <div class="card-body p-2">
                 <div class="d-flex justify-content-start gap-2">
                   <div class="col-auto">
-                    <v-img :src="buildImagePath(item.product.get_main_image.original)" :lazy-src="buildImagePath(item.product.get_main_image.original)" :alt="item.product.name" :width="150" :height="150" />
+                    <v-img :src="parseMainImage(item.product)" :lazy-src="parseMainImage(item.product)" :alt="item.product.name" :width="150" :height="150" />
                   </div>
 
                   <div class="infos">
@@ -224,8 +218,7 @@
       <div class="container my-5">
         <div class="row">
           <div class="col-12">
-            <v-img :src="buildImagePath('placeholder.svg', false, true)" />
-            <!-- <v-img :src="buildImagePath(currentEditedProduct.product.get_main_image.original)" :lazy-src="buildImagePath(currentEditedProduct.product.get_main_image.original)" :alt="currentEditedProduct.product.name" /> -->
+            <v-img :src="localImagePath('size-guide.jpg')" />
           </div>
 
           <div class="col-12">
@@ -271,6 +264,7 @@ import { useAuthenticationComposable } from 'composables/authentication'
 // import { useUtilities } from 'composables/shop'
 import { useAuthentication } from 'stores/authentication'
 import { createMockupProducts, buildImagePath } from 'src/utils'
+import { useUtilities } from 'composables/shop'
 import { defineAsyncComponent } from 'vue'
 
 import BaseNavbar from 'components/BaseNavbar.vue'
@@ -288,6 +282,7 @@ export default {
     })
   },
   setup () {
+    const { parseMainImage, localImagePath } = useUtilities()
     const { email, password, login } = useAuthenticationComposable()
 
     // const { translatePrice } = useUtilities()
@@ -323,6 +318,8 @@ export default {
       cartStore,
       currentEditedProduct,
       // translatePrice,
+      localImagePath,
+      parseMainImage,
       buildImagePath,
       changedProduct,
       authenticationStore,

@@ -1,6 +1,6 @@
 <template>
   <div :data-count="quantity" class="recommendations">
-    <h2 class="h4 text-center">{{ blockTitle }}</h2>
+    <h2 class="h4 text-center mb-5">{{ blockTitle }}</h2>
     
     <div ref="productsRow" class="row">
       <div v-for="product in recommendations" :key="product.id" class="col-3">

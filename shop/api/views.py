@@ -51,6 +51,7 @@ def get_product(request, pk, **kwargs):
     """Returns the details for a specific given 
     product present in the shop"""
     product = get_object_or_404(Product, pk=pk)
+    variants = Product.objects.filter(name=product.name)
 
     is_admin = request.GET.get('admin', False)
     if is_admin == 'true':
@@ -58,7 +59,14 @@ def get_product(request, pk, **kwargs):
     else:
         serializer = shop_serializers.ProductSerializer
     serializer = serializer(instance=product)
-    return Response(serializer.data)
+
+    data = serializer.data
+    variants_serializer = shop_serializers.ColorVariantProductSerializer(
+        instance=variants,
+        many=True
+    )
+    data['variants'] = variants_serializer.data
+    return Response(data)
 
 
 @api_view(['get'])

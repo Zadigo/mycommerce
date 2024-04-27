@@ -204,18 +204,20 @@ class AbstractProduct(models.Model):
         return self.size_set.all()
 
     @property
-    def has_variants(self):
+    def has_sizes(self):
         """Checks if there are available
         sizes for the given product"""
-        return any([
-            self.size_set.all().exists()
-        ])
+        return self.sizes.exists()
 
     @property
     def product_collection(self):
         """Get the first collection in which the
         active product was classified in"""
         return self.collection_set.first()
+
+    @property
+    def color_variant_name(self):
+        return f'{self.name} {self.color}'
 
     def clean(self):
         if self.on_sale:

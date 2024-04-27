@@ -26,7 +26,8 @@ export default {
   props: {
     sizes: {
       type: Array,
-      required: true
+      required: true,
+      default: () => []
     }
   },
   emits: {

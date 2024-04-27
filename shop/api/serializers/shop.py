@@ -27,6 +27,17 @@ class ImageSerializer(Serializer):
     mid_size = fields.FileField()
 
 
+class ColorVariantProductSerializer(Serializer):
+    """Serializer used for sending data
+    to agents that require displaying
+    the color variants of a product"""
+
+    id = fields.IntegerField()
+    color = fields.CharField()
+    get_main_image = ImageSerializer(required=False)
+    active = fields.BooleanField()
+
+
 class ProductSerializer(Serializer):
     """Serializer used for sending data
     to agents that require displaying all
@@ -38,6 +49,7 @@ class ProductSerializer(Serializer):
     color = fields.CharField()
     category = fields.CharField()
     sizes = SizeSerializer(many=True)
+    has_sizes = fields.BooleanField()
     get_price = fields.DecimalField(5, 2)
     active = fields.BooleanField()
 
@@ -58,6 +70,7 @@ class ProductSerializer(Serializer):
     # on_sale = fields.BooleanField()
 
     # display_new = fields.BooleanField()
+    color_variant_name = fields.CharField()
     slug = fields.SlugField(required=False)
     modified_on = fields.DateField(required=False)
     created_on = fields.DateField(required=False)

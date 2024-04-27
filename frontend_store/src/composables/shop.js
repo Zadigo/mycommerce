@@ -33,6 +33,12 @@ export function useShopComposable () {
 }
 
 export function useUtilities () {
+  function localImagePath (path) {
+    // const image = new URL(`./assets/${path}`, import.meta.url)
+    // return image.toString()
+    return `/public/${path}`
+  }
+
   /**
    * Builds the full url path to the
    * django /media/ backend folder for
@@ -42,8 +48,9 @@ export function useUtilities () {
     let url
 
     if (path === null || typeof path === 'undefined') {
-      const image = new URL(`./assets/placeholder.svg`, import.meta.url)
-      return image.toString()
+      // const image = new URL(`./assets/placeholder.svg`, import.meta.url)
+      // return image.toString()
+      return localImagePath('placeholder.svg')
     }
 
     if (import.meta.env.DEV) {
@@ -58,11 +65,6 @@ export function useUtilities () {
 
     const finalUrl = new URL(path, url)
     return finalUrl.toString()
-  }
-
-  function localImagePath(path) {
-    const image = new URL(`./assets/${path}`, import.meta.url)
-    return image.toString()
   }
 
   function conditionalImagePath (path, fallback = 'placeholder.svg') {
@@ -90,7 +92,21 @@ export function useUtilities () {
     return n(priceNumber, 'currency')
   }
 
+  /**
+   * From a product object parse the path
+   * for the main image 
+   */
+  function parseMainImage(product, size = 'original') {
+    const data = product.get_main_image
+    if (data === null || typeof data === 'undefined') {
+      return localImagePath('placeholder.svg')
+    } else {
+      return djangoMediaPath(data[size])
+    }
+  }
+
   return {
+    parseMainImage,
     conditionalImagePath,
     djangoMediaPath,
     localImagePath,

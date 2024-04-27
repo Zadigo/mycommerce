@@ -14,6 +14,7 @@
                       Shop
                     </router-link>
                   </li>
+                  
                   <li class="breadcrumb-item active" aria-current="page">
                     Soutien-Gorge
                   </li>
@@ -32,6 +33,7 @@
             <template #default>
               <async-product-items :grid-size="currentGridSize" @update-products="handleSEO" />
             </template>
+
             <template #fallback>
               <loading-product-items />
             </template>
@@ -58,9 +60,7 @@ export default {
     DefaultFiltering,
     LoadingProductItems,
     AsyncProductItems: defineAsyncComponent({
-      loader: async () => import('components/products/ProductItems.vue'),
-      // loadingComponent: LoadingProductItems,
-      timeout: 10000
+      loader: async () => import('components/products/ProductItems.vue')
     })
   },
   setup () {

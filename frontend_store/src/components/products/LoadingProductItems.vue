@@ -7,14 +7,7 @@
 </template>
 
 <script>
-import { useUtilities } from 'composables/shop'
-
 export default {
-  setup () {
-    const { djangoMediaPath } = useUtilities()
-    return {
-      djangoMediaPath
-    }
-  }
+  name: 'LoadingProductItems'
 }
 </script>
