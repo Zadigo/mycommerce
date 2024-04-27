@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from collection.api import serializers
 from collection.models import Collection
 from mycommerce.utils import pagination_helper
-from shop.api.serializers import ProductSerializer
+from shop.api.serializers.shop import ProductSerializer
 from shop.models import Product
 
 

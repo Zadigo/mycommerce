@@ -1,4 +1,3 @@
-import os
 import pathlib
 import random
 import string
@@ -16,7 +15,7 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
 from mycommerce.choices import SubCategoryChoices
-from shop.choices import CategoryChoices, ColorChoices
+from shop.choices import ColorChoices
 from shop.utils import calculate_sale, create_slug, image_path, video_path
 from shop.validators import price_validator, validate_video_file_extension
 
