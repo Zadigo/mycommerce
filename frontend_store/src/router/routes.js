@@ -94,5 +94,14 @@ export const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/404',
+    name: 'not_found',
+    component: () => import('pages/ErrorNotFound.vue')
+  },
+  {
+    path: '/:catchAll(.*)*',
+    component: () => import('pages/ErrorNotFound.vue')
   }
 ]

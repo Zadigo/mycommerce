@@ -1,5 +1,5 @@
 <template>
-  <article :aria-label="product.name" class="card shadow-none rounded-0" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
+  <article :data-id="product.id" :aria-label="product.name" class="card shadow-none rounded-0" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
     <router-link :to="{ name: 'shop_product', params: { id: product.id } }" class="link-dark">
       <v-img :src="buildImagePath(product.get_main_image?.original)" :lazy-:src="buildImagePath(product.get_main_image?.original)" :alt="product.name" />
     </router-link>
@@ -14,7 +14,7 @@
             </div>
           </div>
 
-          <v-btn v-else variant="text" block rounded @click="handleSelectedNoSize">
+          <v-btn v-else variant="outlined" color="primary" block rounded @click="handleSelectedNoSize">
             {{ $t('Ajouter au panier') }}
           </v-btn>
         </div>
@@ -101,7 +101,7 @@ export default {
 
   .card-cover {
     position: absolute;
-    bottom: 20%;
+    bottom: 16%;
     left: 2%;
     right: 2%;
     height: auto;

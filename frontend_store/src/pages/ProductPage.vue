@@ -417,7 +417,11 @@ export default {
         const response = await this.$http.get(`shop/products/${this.$route.params.id}`)
         this.currentProduct = response.data
       } catch (e) {
-        console.log(e)
+        if (e.response.status === 404) {
+          this.$router.push({
+            name: 'not_found'
+          })
+        }
       }
     },
     async handleAddToCart () {

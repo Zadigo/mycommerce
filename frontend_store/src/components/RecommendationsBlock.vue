@@ -1,6 +1,7 @@
 <template>
   <div :data-count="quantity" class="recommendations">
     <h2 class="h4 text-center">{{ blockTitle }}</h2>
+    
     <div ref="productsRow" class="row">
       <div v-for="product in recommendations" :key="product.id" class="col-3">
         <product-card :product="product" />
@@ -13,8 +14,8 @@
 import { ref } from 'vue'
 import { client } from '../plugins/axios'
 import { getCurrentInstance } from 'vue'
-// import { createMockupProducts } from 'src/utils'
 import { useVueSession } from 'src/plugins/vue-storages'
+// import { createMockupProducts } from 'src/utils'
 
 import ProductCard from 'components/products/ProductCard.vue'
 

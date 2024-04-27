@@ -28,6 +28,7 @@ router.beforeEach((to, from, next) => {
 router.afterEach((to, from, failure) => {
   if (isNavigationFailure(failure)) {
     // Do something
+    console.log('navigation failure', failure, to, from)
   }
 })
 

@@ -5,6 +5,7 @@
         <product-card :product="product" />
       </template>
     </v-infinite-scroll> -->
+
     <div v-for="product in products" :key="product.id" :class="gridClass">
       <product-card :product="product" />
     </div>
@@ -14,6 +15,8 @@
 <script>
 import { ref, computed } from 'vue'
 import { client } from 'src/plugins/axios'
+import { useRoute, useRouter } from 'vue-router'
+
 // import { createMockupProducts } from '../../utils.js'
 
 import ProductCard from './ProductCard.vue'
@@ -35,16 +38,31 @@ export default {
     }
   },
   setup () {
+    const router = useRouter()
+    const route = useRoute()
+
     const cachedResponse = ref({})
     const products = ref([])
 
     async function requestProducts () {
       // products.value = createMockupProducts(30)
       try {
+        // TODO: Get the collection to get from
+        // the url parameters
+        const collectionName = route.params.id
+        collectionName
+
         const response = await client.get(`collection/all`)
         cachedResponse.value = response.data
         products.value = cachedResponse.value.results
       } catch (e) {
+        // If we fail to get the collectionName
+        // redirect to the 404 page
+        if (e.response.status === 404) {
+          router.push({
+            name: 'not_found'
+          })
+        }
         console.error(e)
       }
     }

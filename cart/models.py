@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from cart.managers import CartManager
 from shop.choices import ClotheSizesChoices
 from shop.models import Product
 
-from cart.managers import CartManager
-
 USER_MODEL = get_user_model()
+
 
 class AbstractCart(models.Model):
     session_id = models.CharField(
@@ -48,12 +49,12 @@ class AbstractCart(models.Model):
         ]
 
     def __str__(self):
-        return self.session_id
+        return f'Session: {self.session_id}'
 
 
 class Cart(AbstractCart):
     objects = CartManager.as_manager()
-    
+
     class Meta(AbstractCart.Meta):
         verbose_name = _('Cart')
         verbose_name_plural = _('Carts')
