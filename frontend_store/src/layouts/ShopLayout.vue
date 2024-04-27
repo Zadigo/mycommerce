@@ -263,7 +263,7 @@ import { useCart } from 'src/stores/cart'
 import { useAuthenticationComposable } from 'composables/authentication'
 // import { useUtilities } from 'composables/shop'
 import { useAuthentication } from 'stores/authentication'
-import { createMockupProducts, buildImagePath } from 'src/utils'
+import { createMockupProducts } from 'src/utils'
 import { useUtilities } from 'composables/shop'
 import { defineAsyncComponent } from 'vue'
 
@@ -320,7 +320,6 @@ export default {
       // translatePrice,
       localImagePath,
       parseMainImage,
-      buildImagePath,
       changedProduct,
       authenticationStore,
       showAddedProductDrawer,

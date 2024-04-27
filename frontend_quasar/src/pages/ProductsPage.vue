@@ -119,7 +119,7 @@ export default {
       selected: []
     })
 
-    const showUploadProductsFile = ref(true)
+    const showUploadProductsFile = ref(false)
     const productsFile = ref(null)
     
     return {

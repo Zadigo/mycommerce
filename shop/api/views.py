@@ -2,7 +2,7 @@ from mimetypes import guess_extension
 
 from django.core.files.images import ImageFile
 from django.core.validators import FileExtensionValidator
-from django.db.models import CharField, Q, Value
+from django.db.models import F, CharField, Q, Value
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -215,7 +215,11 @@ def upload_images_to_product(request, pk, **kwargs):
     product.images.add(*created_images)
     product.save()
 
-    serializer = _serializers.ImageSerializer(
+    first_image = product.images.first()
+    first_image.is_main_image = ~F('is_main_image')
+    first_image.save()
+
+    serializer = shop_serializers.ImageSerializer(
         instance=product.images.all(),
         many=True
     )
