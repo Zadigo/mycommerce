@@ -49,10 +49,11 @@ class CartManager(QuerySet):
 
     def _add_to_cart(self, request, session_id, product, **kwargs):
         if not product.active:
-            raise ProductActiveError('Product is not active')
+            raise ProductActiveError({'product': 'Product is not active'})
 
         # TODO: product.get_price
-        price = product.sale_price if product.on_sale else product.unit_price
+        # price = product.sale_price if product.on_sale else product.unit_price
+        price = product.get_price
 
         params = {
             'session_id': session_id,
@@ -69,9 +70,9 @@ class CartManager(QuerySet):
         queryset = self.filter(session_id__iexact=session_id)
 
         if request.user.is_authenticated:
-            # If the user is now authenticated but had items from 
-            # a previous session where he was not authenticated, 
-            # implement the user object on the foreign key of 
+            # If the user is now authenticated but had items from
+            # a previous session where he was not authenticated,
+            # implement the user object on the foreign key of
             # the anonymous cart items
             for item in queryset:
                 item.user = request.user

@@ -42,12 +42,12 @@ def cart_view(request, pk, **kwargs):
 @permission_classes([AllowAny])
 def add_to_cart(request, **kwargs):
     """Add a product to the cart"""
-    print(request.data)
     validator = ValidateCart(data=request.data)
     validator.is_valid(raise_exception=True)
 
-    session_id, queryset = validator.save(request)
-    return simple_api_response(build_cart_response(queryset, session_id))
+    # session_id, queryset = validator.save(request)
+    # return simple_api_response(build_cart_response(queryset, session_id))
+    return Response({'status': True})
 
 
 @api_view(['post'])

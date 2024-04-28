@@ -1,4 +1,4 @@
-// import { client } from 'src/plugins/axios'
+import { client } from 'src/plugins/axios'
 import { useCart } from 'src/stores/cart'
 import { getCurrentInstance, ref } from 'vue'
 
@@ -14,15 +14,27 @@ export function useCartComposable () {
   })
 
   const showSizeSelectionWarning = ref(false)
+  const stockDetailsResponse = ref({})
+
+  /**
+   * This callback internal function can be used
+   * to get details on the current stock of a given
+   * product in the database 
+   */
+  async function requestCheckStock (id) {
+    id
+    stockDetailsResponse.value = {}
+  }
 
   async function requestAddToCart (data) {
-    data
-    // try {
-    //   // const response = await client.post('cart', data)
-    //   // return response
-    // } catch (e) {
-    //   console.error(e)
-    // }
+    try {
+      const response = await client.post('cart/add', data)
+      await requestCheckStock()
+      return response
+    } catch (e) {
+      console.error(e)
+      return {}
+    }
   }
 
   /**
@@ -97,6 +109,7 @@ export function useCartComposable () {
   return {
     userSelection,
     showSizeSelectionWarning,
+    stockDetailsResponse,
     addToCartNoSize,
     deleteFromCart,
     quickAddToCartNoSize,

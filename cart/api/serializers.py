@@ -30,7 +30,7 @@ def build_cart_response(queryset, session_id):
 
 class CartSerializer(Serializer):
     """Serializes the cart objects"""
-    
+
     id = fields.IntegerField()
     product = ProductSerializer()
     default_size = fields.CharField()
@@ -45,15 +45,17 @@ class ValidateVariants(Serializer):
     )
 
 
+class ValidateProduct(Serializer):
+    id = fields.IntegerField()
+    color = fields.CharField()
+
+
 class ValidateCart(Serializer):
     """Validates the data used to create a
     cart item in the database"""
 
-    product = fields.IntegerField()
-    default_size = fields.ChoiceField(
-        ClotheSizesChoices.choices(),
-        default=ClotheSizesChoices.default('S')
-    )
+    product = ValidateProduct()
+    default_size = fields.CharField()
     session_id = fields.CharField(allow_null=True)
 
     def list_items(self, **kwargs):
@@ -62,18 +64,13 @@ class ValidateCart(Serializer):
 
     def create(self, validated_data):
         data = validated_data.copy()
-        product_id = data.pop('product')
+        product_id = data.pop('product')['id']
         product = get_object_or_404(Product, id=product_id)
         return Cart.objects.rest_api_add_to_cart(self.request, product, **data)
 
     def save(self, request, **kwargs):
         setattr(self, 'request', request)
         return super().save(**kwargs)
-        # validated_data = {**self.validated_data, **kwargs}
-
-        # if self.instance is not None:
-        #     return self.update(self.instance, validated_data)
-        # return self.create(validated_data, request=request)
 
     def delete(self, request, **kwargs):
         product_id = self.validated_data['product']
