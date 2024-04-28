@@ -1,30 +1,29 @@
 <template>
   <shop-layout>
     <section id="product" class="container-fluid my-5">
+      <!-- Product -->
       <div class="row gy-1">
-        <!-- Product -->
         <div id="product-image" class="col-12">
-          <div class="row">
-            <div id="product-image" class="col-6">
-              <!-- <vue-image-zoomer regular="../assets/img4.jpeg" zoom="../assets/img4.jpeg" @on-zoom="() => {}">
-                <img src="../assets/img4.jpeg" class="img-fluid" alt="">
-              </vue-image-zoomer> -->
+          <div class="row row-cols-5">
+            <div id="product-main-image" class="col-6">
               <v-img :src="parseMainImage(currentProduct)" :lazy-src="parseMainImage(currentProduct)" :alt="currentProduct.name" />
             </div>
 
             <!-- TODO: Detect which sections can be reusable components -->
-            <div id="product-information" class="col-6">
+            <div id="product-information" class="col-4 ms-5">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item">
                   <router-link :to="{ name: 'shop_products' }">
                     Shop
                   </router-link>
                 </li>
+
                 <li class="breadcrumb-item">
                   <router-link :to="{ name: 'shop_products_collection', params: { id: 'soutien-gorge' } }">
                     Soutien-Gorge
                   </router-link>
                 </li>
+
                 <li class="breadcrumb-item active" aria-current="page">
                   {{ currentProduct.name }}
                 </li>
@@ -32,22 +31,22 @@
 
               <!-- Information -->
               <h1 class="h3 fw-bold" aria-label="Product name">{{ currentProduct.name }}</h1>
-              
+
               <!-- Reference -->
               <p class="fw-light text-body-secondary mb-2" aria-label="Product reference">
                 Ref. 3970/623/800
               </p>
 
               <!-- Price -->
-              <p class="h5 fw-bold mb-5" aria-label="Product price">
+              <p class="h5 fw-bold mb-3" aria-label="Product price">
                 {{ translatePrice(currentProduct.get_price) }}
               </p>
 
               <!-- Reviews -->
               <div class="fw-bold d-flex justify-content-start gap-1">
-                <a href="#" class="link-dark me-2">3 stars</a>
+                <!-- <a href="#" class="link-dark me-3">3 stars</a> -->
 
-                <div class="stars">
+                <div aria-label="3 stars" data-rating="3" class="stars">
                   <font-awesome-icon v-for="i in 5" :key="i" :icon="['fas', 'star']" />
                 </div>
 
@@ -70,13 +69,13 @@
 
               <!-- Size Guide -->
               <p class="mt-4 d-flex justify-content-start gap-3">
-                <a href class="btn btn-text btn-rounded fw-bold shadow-none" @click.prevent="sizeGuideDrawer = true">
-                  <v-icon icon="fas fa-ruler" class="me-2" /> {{ $t('Guide des tailles') }}
+                <a href class="btn btn-light btn-rounded fw-bold shadow-none" @click.prevent="sizeGuideDrawer = true">
+                  <v-icon icon="mdi-ruler" class="me-2" /> {{ $t('Guide des tailles') }}
                 </a>
 
-                <span class="fw-light">
+                <!-- <span class="fw-light">
                   {{ $t('Taille porté', { size: 'S' }) }} | {{ $t('Taille du mannequin', { heigth: 176 }) }}
-                </span>
+                </span> -->
               </p>
 
               <transition id="choose-size" tag="div" name="opacity">
@@ -89,7 +88,7 @@
                   Ajouter au panier
                 </button>
 
-                <button type="button" class="btn btn-primary btn-lg shadow-none btn-rounded" aria-label="Like product" @click="handleLike">
+                <button type="button" class="btn btn-lg shadow-none btn-rounded btn-light" aria-label="Like product" @click="handleLike">
                   <font-awesome-icon v-if="isLiked" :icon="['fas', 'heart']" />
                   <font-awesome-icon v-else :icon="['far', 'heart']" />
                 </button>
@@ -109,29 +108,28 @@
                   <span class="fw-bold text-uppercase">Gratuit</span>
                 </div>
               </div>
+
+              <!-- Additional Information -->
+              <div class="py-3 bg-white mt-4 d-flex justify-content-start align-items-center gap-2">
+                <a href class="link-dark fw-bold" aria-label="Livraison et retour" @click.prevent="showCompositionDrawer = true">
+                  Composition, soin et traçabilité
+                </a> |
+
+                <a href class="link-dark fw-bold" aria-label="Livraison et retour" @click.prevent="showDeliveryDrawer = true">
+                  Livraison et retour
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- More Product Images -->
-        <!-- <div id="product-images" class="col-12">
-          <div v-if="currentProduct.images" class="row g-1">
-            <div v-for="image in currentProduct.images" :key="image.id" class="col-4">
-              <v-img :src="djangoMediaPath(image.original)" :lazy-src="djangoMediaPath(image.original)" :alt="image.name" />
-            </div>
-          </div>
-        </div> -->
         <component :is="imageComponent" :images="currentProduct.images" />
+      </div>
 
-        <!-- More Products -->
-        <!-- TODO: Make this a component: ProductsRecommentation.vue -->
-        <div id="more-products" ref="moreProductsIntersect" class="col-12 mt-5">
-          <!-- <h2 class="h4 text-center mb-4">Cela peut t'intéresser</h2>
-          <div class="row g-1">
-            <div v-for="product in moreProducts" :key="product" class="col-sm-6 col-md-3">
-              <product-card :product="product" />
-            </div>
-          </div> -->
+      <!-- More Products -->
+      <div ref="moreProductsIntersect" class="row g-1 my-5">
+        <div id="more-products" class="col-12">
           <suspense>
             <template #default>
               <async-recommendation-block :quantity="30" />
@@ -147,7 +145,7 @@
       <!-- Modals -->
 
       <!-- Size Guide -->
-      <v-navigation-drawer id="size-guide" v-model="sizeGuideDrawer" width="400" location="right" temporary>
+      <v-navigation-drawer id="size-guide-modal" v-model="sizeGuideDrawer" width="400" location="right" temporary>
         <v-toolbar class="border-bottom" color="white">
           <v-toolbar-title class="fw-bold">Guide des tailles</v-toolbar-title>
 
@@ -203,6 +201,97 @@
                 autour de la partie la plus large de ton tour de hanche.
               </p>
             </div>
+          </div>
+        </div>
+      </v-navigation-drawer>
+
+      <!-- Delivery And Returns -->
+      <v-navigation-drawer id="composition-modal" v-model="showCompositionDrawer" width="400" location="right" temporary>
+        <div class="container my-4 fw-light">
+          <h4 class="h5 mb-1 mt-3">Composition</h4>
+          <ul>
+            <li>75% viscose</li>
+            <li>22% polyamide</li>
+            <li>3% élasthanne</li>
+          </ul>
+        </div>
+      </v-navigation-drawer>
+
+      <!-- Delivery And Returns -->
+      <v-navigation-drawer id="delivery-modal" v-model="showDeliveryDrawer" width="400" location="right" temporary>
+        <div class="container my-4 fw-light">
+          <div class="row">
+            <p class="fw-bold mb-1 mt-3">Livraison:</p>
+            <p>Livraison en magasinGRATUITE</p>
+
+            <p class="fw-bold mb-1 mt-3">Dans le magasin de votre choix</p>
+            <p>en 2-4 jours ouvrables</p>
+
+            <div>
+              <div class="d-flex justify-content-between fw-bold">
+                <span>Standard</span>
+                <span>4.95€</span>
+              </div>
+              <p>En 2-5 jours ouvrables</p>
+            </div>
+
+            <div>
+              <div class="d-flex justify-content-between fw-bold">
+                <span>Express</span>
+                <span>9.95€</span>
+              </div>
+              <p>En 2-3 jours ouvrables</p>
+            </div>
+
+            <div>
+              <div class="d-flex justify-content-between fw-bold">
+                <span>Point Relais Colis</span>
+                <span>3.95€</span>
+              </div>
+              <p>En 2-4 jours ouvrables</p>
+            </div>
+
+            <h4 class="h5">Remboursement:</h4>
+
+            <p class="fw-bold mb-1 mt-3">Remboursement</p>
+            <p>Vous disposez de 30 jours à compter de la date d'expédition de la commande Les retours en magasin sont toujours GRATUITS</p>
+
+            <p>Vous pouvez restituer un produit dans l'un de nos magasins situé dans le pays dans lequel vous avez effectué votre achat.</p>
+
+            <p class="fw-bold mb-1 mt-3">Retour en point relais</p>
+            <p>
+              Tu peux demander à retourner un article via l'un de nos points relais dans la
+              section « Mon Compte » de notre site en sélectionnant « Retour en point relais ».
+              Cette option est gratuite si tu effectues ton premier retour en point relais dans les 15 premiers
+              jours de la période de retour. Si tu effectues ton retour en point relais une fois les 15 premiers
+              jours de la période de retour passés, ou si c’est ta deuxième demande de retour pour la même commande,
+              les frais de retour seront de 4,95€.
+            </p>
+
+            <div class="mt-3">
+              <div class="d-flex justify-content-between fw-bold">
+                <span>Retour à domicile</span>
+                <span>5,95€</span>
+              </div>
+              <p>
+                Vous pouvez demander le retour d'un produit via un
+                ramassage par un transporteur en visitant la section "Mon Compte" sur notre
+                site Web et en sélectionnant "Retour à domicile". Cette option a un coût de 5,95€.
+              </p>
+            </div>
+
+            <p class="fw-bold mb-1 mt-3">Ne peuvent être ni échangés ni retournés :</p>
+            <ul>
+              <li>Les articles personnalisés</li>
+              <li>Les sous-vêtements</li>
+              <li>Les boucles d'oreilles</li>
+              <li>Les accessoires pour les cheveux</li>
+              <li>Les casquettes et les chapeaux</li>
+              <li>Articles imprimés sur demande</li>
+              <li>Produits The Bershka Print Shop</li>
+            </ul>
+
+            <a href="#" class="mt-3">Consulte ici les conditions et exceptions pour les retours et les échanges</a>
           </div>
         </div>
       </v-navigation-drawer>
@@ -277,6 +366,8 @@ export default {
     const { showAddedProductDrawer } = storeToRefs(cartStore)
 
     const sizeGuideDrawer = ref(false)
+    const showDeliveryDrawer = ref(false)
+    const showCompositionDrawer = ref(false)
     const showSizeSelectionWarning = ref(false)
 
     const currentProduct = ref({})
@@ -336,6 +427,8 @@ export default {
       cartStore,
       shopStore,
       sizeGuideDrawer,
+      showCompositionDrawer,
+      showDeliveryDrawer,
       showAddedProductDrawer,
       userSelection,
       currentProduct,
