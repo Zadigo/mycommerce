@@ -380,7 +380,7 @@ export default {
       this.$router.push({ 
         name: 'shop_products_collection', 
         params: {
-          id: 'new'
+          id: 'novelties'
         }
       })
     },

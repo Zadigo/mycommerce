@@ -32,11 +32,15 @@
 
               <!-- Information -->
               <h1 class="h3 fw-bold" aria-label="Product name">{{ currentProduct.name }}</h1>
-              <p class="fw-light text-body-secondary" aria-label="Product reference">Ref. 3970/623/800</p>
+              
+              <!-- Reference -->
+              <p class="fw-light text-body-secondary mb-2" aria-label="Product reference">
+                Ref. 3970/623/800
+              </p>
 
               <!-- Price -->
-              <p class="h5 fw-bold" aria-label="Product price">
-                <!-- {{ $n(parseFloat(currentProduct.get_price), 'currency') }} -->
+              <p class="h5 fw-bold mb-5" aria-label="Product price">
+                {{ translatePrice(currentProduct.get_price) }}
               </p>
 
               <!-- Reviews -->
@@ -53,7 +57,7 @@
               </div>
 
               <!-- Variants -->
-              <div id="variants" class="d-flex justify-content-start align-items-center gap-1 my-4">
+              <div v-if="hasColorVariants" id="variants" class="d-flex justify-content-start align-items-center gap-1 my-4">
                 <div v-for="variant in currentProduct.variants" :key="variant.id" class="variant">
                   <router-link :to="{ name: 'shop_product', params: { id: variant.id } }" :aria-label="`${variant.name} ${variant.color}`">
                     <v-img :src="parseMainImage(variant, 'original')" :lazy-src="parseMainImage(variant, 'original')" :alt="variant.color" width="50" />
@@ -66,8 +70,8 @@
 
               <!-- Size Guide -->
               <p class="mt-4 d-flex justify-content-start gap-3">
-                <a href class="fw-bold" @click.prevent="sizeGuideDrawer = true">
-                  {{ $t('Guide des tailles') }}
+                <a href class="btn btn-text btn-rounded fw-bold shadow-none" @click.prevent="sizeGuideDrawer = true">
+                  <v-icon icon="fas fa-ruler" class="me-2" /> {{ $t('Guide des tailles') }}
                 </a>
 
                 <span class="fw-light">
@@ -110,19 +114,14 @@
         </div>
 
         <!-- More Product Images -->
-        <div id="product-images" class="col-12">
+        <!-- <div id="product-images" class="col-12">
           <div v-if="currentProduct.images" class="row g-1">
             <div v-for="image in currentProduct.images" :key="image.id" class="col-4">
               <v-img :src="djangoMediaPath(image.original)" :lazy-src="djangoMediaPath(image.original)" :alt="image.name" />
             </div>
           </div>
-
-          <!-- <div v-else class="row g-1">
-            <div v-for="image in 6" :key="image.id" class="col-4">
-              <v-img :src="buildImagePath('placeholder.svg', false, true)" :lazy-src="buildImagePath('placeholder.svg', false, true)" alt="Boutique" />
-            </div>
-          </div> -->
-        </div>
+        </div> -->
+        <component :is="imageComponent" :images="currentProduct.images" />
 
         <!-- More Products -->
         <!-- TODO: Make this a component: ProductsRecommentation.vue -->
@@ -212,6 +211,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import { ref, inject, defineAsyncComponent } from 'vue'
 import { mapActions, storeToRefs } from 'pinia'
 // import { useSeoMeta } from 'unhead'
@@ -232,13 +232,17 @@ import { useUtilities } from 'src/composables/shop'
 import 'vue-image-zoomer/dist/style.css'
 
 import BaseSizeBlock from 'src/components/BaseSizeBlock.vue'
+import FiveImages from 'src/components/product/FiveImages.vue'
 import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
+import SixImages from 'src/components/product/SixImages.vue'
 // import ProductCard from 'components/products/ProductCard.vue'
 
 export default {
   name: 'ProductPage',
   components: {
     BaseSizeBlock,
+    FiveImages,
+    SixImages,
     LoadingRecommendationsBlock,
     // ProductCard,
     // VueImageZoomer,
@@ -262,7 +266,7 @@ export default {
     // the product page
     const intersectionTarget = ref(null)
 
-    const { localImagePath, parseMainImage, djangoMediaPath } = useUtilities()
+    const { localImagePath, parseMainImage, djangoMediaPath, translatePrice } = useUtilities()
 
     const { isLiked, handleLike } = useShopComposable()
 
@@ -340,10 +344,30 @@ export default {
       productVariants,
       djangoMediaPath,
       parseMainImage,
+      translatePrice,
       localImagePath,
       handleLike,
       buildImagePath,
       showSizeSelectionWarning
+    }
+  },
+  computed: {
+    imageComponent () {
+      // Returns the proper image component to display
+      // the remaining images for the given product
+      if (this.currentProduct.images?.length === 6) {
+        return 'six-images'
+      } else if (this.currentProduct.images?.length === 5) {
+        return 'five-images'
+      } else {
+        return 'six-images'
+      }
+    },
+    hasColorVariants () {
+      const variants = _.filter(this.currentProduct.variants, (product) => {
+        return product.id !== this.currentProduct.id
+      })
+      return variants.length > 0
     }
   },
   watch: {
@@ -484,5 +508,9 @@ export default {
 
 .products-wrapper::-webkit-scrollbar {
   display: none;
+}
+
+p[aria-label="Product reference"] {
+  font-size: 0.8rem;
 }
 </style>

@@ -40,16 +40,13 @@ def get_collection(request, name, **kwargs):
         )
         products = products.order_by('-created_on')
 
-        paginator, serializer_instance, _ = pagination_helper(
+        instance = pagination_helper(
             request,
             products,
             ProductSerializer,
             response_only=False
         )
-        paginated_products = paginator.get_response_dict(
-            serializer_instance.data
-        )
-        data_to_return = {**paginated_products, **collection_data}
+        data_to_return = instance.get_template(**collection_data)
         data_to_return['infos'] = {'total_count': products.count()}
         return Response(data=data_to_return)
 

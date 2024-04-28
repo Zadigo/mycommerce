@@ -5,7 +5,7 @@
         <div class="col-sm-12 col-md-10 offset-md-1">
           <div class="row g-1">
             <div v-for="i in 6" :key="i" class="col-sm-12 col-md-4 my-1">
-              <router-link :to="{ name: 'shop_products_collection', params: { id: 'my-collection'} }">
+              <router-link :to="{ name: 'shop_products_collection', params: { id: 'all'} }">
                 <article class="card shadow-none" aria-label="">
                   <img src="../../assets/img3.jpeg" alt="" class="card-img" />
                   <h1 class="text-white text-center">Collection name</h1>
@@ -37,11 +37,11 @@ export default {
   mounted () {
     this.requestCollectionNames()
     // TODO: Analytics does not work
-    this.$analytics('event', 'page_view', {
-      page_title: 'Soutien-Gorge',
-      page_location: window.location.origin,
-      page_path: this.$route.fullPath,
-    })
+    // this.$analytics('event', 'page_view', {
+    //   page_title: 'Soutien-Gorge',
+    //   page_location: window.location.origin,
+    //   page_path: this.$route.fullPath,
+    // })
   },
   methods: {
     async requestCollectionNames () {

@@ -40,6 +40,7 @@ class ShoeSizesChoices:
 
 
 class ColorChoices(Choices):
+    PRINTS = 'Prints'
     BLACK = 'Black'
     BEIGE = 'Beige'
     CAMEL = 'Camel'
@@ -47,8 +48,11 @@ class ColorChoices(Choices):
     CREAM = 'Cream'
     GREEN = 'Green'
     GREY = 'Grey'
+    KAKI = 'Kaki'
     MARINE = 'Marine'
     NAVY = 'Navy'
+    ORANGE = 'Orange'
+    PINK = 'Pink'
     RED = 'Red'
     TAUPE = 'Taupe'
     WHITE = 'White'

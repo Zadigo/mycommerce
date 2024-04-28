@@ -1,9 +1,9 @@
 <template>
   <div :data-count="quantity" class="recommendations">
     <h2 class="h4 text-center mb-5">{{ blockTitle }}</h2>
-    
-    <div ref="productsRow" class="row">
-      <div v-for="product in recommendations" :key="product.id" class="col-3">
+
+    <div ref="productsRow" class="row g-1">
+      <div v-for="product in recommendations" :key="product.id" :class="rowClass">
         <product-card :product="product" />
       </div>
     </div>
@@ -37,6 +37,10 @@ export default {
     },
     scrollable: {
       type: Boolean
+    },
+    columns: {
+      type: Number,
+      default: 3
     }
   },
   async setup () {
@@ -63,6 +67,16 @@ export default {
     
     return {
       recommendations
+    }
+  },
+  computed: {
+    rowClass () {
+      return [
+        {
+          'col-2': this.columns === 2,
+          'col-3': this.columns === 3
+        }
+      ]
     }
   },
   mounted () {

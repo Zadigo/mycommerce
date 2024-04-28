@@ -14,7 +14,9 @@ import router from './router'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import colors from 'vuetify/util/colors'
-import { aliases, mdi } from 'vuetify/iconsets/mdi'
+// import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
+// import { aliases, fa } from 'vuetify/iconsets/fa'
 
 import './style.css'
 import 'vuetify/styles'
@@ -82,6 +84,7 @@ const vuetify = createVuetify({
     aliases,
     sets: {
       mdi
+      // fa
     }
   }
 })

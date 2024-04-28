@@ -1,7 +1,9 @@
 import json
+from mimetypes import guess_type
 
 import pandas
 from django.core.validators import FileExtensionValidator
+from django.db import IntegrityError
 from django.db.models import Value
 from rest_framework import fields
 from rest_framework.exceptions import ValidationError
@@ -44,43 +46,66 @@ class ValidateUpdateProduct(Serializer):
 class ValidateFileUpload(Serializer):
     file = fields.FileField()
 
-    # def validate(self, attrs):
-    #     file = attrs['file']
-    #     validator = FileExtensionValidator(allowed_extensions=['json', 'csv'])
-    #     validator(file.name)
-    #     return super().validate(attrs)
+    def validate(self, attrs):
+        file = attrs['file']
+        validator = FileExtensionValidator(allowed_extensions=['json', 'csv'])
+        validator(file)
+
+        max_accepted_size = 100 * 1000000
+        if file.size > max_accepted_size:
+            raise ValidationError({
+                'file': 'The maximum size of a file should be 100MB'
+            })
+        return super().validate(attrs)
 
     def create(self, validated_data):
         file = validated_data['file']
 
-        expected_columns = ['name', 'price']
-        df = pandas.read_json(file)
-
-        actual_columns = []
-        for column in df.columns:
-            if column in expected_columns:
-                actual_columns.append(column)
-
-        if not actual_columns:
-            raise ValidationError(detail={
-                'columns': 'Missing columns'
+        lhv, _ = guess_type(file.name)
+        if lhv == 'application/json':
+            df = pandas.read_json(file)
+        elif lhv == 'application/vnd.ms-excel':
+            df = pandas.read_csv(file)
+        else:
+            raise ValidationError({
+                'file': 'Filetype is not valid. Accepted files are .json and .csv'
             })
 
-        df = df[actual_columns]
+        allowed_columns = ['name', 'color', 'price']
+
+        columns_to_use = []
+        for column in df.columns:
+            if column in allowed_columns:
+                columns_to_use.append(column)
+
+        if not columns_to_use:
+            raise ValidationError(detail={
+                'columns': f'Missing one of the following columns: {','.join(allowed_columns)}'
+            })
+
+        df = df[columns_to_use]
         df.name = df.name.map(clean_text)
         empty_names = df[df.name.isna()]
         df = df.loc[~df.name.isna()]
         print(df)
+        setattr(self, '_db_creation_errors', [])
 
         def create_new_products():
             for row in df.itertuples(name='Product'):
-                yield Product.objects.create(
-                    name=Value(row.name),
-                    price=Value(row.price)
-                )
-        # products = list(create_new_products())
-
-        return [Product.objects.first()]
+                try:
+                    yield Product.objects.create(
+                        name=row.name,
+                        unit_price=row.price,
+                        color=row.color
+                    )
+                except IntegrityError:
+                    # Instead of raising an error with the
+                    # creation process when we get an integrity
+                    # error, just catch the products that were
+                    # not created and return them to the user
+                    self._db_creation_errors.append(row.name)
+        products = list(create_new_products())
+        return products
 
 
 class AdminProductSerializer(Serializer):

@@ -2,6 +2,6 @@ import WebFontLoader from 'webfontloader'
 
 WebFontLoader.load({
   google: {
-    families: ['Roboto', 'Oswald']
+    families: ['Roboto', 'Ruda', 'Work sans', 'Poppins']
   }
 })

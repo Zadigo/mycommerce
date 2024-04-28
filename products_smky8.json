@@ -1,6 +1,7 @@
 [
     {
-        "name": "Jupe midi popeline taille élastique",
+        "name": "Jupe midi popeline taille élastique",
+        "color": "White",
         "id_or_reference": "Ref 1089/207/712",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-midi-popeline-taille-%C3%A9lastique-c0p158334610.html?colorId=712&stylismId=11",
@@ -17,6 +18,7 @@
     },
     {
         "name": "Minijupe cargo serge ceinture",
+        "color": "White",
         "id_or_reference": "Ref 1075/665/250",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/minijupe-cargo-serge-ceinture-c0p149435074.html?colorId=250",
@@ -32,6 +34,7 @@
     },
     {
         "name": "Jupe-culotte paréo plissée",
+        "color": "White",
         "id_or_reference": "Ref 1241/168/251",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-culotte-par%C3%A9o-pliss%C3%A9e-c0p154819330.html?colorId=251",
@@ -48,6 +51,7 @@
     },
     {
         "name": "Minijupe bouffante",
+        "color": "Black",
         "id_or_reference": "Ref 1085/168/250",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/minijupe-bouffante-c0p152857323.html?colorId=250",
@@ -64,6 +68,7 @@
     },
     {
         "name": "Minijupe bouffante",
+        "color": "Black",
         "id_or_reference": "Ref 1085/168/800",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/minijupe-bouffante-c0p151697755.html?colorId=800",
@@ -81,6 +86,7 @@
     },
     {
         "name": "Jupe midi imprimée",
+        "color": "Prints",
         "id_or_reference": "Ref 1102/745/800",
         "price": 22.99,
         "url": "https://www.bershka.com/fr/jupe-midi-imprim%C3%A9e-c0p156293021.html?colorId=800",
@@ -96,6 +102,7 @@
     },
     {
         "name": "Minijupe plissée élastiquée popeline contrastante",
+        "color": "Brown",
         "id_or_reference": "Ref 3216/602/830",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/minijupe-pliss%C3%A9e-%C3%A9lastiqu%C3%A9e-popeline-contrastante-c0p149435325.html?colorId=830",
@@ -112,6 +119,7 @@
     },
     {
         "name": "Minijupe à volants",
+        "color": "White",
         "id_or_reference": "Ref 1094/019/712",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/minijupe-%C3%A0-volants-c0p154136104.html?colorId=712",
@@ -127,6 +135,7 @@
     },
     {
         "name": "Jupe midi fendue imprimée",
+        "color": "Prints",
         "id_or_reference": "Ref 1087/187/746",
         "price": 22.99,
         "url": "https://www.bershka.com/fr/jupe-midi-fendue-imprim%C3%A9e-c0p159598545.html?colorId=746",
@@ -143,6 +152,7 @@
     },
     {
         "name": "Jupe cargo lanières",
+        "color": "Black",
         "id_or_reference": "Ref 1062/335/800",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-cargo-lani%C3%A8res-c0p151013323.html?colorId=800",
@@ -158,6 +168,7 @@
     },
     {
         "name": "Jupe midi satin",
+        "color": "White",
         "id_or_reference": "Ref 1106/168/250",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-midi-satin-c0p156956614.html?colorId=250",
@@ -173,6 +184,7 @@
     },
     {
         "name": "Jupe midi tailoring plissée ceinture fente",
+        "color": "Black",
         "id_or_reference": "Ref 1096/168/800",
         "price": 35.99,
         "url": "https://www.bershka.com/fr/jupe-midi-tailoring-pliss%C3%A9e-ceinture-fente-c0p151686569.html?colorId=800",
@@ -188,6 +200,7 @@
     },
     {
         "name": "Jupe midi à imprimé animal",
+        "color": "Prints",
         "id_or_reference": "Ref 1099/692/716",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-midi-%C3%A0-imprim%C3%A9-animal-c0p156208340.html?colorId=716",
@@ -205,6 +218,7 @@
     },
     {
         "name": "Jupe midi gaufrée",
+        "color": "Black",
         "id_or_reference": "Ref 1088/169/800",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/jupe-midi-gaufr%C3%A9e-c0p153941872.html?colorId=800",
@@ -221,6 +235,7 @@
     },
     {
         "name": "Minijupe en crochet",
+        "color": "Beige",
         "id_or_reference": "Ref 1091/169/712",
         "price": 17.99,
         "url": "https://www.bershka.com/fr/minijupe-en-crochet-c0p158334517.html?colorId=712&stylismId=1",
@@ -236,6 +251,7 @@
     },
     {
         "name": "Minijupe",
+        "color": "Black",
         "id_or_reference": "Ref 1151/653/800",
         "price": 15.99,
         "url": "https://www.bershka.com/fr/minijupe-c0p152090537.html?colorId=800",
@@ -251,6 +267,7 @@
     },
     {
         "name": "Jupe midi gaufrée",
+        "color": "Pink",
         "id_or_reference": "Ref 1088/169/902",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/jupe-midi-gaufr%C3%A9e-c0p153941873.html?colorId=902",
@@ -266,6 +283,7 @@
     },
     {
         "name": "Minijupe taille retroussée",
+        "color": "White",
         "id_or_reference": "Ref 1234/019/251",
         "price": 15.99,
         "url": "https://www.bershka.com/fr/minijupe-taille-retrouss%C3%A9e-c0p153514318.html?colorId=251",
@@ -281,6 +299,7 @@
     },
     {
         "name": "Minijupe en crochet",
+        "color": "Beige",
         "id_or_reference": "Ref 1091/169/712",
         "price": 17.99,
         "url": "https://www.bershka.com/fr/minijupe-en-crochet-c0p153941871.html?colorId=712",
@@ -296,6 +315,7 @@
     },
     {
         "name": "Minijupe serge",
+        "color": "White",
         "id_or_reference": "Ref 1078/053/712",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/minijupe-serge-c0p151285509.html?colorId=712",
@@ -311,6 +331,7 @@
     },
     {
         "name": "Minijupe jacquard",
+        "color": "White",
         "id_or_reference": "Ref 1167/106/712",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/minijupe-jacquard-c0p155673824.html?colorId=712",
@@ -327,6 +348,7 @@
     },
     {
         "name": "Mini-jupe ceinture boucle",
+        "color": "Grey",
         "id_or_reference": "Ref 1109/168/812",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/mini-jupe-ceinture-boucle-c0p157517428.html?colorId=812",
@@ -342,6 +364,7 @@
     },
     {
         "name": "Minijupe-culotte denim plissée",
+        "color": "Black",
         "id_or_reference": "Ref 1231/534/800",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/minijupe-culotte-denim-pliss%C3%A9e-c0p152772071.html?colorId=800",
@@ -357,6 +380,7 @@
     },
     {
         "name": "Jupe midi en dentelle",
+        "color": "White",
         "id_or_reference": "Ref 1100/363/250",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-midi-en-dentelle-c0p156861780.html?colorId=250",
@@ -373,6 +397,7 @@
     },
     {
         "name": "Minijupe similicuir plissée",
+        "color": "Brown",
         "id_or_reference": "Ref 1076/677/700",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/minijupe-similicuir-pliss%C3%A9e-c0p149435065.html?colorId=700",
@@ -389,6 +414,7 @@
     },
     {
         "name": "Mini-jupe tailoring",
+        "color": "Grey",
         "id_or_reference": "Ref 1090/168/802",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/mini-jupe-tailoring-c0p151494825.html?colorId=802",
@@ -404,6 +430,7 @@
     },
     {
         "name": "Minijupe à volants",
+        "color": "Black",
         "id_or_reference": "Ref 1236/168/800",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/minijupe-%C3%A0-volants-c0p153384498.html?colorId=800",
@@ -420,6 +447,7 @@
     },
     {
         "name": "Minijupe taille retroussée",
+        "color": "White",
         "id_or_reference": "Ref 1234/019/251",
         "price": 15.99,
         "url": "https://www.bershka.com/fr/minijupe-taille-retrouss%C3%A9e-c0p158334538.html?colorId=251&stylismId=4",
@@ -435,6 +463,7 @@
     },
     {
         "name": "Jupe-culotte tailoring plissée",
+        "color": "Black",
         "id_or_reference": "Ref 6043/168/800",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-culotte-tailoring-pliss%C3%A9e-c0p152040534.html?colorId=800",
@@ -451,6 +480,7 @@
     },
     {
         "name": "Mini-jupe plissée",
+        "color": "Grey",
         "id_or_reference": "Ref 1242/168/250",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/mini-jupe-pliss%C3%A9e-c0p155667449.html?colorId=250",
@@ -467,6 +497,7 @@
     },
     {
         "name": "Jupe midi rayée en maille",
+        "color": "Print",
         "id_or_reference": "Ref 1148/645/040",
         "price": 15.99,
         "url": "https://www.bershka.com/fr/jupe-midi-ray%C3%A9e-en-maille-c0p149435234.html?colorId=040",
@@ -482,6 +513,7 @@
     },
     {
         "name": "Minijupe serge",
+        "color": "Kaki",
         "id_or_reference": "Ref 1078/053/505",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/minijupe-serge-c0p151285510.html?colorId=505",
@@ -497,6 +529,7 @@
     },
     {
         "name": "Jupe longue chiffon pois",
+        "color": "Print",
         "id_or_reference": "Ref 1163/359/800",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-longue-chiffon-pois-c0p152892269.html?colorId=800",
@@ -512,6 +545,7 @@
     },
     {
         "name": "Jupe midi popeline taille élastique",
+        "color": "Black",
         "id_or_reference": "Ref 1089/207/800",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-midi-popeline-taille-%C3%A9lastique-c0p158334611.html?colorId=800&stylismId=11",
@@ -528,6 +562,7 @@
     },
     {
         "name": "Minijupe texturée",
+        "color": "Print",
         "id_or_reference": "Ref 1108/168/800",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/minijupe-textur%C3%A9e-c0p157426466.html?colorId=800",
@@ -544,6 +579,7 @@
     },
     {
         "name": "Jupe midi satinée",
+        "color": "White",
         "id_or_reference": "Ref 1164/187/808",
         "price": 35.99,
         "url": "https://www.bershka.com/fr/jupe-midi-satin%C3%A9e-c0p153611382.html?colorId=808",
@@ -559,6 +595,7 @@
     },
     {
         "name": "Minijupe à volants",
+        "color": "Beige",
         "id_or_reference": "Ref 1236/168/710",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/minijupe-%C3%A0-volants-c0p153384497.html?colorId=710",
@@ -575,6 +612,7 @@
     },
     {
         "name": "Minijupe satin jacquard",
+        "color": "White",
         "id_or_reference": "Ref 1172/694/712",
         "price": 32.99,
         "url": "https://www.bershka.com/fr/minijupe-satin-jacquard-c0p156213184.html?colorId=712",
@@ -591,6 +629,7 @@
     },
     {
         "name": "Jupe denim midi",
+        "color": "Blue",
         "id_or_reference": "Ref 1061/166/428",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-denim-midi-c0p153280984.html?colorId=428",
@@ -606,6 +645,7 @@
     },
     {
         "name": "Jupe midi plissée",
+        "color": "Grey",
         "id_or_reference": "Ref 1105/168/812",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-midi-pliss%C3%A9e-c0p154710212.html?colorId=812",
@@ -622,6 +662,7 @@
     },
     {
         "name": "Minijupe taille retroussée",
+        "color": "White",
         "id_or_reference": "Ref 1234/019/268",
         "price": 15.99,
         "url": "https://www.bershka.com/fr/minijupe-taille-retrouss%C3%A9e-c0p153514317.html?colorId=268",
@@ -637,6 +678,7 @@
     },
     {
         "name": "Jupe denim midi",
+        "color": "Blue",
         "id_or_reference": "Ref 1061/166/428",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-denim-midi-c0p159486327.html?colorId=428&stylismId=1",
@@ -652,6 +694,7 @@
     },
     {
         "name": "Jupe culotte en denim",
+        "color": "Blue",
         "id_or_reference": "Ref 1067/220/800",
         "price": 49.99,
         "url": "https://www.bershka.com/fr/jupe-culotte-en-denim-c0p155210331.html?colorId=800",
@@ -668,6 +711,7 @@
     },
     {
         "name": "Minijupe à volants",
+        "color": "Black",
         "id_or_reference": "Ref 1094/019/800",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/minijupe-%C3%A0-volants-c0p154136105.html?colorId=800",
@@ -683,6 +727,7 @@
     },
     {
         "name": "Minijupe taille retroussée",
+        "color": "Black",
         "id_or_reference": "Ref 1234/019/800",
         "price": 15.99,
         "url": "https://www.bershka.com/fr/minijupe-taille-retrouss%C3%A9e-c0p153447179.html?colorId=800",
@@ -698,6 +743,7 @@
     },
     {
         "name": "Minijupe cargo serge ceinture",
+        "color": "Grey",
         "id_or_reference": "Ref 1075/665/810",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/minijupe-cargo-serge-ceinture-c0p149435073.html?colorId=810",
@@ -713,6 +759,7 @@
     },
     {
         "name": "Jupe midi en dentelle",
+        "color": "Black",
         "id_or_reference": "Ref 1166/187/800",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-midi-en-dentelle-c0p156221333.html?colorId=800",
@@ -728,6 +775,7 @@
     },
     {
         "name": "Minijupe-culotte",
+        "color": "Blue",
         "id_or_reference": "Ref 1065/019/400",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/minijupe-culotte-c0p155282857.html?colorId=400",
@@ -743,6 +791,7 @@
     },
     {
         "name": "Jupe cargo lanières",
+        "color": "Black",
         "id_or_reference": "Ref 1062/335/800",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-cargo-lani%C3%A8res-c0p152761142.html?colorId=800&stylismId=4",
@@ -758,6 +807,7 @@
     },
     {
         "name": "Jupe midi maille bord-côte",
+        "color": "Pink",
         "id_or_reference": "Ref 1146/686/201",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/jupe-midi-maille-bord-c%C3%B4te-c0p149434953.html?colorId=201",
@@ -773,6 +823,7 @@
     },
     {
         "name": "Jupe midi texture rustique",
+        "color": "Beige",
         "id_or_reference": "Ref 1107/218/251",
         "price": 35.99,
         "url": "https://www.bershka.com/fr/jupe-midi-texture-rustique-c0p158588223.html?colorId=251",
@@ -788,6 +839,7 @@
     },
     {
         "name": "Minijupe gaufrée volants imprimé",
+        "color": "Print",
         "id_or_reference": "Ref 1243/692/800",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/minijupe-gaufr%C3%A9e-volants-imprim%C3%A9-c0p158588222.html?colorId=800",
@@ -803,6 +855,7 @@
     },
     {
         "name": "Mini-jupe denim cargo",
+        "color": "Blue",
         "id_or_reference": "Ref 1063/352/428",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/mini-jupe-denim-cargo-c0p151080329.html?colorId=428",
@@ -818,6 +871,7 @@
     },
     {
         "name": "Jupe cargo lanières",
+        "color": "Blue",
         "id_or_reference": "Ref 1062/335/428",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-cargo-lani%C3%A8res-c0p152761645.html?colorId=428&stylismId=4",
@@ -832,7 +886,8 @@
         ]
     },
     {
-        "name": "Jupe midi avec nœud",
+        "name": "Jupe midi avec noeud",
+        "color": "Black",
         "id_or_reference": "Ref 1087/326/800",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/jupe-midi-avec-n%C5%93ud-c0p152014930.html?colorId=800",
@@ -849,6 +904,7 @@
     },
     {
         "name": "Jupe midi maille rayures",
+        "color": "Print",
         "id_or_reference": "Ref 1147/686/800",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/jupe-midi-maille-rayures-c0p149435484.html?colorId=800",
@@ -864,6 +920,7 @@
     },
     {
         "name": "Minijupe taille retroussée",
+        "color": "Black",
         "id_or_reference": "Ref 1234/019/800",
         "price": 15.99,
         "url": "https://www.bershka.com/fr/minijupe-taille-retrouss%C3%A9e-c0p159486332.html?colorId=800&stylismId=1",
@@ -879,6 +936,7 @@
     },
     {
         "name": "Jupe midi rustique",
+        "color": "Yellow",
         "id_or_reference": "Ref 1150/693/510",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/jupe-midi-rustique-c0p151625279.html?colorId=510",
@@ -895,6 +953,7 @@
     },
     {
         "name": "Minijupe tailoring plissée ceinture",
+        "color": "Black",
         "id_or_reference": "Ref 1079/168/800",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/minijupe-tailoring-pliss%C3%A9e-ceinture-c0p149436256.html?colorId=800",
@@ -911,6 +970,7 @@
     },
     {
         "name": "Jupe midi maille côtelée rustique",
+        "color": "Beige",
         "id_or_reference": "Ref 1154/693/712",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/jupe-midi-maille-c%C3%B4tel%C3%A9e-rustique-c0p152533245.html?colorId=712",
@@ -927,6 +987,7 @@
     },
     {
         "name": "Jupe midi rustique ajours",
+        "color": "Red",
         "id_or_reference": "Ref 1152/376/675",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/jupe-midi-rustique-ajours-c0p152090517.html?colorId=675",
@@ -942,6 +1003,7 @@
     },
     {
         "name": "Minijupe-culotte denim plissée",
+        "color": "Blue",
         "id_or_reference": "Ref 1231/534/432",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/minijupe-culotte-denim-pliss%C3%A9e-c0p152772070.html?colorId=432",
@@ -957,6 +1019,7 @@
     },
     {
         "name": "Mini-jupe denim cargo",
+        "color": "Blue",
         "id_or_reference": "Ref 1063/352/800",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/mini-jupe-denim-cargo-c0p151557188.html?colorId=800",
@@ -972,6 +1035,7 @@
     },
     {
         "name": "Mini-jupe plissée similicuir",
+        "color": "Black",
         "id_or_reference": "Ref 6047/692/800",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/mini-jupe-pliss%C3%A9e-similicuir-c0p152040347.html?colorId=800",
@@ -987,6 +1051,7 @@
     },
     {
         "name": "Mini-jupe ceinture boucle",
+        "color": "Pink",
         "id_or_reference": "Ref 1109/168/902",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/mini-jupe-ceinture-boucle-c0p157517429.html?colorId=902",
@@ -1002,6 +1067,7 @@
     },
     {
         "name": "Minijupe taille retroussée",
+        "color": "Print",
         "id_or_reference": "Ref 1234/019/268",
         "price": 15.99,
         "url": "https://www.bershka.com/fr/minijupe-taille-retrouss%C3%A9e-c0p158334639.html?colorId=268&stylismId=4",
@@ -1017,6 +1083,7 @@
     },
     {
         "name": "Mini-jupe popeline",
+        "color": "White",
         "id_or_reference": "Ref 1097/207/250",
         "price": 22.99,
         "url": "https://www.bershka.com/fr/mini-jupe-popeline-c0p155282849.html?colorId=250",
@@ -1032,6 +1099,7 @@
     },
     {
         "name": "Jupe-culotte tailoring plissée",
+        "color": "Print",
         "id_or_reference": "Ref 6043/168/812",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-culotte-tailoring-pliss%C3%A9e-c0p152040535.html?colorId=812",
@@ -1049,6 +1117,7 @@
     },
     {
         "name": "Jupe midi popeline taille élastique",
+        "color": "Black",
         "id_or_reference": "Ref 1089/207/800",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-midi-popeline-taille-%C3%A9lastique-c0p153036731.html?colorId=800",
@@ -1065,6 +1134,7 @@
     },
     {
         "name": "Minijupe cargo plissée",
+        "color": "Blue",
         "id_or_reference": "Ref 1064/534/432",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/minijupe-cargo-pliss%C3%A9e-c0p153124415.html?colorId=432",
@@ -1080,6 +1150,7 @@
     },
     {
         "name": "Jupe culotte en denim",
+        "color": "Blue",
         "id_or_reference": "Ref 3194/352/400",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/jupe-culotte-en-denim-c0p151697761.html?colorId=400",
@@ -1095,6 +1166,7 @@
     },
     {
         "name": "Mini-jupe en maille",
+        "color": "White",
         "id_or_reference": "Ref 1080/187/712",
         "price": 15.99,
         "url": "https://www.bershka.com/fr/mini-jupe-en-maille-c0p149435137.html?colorId=712",
@@ -1110,6 +1182,7 @@
     },
     {
         "name": "Jupe denim",
+        "color": "Blue",
         "id_or_reference": "Ref 6052/166/432",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-denim-c0p159740749.html?colorId=432",
@@ -1125,6 +1198,7 @@
     },
     {
         "name": "Jupe midi rustique détail fleurs",
+        "color": "Print",
         "id_or_reference": "Ref 1098/360/712",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-midi-rustique-d%C3%A9tail-fleurs-c0p155667459.html?colorId=712",
@@ -1141,6 +1215,7 @@
     },
     {
         "name": "Minijupe jean",
+        "color": "Blue",
         "id_or_reference": "Ref 6053/166/428",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/minijupe-jean-c0p159740750.html?colorId=428",
@@ -1156,6 +1231,7 @@
     },
     {
         "name": "Minijupe denim underwear",
+        "color": "Blue",
         "id_or_reference": "Ref 1060/335/400",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/minijupe-denim-underwear-c0p151897277.html?colorId=400",
@@ -1172,6 +1248,7 @@
     },
     {
         "name": "Minijupe bengaline chinée",
+        "color": "White",
         "id_or_reference": "Ref 1103/692/711",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/minijupe-bengaline-chin%C3%A9e-c0p157814246.html?colorId=711",
@@ -1188,6 +1265,7 @@
     },
     {
         "name": "Jupe-culotte tailoring",
+        "color": "Grey",
         "id_or_reference": "Ref 6044/168/812",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/jupe-culotte-tailoring-c0p152040287.html?colorId=812",
@@ -1203,7 +1281,8 @@
         ]
     },
     {
-        "name": "Jupe midi avec nœud",
+        "name": "Jupe midi avec noeud",
+        "color": "White",
         "id_or_reference": "Ref 1087/326/251",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/jupe-midi-avec-n%C5%93ud-c0p152090530.html?colorId=251",
@@ -1221,6 +1300,7 @@
     },
     {
         "name": "Jupe culotte en denim",
+        "color": "Blue",
         "id_or_reference": "Ref 3194/352/800",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/jupe-culotte-en-denim-c0p151697762.html?colorId=800",
@@ -1236,6 +1316,7 @@
     },
     {
         "name": "Minijupe plissée élastiquée popeline contrastante",
+        "color": "Black",
         "id_or_reference": "Ref 3216/602/800",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/minijupe-pliss%C3%A9e-%C3%A9lastiqu%C3%A9e-popeline-contrastante-c0p149435157.html?colorId=800",
@@ -1252,6 +1333,7 @@
     },
     {
         "name": "Jupe midi popeline taille élastique",
+        "color": "White",
         "id_or_reference": "Ref 1089/207/712",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-midi-popeline-taille-%C3%A9lastique-c0p153036730.html?colorId=712",
@@ -1268,6 +1350,7 @@
     },
     {
         "name": "Jupe-culotte tailoring",
+        "color": "Black",
         "id_or_reference": "Ref 6044/168/800",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/jupe-culotte-tailoring-c0p152040286.html?colorId=800",
@@ -1284,6 +1367,7 @@
     },
     {
         "name": "Minijupe bengaline chinée",
+        "color": "White",
         "id_or_reference": "Ref 1103/692/711",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/minijupe-bengaline-chin%C3%A9e-c0p160377392.html?colorId=711&stylismId=1",
@@ -1300,6 +1384,7 @@
     },
     {
         "name": "Jupe midi texturée",
+        "color": "White",
         "id_or_reference": "Ref 1095/207/250",
         "price": 35.99,
         "url": "https://www.bershka.com/fr/jupe-midi-textur%C3%A9e-c0p155282848.html?colorId=250",
@@ -1316,6 +1401,7 @@
     },
     {
         "name": "Mini-jupe tailoring",
+        "color": "Black",
         "id_or_reference": "Ref 1090/168/800",
         "price": 19.99,
         "url": "https://www.bershka.com/fr/mini-jupe-tailoring-c0p151494824.html?colorId=800",
@@ -1331,6 +1417,7 @@
     },
     {
         "name": "Minijupe taille retroussée",
+        "color": "Black",
         "id_or_reference": "Ref 1234/019/800",
         "price": 15.99,
         "url": "https://www.bershka.com/fr/minijupe-taille-retrouss%C3%A9e-c0p158334638.html?colorId=800&stylismId=4",
@@ -1346,6 +1433,7 @@
     },
     {
         "name": "Jupe cargo lanières",
+        "color": "Blue",
         "id_or_reference": "Ref 1062/335/428",
         "price": 29.99,
         "url": "https://www.bershka.com/fr/jupe-cargo-lani%C3%A8res-c0p151013324.html?colorId=428",
@@ -1361,6 +1449,7 @@
     },
     {
         "name": "Jupe midi rayures",
+        "color": "Print",
         "id_or_reference": "Ref 1093/168/400",
         "price": 25.99,
         "url": "https://www.bershka.com/fr/jupe-midi-rayures-c0p154537137.html?colorId=400",

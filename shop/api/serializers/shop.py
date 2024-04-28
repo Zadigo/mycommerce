@@ -51,6 +51,7 @@ class ProductSerializer(Serializer):
     sizes = SizeSerializer(many=True)
     has_sizes = fields.BooleanField()
     get_price = fields.DecimalField(5, 2)
+    is_new = fields.BooleanField()
     active = fields.BooleanField()
 
     # TODO: Implement the remaning fields

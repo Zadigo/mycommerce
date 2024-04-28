@@ -5,11 +5,12 @@ import string
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models import UniqueConstraint
+from django.db.models import Choices, UniqueConstraint
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
 from django.forms import ValidationError
 from django.urls import reverse
+from django.utils.timezone import now, timedelta
 from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
@@ -170,6 +171,13 @@ class AbstractProduct(models.Model):
         return f'Product - {self.pk}: {self.name}'
 
     @property
+    def is_new(self):
+        """Products that have less than five days of
+        creation are marked as being new"""
+        difference = (now() - timedelta(days=5))
+        return self.created_on <= difference.date()
+
+    @property
     def get_main_image(self):
         """Returns the main image for the
         current product"""
@@ -300,7 +308,10 @@ class Wishlist(AbstractUserList):
 
 @receiver(pre_save, sender=Product)
 def create_product_slug(instance, **kwargs):
-    instance.slug = create_slug(instance.name, instance.color)
+    color = instance.color
+    if isinstance(color, Choices):
+        color = color.label
+    instance.slug = create_slug(instance.name, color)
 
 
 @receiver(post_delete, sender=Image)

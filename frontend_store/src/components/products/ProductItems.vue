@@ -52,7 +52,7 @@ export default {
         const collectionName = route.params.id
         collectionName
 
-        const response = await client.get(`collection/all`)
+        const response = await client.get(`collection/${route.params.id}`)
         cachedResponse.value = response.data
         products.value = cachedResponse.value.results
       } catch (e) {

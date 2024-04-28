@@ -14,7 +14,7 @@ def remove_accents(text):
 def clean_text(text):
     if text is None:
         return None
-    
+
     text = str(text)
     text = unicodedata.normalize('NFKD', text)
 
@@ -55,6 +55,9 @@ def create_slug(word, *additional_words):
     words.extend(list(additional_words))
 
     def filter_function(word):
+        if word is None:
+            return ''
+        
         if "d'" in word or "D'" in word:
             word = word.replace("d'", '')
             word = word.replace("D'", '')

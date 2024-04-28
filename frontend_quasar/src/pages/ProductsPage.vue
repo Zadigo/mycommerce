@@ -13,11 +13,20 @@
 
               <q-space />
 
-              <q-btn @click="uploadProductsFile">Upload file</q-btn>
+              <q-btn color="primary" rounded unelevated @click="showUploadProductsFile = true">Upload file</q-btn>
               <q-btn :to="{ name: 'images_view' }" color="primary" icon="fas fa-image" label="Images" unelevated rounded />
               <q-btn :to="{ name: 'product_view', params: { id: 1 } }" color="primary" icon="fas fa-plus" label="Create" unelevated rounded />
-              <q-btn color="primary" :disable="loading" label="Add row" unelevated rounded />
-              <q-btn class="q-ml-sm" color="primary" :disable="loading" label="Remove row" unelevated rounded />
+
+              <q-btn round flat>
+                <q-icon name="fas fa-ellipsis-vertical"></q-icon>
+                <q-menu>
+                  <q-list>
+                    <q-item v-for="dropAction in dropActions" :key="dropAction" v-close-popup clickable @click="handleUpdateProducts">
+                      <q-item-section>{{ dropAction }}</q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-btn>
             </template>
 
             <template v-slot:body-cell-id="props">
@@ -30,8 +39,8 @@
 
             <template v-slot:body-cell-active="props">
               <q-td :props="props">
-                <q-badge v-if="props.row.active" color="green-3" label="Active"></q-badge>
-                <q-badge v-else color="red-3" label="Inactive"></q-badge>
+                <q-icon v-if="props.row.active" name="fas fa-circle-check" color="green-3"></q-icon>
+                <q-icon v-else name="fas fa-circle-xmark" color="red-3"></q-icon>
               </q-td>
             </template>
           </q-table>
@@ -43,7 +52,7 @@
       <q-dialog v-model="showUploadProductsFile">
         <q-card style="width: 400px;">
           <q-card-section>
-
+            <h2 class="q-ma-sm text-h5">Upload a file</h2>
           </q-card-section>
 
           <q-separator></q-separator>
@@ -66,6 +75,22 @@
           </q-card-actions>
         </q-card>
       </q-dialog>
+
+      <q-dialog v-model="confirmationDialog" position="right">
+        <q-card style="width: 350px">
+          <q-card-section class="row items-center no-wrap">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+            Asperiores repudiandae minima voluptatibus debitis pariatur iste qui 
+            officia delectus assumenda itaque corrupti, sint optio earum aliquam 
+            sit quod error, harum nemo!
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn flat>Cancel</q-btn>
+            <q-btn color="primary" unelevated>Validate</q-btn>
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </table-page-component>
   </q-page>
 </template>
@@ -76,7 +101,13 @@ import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useShop } from '../stores/shop'
 import TablePageComponent from '../components/TablePageComponent.vue'
+import { useQuasar } from 'quasar'
 
+const dropActions = [
+  'Activate',
+  'Deactivate',
+  'Delete'
+]
 
 const productColumns = [
   {
@@ -111,21 +142,30 @@ export default {
     TablePageComponent
   },
   setup () {
+    const { notify } = useQuasar()
     const store = useShop()
     const { products } = storeToRefs(store)
+
     const search = ref(null)
     const loading = ref(true)
+    
     const requestData = ref({
+      active: false,
       selected: []
     })
 
     const showUploadProductsFile = ref(false)
     const productsFile = ref(null)
+
+    const confirmationDialog = ref(false)
     
     return {
       search,
       loading,
+      notify,
+      dropActions,
       requestData,
+      confirmationDialog,
       productsFile,
       showUploadProductsFile,
       productColumns,
@@ -168,10 +208,55 @@ export default {
     },
     async uploadProductsFile () {
       try {
-        const response = await this.$api.post('shop/products/upload')
-        response
+        const formData = new FormData()
+        formData.append('file', this.productsFile, this.productsFile.name)
+
+        const response = await this.$api.post('shop/products/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        this.products = response.data
+        this.showUploadProductsFile = false
+        this.productsFile = null
+
+        this.notify({
+          color: 'green-11',
+          message: `Uploaded ${this.products.length} products`,
+          position: 'top-right',
+          closeBtn: true
+        })
       } catch (e) {
-        console.log(e)
+        this.notify({
+          color: 'red-11',
+          message: 'Failed to upload products',
+          position: 'top-right',
+          closeBtn: true
+        })
+      }
+    },
+    async requestUpdateProducts () {
+      
+    },
+    handleUpdateProducts (action) {
+      switch (action) {
+        case 'Activate':
+          this.requestData.active = true
+          this.requestUpdateProducts()
+          break
+          
+        case 'Deactivate':
+          this.requestData.active = false
+          this.requestUpdateProducts()
+          break
+
+        case 'Delete':
+          this.requestData.active = false
+          this.requestUpdateProducts()
+          break
+      
+        default:
+          break
       }
     }
   }

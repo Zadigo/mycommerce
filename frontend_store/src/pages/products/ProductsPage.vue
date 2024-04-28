@@ -79,6 +79,7 @@ export default {
     ])
     
     const currentGridSize = ref(4)
+    
     return {
       currentGridSize
     }

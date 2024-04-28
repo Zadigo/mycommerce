@@ -228,6 +228,8 @@ def upload_images_to_product(request, pk, **kwargs):
 
 @api_view(['post'])
 def update_product(request, pk, **kwargs):
+    """Updates the different technical aspects
+    of a given product in the database"""
     product = get_object_or_404(Product, pk=pk)
     serializer = admin_serializers.ValidateUpdateProduct(
         instance=product,
@@ -236,18 +238,21 @@ def update_product(request, pk, **kwargs):
     serializer.is_valid(raise_exception=True)
     updated = serializer.save()
 
-    print(updated.active)
-
     serializer = shop_serializers.ProductSerializer(instance=updated)
     return Response(serializer.data)
 
 
 @api_view(['post'])
 def upload_products(request, **kwargs):
+    """Upload a file containing a set of products
+    to create in the database"""
     serializer = admin_serializers.ValidateFileUpload(data=request.data)
     serializer.is_valid(raise_exception=True)
     created_products = serializer.save()
-    serializer = admin_serializers.ProductSerializer(
+    # TODO: Send this back to the user
+    print(serializer._db_creation_errors)
+
+    serializer = admin_serializers.AdminProductSerializer(
         instance=created_products,
         many=True
     )
