@@ -1,8 +1,8 @@
-from django.db.models import DecimalField, Value
+from django.db.models import DecimalField, F, Value
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from cart.api import serializers
@@ -63,7 +63,7 @@ def authenticate_user_cart(request, **kwargs):
     session_id = request.data.get('session_id', None)
     if session_id is not None and request.user.is_authenticated:
         queryset = Cart.objects.filter(session_id=session_id)
-        queryset.update(user=request.user)
+        queryset.update(user=request.user, is_anonymous=~F('is_anonymous'))
     return Response({'status': True})
 
 
@@ -81,7 +81,7 @@ def delete_from_cart_view(request, **kwargs):
     serializer = ValidateCart(data=request.data)
     serializer.is_valid(raise_exception=True)
     queryset = serializer.delete(request)
-    
+
     if request.user.is_authenticated:
         return Response({'status': False})
     else:
@@ -90,7 +90,7 @@ def delete_from_cart_view(request, **kwargs):
 
 
 @api_view(['post'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def payment(request, **kwargs):
     shipment_serializer = ValidateShipment(data=request.data)
     shipment_serializer.is_valid(raise_exception=True)
@@ -105,7 +105,7 @@ def payment(request, **kwargs):
         # 2. Create an order
         attrs = {
             'reference': get_random_string(12),
-            'stripe_reference': 'some reference',
+            'stripe_reference': f'cus_{get_random_string(length=30)}',
             'user': request.user if request.user.is_authenticated else None,
             'address': shipment_serializer.validated_data['address'],
             'city': shipment_serializer.validated_data['city'],
@@ -114,13 +114,17 @@ def payment(request, **kwargs):
         customer_order = CustomerOrder.objects.create(**attrs)
 
         total = Cart.objects.cart_total(request, session_id=session_id)
-        customer_order.total = Value(total, output_field=DecimalField())
+        customer_order.total = total['price__sum']
         customer_order.save()
+
+        queryset.update(is_paid_for=~F('is_paid_for'))
 
         items_to_create = []
         for item in queryset:
             items_to_create.append(ProductHistory(
-                product=item.product, unit_price=item.price))
+                product=item.product, 
+                unit_price=item.price
+            ))
 
         created_items = ProductHistory.objects.bulk_create(items_to_create)
         customer_order.products.add(*created_items)

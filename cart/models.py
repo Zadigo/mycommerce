@@ -38,6 +38,13 @@ class AbstractCart(models.Model):
         default=0
     )
 
+    is_stale = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Previous products from an authenticated user on which "
+            "no actions were performed"
+        )
+    )
     is_anonymous = models.BooleanField(default=False)
     is_paid_for = models.BooleanField(default=False)
 

@@ -51,6 +51,17 @@ class CartManager(QuerySet):
         if not product.active:
             raise ProductActiveError({'product': 'Product is not active'})
 
+        # The user might have other items in his cart
+        # with different session_id keys, mark them
+        # as stale before creating new items. We only
+        # keep track of what is authenticated because
+        # there might be non authenticated items from
+        # the same user
+        if request.user.is_authenticated:
+            authenticated_items = self.filter(user=request.user, is_paid=False)
+            authenticated_items.update(is_stale=True)
+
+
         # TODO: product.get_price
         # price = product.sale_price if product.on_sale else product.unit_price
         price = product.get_price

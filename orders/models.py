@@ -45,7 +45,7 @@ class CustomerOrder(models.Model):
     )
     stripe_reference = models.CharField(
         max_length=100,
-        help_text=_('The stripe order rederence e.g. cus_1234'),
+        help_text=_("The stripe order rederence e.g. cus_1234"),
         validators=[],
         unique=True
     )
@@ -55,8 +55,9 @@ class CustomerOrder(models.Model):
         blank=True,
         null=True
     )
-    
-    address = models.CharField(max_length=100)
+    address = models.CharField(
+        max_length=100
+    )
     city = models.CharField(
         max_length=100,
         choices=CityChoices.choices,
@@ -68,8 +69,15 @@ class CustomerOrder(models.Model):
         choices=CountryChoices.choices,
         default=CountryChoices.FRANCE
     )
-    
-    products = models.ManyToManyField(ProductHistory, blank=True)
+    products = models.ManyToManyField(
+        ProductHistory, 
+        blank=True,
+        help_text=_(
+            "Reference to the products that were bought "
+            "at the price at which they were bought at "
+            "the purchase date"
+        )
+    )
     total = models.DecimalField(
         max_digits=5,
         decimal_places=2,
@@ -83,4 +91,4 @@ class CustomerOrder(models.Model):
         ordering = ['created_on']
 
     def __str__(self):
-        return self.reference
+        return f'CustomerOrder: {self.reference}'
