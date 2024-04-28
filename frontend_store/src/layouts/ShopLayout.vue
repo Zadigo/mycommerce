@@ -343,16 +343,20 @@ export default {
     async handleLogin () {
       this.login(() => {
         this.authenticationStore.showLoginDrawer = false
+        
+        if (!this.$session.keyExists('authenticated_cart')) {
+          this.$session.create('authenticated_cart', false)
+        }
         this.handleAuthenticateCart()
       })
     },
     async handleAuthenticateCart () {
       try {
-        if (this.$session.keyExists('session_id')) {
+        if (!this.$session.retrieve('authenticated_cart')) {
           await this.$http.post('cart/authenticate', {
             session_id: this.$session.retrieve('session_id')
           })
-          this.$session.remove('session_id')
+          this.$session.toggle('authenticated_cart')
         }
       } catch (e) {
         console.log(e)

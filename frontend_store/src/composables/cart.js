@@ -32,7 +32,7 @@ export function useCartComposable () {
   async function requestAddToCart (data) {
     try {
       const sessionId = session.retrieve('session_id')
-      userSelection.value.session_id = sessionId
+      userSelection.value.session_id = sessionId || null
 
       const response = await client.post('cart/add', data)
       await requestCheckStock()

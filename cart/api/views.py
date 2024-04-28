@@ -81,8 +81,12 @@ def delete_from_cart_view(request, **kwargs):
     serializer = ValidateCart(data=request.data)
     serializer.is_valid(raise_exception=True)
     queryset = serializer.delete(request)
-    session_id = serializer.validated_data['session_id']
-    return simple_api_response(build_cart_response(queryset, session_id))
+    
+    if request.user.is_authenticated:
+        return Response({'status': False})
+    else:
+        session_id = serializer.validated_data['session_id']
+        return simple_api_response(build_cart_response(queryset, session_id))
 
 
 @api_view(['post'])

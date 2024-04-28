@@ -12,7 +12,10 @@
       <div id="shop-navbar" class="collapse navbar-collapse">
         <div v-if="authenticationStore.isAuthenticated" class="navbar-nav">
           <router-link :to="{ name: 'wishlist' }" class="nav-link">Wishlist</router-link>
-          <router-link :to="{ name: 'shop_payment_home' }" class="nav-link">Cart</router-link>
+          <!-- <router-link :to="{ name: 'shop_payment_home' }" class="nav-link">Cart</router-link> -->
+          <a href class="nav-link" @click.prevent="() => { showCartDrawer = true }">
+            Cart
+          </a>
 
           <router-link :to="{ name: 'accounts_home' }" class="nav-link">
             <font-awesome-icon :icon="['fas', 'user']" />
