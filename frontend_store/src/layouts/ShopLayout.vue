@@ -343,7 +343,20 @@ export default {
     async handleLogin () {
       this.login(() => {
         this.authenticationStore.showLoginDrawer = false
+        this.handleAuthenticateCart()
       })
+    },
+    async handleAuthenticateCart () {
+      try {
+        if (this.$session.keyExists('session_id')) {
+          await this.$http.post('cart/authenticate', {
+            session_id: this.$session.retrieve('session_id')
+          })
+          this.$session.remove('session_id')
+        }
+      } catch (e) {
+        console.log(e)
+      }
     },
     searchProducts: _.debounce(async function () {
       // Allows the user to search for products

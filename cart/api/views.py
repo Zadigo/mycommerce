@@ -5,12 +5,12 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from cart.api import serializers
 from cart.api.serializers import (ValidateCart, ValidateShipment,
                                   build_cart_response)
 from cart.models import Cart
 from mycommerce.responses import simple_api_response
 from orders.models import CustomerOrder, ProductHistory
-from cart.api import serializers
 
 
 @api_view(['get'])
@@ -41,12 +41,29 @@ def cart_view(request, pk, **kwargs):
 @api_view(['post'])
 @permission_classes([AllowAny])
 def add_to_cart(request, **kwargs):
-    """Add a product to the cart"""
+    """Add a product to the cart. Returns
+    a `session_id` and the list of products
+    that were for the given session"""
     validator = ValidateCart(data=request.data)
     validator.is_valid(raise_exception=True)
 
-    # session_id, queryset = validator.save(request)
-    # return simple_api_response(build_cart_response(queryset, session_id))
+    session_id, queryset = validator.save(request)
+    return simple_api_response(build_cart_response(queryset, session_id))
+
+
+@api_view(['post'])
+@permission_classes([AllowAny])
+def authenticate_user_cart(request, **kwargs):
+    """Allows us to authenticate the items in the
+    user's cart once they logged in. This gets
+    triggered only in the case where the user
+    has started adding items when he was not
+    authenticated and then authenticates for
+    the payment process"""
+    session_id = request.data.get('session_id', None)
+    if session_id is not None and request.user.is_authenticated:
+        queryset = Cart.objects.filter(session_id=session_id)
+        queryset.update(user=request.user)
     return Response({'status': True})
 
 
@@ -58,6 +75,7 @@ def update_in_cart_view(request, **kwargs):
 
 
 @api_view(['post'])
+@permission_classes([AllowAny])
 def delete_from_cart_view(request, **kwargs):
     """Delete a product from the cart"""
     serializer = ValidateCart(data=request.data)

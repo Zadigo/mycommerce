@@ -312,6 +312,7 @@ import { useShopComposable } from 'composables/shop'
 import { useIntersectionObserver } from '@vueuse/core'
 // import { useRouter, useRoute } from 'vue-router'
 import { buildImagePath } from 'src/utils'
+import { useCartComposable } from 'src/composables/cart'
 import { useUtilities } from 'src/composables/shop'
 
 // import { VueImageZoomer } from 'vue-image-zoomer'
@@ -357,6 +358,8 @@ export default {
 
     const { localImagePath, parseMainImage, djangoMediaPath, translatePrice } = useUtilities()
 
+    const { addToCart, addToCartNoSize, showSizeSelectionWarning, userSelection } = useCartComposable()
+
     const { isLiked, handleLike } = useShopComposable()
 
     const authenticationStore = useAuthentication()
@@ -368,13 +371,13 @@ export default {
     const sizeGuideDrawer = ref(false)
     const showDeliveryDrawer = ref(false)
     const showCompositionDrawer = ref(false)
-    const showSizeSelectionWarning = ref(false)
+    // const showSizeSelectionWarning = ref(false)
 
     const currentProduct = ref({})
-    const userSelection = ref({
-      size: null,
-      quantity: 1,
-    })
+    // const userSelection = ref({
+    //   size: null,
+    //   quantity: 1,
+    // })
 
     // const productPath = router.resolve({ name: 'shop_product', params: { id: route.params.id } })
     // setTimeout(() => {
@@ -435,6 +438,8 @@ export default {
       authenticationStore,
       isLiked,
       productVariants,
+      addToCart,
+      addToCartNoSize,
       djangoMediaPath,
       parseMainImage,
       translatePrice,
@@ -554,12 +559,19 @@ export default {
       // to the current user's cart. Products that
       // require a size will force the user to
       // select a size before handling the action
-      if (this.userSelection.size === null && this.currentProduct.has_size) {
-        this.showSizeSelectionWarning = true
-      } else {
+      // if (this.userSelection.size === null && this.currentProduct.has_size) {
+      //   this.showSizeSelectionWarning = true
+      // } else {
+      //   this.showAddedProductDrawer = true
+      //   this.cartStore.addToCart(this.currentProduct, this.userSelection)
+      // }
+      this.addToCartNoSize(this.currentProduct, (data) => {
         this.showAddedProductDrawer = true
-        this.cartStore.addToCart(this.currentProduct, this.userSelection)
-      }
+        
+        if (!this.$session.keyExists('session_id')) {
+          this.$session.create('session_id', data.session_id)
+        }
+      })
     },
     async handleViewingHistory () {
       // Handles the action of keeping track

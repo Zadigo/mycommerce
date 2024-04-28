@@ -25,8 +25,10 @@ class AbstractCart(models.Model):
         Product,
         on_delete=models.CASCADE
     )
-    default_size = models.CharField(
+    size = models.CharField(
         max_length=100,
+        blank=True,
+        null=True,
         choices=ClotheSizesChoices.choices(),
         default=ClotheSizesChoices.default('Unique')
     )

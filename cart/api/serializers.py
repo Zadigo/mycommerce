@@ -33,7 +33,7 @@ class CartSerializer(Serializer):
 
     id = fields.IntegerField()
     product = ProductSerializer()
-    default_size = fields.CharField()
+    size = fields.CharField()
     price = fields.DecimalField(5, 2)
     created_on = fields.DateTimeField()
 
@@ -55,7 +55,7 @@ class ValidateCart(Serializer):
     cart item in the database"""
 
     product = ValidateProduct()
-    default_size = fields.CharField()
+    size = fields.CharField(allow_null=True)
     session_id = fields.CharField(allow_null=True)
 
     def list_items(self, **kwargs):

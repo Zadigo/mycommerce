@@ -59,7 +59,7 @@ class CartManager(QuerySet):
             'session_id': session_id,
             'product': product,
             'price': price,
-            'default_size': kwargs.get('default_size'),
+            'size': kwargs.get('size'),
             'is_anonymous': not request.user.is_authenticated
         }
 
