@@ -3,6 +3,7 @@ from rest_framework import fields
 from rest_framework.serializers import Serializer
 
 from variants.api.serializers import SizeSerializer
+from collection.api.serializers import CollectionSerializer
 
 
 class ImageProductSerializer(Serializer):
@@ -51,27 +52,19 @@ class ProductSerializer(Serializer):
     sizes = SizeSerializer(many=True)
     has_sizes = fields.BooleanField()
     get_price = fields.DecimalField(5, 2)
-    is_new = fields.BooleanField()
-    active = fields.BooleanField()
-
-    # TODO: Implement the remaning fields
-    # id = fields.IntegerField()
-    # name = fields.CharField(required=False)
     # unit_price = fields.DecimalField(5, 2, required=False)
     # usd_unit_price = fields.DecimalField(5, 2, required=False)
-
-    # # additional_variants = AdditionalVariantSerializer(many=True, required=False)
-    get_main_image = ImageSerializer(required=False)
-    images = ImageSerializer(many=True, required=False)
-    # video = VideoSerializer(required=False)
-
-    # get_price = fields.DecimalField(5, 2)
     # sale_value = fields.IntegerField()
     # sale_price = fields.DecimalField(5, 2)
     # on_sale = fields.BooleanField()
-
-    # display_new = fields.BooleanField()
+    collection_set = CollectionSerializer(many=True)
+    get_main_image = ImageSerializer(required=False)
+    images = ImageSerializer(many=True, required=False)
+    # video = VideoSerializer(required=False)
     color_variant_name = fields.CharField()
+    is_new = fields.BooleanField()
+    active = fields.BooleanField()
+    display_new = fields.BooleanField()
     slug = fields.SlugField(required=False)
     modified_on = fields.DateField(required=False)
     created_on = fields.DateField(required=False)

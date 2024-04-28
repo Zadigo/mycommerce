@@ -11,6 +11,7 @@ class PaginationHelper:
     paginator = CustomPagination()
 
     def __init__(self):
+        self.queryset = []
         self.paginated_data = []
         self.serializer_instance = None
 
@@ -18,15 +19,17 @@ class PaginationHelper:
         """Paginates a list of items using the
         CustomPagination class above and the serializer
         to be used in order to return the data"""
-        self.paginated_data = self.paginator.paginate_queryset(
+        paginated_data = self.paginator.paginate_queryset(
             queryset,
             request
         )
         serializer_instance = serializer(
-            instance=self.paginated_data,
+            instance=paginated_data,
             many=True
         )
         self.serializer_instance = serializer_instance
+        self.paginated_data = serializer_instance.data
+        
         if response_only:
             return self.paginator.get_paginated_response(serializer_instance.data)
         return self

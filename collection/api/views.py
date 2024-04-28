@@ -1,6 +1,6 @@
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from collection.api import serializers
@@ -17,7 +17,8 @@ def build_colors(colors):
 
 
 @api_view(['get'])
-def get_collection(request, name, **kwargs):
+@permission_classes([AllowAny])
+def list_collection_products(request, name, **kwargs):
     """Returns a specific collection"""
     queryset = Product.objects.filter(active=True)
 
@@ -46,17 +47,18 @@ def get_collection(request, name, **kwargs):
             ProductSerializer,
             response_only=False
         )
-        data_to_return = instance.get_template(**collection_data)
+        data_to_return = instance.get_template(collection=collection_data)
         data_to_return['infos'] = {'total_count': products.count()}
         return Response(data=data_to_return)
 
 
 @api_view(['get'])
-def list_collection_names(request, **kwargs):
+@permission_classes([AllowAny])
+def list_collections(request, **kwargs):
     """Returns the names of all the collections
     that exist in the shop"""
     queryset = Collection.objects.all()
-    serializer = serializers.CollectionNameSerializer(
+    serializer = serializers.CollectionSerializer(
         instance=queryset,
         many=True
     )
@@ -64,7 +66,10 @@ def list_collection_names(request, **kwargs):
 
 
 @api_view(['post'])
-def search_collection(request, pk, **kwargs):
+@permission_classes([AllowAny])
+def search_collection_products(request, pk, **kwargs):
+    """Search the products within a collection using
+    certain specific set of criteria"""
     collection = get_object_or_404(Collection, id=pk)
     serializer = serializers.CollectionSerializer(instance=collection)
     collection_data = serializer.data

@@ -1,33 +1,14 @@
-import re
-from typing import OrderedDict, Tuple
-
-from rest_framework import fields
-from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.response import Response
 from django.db.models import Q
+from rest_framework import fields
 from rest_framework.serializers import Serializer
 
 
-# DELETE
-# class CommaSeperatedField(fields.Field):
-#     def to_internal_value(self, data):
-#         result = re.match(r'(\w+)\,', data)
-#         if result:
-#             return list(result.groups())
-#         self.fail('invalid', input=data)
-
-#     def to_representation(self, value):
-#         tokens = value
-
-class CollectionNameSerializer(Serializer):
+class CollectionSerializer(Serializer):
     id = fields.IntegerField()
     name = fields.CharField()
     category = fields.CharField()
     sub_category = fields.CharField()
     number_of_items = fields.IntegerField()
-
-
-class CollectionSerializer(CollectionNameSerializer):
     illustration = fields.ImageField()
     tags = fields.CharField()
     get_view_name = fields.CharField()
