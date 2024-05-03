@@ -1,25 +1,53 @@
-from shop.api import views
 from django.urls import re_path
+
+from shop.api.views import admin as admin_views
+from shop.api.views import shop as shop_views
 
 app_name = 'shop_api'
 
 urlpatterns = [
     re_path(
         r'^products/(?P<pk>\d+)/upload-images$',
-        views.upload_images_to_product
+        admin_views.upload_images_to_product
     ),
-    re_path(r'^products/(?P<pk>\d+)/update$', views.update_product),
-    re_path(r'^products/(?P<pk>\d+)$', views.get_product),
-    re_path(r'^like$', views.like_product_view, name='like'),
-    re_path(r'^filter-images$', views.filter_images),
-    re_path(r'^images$', views.list_images),
-    re_path(r'^recommendations$', views.list_recommendations),
-    re_path(r'^images/associate$', views.associate_images),
-    re_path(r'^images/upload$', views.upload_images),
-    re_path(r'^search$', views.search_shop),
     re_path(
-        r'^products/upload$', 
-        views.upload_products
+        r'^products/(?P<pk>\d+)/update$',
+        admin_views.update_product
     ),
-    re_path(r'^products$', views.list_products)
+    re_path(
+        r'^products/(?P<pk>\d+)$',
+        shop_views.get_product
+    ),
+    re_path(
+        r'^filter-images$',
+        admin_views.filter_images
+    ),
+    re_path(
+        r'^images$',
+        admin_views.list_images
+    ),
+    re_path(
+        r'^recommendations$',
+        shop_views.list_recommendations
+    ),
+    re_path(
+        r'^images/associate$',
+        admin_views.associate_images
+    ),
+    re_path(
+        r'^images/upload$',
+        admin_views.upload_images
+    ),
+    re_path(
+        r'^search$',
+        shop_views.search_shop
+    ),
+    re_path(
+        r'^products/upload$',
+        admin_views.upload_products
+    ),
+    re_path(
+        r'^products$',
+        shop_views.list_products
+    )
 ]

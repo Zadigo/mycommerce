@@ -68,3 +68,7 @@ class ProductSerializer(Serializer):
     slug = fields.SlugField(required=False)
     modified_on = fields.DateField(required=False)
     created_on = fields.DateField(required=False)
+
+
+class LikeSerializer(Serializer):
+    pass

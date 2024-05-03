@@ -7,10 +7,25 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from shop.api import _serializers
+from mycommerce.utils import remove_accents
 from shop.api.serializers import admin as admin_serializers
 from shop.api.serializers import shop as shop_serializers
 from shop.models import Image, Product
+
+
+@api_view(['get'])
+def list_images(request, **kwargs):
+    queryset = Image.objects.all()
+
+    image_name = request.GET.get('name', None)
+    if image_name is not None:
+        queryset = queryset.filter(name__icontains=image_name)
+
+    serializer = admin_serializers.ImageSerializer(
+        instance=queryset,
+        many=True
+    )
+    return Response(serializer.data)
 
 
 @api_view(http_method_names=['post'])
@@ -24,12 +39,14 @@ def upload_images(request, **kwargs):
         association.append((name, files[i]))
 
     validator = FileExtensionValidator(
-        allowed_extensions=['jpg', 'jpeg', 'webp'])
+        allowed_extensions=['jpg', 'jpeg', 'webp']
+    )
     for item in association:
         file = item[1]
 
         extension = guess_extension(file.content_type)
-        file_name = f'{item[0]}{extension}'
+        clean_name = remove_accents(item[0])
+        file_name = f'{clean_name}{extension}'
 
         image = ImageFile(file, name=file_name)
         validator(image)
@@ -93,7 +110,11 @@ def upload_images_to_product(request, pk, **kwargs):
     product.images.add(*created_images)
     product.save()
 
-    serializer = _serializers.ImageSerializer(
+    first_image = product.images.first()
+    first_image.is_main_image = ~F('is_main_image')
+    first_image.save()
+
+    serializer = shop_serializers.ImageSerializer(
         instance=product.images.all(),
         many=True
     )
@@ -102,6 +123,8 @@ def upload_images_to_product(request, pk, **kwargs):
 
 @api_view(['post'])
 def update_product(request, pk, **kwargs):
+    """Updates the different technical aspects
+    of a given product in the database"""
     product = get_object_or_404(Product, pk=pk)
     serializer = admin_serializers.ValidateUpdateProduct(
         instance=product,
@@ -110,19 +133,32 @@ def update_product(request, pk, **kwargs):
     serializer.is_valid(raise_exception=True)
     updated = serializer.save()
 
-    print(updated.active)
-
     serializer = shop_serializers.ProductSerializer(instance=updated)
     return Response(serializer.data)
 
 
 @api_view(['post'])
 def upload_products(request, **kwargs):
+    """Upload a file containing a set of products
+    to create in the database"""
     serializer = admin_serializers.ValidateFileUpload(data=request.data)
     serializer.is_valid(raise_exception=True)
     created_products = serializer.save()
-    serializer = admin_serializers.ProductSerializer(
+    # TODO: Send this back to the user
+    print(serializer._db_creation_errors)
+
+    serializer = admin_serializers.AdminProductSerializer(
         instance=created_products,
         many=True
     )
     return Response(serializer.data)
+
+
+@api_view(['post'])
+def filter_images(request, **kwargs):
+    serializer = admin_serializers.ValidateImageFiltersSerializer(
+        data=request.data
+    )
+    serializer.is_valid(raise_exception=True)
+    data = serializer.filter_images()
+    return Response(data)
