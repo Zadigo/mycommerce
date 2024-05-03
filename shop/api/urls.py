@@ -39,10 +39,6 @@ urlpatterns = [
         admin_views.upload_images
     ),
     re_path(
-        r'^search$',
-        shop_views.search_shop
-    ),
-    re_path(
         r'^products/upload$',
         admin_views.upload_products
     ),

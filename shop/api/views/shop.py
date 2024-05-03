@@ -1,5 +1,5 @@
-
-from django.db.models import Q
+from django.db.models import Q, When, Case
+from django.db.models.functions.window import Rank
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from shop.api import CustomPagination
 from shop.api.serializers import admin as admin_serializers
 from shop.api.serializers import shop as shop_serializers
-from shop.models import Like, Product
+from shop.models import Product
 from shop.serializers import ProductSerializer
 
 
@@ -19,6 +19,34 @@ def list_products(request, **kwargs):
     queryset = Product.objects.all()
 
     is_admin = request.GET.get('admin', False)
+
+    search = request.GET.get('q', None)
+    if search is not None:
+        logic = (
+            Q(name=search) |
+            Q(name__icontains=search)
+        )
+        queryset = queryset.filter(logic)
+
+    colors = request.GET.getlist('colors', None)
+    if colors is not None:
+        queryset = queryset.filter(color__in=colors)
+
+    min_price = request.GET.get('min_price', None)
+    max_price = request.GET.get('max_price', None)
+    if min_price is not None:
+        condition = When(condition=Q(on_sale=True), then='sale_price')
+        case = Case(*[condition], default='unit_price')
+
+        annotated_price = queryset.annotate(true_price=case)
+        queryset = annotated_price.filter(true_price__gte=min_price)
+
+        if max_price is not None:
+            queryset = queryset.filter(true_price__lte=max_price)
+
+    sizes = request.GET.getlist('sizes', [])
+    if sizes:
+        queryset = queryset.filter(size__name__in=sizes)
 
     serializer = None
     if is_admin == 'true':
@@ -86,7 +114,9 @@ def search_shop(request, **kwargs):
 
 @api_view(['get'])
 def list_recommendations(request, **kwargs):
+    search = request.GET.get('q')
     quantity = request.GET.get('quantity', 20)
+
     queryset = Product.objects.all()[:quantity]
     serializer = ProductSerializer(
         instance=queryset,
@@ -104,26 +134,6 @@ def toggle_like(request, pk, **kwargs):
     else:
         product.like_set.create()
     queryset = Product.objects.filter(like__product__id=product.id)
-    serializer = shop_serializers.ProductSerializer(
-        instance=queryset,
-        many=True
-    )
-    return Response(serializer.data)
-
-# TODO: Put this in list_products
-
-
-@api_view(['get'])
-def search_shop(request, **kwargs):
-    search = request.GET.get('q', None)
-    if search is None:
-        return Response([])
-
-    logic = (
-        Q(name=search) |
-        Q(name__icontains=search)
-    )
-    queryset = Product.objects.filter(logic)
     serializer = shop_serializers.ProductSerializer(
         instance=queryset,
         many=True
