@@ -1,3 +1,6 @@
+import spacy
+import pandas
+import random
 from django.db.models import Q, When, Case
 from django.db.models.functions.window import Rank
 from django.shortcuts import get_object_or_404
@@ -114,10 +117,49 @@ def search_shop(request, **kwargs):
 
 @api_view(['get'])
 def list_recommendations(request, **kwargs):
-    search = request.GET.get('q')
-    quantity = request.GET.get('quantity', 20)
+    testing = request.GET.get('t', None)
+    product_id = request.GET.get('q')
+    quantity = request.GET.get('quantity', 30)
 
-    queryset = Product.objects.all()[:quantity]
+    try:
+        quantity = int(quantity)
+    except:
+        return Response([], status=400)
+
+    product = get_object_or_404(Product, pk=product_id)
+    products = Product.objects.exclude(id=product.id)
+    product_values = products.values('id', 'name')
+
+    # TODO: For testing purposes
+    if testing is not None:
+        if testing == 'true':
+            serializer = ProductSerializer(
+                instance=products[:quantity],
+                many=True
+            )
+            return Response(serializer.data)
+
+    df = pandas.DataFrame(product_values)
+
+    try:
+        # calculator = spacy.load('en_core_web_md')
+        calculator = spacy.load('fr_core_news_md')
+    except Exception as e:
+        print(e)
+        return Response([], status=400)
+
+    for product in df.itertuples(name='Product'):
+        result = calculator(product.name).similarity(calculator(product.name))
+        df.loc[product.Index, 'similarity'] = result
+
+    df = df.sort_values('similarity')
+    df = df.loc[lambda x: x.similarity > 0.8]
+
+    print(df)
+
+    selected_items = random.choices(df.id.to_list(), k=quantity)
+    queryset = Product.objects.filter(id__in=selected_items)
+
     serializer = ProductSerializer(
         instance=queryset,
         many=True
