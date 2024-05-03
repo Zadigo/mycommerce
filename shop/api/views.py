@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from mycommerce.utils import remove_accents
 from shop.api import CustomPagination
 from shop.api.serializers import admin as admin_serializers
 from shop.api.serializers import shop as shop_serializers
@@ -146,12 +147,14 @@ def upload_images(request, **kwargs):
         association.append((name, files[i]))
 
     validator = FileExtensionValidator(
-        allowed_extensions=['jpg', 'jpeg', 'webp'])
+        allowed_extensions=['jpg', 'jpeg', 'webp']
+    )
     for item in association:
         file = item[1]
 
         extension = guess_extension(file.content_type)
-        file_name = f'{item[0]}{extension}'
+        clean_name = remove_accents(item[0])
+        file_name = f'{clean_name}{extension}'
 
         image = ImageFile(file, name=file_name)
         validator(image)

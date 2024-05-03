@@ -1,4 +1,4 @@
-
+import unidecode
 from rest_framework.pagination import LimitOffsetPagination
 
 
@@ -47,3 +47,8 @@ class PaginationHelper:
 
 
 pagination_helper = PaginationHelper()
+
+
+def remove_accents(text):
+    text = str(text)
+    return unidecode.unidecode(text)

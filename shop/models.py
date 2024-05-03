@@ -337,10 +337,13 @@ def delete_image_on_update(sender, instance, **kwargs):
                 return False
             else:
                 new_image = instance.original
-                if old_image and old_image != new_image:
-                    path = pathlib.Path(old_image.original.path)
-                    if path.is_file():
-                        path.unlink()
+                # FIXME: This does not work. When trying to save the
+                # model, the image gets deleted e.g. when trying to
+                # set the new is_main_image
+                # if old_image and old_image != new_image:
+                #     path = pathlib.Path(old_image.original.path)
+                #     if path.is_file():
+                #         path.unlink()
     else:
         instance.original.delete(save=False)
 
