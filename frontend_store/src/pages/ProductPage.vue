@@ -6,20 +6,22 @@
         <div id="product-image" class="col-12">
           <div class="row row-cols-5">
             <div id="product-main-image" class="col-6">
-              <v-img :src="parseMainImage(currentProduct)" :lazy-src="parseMainImage(currentProduct)" :alt="currentProduct.name" />
+              <div id="main-image">
+                <v-img :src="parseMainImage(currentProduct)" :lazy-src="parseMainImage(currentProduct)" :alt="currentProduct.name" />
+              </div>
             </div>
 
             <!-- TODO: Detect which sections can be reusable components -->
             <div id="product-information" class="col-4 ms-5">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                  <router-link :to="{ name: 'shop_products' }">
+                  <router-link :to="{ name: 'shop_products' }" class="link-dark">
                     Shop
                   </router-link>
                 </li>
 
                 <li class="breadcrumb-item">
-                  <router-link :to="{ name: 'shop_products_collection', params: { id: 'soutien-gorge' } }">
+                  <router-link :to="{ name: 'shop_products_collection', params: { id: 'soutien-gorge' } }" class="link-dark">
                     Soutien-Gorge
                   </router-link>
                 </li>
@@ -30,7 +32,7 @@
               </ol>
 
               <!-- Information -->
-              <h1 class="h3 fw-bold" aria-label="Product name">{{ currentProduct.name }}</h1>
+              <h1 class="h3 fw-light" aria-label="Product name">{{ currentProduct.name }}</h1>
 
               <!-- Reference -->
               <p class="fw-light text-body-secondary mb-2" aria-label="Product reference">
@@ -95,22 +97,22 @@
               </div>
 
               <!-- Delivery Types -->
-              <div class="list-group mt-5">
+              <div class="list-group mt-5 fw-ecommerce-small-1">
                 <div class="list-group-item d-flex justify-content-start gap-3 align-items-center p-3">
                   <font-awesome-icon :icon="['fas', 'shop']" />
                   <span>Enlèvement en magasin</span>
-                  <span class="fw-bold text-uppercase">Gratuit</span>
+                  <span class="fw-bold text-uppercase text-success">Gratuit</span>
                 </div>
 
                 <div class="list-group-item d-flex justify-content-start gap-3 align-items-center p-3">
                   <font-awesome-icon :icon="['fas', 'truck']" />
                   <span>Livraison standard à domicile</span>
-                  <span class="fw-bold text-uppercase">Gratuit</span>
+                  <span class="fw-bold text-uppercase text-success">Gratuit</span>
                 </div>
               </div>
 
               <!-- Additional Information -->
-              <div class="py-3 bg-white mt-4 d-flex justify-content-start align-items-center gap-2">
+              <div class="py-3 bg-white mt-4 d-flex justify-content-start align-items-center gap-2 fw-ecommerce-small-1">
                 <a href class="link-dark fw-bold" aria-label="Livraison et retour" @click.prevent="showCompositionDrawer = true">
                   Composition, soin et traçabilité
                 </a> |
@@ -617,5 +619,23 @@ export default {
 
 p[aria-label="Product reference"] {
   font-size: 0.8rem;
+}
+
+.fw-ecommerce-small-1 {
+  font-size: 0.9rem;
+}
+
+h1 {
+  font-size: 1.3rem;
+}
+
+#product-main-image {
+  position: relative;
+}
+
+#main-image {
+  position: sticky;
+  top: 0;
+  left: 0;
 }
 </style>

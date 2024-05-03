@@ -4,6 +4,7 @@ import { defineStore } from "pinia"
 const useCart = defineStore('cart', {
   state: () => ({
     requestData: {
+      session_id: null,
       firstname: null,
       lastname: null,
       email: null,
@@ -12,7 +13,8 @@ const useCart = defineStore('cart', {
       zip_code: null,
       country: null,
       city: null,
-      delivery: 'Post office'
+      delivery: 'Post office',
+      card_token: null
     },
     
     products: [],

@@ -36,6 +36,7 @@ import { useCart } from 'src/stores/cart'
 import { computed } from 'vue'
 import { useScript } from 'unhead'
 import { useUtilities } from 'src/composables/shop'
+import { storeToRefs } from 'pinia'
 
 const paymentMethods = [
   {
@@ -59,6 +60,7 @@ export default {
     useScript({ src: 'https://x.klarnacdn.net/kp/lib/v1/api.js' })
 
     const cartStore = useCart()
+    const { requestData } = storeToRefs(cartStore)
 
     const { translatePrice } = useUtilities()
     
@@ -69,11 +71,12 @@ export default {
     })
 
     return {
-      translatePrice,
       cartStore,
+      requestData,
       hasSelectedPaymentMethod,
       selectedPaymentMethod,
       paymentMethods,
+      translatePrice
     }
   },
   methods: {
