@@ -7,7 +7,7 @@ app_name = 'cart_api'
 urlpatterns = [
     re_path(
         r'^(?P<pk>\d+)$',
-        views.cart_view
+        views.cart
     ),
     re_path(
         r'^authenticate$',
@@ -19,18 +19,19 @@ urlpatterns = [
     ),
     re_path(
         r'^remove$',
-        views.delete_from_cart_view
+        views.delete_from_cart
     ),
     re_path(
         r'^update$',
-        views.update_in_cart_view
+        views.update_in_cart
     ),
     re_path(
         r'^add$',
-        views.add_to_cart, name='add_to_cart'
+        views.add_to_cart,
+        name='add_to_cart'
     ),
     re_path(
         r'^$',
-        views.carts_view
+        views.carts
     )
 ]

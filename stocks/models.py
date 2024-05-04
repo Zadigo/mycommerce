@@ -11,6 +11,7 @@ from stocks.utils import get_product_model
 
 PRODUCT_MODEL = get_product_model()
 
+
 class Isle(models.Model):
     """Represents an isle for a given product. An
     isle has dimensions which gives us the amount of
@@ -25,42 +26,47 @@ class Isle(models.Model):
         help_text=_('Describe what the isle contains'),
         blank=True,
         null=True
-    )    
-    total_capacity = models.PositiveIntegerField(default=1)
-    created_on = models.DateField(auto_now=True)
+    )
+    total_capacity = models.PositiveIntegerField(
+        default=1
+    )
+    created_on = models.DateField(
+        auto_now=True
+    )
 
     def __str__(self):
-        return self.shortname
-        
+        return f'Isle: {self.shortname}'
+
 
 class Stock(models.Model):
     """Represents the current stock
     for the given product or collection"""
 
-    reference = models.UUIDField(default=uuid4)
+    reference = models.UUIDField(
+        default=uuid4
+    )
     product = models.ForeignKey(
         PRODUCT_MODEL,
         on_delete=models.CASCADE
     )
-    
     isle = models.OneToOneField(
         Isle,
         help_text=_('The isle on which the product is stored'),
         on_delete=models.CASCADE
     )
-    sku = models.CharField(
-        max_length=50,
-        blank=True,
-        null=True
-    )
+    # sku = models.CharField(
+    #     max_length=50,
+    #     blank=True,
+    #     null=True
+    # )
     quantity = models.PositiveIntegerField(
         default=20
     )
-    unit_price = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        help_text=_('Unit price of each product')
-    )
+    # unit_price = models.DecimalField(
+    #     max_digits=5,
+    #     decimal_places=2,
+    #     help_text=_('Unit price of each product')
+    # )
     total = models.DecimalField(
         max_digits=5,
         decimal_places=2,
@@ -69,45 +75,57 @@ class Stock(models.Model):
     is_active = models.BooleanField(
         default=True
     )
-    in_stock = models.BooleanField(
-        default=True
-    )
-    almost_sold_out = models.BooleanField(
-        default=False
-    )
-    
+    # in_stock = models.BooleanField(
+    #     default=True
+    # )
+    # almost_sold_out = models.BooleanField(
+    #     default=False
+    # )
+
     class Meta:
         indexes = [
             models.Index(fields=['reference'])
-        ]    
+        ]
 
     def __str__(self):
-        return str(self.reference)
-    
+        return f'Stock: {self.reference}'
+
     def clean(self):
         # We should not be able to add products to
         # isle if it is already full
         if self.quantity > self.isle.total_capacity:
-            raise ValidationError('The number of products cannot fit in the isle')
-    
+            raise ValidationError(
+                'The number of products cannot fit in the isle')
+
     @property
     def used_capacity(self):
         return self.quantity / self.isle.total_capacity
-    
-    
+
+    @property
+    def in_stock(self):
+        return any([
+            self.quantity == 0,
+            self.quantity <= 2
+        ])
+
+    @property
+    def almost_sold_out(self):
+        return self.quantity >= 5 and self.quantity <= 10
+
+
 @receiver(post_save, sender=Stock)
 def update_stock(instance, **kwargs):
-    instance.total_quantity = instance.isle.total_capacity * instance.unit_price
+    instance.total_quantity = instance.isle.total_capacity * instance.product.unit_price
     # When stock quantity is equals
     # to zero, we are out of stock
-    if instance.quantity == 0:
-        instance.in_stock = False
-    else:
-        instance.in_stock = True
-    
+    # if instance.quantity == 0:
+    #     instance.in_stock = False
+    # else:
+    #     instance.in_stock = True
+
     # If we have less than 10 products,
     # we are almost out of stock
-    if instance.quantity <= 10:
-        instance.almost_sold_out = True
-    else:
-        instance.almost_sold_out = False
+    # if instance.quantity <= 10:
+    #     instance.almost_sold_out = True
+    # else:
+    #     instance.almost_sold_out = False

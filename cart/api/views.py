@@ -16,7 +16,7 @@ from orders.models import CustomerOrder, ProductHistory
 
 @api_view(['get'])
 @permission_classes([AllowAny])
-def carts_view(request, **kwargs):
+def carts(request, **kwargs):
     """Return all items from the user's cart"""
     queryset = Cart.objects.all()
     serializer = serializers.CartSerializer(
@@ -32,7 +32,7 @@ def carts_view(request, **kwargs):
 
 @api_view(['get'])
 @permission_classes([AllowAny])
-def cart_view(request, pk, **kwargs):
+def cart(request, pk, **kwargs):
     """Return all items from the user's cart"""
     cart = get_object_or_404(Cart, id=pk)
     serializer = serializers.CartSerializer(instance=cart)
@@ -70,14 +70,14 @@ def authenticate_user_cart(request, **kwargs):
 
 @api_view(['post'])
 @permission_classes([AllowAny])
-def update_in_cart_view(request, **kwargs):
+def update_in_cart(request, **kwargs):
     """Update item in cart (quantity, size...)"""
     return Response(data={})
 
 
 @api_view(['post'])
 @permission_classes([AllowAny])
-def delete_from_cart_view(request, **kwargs):
+def delete_from_cart(request, **kwargs):
     """Delete a product from the cart"""
     serializer = ValidateCart(data=request.data)
     serializer.is_valid(raise_exception=True)

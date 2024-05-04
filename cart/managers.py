@@ -1,4 +1,4 @@
-from django.db.models import F, QuerySet, Value
+from django.db.models import QuerySet
 from django.db.models.aggregates import Sum
 from django.db.models.expressions import Q
 
