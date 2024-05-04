@@ -7,17 +7,6 @@ from cart.utils import SessionManager
 
 
 class CartManager(QuerySet):
-    def _update_quantity(self, queryset, expression):
-        try:
-            cart_instance = queryset.get()
-        except:
-            return None
-        else:
-            cart_instance.quantity = expression
-            cart_instance.save()
-            cart_instance.refresh_from_db()
-            return cart_instance
-
     def cart_items(self, session_id):
         """Return all the items in the user's cart
         using the cart_session_id"""
@@ -108,11 +97,3 @@ class CartManager(QuerySet):
         session_manager = SessionManager(request)
         session_id = session_manager.get_or_create()
         return self._add_to_cart(request, session_id, product, **kwargs)
-
-    def increase_quantity(self, cart_session_id):
-        queryset = self.get_cart_products(cart_session_id)
-        return self._update_quantity(queryset, F('quantity') + 1)
-
-    def decrease_quantity(self, cart_session_id):
-        queryset = self.get_cart_products(cart_session_id)
-        return self._update_quantity(queryset, F('quantity') - 1)

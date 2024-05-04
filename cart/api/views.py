@@ -9,6 +9,7 @@ from cart.api import serializers
 from cart.api.serializers import (ValidateCart, ValidateShipment,
                                   build_cart_response)
 from cart.models import Cart
+from cart.payment import payment_interface
 from mycommerce.responses import simple_api_response
 from orders.models import CustomerOrder, ProductHistory
 
@@ -92,15 +93,22 @@ def delete_from_cart_view(request, **kwargs):
 @api_view(['post'])
 @permission_classes([IsAuthenticated])
 def payment(request, **kwargs):
+    """Here the user pays for the elements that
+    are currently in his cart. An order is created
+    in the database and a set of automations are
+    eventually sent via N8N to the linked backends"""
     shipment_serializer = ValidateShipment(data=request.data)
     shipment_serializer.is_valid(raise_exception=True)
 
     # 1. Get the customer's cart
-    session_id = request.data.get('session_id', None)
+    session_id = shipment_serializer.validated_data['session_id']
     queryset = Cart.objects.cart_items(session_id)
 
     if queryset.exists():
         # 1. Execute payment with Stripe
+        payment_interface.payment(14)
+        if not payment_interface.completed:
+            return payment_interface.get_fail_response()
 
         # 2. Create an order
         attrs = {
@@ -122,11 +130,11 @@ def payment(request, **kwargs):
         items_to_create = []
         for item in queryset:
             items_to_create.append(ProductHistory(
-                product=item.product, 
+                product=item.product,
                 unit_price=item.price
             ))
 
         created_items = ProductHistory.objects.bulk_create(items_to_create)
         customer_order.products.add(*created_items)
-        return simple_api_response({'state': True, 'reference': customer_order.reference, 'total': total})
-    return simple_api_response({'state': False})
+        return Response({'state': True, 'reference': customer_order.reference, 'total': total})
+    return Response({'message': 'Empty cart'}, status=402)
