@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from cart.managers import CartManager
+from discounts.utils import calculate_discount
 from shop.choices import ClotheSizesChoices
 from shop.models import Product
 
@@ -40,7 +41,9 @@ class AbstractCart(models.Model):
         decimal_places=2,
         default=0
     )
-
+    # has_discount = models.BooleanField(
+    #     default=False
+    # )
     is_stale = models.BooleanField(
         default=False,
         help_text=_(
@@ -67,6 +70,22 @@ class AbstractCart(models.Model):
 
     def __str__(self):
         return f'Session: {self.session_id}'
+
+    # def discounted_prices(self):
+    #     """If the the current product is related to
+    #     a discount tag, return the list of all the
+    #     discounts available to this product"""
+    #     results = []
+    #     discounts = self.product.discount_set.all()
+    #     for discount in discounts:
+    #         results.append({
+    #             'name': discount.name,
+    #             'discounted_price': calculate_discount(
+    #                 self.product.name,
+    #                 discount.discount_percentage
+    #             )
+    #         })
+    #     return results
 
 
 class Cart(AbstractCart):
