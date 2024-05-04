@@ -12,7 +12,10 @@ USER_MODEL = get_user_model()
 class AbstractCart(models.Model):
     session_id = models.CharField(
         max_length=100,
-        help_text=_("Unique session identifier for the user's carts")
+        help_text=_(
+            "Unique session identifier "
+            "for the user's carts"
+        )
     )
     user = models.ForeignKey(
         USER_MODEL,
@@ -45,10 +48,15 @@ class AbstractCart(models.Model):
             "no actions were performed"
         )
     )
-    is_anonymous = models.BooleanField(default=False)
-    is_paid_for = models.BooleanField(default=False)
-
-    created_on = models.DateTimeField(auto_now=True)
+    is_anonymous = models.BooleanField(
+        default=False
+    )
+    is_paid_for = models.BooleanField(
+        default=False
+    )
+    created_on = models.DateTimeField(
+        auto_now=True
+    )
 
     class Meta:
         abstract = True

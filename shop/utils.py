@@ -1,10 +1,11 @@
 import re
-import unidecode
 import unicodedata
 from typing import Any
 
+import unidecode
 from django.db.models import Value
 from django.utils.crypto import get_random_string
+from django.utils.text import get_valid_filename
 
 
 def remove_accents(text):

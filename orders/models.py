@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
@@ -12,7 +14,7 @@ USER_MODEL = get_user_model()
 class ProductHistory(models.Model):
     """A model that stores a product at the state
     at which it was bought by a customer.
-    
+
     This is useful for when the product's price 
     changes. The price in the order would stay 
     the same as when the customer bought it"""
@@ -27,12 +29,12 @@ class ProductHistory(models.Model):
         default=0
     )
     created_on = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         verbose_name = _('product history')
         verbose_name_plural = _('product histories')
         ordering = ['created_on']
-    
+
     def __str__(self):
         return self.product.name
 
@@ -40,17 +42,21 @@ class ProductHistory(models.Model):
 class CustomerOrder(models.Model):
     reference = models.CharField(
         max_length=100,
-        default=get_random_string(12),
+        blank=True,
+        null=True,
         unique=True
     )
-    stripe_reference = models.CharField(
+    stripe_charge = models.CharField(
         max_length=100,
-        help_text=_("The stripe order rederence e.g. cus_1234"),
+        help_text=_(
+            "The stripe order reference "
+            "or charge e.g. ch_1234"
+        ),
         validators=[],
         unique=True
     )
     user = models.ForeignKey(
-        USER_MODEL, 
+        USER_MODEL,
         on_delete=models.CASCADE,
         blank=True,
         null=True
@@ -63,18 +69,20 @@ class CustomerOrder(models.Model):
         choices=CityChoices.choices,
         default=CityChoices.LILLE
     )
-    zip_code = models.CharField(max_length=100)
+    zip_code = models.CharField(
+        max_length=100
+    )
     country = models.CharField(
         max_length=100,
         choices=CountryChoices.choices,
         default=CountryChoices.FRANCE
     )
     products = models.ManyToManyField(
-        ProductHistory, 
+        ProductHistory,
         blank=True,
         help_text=_(
             "Reference to the products that were bought "
-            "at the price at which they were bought at "
+            "at the price at which they were bought on "
             "the purchase date"
         )
     )
@@ -83,8 +91,10 @@ class CustomerOrder(models.Model):
         decimal_places=2,
         default=0
     )
-    created_on = models.DateTimeField(auto_now=True)
-    
+    created_on = models.DateTimeField(
+        auto_now=True
+    )
+
     class Meta:
         verbose_name = _('customer order')
         verbose_name_plural = _('customer orders')
@@ -92,3 +102,8 @@ class CustomerOrder(models.Model):
 
     def __str__(self):
         return f'CustomerOrder: {self.reference}'
+
+
+@receiver(pre_save, sender=CustomerOrder)
+def create_order_reference(instance, **kwargs):
+    pass
