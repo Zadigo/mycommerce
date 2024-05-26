@@ -51,6 +51,11 @@ def list_products(request, **kwargs):
     if sizes:
         queryset = queryset.filter(size__name__in=sizes)
 
+    # for product in queryset:
+    #     ViewingHistory.objects.get_or_create(
+    #         product=product
+    #     )
+
     serializer = None
     if is_admin == 'true':
         product_name = request.GET.get('name')

@@ -5,7 +5,7 @@ import string
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models import Choices, UniqueConstraint
+from django.db.models import CheckConstraint, Choices, Q, UniqueConstraint
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
 from django.forms import ValidationError
@@ -61,6 +61,13 @@ class Image(models.Model):
 
     class Meta:
         ordering = ['-created_on', 'name']
+        indexes = [
+            models.Index(
+                condition=Q(is_main_image=True),
+                fields=['is_main_image'],
+                name='main_image_images'
+            )
+        ]
 
     def __str__(self):
         return self.name
@@ -158,12 +165,25 @@ class AbstractProduct(models.Model):
         abstract = True
         ordering = ['name', '-created_on']
         indexes = [
-            models.Index(fields=['name', 'sku', 'category'])
+            models.Index(
+                condition=Q(on_sale=True),
+                fields=['on_sale'],
+                name='on_sale_products'
+            ),
+            models.Index(
+                condition=Q(display_new=True),
+                fields=['display_new'],
+                name='display_new_products'
+            )
         ]
         constraints = [
             UniqueConstraint(
                 fields=['name', 'color'],
                 name='unique_name_with_color'
+            ),
+            CheckConstraint(
+                check=Q(unit_price__gt=0),
+                name='unit_price_over_zero'
             )
         ]
 
@@ -252,6 +272,23 @@ class Product(AbstractProduct):
     class Meta(AbstractProduct.Meta):
         verbose_name = _('Product')
         verbose_name_plural = _('Products')
+
+
+# class ViewingHistory(models.Model):
+#     """Saves the the viewing history
+#     of the products that are saved in
+#     the database"""
+
+#     product = models.ForeignKey(
+#         Product,
+#         models.CASCADE
+#     )
+#     created_on = models.DateTimeField(
+#         auto_now=True
+#     )
+
+#     def __str__(self):
+#         return f'ViewingHistory: {self.product.name}'
 
 
 class AbstractUserList(models.Model):

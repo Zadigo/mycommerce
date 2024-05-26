@@ -37,6 +37,8 @@ urlpatterns = [
         include('collection.api.urls')
     ),
 
+    re_path(r'^test', views.TestPage.as_view()),
+
     path('collection/', include('collection.urls')),
     path('shop/', include('shop.urls')),
     path('admin/', admin.site.urls),
