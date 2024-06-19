@@ -11,8 +11,11 @@ from shop.models import Product
 
 
 def cart_statistics(queryset):
-    values = queryset.values('product__name')
-    grouped = values.annotate(count=Count('product__name'), total=Sum('price'))
+    values = queryset.values('product__id', 'product__name')
+    grouped = values.annotate(
+        count=Count('product__name'), 
+        total=Sum('price')
+    )
     return grouped.order_by()
 
 
@@ -51,7 +54,7 @@ class ValidateProduct(Serializer):
 
 class ValidateCart(Serializer):
     """Validates the data used to create a
-    cart item in the database"""
+    new cart object in the database"""
 
     product = ValidateProduct()
     size = fields.CharField(allow_null=True)
@@ -61,15 +64,15 @@ class ValidateCart(Serializer):
         session_id = self.validated_data['session_id']
         return Cart.objects.cart_items(session_id=session_id)
 
+    def save(self, request, **kwargs):
+        setattr(self, 'request', request)
+        return super().save(**kwargs)
+
     def create(self, validated_data):
         data = validated_data.copy()
         product_id = data.pop('product')['id']
         product = get_object_or_404(Product, id=product_id)
         return Cart.objects.rest_api_add_to_cart(self.request, product, **data)
-
-    def save(self, request, **kwargs):
-        setattr(self, 'request', request)
-        return super().save(**kwargs)
 
     def delete(self, request, **kwargs):
         product_id = self.validated_data['product']

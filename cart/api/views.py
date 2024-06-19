@@ -42,21 +42,23 @@ def cart(request, pk, **kwargs):
 @api_view(['post'])
 @permission_classes([AllowAny])
 def add_to_cart(request, **kwargs):
-    """Add a product to the cart. Returns
-    a `session_id` and the list of products
-    that were for the given session"""
+    """Add a product to the cart. This allows the customer
+    to add products being anonymous or logged in. In the
+    first case, it returns a `session_id` used to identify
+    the user and the list of products that were added to the
+    cart for the given session"""
     validator = ValidateCart(data=request.data)
     validator.is_valid(raise_exception=True)
 
     session_id, queryset = validator.save(request)
-    return simple_api_response(build_cart_response(queryset, session_id))
+    return Response(build_cart_response(queryset, session_id))
 
 
 @api_view(['post'])
 @permission_classes([AllowAny])
 def authenticate_user_cart(request, **kwargs):
     """Allows us to authenticate the items in the
-    user's cart once they logged in. This gets
+    user's cart once they are logged in. This gets
     triggered only in the case where the user
     has started adding items when he was not
     authenticated and then authenticates for
