@@ -27,10 +27,10 @@ class LoginUserSerializer(Serializer):
         if not result:
             raise AuthenticationFailed(detail='Could not authenticate user')
 
-        login(request, user)
-        token, state = Token.objects.get_or_create(user=user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        instance, state = Token.objects.get_or_create(user=user)
         serializer = UserSerializer(instance=user)
-        return {'token': token.key, 'user': serializer.data}
+        return {'token': instance.key, 'user': serializer.data}
 
 
 class SignupUserSerializer(LoginUserSerializer):
