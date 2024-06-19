@@ -58,6 +58,15 @@ class Shipment(models.Model):
     delivered = models.BooleanField(default=False)
     created_on = models.DateTimeField(auto_now_add=True)
     
+    class Meta:
+        indexes = [
+            models.Index(
+                fields=['delivered'],
+                name='not_delivered',
+                condition=models.Q(delivered=False)
+            )
+        ]
+    
     def __str__(self):
         return self.transporter
 
