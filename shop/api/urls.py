@@ -1,11 +1,11 @@
-from django.urls import re_path
+from django.urls import include, path, re_path
 
 from shop.api.views import admin as admin_views
 from shop.api.views import shop as shop_views
 
 app_name = 'shop_api'
 
-urlpatterns = [
+adminpatterns = [
     re_path(
         r'^products/(?P<pk>\d+)/upload-images$',
         admin_views.upload_images_to_product
@@ -24,11 +24,7 @@ urlpatterns = [
     ),
     re_path(
         r'^images$',
-        admin_views.list_images
-    ),
-    re_path(
-        r'^recommendations$',
-        shop_views.list_recommendations
+        admin_views.ListImages.as_view({'get': 'list'})
     ),
     re_path(
         r'^images/associate$',
@@ -41,6 +37,14 @@ urlpatterns = [
     re_path(
         r'^products/upload$',
         admin_views.upload_products
+    )
+]
+
+urlpatterns = [
+    path('admin/', include((adminpatterns, 'admin'))),
+    re_path(
+        r'^recommendations$',
+        shop_views.list_recommendations
     ),
     re_path(
         r'^products$',

@@ -11,7 +11,10 @@ from django.db.models.functions.window import Rank
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import make_aware, now
 from rest_framework.decorators import api_view
+from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 
 from cart.models import Cart
 from mycommerce.utils import remove_accents
@@ -34,6 +37,21 @@ def list_images(request, **kwargs):
         many=True
     )
     return Response(serializer.data)
+
+
+class ListImages(ListModelMixin, GenericViewSet):
+    """List all the images avaible in the database"""
+
+    serializer_class = admin_serializers.ImageSerializer
+    queryset = Product.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        image_name = self.request.GET.get('name')
+
+        if image_name is not None:
+            return queryset.filter(name__icontains=image_name)
+        return queryset
 
 
 @api_view(http_method_names=['post'])

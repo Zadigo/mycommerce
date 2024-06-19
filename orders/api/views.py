@@ -1,11 +1,10 @@
-from api.serializers.orders import CustomerOrderSerializer
-from api.views.responses import success_response
-from cart.models import Cart
-from cart.utils import SessionManager
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from cart.models import Cart
+from cart.utils import SessionManager
+from orders.api.serializers import CustomerOrderSerializer
 from orders.models import CustomerOrder, ProductHistory
 from orders.payments.session import SessionBasedPayment
 

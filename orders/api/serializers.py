@@ -1,6 +1,7 @@
-from api.serializers.products import ImageSerializer
 from rest_framework import fields
 from rest_framework.serializers import Serializer
+
+from shop.api.serializers.shop import ImageSerializer
 
 
 class SimpleProductSerializer(Serializer):

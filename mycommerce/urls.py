@@ -4,6 +4,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
+from drf_spectacular.views import (SpectacularAPIView, SpectacularRedocView,
+                                   SpectacularSwaggerView)
 
 from mycommerce import views
 from mycommerce.sitemaps import SITEMAPS
@@ -16,7 +18,7 @@ urlpatterns = [
         name='django.contrib.sitemaps.views.sitemap'
     ),
     path(
-        '__debug__/', 
+        '__debug__/',
         include('debug_toolbar.urls')
     ),
 
@@ -35,6 +37,22 @@ urlpatterns = [
     path(
         'api/v1/collection/',
         include('collection.api.urls')
+    ),
+
+    path(
+        'api/schema/',
+        SpectacularAPIView.as_view(),
+        name='schema'
+    ),
+    path(
+        'api/schema/swagger-ui/',
+        SpectacularSwaggerView.as_view(url_name='schema'),
+        name='swagger-ui'
+    ),
+    path(
+        'api/schema/redoc/',
+        SpectacularRedocView.as_view(url_name='schema'),
+        name='redoc'
     ),
 
     path('ckeditor5/', include('django_ckeditor_5.urls')),

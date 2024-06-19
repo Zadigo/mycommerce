@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     'corsheaders',
+    'drf_spectacular',
     'rest_framework',
     'rest_framework.authtoken',
     'debug_toolbar',
@@ -209,7 +210,8 @@ SITE = 1
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication'
-    ]
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
 }
 
 
@@ -277,10 +279,21 @@ SOCIALACCOUNT_PROVIDERS = {
         # For each OAuth based provider, either add a ``SocialApp``
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
-        'APP': {
-            'client_id': '123',
-            'secret': '456',
-            'key': ''
+        'APPS': [
+            {
+                'client_id': '123',
+                'secret': '456',
+                'key': ''
+            }
+        ],
+        # These are provider-specific settings that can only be
+        # listed here:
+        'SCOPE': [
+            "profile",
+            "email",
+        ],
+        'AUTH_PARAMS': {
+            "access_type": "online",
         }
     }
 }

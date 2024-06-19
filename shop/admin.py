@@ -2,9 +2,13 @@ import random
 
 from django.contrib import admin
 from django.core.exceptions import ValidationError
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import (OpenApiExample, OpenApiParameter,
+                                   extend_schema)
 from import_export.admin import ImportExportModelAdmin
 from import_export.resources import ModelResource
 
+from shop.api.serializers.shop import ProductSerializer
 from shop.models import Image, Like, Product, Video, Wishlist
 from shop.utils import create_slug
 
@@ -101,3 +105,10 @@ class LikeAdmin(admin.ModelAdmin):
     list_display = ['user', 'created_on']
     search_fields = ['products__name']
     date_hiearchy = 'created_on'
+
+
+# class ProductViewset:
+#     serializer_class = ProductSerializer
+
+#     def list(self, request):
+#         return super().list(request)

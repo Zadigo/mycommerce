@@ -29,6 +29,7 @@ numpy = "==1.26.4"
 jwt = "*"
 django-allauth = {extras = ["socialaccount"], version = "*"}
 django-ckeditor-5 = "*"
+drf-spectacular = "*"
 
 [dev-packages]
 autopep8 = "*"
