@@ -1,0 +1,13 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "npm",
+            "script": "dev",
+            "path": "frontend_store",
+            "detail": "Starts the application with NPM",
+            "label": "e-commerce: start",
+            "problemMatcher": ["$eslint-stylish", "$vite"]
+        }
+    ]
+}

@@ -17,20 +17,15 @@
         {
             "type": "msedge",
             "request": "launch",
-            "name": "vuejs:chrome",
-            "url": "http://localhost:8080",
+            "name": "vuejs:edge",
+            "url": "http://localhost:5173",
             "webRoot": "${workspaceFolder}/src",
+            "preLaunchTask": "e-commerce: start",
             "vueComponentPaths": [
-                "${workspaceFolder}/src/**/*.vue"
+                "${workspaceFolder}/frontend_store/src/**/*.vue"
             ],
-            "sourceMapPathOverrides": {
-                "webpack:///src/*": "${webRoot}/*"
-            },
-            "pathMapping": {
-                "webpack:///src/": "${webRoot}/src"
-            },
             "skipFiles": [
-                "${workspaceFolder}/node_modules/**/*.js",
+                "${workspaceFolder}/frontend_store/node_modules/**/*.js",
                 "${webRoot}/node_modules/*",
                 "<node_internals>/**"
             ],
