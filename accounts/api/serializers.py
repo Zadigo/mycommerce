@@ -27,10 +27,16 @@ class LoginUserSerializer(Serializer):
         if not result:
             raise AuthenticationFailed(detail='Could not authenticate user')
 
-        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-        instance, state = Token.objects.get_or_create(user=user)
+        instance = super().save(**kwargs)
         serializer = UserSerializer(instance=user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return {'token': instance.key, 'user': serializer.data}
+
+    def create(self, validated_data):
+        instance, state = Token.objects.get_or_create(
+            user__email=validated_data['email']
+        )
+        return instance
 
 
 class SignupUserSerializer(LoginUserSerializer):
@@ -38,15 +44,15 @@ class SignupUserSerializer(LoginUserSerializer):
     password = None
     password1 = fields.CharField()
     password2 = fields.CharField()
-    
+
     def save(self, request, **kwargs):
         pass
-    
+
 
 class AccountMixin:
     def get_object(self):
         return get_object_or_404(USER_MODEL, id=self.validated_data['id'])
-    
+
 
 class UserProfileSerializer(AccountMixin, Serializer):
     id = fields.IntegerField()
@@ -54,7 +60,7 @@ class UserProfileSerializer(AccountMixin, Serializer):
     def save(self, request, **kwargs):
         user = self.get_object()
 
-    
+
 class UserSerializer(AccountMixin, Serializer):
     id = fields.CharField(read_only=True)
     userprofile = UserProfileSerializer()
@@ -65,6 +71,7 @@ class UserSerializer(AccountMixin, Serializer):
     email = fields.CharField(allow_null=True)
     # telephone = fields.CharField(allow_null=True)
 
+    # TODO: Remove
     def save(self, request, **kwargs):
         user = self.get_object()
 
