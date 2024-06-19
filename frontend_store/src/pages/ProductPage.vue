@@ -40,14 +40,14 @@
               </p>
 
               <!-- Price -->
-              <p class="h5 fw-bold mb-3" aria-label="Product price">
-                {{ translatePrice(currentProduct.get_price) }}
-              </p>
+              <v-skeleton-loader :loading="isLoading" type="text" style="margin-left: 0;">
+                <p class="h5 fw-bold mb-3" aria-label="Product price">
+                  {{ translatePrice(currentProduct.get_price) }}
+                </p>
+              </v-skeleton-loader>
 
               <!-- Reviews -->
               <div class="fw-bold d-flex justify-content-start gap-1">
-                <!-- <a href="#" class="link-dark me-3">3 stars</a> -->
-
                 <div aria-label="3 stars" data-rating="3" class="stars">
                   <font-awesome-icon v-for="i in 5" :key="i" :icon="['fas', 'star']" />
                 </div>
@@ -266,7 +266,7 @@
               section « Mon Compte » de notre site en sélectionnant « Retour en point relais ».
               Cette option est gratuite si tu effectues ton premier retour en point relais dans les 15 premiers
               jours de la période de retour. Si tu effectues ton retour en point relais une fois les 15 premiers
-              jours de la période de retour passés, ou si c’est ta deuxième demande de retour pour la même commande,
+              jours de la période de retour passés, ou si c'est ta deuxième demande de retour pour la même commande,
               les frais de retour seront de 4,95€.
             </p>
 
@@ -327,7 +327,6 @@ import BaseSizeBlock from 'src/components/BaseSizeBlock.vue'
 import FiveImages from 'src/components/product/FiveImages.vue'
 import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
 import SixImages from 'src/components/product/SixImages.vue'
-// import ProductCard from 'components/products/ProductCard.vue'
 
 export default {
   name: 'ProductPage',
@@ -336,10 +335,10 @@ export default {
     FiveImages,
     SixImages,
     LoadingRecommendationsBlock,
-    // ProductCard,
     // VueImageZoomer,
     AsyncRecommendationBlock: defineAsyncComponent({
-      loader: async () => import('components/RecommendationsBlock.vue')
+      loader: () => import('components/RecommendationsBlock.vue'),
+      delay: 500
     })
   },
   beforeRouteEnter (to, from, next) {
@@ -353,6 +352,7 @@ export default {
     // const router = useRouter()
     // const route = useRoute()
     
+    const isLoading = ref(true)
     // Interceptor to check that the user has moved
     // down to the the "more-products" section of
     // the product page
@@ -439,6 +439,7 @@ export default {
       currentProduct,
       authenticationStore,
       isLiked,
+      isLoading,
       productVariants,
       addToCart,
       addToCartNoSize,
@@ -487,7 +488,7 @@ export default {
       }
     }
   },
-  beforeMount () {
+  created () {
     this.requestProduct()
     // As with the "documentVisible" watcher function,
     // listen for when the user refreshes the page
@@ -548,6 +549,7 @@ export default {
       try {
         const response = await this.$http.get(`shop/products/${this.$route.params.id}`)
         this.currentProduct = response.data
+        this.isLoading = false
       } catch (e) {
         if (e.response.status === 404) {
           this.$router.push({
@@ -637,5 +639,9 @@ h1 {
   position: sticky;
   top: 0;
   left: 0;
+}
+
+.v-skeleton-loader__image {
+  height: 655px;
 }
 </style>

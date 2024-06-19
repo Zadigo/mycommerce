@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from cart.managers import CartManager
@@ -94,3 +95,16 @@ class Cart(AbstractCart):
     class Meta(AbstractCart.Meta):
         verbose_name = _('Cart')
         verbose_name_plural = _('Carts')
+        indexes = [
+            models.Index(
+                condition=Q(is_paid_for=True),
+                fields=['is_paid_for'],
+                name='is_paid_for_carts'
+            )
+        ]
+        constraints = [
+            models.CheckConstraint(
+                check=Q(price__gte=0),
+                name='cart_price_over_zero'
+            )
+        ]

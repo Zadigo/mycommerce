@@ -25,13 +25,13 @@
         </div>
 
         <div class="col-12">
-          <default-filtering @update-grid-size="handleGridSize" />
+          <default-filtering :products="products" @update-grid-size="handleGridSize" />
         </div>
 
         <div class="col-12">
           <suspense>
             <template #default>
-              <async-product-items :grid-size="currentGridSize" @update-products="handleSEO" />
+              <async-product-items :grid-size="currentGridSize" @update-products="handleProducts" />
             </template>
 
             <template #fallback>
@@ -46,13 +46,13 @@
 
 <script>
 import _ from 'lodash'
-import { ref } from 'vue'
 import { useHead } from 'unhead'
+import { ref, provide } from 'vue'
 import { defineAsyncComponent } from 'vue'
 import { defineProduct, useSchemaOrg } from '@unhead/schema-org'
 
-import LoadingProductItems from 'components/products/LoadingProductItems.vue'
 import DefaultFiltering from 'components/products/filtering/DefaultFiltering.vue'
+import LoadingProductItems from 'components/products/LoadingProductItems.vue'
 
 export default {
   name: 'ProductsPage',
@@ -60,10 +60,17 @@ export default {
     DefaultFiltering,
     LoadingProductItems,
     AsyncProductItems: defineAsyncComponent({
-      loader: async () => import('components/products/ProductItems.vue')
+      loader: () => import('components/products/ProductItems.vue'),
+      delay: 1000
     })
   },
   setup () {
+    const products = ref({})
+    const productsLoading = ref(true)
+    const currentGridSize = ref(4)
+
+    provide('productsLoading', productsLoading)
+
     useHead({
       title: 'Collection name',
       description: '',
@@ -73,23 +80,25 @@ export default {
       twitterCard: 'summary_large_image',
       ogSiteName: 'Ma Boutique'
     })
-
-    useSchemaOrg([
-
-    ])
-    
-    const currentGridSize = ref(4)
     
     return {
+      products,
+      productsLoading,
       currentGridSize
     }
   },
   methods: {
     handleGridSize (size) {
       this.currentGridSize = size
+      this.$session.create('grid-size', size)
     },
-    handleSEO (products) {
-      useSchemaOrg(_.map(products, (product) => {
+    handleProducts (products) {
+      this.products = products
+      this.productsLoading = false
+      this.handleSEO()
+    },
+    handleSEO () {
+      useSchemaOrg(_.map(this.products, (product) => {
         return defineProduct({
           name: product.name,
           offers: [

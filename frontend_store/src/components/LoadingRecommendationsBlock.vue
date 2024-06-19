@@ -1,9 +1,9 @@
 <template>
   <div :data-count="quantity" class="recommendations">
     <h2 class="h4 text-center">{{ blockTitle }}</h2>
-    <div ref="productsRow" class="row">
+    <div ref="productsRow" class="row g-1">
       <div v-for="product in quantity" :key="product.id" class="col-3">
-        <v-skeleton-loader type="card"></v-skeleton-loader>
+        <v-skeleton-loader type="image"></v-skeleton-loader>
       </div>
     </div>
   </div>

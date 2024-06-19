@@ -39,7 +39,7 @@
             Taille
             <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
           </button> -->
-          <button type="button" class="btn btn-sm btn-light shadow-none">
+          <!-- <button type="button" class="btn btn-sm btn-light shadow-none">
             Couleurs
             <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
           </button>
@@ -62,18 +62,17 @@
           <button type="button" class="btn btn-sm btn-light shadow-none">
             Coques
             <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
-          </button>
+          </button> -->
         </div>
 
-
         <div class="d-flex justify-content-right gap-1 align-items-center">
-          <span id="product-count" class="fw-bold me-2">92 produits trouvés</span>
-          <!-- <button class="btn btn-sm btn-light shadow-none">
-            <font-awesome-icon :key="i" :icon="['fas', 'table-cells']" />
-          </button> -->
+          <v-skeleton-loader v-if="productsLoading" type="text"></v-skeleton-loader>
+          <span v-else id="product-count" class="fw-bold me-2">{{ products.length }} produits trouvés</span>
+
           <button type="button" class="btn btn-sm btn-light shadow-none" @click="handleGridSize(3)">
             <font-awesome-icon :icon="['fas', 'table-cells-large']" />
           </button>
+          
           <button type="button" class="btn btn-sm btn-light shadow-none" @click="handleGridSize(4)">
             <font-awesome-icon :icon="['fas', 'table-cells']" />
           </button>
@@ -84,13 +83,20 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 
 const sortingOptions = [
   'Prix croissant'
 ]
 
 export default {
+  name: 'DefaultFiltering',
+  props: {
+    products: {
+      type: Object,
+      default: () => {}
+    }
+  },
   emits: {
     'update-grid-size' () {
       return true
@@ -98,8 +104,11 @@ export default {
   },
   setup () {
     const gridSize = ref(4)
+    const productsLoading = inject('productsLoading')
+
     return {
       gridSize,
+      productsLoading,
       sortingOptions
     }
   },

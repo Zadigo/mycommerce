@@ -15,9 +15,8 @@
 <script>
 import { ref, computed } from 'vue'
 import { client } from 'src/plugins/axios'
+import { useVueSession } from 'src/plugins/vue-storages'
 import { useRoute, useRouter } from 'vue-router'
-
-// import { createMockupProducts } from '../../utils.js'
 
 import ProductCard from './ProductCard.vue'
 
@@ -37,15 +36,15 @@ export default {
       return true
     }
   },
-  setup () {
+  async setup () {
     const router = useRouter()
     const route = useRoute()
+    const { session } = useVueSession()
 
     const cachedResponse = ref({})
     const products = ref([])
 
     async function requestProducts () {
-      // products.value = createMockupProducts(30)
       try {
         // TODO: Get the collection to get from
         // the url parameters
@@ -55,6 +54,7 @@ export default {
         const response = await client.get(`collection/${route.params.id}`)
         cachedResponse.value = response.data
         products.value = cachedResponse.value.results
+        session.create('products', response.data)
       } catch (e) {
         // If we fail to get the collectionName
         // redirect to the 404 page
@@ -66,18 +66,16 @@ export default {
         console.error(e)
       }
     }
-    requestProducts()
+    await requestProducts()
 
     const nextPageUrl = computed(() => {
-      // Independently save the url for
-      // retrieving the data for the
-      // next page
       return cachedResponse.value.next
     })
 
     return {
       products,
-      nextPageUrl
+      nextPageUrl,
+      requestProducts
     }
   },
   computed: {
@@ -103,6 +101,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-</style>

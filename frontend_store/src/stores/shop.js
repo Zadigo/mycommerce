@@ -1,6 +1,6 @@
-import _ from "lodash"
+import _ from 'lodash'
 import { defineStore } from 'pinia'
-import { createMockupProducts } from "src/utils"
+import { createMockupProducts } from 'src/utils'
 
 const useShop = defineStore('shop', {
   state: () => ({
