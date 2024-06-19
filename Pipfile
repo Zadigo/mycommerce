@@ -30,6 +30,7 @@ jwt = "*"
 django-allauth = {extras = ["socialaccount"], version = "*"}
 django-ckeditor-5 = "*"
 drf-spectacular = "*"
+markdown = "*"
 
 [dev-packages]
 autopep8 = "*"

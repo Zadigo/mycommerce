@@ -24,7 +24,7 @@ adminpatterns = [
     ),
     re_path(
         r'^images$',
-        admin_views.ListImages.as_view({'get': 'list'})
+        admin_views.ListImages.as_view()
     ),
     re_path(
         r'^images/associate$',

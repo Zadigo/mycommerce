@@ -55,6 +55,11 @@ urlpatterns = [
         name='redoc'
     ),
 
+    path(
+        'api/rest/',
+        include('rest_framework.urls'),
+        name='rest_framework'
+    ),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
     path('all-accounts/', include('allauth.urls')),
 
