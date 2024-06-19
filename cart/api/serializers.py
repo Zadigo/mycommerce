@@ -5,9 +5,9 @@ from rest_framework.serializers import Serializer
 
 from cart.models import Cart
 from orders.choices import ShipmentChoices
+from shop.api.serializers.shop import ProductSerializer
 from shop.choices import ClotheSizesChoices
 from shop.models import Product
-from shop.serializers import ProductSerializer
 
 
 def cart_statistics(queryset):
