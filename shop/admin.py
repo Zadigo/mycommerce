@@ -1,15 +1,22 @@
-from django.contrib import admin
-from django.core.exceptions import ValidationError
-
-from shop.models import (Image, Like, Product, Video,
-                         Wishlist)
 import random
 
+from django.contrib import admin
+from django.core.exceptions import ValidationError
+from import_export.admin import ImportExportModelAdmin
+from import_export.resources import ModelResource
+
+from shop.models import Image, Like, Product, Video, Wishlist
 from shop.utils import create_slug
 
 
+class ProductResource(ModelResource):
+    class Meta:
+        model = Product
+
+
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(ImportExportModelAdmin):
+    resource_classes = [ProductResource]
     list_display = ['name', 'color', 'category', 'unit_price', 'active']
     filter_horizontal = ['images']
     list_filter = ['active']
@@ -81,12 +88,6 @@ class ImageAdmin(admin.ModelAdmin):
 class VideoAdmin(admin.ModelAdmin):
     list_display = ['name', 'content']
     search_fields = ['name']
-
-
-# @admin.register(AdditionalVariant)
-# class AdditionalVariantAdmin(admin.ModelAdmin):
-#     list_display = ['reference', 'in_stock', 'active']
-#     list_filter = ['active', 'in_stock']
 
 
 @admin.register(Wishlist)
