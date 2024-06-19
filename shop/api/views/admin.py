@@ -1,13 +1,21 @@
+import datetime
 from mimetypes import guess_extension
 
 from django.core.files.images import ImageFile
 from django.core.validators import FileExtensionValidator
-from django.db.models import CharField, Value
+from django.db.models import CharField, F, Q, Value
+from django.db.models.aggregates import Avg, Count, Max, Min, StdDev, Variance
+from django.db.models.expressions import Window
+from django.db.models.functions import ExtractYear
+from django.db.models.functions.window import Rank
 from django.shortcuts import get_object_or_404
+from django.utils.timezone import make_aware, now
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from cart.models import Cart
 from mycommerce.utils import remove_accents
+from orders.models import CustomerOrder
 from shop.api.serializers import admin as admin_serializers
 from shop.api.serializers import shop as shop_serializers
 from shop.models import Image, Product
@@ -162,3 +170,83 @@ def filter_images(request, **kwargs):
     serializer.is_valid(raise_exception=True)
     data = serializer.filter_images()
     return Response(data)
+
+
+@api_view(['get'])
+def calculate_shop_statistics(request, **kwargs):
+    customer_orders = CustomerOrder.objects.annotate(
+        current_year=ExtractYear('created_on')
+    )
+    carts = Cart.objects.all()
+
+    statistics = {
+        'total': {},
+        'current_month': {}
+    }
+
+    current_date = now()
+    first = datetime.datetime(
+        year=current_date.year,
+        month=current_date.month,
+        day=1
+    )
+
+    customer_orders_for_month = customer_orders.filter(
+        Q(created_on__gte=make_aware(first)) &
+        Q(created_on__lte=now())
+    )
+
+    total_customer_orders = customer_orders.aggregate(
+        Count('id'),
+        Avg('price'),
+        Max('price'),
+        Min('price'),
+        StdDev('price'),
+        Variance('price')
+    )
+    statistics['total'].update(**total_customer_orders)
+
+    total_customer_orders_for_month = customer_orders_for_month.aggregate(
+        Count('id'),
+        Avg('price'),
+        Max('price'),
+        Min('price'),
+        StdDev('price'),
+        Variance('price')
+    )
+    statistics['month'].update(**total_customer_orders_for_month)
+
+    statistics_unpaid_cart = carts.aggregate(
+        Count('id'),
+        Avg('price'),
+        Max('price'),
+        Min('price'),
+        StdDev('price'),
+        Variance('price')
+    )
+    statistics.update(**statistics_unpaid_cart)
+
+    top_selling_products = carts.annotate(top_selling=Window(
+        Rank(),
+        partition_by=F('product__id'),
+        order_by='id'
+    )
+    )
+    statistics['top_selling_products'] = top_selling_products
+    return Response(statistics)
+
+
+@api_view(['post'])
+def toggle_product_state(request, method, **kwargs):
+    product_ids = request.data.get('products', [])
+    products = Product.objects.filter(id__in=product_ids)
+
+    if method == 'activate':
+        products.update(active=True)
+
+    if method == 'deactivate':
+        products.update(active=False)
+
+    serializer = shop_serializers.ProductSerializer(
+        instance=products, many=True)
+    return Response(serializer.data)

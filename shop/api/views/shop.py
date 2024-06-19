@@ -1,7 +1,8 @@
-import spacy
-import pandas
 import random
-from django.db.models import Q, When, Case
+
+import pandas
+import spacy
+from django.db.models import Case, Q, When
 from django.db.models.functions.window import Rank
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
@@ -10,8 +11,8 @@ from rest_framework.response import Response
 from shop.api import CustomPagination
 from shop.api.serializers import admin as admin_serializers
 from shop.api.serializers import shop as shop_serializers
+from shop.api.serializers.shop import ProductSerializer
 from shop.models import Product
-from shop.serializers import ProductSerializer
 
 
 @api_view(['get'])
@@ -160,7 +161,7 @@ def list_recommendations(request, **kwargs):
     df = df.sort_values('similarity')
     df = df.loc[lambda x: x.similarity > 0.8]
 
-    print(df)
+    # print(df)
 
     selected_items = random.choices(df.id.to_list(), k=quantity)
     queryset = Product.objects.filter(id__in=selected_items)

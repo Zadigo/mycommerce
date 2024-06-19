@@ -174,6 +174,11 @@ class AbstractProduct(models.Model):
                 condition=Q(display_new=True),
                 fields=['display_new'],
                 name='display_new_products'
+            ),
+            models.Index(
+                condition=Q(active=True),
+                fields=['active'],
+                name='active_products'
             )
         ]
         constraints = [
