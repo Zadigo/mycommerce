@@ -22,11 +22,13 @@ django-redis = "*"
 python-dotenv = "*"
 tablib = "*"
 django-import-export = "*"
-django-allauth = "*"
 psycopg = {extras = ["binary", "pool"], version = "*"}
 unidecode = "*"
 spacy = "*"
 numpy = "==1.26.4"
+jwt = "*"
+django-allauth = {extras = ["socialaccount"], version = "*"}
+django-ckeditor-5 = "*"
 
 [dev-packages]
 autopep8 = "*"
