@@ -5,8 +5,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-FRONT_DIR = BASE_DIR / 'frontend'
-
 dotenv.load_dotenv(BASE_DIR / '.env')
 
 
@@ -39,6 +37,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'debug_toolbar',
+    'import_export',
 
     'legal',
     'accounts',
@@ -70,8 +69,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'templates',
-            FRONT_DIR / 'dist'
+            BASE_DIR / 'templates'
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -145,8 +143,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-    FRONT_DIR / 'dist/static'
+    BASE_DIR / 'static'
 ]
 
 MEDIA_URL = 'media/'
@@ -184,13 +181,13 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
     'http://localhost:5200',
-    'http://localhost:5173'
+    'http://localhost:5174'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8080',
     'http://localhost:5200',
-    'http://localhost:5173'
+    'http://localhost:5174'
 ]
 
 
