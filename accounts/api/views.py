@@ -4,10 +4,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from accounts.serializers import LoginUserSerializer, UserSerializer
+from accounts.api.serializers import LoginUserSerializer, UserSerializer, USER_MODEL
 from mycommerce.responses import simple_api_response
 
-USER_MODEL = get_user_model()
 
 
 @api_view(['post'])

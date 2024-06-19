@@ -13,7 +13,7 @@ class Address(models.Model):
         max_length=100
     )
     zip_code = models.PositiveIntegerField()
-    
+
     def __str__(self):
         return self.address
 
@@ -29,10 +29,10 @@ class UserProfile(models.Model):
         null=True
     )
     created_on = models.DateField(auto_now_add=True)
-    
+
     def __str__(self):
         return str(self.user)
-    
+
 
 @receiver(post_save, sender=User)
 def create_profile(instance, created, **kwargs):
