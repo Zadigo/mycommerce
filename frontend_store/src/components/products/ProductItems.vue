@@ -16,7 +16,7 @@
 import { ref, computed } from 'vue'
 import { client } from 'src/plugins/axios'
 import { useVueSession } from 'src/plugins/vue-storages'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 import ProductCard from './ProductCard.vue'
 
@@ -37,7 +37,7 @@ export default {
     }
   },
   async setup () {
-    const router = useRouter()
+    // const router = useRouter()
     const route = useRoute()
     const { session } = useVueSession()
 
@@ -58,11 +58,11 @@ export default {
       } catch (e) {
         // If we fail to get the collectionName
         // redirect to the 404 page
-        if (e.response.status === 404) {
-          router.push({
-            name: 'not_found'
-          })
-        }
+        // if (e.response.status === 404) {
+        //   router.push({
+        //     name: 'not_found'
+        //   })
+        // }
         console.error(e)
       }
     }

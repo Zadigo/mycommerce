@@ -124,8 +124,8 @@ def search_shop(request, **kwargs):
 @api_view(['get'])
 def list_recommendations(request, **kwargs):
     testing = request.GET.get('t', None)
-    product_id = request.GET.get('q')
-    quantity = request.GET.get('quantity', 30)
+    product_id = request.GET.get('p')
+    quantity = request.GET.get('q', 30)
 
     try:
         quantity = int(quantity)
@@ -152,7 +152,15 @@ def list_recommendations(request, **kwargs):
         calculator = spacy.load('fr_core_news_md')
     except Exception as e:
         print(e)
-        return Response([], status=400)
+        # Instead of failing hard, just return
+        # the first set of available products
+        # to the frontend
+        products = products.exclude()
+        serializer = shop_serializers.ProductSerializer(
+            instance=products[:quantity],
+            many=True
+        )
+        return Response(serializer.data, status=200)
 
     for product in df.itertuples(name='Product'):
         result = calculator(product.name).similarity(calculator(product.name))

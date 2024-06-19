@@ -15,10 +15,6 @@ adminpatterns = [
         admin_views.update_product
     ),
     re_path(
-        r'^products/(?P<pk>\d+)$',
-        shop_views.get_product
-    ),
-    re_path(
         r'^filter-images$',
         admin_views.filter_images
     ),
@@ -42,6 +38,10 @@ adminpatterns = [
 
 urlpatterns = [
     path('admin/', include((adminpatterns, 'admin'))),
+    re_path(
+        r'^products/(?P<pk>\d+)$',
+        shop_views.get_product
+    ),
     re_path(
         r'^recommendations$',
         shop_views.list_recommendations

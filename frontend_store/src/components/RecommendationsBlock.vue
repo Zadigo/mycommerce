@@ -13,11 +13,11 @@
 <script>
 import { ref } from 'vue'
 import { client } from '../plugins/axios'
-import { getCurrentInstance } from 'vue'
 import { useVueSession } from 'src/plugins/vue-storages'
 // import { createMockupProducts } from 'src/utils'
 
 import ProductCard from 'components/products/ProductCard.vue'
+import { useRoute } from 'vue-router'
 
 export default {
   name: 'RecommendationsBlock',
@@ -43,8 +43,8 @@ export default {
       default: 3
     }
   },
-  async setup () {
-    const app = getCurrentInstance()
+  async setup (props) {
+    const route = useRoute()
     const { session } = useVueSession()
 
     const recommendations = ref([])
@@ -53,7 +53,8 @@ export default {
       try {
         const response = await client.get('shop/recommendations', {
           params: {
-            q: app.props.quantity
+            p: route.params.id,
+            q: props.quantity
           }
         })
         // recommendations.value = createMockupProducts(app.props.quantity)
