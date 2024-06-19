@@ -15,12 +15,13 @@ class CustomerOrderAdmin(admin.ModelAdmin):
     list_display = ['reference', 'user', 'total']
     search_fields = ['reference', 'products__name']
     fieldsets = [
-        ['References', {'fields': ['reference', 'stripe_reference']}],
+        ['References', {'fields': ['reference']}],
         ['Order', {'fields': ['total', 'products']}],
         ['User information', {'fields': [
-            'user', 'address', 'city', 'zip_code', 'country']}],
+            'user', 'address', 'city', 'zip_code', 'country', 'notes']}],
     ]
-    actions = ['send_email_confirmation', 'download_pdf', 'download_csv', 'send_order_cancelled_email']
+    actions = ['send_email_confirmation', 'download_pdf',
+               'download_csv', 'send_order_cancelled_email']
     filter_horizontal = ['products']
     date_hiearchy = 'created_on'
 

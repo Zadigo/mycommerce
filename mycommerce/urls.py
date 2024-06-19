@@ -22,7 +22,7 @@ urlpatterns = [
 
     path(
         'api/v1/accounts/',
-        include('accounts.urls')
+        include('accounts.api.urls')
     ),
     path(
         'api/v1/shop/',
@@ -36,6 +36,9 @@ urlpatterns = [
         'api/v1/collection/',
         include('collection.api.urls')
     ),
+
+    path('ckeditor5/', include('django_ckeditor_5.urls')),
+    path('all-accounts/', include('allauth.urls')),
 
     re_path(r'^test', views.TestPage.as_view()),
 

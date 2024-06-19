@@ -33,11 +33,18 @@ INSTALLED_APPS = [
     'django_extensions',
     'django.contrib.sitemaps',
     'django.contrib.sites',
+
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
     'debug_toolbar',
     'import_export',
+    'django_ckeditor_5',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 
     'legal',
     'accounts',
@@ -47,7 +54,7 @@ INSTALLED_APPS = [
     'cart',
     'orders',
     'shipments',
-    'reviews',
+    'reviews'
 ]
 
 MIDDLEWARE = [
@@ -60,7 +67,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware'
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'allauth.account.middleware.AccountMiddleware'
 ]
 
 ROOT_URLCONF = 'mycommerce.urls'
@@ -82,8 +90,8 @@ TEMPLATES = [
             'libraries': {
                 'currency': 'shop.templatetags.currency'
             }
-        },
-    },
+        }
+    }
 ]
 
 WSGI_APPLICATION = 'mycommerce.wsgi.application'
@@ -250,3 +258,48 @@ EMAIL_PORT = 587
 # Sites
 
 SITE_ID = 1
+
+
+# Authentication
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
+]
+
+
+# Django All Auth for more information
+# on the settings for django-allauth
+# https://docs.allauth.org/en/latest/socialaccount/provider_configuration.html
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': '123',
+            'secret': '456',
+            'key': ''
+        }
+    }
+}
+
+
+# CKEditor for more information on customizing
+# the editor https://pypi.org/project/django-ckeditor-5/
+
+CKEDITOR_BASEPATH = MEDIA_ROOT / 'ckeditor/ckeditor'
+
+CKEDITOR_UPLOAD_PATH = 'ck_editor/'
+
+CKEDITOR_5_ALLOW_ALL_FILE_TYPES = False
+
+CKEDITOR_5_UPLOAD_FILE_TYPES = ['jpeg']
+
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': ['heading', '|', 'bold', 'italic', 'link',
+                    'bulletedList' ]
+    }
+}

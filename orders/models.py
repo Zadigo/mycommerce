@@ -2,8 +2,8 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
-from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
+from django_ckeditor_5.fields import CKEditor5Field
 
 from mycommerce.choices import CityChoices, CountryChoices
 from shop.models import Product
@@ -18,6 +18,7 @@ class ProductHistory(models.Model):
     This is useful for when the product's price 
     changes. The price in the order would stay 
     the same as when the customer bought it"""
+
     product = models.ForeignKey(
         Product,
         on_delete=models.SET_NULL,
@@ -90,6 +91,11 @@ class CustomerOrder(models.Model):
         max_digits=5,
         decimal_places=2,
         default=0
+    )
+    notes = CKEditor5Field(
+        max_length=5000,
+        blank=True,
+        null=True
     )
     created_on = models.DateTimeField(
         auto_now=True
