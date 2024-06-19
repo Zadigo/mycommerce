@@ -4,18 +4,32 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-autopep8 = "*"
+pandas = "*"
+matplotlib = "*"
 djangorestframework = "*"
 django-extensions = "*"
 django-cors-headers = "*"
 django = "*"
+gunicorn = "*"
 stripe = "*"
 django-imagekit = "*"
 pillow = "*"
-psycopg2 = "*"
-matplotlib = "*"
+django-axes = "*"
+boto3 = "*"
+django-storages = "*"
+django-debug-toolbar = "*"
+django-redis = "*"
+python-dotenv = "*"
+tablib = "*"
+django-import-export = "*"
+django-allauth = "*"
+psycopg = {extras = ["binary", "pool"], version = "*"}
+unidecode = "*"
+spacy = "*"
+numpy = "==1.26.4"
 
 [dev-packages]
+autopep8 = "*"
 
 [requires]
-python_version = "3.10"
+python_version = "3.12"
