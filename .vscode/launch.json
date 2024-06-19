@@ -18,17 +18,20 @@
             "type": "msedge",
             "request": "launch",
             "name": "vuejs:edge",
-            "url": "http://localhost:5173",
-            "webRoot": "${workspaceFolder}/src",
+            "url": "http://localhost:5173/",
+            "webRoot": "${workspaceFolder}/frontend_store/",
             "preLaunchTask": "e-commerce: start",
             "vueComponentPaths": [
                 "${workspaceFolder}/frontend_store/src/**/*.vue"
             ],
+            "sourceMapPathOverrides": {
+                "webpack:///src/compsables/*.js": "${webRoot}/src/**/*.js"
+            },
             "skipFiles": [
                 "${workspaceFolder}/frontend_store/node_modules/**/*.js",
                 "${webRoot}/node_modules/*",
                 "<node_internals>/**"
-            ],
+            ]
         }
     ]
 }
