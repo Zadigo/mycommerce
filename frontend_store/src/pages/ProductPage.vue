@@ -373,7 +373,6 @@ export default {
     const sizeGuideDrawer = ref(false)
     const showDeliveryDrawer = ref(false)
     const showCompositionDrawer = ref(false)
-    // const showSizeSelectionWarning = ref(false)
 
     const currentProduct = ref({})
     // const userSelection = ref({
@@ -563,12 +562,6 @@ export default {
       // to the current user's cart. Products that
       // require a size will force the user to
       // select a size before handling the action
-      // if (this.userSelection.size === null && this.currentProduct.has_size) {
-      //   this.showSizeSelectionWarning = true
-      // } else {
-      //   this.showAddedProductDrawer = true
-      //   this.cartStore.addToCart(this.currentProduct, this.userSelection)
-      // }
       this.addToCartNoSize(this.currentProduct, (data) => {
         this.showAddedProductDrawer = true
         
