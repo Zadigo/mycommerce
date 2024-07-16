@@ -1,10 +1,31 @@
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from accounts.api.serializers import (USER_MODEL, LoginUserSerializer,
                                       UserSerializer)
+from rest_framework.generics import CreateAPIView
+
+# class Login(CreateAPIView):
+#     """Logs the user in using standard username
+#     and password data
+#     """
+
+#     http_method_names = ['post']
+#     serializer_class = LoginUserSerializer
+#     permission_classes = [AllowAny]
+
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.serializer_class(data=self.request.data)
+#         serializer.is_valid(raise_exception=True)
+#         data = self.perform_create(serializer)
+#         headers = self.get_success_headers(serializer.data)
+#         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
+
+#     def perform_create(self, serializer):
+#         return serializer.save()
 
 
 @api_view(['post'])
