@@ -1,10 +1,14 @@
 {
     "avis": "{n} avis",
+    "Taille": "Taille",
+    "Tailles standard": "Tailles standard",
     "Taille porté": "Taille porté : {size}",
     "Taille du mannequin": "Taille du mannequin : {height}cm",
+    "Trier": "Trier",
     "Guide des tailles": "Guide des tailles",
     "Ajouter au panier": "Ajouter au panier",
     "Livraison gratuite offerte": "Il te manque {n} pour profiter de la",
     "Se connecter": "Se connecter",
-    "Conservations des favoris": "Tes favoris seront conservés pour une durée limitée"
+    "Conservations des favoris": "Tes favoris seront conservés pour une durée limitée",
+    "Produits trouvés": "0 produits trouvés | 1 produit trouvé | {count} produits trouvés"
 }

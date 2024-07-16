@@ -1,7 +1,10 @@
 {
     "avis": "{n} avis",
+    "Taille": "Taille",
+    "Tailles standard": "Tailles standard",
     "Taille porté": "Taille porté : {size}",
     "Taille du mannequin": "Taille du mannequin : {height}cm",
+    "Trier": "Trier",
     "Guide des tailles": "Guide des tailles",
     "Ajouter au panier": "Ajouter au panier",
     "Livraison gratuite offerte": "Il te manque {n} pour profiter de la",
