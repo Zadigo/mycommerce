@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'rest_framework',
     'rest_framework.authtoken',
+    'django.contrib.humanize',
     'debug_toolbar',
     'import_export',
     'django_ckeditor_5',
@@ -267,8 +268,8 @@ SITE_ID = 1
 # Authentication
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend'
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend'
 ]
 
 
@@ -314,7 +315,9 @@ CKEDITOR_5_UPLOAD_FILE_TYPES = ['jpeg']
 
 CKEDITOR_5_CONFIGS = {
     'default': {
-        'toolbar': ['heading', '|', 'bold', 'italic', 'link',
-                    'bulletedList' ]
+        'toolbar': [
+            'heading', '|', 'bold', 'italic',
+            'link', 'bulletedList'
+        ]
     }
 }
