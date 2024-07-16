@@ -1,10 +1,9 @@
 import { computed, getCurrentInstance, ref } from 'vue'
+import { whenever } from '@vueuse/core'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { client } from 'src/plugins/axios'
 import { useAuthentication } from 'src/stores/authentication'
 import { useVueSession } from 'src/plugins/vue-storages'
-// import { useRouter } from 'vue-router'
-import { whenever } from '@vueuse/core'
 
 /**
  * This Vue composable provides functionality for managing 
@@ -18,12 +17,18 @@ export function useAuthenticationComposable () {
   const { session } = useVueSession()
   const authenticationStore = useAuthentication()
   const cookies = useCookies(['authentication'])
-  // const router = useRouter()
 
   const email = ref(null)
   const password = ref(null)
   const authenticationFailuresCounter = ref(0)
   
+  /**
+   * Indicates the authentication token used to
+   * communicated securily with the backend on
+   * pages that require a form or authentication
+   * 
+   * @returns String
+   */
   const authToken = computed(() => {
     return cookies.get('token')
   })
@@ -35,19 +40,38 @@ export function useAuthenticationComposable () {
     )
   })
 
-  whenever(authenticationFailuresCounter, (attempts) => {
-    if (attempts > 3) {
-      console.log('Attempted to login more than three times')
-      // Do something here
-    }
+  /**
+   * Checks the amount of times the user has failed
+   * to try and authenticate himself
+   */
+  const hasReachedMaxAuthenticationFailures = computed(() => {
+    return authenticationFailuresCounter.value > 3
   })
 
+  whenever(hasReachedMaxAuthenticationFailures, () => {
+    console.log('Attempted to login more than three times')
+  })
+
+  /**
+   * Proxy function used to execute a callback by
+   * passing in the current app context
+   * 
+   * @param {Function} func
+   * @returns void
+   */
   function executeCallback(func) {
     if (typeof func === 'function') {
       func.call(app)
     }
   }
   
+  /**
+   * Method that handles the login to the
+   * backend
+   * 
+   * @param {Function} callback
+   * @returns void
+   */
   async function login (callback) {
     try {
       const response = await client.post('accounts/login', {
@@ -68,6 +92,13 @@ export function useAuthenticationComposable () {
     }
   }
 
+  /**
+   * Method that handles the logout to the
+   * backend
+   * 
+   * @param {Function} callback
+   * @returns void
+   */
   async function logout (callback) {
     try {
       await client.post('accounts/logout')
@@ -88,6 +119,10 @@ export function useAuthenticationComposable () {
     }
   }
 
+  /**
+   * Function used to refresh the authentication
+   * token 
+   */
   async function refresh () {
     try {
       cookies.get('token')
@@ -107,6 +142,7 @@ export function useAuthenticationComposable () {
     isAuthenticated,
     authenticationFailuresCounter,
     cookies,
+    hasReachedMaxAuthenticationFailures,
     authenticateFromCache,
     login,
     refresh,
