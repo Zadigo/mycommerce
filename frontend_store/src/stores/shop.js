@@ -11,7 +11,7 @@ const useShop = defineStore('shop', {
     /**
      * Adds the product to the list of
      * products that were historically
-     * visited by the user
+     * visited by the user in the store
      * 
      * @param {Object} product The product object
      * @param {Number} product.id The unique ID of the product
