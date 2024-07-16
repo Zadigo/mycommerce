@@ -1,10 +1,10 @@
 <template>
   <div class="card shadow-none mb-3">
-    <div class="card-body px-0">
+    <div class="card-body px-0 text-center">
       <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex justify-content-left gap-1">
-          <v-btn flat>
-            Trier
+          <v-btn variant="tonal" flat>
+            {{ $t('Trier') }}
             <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
 
             <v-menu activator="parent">
@@ -16,16 +16,19 @@
             </v-menu>
           </v-btn>
 
-          <v-btn flat>
-            Taille
+          <v-btn variant="tonal" flat>
+            {{ $t('Taille') }}
             <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
 
             <v-menu activator="parent">
-              <v-list style="width: 400px;">
+              <v-list style="width: 250px;">
                 <v-list-item>
-                  <p class="text-tertiary">Tailles standard</p>
-                  <v-btn variant="outlined">S</v-btn>
-                  <v-btn variant="outlined">XS</v-btn>
+                  <p class="text-tertiary">{{ $t('Tailles standard') }}</p>
+                  <div class="d-flex justify-content-start gap-1 flex-wrap">
+                    <v-btn v-for="size in sizes.clothes" :key="size" variant="outlined" rounded>
+                      {{ size }}
+                    </v-btn>
+                  </div>
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -85,8 +88,11 @@
 <script>
 import { ref, inject } from 'vue'
 
+import sizes from 'src/data/sizes.json'
+
 const sortingOptions = [
-  'Prix croissant'
+  'Prix croissant',
+  'Prix décroissant'
 ]
 
 export default {
@@ -107,13 +113,27 @@ export default {
     const productsLoading = inject('productsLoading')
 
     return {
+      sizes,
       gridSize,
       productsLoading,
       sortingOptions
     }
   },
+  beforeMount() {
+    if (this.$session.keyExists('grid-size')) {
+      this.gridSize = this.$session.retrieve('grid-size')
+      this.$emit('update-grid-size')
+    }
+  },
   methods: {
-    handleGridSize (size) {
+    /**
+     * Changes the size of the grid to
+     * reduce or increase the amount of
+     * products displayed on the screen
+     * 
+     * @param {String | Number} size 
+     */
+    handleGridSize (size) { 
       this.gridSize = size
       this.$emit('update-grid-size', size)
     }
