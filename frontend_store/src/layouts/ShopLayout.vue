@@ -1,6 +1,6 @@
 <template>
   <section id="shop">
-    <!-- Nav -->
+    <!-- Navbar -->
     <base-navbar @display-search="showSearchModal = true" />
 
     <main>
@@ -256,20 +256,18 @@
 <script>
 import _ from 'lodash'
 import { ref } from 'vue'
+import { defineAsyncComponent } from 'vue'
 import { whenever } from '@vueuse/core'
 import { storeToRefs, mapState } from 'pinia'
 import { useShop } from 'src/stores/shop'
 import { useCart } from 'src/stores/cart'
-import { useAuthenticationComposable } from 'composables/authentication'
-// import { useUtilities } from 'composables/shop'
-import { useAuthentication } from 'stores/authentication'
+import { useAuthenticationComposable } from 'src/composables/authentication'
+import { useAuthentication } from 'src/stores/authentication'
 import { createMockupProducts } from 'src/utils'
-import { useUtilities } from 'composables/shop'
-import { defineAsyncComponent } from 'vue'
+import { useUtilities } from 'src/composables/shop'
 
-import BaseNavbar from 'components/BaseNavbar.vue'
-import BaseFooter from 'components/BaseFooter.vue'
-// import ProductCard from 'components/products/ProductCard.vue'
+import BaseNavbar from 'src/components/BaseNavbar.vue'
+import BaseFooter from 'src/components/BaseFooter.vue'
 
 export default {
   name: 'ShopLayout',
@@ -334,12 +332,13 @@ export default {
     ...mapState(useCart, ['cartTotal']),
   },
   created () {
-    // Preload the cart from the session if we actually
-    // have the data. This allows us then to dynamically
-    // calculate the items that the user has selected
     this.cartStore.loadFromCache()
   },
   methods: {
+    /**
+     * Proxy that handles the main login process
+     * to the backend
+     */
     async handleLogin () {
       this.login(() => {
         this.authenticationStore.showLoginDrawer = false
@@ -350,6 +349,12 @@ export default {
         this.handleAuthenticateCart()
       })
     },
+    /**
+     * When the user has added a set of products to his
+     * cart when he was not logged in, this function will
+     * get called in order to attribute all the products
+     * to his authenticated account once he logs in  
+     */
     async handleAuthenticateCart () {
       try {
         if (!this.$session.retrieve('authenticated_cart')) {
@@ -362,8 +367,10 @@ export default {
         console.log(e)
       }
     },
+    /**
+     * Allows the user to search for products
+     */
     searchProducts: _.debounce(async function () {
-      // Allows the user to search for products
       try {
         if (this.search && this.search !== "") {
           const response = await this.$http.get('shop/search', {
@@ -377,9 +384,13 @@ export default {
         console.log(e)
       }
     }, 6000),
+    /**
+     * Handles the situation where the user tries
+     * to go to the cart but is not logged in. If
+     * he tries to access the cart while anonymous,
+     * he is invited to login before pursuing
+     */
     handleNotAuthenticatedOrdering () {
-      // Handles the situation where the user tries
-      // to go to the cart but is not logged in
       if (this.authenticationStore.isAuthenticated) {
         this.showAddedProductDrawer = false
         this.$route.push({ name: 'shop_payment_home' })
@@ -389,10 +400,12 @@ export default {
         this.authenticationStore.showLoginDrawer = true
       }
     },
+    /**
+     * Handles the redirection to the correct page
+     * if the user clicks on the discover button
+     * in the cart modal
+     */
     handleCartButtonRedirection () {
-      // Handle the redirection the correct page
-      // if the user clicks on the discover button
-      // on the cart button
       this.cartStore.showCartDrawer = false
       this.$router.push({ 
         name: 'shop_products_collection', 
@@ -401,9 +414,15 @@ export default {
         }
       })
     },
+    /**
+     * Handle the opening or the closing of 
+     * the product edition dialog by ensuring
+     * that cartDrawer is closed
+     * 
+     * @param {String} action
+     * @param {{}} [product={}] 
+     */
     handleProductEdition (action, product = {}) {
-      // Handle the opening or the closing of
-      // the product edition dialog
       this.currentEditedProduct = product
       switch (action) {
         case 'open':
