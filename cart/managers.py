@@ -1,9 +1,53 @@
 from django.db.models import QuerySet
 from django.db.models.aggregates import Sum
 from django.db.models.expressions import Q
+from django.utils.crypto import get_random_string
 
 from cart.exceptions import ProductActiveError
-from cart.utils import SessionManager
+
+CART_SESSION_NAME = 'cart_session_id'
+
+
+class SessionManager:
+    """A simple manager for dealing with creating or
+    deleting cart ids in the user session"""
+
+    def __init__(self, request):
+        self.request = request
+        self.cart_session_id = request.session.get(CART_SESSION_NAME, None)
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}({self.cart_session_id})'
+
+    def __str__(self):
+        return str(self.cart_session_id)
+
+    def __eq__(self, value):
+        return self.cart_session_id == value
+
+    @property
+    def has_session_id(self):
+        return self.cart_session_id is not None
+
+    @classmethod
+    def create_session_key(cls):
+        return get_random_string(12)
+
+    def get_or_create(self):
+        """Check if there is a session id and
+        if not create a new one, store and
+        return it"""
+        if self.cart_session_id is None:
+            new_session_id = get_random_string(12)
+            self.request.session[CART_SESSION_NAME] = new_session_id
+            self.cart_session_id = new_session_id
+        return self.cart_session_id
+
+    def delete(self):
+        self.request.session.pop(CART_SESSION_NAME)
+
+    def get_response(self, using, params={}):
+        return using(**params)
 
 
 class CartManager(QuerySet):
@@ -47,18 +91,13 @@ class CartManager(QuerySet):
         # there might be non authenticated items from
         # the same user
         if request.user.is_authenticated:
-            authenticated_items = self.filter(user=request.user, is_paid=False)
+            authenticated_items = self.filter(user=request.user, is_paid_for=False)
             authenticated_items.update(is_stale=True)
-
-
-        # TODO: product.get_price
-        # price = product.sale_price if product.on_sale else product.unit_price
-        price = product.get_price
 
         params = {
             'session_id': session_id,
             'product': product,
-            'price': price,
+            'price': product.get_price,
             'size': kwargs.get('size'),
             'is_anonymous': not request.user.is_authenticated
         }
@@ -82,18 +121,22 @@ class CartManager(QuerySet):
         return queryset
 
     def rest_api_add_to_cart(self, request, product, session_id=None, **kwargs):
-        # NOTE: In this function, we should be receiving the
-        # session_id for the cart from the frontend if a new
-        # cart
+        """This function allows us to add products in a cart in
+        two different ways:
+            * Anonymous: create a `session_id` that allows us to identify
+                         the customer from the not logged in session
+            * Authenticated: still use the `session_id` but we can use the
+                             the authenticated user to identify his carts 
+        """
         if session_id is None:
             session_id = SessionManager.create_session_key()
         queryset = self._add_to_cart(request, session_id, product, **kwargs)
         return session_id, queryset
 
     def add_to_cart(self, request, product, **kwargs):
-        # NOTE: Works in combination with session backends. When
-        # using rest API, the session does not actively persist
-        # which turns out having a new cart creation every time
+        """Works in combination with session backends. When
+        using rest `rest_api_add_to_cart`, the session does not actively 
+        persist which can inadvertly create a new cart every time"""
         session_manager = SessionManager(request)
         session_id = session_manager.get_or_create()
         return self._add_to_cart(request, session_id, product, **kwargs)

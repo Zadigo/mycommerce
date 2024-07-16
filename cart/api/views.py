@@ -2,6 +2,8 @@ from django.db.models import DecimalField, F, Value
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.generics import (CreateAPIView, ListAPIView,
+                                     RetrieveAPIView, UpdateAPIView)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -12,6 +14,27 @@ from cart.models import Cart
 from cart.payment import payment_interface
 from mycommerce.responses import simple_api_response
 from orders.models import CustomerOrder, ProductHistory
+
+
+class ListAllCarts(ListAPIView):
+    """Returns all the carts in the current shop
+    that were created by the users (authenticated
+    and none authenticated ones)"""
+
+    serializer_class = serializers.CartSerializer
+    queryset = Cart.objects.all()
+    http_method_names = ['get']
+    permission_classes = [AllowAny]
+
+
+class ListCart(RetrieveAPIView):
+    """Return all items that were saved
+    in the specific user's cart"""
+
+    serializer_class = serializers.CartSerializer
+    queryset = Cart.objects.all()
+    http_method_names = ['get']
+    permission_classes = [AllowAny]
 
 
 @api_view(['get'])

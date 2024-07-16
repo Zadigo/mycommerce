@@ -6,8 +6,12 @@ app_name = 'cart_api'
 
 urlpatterns = [
     re_path(
+        r'^(?P<pk>\d+)/add$',
+        views.add_to_cart
+    ),
+    re_path(
         r'^(?P<pk>\d+)$',
-        views.cart
+        views.ListCart.as_view()
     ),
     re_path(
         r'^authenticate$',
@@ -26,12 +30,7 @@ urlpatterns = [
         views.update_in_cart
     ),
     re_path(
-        r'^add$',
-        views.add_to_cart,
-        name='add_to_cart'
-    ),
-    re_path(
         r'^$',
-        views.carts
+        views.ListAllCarts.as_view()
     )
 ]
