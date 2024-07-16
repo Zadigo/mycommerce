@@ -27,6 +27,7 @@ class LoginUserSerializer(Serializer):
         if not result:
             raise AuthenticationFailed(detail='Could not authenticate user')
 
+        setattr(self, '_user', user)
         instance = super().save(**kwargs)
         serializer = UserSerializer(instance=user)
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
@@ -34,6 +35,7 @@ class LoginUserSerializer(Serializer):
 
     def create(self, validated_data):
         instance, state = Token.objects.get_or_create(
+            defaults={'user': self._user},
             user__email=validated_data['email']
         )
         return instance
