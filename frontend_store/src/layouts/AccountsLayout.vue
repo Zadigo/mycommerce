@@ -3,8 +3,10 @@
     <base-navbar @display-search="() => {}" />
 
     <div class="container mb-5" style="margin-top: 6rem;">
+      <base-messages />
+
       <div class="row">
-        <div class="col-sm-12 col-md-10 offset-md-2">
+        <div class="col-sm-12 col-md-9 offset-md-2">
           <div class="row">
             <div class="col-4">
               <div class="card shadow-sm">
@@ -18,7 +20,7 @@
               </div>
             </div>
       
-            <div class="col-6">
+            <div class="col-8">
               <router-view></router-view>
             </div>
           </div>
@@ -30,6 +32,7 @@
 
 
 <script>
+import BaseMessages from 'src/components/BaseMessages.vue'
 import BaseNavbar from 'components/BaseNavbar.vue'
 
 const links = [
@@ -45,6 +48,7 @@ const links = [
 
 export default {
   components: {
+    BaseMessages,
     BaseNavbar
   },
   setup () {

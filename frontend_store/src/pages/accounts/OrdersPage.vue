@@ -14,7 +14,7 @@
 
   <div v-else class="card shadow-sm">
     <div class="card-header">
-      <h1 class="h4">Mes achats</h1>
+      <h1 class="h4">{{ $t('Mes achats') }}</h1>
     </div>
 
     <div v-if="hasOrders" class="card-body">
@@ -23,7 +23,7 @@
 
     <div v-else class="card-body text-center">
       <p class="fw-bold">
-        Tu n'as encore aucun achat en ligne
+        {{ $t("Tu n'as encore aucun achat en ligne") }}
       </p>
       <p class="fw-light">
         Si tu ne trouves pas ton achat, tu as
@@ -32,7 +32,7 @@
       </p>
 
       <v-btn variant="text" @click="showFindOrder = true">
-        Trouver ma commande
+        {{ $t('Trouver ma commande') }}
         <font-awesome-icon :icon="['fas', 'arrow-right']" class="ms-2" />
       </v-btn>
     </div>
@@ -40,20 +40,43 @@
 </template>
 
 <script>
-import { computed } from 'vue';
-import { ref } from 'vue';
+import { useMessages } from 'src/stores/messages';
+import { ref } from 'vue'
+import { computed } from 'vue'
 
 export default {
+  name: 'OrdersPage',
   setup () {
     const orders = ref([])
     const showFindOrder = ref(false)
+
     const hasOrders = computed(() => {
       return orders.value.length > 0
     })
+
+    const messagesStore = useMessages()
+    
     return {
+      messagesStore,
       orders,
       showFindOrder,
       hasOrders
+    }
+  },
+  beforeMount () {
+    this.requestOrders()
+  },
+  methods: {
+    /**
+     * Returns the orders that were made
+     * the authenticated user
+     */
+    async requestOrders () {
+      try {
+        await this.$http.post('/orders/')
+      } catch (e) { 
+        this.messagesStore.addErrorMessage('Error', 'Network failed to do whatever')
+      }
     }
   }
 }

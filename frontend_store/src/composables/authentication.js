@@ -83,9 +83,9 @@ export function useAuthenticationComposable () {
       authenticationFailuresCounter.value = 0
 
       authenticationStore.token = authToken.value
+      authenticationStore.profile = response.data.user
 
       executeCallback(callback)
-
     } catch (e) {
       authenticationFailuresCounter.value += 1
       console.log(e)

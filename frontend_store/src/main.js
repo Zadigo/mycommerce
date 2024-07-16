@@ -10,6 +10,7 @@ import { createHead } from 'unhead'
 import { useVueSession } from './plugins/vue-storages'
 
 import router from './router'
+import DayJsAdapter from '@date-io/dayjs'
 
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
@@ -69,6 +70,9 @@ const plugins = installPlugins()
 const vuetify = createVuetify({
   components,
   directives,
+  date: {
+    adapter: DayJsAdapter
+  },
   theme: {
     themes: {
       light: {

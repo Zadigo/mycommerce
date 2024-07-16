@@ -9,13 +9,13 @@
 </template>
 
 <script>
-import { useI18n } from "vue-i18n"
+import { useI18n } from 'vue-i18n'
 import { ref, provide, watch } from 'vue'
-import { useAuthentication } from "./stores/authentication"
-import { useDocumentVisibility, useMediaQuery, useScreenOrientation } from "@vueuse/core"
+import { useAuthentication } from 'src/stores/authentication'
+import { useDocumentVisibility, useMediaQuery, useScreenOrientation } from '@vueuse/core'
 import { useSchemaOrg, defineOrganization } from '@unhead/schema-org'
 
-import organization from 'data/organization.json'
+import organization from 'src/data/organization.json'
 
 export default {
   name: 'App',
@@ -63,32 +63,4 @@ export default {
   scrollbar-width: thin;
   scroll-behavior: smooth;
 }
-
-.opacity-enter-active,
-.opacity-leave-active {
-  transition: all .3s ease-in-out;
-}
-
-.opacity-enter-to,
-.opacity-leave-from {
-  opacity: .9;
-}
-
-.opacity-enter-from,
-.opacity-leave-to {
-  opacity: 1;
-}
-
-.opacity-move {
-  transition: all .2s ease-in-out;
-}
-
-/* ::-webkit-scrollbar {
-} */
-/* ::-webkit-scrollbar-track {
-  height: 10px;
-} */
-/* ::-webkit-scrollbar-thumb {
-  scrollbar-width: thin;
-} */
 </style>

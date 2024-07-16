@@ -1,22 +1,44 @@
 <template>
   <section>
-    <div class="card shadow-sm">
+    <!-- Email / Password -->
+    <div id="email-password" class="card shadow-sm">
       <div class="card-header">
         <h1 class="h6 text-uppercase fw-bold my-3">Accédez à votre compte</h1>
       </div>
 
       <div class="card-body">
-        <p class="fw-bold">Mot de passe</p>
-        <!-- class="p-3 bg-light d-block rounded-1 d-flex justify-content-between align-items-center" -->
-        <v-btn class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block>
-          <span>*************</span>
-          <font-awesome-icon :icon="['fas', 'pen']" />
-        </v-btn>
+        <!-- Password -->
+        <p class="fw-bold">{{ $t('Mot de passe') }}</p>
 
+        <transition name="opacity" mode="out-in">
+          <v-form v-if="showEditPassword" class="password-block" @submit.prevent>
+            <v-text-field id="password1" v-model="emailPasswordData.password1" variant="solo-filled" placeholder="Password 1" type="password" aria-label="Password 1" flat></v-text-field>
+            <v-text-field id="password2" v-model="emailPasswordData.password2" variant="solo-filled" placeholder="Password 2" type="password" aria-label="Password 2" flat></v-text-field>
+            
+            <v-btn color="secondary" rounded @click="requestChangeEmailPassword">
+              {{ $t('Changer le mot de passe') }}
+            </v-btn>
+          </v-form>
+
+          <v-btn v-else class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block @click="showEditPassword = true">
+            <span class="me-2">*************</span>
+            <font-awesome-icon :icon="['fas', 'pen']" />
+          </v-btn>
+        </transition>
+
+        <!-- Email -->
         <p class="fw-bold mt-4">Email</p>
-        <!-- class="p-3 bg-light d-block rounded-1 d-flex justify-content-between align-items-center" -->
-        <v-btn class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block>
-          <span>google@gmail.com</span>
+
+        <v-form v-if="showEditEmail" class="password-block" @submit.prevent>
+          <v-text-field v-model="emailPasswordData.email" variant="solo-filled" placeholder="Email" type="email" aria-label="Email" flat></v-text-field>        
+          
+          <v-btn color="secondary" rounded @click="requestChangeEmailPassword">
+            {{ $t("Changer l'email") }}
+          </v-btn>
+        </v-form>
+        
+        <v-btn v-else class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block @click="showEditEmail = true">
+          <span class="me-2">{{ profile.email }}</span>
           <font-awesome-icon :icon="['fas', 'pen']" />
         </v-btn>
 
@@ -29,129 +51,111 @@
       </div>
     </div>
 
-    <div class="card shadow-sm mt-2">
+    <!-- Billing -->
+    <div id="billing" class="card shadow-sm mt-2">
       <div class="card-header">
-        <h1 class="h6 text-uppercase fw-bold my-3">Information pour la facturation</h1>
-        <v-btn icon="mdi-close" @click="showBillingForm = false"></v-btn>
+        <h1 class="h6 text-uppercase fw-bold my-3">{{ $t('Information pour la facturation') }}</h1>
       </div>
 
-      <div v-if="showBillingForm" class="card-body">
-        <v-form id="user-information" @submit.prevent>
-          <div class="d-flex justify-content-between gap-1">
-            <v-text-field v-model="proxyRequestData.firstname" variant="outlined" placeholder="Firstname" autocomplete="given-name "></v-text-field>
-            <v-text-field v-model="proxyRequestData.lastname" variant="outlined" placeholder="Lastname" autocomplete="family-name "></v-text-field>
-          </div>
-  
-          <v-text-field v-model="proxyRequestData.address" variant="outlined" placeholder="Address line" autocomplete="street-address"></v-text-field>
-  
-          <div class="d-flex justify-content-between gap-1">
-            <v-text-field v-model="proxyRequestData.zip_code" variant="outlined" placeholder="Zip code" autocomplete="postal-code"></v-text-field>
-            <v-text-field v-model="proxyRequestData.country" variant="outlined" placeholder="Country" autocomplete="country"></v-text-field>
-          </div>
-  
-          <v-select v-model="proxyRequestData.city" :items="cities" variant="outlined"></v-select>
-  
-          <v-text-field v-model="proxyRequestData.telephone" variant="outlined" placeholder="Telephone" autocomplete="tel"></v-text-field>
-  
-          <div class="card shadow-none border">
-            <div class="card-body">
-              <p class="fw-bold">Sexe</p>
-              <v-radio-group v-model="requestData.sexe" hide-details>
-                <v-radio label="Femme" value="Femme"></v-radio>
-                <v-radio label="Homme" value="Homme"></v-radio>
-              </v-radio-group>
-            </div>
-          </div>
-  
-          <p class="fw-bold mt-4">Date d'anniversaire</p>
-          <!-- <v-date-field></v-date-field> -->
-  
-          <v-btn class="mt-4" color="primary" block @click="handleUpdateUserDetails">
-            Mettre à jour
-          </v-btn>
-        </v-form>
-      </div>
-
-      <div v-else class="card-body" @click="showBillingForm = true">
-        <p class="fw-bold mb-2">{{ fullName }}</p>
-        <p class="m-0">{{ proxyRequestData.email }}</p>
-        <p class="m-0">{{ proxyRequestData.address }}</p>
-        <p class="m-0">{{ proxyRequestData.zip_code }} {{ proxyRequestData.city }}</p>
-        <p class="m-0">{{ proxyRequestData.country }}</p>
-        <p class="m-0">Téléphone portable: {{ proxyRequestData.telephone }}</p>
-      </div>
+      <billing-form v-for="address in profile.userprofile.address_set" :key="address.id" :address="address" />
     </div>
   </section>
 </template>
 
 <script>
-import { ref } from 'vue'
-import { useRefHistory } from '@vueuse/core'
-import cities from 'data/fr_cities.json'
-import { computed } from 'vue'
+import { provide, ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useAuthentication } from 'src/stores/authentication'
+import { useMessages } from 'src/stores/messages'
+
+import BillingForm from 'src/components/accounts/BillingForm.vue'
 
 export default {
+  name: 'UserPage',
+  components: {
+    BillingForm
+  },
   setup () {
-    const proxyRequestData = ref({
-      firstname: null,
-      lastname: null,
-      address: null,
-      zip_code: null,
-      country: null,
-      city: null,
-      sexe: 'Femme',
-      telephone: null
-    })
-    const requestData = ref({
-      firstname: null,
-      lastname: null,
-      address: null,
-      zip_code: null,
-      country: null,
-      city: null,
-      sexe: 'Femme',
-      telephone: null
-    })
+    const messagesStore = useMessages()
 
-    const { history, undo, redo } = useRefHistory(requestData)
+    const authenticationStore = useAuthentication()
+    const { profile } = storeToRefs(authenticationStore)
 
-    const fullName = computed(() => {
-      return `${proxyRequestData.value.firstname} ${proxyRequestData.value.lastname}`
+    const emailPasswordData = ref({
+      email: null,
+      password1: null,
+      password2: null
     })
-
-    // syncRef(proxyRequestData, requestData, 'right')
 
     const showBillingForm = ref(false)
+    const showEditPassword = ref(false)
+    const showEditEmail = ref(false)
+
+    provide('profile', profile)
 
     return {
       history,
-      undoRequestData: undo,
-      redoRequestData: redo,
-      fullName,
-      showBillingForm,
-      proxyRequestData,
-      requestData,
-      cities
+      profile,
+      messagesStore,
+      emailPasswordData,
+      showEditPassword,
+      showEditEmail,
+      showBillingForm
     }
   },
   mounted () {
     this.requestUserDetails()
   },
   methods: {
-    async requestUserDetails () {
-      this.proxyRequestData = {
-        firstname: 'Aurélie',
-        lastname: 'Mazon',
-        address: '45 rue de Paris',
-        zip_code: '75000',
-        country: 'FR',
-        city: 'Nord',
-        sexe: 'Femme',
-        telephone: '06 01 01 01 01'
+    /**
+     * Requests an update for the password and/or
+     * the email address by the user 
+     * 
+     * @param {String} method 
+     */
+    async requestChangeEmailPassword (method) {
+      try {
+        await this.$http.post('accounts/update', this.emailPasswordData)
+
+        this.emailPasswordData.email = null
+        this.emailPasswordData.password1 = null
+        this.emailPasswordData.password2 = null
+        
+        if (method === 'password') {
+          this.showEditPassword = false
+        } else if (method === 'email') {
+          this.showEditEmail= false
+        }
+      } catch (e) {
+        this.showEditEmail = false
+        this.showEditPassword = false
+        this.resetEmailPasswordData()
+        this.messagesStore.addErrorMessage('Not saved', 'Items not saved')
       }
     },
-    async handleUpdateUserDetails () {
-      this.showBillingForm = false
+    /**
+     * Returns details on the profile for
+     * the currently authenticated user 
+     */
+    async requestUserDetails () {
+      try {
+        if (!this.$session.keyExists('profile')) {
+          const response = await this.$http.get('accounts/profile')
+          this.profile = response.data
+          this.$session.create('profile', this.profile)
+        } else {
+          this.profile = this.$session.retrieve('profile')
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    resetEmailPasswordData () {
+      this.emailPasswordData = {
+        email: null,
+        password1: null,
+        password2: null
+      }
     }
   }
 }

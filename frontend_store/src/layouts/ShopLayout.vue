@@ -2,7 +2,9 @@
   <section id="shop">
     <!-- Navbar -->
     <base-navbar @display-search="showSearchModal = true" />
-
+    
+    <base-messages />
+    
     <main>
       <slot></slot>
     </main>
@@ -270,7 +272,9 @@ import { useAuthenticationComposable } from 'src/composables/authentication'
 import { useAuthentication } from 'src/stores/authentication'
 import { createMockupProducts } from 'src/utils'
 import { useUtilities } from 'src/composables/shop'
+import { useMessages } from 'src/stores/messages'
 
+import BaseMessages from 'src/components/BaseMessages.vue'
 import BaseNavbar from 'src/components/BaseNavbar.vue'
 import BaseFooter from 'src/components/BaseFooter.vue'
 import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
@@ -282,11 +286,15 @@ export default {
       loader: async () => import('src/components/RecommendationsBlock.vue'),
       delay: 3000
     }),
+    BaseMessages,
     BaseNavbar,
     BaseFooter,
     LoadingRecommendationsBlock
   },
   setup () {
+    const messagesStore = useMessages()
+    const { messageItems } = storeToRefs(messagesStore)
+
     const { parseMainImage, localImagePath } = useUtilities()
     const { email, password, login } = useAuthenticationComposable()
 
@@ -331,6 +339,7 @@ export default {
       showEditProductDrawer,
       showCartDrawer,
       search,
+      messageItems,
       searchedProducts,
       showSearchModal
     }
@@ -351,6 +360,8 @@ export default {
         this.authenticationStore.showLoginDrawer = false
         
         if (!this.$session.keyExists('authenticated_cart')) {
+          // When the user logs, we know from the start that the
+          // items in the cart were not authenticated
           this.$session.create('authenticated_cart', false)
         }
         this.handleAuthenticateCart()

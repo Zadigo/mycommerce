@@ -3,6 +3,7 @@ import { useAuthentication } from 'src/stores/authentication'
 import { useCookies } from '@vueuse/integrations/useCookies'
 
 import axios from 'axios'
+import { useMessages } from 'src/stores/messages'
 
 /**
  * 
@@ -46,7 +47,13 @@ client.interceptors.response.use(
       const { session } = useVueSession()
       
       session.remove('authentication')
+      session.remove('profile')
       cookies.remove('token')
+    }
+
+    if ([404, 500].includes(response.status)) {
+      const messagesStore = useMessages()
+      messagesStore.addNetworkError()
     }
     return response
   }

@@ -1,21 +1,5 @@
-/* font-family: "Oswald", "Roboto", system-ui, Avenir, Helvetica, Arial, sans-serif; */
-/* :root {
-  font-family: Roboto, Arial, sans-serif;
-  color-scheme: light dark;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-} */
-
 * {
   font-family: "Ruda", Roboto, system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
-html {
-  /* font-synthesis: none; */
-  text-rendering: optimizeSpeed;
-  color-scheme: light;
 }
 
 .list-group-item.router-link-exact-active {
@@ -23,4 +7,23 @@ html {
   color: var(--mdb-list-group-active-color);
   background-color: var(--mdb-list-group-active-bg);
   border-color: var(--mdb-list-group-active-border-color);
+}
+
+.opacity-enter-active,
+.opacity-leave-active {
+  transition: all .3s ease-in-out;
+}
+
+.opacity-enter-to,
+.opacity-leave-from {
+  opacity: .9;
+}
+
+.opacity-enter-from,
+.opacity-leave-to {
+  opacity: 1;
+}
+
+.opacity-move {
+  transition: all .2s ease-in-out;
 }

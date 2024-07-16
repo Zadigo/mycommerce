@@ -43,3 +43,8 @@ export default function installPlugins () {
     }
   }
 }
+
+export {
+  dayjs,
+  i18n
+}
