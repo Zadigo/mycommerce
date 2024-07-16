@@ -83,9 +83,8 @@ export function useCartComposable () {
    * Proxy function used for example on the product
    * page to communicate between the page and 
    * `requestAddToCart`. This requires a size
-   * selection. For no size:
+   * selection. For no size see {@linkcode addToCartNoSize}
    * 
-   * @see addToCartNoSize
    * @param {Object} product
    * @param {Function} callback
    */
