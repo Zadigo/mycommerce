@@ -9,7 +9,8 @@ import axios from 'axios'
  * Returns the proper API url for calling
  * the backend depending on the application's
  * development state
- *  
+ * 
+ * @returns {String} String url 
  */
 function getApiUrl () {
   if (import.meta.env.DEV) {
