@@ -10,7 +10,7 @@ import { useVueSession } from 'src/plugins/vue-storages'
  * user authentication within a Vue application. It integrates 
  * session management with cookies to handle user login, logout, and 
  * token refresh 
-*/
+ */
 export function useAuthenticationComposable () {
   const app = getCurrentInstance()
 
