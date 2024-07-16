@@ -32,4 +32,8 @@ router.afterEach((to, from, failure) => {
   }
 })
 
+router.onError((error, to, from) => {
+  console.error(error, to, from)
+})
+
 export default router
