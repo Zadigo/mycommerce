@@ -16,6 +16,15 @@ from shop.utils import create_slug
 class ProductResource(ModelResource):
     class Meta:
         model = Product
+        fields = [
+            'name',
+            'color',
+            'sku',
+            'category',
+            'unit_price',
+            'on_sale',
+            'display_new'
+        ]
 
 
 @admin.register(Product)
