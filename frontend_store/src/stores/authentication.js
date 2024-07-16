@@ -7,6 +7,11 @@ const useAuthentication = defineStore('authentication', {
     profile: {}
   }),
   getters: {
+    /**
+     * Indicates whether the user is authenticated
+     * 
+     * @returns {Boolean} 
+     */
     isAuthenticated () {
       return (
         this.token !== null &&
@@ -15,10 +20,12 @@ const useAuthentication = defineStore('authentication', {
     }
   },
   actions: {
+    /**
+     * Allows us to load the token and profile information
+     * from the cache in order to determine if the user
+     * is still authenticated
+     */
     loadFromCache () {
-      // Allows us to load the token and profile information
-      // from the cache in order to determine if the user
-      // is still authenticated
       const data = this.$session.retrieve('authentication') || {}
       this.token = data.token
       this.profile = data.user
