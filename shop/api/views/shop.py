@@ -76,7 +76,7 @@ class GetProduct(RetrieveAPIView):
 
         product = self.get_object()
         serializer = self.get_serializer(product)
-        
+
         variants = Product.objects.filter(name=product.name)
         variants_serializer = shop_serializers.ColorVariantProductSerializer(
             instance=variants,
@@ -85,7 +85,7 @@ class GetProduct(RetrieveAPIView):
         data = serializer.data
         data['variants'] = variants_serializer.data
         return Response(data)
-        
+
 
 class ListRecommendations(ListAPIView):
     """This endpoint allows the pages that require displaying
@@ -99,7 +99,8 @@ class ListRecommendations(ListAPIView):
     permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
-        serializer = self.get_serializer(instance=self.get_queryset(), many=True)
+        serializer = self.get_serializer(
+            instance=self.get_queryset(), many=True)
         return Response(serializer.data)
 
     def get_queryset(self):
@@ -108,23 +109,32 @@ class ListRecommendations(ListAPIView):
         frontend. In the case where we have a collection name,
         we can return random items from said collection who
         have a high popularity in the shop"""
-        testing = self.request.GET.get('t', None)
-        collection_name = self.request.GET.get('c')
-        product_id = self.request.GET.get('p')
+        product_id_or_collection_name = self.request.GET.get('p')
         quantity = self.request.GET.get('q', 30)
-        
-        queryset =  super().get_queryset()
 
-        if testing is not None:
-            pass
+        if product_id_or_collection_name is None:
+            return []
+
+        is_integer = all([
+            product_id_or_collection_name.isnumeric(),
+            product_id_or_collection_name.isdigit(),
+        ])
+
+        queryset = super().get_queryset()
+
+        if is_integer:
+            product_id_or_collection_name = int(product_id_or_collection_name)
 
         try:
             quantity = int(quantity)
         except:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
-        if product_id is not None:
-            product = get_object_or_404(Product, pk=product_id)
+        if is_integer:
+            product = get_object_or_404(
+                Product,
+                pk=product_id_or_collection_name
+            )
             products = self.queryset.exclude(id=product.id)
             product_values = products.values('id', 'name')
 
@@ -141,20 +151,21 @@ class ListRecommendations(ListAPIView):
                 return products[:quantity]
 
             for product in df.itertuples(name='Product'):
-                result = calculator(product.name).similarity(calculator(product.name))
+                result = calculator(product.name).similarity(
+                    calculator(product.name))
                 df.loc[product.Index, 'similarity'] = result
 
             df = df.sort_values('similarity')
             high_similarity = df.loc[lambda x: x.similarity > 0.8]
 
-            selected_items = random.choices(high_similarity.id.to_list(), k=quantity)
+            selected_items = random.choices(
+                high_similarity.id.to_list(), k=quantity)
             return queryset.filter(id__in=selected_items)
-
-        if collection_name is not None:
-            products = self.queryset.filter(collection__name=collection_name)
+        else:
+            products = self.queryset.filter(
+                collection__name=product_id_or_collection_name
+            )
             return products[:quantity]
-        
-        return []
 
 
 class SearchShop(ListAPIView):
@@ -167,7 +178,8 @@ class SearchShop(ListAPIView):
     permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
-        serializer = self.get_serializer(instance=self.get_queryset(), many=True)
+        serializer = self.get_serializer(
+            instance=self.get_queryset(), many=True)
         return Response(serializer.data)
 
     def get_queryset(self):
