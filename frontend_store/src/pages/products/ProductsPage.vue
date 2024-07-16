@@ -1,11 +1,13 @@
 <template>
   <shop-layout>
-    <section class="container-fluid">
+    <section class="container-fluid my-5">
       <div class="row">
         <div class="col-12">
           <div class="card shadow-none mb-1">
             <div class="card-body d-flex flex-column justify-content-center align-items-center">
-              <h1 class="text-uppercase fw-bold text-center">Soutien-Gorge corbeille</h1>
+              <h1 aria-labelledby="" class="text-uppercase fw-bold text-center">
+                Soutien-Gorge corbeille
+              </h1>
 
               <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -39,20 +41,24 @@
             </template>
           </suspense>
         </div>
+
+        <div class="col-8 offset-md-2 h1 fw-bold text-center p-5">
+          No products
+        </div>
       </div>
     </section>
   </shop-layout>
 </template>
 
 <script>
-import _ from 'lodash'
-import { useHead } from 'unhead'
+// import _ from 'lodash'
+// import { useHead } from 'unhead'
 import { ref, provide } from 'vue'
 import { defineAsyncComponent } from 'vue'
-import { defineProduct, useSchemaOrg } from '@unhead/schema-org'
+// import { defineProduct, useSchemaOrg } from '@unhead/schema-org'
 
-import DefaultFiltering from 'components/products/filtering/DefaultFiltering.vue'
-import LoadingProductItems from 'components/products/LoadingProductItems.vue'
+import DefaultFiltering from 'src/components/products/filtering/DefaultFiltering.vue'
+import LoadingProductItems from 'src/components/products/LoadingProductItems.vue'
 
 export default {
   name: 'ProductsPage',
@@ -60,7 +66,7 @@ export default {
     DefaultFiltering,
     LoadingProductItems,
     AsyncProductItems: defineAsyncComponent({
-      loader: () => import('components/products/ProductItems.vue'),
+      loader: () => import('src/components/products/ProductItems.vue'),
       delay: 1000
     })
   },
@@ -71,15 +77,15 @@ export default {
 
     provide('productsLoading', productsLoading)
 
-    useHead({
-      title: 'Collection name',
-      description: '',
-      ogTitle: '',
-      ogDescription: '',
-      ogImage: 'https://example.com/image.png',
-      twitterCard: 'summary_large_image',
-      ogSiteName: 'Ma Boutique'
-    })
+    // useHead({
+    //   title: 'Collection name',
+    //   description: '',
+    //   ogTitle: '',
+    //   ogDescription: '',
+    //   ogImage: 'https://example.com/image.png',
+    //   twitterCard: 'summary_large_image',
+    //   ogSiteName: 'Ma Boutique'
+    // })
     
     return {
       products,
@@ -87,28 +93,40 @@ export default {
       currentGridSize
     }
   },
+  beforeMount() {
+    if (this.$session.keyExists('grid-size')) {
+      this.currentGridSize = this.sessionStorage.retrieve('grid-size')
+    }
+  },
   methods: {
     handleGridSize (size) {
+      // Changes the size of the grid to
+      // reduce or increase the amount of
+      // products displayed on the screen
       this.currentGridSize = size
       this.$session.create('grid-size', size)
     },
     handleProducts (products) {
+      // Returns the products from the child
+      // component to the parent so that we
+      // can process them e.g. SEO here
       this.products = products
       this.productsLoading = false
-      this.handleSEO()
+      // this.handleSEO()
     },
-    handleSEO () {
-      useSchemaOrg(_.map(this.products, (product) => {
-        return defineProduct({
-          name: product.name,
-          offers: [
-            {
-              price: product.price
-            }
-          ]
-        })
-      }))
-    }
+    // TODO: Implement the Schema for products
+    // handleSEO () {
+    //   useSchemaOrg(_.map(this.products, (product) => {
+    //     return defineProduct({
+    //       name: product.name,
+    //       offers: [
+    //         {
+    //           price: product.price
+    //         }
+    //       ]
+    //     })
+    //   }))
+    // }
   }
 }
 </script>
