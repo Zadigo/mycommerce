@@ -93,23 +93,26 @@ export default {
       currentGridSize
     }
   },
-  beforeMount() {
-    if (this.$session.keyExists('grid-size')) {
-      this.currentGridSize = this.$session.retrieve('grid-size')
-    }
-  },
   methods: {
+    /**
+     * Changes the size of the grid to
+     * reduce or increase the amount of
+     * products displayed on the screen
+     * 
+     * @param {Number} size 
+     */
     handleGridSize (size) {
-      // Changes the size of the grid to
-      // reduce or increase the amount of
-      // products displayed on the screen
       this.currentGridSize = size
       this.$session.create('grid-size', size)
     },
+    /**
+     * Returns the products from the child
+     * component to the parent so that we
+     * can process them e.g. SEO here
+     * 
+     * @param {Array} products 
+     */
     handleProducts (products) {
-      // Returns the products from the child
-      // component to the parent so that we
-      // can process them e.g. SEO here
       this.products = products
       this.productsLoading = false
       // this.handleSEO()
