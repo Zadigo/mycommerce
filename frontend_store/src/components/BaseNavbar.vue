@@ -78,9 +78,9 @@
 
 <script>
 import { storeToRefs } from 'pinia'
-import { useAuthenticationComposable } from 'src/composables/authentication';
-import { useAuthentication } from 'src/stores/authentication';
-import { useCart } from 'src/stores/cart';
+import { useAuthenticationComposable } from 'src/composables/authentication'
+import { useAuthentication } from 'src/stores/authentication'
+import { useCart } from 'src/stores/cart'
 
 export default {
   emits: {
@@ -105,6 +105,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * Proxy to handle to logout process  
+     */
     handleLogout () {
       this.logout(() => {
         this.$router.push({

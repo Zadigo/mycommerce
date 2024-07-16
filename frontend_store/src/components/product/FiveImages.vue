@@ -13,8 +13,8 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import { useUtilities } from 'src/composables/shop'
-import { computed } from 'vue';
 
 export default {
   name: 'SixImages',

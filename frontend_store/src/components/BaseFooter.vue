@@ -66,8 +66,8 @@
 </template>
 
 <script>
-import socials from 'data/socials.json'
-import footer from 'data/footer_links.json'
+import socials from 'src/data/socials.json'
+import footer from 'src/data/footer_links.json'
 
 export default {
   name: 'BaseFooter',
