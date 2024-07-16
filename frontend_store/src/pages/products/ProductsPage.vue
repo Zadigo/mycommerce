@@ -95,7 +95,7 @@ export default {
   },
   beforeMount() {
     if (this.$session.keyExists('grid-size')) {
-      this.currentGridSize = this.sessionStorage.retrieve('grid-size')
+      this.currentGridSize = this.$session.retrieve('grid-size')
     }
   },
   methods: {
