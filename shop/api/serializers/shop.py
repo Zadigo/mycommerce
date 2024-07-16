@@ -2,8 +2,8 @@
 from rest_framework import fields
 from rest_framework.serializers import Serializer
 
-from variants.api.serializers import SizeSerializer
 from collection.api.serializers import CollectionSerializer
+from variants.api.serializers import SizeSerializer
 
 
 class ImageProductSerializer(Serializer):

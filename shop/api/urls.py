@@ -40,14 +40,22 @@ urlpatterns = [
     path('admin/', include((adminpatterns, 'admin'))),
     re_path(
         r'^products/(?P<pk>\d+)$',
-        shop_views.get_product
+        shop_views.GetProduct.as_view()
+        # shop_views.get_product
+    ),
+    re_path(
+        r'^search$',
+        shop_views.SearchShop.as_view()
+        # shop_views.get_product
     ),
     re_path(
         r'^recommendations$',
-        shop_views.list_recommendations
+        # shop_views.list_recommendations
+        shop_views.ListRecommendations.as_view()
     ),
     re_path(
         r'^products$',
-        shop_views.list_products
+        shop_views.ListProducts.as_view()
+        # shop_views.list_products
     )
 ]
