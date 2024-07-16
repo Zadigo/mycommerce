@@ -93,7 +93,9 @@ class Video(models.Model):
 
 
 class AbstractProduct(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(
+        max_length=100
+    )
     color = models.CharField(
         max_length=100,
         choices=ColorChoices.choices,

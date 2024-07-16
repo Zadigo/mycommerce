@@ -23,6 +23,10 @@ urlpatterns = [
     ),
 
     path(
+        'api/v1/stocks/', 
+        include('stocks.api.urls')
+    ),
+    path(
         'api/v1/orders/', 
         include('orders.api.urls')
     ),
