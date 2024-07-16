@@ -24,8 +24,12 @@ USER_MODEL = get_user_model()
 
 
 class Image(models.Model):
-    """Stores images that are related 
-    to the given product"""
+    """The `Image` model represents image content associated 
+    with products in the e-commerce application. It stores 
+    image files and their metadata, such as the name, variant, 
+    and creation date. This model also handles image processing 
+    to generate different sizes and formats for display purposes
+    """
 
     name = models.CharField(
         max_length=100,
@@ -74,8 +78,11 @@ class Image(models.Model):
 
 
 class Video(models.Model):
-    """Stores videos related to the
-    given product"""
+    """The `Video` model represents video content related 
+    to products in the e-commerce application. It stores 
+    video files and their metadata, such as the name and 
+    creation date. This model helps in providing a rich 
+    multimedia experience for product listings"""
 
     name = models.CharField(
         max_length=100,
@@ -199,15 +206,19 @@ class AbstractProduct(models.Model):
 
     @property
     def is_new(self):
-        """Products that have less than five days of
-        creation are marked as being new"""
+        """The `is_new` property is a read-only attribute 
+        that determines whether a product is considered new. 
+        A product is classified as new if it has been created 
+        within the last five days."""
         difference = (now() - timedelta(days=5))
         return self.created_on <= difference.date()
 
     @property
     def get_main_image(self):
-        """Returns the main image for the
-        current product"""
+        """The `get_main_image` property is a read-only attribute 
+        that retrieves the main image for a product. If the product 
+        has a designated main image, it returns that image; otherwise, 
+        it returns the first image from the product's image collection."""
         queryset = self.images.filter(is_main_image=True)
         if queryset.exists():
             return queryset.first()
@@ -219,8 +230,12 @@ class AbstractProduct(models.Model):
 
     @property
     def get_price(self):
-        """Returns the current price
-        for the given product"""
+        """The `get_price` property is a read-only attribute 
+        that determines and returns the appropriate price for 
+        a product. It simplifies the logic for price display on 
+        the frontend by checking if the product is on sale and 
+        returning the sale price if applicable, otherwise returning 
+        the regular unit price"""
         if self.on_sale and self.sale_price > 0:
             return self.sale_price
         return self.unit_price
@@ -276,6 +291,12 @@ class AbstractProduct(models.Model):
 
 
 class Product(AbstractProduct):
+    """The Product model, inheriting from the `AbstractProduct` 
+    class, represents fashion items in the e-commerce application. 
+    It encompasses various attributes and methods essential for 
+    product management, ensuring a comprehensive representation of 
+    each product's details and functionalities"""
+
     class Meta(AbstractProduct.Meta):
         verbose_name = _('Product')
         verbose_name_plural = _('Products')
@@ -335,8 +356,12 @@ class Like(AbstractUserList):
 
 
 class Wishlist(AbstractUserList):
-    """Products that were added
-    into the user's wishlist"""
+    """The `Wishlist` model represents a collection of 
+    products that a user has added to their wishlist. 
+    This feature allows users to save products they are 
+    interested in, facilitating easy access for future purchases. 
+    Wishlists enhance the shopping experience by helping users 
+    organize and keep track of their desired items"""
 
     name = models.CharField(max_length=100)
 
