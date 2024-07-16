@@ -55,6 +55,7 @@
 // import { useHead } from 'unhead'
 import { ref, provide } from 'vue'
 import { defineAsyncComponent } from 'vue'
+import { useAuthentication } from 'src/stores/authentication'
 // import { defineProduct, useSchemaOrg } from '@unhead/schema-org'
 
 import DefaultFiltering from 'src/components/products/filtering/DefaultFiltering.vue'
@@ -75,6 +76,8 @@ export default {
     const productsLoading = ref(true)
     const currentGridSize = ref(4)
 
+    const authenticationStore = useAuthentication()
+
     provide('productsLoading', productsLoading)
 
     // useHead({
@@ -89,9 +92,19 @@ export default {
     
     return {
       products,
+      authenticationStore,
       productsLoading,
       currentGridSize
     }
+  },
+  beforeMount () {
+    // Some pages will redirect to this page indicating
+    // that login is required via the ?login=0 query
+    // DEBUG: Does not get the query
+    // console.log('mounted', this.$route.query)
+    // if (this.$route.query.login === 0) {
+    //   this.authenticationStore.showLoginDrawer = true
+    // }
   },
   methods: {
     /**

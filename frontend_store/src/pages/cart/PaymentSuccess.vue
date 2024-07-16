@@ -26,7 +26,7 @@ import { ref } from 'vue'
 import { useHead } from 'unhead'
 import { createMockupProducts } from 'src/utils'
 
-import ProductCard from 'components/products/ProductCard.vue'
+import ProductCard from 'src/components/products/ProductCard.vue'
 
 export default {
   name: 'PaymentSuccess',

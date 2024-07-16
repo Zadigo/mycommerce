@@ -452,9 +452,13 @@ export default {
     }
   },
   computed: {
+    /**
+     * Returns the proper image component to display
+     * the remaining images for the given product
+     * 
+     * @returns {String} The name of the image component
+     */
     imageComponent () {
-      // Returns the proper image component to display
-      // the remaining images for the given product
       if (this.currentProduct.images?.length === 6) {
         return 'six-images'
       } else if (this.currentProduct.images?.length === 5) {
@@ -463,6 +467,11 @@ export default {
         return 'six-images'
       }
     },
+    /**
+     * Indicates if the product has other color variants
+     * 
+     * @returns {Boolean}
+     */
     hasColorVariants () {
       const variants = _.filter(this.currentProduct.variants, (product) => {
         return product.id !== this.currentProduct.id
@@ -537,14 +546,14 @@ export default {
   },
   methods: {
     ...mapActions(useShop, ['addToHistory']),
+    /**
+     * Request the details of the given product
+     * from the backend. This dos not use products
+     * that were preloaded in the products page but
+     * requests the product details on each page just
+     * like would do a static page
+     */
     async requestProduct () {
-      // Request the details of the given product
-      // from the backend. This dos not use products
-      // that were preloaded in the products page but
-      // requests the product details on each page just
-      // like would do a static page
-      // this.currentProduct = createMockupProduct(this.$route.params.id)
-
       try {
         const response = await this.$http.get(`shop/products/${this.$route.params.id}`)
         this.currentProduct = response.data
@@ -557,11 +566,15 @@ export default {
         }
       }
     },
+    /**
+     * Handles the action of adding a product
+     * to the current user's cart. Products that
+     * require a size will force the user to
+     * select a size before handling the action
+     * 
+     * @listens click
+     */
     async handleAddToCart () {
-      // Handles the action of adding a product
-      // to the current user's cart. Products that
-      // require a size will force the user to
-      // select a size before handling the action
       this.addToCartNoSize(this.currentProduct, (data) => {
         this.showAddedProductDrawer = true
         
@@ -570,12 +583,18 @@ export default {
         }
       })
     },
+    /**
+     * Handles the action of keeping track 
+     * of the products that were viewed by
+     * the user during his session
+     */
     async handleViewingHistory () {
-      // Handles the action of keeping track
-      // of the products that were viewed by
-      // the user during his session
       this.addToHistory(this.currentProduct)
     },
+    /**
+     * Sends the statistics to the backend for products
+     * that were visited by the user to the backend
+     */
     async handleSendingStatistics () {
       // TODO: We need to send these statistics ONLY if
       // if there are products to be sent and ONLY IF there's

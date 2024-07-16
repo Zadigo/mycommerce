@@ -34,9 +34,9 @@
 
 <script>
 import { useHead } from 'unhead'
-import NavigationCardFooter from '../../components/cart/NavigationCardFooter.vue'
-import { useCart } from 'src/stores/cart'
 import { storeToRefs } from 'pinia'
+import NavigationCardFooter from 'src/components/cart/NavigationCardFooter.vue'
+import { useCart } from 'src/stores/cart'
 
 export default {
   name: 'PaymentPage',
@@ -55,6 +55,12 @@ export default {
       store,
       requestData,
       rules: {
+        /**
+         * Verifies that the postal code is correct
+         * 
+         * @param {String} zipCode The postal code
+         * @returns {Boolean} Whether the postal code is valid
+         */
         postalCode: zipCode => {
           const regex = /\d{5}/
           return regex.test(zipCode) || 'Zip code is not valid'

@@ -16,9 +16,9 @@
 
 <script>
 import { useHead } from 'unhead'
-import { useCart } from 'stores/cart'
+import { useCart } from 'src/stores/cart'
 
-import NavigationCardFooter from 'components/cart/NavigationCardFooter.vue'
+import NavigationCardFooter from 'src/components/cart/NavigationCardFooter.vue'
 
 const deliveryMethods = [
   'Post office',
@@ -27,7 +27,7 @@ const deliveryMethods = [
 ]
 
 export default {
-  name: 'PaymentPage',
+  name: 'PaymentHomePage',
   components: {
     NavigationCardFooter
   },

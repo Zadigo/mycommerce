@@ -44,6 +44,12 @@ export default {
     // })
   },
   methods: {
+    /**
+     * Gets all the names of the collections that are
+     * available to be displayed on this page
+     * 
+     * @listens
+     */
     async requestCollectionNames () {
       try {
         const numberOfItems = this.$session.listCount('collections')
@@ -58,6 +64,9 @@ export default {
         console.error('CollectionPage', e)
       }
     },
+    /**
+     * @param {Number} size The grid size
+     */
     handleGridSize (size) {
       this.currentGridSize = size
     }

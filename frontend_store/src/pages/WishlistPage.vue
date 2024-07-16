@@ -37,7 +37,7 @@ import { storeToRefs } from 'pinia'
 import { useShop } from 'src/stores/shop'
 import { useAuthentication } from 'src/stores/authentication'
 
-import ProductCard from 'components/products/ProductCard.vue'
+import ProductCard from 'src/components/products/ProductCard.vue'
 
 export default {
   name: 'WishlistPage',

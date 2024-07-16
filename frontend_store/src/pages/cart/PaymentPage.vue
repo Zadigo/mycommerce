@@ -32,11 +32,11 @@
 
 <script>
 import { ref } from 'vue'
-import { useCart } from 'src/stores/cart'
 import { computed } from 'vue'
 import { useScript } from 'unhead'
-import { useUtilities } from 'src/composables/shop'
 import { storeToRefs } from 'pinia'
+import { useCart } from 'src/stores/cart'
+import { useUtilities } from 'src/composables/shop'
 
 const paymentMethods = [
   {
@@ -80,11 +80,17 @@ export default {
     }
   },
   methods: {
+    /**
+     * Executes card tokenization and initiates the
+     * payment on the backend side
+     */
     async handlePayment () {
-      // Executes card tokenization and initiates the
-      // payment on the backend side
       this.$router.push({ name: 'shop_payment_success' })
     },
+    /**
+     * Executes card tokenization and initiates the
+     * payment on the backend side
+     */
     handlePaymentType (cardType) {
       this.selectedPaymentMethod = cardType
     }
