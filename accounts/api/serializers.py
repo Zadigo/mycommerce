@@ -1,17 +1,14 @@
-from django.contrib.auth import get_user_model, login, update_session_auth_hash
-from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth import get_user_model, login
 from django.shortcuts import get_object_or_404
 from rest_framework import fields
 from rest_framework.authtoken.models import Token
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.serializers import Serializer
 
+from accounts.models import Address
+from accounts.validators import check_password_validator
+
 USER_MODEL = get_user_model()
-
-
-def password_validator(value):
-    validate_password(value)
-    return value
 
 
 class LoginUserSerializer(Serializer):
@@ -41,29 +38,57 @@ class LoginUserSerializer(Serializer):
         return instance
 
 
-class SignupUserSerializer(LoginUserSerializer):
-    name = fields.CharField()
-    password = None
-    password1 = fields.CharField()
-    password2 = fields.CharField()
+class SignupUserSerializer(Serializer):
+    username = fields.CharField()
+    email = fields.EmailField()
+    password1 = fields.CharField(validators=[check_password_validator])
+    password2 = fields.CharField(validators=[check_password_validator])
 
-    def save(self, request, **kwargs):
-        pass
+    def validate(self, attrs):
+        if attrs['password1'] != attrs['password2']:
+            raise ValidationError(detail={
+                'password1': 'Password do not match',
+                'password2': 'Password do not match',
+            })
+
+        fake_emails = []
+        if attrs['email'] in fake_emails:
+            raise ValidationError(detail={
+                'email': 'Email does not have a valid domain'
+            })
+
+        return attrs
+
+    def create(self, validated_data):
+        user = USER_MODEL.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password1']
+        )
+        return user
 
 
-class AccountMixin:
-    def get_object(self):
-        return get_object_or_404(USER_MODEL, id=self.validated_data['id'])
-
-
-class UserProfileSerializer(AccountMixin, Serializer):
+class AddressSerializer(Serializer):
     id = fields.IntegerField()
+    firstname = fields.CharField()
+    lastname = fields.CharField()
+    address_line = fields.CharField()
+    zip_code = fields.IntegerField()
+    country = fields.CharField()
+    city = fields.CharField()
+    telephone = fields.CharField()
+    gender = fields.CharField()
+    is_active = fields.BooleanField(default=False)
+    created_on = fields.DateTimeField()
 
-    def save(self, request, **kwargs):
-        user = self.get_object()
+
+class UserProfileSerializer(Serializer):
+    id = fields.IntegerField()
+    stripe_id = fields.CharField()
+    address_set = AddressSerializer(many=True)
 
 
-class UserSerializer(AccountMixin, Serializer):
+class UserSerializer(Serializer):
     id = fields.CharField(read_only=True)
     userprofile = UserProfileSerializer()
     first_name = fields.CharField(allow_null=True)
@@ -71,17 +96,52 @@ class UserSerializer(AccountMixin, Serializer):
     get_full_name = fields.CharField(required=False)
     username = fields.CharField(allow_null=True)
     email = fields.CharField(allow_null=True)
-    # telephone = fields.CharField(allow_null=True)
 
-    # TODO: Remove
-    def save(self, request, **kwargs):
-        user = self.get_object()
 
-        user.username = self.validated_data['username']
-        user.email = self.validated_data['email']
-        user.save()
+class ValidateUpdateAccount(Serializer):
+    email = fields.EmailField(
+        allow_null=True
+    )
+    password1 = fields.CharField(
+        validators=[check_password_validator]
+    )
+    password2 = fields.CharField(
+        validators=[check_password_validator]
+    )
 
-        password = self.validated_data.get('password', None)
-        if password is not None:
-            user.set_password(user.check_password(password))
-            update_session_auth_hash(request, user)
+    def validate(self, attrs):
+        if attrs['password1'] != attrs['password2']:
+            raise ValidationError(detail={
+                'password1': 'Password do not match',
+                'password2': 'Password do not match',
+            })
+        return attrs
+
+
+class ValidateAddressSerializer(Serializer):
+    firstname = fields.CharField()
+    lastname = fields.CharField()
+    address_line = fields.CharField()
+    zip_code = fields.IntegerField()
+    country = fields.CharField()
+    city = fields.CharField()
+    telephone = fields.CharField(allow_null=True)
+    gender = fields.IntegerField()
+    is_active = fields.BooleanField(default=False)
+
+    def __init__(self, request=None, **kwargs):
+        super().__init__(**kwargs)
+        self._request = request
+
+    def update(self, instance, validated_data):
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        instance.save()
+        return instance
+    
+    def create(self, validated_data):
+        instance = Address.objects.create(
+            user_profile=self._request.user.user_profile,
+            **validated_data
+        )
+        return instance
