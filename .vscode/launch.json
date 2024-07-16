@@ -31,7 +31,8 @@
                 "${workspaceFolder}/frontend_store/node_modules/**/*.js",
                 "${webRoot}/node_modules/*",
                 "<node_internals>/**"
-            ]
+            ],
+            "env": {}
         }
     ]
 }
