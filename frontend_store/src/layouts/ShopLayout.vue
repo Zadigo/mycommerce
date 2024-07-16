@@ -50,9 +50,14 @@
                 </v-text-field>
               </div>
 
-              <!-- TODO: Make this a component: ProductsRecommentation.vue -->
               <suspense>
-                <async-recommendations-block />
+                <template #default>
+                  <async-recommendations-block />
+                </template>
+                
+                <template #fallback>
+                  <loading-recommendations-block />
+                </template>
               </suspense>
             </div>
           </div>
@@ -268,16 +273,18 @@ import { useUtilities } from 'src/composables/shop'
 
 import BaseNavbar from 'src/components/BaseNavbar.vue'
 import BaseFooter from 'src/components/BaseFooter.vue'
+import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
 
 export default {
   name: 'ShopLayout',
   components: {
+    AsyncRecommendationsBlock: defineAsyncComponent({
+      loader: async () => import('src/components/RecommendationsBlock.vue'),
+      delay: 3000
+    }),
     BaseNavbar,
     BaseFooter,
-    // ProductCard,
-    AsyncRecommendationsBlock: defineAsyncComponent({
-      loader: async () => import('components/RecommendationsBlock.vue')
-    })
+    LoadingRecommendationsBlock
   },
   setup () {
     const { parseMainImage, localImagePath } = useUtilities()
