@@ -2,6 +2,36 @@
 
 A fullstack SPA fashion ecommerce website created with Vue and Django.
 
+# Overview
+This project is an advanced e-commerce platform specializing in fashion clothing. Designed with a robust backend using Django and a dynamic frontend with Vue.js, it aims to provide a seamless shopping experience. The application supports various functionalities such as managing products, user interactions, and order processing.
+
+# Key Features
+
+## Product Management
+* Product Model: Central to the platform, the Product model encapsulates essential details about each fashion item.
+* Image and Video Models: These models link to the Product model, enabling the inclusion of multimedia content for detailed product presentations.
+
+## User Interactions
+* Wishlist and Like Models: These models, derived from the AbstractWishlist class, allow users to save and like their preferred products, enhancing user engagement and personalization.
+
+## Order and Shipment
+* CustomerOrder and ProductHistory Models: The CustomerOrder model tracks customer purchases, while the ProductHistory model preserves the product's state at the time of order, ensuring accurate historical pricing data.
+* Shipment Model: This model manages the shipment details of orders, ensuring timely and accurate delivery tracking.
+
+## Discounts and Promotions
+* Discount Model: This model facilitates the creation of various discounts and coupons, providing customers with price reductions on selected products.
+
+## User Management
+* UserProfile Model: Stores user-specific information such as telephone number and Stripe ID, essential for user authentication and payment processing.
+* Address Model: Allows users to save multiple billing addresses, simplifying the checkout process.
+
+## Cart and Stock Management
+* Cart Model: Tracks items added to the cart, supporting the checkout process.
+* Stock Model: Monitors the inventory status of products, ensuring stock availability is accurately reflected.
+
+## Purpose and Benefits
+This documentation aims to provide a comprehensive guide for developers to understand and extend the application's functionality efficiently. By detailing the various models and their interactions, it ensures that future development and maintenance efforts are streamlined, supporting the application's scalability and robustness.
+
 ## How to test
 
 First download the image folder on [Dropbox](https://www.dropbox.com/sh/hqll9tutdy7wji0/AACsJSeDAqyr-Oeic44OXSL9a?dl=0). Create a `project.ini` file with a `images_folder` variable under the default section and copy the path to its location. Open the `init.ipynb` and run all the cells. The final result should be a set of products created in your local database. You can then move to the __Getting tarted__ section.
