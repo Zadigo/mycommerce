@@ -5,7 +5,8 @@ from collection.api import views
 urlpatterns = [
     re_path(
         r'^(?P<name>[a-z\-]+)',
-        views.list_collection_products
+        views.ListCollectionProducts.as_view()
+        # views.list_collection_products
     ),
     re_path(
         r'^(?P<pk>\d+)/search$',
