@@ -4,7 +4,6 @@ from rest_framework import fields
 from rest_framework.serializers import Serializer
 
 from cart.models import Cart
-from orders.choices import ShipmentChoices
 from shop.api.serializers.shop import ProductSerializer
 from shop.choices import ClotheSizesChoices
 from shop.models import Product
@@ -86,20 +85,3 @@ class ValidateCart(Serializer):
         product_id = self.validated_data['product']
         session_id = self.validated_data['session_id']
         return Cart.objects.remove_from_cart(self._request, product_id, session_id)
-
-
-class ValidateShipment(Serializer):
-    session_id = fields.CharField()
-    discount_code = fields.CharField(required=False)
-    email = fields.CharField()
-    firstname = fields.CharField()
-    lastname = fields.CharField()
-    address = fields.CharField()
-    zip_code = fields.CharField()
-    city = fields.CharField()
-    country = fields.CharField()
-    telephone = fields.CharField()
-    delivery_option = fields.ChoiceField(
-        ShipmentChoices.choices,
-        default=ShipmentChoices.CHRONOPOST
-    )
