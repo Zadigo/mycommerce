@@ -37,6 +37,7 @@ import { useScript } from 'unhead'
 import { storeToRefs } from 'pinia'
 import { useCart } from 'src/stores/cart'
 import { useUtilities } from 'src/composables/shop'
+import { useMessages } from 'src/stores/messages'
 
 const paymentMethods = [
   {
@@ -59,6 +60,7 @@ export default {
     useScript({ src: 'https://js.stripe.com/v3' })
     useScript({ src: 'https://x.klarnacdn.net/kp/lib/v1/api.js' })
 
+    const messagesStore = useMessages()
     const cartStore = useCart()
     const { requestData } = storeToRefs(cartStore)
 
@@ -73,6 +75,7 @@ export default {
     return {
       cartStore,
       requestData,
+      messagesStore,
       hasSelectedPaymentMethod,
       selectedPaymentMethod,
       paymentMethods,
@@ -85,7 +88,14 @@ export default {
      * payment on the backend side
      */
     async handlePayment () {
-      this.$router.push({ name: 'shop_payment_success' })
+      try {
+        const response = await this.$http.post('orders/create', this.requestData)
+        this.$session.create('payment_response', response.data)
+        this.$router.push({ name: 'shop_payment_success' })
+      } catch (e) {
+        this.messagesStore.addErrorMessage('Payment error', e.response)
+        console.log(e)
+      }
     },
     /**
      * Executes card tokenization and initiates the
