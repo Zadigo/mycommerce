@@ -2,9 +2,10 @@
   <div class="card shadow-sm">
     <div class="card-body">
       <!-- <h2 class="card-title h5">Enlèvement en magasin</h2> -->
-      <h2 class="card-title h5">Adresse de livraison</h2>
+      <h2 class="card-title h5">{{ $t('Adresse de livraison') }}</h2>
 
       <v-text-field v-model="requestData.address_line" variant="outlined" autocomplete="street-address"></v-text-field>
+      <v-text-field v-model="requestData.city" variant="outlined" autocomplete="address-level1"></v-text-field>
 
       <div class="d-flex justify-content-between gap-1">
         <v-text-field v-model="requestData.zip_code" :rules="[ rules.postalCode ]" placeholder="Zip code" variant="outlined" autocomplete="postal-code"></v-text-field>
@@ -35,8 +36,9 @@
 <script>
 import { useHead } from 'unhead'
 import { storeToRefs } from 'pinia'
-import NavigationCardFooter from 'src/components/cart/NavigationCardFooter.vue'
 import { useCart } from 'src/stores/cart'
+
+import NavigationCardFooter from 'src/components/cart/NavigationCardFooter.vue'
 
 export default {
   name: 'PaymentPage',
