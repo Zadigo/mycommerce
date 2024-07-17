@@ -1,4 +1,5 @@
-from django.db.models import Case, DecimalField, F, Q, Sum, When
+from django.core.cache import cache
+from django.db.models import F, Sum
 from django.utils.crypto import get_random_string
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -6,14 +7,13 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from accounts.models import Address
-from cart.api.serializers import ValidateShipment
 from cart.models import Cart
-from mycommerce.n8n import Webhook
-from orders.api.serializers import CustomerOrderSerializer
+from mycommerce.choices import ShipmentChoices
+from orders.api.serializers import (CustomerOrderSerializer,
+                                    DeliveryOptionsSerializer,
+                                    ValidateShipment)
 from orders.models import CustomerOrder, ProductHistory
 from orders.payment import payment_interface
-from shipments.models import Shipment
 
 
 class ListCustomerOrders(ListAPIView):
@@ -27,6 +27,23 @@ class ListCustomerOrders(ListAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
+
+
+class ListDeliveryOptions(ListAPIView):
+    serializer_class = DeliveryOptionsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        if cache.has_key('delivery_options'):
+            return cache.get('delivery_options')
+
+        def map_options():
+            for i, choice in enumerate(ShipmentChoices.choices):
+                yield {'id': i + 1, 'name': choice[0]}
+
+        delivery_options = list(map_options())
+        cache.set('delivery_options', delivery_options, timeout=3600)
+        return delivery_options
 
 
 @api_view(['post'])
@@ -54,11 +71,12 @@ def new_customer_order(request, **kwargs):
         params = {
             'firstname': shipment_serializer.validated_data['firstname'],
             'lastname': shipment_serializer.validated_data['lastname'],
-            'address_line': shipment_serializer.validated_data['address'],
+            'address_line': shipment_serializer.validated_data['address_line'],
             'zip_code': shipment_serializer.validated_data['zip_code'],
             'country': shipment_serializer.validated_data['country'],
             'city': shipment_serializer.validated_data['city'],
-            'telephone': shipment_serializer.validated_data['telephone']
+            'telephone': shipment_serializer.validated_data['telephone'],
+            'user_profile': request.user.userprofile
         }
         billing_address, state = billing_addresses.update_or_create(
             defaults=params,
