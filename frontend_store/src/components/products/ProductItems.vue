@@ -16,7 +16,8 @@
 import { ref, computed } from 'vue'
 import { client } from 'src/plugins/axios'
 import { useVueSession } from 'src/plugins/vue-storages'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { useMessages } from 'src/stores/messages'
 
 import ProductCard from './ProductCard.vue'
 
@@ -37,32 +38,30 @@ export default {
     }
   },
   async setup () {
-    // const router = useRouter()
+    const router = useRouter()
     const route = useRoute()
     const { session } = useVueSession()
 
     const cachedResponse = ref({})
     const products = ref([])
 
+    const messagesStore = useMessages()
+
     async function requestProducts () {
       try {
-        // TODO: Get the collection to get from
-        // the url parameters
         const collectionName = route.params.id
-        collectionName
-
-        const response = await client.get(`collection/${route.params.id}`)
+        const response = await client.get(`collection/${collectionName}`)
         cachedResponse.value = response.data
         products.value = cachedResponse.value.results
         session.create('products', response.data)
       } catch (e) {
         // If we fail to get the collectionName
         // redirect to the 404 page
-        // if (e.response.status === 404) {
-        //   router.push({
-        //     name: 'not_found'
-        //   })
-        // }
+        if (e.response.status === 404) {
+          router.push({ name: 'not_found' })
+        }
+
+        messagesStore.addNetworkError()
         console.error(e)
       }
     }
@@ -93,11 +92,18 @@ export default {
     this.$emit('update-products', this.products)
   },
   methods: {
-    // async handleLoadMoreProducts ({ done }) {
-    //   const newProducts = Array.from({ length: 30 }, (k, v) => v + 1)
-    //   this.products.push(...newProducts)
-    //   done('ok')
-    // }
+    /**
+     * This is the main pagination function that is
+     * used to load more products on the page when
+     * the trigger section is reached
+     * 
+     * @param {{Function}} The triggering element  
+     */
+    async handleLoadMoreProducts ({ done }) {
+      const newProducts = Array.from({ length: 30 }, (k, v) => v + 1)
+      this.products.push(...newProducts)
+      done('ok')
+    }
   }
 }
 </script>
