@@ -71,8 +71,8 @@
               </div>
 
               <div class="delivery d-flex justify-content-between my-2">
-                <span>Frais d'envoi</span>
-                <span class="fw-bold text-uppercase text-success">Gratuit</span>
+                <span>{{ $t("Frais d'envoi") }}</span>
+                <span class="fw-bold text-uppercase text-success">{{ $t('Gratuit') }}</span>
               </div>
 
               <div class="total d-flex justify-content-between">
