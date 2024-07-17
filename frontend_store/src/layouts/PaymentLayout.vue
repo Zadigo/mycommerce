@@ -3,7 +3,7 @@
     <header>
       <nav class="navbar fixed-top navbar-dark bg-white d-flex justify-content-center shadow-none text-uppercase">
         <router-link :to="{ name: 'shop_products'}" class="link-dark">
-          <h1 class="h2 fw-bold">Boutique</h1>
+          <h1 class="h2 fw-bold">{{ $t('Boutique') }}</h1>
         </router-link>
       </nav>
     </header>
@@ -41,7 +41,7 @@
                 <article v-for="item in products" :key="item.id" :aria-label="item.product.name" class="list-group-item d-flex justify-content-start align-items-top gap-4 border-none ps-0">
                   <div class="col-auto">
                     <router-link :to="{ name: 'shop_product', params: { id: item.id } }">
-                      <v-img :src="djangoMediaPath(item.product.get_main_image.original)" :lazy-src="djangoMediaPath(item.product.get_main_image.original)" :width="100" :alt="item.product.name" />
+                      <v-img :src="djangoMediaPath(item.product.get_main_image?.original)" :lazy-src="djangoMediaPath(item.product.get_main_image?.original)" :width="100" :alt="item.product.name" />
                     </router-link>
                   </div>
 
