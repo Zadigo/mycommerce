@@ -1,90 +1,87 @@
-name,color,unit_price,active,display_new,slug,category,on_sale,sale_value
-Jupe Midi Popeline Taille Élastique,Yellow,337,False,True,jupe-midi-popeline-taille-elastique-0-yellow,Activewear,False,0
-Minijupe Cargo Serge Ceinture,Camel,710,False,True,minijupe-cargo-serge-ceinture-1-camel,Bags,True,42
-Jupe-Culotte Paréo Plissée,Red,57,False,False,jupe-culotte-pareo-plissee-2-red,Pants,False,0
-Minijupe Bouffante,Charcoal,753,False,True,minijupe-bouffante-3-charcoal,Pants,True,28
-Minijupe Bouffante,Taupe,112,False,False,minijupe-bouffante-4-taupe,Tops,False,0
-Jupe Midi ImpriméE,Green,669,False,True,jupe-midi-imprimee-5-green,Tops,False,0
-Minijupe Plissée ÉLastiquéE Popeline Contrastante,Beige,247,False,False,minijupe-plissee-elastiquee-popeline-contrastante-6-beige,Bras,False,0
-Minijupe À Volants,Red,664,False,False,minijupe-a-volants-7-red,Bras,False,0
-Jupe Midi Fendue ImpriméE,Black,797,False,True,jupe-midi-fendue-imprimee-8-black,Shorts,False,0
-Jupe Cargo Lanières,Charcoal,628,False,True,jupe-cargo-lanieres-9-charcoal,Suits,True,46
-Jupe Midi Satin,Cream,181,False,False,jupe-midi-satin-10-cream,Denim,False,0
-Jupe Midi Tailoring Plissée Ceinture Fente,Pink,460,False,False,jupe-midi-tailoring-plissee-ceinture-fente-11-pink,Tops,True,29
-Jupe Midi À Imprimé Animal,Yellow,128,False,False,jupe-midi-a-imprime-animal-12-yellow,Bags,False,0
-Jupe Midi GaufréE,Orange,595,False,True,jupe-midi-gaufree-13-orange,Suits,True,40
-Minijupe En Crochet,Prints,572,False,True,minijupe-crochet-14-prints,Denim,False,0
-Minijupe,Black,203,False,True,minijupe-15-black,Activewear,True,21
-Jupe Midi GaufréE,Green,177,False,True,jupe-midi-gaufree-16-green,Denim,True,46
-Minijupe Taille Retrousée,Yellow,94,False,False,minijupe-taille-retroussee-17-yellow,Suits,False,0
-Minijupe En Crochet,Yellow,124,False,True,minijupe-crochet-18-yellow,Pants,True,33
-Minijupe Serge,Camel,582,False,False,minijupe-serge-19-camel,Bras,False,0
-Minijupe Jacquard,Black,663,False,False,minijupe-jacquard-20-black,Accessories,True,37
-Mini-Jupe Ceinture Boucle,Marine,561,False,False,mini-jupe-ceinture-boucle-21-marine,Denim,False,0
-Minijupe-Culotte Denim Plissée,Taupe,682,False,True,minijupe-culotte-denim-plissee-22-taupe,Bags,False,0
-Jupe Midi En Dentelle,White,388,False,True,jupe-midi-dentelle-23-white,Accessories,True,32
-Minijupe Similicuir Plissée,Orange,256,False,False,minijupe-similicuir-plissee-24-orange,Tops,True,35
-Mini-Jupe Tailoring,Camel,384,False,True,mini-jupe-tailoring-25-camel,Panties,False,0
-Minijupe À Volants,Prints,751,False,False,minijupe-a-volants-26-prints,Shorts,False,0
-Minijupe Taille Retrousée,Green,176,False,True,minijupe-taille-retroussee-27-green,Pants,True,18
-Jupe-Culotte Tailoring Plissée,Orange,33,False,True,jupe-culotte-tailoring-plissee-28-orange,Denim,False,0
-Mini-Jupe Plissée,Orange,217,False,True,mini-jupe-plissee-29-orange,Activewear,False,0
-Jupe Midi RayéE En Maille,Green,19,False,True,jupe-midi-rayee-maille-30-green,Shorts,False,0
-Minijupe Serge,Cream,662,False,True,minijupe-serge-31-cream,Shoes,True,47
-Jupe Longue Chiffon Pois,Pink,485,False,False,jupe-longue-chiffon-pois-32-pink,Pants,True,22
-Jupe Midi Popeline Taille Élastique,Cream,586,False,False,jupe-midi-popeline-taille-elastique-33-cream,Denim,False,0
-Minijupe TexturéE,Prints,684,False,False,minijupe-texturee-34-prints,Bras,True,33
-Jupe Midi SatinéE,Beige,615,False,True,jupe-midi-satinee-35-beige,Activewear,False,0
-Minijupe À Volants,Navy,597,False,False,minijupe-a-volants-36-navy,Activewear,True,10
-Minijupe Satin Jacquard,Yellow,383,False,True,minijupe-satin-jacquard-37-yellow,Bags,True,15
-Jupe Denim Midi,Green,547,False,False,jupe-denim-midi-38-green,Bags,True,48
-Jupe Midi Plissée,Beige,142,False,True,jupe-midi-plissee-39-beige,Pants,False,0
-Minijupe Taille Retrousée,Camel,213,False,False,minijupe-taille-retroussee-40-camel,Bras,False,0
-Jupe Denim Midi,Cream,121,False,True,jupe-denim-midi-41-cream,Shoes,False,0
-Jupe Culotte En Denim,Cream,610,False,True,jupe-culotte-denim-42-cream,Shorts,True,37
-Minijupe À Volants,Charcoal,758,False,False,minijupe-a-volants-43-charcoal,Shoes,True,30
-Minijupe Taille Retrousée,Beige,410,False,True,minijupe-taille-retroussee-44-beige,Denim,False,0
-Minijupe Cargo Serge Ceinture,Prints,440,False,True,minijupe-cargo-serge-ceinture-45-prints,Pants,True,35
-Jupe Midi En Dentelle,Charcoal,183,False,False,jupe-midi-dentelle-46-charcoal,Activewear,False,0
-Minijupe-Culotte,Kaki,432,False,True,minijupe-culotte-47-kaki,Activewear,False,0
-Jupe Cargo Lanières,Kaki,463,False,True,jupe-cargo-lanieres-48-kaki,Shorts,False,0
-Jupe Midi Maille Bord-CôTe,Kaki,144,False,True,jupe-midi-maille-bord-cote-49-kaki,Tops,True,37
-Jupe Midi Texture Rustique,Cream,667,False,False,jupe-midi-texture-rustique-50-cream,Activewear,False,0
-Minijupe GaufréE Volants Imprimé,White,510,False,False,minijupe-gaufree-volants-imprime-51-white,Bras,True,12
-Mini-Jupe Denim Cargo,Black,596,False,False,mini-jupe-denim-cargo-52-black,Bras,False,0
-Jupe Cargo Lanières,White,242,False,True,jupe-cargo-lanieres-53-white,Bras,False,0
-Jupe Midi Avec Noeud,Red,71,False,False,jupe-midi-avec-noeud-54-red,Tops,True,45
-Jupe Midi Maille Rayures,Grey,162,False,True,jupe-midi-maille-rayures-55-grey,Tops,True,19
-Minijupe Taille Retrousée,Green,781,False,True,minijupe-taille-retroussee-56-green,Shorts,False,0
-Jupe Midi Rustique,Kaki,686,False,False,jupe-midi-rustique-57-kaki,Dresses,True,35
-Minijupe Tailoring Plissée Ceinture,Taupe,303,False,False,minijupe-tailoring-plissee-ceinture-58-taupe,Accessories,False,0
-Jupe Midi Maille CôTeléE Rustique,Taupe,394,False,False,jupe-midi-maille-cotelee-rustique-59-taupe,Shoes,True,21
-Jupe Midi Rustique Ajours,Prints,70,False,True,jupe-midi-rustique-ajours-60-prints,Activewear,False,0
-Minijupe-Culotte Denim Plissée,Cream,598,False,False,minijupe-culotte-denim-plissee-61-cream,Panties,True,24
-Mini-Jupe Denim Cargo,Red,734,False,True,mini-jupe-denim-cargo-62-red,Shorts,False,0
-Mini-Jupe Plissée Similicuir,Kaki,92,False,True,mini-jupe-plissee-similicuir-63-kaki,Panties,True,23
-Mini-Jupe Ceinture Boucle,Beige,760,False,False,mini-jupe-ceinture-boucle-64-beige,Pants,True,38
-Minijupe Taille Retrousée,Green,68,False,True,minijupe-taille-retroussee-65-green,Bags,False,0
-Mini-Jupe Popeline,Pink,205,False,False,mini-jupe-popeline-66-pink,Shoes,False,0
-Jupe-Culotte Tailoring Plissée,Taupe,107,False,True,jupe-culotte-tailoring-plissee-67-taupe,Shoes,False,0
-Jupe Midi Popeline Taille Élastique,Kaki,296,False,True,jupe-midi-popeline-taille-elastique-68-kaki,Activewear,True,25
-Minijupe Cargo Plissée,Green,417,False,True,minijupe-cargo-plissee-69-green,Shorts,False,0
-Jupe Culotte En Denim,Beige,109,False,False,jupe-culotte-denim-70-beige,Pants,False,0
-Mini-Jupe En Maille,Prints,753,False,False,mini-jupe-maille-71-prints,Panties,True,13
-Jupe Denim,Yellow,370,False,False,jupe-denim-72-yellow,Denim,True,19
-Jupe Midi Rustique DéTail Fleurs,Camel,579,False,False,jupe-midi-rustique-detail-fleurs-73-camel,Dresses,True,39
-Minijupe Jean,Taupe,193,False,False,minijupe-jean-74-taupe,Tops,False,0
-Minijupe Denim Underwear,Charcoal,793,False,False,minijupe-denim-underwear-75-charcoal,Suits,True,11
-Minijupe Bengaline Chinée,Red,314,False,False,minijupe-bengaline-chinee-76-red,Dresses,True,17
-Jupe-Culotte Tailoring,Red,192,False,True,jupe-culotte-tailoring-77-red,Bags,True,35
-Jupe Midi Avec Noeud,Charcoal,556,False,True,jupe-midi-avec-noeud-78-charcoal,Accessories,True,10
-Jupe Culotte En Denim,Taupe,188,False,False,jupe-culotte-denim-79-taupe,Suits,False,0
-Minijupe Plissée ÉLastiquéE Popeline Contrastante,Navy,439,False,False,minijupe-plissee-elastiquee-popeline-contrastante-80-navy,Pants,True,45
-Jupe Midi Popeline Taille Élastique,Cream,278,False,True,jupe-midi-popeline-taille-elastique-81-cream,Pants,False,0
-Jupe-Culotte Tailoring,Kaki,366,False,False,jupe-culotte-tailoring-82-kaki,Tops,True,17
-Minijupe Bengaline Chinée,Yellow,109,False,True,minijupe-bengaline-chinee-83-yellow,Bags,True,34
-Jupe Midi TexturéE,Yellow,254,False,False,jupe-midi-texturee-84-yellow,Accessories,False,0
-Mini-Jupe Tailoring,Camel,592,False,False,mini-jupe-tailoring-85-camel,Pants,True,13
-Minijupe Taille Retrousée,Cream,134,False,True,minijupe-taille-retroussee-86-cream,Tops,False,0
-Jupe Cargo Lanières,Prints,239,False,False,jupe-cargo-lanieres-87-prints,Accessories,True,11
-Jupe Midi Rayures,Cream,204,False,False,jupe-midi-rayures-88-cream,Shorts,True,35
+id,name,color,unit_price,active,display_new,slug,category,created_on,modified_on,on_sale,sale_value
+0,Jupe cargo lanières,Red,29.99,False,False,jupe-cargo-lanieres-1-red-443872,Dresses,2024-07-17,2024-07-17,True,42
+1,Jupe cargo lanières,Pink,29.99,False,True,jupe-cargo-lanieres-2-pink-431433,Dresses,2024-07-17,2024-07-17,False,0
+2,Jupe cargo lanières,Black,29.99,False,True,jupe-cargo-lanieres-3-black-714742,Dresses,2024-07-17,2024-07-17,False,0
+3,Jupe cargo lanières,Blue,29.99,False,True,jupe-cargo-lanieres-4-blue-221736,Dresses,2024-07-17,2024-07-17,False,0
+4,Jupe culotte en denim,Blue,25.99,False,False,jupe-culotte-denim-5-blue-506241,Dresses,2024-07-17,2024-07-17,True,31
+5,Jupe culotte en denim,Blue,49.99,False,False,jupe-culotte-denim-6-blue-59833,Dresses,2024-07-17,2024-07-17,False,0
+6,Jupe culotte en denim,Blue,25.99,False,False,jupe-culotte-denim-7-blue-441910,Dresses,2024-07-17,2024-07-17,True,35
+7,Jupe denim,Blue,29.99,False,False,jupe-denim-8-blue-243854,Dresses,2024-07-17,2024-07-17,True,31
+8,Jupe denim midi,Blue,29.99,False,False,jupe-denim-midi-9-blue-4472,Dresses,2024-07-17,2024-07-17,False,0
+9,Jupe longue chiffon pois,Print,29.99,False,False,jupe-longue-chiffon-pois-10-print-613908,Dresses,2024-07-17,2024-07-17,False,0
+10,Jupe midi avec noeud,White,19.99,False,False,jupe-midi-avec-noeud-11-white-449342,Dresses,2024-07-17,2024-07-17,True,19
+11,Jupe midi avec noeud,Black,19.99,False,True,jupe-midi-avec-noeud-12-black-166083,Dresses,2024-07-17,2024-07-17,False,0
+12,Jupe midi à imprimé animal,Print,29.99,False,False,jupe-midi-a-imprime-animal-13-print-258075,Dresses,2024-07-17,2024-07-17,True,13
+13,Jupe midi en dentelle,White,29.99,False,True,jupe-midi-dentelle-14-white-38100,Dresses,2024-07-17,2024-07-17,False,0
+14,Jupe midi en dentelle,Black,29.99,False,True,jupe-midi-dentelle-15-black-657464,Dresses,2024-07-17,2024-07-17,True,46
+15,Jupe midi fendue imprimée,Print,22.99,False,False,jupe-midi-fendue-imprimee-16-print-694821,Dresses,2024-07-17,2024-07-17,True,16
+16,Jupe midi gaufrée,Black,19.99,False,False,jupe-midi-gaufree-17-black-626936,Dresses,2024-07-17,2024-07-17,True,28
+17,Jupe midi gaufrée,Pink,19.99,False,True,jupe-midi-gaufree-18-pink-647682,Dresses,2024-07-17,2024-07-17,True,16
+18,Jupe midi imprimée,Print,22.99,False,False,jupe-midi-imprimee-19-print-620279,Dresses,2024-07-17,2024-07-17,False,0
+19,Jupe midi maille bord-côte,Pink,25.99,False,True,jupe-midi-maille-bord-cote-20-pink-357493,Dresses,2024-07-17,2024-07-17,True,11
+20,Jupe midi maille côtelée rustique,Beige,25.99,False,False,jupe-midi-maille-cotelee-rustique-21-beige-62423,Dresses,2024-07-17,2024-07-17,True,33
+21,Jupe midi maille rayures,Print,25.99,False,False,jupe-midi-maille-rayures-22-print-404224,Dresses,2024-07-17,2024-07-17,False,0
+22,Jupe midi plissée,Grey,29.99,False,True,jupe-midi-plissee-23-grey-734416,Dresses,2024-07-17,2024-07-17,True,27
+23,Jupe midi popeline taille élastique,Grey,29.99,False,False,jupe-midi-popeline-taille-elastique-24-grey-406867,Dresses,2024-07-17,2024-07-17,False,0
+24,Jupe midi popeline taille élastique,White,29.99,False,False,jupe-midi-popeline-taille-elastique-25-white-209964,Dresses,2024-07-17,2024-07-17,True,24
+25,Jupe midi popeline taille élastique,Black,29.99,False,False,jupe-midi-popeline-taille-elastique-26-black-788163,Dresses,2024-07-17,2024-07-17,False,0
+26,Jupe midi popeline taille élastique,White,29.99,False,False,jupe-midi-popeline-taille-elastique-27-white-580593,Dresses,2024-07-17,2024-07-17,True,10
+27,Jupe midi rayée en maille,Print,15.99,False,False,jupe-midi-rayee-maille-28-print-505441,Dresses,2024-07-17,2024-07-17,True,18
+28,Jupe midi rayures,Print,25.99,False,True,jupe-midi-rayures-29-print-630701,Dresses,2024-07-17,2024-07-17,False,0
+29,Jupe midi rustique,Yellow,25.99,False,True,jupe-midi-rustique-30-yellow-549367,Dresses,2024-07-17,2024-07-17,False,0
+30,Jupe midi rustique ajours,Red,25.99,False,True,jupe-midi-rustique-ajours-31-red-323549,Dresses,2024-07-17,2024-07-17,False,0
+31,Jupe midi rustique détail fleurs,Print,29.99,False,True,jupe-midi-rustique-detail-fleurs-32-print-577067,Dresses,2024-07-17,2024-07-17,False,0
+32,Jupe midi satin,White,29.99,False,False,jupe-midi-satin-33-white-349695,Dresses,2024-07-17,2024-07-17,False,0
+33,Jupe midi satinée,White,35.99,False,False,jupe-midi-satinee-34-white-45824,Dresses,2024-07-17,2024-07-17,False,0
+34,Jupe midi tailoring plissée ceinture fente,Black,35.99,False,True,jupe-midi-tailoring-plissee-ceinture-fente-35-black-273713,Dresses,2024-07-17,2024-07-17,True,44
+35,Jupe midi texture rustique,Beige,35.99,False,False,jupe-midi-texture-rustique-36-beige-685441,Dresses,2024-07-17,2024-07-17,True,29
+36,Jupe midi texturée,White,35.99,False,True,jupe-midi-texturee-37-white-171808,Dresses,2024-07-17,2024-07-17,True,43
+37,Jupe-culotte paréo plissée,White,29.99,False,False,jupe-culotte-pareo-plissee-38-white-98688,Dresses,2024-07-17,2024-07-17,False,0
+38,Jupe-culotte tailoring,Black,19.99,False,True,jupe-culotte-tailoring-39-black-289474,Dresses,2024-07-17,2024-07-17,True,26
+39,Jupe-culotte tailoring,Grey,19.99,False,False,jupe-culotte-tailoring-40-grey-54537,Dresses,2024-07-17,2024-07-17,False,0
+40,Jupe-culotte tailoring plissée,Black,29.99,False,False,jupe-culotte-tailoring-plissee-41-black-666087,Dresses,2024-07-17,2024-07-17,True,18
+41,Jupe-culotte tailoring plissée,Print,29.99,False,True,jupe-culotte-tailoring-plissee-42-print-391729,Dresses,2024-07-17,2024-07-17,True,16
+42,Mini-jupe ceinture boucle,Pink,29.99,False,True,mini-jupe-ceinture-boucle-43-pink-650076,Dresses,2024-07-17,2024-07-17,True,11
+43,Mini-jupe ceinture boucle,Grey,29.99,False,True,mini-jupe-ceinture-boucle-44-grey-90417,Dresses,2024-07-17,2024-07-17,True,31
+44,Mini-jupe denim cargo,Black,25.99,False,False,mini-jupe-denim-cargo-45-black-349845,Dresses,2024-07-17,2024-07-17,True,41
+45,Mini-jupe denim cargo,Blue,25.99,False,True,mini-jupe-denim-cargo-46-blue-173539,Dresses,2024-07-17,2024-07-17,False,0
+46,Mini-jupe en maille,White,15.99,False,False,mini-jupe-maille-47-white-671008,Dresses,2024-07-17,2024-07-17,False,0
+47,Mini-jupe plissée,Grey,19.99,False,True,mini-jupe-plissee-48-grey-445161,Dresses,2024-07-17,2024-07-17,True,12
+48,Mini-jupe plissée similicuir,Black,19.99,False,False,mini-jupe-plissee-similicuir-49-black-798998,Dresses,2024-07-17,2024-07-17,True,40
+49,Mini-jupe popeline,White,22.99,False,False,mini-jupe-popeline-50-white-231931,Dresses,2024-07-17,2024-07-17,False,0
+50,Mini-jupe tailoring,Black,19.99,False,False,mini-jupe-tailoring-51-black-768217,Dresses,2024-07-17,2024-07-17,True,46
+51,Mini-jupe tailoring,Grey,19.99,False,True,mini-jupe-tailoring-52-grey-57529,Dresses,2024-07-17,2024-07-17,False,0
+52,Minijupe,Black,15.99,False,False,minijupe-53-black-349629,Dresses,2024-07-17,2024-07-17,False,0
+53,Minijupe à volants,White,25.99,False,False,minijupe-a-volants-54-white-302244,Dresses,2024-07-17,2024-07-17,True,26
+54,Minijupe à volants,Black,25.99,False,True,minijupe-a-volants-55-black-468678,Dresses,2024-07-17,2024-07-17,True,16
+55,Minijupe à volants,Beige,25.99,False,False,minijupe-a-volants-56-beige-211064,Dresses,2024-07-17,2024-07-17,True,13
+56,Minijupe bengaline chinée,White,19.99,False,True,minijupe-bengaline-chinee-57-white-47846,Dresses,2024-07-17,2024-07-17,False,0
+57,Minijupe bouffante,Black,19.99,False,True,minijupe-bouffante-58-black-203447,Dresses,2024-07-17,2024-07-17,False,0
+58,Minijupe bouffante,Print,19.99,False,False,minijupe-bouffante-59-print-793794,Dresses,2024-07-17,2024-07-17,True,48
+59,Minijupe cargo plissée,Blue,29.99,False,False,minijupe-cargo-plissee-60-blue-417911,Dresses,2024-07-17,2024-07-17,False,0
+60,Minijupe cargo serge ceinture,White,25.99,False,True,minijupe-cargo-serge-ceinture-61-white-193394,Dresses,2024-07-17,2024-07-17,True,17
+61,Minijupe cargo serge ceinture,Grey,25.99,False,True,minijupe-cargo-serge-ceinture-62-grey-523764,Dresses,2024-07-17,2024-07-17,True,26
+62,Minijupe denim underwear,Blue,29.99,False,False,minijupe-denim-underwear-63-blue-550403,Dresses,2024-07-17,2024-07-17,True,30
+63,Minijupe en crochet,Beige,17.99,False,True,minijupe-crochet-64-beige-171718,Dresses,2024-07-17,2024-07-17,True,37
+64,Minijupe en crochet,Beige,17.99,False,True,minijupe-crochet-65-beige-532660,Dresses,2024-07-17,2024-07-17,False,0
+65,Minijupe gaufrée volants imprimé,Print,19.99,False,False,minijupe-gaufree-volants-imprime-66-print-258943,Dresses,2024-07-17,2024-07-17,False,0
+66,Minijupe jacquard,White,29.99,False,False,minijupe-jacquard-67-white-188304,Dresses,2024-07-17,2024-07-17,True,23
+67,Minijupe jean,Blue,29.99,False,True,minijupe-jean-68-blue-705376,Dresses,2024-07-17,2024-07-17,False,0
+68,Minijupe plissée élastiquée popeline contrastante,Brown,19.99,False,False,minijupe-plissee-elastiquee-popeline-contrastante-69-brown-154350,Dresses,2024-07-17,2024-07-17,False,0
+69,Minijupe plissée élastiquée popeline contrastante,Black,19.99,False,False,minijupe-plissee-elastiquee-popeline-contrastante-70-black-261284,Dresses,2024-07-17,2024-07-17,False,0
+70,Minijupe satin jacquard,White,32.99,False,True,minijupe-satin-jacquard-71-white-27773,Dresses,2024-07-17,2024-07-17,True,21
+71,Minijupe serge,Kaki,19.99,False,False,minijupe-serge-72-kaki-235239,Dresses,2024-07-17,2024-07-17,False,0
+72,Minijupe serge,White,19.99,False,True,minijupe-serge-73-white-793141,Dresses,2024-07-17,2024-07-17,True,36
+73,Minijupe similicuir plissée,Brown,25.99,False,True,minijupe-similicuir-plissee-74-brown-565588,Dresses,2024-07-17,2024-07-17,False,0
+74,Minijupe taille retroussée,Black,15.99,False,False,minijupe-taille-retroussee-75-black-593392,Dresses,2024-07-17,2024-07-17,True,45
+75,Minijupe taille retroussée,White,15.99,False,True,minijupe-taille-retroussee-76-white-58249,Dresses,2024-07-17,2024-07-17,True,42
+76,Minijupe taille retroussée,Black,15.99,False,False,minijupe-taille-retroussee-77-black-120213,Dresses,2024-07-17,2024-07-17,False,0
+77,Minijupe taille retroussée,Print,15.99,False,True,minijupe-taille-retroussee-78-print-324255,Dresses,2024-07-17,2024-07-17,True,24
+78,Minijupe taille retroussée,Print,15.99,False,True,minijupe-taille-retroussee-79-print-187660,Dresses,2024-07-17,2024-07-17,False,0
+79,Minijupe taille retroussée,White,15.99,False,False,minijupe-taille-retroussee-80-white-22364,Dresses,2024-07-17,2024-07-17,False,0
+80,Minijupe taille retroussée,Black,15.99,False,False,minijupe-taille-retroussee-81-black-57624,Dresses,2024-07-17,2024-07-17,True,20
+81,Minijupe tailoring plissée ceinture,Black,25.99,False,False,minijupe-tailoring-plissee-ceinture-82-black-78507,Dresses,2024-07-17,2024-07-17,False,0
+82,Minijupe texturée,Print,25.99,False,True,minijupe-texturee-83-print-641674,Dresses,2024-07-17,2024-07-17,False,0
+83,Minijupe-culotte,Blue,29.99,False,False,minijupe-culotte-84-blue-240142,Dresses,2024-07-17,2024-07-17,True,36
+84,Minijupe-culotte denim plissée,Blue,29.99,False,False,minijupe-culotte-denim-plissee-85-blue-26213,Dresses,2024-07-17,2024-07-17,False,0
+85,Minijupe-culotte denim plissée,Black,29.99,False,False,minijupe-culotte-denim-plissee-86-black-653354,Dresses,2024-07-17,2024-07-17,False,0

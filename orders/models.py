@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.fields import CKEditor5Field
 
@@ -29,7 +30,9 @@ class ProductHistory(models.Model):
         decimal_places=2,
         default=0
     )
-    created_on = models.DateTimeField(auto_now=True)
+    created_on = models.DateTimeField(
+        auto_now=True
+    )
 
     class Meta:
         verbose_name = _('product history')
@@ -37,7 +40,7 @@ class ProductHistory(models.Model):
         ordering = ['created_on']
 
     def __str__(self):
-        return self.product.name
+        return f'Product History: {self.product.name}'
 
 
 class CustomerOrder(models.Model):
@@ -112,4 +115,5 @@ class CustomerOrder(models.Model):
 
 @receiver(pre_save, sender=CustomerOrder)
 def create_order_reference(instance, **kwargs):
-    pass
+    if instance.reference is None:
+        instance.reference = get_random_string(length=30)

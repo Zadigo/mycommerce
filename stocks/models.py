@@ -1,8 +1,8 @@
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-
+from django.db.models import F, DecimalField, ExpressionWrapper
 from shop.models import Product
 
 
@@ -54,7 +54,11 @@ class Stock(models.Model):
     total = models.DecimalField(
         max_digits=5,
         decimal_places=2,
-        help_text=_('The total value of the stock')
+        blank=True,
+        null=True,
+        help_text=_(
+            'The total value of the stock'
+        )
     )
     is_active = models.BooleanField(
         default=True
@@ -80,7 +84,7 @@ class Stock(models.Model):
         ]
 
     def __str__(self):
-        return f'Stock: {self.reference}'
+        return f'Stock: {self.product}'
 
     # def clean(self):
     #     # We should not be able to add products to
@@ -109,11 +113,14 @@ class Stock(models.Model):
         return self.quantity >= 5 and self.quantity <= 10
 
 
-@receiver(pre_save, sender=Stock)
-def created_stock_id(instance, **kwargs):
-    if instance.stock_id is None:
-        instance.stock_id = created_stock_id()
-
+@receiver(post_save, sender=Stock)
+def calculate_total(instance, created, **kwargs):
+    if created:
+        instance.total = ExpressionWrapper(
+            F('quantity') * instance.product.unit_price,
+            output_field=DecimalField()
+        )
+        instance.save()
 
 # @receiver(post_save, sender=Stock)
 # def update_stock(instance, **kwargs):

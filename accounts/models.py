@@ -52,7 +52,7 @@ class Address(models.Model):
     )
 
     def __str__(self):
-        return f'Address: {self.user_profile}'
+        return f'{self.pk}: {self.user_profile}'
 
 
 class UserProfile(models.Model):

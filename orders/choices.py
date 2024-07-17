@@ -3,6 +3,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 class ShipmentChoices(Choices):
+    IN_HOUSE = 'In house'
+    DHL = 'DHL'
     CHRONOPOST = 'Chronopost'
     COLISSIMO_STANDARD = 'Colissimo - Livraison standard'
     COLISSIMO_INTERNATIONAL = 'Colissimo International'

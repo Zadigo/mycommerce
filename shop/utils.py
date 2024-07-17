@@ -1,7 +1,6 @@
 import re
 import unicodedata
-from typing import Any
-
+import random
 import unidecode
 from django.db.models import Value
 from django.utils.crypto import get_random_string
@@ -49,34 +48,54 @@ def create_image_slug(name: str, reverse: bool = False):
     return f'{image_name.strip().lower()}.jpg'
 
 
-def create_slug(word, *additional_words):
-    # List of determinants to exclude
+def create_slug(word, *additional_words, generate_random_id=True):
+    # List of determinants to exclude from
+    # the text and that do not bring any
+    # fundamental value to the final string
     words_to_exlude = ['de', 'en', 'le', 'la', 'à', 'un', 'une', 'les', 'et']
     words = word.split(' ')
     words.extend(list(additional_words))
 
-    def filter_function(word):
+    def word_mapper(word):
         if word is None:
             return ''
-        
-        if "d'" in word or "D'" in word:
-            word = word.replace("d'", '')
-            word = word.replace("D'", '')
-            return word.strip().lower()
+
+        if isinstance(word, int):
+            return str(word)
+
+        if word == '-':
+            return ''
+
+        apostrophe_tokens = [
+            "l'", "L'", "d'",
+            "D'", "m'", "M'", "n'", "N'",
+            "c'", "C'"
+        ]
+        for token in apostrophe_tokens:
+            if token in word:
+                word = word.replace(token, '')
 
         if word not in words_to_exlude:
             return word.strip().lower()
         return ''
 
-    intermediate_words = map(filter_function, words)
+    intermediate_words = map(word_mapper, words)
     clean_words = filter(lambda x: x != '', intermediate_words)
 
     final_word = '-'.join(clean_words)
     non_accentuated_word = remove_accents(final_word)
+
+    # The random ID can be used to differentiate
+    # slugs that can share similarities and
+    # therefore create integrity errors
+    if generate_random_id:
+        random_id = random.randint(1, 800000)
+        return f'{non_accentuated_word}-{random_id}'
+
     return non_accentuated_word
 
 
-def calculate_sale(price: Any, percentage: int):
+def calculate_sale(price, percentage):
     """Calculates the new price from a 
     sale percentage"""
     price = float(price)
@@ -85,6 +104,7 @@ def calculate_sale(price: Any, percentage: int):
 
 
 def transform_to_snake_case(value: str):
+    # return get_valid_filename(value)
     value = value.replace(' ', '_')
     value = value.replace('-', '_')
     return value.lower().strip()

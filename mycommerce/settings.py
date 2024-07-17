@@ -175,10 +175,6 @@ INTERNAL_IPS = ['127.0.0.1']
 
 # Shop
 
-PRODUCT_MODEL = 'shop.Product'
-
-CUSTOMER_ORDERS_MODEL = 'orders.CustomerOrder'
-
 STRIPE_TOKENS = [
     ()
 ]

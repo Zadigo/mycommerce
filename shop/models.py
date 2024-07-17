@@ -15,7 +15,7 @@ from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
-from mycommerce.choices import SubCategoryChoices
+from mycommerce.choices import CategoryChoices, SubCategoryChoices
 from shop.choices import ColorChoices
 from shop.utils import calculate_sale, create_slug, image_path, video_path
 from shop.validators import price_validator, validate_video_file_extension
@@ -111,6 +111,7 @@ class AbstractProduct(models.Model):
     )
     sku = models.CharField(
         max_length=100,
+        verbose_name='SKU',
         help_text=_('Stock Keeping Unit'),
         unique=True,
         blank=True,
@@ -118,9 +119,23 @@ class AbstractProduct(models.Model):
     )
     category = models.CharField(
         max_length=100,
+        choices=CategoryChoices.choices,
+        default=CategoryChoices.NOT_ATTRIBUTED,
+        help_text=_(
+            "The main category under which the product "
+            "can be grouped. This allows the grouping of "
+            "products that fit under the given category"
+        )
+    )
+    sub_category = models.CharField(
+        max_length=100,
+        verbose_name=_('Sub-category'),
         choices=SubCategoryChoices.choices(),
         default=SubCategoryChoices.default('Not attributed'),
-        help_text=_("The product's main category")
+        help_text=_(
+            "Additionnal category that can be used to "
+            "better classify the product in the database"
+        )
     )
     images = models.ManyToManyField(
         Image,
@@ -191,10 +206,10 @@ class AbstractProduct(models.Model):
             )
         ]
         constraints = [
-            UniqueConstraint(
-                fields=['name', 'color'],
-                name='unique_name_with_color'
-            ),
+            # UniqueConstraint(
+            #     fields=['name', 'color', 'sku'],
+            #     name='unique_name_with_color'
+            # ),
             CheckConstraint(
                 check=Q(unit_price__gt=0),
                 name='unit_price_over_zero'
@@ -202,7 +217,7 @@ class AbstractProduct(models.Model):
         ]
 
     def __str__(self):
-        return f'Product - {self.pk}: {self.name}'
+        return f'{self.pk}: {self.name}'
 
     @property
     def is_new(self):

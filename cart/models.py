@@ -12,6 +12,22 @@ USER_MODEL = get_user_model()
 
 
 class AbstractCart(models.Model):
+    """The AbstractCart model represents a cart that holds 
+    products added by a user. This model supports both 
+    authenticated and anonymous users by using a unique session 
+    identifier (session_id).
+
+    When a user is authenticated, the cart items are linked to the user 
+    profile, allowing for a seamless shopping experience across sessions.
+
+    Purpose:
+
+    * Allows users to add and manage products they wish to purchase
+    * Supports both authenticated and anonymous users, enhancing flexibility 
+      and user experience.
+    * Ensures that users can add products to their cart while logged in or logged out, 
+      with items being linked to their profile once they log in.
+    """
     session_id = models.CharField(
         max_length=100,
         help_text=_(
@@ -90,6 +106,17 @@ class AbstractCart(models.Model):
 
 
 class Cart(AbstractCart):
+    """The `Cart` model provides a robust framework 
+    for managing shopping carts in the application. 
+    By supporting both authenticated and anonymous users, 
+    it ensures a flexible and seamless shopping experience. 
+    The model tracks essential information such as product details, 
+    user associations, and session identifiers, making it an integral 
+    part of the shopping process. This structure enhances user convenience 
+    and ensures persistent shopping behavior, contributing to a 
+    positive user experience
+    """
+
     objects = CartManager.as_manager()
 
     class Meta(AbstractCart.Meta):

@@ -5,5 +5,6 @@ from orders.api import views
 app_name = 'orders_api'
 
 urlpatterns = [
+    re_path(r'^create$', views.new_customer_order),
     re_path(r'^$', views.ListCustomerOrders.as_view())
 ]

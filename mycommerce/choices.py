@@ -1,9 +1,21 @@
+from django.utils.translation import gettext_lazy as _
 import itertools
 
 from django.db.models import Choices
-from django.db.models.functions import Lower
 
-from mycommerce.constants import SUB_CATEGORIES
+from mycommerce.constants import SKU, SUB_CATEGORIES
+
+
+class ShipmentChoices(Choices):
+    IN_HOUSE = 'In house'
+    DHL = 'DHL'
+    CHRONOPOST = 'Chronopost'
+    COLISSIMO_STANDARD = 'Colissimo - Livraison standard'
+    COLISSIMO_INTERNATIONAL = 'Colissimo International'
+    COLIPOSTE_DOM_TOM = 'Coliposte DOM-TOM'
+    COLIPOSTE_INTERNATIONAL = 'Coliposte International'
+    RELAIS_COLIS = 'Relais colis'
+    EN_MAGASIN = 'En magasin'
 
 
 class CityChoices(Choices):
@@ -22,6 +34,24 @@ class CountryChoices(Choices):
 def flatten_choices(choices):
     items = map(lambda x: x[-1], choices.choices)
     return [{'id': i, 'name': choice} for i, choice in enumerate(items)]
+
+
+class CategoryChoices(Choices):
+    ACCESSORIES = 'Accessories'
+    ACTIVEWEAR = 'Activewear'
+    BAGS = 'Bags'
+    BRAS = 'Bras'
+    DENIM = 'Denim'
+    DRESSES = 'Dresses'
+    PANTS = 'Pants'
+    PANTIES = 'Panties'
+    SHOES = 'Shoes'
+    SKIRTS = 'Skirts'
+    SHORTS = 'Shorts'
+    SUITS = 'Suits'
+    TOPS = 'Tops'
+    NOT_ATTRIBUTED = 'Not attributed'
+    OTHER = 'Other'
 
 
 class SubCategoryChoices:
@@ -46,3 +76,8 @@ class SubCategoryChoices:
         if result:
             return result[-1]
         return ('Not attributed', 'Not attributed')
+
+
+def create_sku(name):
+    for sku in SKU:
+        pass

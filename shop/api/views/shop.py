@@ -22,10 +22,10 @@ class ListProducts(ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     pagination_class = CustomPagination
-    http_method_names = ['get']
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = self.queryset.filter(active=True)
+
         search = self.request.GET.get('q', None)
         if search is not None:
             logic = (
@@ -34,12 +34,12 @@ class ListProducts(ListAPIView):
             )
             queryset = queryset.filter(logic)
 
-        colors = self.request.GET.getlist('colors', None)
-        if colors is not None:
+        colors = self.request.GET.getlist('colors')
+        if colors:
             queryset = queryset.filter(color__in=colors)
 
-        min_price = self.request.GET.get('min_price', None)
-        max_price = self.request.GET.get('max_price', None)
+        min_price = self.request.GET.get('min_price')
+        max_price = self.request.GET.get('max_price')
         if min_price is not None:
             condition = When(condition=Q(on_sale=True), then='sale_price')
             case = Case(*[condition], default='unit_price')
@@ -54,7 +54,7 @@ class ListProducts(ListAPIView):
         if sizes:
             queryset = queryset.filter(size__name__in=sizes)
 
-        is_admin = self.request.GET.get('admin', False)
+        is_admin = self.request.GET.get('admin')
         if is_admin == 'true':
             product_name = self.request.GET.get('name')
             if product_name:

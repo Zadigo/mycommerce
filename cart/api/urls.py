@@ -6,20 +6,16 @@ app_name = 'cart_api'
 
 urlpatterns = [
     re_path(
-        r'^(?P<pk>\d+)/add$',
-        views.add_to_cart
-    ),
-    re_path(
         r'^(?P<pk>\d+)$',
         views.ListCart.as_view()
     ),
     re_path(
-        r'^authenticate$',
-        views.authenticate_user_cart
+        r'^add$',
+        views.add_to_cart
     ),
     re_path(
-        r'^payment$',
-        views.payment
+        r'^authenticate$',
+        views.authenticate_user_cart
     ),
     re_path(
         r'^remove$',

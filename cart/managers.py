@@ -81,6 +81,11 @@ class CartManager(QuerySet):
             return self.filter(logic)
 
     def _add_to_cart(self, request, session_id, product, **kwargs):
+        """The `_add_to_cart` function is a core method in the CartManager 
+        class that handles adding products to a user's cart. It supports 
+        both authenticated and anonymous users, ensuring that products 
+        are properly managed and associated with the correct 
+        session or user"""
         if not product.active:
             raise ProductActiveError({'product': 'Product is not active'})
 
@@ -89,7 +94,7 @@ class CartManager(QuerySet):
         # as stale before creating new items. We only
         # keep track of what is authenticated because
         # there might be non authenticated items from
-        # the same user
+        # the same user that are more difficult to track
         if request.user.is_authenticated:
             authenticated_items = self.filter(user=request.user, is_paid_for=False)
             authenticated_items.update(is_stale=True)
@@ -106,6 +111,10 @@ class CartManager(QuerySet):
             params['user'] = request.user
 
         instance = self.create(**params)
+        # Use the session_id to try and identify previous
+        # products that were added using the same session_id
+        # key. This will allow us later on to authenticate these
+        # products when/if the user logs in
         queryset = self.filter(session_id__iexact=session_id)
 
         if request.user.is_authenticated:
@@ -114,6 +123,9 @@ class CartManager(QuerySet):
             # implement the user object on the foreign key of
             # the anonymous cart items
             for item in queryset:
+                if item.user is not None:
+                    continue
+                
                 item.user = request.user
                 item.is_anonymous = False
                 item.save()
@@ -121,12 +133,15 @@ class CartManager(QuerySet):
         return queryset
 
     def rest_api_add_to_cart(self, request, product, session_id=None, **kwargs):
-        """This function allows us to add products in a cart in
-        two different ways:
-            * Anonymous: create a `session_id` that allows us to identify
-                         the customer from the not logged in session
-            * Authenticated: still use the `session_id` but we can use the
-                             the authenticated user to identify his carts 
+        """Adds products to the cart, supporting both anonymous and authenticated users.
+        The function handles adding products to a user's cart in two scenarios:
+
+        * **Anonymous User**: If the user is not logged in, a `session_id` is created
+        to uniquely identify the user's session and track the cart items
+        
+        * **Authenticated User**: Even though the `session_id` is still used, the function
+        also associates the cart items with the authenticated user, ensuring their cart
+        is preserved across sessions
         """
         if session_id is None:
             session_id = SessionManager.create_session_key()

@@ -6,8 +6,8 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
-from collection.choices import CategoryChoices, SubCategoryChoices
 from collection.utils import create_slug
+from mycommerce.choices import CategoryChoices, SubCategoryChoices
 from shop.models import Product
 
 

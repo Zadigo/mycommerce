@@ -16,15 +16,19 @@ from shop.utils import create_slug
 class ProductResource(ModelResource):
     class Meta:
         model = Product
-        fields = [
-            'name',
-            'color',
-            'sku',
-            'category',
-            'unit_price',
-            'on_sale',
-            'display_new'
-        ]
+        # fields = [
+        #     'name',
+        #     'color',
+        #     'sku',
+        #     'category',
+        #     'unit_price',
+        #     'on_sale',
+        #     'display_new',
+        #     'active',
+        #     'slug',
+        #     'sale_value',
+        #     'display_new'
+        # ]
 
 
 @admin.register(Product)
@@ -37,7 +41,7 @@ class ProductAdmin(ImportExportModelAdmin):
     search_fields = ['name', 'id', 'slug']
     fieldsets = [
         ['General', {'fields': ['name', 'sku']}],
-        ['Variant', {'fields': ['color', 'category']}],
+        ['Variant', {'fields': ['color', 'category', 'sub_category']}],
         ['Media', {'fields': ['images', 'video']}],
         ['Pricing', {'fields': ['unit_price',
                                 'sale_value', 'sale_price', 'on_sale']}],
