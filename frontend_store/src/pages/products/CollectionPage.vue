@@ -1,17 +1,18 @@
 <template>
   <shop-layout>
-    <section id="collection" class="container-fluid my-5">
+    <section id="collections" class="container-fluid my-5">
       <div class="row">
         <div class="col-sm-12 col-md-10 offset-md-1">
           <div class="row g-1">
-            <div v-for="i in 6" :key="i" class="col-sm-12 col-md-4 my-1">
+            <article v-for="i in 6" :key="i" class="col-sm-12 col-md-4 my-1">
               <router-link :to="{ name: 'shop_products_collection', params: { id: 'all'} }">
                 <article class="card shadow-none" aria-label="">
-                  <img src="../../assets/img3.jpeg" alt="" class="card-img" />
-                  <h1 class="text-white text-center">Collection name</h1>
+                  <img src="src/assets/img3.jpeg" alt="" class="card-img">
+                  <!-- <v-img src="src/assets/img3.jpeg" lazy-src="src/assets/img3.jpeg" alt="" class="card-img"></v-img> -->
+                  <h1 class="text-white text-center">Collection n° {{ i }}</h1>
                 </article>
               </router-link>
-            </div>
+            </article>
           </div>
         </div>
       </div>
