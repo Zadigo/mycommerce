@@ -411,7 +411,7 @@ export default {
     handleNotAuthenticatedOrdering () {
       if (this.authenticationStore.isAuthenticated) {
         this.showAddedProductDrawer = false
-        this.$route.push({ name: 'shop_payment_home' })
+        this.$router.push({ name: 'shop_payment_home' })
       } else {
         this.cartStore.showCartDrawer = false
         this.cartStore.showAddedProductDrawer = false
