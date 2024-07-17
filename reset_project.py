@@ -1,10 +1,31 @@
-import pathlib
+"""Use this module with care. This is solely
+for testing/development purposes and allows to 
+reset the project to a blank state by removing 
+stored images and products in the database which
+can be numerous and complicated to delete one by one
+"""
+
 import argparse
+import pathlib
+import shutil
+
+BASE_DIR = pathlib.Path(__file__).parent.absolute()
+
+
+def delete_images():
+    folder = BASE_DIR.joinpath('media', 'images')
+    images = folder.glob('**/*.jpg')
+    for image in images:
+        if image.is_file():
+            image.unlink()
+
+    cache_folder = BASE_DIR.joinpath('media', 'CACHE', 'images', 'images')
+    if cache_folder.is_dir():
+        shutil.rmtree(cache_folder)
 
 
 def delete_migration_files():
-    path = pathlib.Path(__file__).parent.absolute()
-    folders = path.glob('**/migrations')
+    folders = BASE_DIR.glob('**/migrations')
 
     valid_files = []
     for folder in folders:
@@ -29,3 +50,5 @@ if __name__ == '__main__':
 
     if namespace.name == 'delete_migration_files':
         delete_migration_files()
+    elif namespace.name == 'images':
+        delete_images()

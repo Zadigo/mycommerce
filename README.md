@@ -50,31 +50,65 @@ This project comes with a full translation for spanish, english and french, with
 
 ### Django
 
+* Pandas
+* Matplotlib
+* Django Rest Framework
 * Python 3
-* Rest framework
-* Django extensions
-* Corsheaders
-* Restframework Auth Token
+* Django Extensions
+* Django Cors Headers
+* Gunicorn
+* Stripe
+* Django ImageKit
+* Pillow
+* Django Axes
+* Boto3/Django storages
+* Django Debug Toolbar
+* Django Redis
+* Python Dotenv
+* Tablib
+* Django Import Export
+* Psycopg
+* Unidecode
+* Spacy
+* Numpy
+* JWT
+* Django Allauth
+* Django CKEditor 5
+* DRF Spectacular
+* Mardown
 
 ### Vue Project
 
-* Vue 3 (Vue CLI)
-* Font awesome Icons
+* Vue 3 (Vite)
+* @date-IO/dayjs
+* @mdi-font
+* @vueuse/core
+* @vueuse/integrations
+* Font awesome Icon
+* Autoprefixer
 * Font Web Loader
 * Day JS
 * Axios
 * Bootstrap
 * Lodash
+* Pinia
+* Unhead/Unhead addons/Unhead schema-org
+* Universal Cookie
+* MDB UI Kit
+* Eslint/Eslint config prettier
+* Postcss
+* Vite/Vitest
 * Vue Session Storage
 * Vue Local Storage
+* Vue Image Zoomer
 * Vue Analytics
 * Material Design Icons (@mdi/fonts)
 * Vue Country Flag
-* Pinia
-* Vue Router 4
 * Vue I18n
-* Vue Devtools API
+* Vue Router 4
+* Vuetify
+* ESLint Plugin Vue
 
 ## Testing
 
-The project comes with a full set of database fixtures for quick testing and a postman JSON file to test the endpoints from the get go.
+To test the project, run `python manage.py` and create a Django user account `python manage.py createsuperuser`. Then enter the admin and use import to load the `products.csv` file. This should load test products in your database. Once done, run `npm run dev` in `/frontend_store/` folder to start the frontend.
