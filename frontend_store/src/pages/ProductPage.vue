@@ -13,7 +13,8 @@
 
             <!-- TODO: Detect which sections can be reusable components -->
             <div id="product-information" class="col-4 ms-5">
-              <ol class="breadcrumb">
+              <v-skeleton-loader v-if="isLoading" type="text"></v-skeleton-loader>
+              <ol v-else class="breadcrumb">
                 <li class="breadcrumb-item">
                   <router-link :to="{ name: 'shop_products' }" class="link-dark">
                     Shop
@@ -21,8 +22,8 @@
                 </li>
 
                 <li class="breadcrumb-item">
-                  <router-link :to="{ name: 'shop_products_collection', params: { id: 'soutien-gorge' } }" class="link-dark">
-                    Soutien-Gorge
+                  <router-link :to="{ name: 'shop_products_collection', params: { id: currentProduct.category?.toLowerCase() } }" class="link-dark">
+                    {{ currentProduct.category }}
                   </router-link>
                 </li>
 
