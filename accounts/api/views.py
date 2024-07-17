@@ -102,6 +102,7 @@ class UpdateAddress(UpdateAPIView):
 
 
 @api_view(['post'])
+@permission_classes([AllowAny])
 def login(request, **kwargs):
     serializer = LoginUserSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
