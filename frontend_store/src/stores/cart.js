@@ -13,7 +13,7 @@ const useCart = defineStore('cart', {
       zip_code: null,
       country: null,
       city: null,
-      delivery: 'Post office',
+      delivery: 'Chronopost',
       card_token: null
     },
     
