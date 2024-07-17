@@ -8,6 +8,16 @@ class CustomPagination(LimitOffsetPagination):
 
 
 class PaginationHelper:
+    """This pagination class allows us to modify the response
+    dictionnary that is returned from `LimitOffsetPagination`.
+    By passing keyword arguments to `get_custom_response_template`,
+    the final response can be populated with additional values.
+
+    >>> pagination_helper = PaginationHelper()
+    ... pagination_helper(request, queryset, serializer_class)
+    ... template = pagination_helper.get_custom_response_template()
+    """
+
     paginator = CustomPagination()
 
     def __init__(self):
@@ -29,12 +39,12 @@ class PaginationHelper:
         )
         self.serializer_instance = serializer_instance
         self.paginated_data = serializer_instance.data
-        
+
         if response_only:
             return self.paginator.get_paginated_response(serializer_instance.data)
         return self
 
-    def get_template(self, **kwargs):
+    def get_custom_response_template(self, **kwargs):
         """Creates a customized pagination template
         once the data has been paginated"""
         data = {
@@ -46,7 +56,7 @@ class PaginationHelper:
         return data | kwargs
 
 
-pagination_helper = PaginationHelper()
+# pagination_helper = PaginationHelper()
 
 
 def remove_accents(text):
