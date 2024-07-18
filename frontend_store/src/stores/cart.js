@@ -17,6 +17,7 @@ const useCart = defineStore('cart', {
       card_token: null
     },
     
+    cache: {},
     products: [],
     
     showAddedProductDrawer: false,
@@ -41,7 +42,7 @@ const useCart = defineStore('cart', {
      */ 
     numberOfProducts () {
       if (this.hasProducts) {
-        return _.sum(_.map(this.products, product => product.quantity))
+        return _.sum(_.map(this.cache.statistics, item => item.quantity))
       } else {
         return 0
       }
@@ -66,7 +67,7 @@ const useCart = defineStore('cart', {
      */
     cartTotal () {
       if (this.hasProducts) {
-        return _.sum(_.map(this.products, item => item.quantity * item.product.get_price))
+        return _.sum(_.map(this.cache.statistics, item => item.total))
       } else {
         return 0
       }
@@ -92,6 +93,7 @@ const useCart = defineStore('cart', {
     loadFromCache () {
       console.log('Load from cache')
       this.products = this.$session.retrieve('cart') || []
+      this.cache = this.$session.retrieve('cart_cache') || {}
     },
     /**
      * This is the main function that adds a product to
@@ -99,30 +101,13 @@ const useCart = defineStore('cart', {
      * does not exist, it is created otherwise, its quantity
      * is upgraded
      * 
-     * @param {Object} product The product object
-     * @param {Object} userSelection The selected attributes for the product
-     * @param {String} userSelection.size The selected product size
-     * @param {String} userSelection.color The selected product color
+     * @param {Object} data The server response object
+     * @param {Object[]} data.results An array of cart objects
+     * @param {Object[]} data.statistics An array of object information
      */
-    addToCart (product, userSelection) {
-      const productData = {
-        id: product.id,
-        size: userSelection.size,
-        color: null,
-        quantity: 1,
-        product: product
-      }
-
-      const existingProduct = _.find(this.products, {
-        id: productData.id,
-        size: productData.size
-      })
-      
-      if (typeof existingProduct === 'undefined') {
-        this.products.push(productData)
-      } else {
-        existingProduct.quantity += 1
-      }
+    updateCart (data) {
+      this.cache = data
+      this.products = data.results
     },
     /**
      * Removes a product entirely from the cart 

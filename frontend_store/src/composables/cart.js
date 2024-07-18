@@ -1,4 +1,3 @@
-import _, { isUndefined } from 'lodash'
 import { client } from 'src/plugins/axios'
 import { useVueSession } from 'src/plugins/vue-storages'
 import { useCart } from 'src/stores/cart'
@@ -28,23 +27,6 @@ export function useCartComposable () {
 
   const showSizeSelectionWarning = ref(false)
   const stockDetailsResponse = ref({})
-
-  /***
-   * Syncs the cart details received from the server
-   * to the one in the frontend store. The formats between
-   * both objects not being the same we have to then sync
-   * their attributes
-   * 
-   * @param {Object} responseData 
-   */
-  function sync (responseData) {
-    _.forEach(cartStore.products, (product) => {
-      const item = _.find(responseData.statistics, { product__id: product.id })
-      if (!isUndefined(item)) {
-        product.quantity = item.quantity
-      }
-    })
-  }
 
   /**
    * This is a callback function that can be used
@@ -77,7 +59,6 @@ export function useCartComposable () {
       userSelection.value.session_id = sessionId || null
 
       const response = await client.post('cart/add', data)
-      session.create('cached_cart', response.data)
       await requestCheckStock()
       return response
     } catch (e) {
@@ -102,8 +83,8 @@ export function useCartComposable () {
       } else {
         userSelection.value.product = product
         const response = await requestAddToCart(userSelection.value)
-        cartStore.addToCart(product, userSelection.value)
-        sync(response.data)
+        session.create('cart_cache', response.data)
+        cartStore.updateCart(response.data)
 
         if (typeof callback === 'function') {
           callback.call(app, response.data)

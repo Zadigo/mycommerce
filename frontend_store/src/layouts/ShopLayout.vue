@@ -18,13 +18,13 @@
         <div class="row">
           <div class="col-12">
             <div class="d-flex flex-column justify-content-center" style="height: 100vh;">
-              <h3 class="h5">Connecte-toi ou crée un compte</h3>
+              <h3 class="h5">{{ $t('Connecte-toi ou crée un compte') }}</h3>
 
               <v-form id="form-login" @submit.prevent>
                 <v-text-field v-model="email" variant="outlined" type="email" placeholder="Email" autocomplete="email"></v-text-field>
                 <v-text-field v-model="password" variant="outlined" type="password" placeholder="Password" autocomplete="current-password"></v-text-field>
 
-                <v-btn color="primary" block @click="handleLogin">Se connecter</v-btn>
+                <v-btn color="primary" block @click="handleLogin">{{ $t('Se connecter') }}</v-btn>
               </v-form>
             </div>
           </div>
@@ -69,14 +69,14 @@
       </v-card>
     </v-dialog>
 
-    <!-- Added Product -->
-    <v-navigation-drawer id="dialog-add-product" v-model="showAddedProductDrawer" location="right" width="400" temporary>
+    <!-- Confirmation Product Confirmation -->
+    <v-navigation-drawer id="dialog-product-confirmation" v-model="showAddedProductDrawer" location="right" width="400" temporary>
       <div class="container">
         <div class="row my-3">
           <div v-if="cartStore.hasProducts" class="col-12">
             <div class="d-flex justify-content-start mb-5 fs-5 align-items-center gap-2">
               <font-awesome-icon :icon="['fas', 'circle-check']" class="text-success" />
-              <span>Ajouté au panier</span>
+              <span>{{ $t('Ajouté au panier') }}</span>
             </div>
 
             <div class="row">
@@ -94,16 +94,16 @@
             <div class="row my-3">
               <div class="col-12">
                 <v-btn color="primary" block @click="handleNotAuthenticatedOrdering">
-                  Passer commande
+                  {{ $t('Passer commande') }}
                 </v-btn>
 
                 <v-btn class="mt-2" variant="text" block @click="showAddedProductDrawer = false, showCartDrawer = true">
-                  Voir le panier
+                  {{ $t('Voir le panier') }}
                 </v-btn>
               </div>
             </div>
 
-            <h4 class="text-center h5">Autres produits</h4>
+            <h4 class="text-center h5">{{ $t('Autres produits') }}</h4>
             <div class="row gx-1 gy-1 products-wrapper">
               <div v-for="i in 10" :key="i" class="col-4">
                 <router-link :to="{ name: 'shop_product', params: { id: i } }" class="link-dark">
@@ -130,8 +130,8 @@
       </v-toolbar>
 
       <div class="container mt-1">
-        <div class="row d-flex justify-content-between">
-          <div v-if="cartStore.hasProducts" class="col-12 mt-4">
+        <div v-if="cartStore.hasProducts" class="row d-flex justify-content-between">
+          <div class="col-12 mt-4">
             <div class="card shadow-sm">
               <div class="card-body">
                 <p v-if="cartStore.freeDeliveryTarget > 0" class="fw-light">
@@ -139,76 +139,56 @@
                   {{ $t('Livraison gratuite offerte', { n: $n(cartStore.freeDeliveryTarget, 'currency') }) }}
                   <!-- Il te manque 19,02 € pour profiter de la -->
                   <span class="fw-bold text-primary text-uppercase">
-                    livraison standard gratuite
+                    {{ $t('livraison standard gratuite') }}
                   </span>
                 </p>
 
                 <div v-else class="fw-light">
                   <p class="fw-bold text-success text-uppercase mb-1">
-                    Livraison standard gratuite
+                    {{ $t('Livraison standard gratuite') }}
                   </p>
 
                   <p class="fw-light">
-                    Tu vas pouvoir profiter de la livraison standard gratuite à domicile
+                    Tu vas pouvoir profiter de la livraison 
+                    standard gratuite à domicile
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div v-if="cartStore.hasProducts" class="col-12 my-3">
-            <article v-for="item in cartStore.products" :key="item.product.id" class="card shadow-none border mb-1" :aria-label="item.product.name">
-              <div class="card-body p-2">
-                <div class="d-flex justify-content-start gap-2">
-                  <div class="col-auto">
-                    <v-img :src="parseMainImage(item.product)" :lazy-src="parseMainImage(item.product)" :alt="item.product.name" :width="150" :height="150" />
-                  </div>
+          <base-cart-iterator class="my-2" @edit-product="handleProductEdition" />
 
-                  <div class="infos">
-                    <router-link :to="{ name: 'shop_product', params: { id: item.product.id } }" class="link-dark" @click="showCartDrawer = false">
-                      <p class="mb-1">{{ item.product.name }}</p>
-                      <div class="fw-bold">{{ $n(parseFloat(item.product.get_price), 'currency') }}</div>
-                      <div class="fs-light fs-6 mb-1 d-flex justify-content-start align-items-center gap-3">
-                        <span>{{ item.size }}</span>
-                        <span>{{ item.quantity }}x</span>
-                      </div>
-                    </router-link>
-
-                    <v-btn class="me-2" size="x-small" variant="tonal" rounded @click="handleProductEdition('open', item)">
-                      <font-awesome-icon :icon="['fas', 'pen']" />
-                    </v-btn>
-
-                    <v-btn variant="tonal" size="x-small" rounded>
-                      <font-awesome-icon :icon="['fas', 'trash']" />
-                    </v-btn>
-                  </div>
-                </div>
-              </div>
-            </article>
-
-            <!-- <div class="d-flex justify-content-between align-items-center">
-              <span>Total (TVA comprise)</span>
-              <span class="fw-bold">{{ $n(cartTotal, 'currency') }}</span>
-            </div> -->
-
+          <div class="d-flex justify-content-between align-items-center py-4">
+            <span class="fw-light">Total (TVA comprise)</span>
+            <span class="fw-bold">{{ $n(cartTotal, 'currency') }}</span>
+          </div>
+          
+          <div class="col-12">
             <v-btn v-if="authenticationStore.isAuthenticated" :to="{ name: 'shop_payment_home' }" color="primary" block>
-              Passer commande
+              {{ $t('Passer commande') }}
             </v-btn>
 
             <v-btn v-else color="primary" block @click="showCartDrawer = false, authenticationStore.showLoginDrawer = true">
-              Passer commande
+              {{ $t('Passer commande') }}
             </v-btn>
           </div>
+        </div>
 
-          <div v-else class="col-12 h-100">
-            <div class="d-flex flex-column justify-content-center text-center my-3">
-              <font-awesome-icon :icon="['fas', 'shopping-bag']" size="7x" class="mb-5 text-dark" />
-              <h3 class="h5 mb-3">Panier vide</h3>
-              <p class="fw-light">Ton panier est encore vide, découvre tout ce que nous avons pour toi</p>
-              <a href class="btn btn-block btn-primary btn-rounded btn-lg shadow-none" @click.prevent="handleCartButtonRedirection">
-                Découvrir
-              </a>
-            </div>
+        <div v-else class="col-12 mt-5 h-100">
+          <div class="d-flex flex-column justify-content-center text-center my-3">
+            <font-awesome-icon :icon="['fas', 'shopping-bag']" size="7x" class="mb-5 text-dark" />
+            
+            <h3 class="h5 mb-3">{{ $t('Panier vide') }}</h3>
+            
+            <p class="fw-light">
+              Ton panier est encore vide, découvre tout 
+              ce que nous avons pour toi
+            </p>
+            
+            <a href class="btn btn-block btn-primary btn-rounded btn-lg shadow-none" @click.prevent="handleCartButtonRedirection">
+              {{ $t('Découvrir') }}
+            </a>
           </div>
         </div>
       </div>
@@ -217,11 +197,11 @@
     <!-- Edit Product -->
     <v-navigation-drawer id="dialog-edit-product" v-model="showEditProductDrawer" location="right" width="400" temporary>
       <v-toolbar class="border-bottom" color="white">
-        <v-btn variant="text" rounded @click="handleProductEdition('close')">
+        <v-btn variant="text" rounded @click="handleProductEdition({ action: 'close' })">
           <font-awesome-icon :icon="['fas', 'angle-left']" />
         </v-btn>
 
-        <v-toolbar-title>Modifier</v-toolbar-title>
+        <v-toolbar-title>{{ $t('Modifier') }}</v-toolbar-title>
       </v-toolbar>
 
       <div class="container my-5">
@@ -232,28 +212,28 @@
 
           <div class="col-12">
             <div class="my-4">
-              <p class="fw-bold mb-1">12,99 €</p>
-              <p>Top bandeau maille milano froncé</p>
+              <p class="fw-bold mb-1">29.99€</p>
+              <p>Product name</p>
             </div>
 
             <div class="my-4">
-              <p class="fw-bold">Couleur</p>
+              <p class="fw-bold">{{ $t('Couleur') }}</p>
             </div>
 
             <div class="my-4">
-              <p class="fw-bold">Taille</p>
+              <p class="fw-bold">{{ $t('Taille') }}</p>
               <div class="d-flex gap-2">
                 <v-btn v-for="i in 3" :key="i" color="primary" rounded>XS</v-btn>
               </div>
             </div>
 
             <div class="my-4">
-              <p class="fw-bold">Quantité</p>
-              <v-text-field v-model="changedProduct.quantity" type="number" min="1" max="999" variant="outlined" style="width:50%;"></v-text-field>
+              <p class="fw-bold">{{ $t('Quantité') }}</p>
+              <v-text-field type="number" min="1" max="999" variant="outlined" style="width:50%;"></v-text-field>
             </div>
 
-            <v-btn color="primary" block @click="handleProductEdition('close')">
-              Enregistrer
+            <v-btn color="primary" block @click="handleProductEdition({ action: 'close' })">
+              {{ $t('Enregistrer') }}
             </v-btn>
           </div>
         </div>
@@ -276,6 +256,7 @@ import { useAuthentication } from 'src/stores/authentication'
 import { useUtilities } from 'src/composables/shop'
 import { useMessages } from 'src/stores/messages'
 
+import BaseCartIterator from 'src/components/BaseCartIterator.vue'
 import BaseMessages from 'src/components/BaseMessages.vue'
 import BaseNavbar from 'src/components/BaseNavbar.vue'
 import BaseFooter from 'src/components/BaseFooter.vue'
@@ -289,6 +270,7 @@ export default {
       loader: async () => import('src/components/RecommendationsBlock.vue'),
       delay: 3000
     }),
+    BaseCartIterator,
     BaseProductIterator,
     BaseMessages,
     BaseNavbar,
@@ -318,10 +300,6 @@ export default {
 
     const { history } = useRefHistory(search)
 
-    const changedProduct = ref({
-      quantity: 1
-    })
-
     whenever(canShowSearch, () => {
       canShowSearch.value = true
     })
@@ -336,7 +314,6 @@ export default {
       canShowSearch,
       localImagePath,
       parseMainImage,
-      changedProduct,
       authenticationStore,
       showAddedProductDrawer,
       showEditProductDrawer,
@@ -441,11 +418,13 @@ export default {
      * the product edition dialog by ensuring
      * that cartDrawer is closed
      * 
-     * @param {String} action
-     * @param {{}} [product={}] 
+     * @param {String} action Open or close the drawer
+     * @param {Object} product Product object to edit
      */
-    handleProductEdition (action, product = {}) {
-      this.currentEditedProduct = product
+    handleProductEdition ({ action, product }) {
+      console.info(action, product)
+      this.currentEditedProduct = product || {}
+
       switch (action) {
         case 'open':
           this.showCartDrawer = false

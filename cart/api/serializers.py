@@ -15,7 +15,7 @@ def cart_statistics(queryset):
     and the total sum to pay for that product group"""
     values = queryset.values('product__id', 'product__name')
     grouped = values.annotate(
-        count=Count('product__name'),
+        quantity=Count('product__name'),
         total=Sum('price')
     )
     return grouped.order_by()
@@ -26,7 +26,31 @@ def build_cart_response(queryset, session_id):
     queryset, that resolves the total count for
     each product in the cart and returns a valid
     dictionnary response for adding an object in
-    the user's cart"""
+    the user's cart
+
+        {
+            'session_id': '...', 
+            'results': [
+                { 
+                    'id': '...', # cart id
+                    'product': {...},
+                    'size': '...', 
+                    'color': '...', 
+                    'price': '...',
+                    'created_on': '...'
+                }
+            ],
+            'statistics': [
+                {
+                    'product__id': '...',
+                    'product__name': '...',
+                    'quantity': '...',
+                    'total': '...'
+                }
+            ],
+            'total': '...'
+        }
+    """
     serializer = CartSerializer(instance=queryset, many=True)
     response_data = {
         'session_id': session_id,
