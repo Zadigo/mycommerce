@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import QuerySet
 from django.db.models.aggregates import Sum
 from django.db.models.expressions import Q
@@ -6,6 +7,12 @@ from django.utils.crypto import get_random_string
 from cart.exceptions import ProductActiveError
 
 CART_SESSION_NAME = 'cart_session_id'
+
+class QuerySetDoesNotExist(Exception):
+    def __init__(self):
+        super().__init__(
+            "Selected products do not exist"
+        )
 
 
 class SessionManager:
@@ -64,21 +71,26 @@ class CartManager(QuerySet):
             queryset = self.filter(session_id=session_id)
         return queryset.aggregate(Sum('price'))
 
-    def remove_from_cart(self, request, product_id, session_id):
+    def remove_from_cart(self, request, product_id, session_id, size=None, color=None):
         logic = Q(session_id__iexact=session_id)
         if request.user.is_authenticated:
             logic = logic & Q(user=request.user.id)
 
+        if size is not None:
+            logic = logic & Q(size=size)
+
+        if color is not None:
+            logic = logic & Q(color=color)
+
         queryset = self.filter(logic)
 
-        try:
-            product = queryset.get(id=product_id)
-        except:
-            raise self.model.DoesNotExist()
-        else:
+        queryset = queryset.filter(id=product_id)
+        if not queryset.exists():
+            raise QuerySetDoesNotExist()
+
+        for product in queryset:
             product.delete()
-        finally:
-            return self.filter(logic)
+        return self.filter(logic)
 
     def _add_to_cart(self, request, session_id, product, **kwargs):
         """The `_add_to_cart` function is a core method in the CartManager 

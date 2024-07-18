@@ -10,16 +10,16 @@ urlpatterns = [
         views.ListCart.as_view()
     ),
     re_path(
+        r'^remove$',
+        views.delete_from_cart
+    ),
+    re_path(
         r'^add$',
         views.add_to_cart
     ),
     re_path(
         r'^authenticate$',
         views.authenticate_user_cart
-    ),
-    re_path(
-        r'^remove$',
-        views.delete_from_cart
     ),
     re_path(
         r'^update$',

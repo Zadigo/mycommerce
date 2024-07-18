@@ -4,6 +4,7 @@ from rest_framework import fields
 from rest_framework.serializers import Serializer
 
 from cart.models import Cart
+from cart.validators import validate_quantity
 from shop.api.serializers.shop import ProductSerializer
 from shop.choices import ClotheSizesChoices
 from shop.models import Product
@@ -80,8 +81,19 @@ class ValidateVariants(Serializer):
 
 
 class ValidateProduct(Serializer):
+    """Serializer that validates the product
+    is going to be added contains an `id`, a `size`
+    and a `color`"""
+
     id = fields.IntegerField()
-    color = fields.CharField()
+    size = fields.CharField(
+        required=False,
+        allow_null=True
+    )
+    color = fields.CharField(
+        required=False,
+        allow_null=True
+    )
 
 
 class ValidateCart(Serializer):
@@ -96,10 +108,6 @@ class ValidateCart(Serializer):
     size = fields.CharField(allow_null=True)
     session_id = fields.CharField(allow_null=True)
 
-    def list_items(self, **kwargs):
-        session_id = self.validated_data['session_id']
-        return Cart.objects.cart_items(session_id=session_id)
-
     def create(self, validated_data):
         data = validated_data.copy()
         product_id = data.pop('product')['id']
@@ -110,3 +118,36 @@ class ValidateCart(Serializer):
         product_id = self.validated_data['product']
         session_id = self.validated_data['session_id']
         return Cart.objects.remove_from_cart(self._request, product_id, session_id)
+
+
+class ValidateIncreaseDecreaseSerializer(Serializer):
+    product = ValidateProduct()
+    method = fields.ChoiceField(
+        [
+            ('Increase', 'Increase'),
+            ('Descrease', 'Decrease')
+        ],
+        default='Increase'
+    )
+    quantity = fields.IntegerField(validators=[validate_quantity])
+
+    def update(self, instance, validated_data):
+        product = get_object_or_404(
+            Product, 
+            id=validated_data['product']['id']
+        )
+
+        stock = instance.stock_set.all()
+        if stock.exists():
+            pass
+        
+        if validated_data['method'] == 'Increase':
+            new_objects = map(
+                    Cart(product=product), 
+                    range(1, validated_data['quantity']
+                )
+            )
+            instances = Cart.objects.bulk_create(new_objects)
+        elif validated_data['method'] == 'Decrease':
+            pass
+        return instance

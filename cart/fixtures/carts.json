@@ -3,7 +3,7 @@
         "model": "auth.User",
         "pk": 1,
         "fields": {
-            "email": "juliette@gmail.com",
+            "email": "juliette@test-mail.com",
             "last_name": "Juliette",
             "first_name": "Lopez",
             "username": "juliette"
@@ -15,32 +15,34 @@
         "fields": {
             "name": "Blazer Strapped",
             "color": "Red",
-            "unit_price": 302,
+            "unit_price": 15.2,
             "active": true,
             "display_new": false,
             "slug": "blazer-strapped",
             "category": "Panties",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
+            "sub_category": "Tanga",
             "sale_value": 36,
-            "on_sale": true
+            "on_sale": true,
+            "created_on": "2022-03-18",
+            "modified_on": "2022-03-18"
         }
     },
     {
         "model": "shop.Product",
         "pk": 2,
         "fields": {
-            "name": "Floral Mesh Balcony Soutien Gorge Et String Ensemble",
-            "color": "Blue",
-            "unit_price": 257,
-            "active": false,
+            "name": "Haut balcony",
+            "color": "Red",
+            "unit_price": 25,
+            "active": true,
             "display_new": false,
-            "slug": "floral-mesh-balcony-soutien-gorge-string-ensemble",
+            "slug": "blazer-strapped",
             "category": "Panties",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
+            "sub_category": "Tanga",
             "sale_value": 0,
-            "on_sale": false
+            "on_sale": true,
+            "created_on": "2022-03-18",
+            "modified_on": "2022-03-18"
         }
     },
     {
@@ -50,9 +52,11 @@
             "created_on": "2022-03-18 02:12:05.396826-05:00",
             "is_anonymous": true,
             "is_paid_for": false,
+            "is_stale": true,
             "product": 1,
             "price": 10,
-            "session_id": "test_session",
+            "size": null,
+            "session_id": "other-session-value",
             "user": null
         }
     },
@@ -63,10 +67,12 @@
             "created_on": "2022-03-18 02:12:05.396826-05:00",
             "is_anonymous": false,
             "is_paid_for": false,
+            "is_stale": false,
             "product": 2,
-            "price": 11,
-            "session_id": "auth_session",
-            "user": null
+            "price": 25,
+            "size": null,
+            "session_id": "juliette-session-value",
+            "user": 1
         }
     }
 ]

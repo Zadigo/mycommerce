@@ -55,7 +55,8 @@ urlpatterns = [
     ),
     re_path(
         r'^products$',
-        shop_views.ListProducts.as_view()
+        shop_views.ListProducts.as_view(),
+        name='api_list_products'
         # shop_views.list_products
     )
 ]

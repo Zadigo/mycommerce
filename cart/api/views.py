@@ -1,8 +1,9 @@
-from django.db.models import F
-from django.shortcuts import get_object_or_404
+from django.db.models import F, Q
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.generics import ListAPIView, RetrieveAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.exceptions import NotFound, status
+from rest_framework.generics import (DestroyAPIView, ListAPIView,
+                                     RetrieveAPIView)
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from cart.api import serializers
@@ -19,7 +20,7 @@ class ListAllCarts(ListAPIView):
     serializer_class = serializers.CartSerializer
     queryset = Cart.objects.all()
     http_method_names = ['get']
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 
 class ListCart(RetrieveAPIView):
@@ -30,6 +31,41 @@ class ListCart(RetrieveAPIView):
     queryset = Cart.objects.all()
     http_method_names = ['get']
     permission_classes = [AllowAny]
+
+
+# TODO: Test this class
+class DeleteFromCart(DestroyAPIView):
+    """Delete a set of objects from the cart"""
+
+    permission_classes = [AllowAny]
+    serializer_class = ValidateCart
+    queryset = Cart.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        if not queryset.exists():
+            raise NotFound(detail={
+                'products': 'Products not found'
+            })
+
+        for item in queryset:
+            self.perform_destroy(item)
+
+        reevaluated_queryset = self.get_queryset()
+        serializer = self.get_serializer(instance=reevaluated_queryset)
+        return Response(serializer.data, code=status.HTTP_204_NO_CONTENT)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        serializer = self.get_serializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+
+        logic = Q(session_id__exact=serializer.validated_data['session_id'])
+        if self.request.user.is_authenticated:
+            logic = logic & Q(user=self.request.user)
+
+        return queryset.filter(logic)
 
 
 @api_view(['get'])
@@ -46,15 +82,6 @@ def carts(request, **kwargs):
     # validator.is_valid(raise_exception=True)
     # queryset = validator.list_items()
     # return simple_api_response(build_cart_response(queryset, validator.validated_data['session_id']))
-
-
-@api_view(['get'])
-@permission_classes([AllowAny])
-def cart(request, pk, **kwargs):
-    """Return all items from the user's cart"""
-    cart = get_object_or_404(Cart, id=pk)
-    serializer = serializers.CartSerializer(instance=cart)
-    return Response(serializer.data)
 
 
 @api_view(['post'])
@@ -97,13 +124,10 @@ def update_in_cart(request, **kwargs):
 @api_view(['post'])
 @permission_classes([AllowAny])
 def delete_from_cart(request, **kwargs):
-    """Delete a product from the cart"""
+    """Delete one or multiple products
+    from the user cart"""
     serializer = ValidateCart(data=request.data)
     serializer.is_valid(raise_exception=True)
     queryset = serializer.delete(request)
-
-    if request.user.is_authenticated:
-        return Response({'status': False})
-    else:
-        session_id = serializer.validated_data['session_id']
-        return simple_api_response(build_cart_response(queryset, session_id))
+    session_id = serializer.validated_data['session_id']
+    return simple_api_response(build_cart_response(queryset, session_id))
