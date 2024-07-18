@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _, { isUndefined } from 'lodash'
 import { client } from 'src/plugins/axios'
 import { useVueSession } from 'src/plugins/vue-storages'
 import { useCart } from 'src/stores/cart'
@@ -30,20 +30,21 @@ export function useCartComposable () {
   const stockDetailsResponse = ref({})
 
   /***
-   * Syncs the cart details retrieved from the backend
-   * to the one in the frontend
+   * Syncs the cart details received from the server
+   * to the one in the frontend store. The formats between
+   * both objects not being the same we have to then sync
+   * their attributes
    * 
    * @param {Object} responseData 
    */
   function sync (responseData) {
     _.forEach(cartStore.products, (product) => {
-      const item = _.find(responseData.statistics, { id: product.id })
-      if (typeof item !== 'undefined') {
-        cartStore.products[product.id].quantity = item.quantity
+      const item = _.find(responseData.statistics, { product__id: product.id })
+      if (!isUndefined(item)) {
+        product.quantity = item.quantity
       }
     })
   }
-
 
   /**
    * This is a callback function that can be used
@@ -76,6 +77,7 @@ export function useCartComposable () {
       userSelection.value.session_id = sessionId || null
 
       const response = await client.post('cart/add', data)
+      session.create('cached_cart', response.data)
       await requestCheckStock()
       return response
     } catch (e) {
@@ -88,10 +90,10 @@ export function useCartComposable () {
    * Proxy function used for example on the product
    * page to communicate between the page and 
    * `requestAddToCart`. This requires a size
-   * selection. For no size see {@linkcode addToCartNoSize}
+   * selection
    * 
-   * @param {Object} product
-   * @param {Function} callback
+   * @param {Object} product The product object
+   * @param {Function} callback The callback function to execute
    */
   async function addToCart (product, callback) {
     try {
@@ -107,32 +109,8 @@ export function useCartComposable () {
           callback.call(app, response.data)
         }
       }
-
     } catch (e) {
       console.log(e)
-    }
-  }
-
-  /**
-    * Proxy function used for example on the product
-    * page to communicate between the page and 
-    * `requestAddToCart`. This does not requires a size
-    *
-    * @param {Object} product The product object
-    * @param {Function} callback The callback function to execute
-    */
-  async function addToCartNoSize (product, callback) {
-    try {
-      userSelection.value.product = product
-      const response = await requestAddToCart(userSelection.value)
-      
-      cartStore.addToCart(product, userSelection.value)
-      
-      if (typeof callback === 'function') {
-        callback.call(app, response.data)
-      }
-    } catch (e) {
-      console.error('Failed to add product to cart', e.response)
     }
   }
 
@@ -152,20 +130,6 @@ export function useCartComposable () {
     await addToCart(product, callback)
   }
 
-  /**
-   * Adds a product to the customer's cart when the
-   * the product size or other caracteristics are
-   * available in a list (e.g. ProductsPage, CollectionsPage...) 
-   * 
-   * @param {Object} product
-   * @param {Function} callback 
-   */
-  async function quickAddToCartNoSize (product, callback) {
-    userSelection.value.id = product.id
-    userSelection.value.product = product
-    await addToCartNoSize(product, callback)
-  }
-
   async function deleteFromCart (product) {
     try {
       cartStore.removeFromCart(product)
@@ -178,9 +142,7 @@ export function useCartComposable () {
     userSelection,
     showSizeSelectionWarning,
     stockDetailsResponse,
-    addToCartNoSize,
     deleteFromCart,
-    quickAddToCartNoSize,
     addToCart,
     quickAddToCart
   }
