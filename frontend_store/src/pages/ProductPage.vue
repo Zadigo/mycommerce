@@ -304,16 +304,17 @@
 
 <script>
 import _ from 'lodash'
+
 import { ref, inject, defineAsyncComponent } from 'vue'
 import { mapActions, storeToRefs } from 'pinia'
-// import { useSeoMeta } from 'unhead'
 import { useCart } from 'src/stores/cart'
 import { useAuthentication } from 'stores/authentication'
 import { useShop } from  'stores/shop'
+// import { useSeoMeta } from 'unhead'
 // import { useSchemaOrg, defineProduct, defineBreadcrumb } from '@unhead/schema-org'
+// import { useRouter, useRoute } from 'vue-router'
 import { useShopComposable } from 'composables/shop'
 import { useIntersectionObserver } from '@vueuse/core'
-// import { useRouter, useRoute } from 'vue-router'
 import { buildImagePath } from 'src/utils'
 import { useCartComposable } from 'src/composables/cart'
 import { useUtilities } from 'src/composables/shop'
@@ -361,7 +362,7 @@ export default {
 
     const { localImagePath, parseMainImage, djangoMediaPath, translatePrice } = useUtilities()
 
-    const { addToCart, addToCartNoSize, showSizeSelectionWarning, userSelection } = useCartComposable()
+    const { addToCart, showSizeSelectionWarning, userSelection } = useCartComposable()
 
     const { isLiked, handleLike } = useShopComposable()
 
@@ -442,7 +443,6 @@ export default {
       isLoading,
       productVariants,
       addToCart,
-      addToCartNoSize,
       djangoMediaPath,
       parseMainImage,
       translatePrice,
@@ -576,7 +576,7 @@ export default {
      * @listens click
      */
     async handleAddToCart () {
-      this.addToCartNoSize(this.currentProduct, (data) => {
+      this.addToCart(this.currentProduct, (data) => {
         this.showAddedProductDrawer = true
         
         if (!this.$session.keyExists('session_id')) {
