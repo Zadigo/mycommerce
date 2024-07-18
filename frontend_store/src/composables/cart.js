@@ -15,6 +15,7 @@ import { getCurrentInstance, ref } from 'vue'
 export function useCartComposable () {
   const app = getCurrentInstance()
   const cartStore = useCart()
+
   const { session } = useVueSession()
 
   const userSelection = ref({
@@ -49,11 +50,15 @@ export function useCartComposable () {
    * to get details on the current stock of a given
    * product in the database
    * 
-   * @param {Number | String} id 
+   * @param {Number | String} id The product ID
    */
   async function requestCheckStock (id) {
-    id
-    stockDetailsResponse.value = {}
+    try {
+      id
+      stockDetailsResponse.value = {}
+    } catch (e) {
+      console.log(e)
+    }
   }
   
   /**
@@ -113,8 +118,8 @@ export function useCartComposable () {
     * page to communicate between the page and 
     * `requestAddToCart`. This does not requires a size
     *
-    * @param {Object} product
-    * @param {Function} callback
+    * @param {Object} product The product object
+    * @param {Function} callback The callback function to execute
     */
   async function addToCartNoSize (product, callback) {
     try {
@@ -136,9 +141,9 @@ export function useCartComposable () {
    * the product size or other caracteristics are
    * available in a list (e.g. ProductsPage, CollectionsPage...) 
    * 
-   * @param {Object} product
-   * @param {String | Number} size
-   * @param {Function} callback 
+   * @param {Object} product The product object
+   * @param {String | Number} size The product's size attribute
+   * @param {Function} callback The callback function to execute
    */
   async function quickAddToCart(product, size, callback) {
     userSelection.value.size = size
