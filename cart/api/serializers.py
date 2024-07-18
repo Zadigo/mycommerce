@@ -43,6 +43,7 @@ class CartSerializer(Serializer):
     id = fields.IntegerField()
     product = ProductSerializer()
     size = fields.CharField()
+    # color = fields.CharField()
     price = fields.DecimalField(5, 2)
     created_on = fields.DateTimeField()
 
