@@ -51,8 +51,10 @@
                   </template>
                 </v-text-field>
               </div>
+              
+              <base-product-iterator v-if="canShowSearch" :products="searchedProducts" />
 
-              <suspense>
+              <suspense v-else>
                 <template #default>
                   <async-recommendations-block />
                 </template>
@@ -262,21 +264,22 @@
 
 <script>
 import _ from 'lodash'
+
 import { ref } from 'vue'
-import { defineAsyncComponent } from 'vue'
-import { whenever } from '@vueuse/core'
+import { defineAsyncComponent, computed } from 'vue'
+import { whenever, useRefHistory } from '@vueuse/core'
 import { storeToRefs, mapState } from 'pinia'
 import { useShop } from 'src/stores/shop'
 import { useCart } from 'src/stores/cart'
 import { useAuthenticationComposable } from 'src/composables/authentication'
 import { useAuthentication } from 'src/stores/authentication'
-import { createMockupProducts } from 'src/utils'
 import { useUtilities } from 'src/composables/shop'
 import { useMessages } from 'src/stores/messages'
 
 import BaseMessages from 'src/components/BaseMessages.vue'
 import BaseNavbar from 'src/components/BaseNavbar.vue'
 import BaseFooter from 'src/components/BaseFooter.vue'
+import BaseProductIterator from 'src/components/BaseProductIterator.vue'
 import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
 
 export default {
@@ -286,6 +289,7 @@ export default {
       loader: async () => import('src/components/RecommendationsBlock.vue'),
       delay: 3000
     }),
+    BaseProductIterator,
     BaseMessages,
     BaseNavbar,
     BaseFooter,
@@ -298,8 +302,6 @@ export default {
     const { parseMainImage, localImagePath } = useUtilities()
     const { email, password, login } = useAuthenticationComposable()
 
-    // const { translatePrice } = useUtilities()
-
     const shopStore = useShop()
     const authenticationStore = useAuthentication()
 
@@ -308,19 +310,20 @@ export default {
 
     const showSearchModal = ref(false)
     const search = ref(null)
-    const canShowSearch = ref(false)
-    const searchedProducts = ref(createMockupProducts(30))
+    const searchedProducts = ref([])
+    const canShowSearch = computed(() => {
+      return searchedProducts.value.length > 0
+    })
     const currentEditedProduct = ref({})
 
-    whenever(searchedProducts, (items) => {
-      if (items.length > 0) {
-        // Do something
-        canShowSearch.value = true
-      }
-    })
+    const { history } = useRefHistory(search)
 
     const changedProduct = ref({
       quantity: 1
+    })
+
+    whenever(canShowSearch, () => {
+      canShowSearch.value = true
     })
 
     return {
@@ -330,7 +333,7 @@ export default {
       shopStore,
       cartStore,
       currentEditedProduct,
-      // translatePrice,
+      canShowSearch,
       localImagePath,
       parseMainImage,
       changedProduct,
@@ -339,6 +342,7 @@ export default {
       showEditProductDrawer,
       showCartDrawer,
       search,
+      searchHistory: history,
       messageItems,
       searchedProducts,
       showSearchModal
@@ -396,12 +400,12 @@ export default {
               q: this.search
             }
           })
-          console.log(response.data)
+          this.searchedProducts = response.data
         }
       } catch (e) {
         console.log(e)
       }
-    }, 6000),
+    }, 1000),
     /**
      * Handles the situation where the user tries
      * to go to the cart but is not logged in. If
