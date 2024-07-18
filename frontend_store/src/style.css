@@ -11,7 +11,7 @@
 
 .opacity-enter-active,
 .opacity-leave-active {
-  transition: all .3s ease-in-out;
+  transition: all .15s ease-in-out;
 }
 
 .opacity-enter-to,
@@ -26,4 +26,25 @@
 
 .opacity-move {
   transition: all .2s ease-in-out;
+}
+
+.pop-enter-active,
+.pop-leave-active {
+  transition: all .15s ease-in-out;
+}
+
+.pop-enter-to,
+.pop-leave-from {
+  opacity: .9;
+  transform: scale(0.95);
+}
+
+.pop-enter-from,
+.pop-leave-to {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.pop-move {
+  transition: all .10s ease-in-out;
 }
