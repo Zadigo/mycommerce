@@ -7,9 +7,17 @@ export type DictSetResult = [success: boolean, data: Record<string, any>]
 export interface BaseOptions {
     /** The default session key (default: vue-session) */
     sessionKey?: number
-    /** Initial values with which to initialize the storage */
+    /**
+     * Initial values with which the storage can be
+     * populated on initilization
+     */
     initial?: Record<string, any>,
-    /** A function to run after the storage is initialized */
+    /**
+     * A callback function that is executed immediately
+     * after the storage session class was initialized.
+     * This is useful for setting up the storage with
+     * certain specific values before usage
+     */
     afterMount?: ((this: VueSession, ...args: any[]) => void) | null
 }
 
@@ -186,40 +194,35 @@ export declare interface VueSession {
     /**
      * Creates a new record under the given global key
      *
-     * @param key - key under which to save the element
-     * @param value - number, array or dictionnary
-     * @returns null
+     * @param key Key under which to save the element
+     * @param value Number, array or dictionnary
      */
     b64Create(key: string, value: string): void
     /**
      * Creates a new record and encodes it to a base 64 string
      *
-     * @param key - key under which to save the element
-     * @param value - string
-     * @returns null
+     * @param key Key under which to save the element
+     * @param value String to transform to b64
      */
     b64Retrieve(key: string, value: any): void
     /**
      * Gets a new record and decodes the base 64 value
      *
-     * @param key - key under which to get the element
-     * @returns null
+     * @param key Key under which to get the b64 transformed string
      */
     b64GetDelete(key: string): void
     /**
      * Gets a new record and immediately deletes it
      *
-     * @param key - key under which to get the element
-     * @returns string
+     * @param key Key under which to get the delete the b64 transformed string
      */
     create(key: string, value: any): void
     /**
      * Saves a key in the local storage with an
      * expiration date
      *
-     * @param key key to use
-     * @param value value to store
-     * @returns null
+     * @param key Key to use
+     * @param value Value to store
      */
     expire (key: string, value: string|number|object|number[]|string[], timeout?: number = 60): void
     /**
@@ -227,21 +230,19 @@ export declare interface VueSession {
      * a persistent one
      *
      * @param key key to transform
-     * @returns null
      */
     persist (key: string): void
     /**
      * Returns the value store under a given key
      *
      * @param key - key to use
-     * @returns an object, a number or an array
+     * @returns {number | string | object | number[] | string[] |object[]} The value to return
      */
     retrieve(key: string): number | string | number[] | string[]
     /**
      * Removes an element stored under a given key
      *
-     * @param key key of the element to remove
-     * @returns null
+     * @param key Key of the element to remove
      */
     remove(key: string): void
     /**
@@ -255,7 +256,7 @@ export declare interface VueSession {
     /**
      * Checks whether a key exists in the storage
      *
-     * @param key key of the element to remove
+     * @param key Key to check existence
      * @returns Boolean
      */
     contains(key: string): boolean
@@ -268,16 +269,16 @@ export declare interface VueSession {
      * a new record with the given value if it
      * does not exist
      *
-     * @param key - key of the element to remove
-     * @param defaultValue - key of the element to remove
+     * @param {string} key Key under which to create the value
+     * @param {string | number | object | string[] | number[] | object[]} defaultValue Default element to return
      */
-    getOrCreate(key: string, defaultValue: any): number | object
+    getOrCreate(key: string, defaultValue: any): string | number | object | string[] | number[] | object[]
     /**
      * Tries to push the incoming element to an 
      * array stored under the given key
      *
-     * @param key - key of the element to remove
-     * @param value - value to add
+     * @param key Key of the list under which to create a new value
+     * @param value Value to add
      */
     listPush(key: string, value: any): void
     /**
@@ -285,46 +286,43 @@ export declare interface VueSession {
      * array stored under the given key ensuring
      * that it is unique
      *
-     * @param key - key of the element to remove
-     * @param value - value to add
+     * @param key Key of the list under which to create a new value
+     * @param value Value to add
      */
     listPushUnique(key: string, value: any): void
     /**
      * Like listPush but will create a new list if it
      * does not already exist
      *
-     * @param key - key under which to save the element
-     * @param value - number, array or dictionnary
-     * @returns null
+     * @param key Key under which to save the element
+     * @param value Value to create
      */
     defaultList (key: string, value: any): void
     /**
      * Merges two lists under a given key
      *
-     * @param key - key under which to merge the elements
-     * @param values - array to merge
-     * @returns null
+     * @param key Key under which to merge the elements
+     * @param values Array to merge
      */
-    listMerge (key: string, values: object): void
+    listMerge (key: string, values: string[] | number[] | object[]): void
     /**
      * Counts the number of items under a given list
      *
-     * @param key - key under which to merge the elements
-     * @returns number
+     * @param {string} key Key containing the list to count the values
+     * @returns {number} Number of elements in the list
      */
     listCount (key: string): number
     /**
      * Toggle a boolean stored under a given key
      * 
-     * @param key - key of the element to toggle
+     * @param {string} key Key containing the boolean to toggle
      */
     toggle(key: string): void
     /**
      * Increment a value by a certain quantity
      * 
-     * @param key - key under which to increment the element
-     * @param k - value to increment by
-     * @returns null
+     * @param {string} key Key under which to increment the element
+     * @param {number} [number=1] k Value to increment by
      */
     incrementBy (key: string, k?: number = 1): void
     /**
@@ -338,19 +336,17 @@ export declare interface VueSession {
     /**
      * Increment a value by a certain quantity
      * 
-     * @param key - key that contains the dictionnary to update
-     * @param keyToUpdate - key in the dictionnary to increment
-     * @param k - value to increment by
-     * @returns null
+     * @param key Key that contains the dictionnary to update
+     * @param keyToUpdate Key in the dictionnary to increment
+     * @param k Value to increment by
      */
     incrementDictKeyBy (key: string, keyToUpdate: string, k?: number = 1): void
     /**
      * Decrement a value by a certain quantity
      * 
-     * @param key - key that contains the dictionnary to update
-     * @param keyToUpdate - key in the dictionnary to decrement
-     * @param k - value to decrement by
-     * @returns null
+     * @param {string} key Key that contains the dictionnary to update
+     * @param {string} keyToUpdate Key in the dictionnary to decrement
+     * @param {number} [number=1] k Value to decrement by
      */
     decrementDictKeyBy (key: string, keyToUpdate: string, k?: number = 1): void
     /**
@@ -364,28 +360,27 @@ export declare interface VueSession {
      * Sets the value of a dictionnary stored under a
      * given key in the storage
      *
-     * @param key - key under which the dictionnary is located
-     * @param subKey - dictionnary key to set
-     * @param value - value to create
-     * @returns null
+     * @param {string} key Key under which the dictionnary is located
+     * @param {string} subKey Dictionnary key to set
+     * @param {any} value Value to create
      */
     dictSet(key: string, subKey: string, value: any): void
     /**
      * Gets the value of a dictionnary stored under a
      * given key in the storage
      *
-     * @param key - storage key to get
-     * @param subKey - dictionnary key to get
-     * @returns any
+     * @param {string} key Storage key to get
+     * @param {string} subKey Dictionnary key to get
+     * @returns {any} Value to return
      */
     dictGet(key: string, subKey: string): any
     /**
      * Checks if a key exists in the underlying
      * dictionnary
      *
-     * @param key - storage key to get
-     * @param subKey - dictionnary key to check
-     * @returns boolean
+     * @param key Key under which to check the existence of the key
+     * @param subKey Dictionnary key to check existence
+     * @returns {boolean} Whether the key exists in the given dictionnary
      */
     dictExists(key: string, subKey: string): boolean
     /**
@@ -393,7 +388,6 @@ export declare interface VueSession {
      * given key in the storage
      *
      * @param key - dictionnary to reset under storage key
-     * @returns null
      */
     dictClear(key: string): void
     /**
@@ -402,7 +396,7 @@ export declare interface VueSession {
      *
      * @param key - storage key to get
      * @param subKey - dictionnary key to remove
-     * @returns any
+     * @returns {any} The value that was removed
      */
     dictRemove(key: string, subKey: string): any
 
