@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.test import Client, RequestFactory, TestCase
+from django.urls import reverse
 from rest_framework.mixins import status
 from rest_framework.test import APIClient, APIRequestFactory, APITestCase
 
 from cart.api import views
+from cart.managers import SessionManager
 from cart.models import Cart
 
 
@@ -57,3 +59,20 @@ class TestCartViews(APITestCase):
     #     client = Client()
     #     response = client.post('api/v1/cart/add', data={'product': 2, 'default_size': 'Unique', 'session_id': 'test_session'})
     #     self.assertEqual(response.status_code, 200)
+
+
+class TestSessionManager(TestCase):
+    def setUp(self):
+        factory = RequestFactory()
+        request = factory.get(reverse('cart_api:api_list_carts'))
+        self.session = SessionManager(request)
+
+    def test_session_structure(self):
+        key = self.session.create_session_key()
+        self.assertIsInstance(key, str)
+        parts = key.split('-')
+        self.assertEqual(len(parts), 3)
+
+    def test_result(self):
+        key = self.session.create_session_key()
+        self.assertTrue(self.session.test_key(key))

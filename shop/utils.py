@@ -1,8 +1,9 @@
+import random
 import re
 import unicodedata
-import random
+from decimal import ROUND_DOWN, Decimal
+
 import unidecode
-from django.db.models import Value
 from django.utils.crypto import get_random_string
 from django.utils.text import get_valid_filename
 
@@ -96,11 +97,17 @@ def create_slug(word, *additional_words, generate_random_id=True):
 
 
 def calculate_sale(price, percentage):
-    """Calculates the new price from a 
-    sale percentage"""
-    price = float(price)
-    result = price * (1 - (percentage / 100))
-    return Value(result)
+    """Calculates the discounted price based on 
+    the original price and discount percentage.
+
+    This function computes the new price 
+    after applying a discount percentage to the 
+    original price"""
+    # price = float(price)
+    # result = price * (1 - (percentage / 100))
+    # return Value(result)
+    result = Decimal(price) * (1 - (Decimal(percentage) / 100))
+    return result.quantize(Decimal('.01'), rounding=ROUND_DOWN)
 
 
 def transform_to_snake_case(value: str):
@@ -111,7 +118,7 @@ def transform_to_snake_case(value: str):
 
 
 def remove_special_characters(value: str):
-    result = re.sub(r'[\(\_\-\)\#\!\*\.]', '', value)
+    result = re.sub(r'[\(\-\)\#\!\*\.]', '', value)
     tokens = result.split(' ')
     name = ' '.join([token for token in tokens if token != ''])
     return name.lower()
@@ -121,12 +128,15 @@ def process_file_name(value: str):
     """Changes the initial file name to a
     random more standard string"""
     basename, ext = value.split('.')
-    return basename, ext, get_random_string(12)
+    return get_valid_filename(basename).lower(), ext
 
 
-def product_media_path(filename: str):
-    basename, ext, unique_identifier = process_file_name(filename)
-    return f"{transform_to_snake_case(remove_special_characters(basename))}_{unique_identifier}.{ext}"
+def product_media_path(filename):
+    """Function that creates unique identifier for the
+    by cleaning it's base name"""
+    unique_identifier = get_random_string(12)
+    basename, ext = process_file_name(filename)
+    return f"{basename}_{unique_identifier}.{ext}"
 
 
 def video_path(instance, filename):

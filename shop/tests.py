@@ -1,18 +1,19 @@
+from decimal import Decimal
+
 from django import setup
-from django.test import TestCase
-from django.test.client import Client, RequestFactory
-
-from shop import views
-from django.urls import reverse
-from shop.models import Product
-from shop.utils import create_slug
-
 from django.contrib.auth import get_user_model
+from django.db.models import Value
 from django.test import Client, RequestFactory, TestCase
+from django.test.client import Client, RequestFactory
+from django.urls import reverse
 from rest_framework.mixins import status
 from rest_framework.test import APIClient, APIRequestFactory, APITestCase
-from shop.api.views import shop as shop_api_views
+
 from cart.models import Cart
+from shop import views
+from shop.api.views import shop as shop_api_views
+from shop.models import Product
+from shop.utils import calculate_sale, create_slug, product_media_path
 
 
 def create_user():
@@ -66,8 +67,19 @@ class TestShopAPI(APITestCase):
 
 
 class TestUtilities(TestCase):
+    fixtures = ['products.json']
+
     def test_calculate_sale(self):
-        pass
+        product = Product.objects.first()
+        result = calculate_sale(product.unit_price, 20)
+
+        self.assertIsInstance(result, Decimal)
+        self.assertEqual(result, Decimal('184.80'))
+
+        # Test that we can save the ouput result
+        # directly on the object
+        product.sale_price = result
+        product.save()
 
     def test_transform_to_snake_case(self):
         pass
@@ -79,7 +91,40 @@ class TestUtilities(TestCase):
         pass
 
     def test_product_media_path(self):
-        pass
+        filenames = [
+            (
+                'Blazer Strapped.jpg', 
+                r'blazer\_strapped\_'
+            ),
+            (
+                'Floral Mesh Balcony Soutien Gorge Et String Ensemble.jpg',
+                r'floral_mesh_balcony_soutien_gorge_et_string_ensemble_'
+            ),
+            (
+                'Blazer Jupe Boutons Dorées.jpg',
+                r'blazer_jupe_boutons_dorées_'
+            ),
+            (
+                'Blazer, plissée de Japon.jpg',
+                r'blazer_plissée_de_japon_'
+            ),
+            (
+                'Blazer - Facile.jpg',
+                r'blazer\_\-\_facile\_'
+            ),
+            (
+                'some_simple_file.jpg',
+                r'some_simple_file_'
+            ),
+            (
+                'some#invalid**filename.jpg',
+                r'someinvalidfilename_'
+            )
+        ]
+        for name, expected in filenames:
+            with self.subTest(filename=name):
+                result = product_media_path(name)
+                self.assertRegex(result, expected)
 
     def test_video_path(self):
         pass

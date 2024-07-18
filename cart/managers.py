@@ -1,12 +1,16 @@
-from django.core.exceptions import ObjectDoesNotExist
+import datetime
+
+import pytz
 from django.db.models import QuerySet
 from django.db.models.aggregates import Sum
 from django.db.models.expressions import Q
-from django.utils.crypto import get_random_string
+from django.utils.crypto import get_random_string, salted_hmac
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from cart.exceptions import ProductActiveError
 
 CART_SESSION_NAME = 'cart_session_id'
+
 
 class QuerySetDoesNotExist(Exception):
     def __init__(self):
@@ -19,9 +23,17 @@ class SessionManager:
     """A simple manager for dealing with creating or
     deleting cart ids in the user session"""
 
+    default_prefix = 'ca'
+    default_signature = 'django'
+
     def __init__(self, request):
         self.request = request
-        self.cart_session_id = request.session.get(CART_SESSION_NAME, None)
+        self.cart_session_id = None
+
+        try:
+            self.cart_session_id = request.session.get(CART_SESSION_NAME, None)
+        except:
+            pass
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self.cart_session_id})'
@@ -37,8 +49,63 @@ class SessionManager:
         return self.cart_session_id is not None
 
     @classmethod
-    def create_session_key(cls):
-        return get_random_string(12)
+    def test_key(cls, key, known_signature=None):
+        """Tests the signature part of the session key
+        and the prefix."""
+        signature, d, identifier = key.split('-')
+        prefix, salted_signature = signature.split('_')
+
+        # Ensure that the year part of the session
+        # key matches the current year
+        decoded_date = datetime.datetime.fromisoformat(
+            urlsafe_base64_decode(d).decode()
+        )
+        current_date = datetime.datetime.now(tz=pytz.UTC)
+
+        # Ensure that the signature matches the default
+        # one: ca_django --; pending that another signature
+        # was not provided by the programmer
+        known_signature = known_signature or cls.default_signature
+        initial_signature = salted_hmac(
+            cls.default_prefix,
+            known_signature
+        ).hexdigest()
+
+        result = all([
+            prefix == cls.default_prefix,
+            salted_signature == initial_signature,
+            decoded_date.year == current_date.year
+        ])
+        if result:
+            return True
+        return False
+
+    @classmethod
+    def create_session_key(cls, signature=None):
+        """The cart session is composed on three main parts:
+
+            * A signature
+            * A base64 encoded UTC date
+            * A random unique string identifier
+
+        The signaure part is composed on two main parts:
+
+            * A prefix: `ca_`
+            * A salted hmac signature composed of the prefix and a signature
+        """
+        current_date = datetime.datetime.now(tz=pytz.UTC)
+        unique_identifier = get_random_string(12)
+
+        signature = signature or cls.default_signature
+        final_signature = salted_hmac(
+            cls.default_prefix,
+            signature
+        ).hexdigest()
+
+        encoded_date = urlsafe_base64_encode(
+            bytes(str(current_date).encode('utf-8'))
+        )
+        return f'{cls.default_prefix}_{final_signature}-{encoded_date}-{unique_identifier}'
 
     def get_or_create(self):
         """Check if there is a session id and
@@ -108,7 +175,8 @@ class CartManager(QuerySet):
         # there might be non authenticated items from
         # the same user that are more difficult to track
         if request.user.is_authenticated:
-            authenticated_items = self.filter(user=request.user, is_paid_for=False)
+            authenticated_items = self.filter(
+                user=request.user, is_paid_for=False)
             authenticated_items.update(is_stale=True)
 
         params = {
@@ -137,7 +205,7 @@ class CartManager(QuerySet):
             for item in queryset:
                 if item.user is not None:
                     continue
-                
+
                 item.user = request.user
                 item.is_anonymous = False
                 item.save()
@@ -150,7 +218,7 @@ class CartManager(QuerySet):
 
         * **Anonymous User**: If the user is not logged in, a `session_id` is created
         to uniquely identify the user's session and track the cart items
-        
+
         * **Authenticated User**: Even though the `session_id` is still used, the function
         also associates the cart items with the authenticated user, ensuring their cart
         is preserved across sessions
