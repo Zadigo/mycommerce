@@ -21,6 +21,13 @@ import { useMessages } from 'src/stores/messages'
 
 import ProductCard from './ProductCard.vue'
 
+/**
+ * This product iterator requests a specific collection
+ * on setup(). This is an async component that is used
+ * mainly for the products/collection page because it
+ * requires the products to be loaded from the database
+ * on initialization 
+ */
 export default {
   name: 'ProductItems',
   components: {
