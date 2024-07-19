@@ -91,7 +91,6 @@ const useCart = defineStore('cart', {
      * calculate the items that the user has selected 
      */
     loadFromCache () {
-      console.log('Load from cache')
       this.products = this.$session.retrieve('cart') || []
       this.cache = this.$session.retrieve('cart_cache') || {}
     },
