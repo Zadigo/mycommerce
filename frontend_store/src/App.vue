@@ -53,7 +53,7 @@ export default {
     this.authenticationStore.loadFromCache()
   },
   beforeMount () {
-    this.currentLanguage = this.sessionStorage.language || 'fr'
+    this.currentLanguage = this.sessionStorageData.language || 'fr'
   }
 }
 </script>
