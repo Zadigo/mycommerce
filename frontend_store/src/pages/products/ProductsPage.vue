@@ -33,11 +33,11 @@
         <div class="col-12">
           <suspense>
             <template #default>
-              <async-product-items :grid-size="currentGridSize" @update-products="handleProducts" />
+              <async-products-feed :grid-size="currentGridSize" @update-products="handleProducts" />
             </template>
 
             <template #fallback>
-              <loading-product-items />
+              <loading-products-feed />
             </template>
           </suspense>
         </div>
@@ -59,17 +59,17 @@ import { useAuthentication } from 'src/stores/authentication'
 // import { defineProduct, useSchemaOrg } from '@unhead/schema-org'
 
 import DefaultFiltering from 'src/components/products/filtering/DefaultFiltering.vue'
-import LoadingProductItems from 'src/components/products/LoadingProductItems.vue'
+import LoadingProductsFeed from '@/components/products/LoadingProductsFeed.vue'
 
 export default {
   name: 'ProductsPage',
   components: {
     DefaultFiltering,
-    LoadingProductItems,
-    AsyncProductItems: defineAsyncComponent({
-      loader: () => import('src/components/products/ProductItems.vue'),
+    AsyncProductsFeed: defineAsyncComponent({
+      loader: () => import('src/components/products/AsyncProductsFeed.vue'),
       delay: 1000
-    })
+    }),
+    LoadingProductsFeed
   },
   setup () {
     const products = ref({})

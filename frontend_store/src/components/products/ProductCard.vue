@@ -37,11 +37,10 @@
 
 <script>
 import { ref } from 'vue'
-// import { buildImagePath } from 'src/utils'
-import { useShopComposable, useUtilities } from 'composables/shop'
+import { useCartComposable } from 'src/composables/cart'
+import { useShopComposable, useUtilities } from 'src/composables/shop'
 
 import BaseSizeButton from '../BaseSizeButton.vue'
-import { useCartComposable } from 'src/composables/cart'
 
 export default {
   name: 'ProductCard',
@@ -79,11 +78,13 @@ export default {
     }
   },
   methods: {
+    /** */
     handleSelectedSize (size) {
       this.quickAddToCart(this.product, size, () => {
         this.isHovered = false
       })
     },
+    /** */
     handleSelectedNoSize () {
       this.quickAddToCartNoSize(this.product, () => {
         this.isHovered = false

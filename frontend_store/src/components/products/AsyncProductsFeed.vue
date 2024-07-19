@@ -29,7 +29,7 @@ import ProductCard from './ProductCard.vue'
  * on initialization 
  */
 export default {
-  name: 'ProductItems',
+  name: 'AsyncProductsFeed',
   components: {
     ProductCard
   },
@@ -47,7 +47,7 @@ export default {
   async setup () {
     const router = useRouter()
     const route = useRoute()
-    const { session } = useVueSession()
+    const { instance } = useVueSession()
 
     const cachedResponse = ref({})
     const products = ref([])
@@ -60,16 +60,16 @@ export default {
         const response = await client.get(`collection/${collectionName}`)
         cachedResponse.value = response.data
         products.value = cachedResponse.value.results
-        session.create('products', response.data)
+        instance.create('products', response.data)
       } catch (e) {
         // If we fail to get the collectionName
         // redirect to the 404 page
+        messagesStore.addNetworkError()
+        console.error(e)
+
         if (e.response.status === 404) {
           router.push({ name: 'not_found' })
         }
-
-        messagesStore.addNetworkError()
-        console.error(e)
       }
     }
     await requestProducts()
