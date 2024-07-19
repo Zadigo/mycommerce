@@ -11,6 +11,7 @@
 <script>
 import { useI18n } from 'vue-i18n'
 import { ref, provide, watch } from 'vue'
+import { useShop } from 'src/stores/shop' 
 import { useAuthentication } from 'src/stores/authentication'
 import { useDocumentVisibility, useMediaQuery, useScreenOrientation } from '@vueuse/core'
 import { useSchemaOrg, defineOrganization } from '@unhead/schema-org'
@@ -27,6 +28,7 @@ export default {
     const { isSupported } = useScreenOrientation()
     const documentVisible = useDocumentVisibility()
     
+    const shopStore = useShop()
     const authenticationStore = useAuthentication()
     
     provide('currentLanguage', currentLanguage)
@@ -46,11 +48,13 @@ export default {
     ])
 
     return {
+      shopStore,
       authenticationStore
     }
   },
   created () {
     this.authenticationStore.loadFromCache()
+    this.shopStore.loadFromCache()
   },
   beforeMount () {
     this.currentLanguage = this.sessionStorageData.language || 'fr'

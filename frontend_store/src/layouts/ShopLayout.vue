@@ -52,7 +52,9 @@
                 </v-text-field>
               </div>
               
-              <base-product-iterator v-if="canShowSearch" :products="searchedProducts" />
+              <div v-if="canShowSearch" class="row gx-1 gy-1">
+                <base-product-iterator :products="searchedProducts" />
+              </div>
 
               <suspense v-else>
                 <template #default>

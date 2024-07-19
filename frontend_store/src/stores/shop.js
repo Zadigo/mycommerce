@@ -1,11 +1,10 @@
-import _ from 'lodash'
+import _, { isUndefined } from 'lodash'
 import { defineStore } from 'pinia'
-import { createMockupProducts } from 'src/utils'
 
 const useShop = defineStore('shop', {
   state: () => ({
     visitedProducts: [],
-    likedProducts: createMockupProducts(2)
+    likedProducts: []
   }),
   actions: {
     /**
@@ -49,7 +48,7 @@ const useShop = defineStore('shop', {
      * @param {String} product.modified_on The product's price
      */
     addToHistory (product) {
-      this.visitedProducts.push(product)
+      this.visitedProducts.push({ id: product.id, name: product.name})
     },
     /**
      * Adds the product to the user's
@@ -60,7 +59,7 @@ const useShop = defineStore('shop', {
     addToWishlist (product) {
       const existingProduct = _.find(this.likedProducts, { id: product.id })
 
-      if (typeof existingProduct === 'undefined') {
+      if (isUndefined(existingProduct)) {
         this.likedProducts.push(product)
       }
     },
@@ -76,6 +75,13 @@ const useShop = defineStore('shop', {
       if (index >= 0) {
         this.likedProducts.splice(index, 1)
       }
+    },
+    checkIsLiked (product) {
+      return this.likedProductsIds.includes(product.id)
+    },
+    loadFromCache () {
+      this.visitedProducts = this.$localstorage.retrieve('visitedProducts') || []
+      this.likedProducts = this.$localstorage.retrieve('likedProducts') || []
     }
   },
   getters: {
@@ -98,6 +104,15 @@ const useShop = defineStore('shop', {
     uniqueVisitedProductIds () {
       const ids = _.map(this.visitedProducts, product => product.id)
       return _.uniq(ids)
+    },
+    /**
+     * Returns the IDs of the products that were liked
+     * by the user
+     * 
+     * @returns {number[]} The IDs of the products that were liked
+     */
+    likedProductsIds () {
+      return _.map(this.likedProducts, (product) => product.id)
     }
   }
 })

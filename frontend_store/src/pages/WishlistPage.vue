@@ -1,8 +1,8 @@
 <template>
   <shop-layout>
-    <section id="wishlist" class="container my-5">
-      <div class="row g-1">
-        <div v-if="!authenticationStore.isAuthenticated" class="col-4">
+    <section id="wishlist" class="container space-section">
+      <div class="row g-2">
+        <div v-if="!authenticationStore.isAuthenticated" class="col-sm-12 col-md-4">
           <div class="card shadow-sm" style="height: 557px;">
             <div class="card-body text-center p-5 d-flex flex-column justify-content-center">
               <div class="information">
@@ -16,7 +16,8 @@
                   sur des dispositifs différents.
                 </p>
 
-                <v-btn @click="showLoginDrawer = true">
+                <v-btn color="secondary" rounded @click="showLoginDrawer = true">
+                  <font-awesome-icon :ucon="['fas', 'signin']" />
                   {{ $t('Se connecter') }}
                 </v-btn>
               </div>
@@ -24,9 +25,20 @@
           </div>
         </div>
 
-        <div v-for="product in likedProducts" :key="product.id" class="col-4">
-          <product-card :product="product" :show-like-button="false" />
-        </div>
+        <template v-if="likedProducts.length > 0">
+          <base-product-iterator :products="likedProducts" />
+          <!-- <div v-for="product in likedProducts" :key="product.id" class="col-sm-12 col-md-4">
+            <product-card :product="product" :show-like-button="false" />
+          </div> -->
+        </template>
+
+        <template v-else>
+          <div v-for="i in 2" :key="i" class="col-sm-12 col-md-4">
+            <div class="card shadow-sm">
+              <v-img :src="`/img${i}.jpeg`" lazy-src="`/img${i}.jpeg`" class="card-img" alt=""></v-img>
+            </div>
+          </div>
+        </template>
       </div>
     </section>
   </shop-layout>
@@ -37,12 +49,13 @@ import { storeToRefs } from 'pinia'
 import { useShop } from 'src/stores/shop'
 import { useAuthentication } from 'src/stores/authentication'
 
+import BaseProductIterator from '@/components/BaseProductIterator.vue'
 import ProductCard from 'src/components/products/ProductCard.vue'
 
 export default {
   name: 'WishlistPage',
   components: {
-    ProductCard
+    BaseProductIterator
   },
   setup () {
     const authenticationStore = useAuthentication()
@@ -55,6 +68,12 @@ export default {
       authenticationStore,
       likedProducts,
       showLoginDrawer
+    }
+  },
+  methods: {
+    /** */
+    async requestLikedProducts () {
+
     }
   }
 }

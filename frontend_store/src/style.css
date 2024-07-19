@@ -48,3 +48,8 @@
 .pop-move {
   transition: all .10s ease-in-out;
 }
+
+.space-section {
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+}

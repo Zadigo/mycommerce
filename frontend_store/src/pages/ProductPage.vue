@@ -1,6 +1,6 @@
 <template>
   <shop-layout>
-    <section id="product" class="container-fluid my-5">
+    <section id="product" class="container-fluid space-section">
       <!-- Product -->
       <div class="row gy-1">
         <div id="product-image" class="col-12">
@@ -591,6 +591,14 @@ export default {
      */
     async handleViewingHistory () {
       this.addToHistory(this.currentProduct)
+
+      if (this.authenticationStore.isAuthenticated) {
+        try {
+          // Pass
+        } catch (e) {
+          console.error(e)
+        }
+      }
     },
     /**
      * Sends the statistics to the backend for products
@@ -601,7 +609,7 @@ export default {
       // if there are products to be sent and ONLY IF there's
       // a change the existing visited products array that we
       // have stored in the session
-      if (this.sessionStorage.visitedProducts.length > 0) {
+      if (this.sessionStorageData.visitedProducts.length > 0) {
         console.log('User left the screen send visitedPages statistics')
       }
     }

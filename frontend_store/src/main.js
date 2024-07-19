@@ -18,11 +18,11 @@ import colors from 'vuetify/util/colors'
 // import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 // import { aliases, fa } from 'vuetify/iconsets/fa'
 
+import './style.css'
 import '@mdi/font/css/materialdesignicons.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'mdb-ui-kit/css/mdb.min.css'
 import 'vuetify/styles'
-import './style.css'
 
 import './plugins'
 
@@ -46,7 +46,17 @@ const sessionPlugin = createVueSession({
   }
 })
 
-const localStoragePlugin = createVueLocalStorage()
+const localStoragePlugin = createVueLocalStorage({
+  afterMount ({ instance }) {
+    if (!instance.keyExists('likedProducts')) {
+      instance.create('likedProducts', [])
+    }
+
+    if (!instance.keyExists('visitedProducts')) {
+      instance.create('visitedProducts', [])
+    }
+  }
+})
 
 pinia.use(({ store }) => {
   store.$router = toRaw(router)
@@ -70,8 +80,10 @@ pinia.use(({ store }) => {
     // and addToHistory so that we can automatically commit the
     // registered products in the store in the user session
     if (mutation.storeId === 'shop') {
-      VueSessionInstance.create('likedProducts', state.likedProducts)
-      VueSessionInstance.create('visitedProducts', state.visitedProducts)
+      VueLocalStorageInstance.create('likedProducts', state.likedProducts)
+      VueLocalStorageInstance.create('visitedProducts', state.visitedProducts)
+      // VueSessionInstance.create('likedProducts', state.likedProducts)
+      // VueSessionInstance.create('visitedProducts', state.visitedProducts)
     }
   })
 })

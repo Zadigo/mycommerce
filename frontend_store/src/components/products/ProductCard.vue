@@ -41,6 +41,7 @@ import { useCartComposable } from 'src/composables/cart'
 import { useShopComposable, useUtilities } from 'src/composables/shop'
 
 import BaseSizeButton from '../BaseSizeButton.vue'
+import { useShop } from '@/stores/shop';
 
 export default {
   name: 'ProductCard',
@@ -58,6 +59,7 @@ export default {
     }
   },
   setup () {
+    const shopStore = useShop()
     const { parseMainImage } = useUtilities()
     const { quickAddToCart, quickAddToCartNoSize } = useCartComposable()
     const { isLiked, handleLike } = useShopComposable()
@@ -66,6 +68,7 @@ export default {
     return {
       isLiked,
       isHovered,
+      shopStore,
       quickAddToCart,
       quickAddToCartNoSize,
       parseMainImage,
@@ -76,6 +79,13 @@ export default {
     requiresSizeItems () {
       return this.product.sizes.length > 0
     }
+  },
+  /**
+   * Once the liked products are loaded from the storage,
+   * check if they were liked by the user
+   */
+  beforeMount () {
+    this.isLiked = this.shopStore.checkIsLiked(this.product.id)
   },
   methods: {
     /** */

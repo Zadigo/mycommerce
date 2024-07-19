@@ -1,6 +1,6 @@
 <template>
   <shop-layout>
-    <section id="collections" class="container-fluid my-5">
+    <section id="collections" class="container-fluid space-section">
       <div class="row">
         <div class="col-sm-12 col-md-10 offset-md-1">
           <div class="row g-1">

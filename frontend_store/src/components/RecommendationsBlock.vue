@@ -44,7 +44,7 @@ export default {
   },
   async setup (props) {
     const route = useRoute()
-    const { session } = useVueSession()
+    const { instance } = useVueSession()
 
     const recommendations = ref([])
     
@@ -57,7 +57,7 @@ export default {
           }
         })
         recommendations.value = response.data
-        session.expire('recommendations', response.data, 100)
+        instance.expire('recommendations', response.data, 100)
       } catch (e) {
         console.error(e)
       }

@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { useShop } from 'stores/shop'
+import { useShop } from 'src/stores/shop'
 import { useI18n } from "vue-i18n"
 
 /**
@@ -38,21 +38,21 @@ export function useShopComposable () {
   
   /**
    * Main entry function for managing the user liked
-   * products either locally or in the backend
+   * products either locally or in the backend.
+   * Handles the action of liking a product
+   * and therefore adding it to the user's
+   * wishlist
    * 
    * @param {Object} product The product to like
    * @param {number} product.id The product ID
    */
   async function handleLike(product) {
-    // Handles the action of liking a product
-    // and therefore adding it to the user's
-    // wishlist
     isLiked.value = !isLiked.value
 
     if (isLiked.value) {
-      shopStore.addToWishlist(product)
+      shopStore.addToWishlist({ id: product.id, name: product.name })
     } else {
-      shopStore.removeFromWishlist(product)
+      shopStore.removeFromWishlist({ id: product.id, name: product.name })
     }
   }
   

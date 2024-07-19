@@ -1,11 +1,9 @@
 <template>
-  <div class="row gx-1 gy-1">
-    <transition-group name="opacity">
-      <div v-for="product in products" :key="product.id" :class="gridClass">
-        <product-card :product="product" />
-      </div>
-    </transition-group>
-  </div>
+  <transition-group name="opacity">
+    <div v-for="product in products" :key="product.id" :class="gridClass">
+      <product-card :product="product" :show-like-button="showLikeButton" />
+    </div>
+  </transition-group>
 </template>
 
 <script>
@@ -31,6 +29,10 @@ export default {
     gridClass: {
       type: String,
       default: 'col-md-4 col-sm-3'
+    },
+    showLikeButton: {
+      type: Boolean,
+      default: true
     }
   },
   setup () {
