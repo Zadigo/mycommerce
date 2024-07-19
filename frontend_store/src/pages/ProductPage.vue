@@ -308,8 +308,8 @@ import _ from 'lodash'
 import { ref, inject, defineAsyncComponent } from 'vue'
 import { mapActions, storeToRefs } from 'pinia'
 import { useCart } from 'src/stores/cart'
-import { useAuthentication } from 'stores/authentication'
-import { useShop } from  'stores/shop'
+import { useAuthentication } from 'src/stores/authentication'
+import { useShop } from  'src/stores/shop'
 // import { useSeoMeta } from 'unhead'
 // import { useSchemaOrg, defineProduct, defineBreadcrumb } from '@unhead/schema-org'
 // import { useRouter, useRoute } from 'vue-router'
@@ -343,11 +343,11 @@ export default {
       delay: 500
     })
   },
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.handleViewingHistory(vm.currentProduct)
-    })
-  },
+  // beforeRouteEnter (to, from, next) {
+  //   next(vm => {
+  //     vm.handleViewingHistory(vm.currentProduct)
+  //   })
+  // },
   setup () {
     const documentVisible = inject('documentVisible')
 
@@ -489,10 +489,8 @@ export default {
       }
     },
     documentVisible (n) {
-      // Instead of sending each visited product
-      // statistics at once, wait for when the user
-      // either changes page or refreshes the page
-      // to send these statistics at once
+      // Instead of sending each store statistics
+      // at once, use a debouncing function
       if (n !== 'visible') {
         this.handleSendingStatistics()
       }
@@ -500,14 +498,10 @@ export default {
   },
   created () {
     this.requestProduct()
-    // As with the "documentVisible" watcher function,
-    // listen for when the user refreshes the page
-    // or closes the tab to send statistics related
-    // to products that he has visited
-    // window.addEventListener('beforeunload', this.handleSendingStatistics)
   },
   mounted () {
     this.intersectionTarget = this.$refs.moreProductsIntersect
+    this.addToHistory(this.currentProduct)
   },
   beforeUpdate () {
     // useSeoMeta({
@@ -542,9 +536,6 @@ export default {
     //     ],
     //   })
     // ])
-  },
-  beforeUnmount () {
-    // window.removeEventListener('beforeunload', this.handleSendingStatistics)
   },
   methods: {
     ...mapActions(useShop, ['addToHistory']),
@@ -591,17 +582,9 @@ export default {
      * of the products that were viewed by
      * the user during his session
      */
-    async handleViewingHistory () {
-      this.addToHistory(this.currentProduct)
-
-      if (this.authenticationStore.isAuthenticated) {
-        try {
-          // Pass
-        } catch (e) {
-          console.error(e)
-        }
-      }
-    },
+    // async handleViewingHistory () {
+    //   this.addToHistory(this.currentProduct)
+    // },
     /**
      * Sends the statistics to the backend for products
      * that were visited by the user to the backend
@@ -611,7 +594,7 @@ export default {
       // if there are products to be sent and ONLY IF there's
       // a change the existing visited products array that we
       // have stored in the session
-      if (this.sessionStorageData.visitedProducts.length > 0) {
+      if (this.localStorageData.visitedProducts.length > 0) {
         console.log('User left the screen send visitedPages statistics')
       }
     }
