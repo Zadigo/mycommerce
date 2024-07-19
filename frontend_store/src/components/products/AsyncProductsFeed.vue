@@ -1,25 +1,24 @@
 <template>
-  <div class="row gx-1 gy-1">
-    <!-- <v-infinite-scroll :items="products" :on-load="handleLoadMoreProducts" :class="gridClass" class="mb-2">
-      <template v-for="product in products" :key="product">
-        <product-card :product="product" />
-      </template>
-    </v-infinite-scroll> -->
-
-    <div v-for="product in products" :key="product.id" :class="gridClass">
-      <product-card :product="product" />
+  <section class="row">
+    <div class="col-12">
+      <default-filtering :products="products" @update-grid-size="handleGridSize" />
     </div>
-  </div>
+
+    <div class="row gx-1 gy-1">
+      <base-product-iterator :products="products" :columns="currentGridSize" />
+    </div>
+  </section>
 </template>
 
 <script>
-import { ref, computed } from 'vue'
 import { client } from 'src/plugins/axios'
+import { ref, computed } from 'vue'
 import { useVueSession } from 'src/plugins/vue-storages'
 import { useRoute, useRouter } from 'vue-router'
 import { useMessages } from 'src/stores/messages'
 
-import ProductCard from './ProductCard.vue'
+import DefaultFiltering from 'src/components/products/filtering/DefaultFiltering.vue'
+import BaseProductIterator from 'src/components/BaseProductIterator.vue'
 
 /**
  * This product iterator requests a specific collection
@@ -31,13 +30,8 @@ import ProductCard from './ProductCard.vue'
 export default {
   name: 'AsyncProductsFeed',
   components: {
-    ProductCard
-  },
-  props: {
-    gridSize: {
-      type: Number,
-      default: 4
-    }
+    BaseProductIterator,
+    DefaultFiltering
   },
   emits: {
     'update-products' () {
@@ -49,6 +43,8 @@ export default {
     const route = useRoute()
     const { instance } = useVueSession()
 
+    const currentGridSize = ref(3)
+
     const cachedResponse = ref({})
     const products = ref([])
 
@@ -57,10 +53,16 @@ export default {
     async function requestProducts () {
       try {
         const collectionName = route.params.id
-        const response = await client.get(`collection/${collectionName}`)
-        cachedResponse.value = response.data
+        const collectionUrlPath = `collection/${collectionName}`
+
+        if (instance.keyExists(collectionUrlPath)) {
+          cachedResponse.value = instance.retrieve(collectionUrlPath)
+        } else {
+          const response = await client.get(collectionUrlPath)
+          instance.create(collectionUrlPath, response.data)
+          cachedResponse.value = response.data
+        }
         products.value = cachedResponse.value.results
-        instance.create('products', response.data)
       } catch (e) {
         // If we fail to get the collectionName
         // redirect to the 404 page
@@ -81,18 +83,25 @@ export default {
     return {
       products,
       nextPageUrl,
+      currentGridSize,
       requestProducts
     }
   },
   computed: {
     gridClass () {
       return [
-        'mb-2',
         {
-          'col-sm-6 col-md-3': this.gridSize === 4,
-          'col-sm-6 col-md-4': this.gridSize === 3
+          'col-sm-6 col-md-3': this.currentGridSize === 4,
+          'col-sm-6 col-md-4': this.currentGridSize === 3
         }
       ] 
+    }
+  },
+  watch: {
+    '$route.params.id' (n, o) {
+      if (n !== o) {
+        this.requestProducts()
+      }
     }
   },
   mounted () {
@@ -107,10 +116,19 @@ export default {
      * @param {{Function}} The triggering element  
      */
     async handleLoadMoreProducts ({ done }) {
-      const newProducts = Array.from({ length: 30 }, (k, v) => v + 1)
-      this.products.push(...newProducts)
+      console.log('Loading more products')
       done('ok')
-    }
+    },
+    /**
+     * Changes the size of the grid to
+     * reduce or increase the amount of
+     * products displayed on the screen
+     * 
+     * @param {Number} size 
+     */
+    handleGridSize (size) {
+      this.currentGridSize = size
+    },
   }
 }
 </script>

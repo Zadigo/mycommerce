@@ -1,9 +1,9 @@
 import { useVueSession } from './vue-storages'
 import { useAuthentication } from 'src/stores/authentication'
 import { useCookies } from '@vueuse/integrations/useCookies'
+import { useMessages } from 'src/stores/messages'
 
 import axios from 'axios'
-import { useMessages } from 'src/stores/messages'
 
 /**
  * 

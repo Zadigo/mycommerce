@@ -147,10 +147,11 @@ function createGoogleAnalytics (options) {
 }
 
 const app = createApp(App)
+// https://vuejs.org/guide/best-practices/performance
+// https://javascript.works-hub.com/learn/how-to-make-your-vue-js-application-faster-a7219
+app.config.performance = true
 app.use(router)
-app.use(createGoogleAnalytics({
-  id: 'G-CVKFG2XPVGv'
-}))
+app.use(createGoogleAnalytics({ id: 'G-CVKFG2XPVGv' }))
 app.use(pinia)
 app.use(vuetify)
 app.use(plugins)

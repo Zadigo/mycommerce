@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { useShop } from 'src/stores/shop'
 import { useI18n } from "vue-i18n"
+import { isUndefined } from 'lodash'
 
 /**
  * A composable that implements default
@@ -83,7 +84,7 @@ export function useUtilities () {
   function djangoMediaPath (path, mediaPrefix = false) {
     let url
 
-    if (path === null || typeof path === 'undefined') {
+    if (!path || isUndefined(path)) {
       return localImagePath('placeholder.svg')
     }
 

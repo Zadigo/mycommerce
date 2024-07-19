@@ -3,7 +3,7 @@
     <h2 class="h4 text-center mb-5">{{ $t(blockTitle) }}</h2>
 
     <div ref="productsRow" class="row g-1">
-      <base-product-iterator :products="recommendations" :grid-class="gridClass" />
+      <base-product-iterator :products="recommendations" :columns="3" />
     </div>
   </div>
 </template>

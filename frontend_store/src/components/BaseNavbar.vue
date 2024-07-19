@@ -1,6 +1,6 @@
 <template>
   <header class="navbar-light navbar-sticky header-static">
-    <nav class="navbar navbar-expand-lg bg-white fixed-top" style="z-index: 1000;">
+    <nav class="navbar navbar-expand-lg bg-white fixed-top shadow-sm" style="z-index: 1000;">
       <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#shop-navbar" aria-controls="shop-navbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>

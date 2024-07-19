@@ -11,6 +11,7 @@ import i18n from './i18n.js'
 if (import.meta.env.DEV) {
   window.dayjs = dayjs
   window.lodash = _
+  window.client = client
   window.UniversalCookie = cookies
 }
 

@@ -27,13 +27,9 @@
         </div>
 
         <div class="col-12">
-          <default-filtering :products="products" @update-grid-size="handleGridSize" />
-        </div>
-
-        <div class="col-12">
           <suspense>
             <template #default>
-              <async-products-feed :grid-size="currentGridSize" @update-products="handleProducts" />
+              <async-products-feed @update-products="handleProducts" />
             </template>
 
             <template #fallback>
@@ -42,8 +38,11 @@
           </suspense>
         </div>
 
-        <div class="col-8 offset-md-2 h1 fw-bold text-center p-5">
-          No products
+        <div v-if="products.length === 0" class="col-6 offset-md-3 text-center p-5">
+          <p class="h4 fw-light">Cette page n'est pas disponible, mais nous en avons beaucoup d'autres à te montrer.</p>
+          <v-btn :to="{ name: 'shop_products_collection', params: { id: 'all' } }" class="mt-3" color="secondary" variant="tonal" rounded>
+            Haut de page
+          </v-btn>
         </div>
       </div>
     </section>
@@ -58,13 +57,13 @@ import { defineAsyncComponent } from 'vue'
 import { useAuthentication } from 'src/stores/authentication'
 // import { defineProduct, useSchemaOrg } from '@unhead/schema-org'
 
-import DefaultFiltering from 'src/components/products/filtering/DefaultFiltering.vue'
+// import DefaultFiltering from 'src/components/products/filtering/DefaultFiltering.vue'
 import LoadingProductsFeed from '@/components/products/LoadingProductsFeed.vue'
 
 export default {
   name: 'ProductsPage',
   components: {
-    DefaultFiltering,
+    // DefaultFiltering,
     AsyncProductsFeed: defineAsyncComponent({
       loader: () => import('src/components/products/AsyncProductsFeed.vue'),
       delay: 1000
@@ -74,8 +73,6 @@ export default {
   setup () {
     const products = ref({})
     const productsLoading = ref(true)
-    const currentGridSize = ref(4)
-
     const authenticationStore = useAuthentication()
 
     provide('productsLoading', productsLoading)
@@ -93,8 +90,7 @@ export default {
     return {
       products,
       authenticationStore,
-      productsLoading,
-      currentGridSize
+      productsLoading
     }
   },
   beforeMount () {
@@ -108,17 +104,6 @@ export default {
   },
   methods: {
     /**
-     * Changes the size of the grid to
-     * reduce or increase the amount of
-     * products displayed on the screen
-     * 
-     * @param {Number} size 
-     */
-    handleGridSize (size) {
-      this.currentGridSize = size
-      this.$session.create('grid-size', size)
-    },
-    /**
      * Returns the products from the child
      * component to the parent so that we
      * can process them e.g. SEO here
@@ -129,7 +114,7 @@ export default {
       this.products = products
       this.productsLoading = false
       // this.handleSEO()
-    },
+    }
     // TODO: Implement the Schema for products
     // handleSEO () {
     //   useSchemaOrg(_.map(this.products, (product) => {
