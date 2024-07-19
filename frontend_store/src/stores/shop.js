@@ -1,4 +1,4 @@
-import _, { isUndefined } from 'lodash'
+import _ from 'lodash'
 import { defineStore } from 'pinia'
 
 const useShop = defineStore('shop', {
@@ -52,15 +52,15 @@ const useShop = defineStore('shop', {
     },
     /**
      * Adds the product to the user's
-     * wishlist on the frontend
+     * wishlist on the frontend. The store has a main
+     * subscription which allows the data to sync to
+     * the local storage
      * 
-     * @param {Object} product  
+     * @param {number} productId The ID of the product to like
      */
-    addToWishlist (product) {
-      const existingProduct = _.find(this.likedProducts, { id: product.id })
-
-      if (isUndefined(existingProduct)) {
-        this.likedProducts.push(product)
+    addToWishlist (productId) {
+      if (!this.likedProducts.includes(productId)) {
+        this.likedProducts.push(productId)
       }
     },
     /**
@@ -70,14 +70,11 @@ const useShop = defineStore('shop', {
      * @param {Object} product The product object
      */
     removeFromWishlist (product) {
-      const index = _.findIndex(this.likedProducts, { id: product.id })
+      const index = _.indexOf(this.likedProducts, product.id)
 
       if (index >= 0) {
         this.likedProducts.splice(index, 1)
       }
-    },
-    checkIsLiked (product) {
-      return this.likedProductsIds.includes(product.id)
     },
     loadFromCache () {
       this.visitedProducts = this.$localstorage.retrieve('visitedProducts') || []
@@ -104,15 +101,6 @@ const useShop = defineStore('shop', {
     uniqueVisitedProductIds () {
       const ids = _.map(this.visitedProducts, product => product.id)
       return _.uniq(ids)
-    },
-    /**
-     * Returns the IDs of the products that were liked
-     * by the user
-     * 
-     * @returns {number[]} The IDs of the products that were liked
-     */
-    likedProductsIds () {
-      return _.map(this.likedProducts, (product) => product.id)
     }
   }
 })

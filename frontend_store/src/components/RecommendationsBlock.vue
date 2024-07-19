@@ -3,9 +3,7 @@
     <h2 class="h4 text-center mb-5">{{ $t(blockTitle) }}</h2>
 
     <div ref="productsRow" class="row g-1">
-      <div v-for="product in recommendations" :key="product.id" :class="rowClass">
-        <product-card :product="product" />
-      </div>
+      <base-product-iterator :products="recommendations" :grid-class="gridClass" />
     </div>
   </div>
 </template>
@@ -16,12 +14,12 @@ import { useRoute } from 'vue-router'
 import { client } from 'src/plugins/axios'
 import { useVueSession } from 'src/plugins/vue-storages'
 
-import ProductCard from 'src/components/products/ProductCard.vue'
+import BaseProductIterator from 'src/components/BaseProductIterator.vue'
 
 export default {
   name: 'RecommendationsBlock',
   components: {
-    ProductCard
+    BaseProductIterator
   },
   props: {
     blockTitle: {
@@ -69,11 +67,11 @@ export default {
     }
   },
   computed: {
-    rowClass () {
+    gridClass () {
       return [
         {
-          'col-2': this.columns === 2,
-          'col-3': this.columns === 3
+          'col-sm-6 col-md-2': this.columns === 2,
+          'col-sm-6 col-md-3': this.columns === 3
         }
       ]
     }

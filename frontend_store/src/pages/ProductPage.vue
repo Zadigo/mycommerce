@@ -313,7 +313,7 @@ import { useShop } from  'stores/shop'
 // import { useSeoMeta } from 'unhead'
 // import { useSchemaOrg, defineProduct, defineBreadcrumb } from '@unhead/schema-org'
 // import { useRouter, useRoute } from 'vue-router'
-import { useShopComposable } from 'composables/shop'
+import { useShopComposable } from 'src/composables/shop'
 import { useIntersectionObserver } from '@vueuse/core'
 import { buildImagePath } from 'src/utils'
 import { useCartComposable } from 'src/composables/cart'
@@ -377,6 +377,7 @@ export default {
     const showCompositionDrawer = ref(false)
 
     const currentProduct = ref({})
+
     // const userSelection = ref({
     //   size: null,
     //   quantity: 1,
@@ -559,6 +560,7 @@ export default {
         const response = await this.$http.get(`shop/products/${this.$route.params.id}`)
         this.currentProduct = response.data
         this.isLoading = false
+        this.isLiked = this.localStorageData.likedProducts.includes(this.currentProduct.id)
       } catch (e) {
         if (e.response.status === 404) {
           this.$router.push({

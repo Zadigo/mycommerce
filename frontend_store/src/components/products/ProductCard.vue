@@ -4,7 +4,7 @@
       <v-img :src="parseMainImage(product)" :lazy-:src="parseMainImage(product)" :alt="product.name" />
     </router-link>
 
-    <div v-if="isHovered" class="card-cover p-4">
+    <div v-if="isHovered && showCart" class="card-cover p-4">
       <div class="row text-center">
         <div class="col-12">
           <div v-if="requiresSizeItems" class="size-items">
@@ -26,7 +26,7 @@
       <font-awesome-icon v-else :icon="['far', 'heart']" />
     </button>
 
-    <router-link :to="{ name: 'shop_product', params: { id: product.id } }" class="link-dark">
+    <router-link v-show="showPrices" :to="{ name: 'shop_product', params: { id: product.id } }" class="link-dark">
       <div class="card-body pt-0 px-0 pb-0">
         <p class="mb-0 mt-1 fw-light" :aria-label="product.name">{{ product.name }}</p>
         <p class="fw-bold">{{ $n(parseFloat(product.get_price), 'currency') }}</p>
@@ -39,9 +39,9 @@
 import { ref } from 'vue'
 import { useCartComposable } from 'src/composables/cart'
 import { useShopComposable, useUtilities } from 'src/composables/shop'
+import { useVueLocalStorage } from '@/plugins/vue-storages'
 
 import BaseSizeButton from '../BaseSizeButton.vue'
-import { useShop } from '@/stores/shop';
 
 export default {
   name: 'ProductCard',
@@ -56,19 +56,30 @@ export default {
     showLikeButton: {
       type: Boolean,
       default: true
+    },
+    showCart: {
+      type: Boolean,
+      default: true
+    },
+    showPrices: {
+      type: Boolean,
+      default: true
     }
   },
-  setup () {
-    const shopStore = useShop()
+  setup (props) {
     const { parseMainImage } = useUtilities()
     const { quickAddToCart, quickAddToCartNoSize } = useCartComposable()
     const { isLiked, handleLike } = useShopComposable()
     const isHovered = ref(false)
 
+    // Once the liked products are loaded from the storage,
+    // check if they were liked by the user
+    const { instance } = useVueLocalStorage()
+    isLiked.value = instance.data.likedProducts.includes(props.product.id)
+
     return {
       isLiked,
       isHovered,
-      shopStore,
       quickAddToCart,
       quickAddToCartNoSize,
       parseMainImage,
@@ -79,13 +90,6 @@ export default {
     requiresSizeItems () {
       return this.product.sizes.length > 0
     }
-  },
-  /**
-   * Once the liked products are loaded from the storage,
-   * check if they were liked by the user
-   */
-  beforeMount () {
-    this.isLiked = this.shopStore.checkIsLiked(this.product.id)
   },
   methods: {
     /** */

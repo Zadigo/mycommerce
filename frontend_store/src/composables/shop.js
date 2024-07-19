@@ -50,9 +50,9 @@ export function useShopComposable () {
     isLiked.value = !isLiked.value
 
     if (isLiked.value) {
-      shopStore.addToWishlist({ id: product.id, name: product.name })
+      shopStore.addToWishlist(product.id)
     } else {
-      shopStore.removeFromWishlist({ id: product.id, name: product.name })
+      shopStore.removeFromWishlist(product.id)
     }
   }
   
