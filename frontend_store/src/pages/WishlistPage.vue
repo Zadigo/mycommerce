@@ -50,7 +50,6 @@ import { useShop } from 'src/stores/shop'
 import { useAuthentication } from 'src/stores/authentication'
 
 import BaseProductIterator from '@/components/BaseProductIterator.vue'
-import ProductCard from 'src/components/products/ProductCard.vue'
 
 export default {
   name: 'WishlistPage',
