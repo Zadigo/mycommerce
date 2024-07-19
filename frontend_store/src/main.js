@@ -1,47 +1,57 @@
 import App from './App.vue'
 
-import { useScript } from 'unhead'
-import { createApp, toRaw } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { createPinia } from 'pinia'
+import { createHead, useScript } from 'unhead'
+import { createApp, toRaw } from 'vue'
 import { createVuetify } from 'vuetify'
-import { createHead } from 'unhead'
 // import { CapoPlugin } from 'unhead'
-import { useVueSession } from './plugins/vue-storages'
+import { createVueLocalStorage, createVueSession, VueLocalStorageInstance, VueSessionInstance } from './plugins/vue-storages'
 
-import router from './router'
 import DayJsAdapter from '@date-io/dayjs'
+import router from './router'
 
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import colors from 'vuetify/util/colors'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import colors from 'vuetify/util/colors'
 // import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 // import { aliases, fa } from 'vuetify/iconsets/fa'
 
-import './style.css'
-import 'vuetify/styles'
+import '@mdi/font/css/materialdesignicons.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'mdb-ui-kit/css/mdb.min.css'
-import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles'
+import './style.css'
 
 import './plugins'
 
 import ShopLayout from './layouts/ShopLayout.vue'
 import installPlugins from './plugins'
 
-const head = createHead({
+createHead({
   plugins: [
     // CapoPlugin()
   ]
 })
 
 const pinia = createPinia()
-pinia.use(({ store }) => {
-  const { session } = useVueSession()
 
+const sessionPlugin = createVueSession({
+  afterMount ({ instance }) {
+    instance.bulkCreate({
+      likedProducts: [],
+      visitedProducts: []
+    })
+  }
+})
+
+const localStoragePlugin = createVueLocalStorage()
+
+pinia.use(({ store }) => {
   store.$router = toRaw(router)
-  store.$session = toRaw(session)
+  store.$session = toRaw(VueSessionInstance)
+  store.$localstorage = toRaw(VueLocalStorageInstance)
   
   // Intercept actions on adding a product in 
   // the cart so that the items can be stored
@@ -49,7 +59,7 @@ pinia.use(({ store }) => {
   store.$onAction(({ name, store, after }) => {
     if ((name === 'updateCart' || name === 'removeFromCart') && store.$id === 'cart') {
       after(() => {
-        session.create('cart', store.$state.products)
+        VueSessionInstance.create('cart', store.$state.products)
         // session.create('cart_cache', store.$state.cache)
       })
     }
@@ -60,8 +70,8 @@ pinia.use(({ store }) => {
     // and addToHistory so that we can automatically commit the
     // registered products in the store in the user session
     if (mutation.storeId === 'shop') {
-      session.create('likedProducts', state.likedProducts)
-      session.create('visitedProducts', state.visitedProducts)
+      VueSessionInstance.create('likedProducts', state.likedProducts)
+      VueSessionInstance.create('visitedProducts', state.visitedProducts)
     }
   })
 })
@@ -131,8 +141,9 @@ app.use(createGoogleAnalytics({
 }))
 app.use(pinia)
 app.use(vuetify)
-app.use(head)
 app.use(plugins)
+app.use(sessionPlugin)
+app.use(localStoragePlugin)
 app.component('FontAwesomeIcon', FontAwesomeIcon)
 app.component('ShopLayout', ShopLayout)
 app.mount('#app')
