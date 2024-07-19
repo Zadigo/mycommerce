@@ -1,14 +1,11 @@
 /*!
- * vue-storages v1.0.0
+ * vuesession v1.0.0
  * (c) 2024 John Pendenque
- * 
  * @license MIT
  */
+import { ref } from 'vue'
+import { watchDeep } from '@vueuse/core'
 import { setupDevtoolsPlugin } from '@vue/devtools-api'
-// import { ref } from 'vue'
-import { BaseStorage } from './base'
-
-let VueSessionInstance
 
 function setupDevtools (app, storage) {
   // let trackId = 0
@@ -75,17 +72,57 @@ function setupDevtools (app, storage) {
   return devtools
 }
 
-class VueSession extends BaseStorage {
-  constructor (options) {    
-    super({ sessionKey: 'vue-session', afterMount: options?.afterMount, storage: sessionStorage })
-    
-    const { persistent } = options || {}
+class VueSession {
+  constructor(options) {
+    console.debug('Vue session class called VueSession')
+
+    const defaultOptions = options || {}
+    const { sessionKey, persistent, initial } = defaultOptions
+
+    this.storage = sessionStorage
+    this._history = []
+
+    this.DEFAULT_KEY_NAME = sessionKey || 'vue-session'
+
+    // TODO: Implement functionnalities for persistence
+    // and for implementing initial data
     this.isPersistent = persistent || false
+    this.initial = initial || {}
+
+    const existingItems = this.storage.getItem(this.DEFAULT_KEY_NAME)
+    if (!existingItems) {
+      const data = { sessionId: Date.now(), ...this.initial }
+      this.storage.setItem(this.DEFAULT_KEY_NAME, JSON.stringify(data))
+    }
+  }
+
+  get data () {
+    return JSON.parse(this.storage.getItem(this.DEFAULT_KEY_NAME))
+  }
+
+  _precheck () {
+    // Ensures that the session key above
+    // is always present before doing any
+    // operations
+    if (!(this.DEFAULT_KEY_NAME in this.storage)) {
+      const sessionData = { sessionId: Date.now() }
+      this.storage.setItem(this.DEFAULT_KEY_NAME, JSON.stringify(sessionData))
+    }
+  }
+
+  _save (data) {
+    // Internal method that saves the stringified
+    // data to the storage
+    this._precheck()
+    this._history.push(['save', data])
+    this.storage.setItem(this.DEFAULT_KEY_NAME, JSON.stringify(data))
   }
 
   _getValueForOperation (key) {
     // Return the numeric value stored under a key
     // to run a given operation
+    // var storedData = this.data
+    // let result = storedData[key]
     const result = this.retrieve(key)
 
     if (typeof result === 'undefined') {
@@ -166,12 +203,28 @@ class VueSession extends BaseStorage {
     return typeof this.data[key]
   }
 
-  renameKey (key, newKey) {
+  rename (key, newKey) {
     const data = this.data
     const oldValue = this.retrieve(key)
     delete data[key]
     this._save(data)
     this.create(newKey, oldValue)
+  }
+
+  retrieve (key) {
+    return this.data[key]
+  }
+
+  create (key, value) {
+    // this._precheck()
+    const storedData = this.data
+    storedData[key] = value
+    this._save(storedData)
+  }
+
+  keyExists (key) {
+    const storedData = this.data
+    return Object.keys(storedData).includes(key)
   }
 
   isEmpty (key) {
@@ -315,8 +368,43 @@ class VueSession extends BaseStorage {
     }
   }
 
+  remove (key) {
+    var storedData = this.data
+    delete storedData[key]
+    this._save(storedData)
+  }
+
+  renew () {
+    // Fails silently if there is no
+    // session in the storage
+    try {
+      const storedData = this.data
+      storedData.sessionId = Date.now()
+      this.storage.setItem(this.DEFAULT_KEY_NAME, JSON.stringify(storedData))
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  clear () {
+    // Fails silently if there is no
+    // session in the storage
+    try {
+      const sessionId = this.data.sessionId
+      this.storage.setItem(this.DEFAULT_KEY_NAME, JSON.stringify({ 'sessionId': sessionId }))
+      return true
+    } catch {
+      return false
+    }
+  }
+
   contains (key) {
     return this.data ? key in this.data : false
+  }
+
+  destroy () {
+    this.storage.clear()
   }
 
   dictSet (key, subKey, value) {
@@ -349,45 +437,54 @@ class VueSession extends BaseStorage {
   }
 
   setup (app) {
-    super.setup(app, setupDevtools)
+    // Call setup() to finalize the
+    // initialization for this class
+    setupDevtools(app, this)
     app.mixin({
       data: () => ({
-        sessionStorageData: this.data
+        sessionStorage: this.data
       })
     })
   }
-
-
 }
 
-function createVueSession (options) {
-  VueSessionInstance = new VueSession(options)
-  
+// const session = new VueSession()
+
+function createVueSession (options = {}) {
+  const session = new VueSession()
+  const afterMountFunction = options.afterMount
+
+  if (typeof afterMountFunction === 'function') {
+    afterMountFunction.call(session)
+  }
+
   if (import.meta.env.DEV) {
-    window.VueSession = VueSessionInstance
+    window.VueSession = session
   }
 
   return {
     install (app) {
-      app.config.globalProperties.$session = VueSessionInstance
-      VueSessionInstance.setup(app, setupDevtools)
+      session.setup(app)
     }
   }
 }
 
 function useVueSession () {
-  // const data = ref(VueSessionInstance.data)
-  // const sessionId = ref(data.value.sessionId)
+  const session = new VueSession()
+  const currentSessionData = ref(session.data)
+
+  watchDeep(currentSessionData, (updated) => {
+    console.log(updated)
+  })
 
   return {
-    // data,
-    // sessionId,
-    instance: VueSessionInstance
+    currentSessionData,
+    session
   }
 }
 
 export {
-  VueSessionInstance,
-  createVueSession, useVueSession, VueSession
+  useVueSession,
+  createVueSession,
+  VueSession
 }
-
