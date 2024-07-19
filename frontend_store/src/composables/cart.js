@@ -40,7 +40,7 @@ export function useCartComposable () {
       id
       stockDetailsResponse.value = {}
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
   }
   
@@ -91,7 +91,7 @@ export function useCartComposable () {
         }
       }
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
   }
 

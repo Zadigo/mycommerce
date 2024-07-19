@@ -69,7 +69,7 @@ export function useShopComposable () {
  */
 export function useUtilities () {
   function localImagePath (path) {
-    return `/public/${path}`
+    return `/${path}`
   }
 
   /**

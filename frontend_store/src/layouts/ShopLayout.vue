@@ -363,7 +363,7 @@ export default {
           this.$session.toggle('authenticated_cart')
         }
       } catch (e) {
-        console.log(e)
+        console.error(e)
       }
     },
     /**
@@ -380,7 +380,7 @@ export default {
           this.searchedProducts = response.data
         }
       } catch (e) {
-        console.log(e)
+        console.error(e)
       }
     }, 1000),
     /**

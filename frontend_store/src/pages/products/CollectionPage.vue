@@ -53,7 +53,7 @@ export default {
      */
     async requestCollectionNames () {
       try {
-        const numberOfItems = this.$session.listCount('collections')
+        const numberOfItems = this.$session.listCount('collections', false)
 
         if (numberOfItems === 0) {
           const response = await this.$http.get('collection')

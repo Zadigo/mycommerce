@@ -49,7 +49,7 @@ export function useAuthenticationComposable () {
   })
 
   whenever(hasReachedMaxAuthenticationFailures, () => {
-    console.log('Attempted to login more than three times')
+    console.error('Attempted to login more than three times')
   })
 
   /**
@@ -88,7 +88,7 @@ export function useAuthenticationComposable () {
       executeCallback(callback)
     } catch (e) {
       authenticationFailuresCounter.value += 1
-      console.log(e)
+      console.error(e)
     }
   }
 
@@ -115,7 +115,7 @@ export function useAuthenticationComposable () {
       //   name: 'shop_products'
       // })
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
   }
 
@@ -127,7 +127,7 @@ export function useAuthenticationComposable () {
     try {
       cookies.get('token')
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
   }
 

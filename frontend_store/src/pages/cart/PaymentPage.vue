@@ -94,7 +94,7 @@ export default {
         this.$router.push({ name: 'shop_payment_success' })
       } catch (e) {
         this.messagesStore.addErrorMessage('Payment error', e.response)
-        console.log(e)
+        console.error(e)
       }
     },
     /**

@@ -59,7 +59,7 @@ export default {
         recommendations.value = response.data
         session.expire('recommendations', response.data, 100)
       } catch (e) {
-        console.log(e)
+        console.error(e)
       }
     }
     await requestRecommendations()
