@@ -1,7 +1,18 @@
 module.exports = {
   root: true,
+  // Optional: this is necessary to parsing
+  // the vue files correctly while using the
+  // typescript linter otherwise it the vue
+  // files raise errors in the templates
+  // https://stackoverflow.com/questions/66597732/eslint-vue-3-parsing-error-expected-eslint
+  parser: 'vue-eslint-parser',
   parserOptions: {
     ecmaVersion: 2021,
+    // Optional: For parsing .ts, d.ts files and related
+    // to the error referenced in the optional above
+    parser: '@typescript-eslint/parser'
+    // See: https://typescript-eslint.io/troubleshooting/typed-linting/#i-get-errors-telling-me-eslint-was-configured-to-run--however-that-tsconfig-does-not--none-of-those-tsconfigs-include-this-file
+    // project: true
   },
   env: {
     node: true,
@@ -9,16 +20,15 @@ module.exports = {
     'vue/setup-compiler-macros': true
   },
   extends: [
-    // Base ESLint recommended rules
+    // Optional: Used for parsing d.ts files
+    'plugin:@typescript-eslint/recommended',
+    // Base ESLint recommended rules. See:
+    // https://github.com/eslint/eslint/blob/main/packages/js/src/configs/eslint-recommended.js
     'eslint:recommended',
-
-    // Uncomment any of the lines below to choose desired strictness,
-    // but leave only one uncommented!
+    // Priority B: Strongly Recommended (Improving Readability)
     // See https://eslint.vuejs.org/rules/#available-rules
-    // 'plugin:vue/vue3-essential', // Priority A: Essential (Error Prevention)
-    'plugin:vue/vue3-strongly-recommended', // Priority B: Strongly Recommended (Improving Readability)
+    'plugin:vue/vue3-strongly-recommended',
     // 'plugin:vue/vue3-recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
-
     // https://github.com/prettier/eslint-config-prettier#installation
     // usage with Prettier, provided by 'eslint-config-prettier'.
     'prettier'
@@ -27,10 +37,12 @@ module.exports = {
     // https://eslint.vuejs.org/user-guide/#why-doesn-t-it-work-on-vue-files
     // required to lint *.vue files
     'vue',
-
     // https://github.com/typescript-eslint/typescript-eslint/issues/389#issuecomment-509292674
     // Prettier has not been included as plugin to avoid performance impact
     // add it as an extension for your IDE
+    // Optional: Used for parsing .ts 
+    // or d.ts files
+    '@typescript-eslint',
 
   ],
   globals: {
@@ -56,10 +68,7 @@ module.exports = {
     "default-case": "error",
     "default-case-last": "warn",
     "dot-notation": "error",
-    "func-style": [
-      "warn",
-      "declaration"
-    ],
+    "func-style": [ "warn", "declaration" ],
     "no-array-constructor": "error",
     "no-use-before-define": "error",
     "no-undef-init": "error",
@@ -89,10 +98,7 @@ module.exports = {
     "vue/require-prop-types": "error",
     "vue/this-in-template": "error",
     "vue/v-on-style": "warn",
-    "vue/component-definition-name-casing": [
-      "error",
-      "PascalCase"
-    ],
+    "vue/component-definition-name-casing": [ "error", "PascalCase" ],
     "vue/html-closing-bracket-spacing": "warn",
     "vue/block-spacing": "error",
     "vue/no-sparse-arrays": "error",
@@ -104,12 +110,9 @@ module.exports = {
     "vue/require-emit-validator": "warn",
     "vue/v-on-function-call": "error",
     "vue/no-unused-refs": "warn",
-    "vue/no-irregular-whitespace": "warn",
+    "vue/no-irregular-whitespace": "error",
     "vue/padding-line-between-blocks": "error",
-    "vue/v-for-delimiter-style": [
-      "error",
-      "in"
-    ],
+    "vue/v-for-delimiter-style": [ "error", "in" ],
     "vue/prefer-separate-static-class": "error",
     "vue/no-multi-spaces": "error",
     "vue/no-template-target-blank": "error",
@@ -129,9 +132,6 @@ module.exports = {
         ]
       }
     ],
-    "vue/v-bind-style": [
-      "error",
-      "shorthand"
-    ]
+    "vue/v-bind-style": [ "error", "shorthand" ]
   }
 }
