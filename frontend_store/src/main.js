@@ -29,11 +29,18 @@ import './plugins'
 import ShopLayout from './layouts/ShopLayout.vue'
 import installPlugins from './plugins'
 
-createHead({
+const head = createHead({
   plugins: [
     // CapoPlugin()
   ]
 })
+
+// https://vite-pwa-org.netlify.app/guide/pwa-minimal-requirements.html
+head.push({ titleTemplate: '%s - Boutique' })
+// head.push({ link: { rel: 'icon', href: '/google.com' } })
+// head.push({ link: { rel: 'apple-touch-icon', href: '/google.com', sizes: '180x180' } })
+// head.push({ link: { rel: 'mask-icon', href: '/mask-icon.svg', color: '#FFFFFF' }})
+// head.push({ meta: { name: 'theme-color', content: '#fffff'  }})
 
 const pinia = createPinia()
 
