@@ -34,7 +34,7 @@ class AdminUploadImageView(FormView):
             
             obj = Image.objects.create(
                 name=name,
-                vriant=variant,
+                variant=variant,
                 original=file
             )
             objs.append(obj)
