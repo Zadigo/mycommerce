@@ -14,7 +14,7 @@ import { useVueSession } from 'src/plugins/vue-storages'
 export function useAuthenticationComposable () {
   const app = getCurrentInstance()
 
-  const { session } = useVueSession()
+  const { instance } = useVueSession()
   const authenticationStore = useAuthentication()
   const cookies = useCookies(['authentication'])
 
@@ -78,8 +78,8 @@ export function useAuthenticationComposable () {
         email: email.value,
         password: password.value
       })
-      session.create('authentication', response.data)
-      cookies.set('token', session.dictGet('authentication', 'token'))
+      instance.create('authentication', response.data)
+      cookies.set('token', instance.dictGet('authentication', 'token'))
       authenticationFailuresCounter.value = 0
 
       authenticationStore.token = authToken.value
@@ -103,7 +103,7 @@ export function useAuthenticationComposable () {
     try {
       await client.post('accounts/logout')
 
-      session.remove('authentication')
+      instance.remove('authentication')
       cookies.remove('token')
 
       authenticationFailuresCounter.value = 0
@@ -128,7 +128,7 @@ export function useAuthenticationComposable () {
   }
 
   function authenticateFromCache () {
-    return session.retrieve('token')
+    return instance.retrieve('token')
   }
 
   return {

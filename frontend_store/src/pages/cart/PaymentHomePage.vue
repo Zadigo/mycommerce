@@ -15,11 +15,11 @@
 </template>
 
 <script>
+import { ref } from 'vue'
 import { useHead } from 'unhead'
 import { useCart } from 'src/stores/cart'
 import { storeToRefs } from 'pinia'
 import { useVueSession } from 'src/plugins/vue-storages'
-import { ref } from 'vue'
 
 import NavigationCardFooter from 'src/components/cart/NavigationCardFooter.vue'
 
@@ -29,17 +29,17 @@ export default {
     NavigationCardFooter
   },
   setup () {
-    useHead({
-      title: 'Delivery options'
-    })
-    
     const store = useCart()
     const { requestData }  = storeToRefs(store)
 
-    const { session } = useVueSession()
-    requestData.value.session_id = session.retrieve('session_id')
+    const { instance } = useVueSession()
+    requestData.value.session_id = instance.retrieve('session_id')
 
     const deliveryOptions = ref([])
+
+    useHead({
+      title: 'Options de livraison'
+    })
 
     return {
       store,

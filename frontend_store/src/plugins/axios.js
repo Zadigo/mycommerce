@@ -1,4 +1,4 @@
-import { useVueSession } from './vue-storages'
+import { VueSessionInstance } from './vue-storages'
 import { useAuthentication } from 'src/stores/authentication'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { useMessages } from 'src/stores/messages'
@@ -44,10 +44,9 @@ client.interceptors.response.use(
   response => {
     if (response.status === 401) {
       const cookies = useCookies()
-      const { session } = useVueSession()
-      
-      session.remove('authentication')
-      session.remove('profile')
+
+      VueSessionInstance.remove('authentication')
+      VueSessionInstance.remove('profile')
       cookies.remove('token')
     }
 

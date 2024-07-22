@@ -15,7 +15,7 @@ export function useCartComposable () {
   const app = getCurrentInstance()
   const cartStore = useCart()
 
-  const { session } = useVueSession()
+  const { instance } = useVueSession()
 
   const userSelection = ref({
     id: null,
@@ -53,7 +53,7 @@ export function useCartComposable () {
    */
   async function requestAddToCart (data) {
     try {
-      const sessionId = session.retrieve('session_id')
+      const sessionId = instance.retrieve('session_id')
       // By changing this, it updates in the underlying
       // proxy in the ref since data is that proxy
       userSelection.value.session_id = sessionId || null
@@ -83,7 +83,7 @@ export function useCartComposable () {
       } else {
         userSelection.value.product = product
         const response = await requestAddToCart(userSelection.value)
-        session.create('cart_cache', response.data)
+        instance.create('cart_cache', response.data)
         cartStore.updateCart(response.data)
 
         if (typeof callback === 'function') {
