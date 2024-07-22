@@ -4,7 +4,9 @@ import { defineStore } from 'pinia'
 const useShop = defineStore('shop', {
   state: () => ({
     visitedProducts: [],
-    likedProducts: []
+    likedProducts: [],
+
+    showLanguageModal: false
   }),
   actions: {
     /**
