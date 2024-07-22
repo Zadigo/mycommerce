@@ -12,7 +12,7 @@
               <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                   <li class="breadcrumb-item">
-                    <router-link :to="{ name: 'shop_products' }">
+                    <router-link :to="{ name: 'shop_collections' }">
                       Shop
                     </router-link>
                   </li>

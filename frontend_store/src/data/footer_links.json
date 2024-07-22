@@ -3,31 +3,31 @@
         "section": "Aide",
         "links": [
             {
-                "to": "shop_products",
+                "to": "shop_collections",
                 "params": null,
                 "name": "Acheter en ligne"
             },
             {
-                "to": "shop_products",
+                "to": "shop_collections",
                 "name": "Paiement"
             },
             {
-                "to": "shop_products",
+                "to": "shop_collections",
                 "params": null,
                 "name": "Livraison"
             },
             {
-                "to": "shop_products",
+                "to": "shop_collections",
                 "params": null,
                 "name": "Retour"
             },
             {
-                "to": "shop_products",
+                "to": "shop_collections",
                 "params": null,
                 "name": "Achat en tant qu'invité"
             },
             {
-                "to": "shop_products",
+                "to": "shop_collections",
                 "params": null,
                 "name": "Me désabonner"
             }

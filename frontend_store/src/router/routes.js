@@ -5,8 +5,8 @@ export const routes = [
   },
   {
     path: '/shop',
-    name: 'shop_products',
-    component: async () => import('../pages/products/CollectionPage.vue'),
+    name: 'shop_collections',
+    component: async () => import('src/pages/CollectionsPage.vue'),
     meta: {
       requiresAuthentication: false
     }

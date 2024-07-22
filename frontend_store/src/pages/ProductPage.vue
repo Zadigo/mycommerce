@@ -16,7 +16,7 @@
               <v-skeleton-loader v-if="isLoading" type="text"></v-skeleton-loader>
               <ol v-else class="breadcrumb">
                 <li class="breadcrumb-item">
-                  <router-link :to="{ name: 'shop_products' }" class="link-dark">
+                  <router-link :to="{ name: 'shop_collections' }" class="link-dark">
                     Shop
                   </router-link>
                 </li>

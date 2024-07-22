@@ -9,12 +9,12 @@
         <div id="shop-navbar" class="collapse navbar-collapse">
           <div class="d-flex justify-content-around w-100">
             <div class="navbar-nav">
-              <router-link :to="{ name: 'shop_products' }" class="nav-link">
+              <router-link :to="{ name: 'shop_collections' }" class="nav-link">
                 Collection
               </router-link>
             </div>
   
-            <router-link :to="{ name: 'shop_products' }" class="navbar-brand text-uppercase fw-bold text-center">
+            <router-link :to="{ name: 'shop_collections' }" class="navbar-brand text-uppercase fw-bold text-center">
               {{ companyDetails.name }}
             </router-link>
   
@@ -115,7 +115,7 @@ export default {
     handleLogout () {
       this.logout(() => {
         this.$router.push({
-          name: 'shop_products'
+          name: 'shop_collections'
         })
       })
     }

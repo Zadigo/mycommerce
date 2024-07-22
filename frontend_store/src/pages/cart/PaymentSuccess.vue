@@ -4,7 +4,7 @@
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <h1>Thank you</h1>
-          <v-btn :to="{ name: 'shop_products' }" color="secondary" variant="tonal" rounded>
+          <v-btn :to="{ name: 'shop_collections' }" color="secondary" variant="tonal" rounded>
             Notre nouvelle collection
           </v-btn>
         </div>

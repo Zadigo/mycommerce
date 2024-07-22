@@ -14,7 +14,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuthentication) {
     if (!store.isAuthenticated) {
       next({
-        name: 'shop_products',
+        name: 'shop_collections',
         query: {
           login: 0
         }

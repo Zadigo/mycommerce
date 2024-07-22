@@ -63,7 +63,7 @@
     </section>
 
     <div class="d-flex justify-content-between align-items-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
-      <div class="copyright">© {{ $date.year() }} Copyright: <router-link :to="{ name: 'shop_products' }" class="text-reset fw-bold">{{ companyDetails.name }}</router-link></div>
+      <div class="copyright">© {{ $date.year() }} Copyright: <router-link :to="{ name: 'shop_collections' }" class="text-reset fw-bold">{{ companyDetails.name }}</router-link></div>
       <div class="d-flex justify-content-around gap-4">
         <a href="http://" class="text-muted">Condition général d'achat</a>
         <a href="http://" class="text-muted">Politique de confidentialité</a>

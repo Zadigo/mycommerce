@@ -110,10 +110,6 @@ export function useAuthenticationComposable () {
       authenticationStore.token = null
 
       executeCallback(callback)
-      
-      // router.push({
-      //   name: 'shop_products'
-      // })
     } catch (e) {
       console.error(e)
     }

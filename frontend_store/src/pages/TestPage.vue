@@ -5,7 +5,7 @@
         <div>{{ console.log('8', 'page') }}</div>
         <div>{{ checkAdd }}</div>
         <button type="button" class="btn btn-primary btn-rounded" @click="handleAdd">Add</button>
-        <router-link :to="{ name: 'shop_products' }" class="btn btn-primary btn-rounded">
+        <router-link :to="{ name: 'shop_collections' }" class="btn btn-primary btn-rounded">
           Navigate page
         </router-link>
       </div>
