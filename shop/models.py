@@ -34,7 +34,10 @@ class Image(models.Model):
     name = models.CharField(
         max_length=100,
         unique=True,
-        help_text=_("Used for the image's alt attribute")
+        help_text=_(
+            "Used for the image's "
+            "alt attribute"
+        )
     )
     variant = models.CharField(
         max_length=100,
@@ -74,7 +77,13 @@ class Image(models.Model):
         ]
 
     def __str__(self):
+        if self.variant is not None:
+            return self.name_with_variant
         return self.name
+    
+    @property
+    def name_with_variant(self):
+        return f'{self.name} - {self.variant}'
 
 
 class Video(models.Model):

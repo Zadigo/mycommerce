@@ -2,6 +2,8 @@ import random
 
 from django.contrib import admin
 from django.core.exceptions import ValidationError
+from django.urls import re_path
+from django.urls.resolvers import URLPattern
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (OpenApiExample, OpenApiParameter,
                                    extend_schema)
@@ -11,6 +13,7 @@ from import_export.resources import ModelResource
 from shop.api.serializers.shop import ProductSerializer
 from shop.models import Image, Like, Product, Video, Wishlist
 from shop.utils import create_slug
+from shop.views import AdminUploadImageView
 
 
 class ProductResource(ModelResource):
@@ -95,10 +98,21 @@ class ProductAdmin(ImportExportModelAdmin):
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ['name', 'original', 'created_on', 'is_main_image']
+    list_display = ['name', 'variant', 'created_on', 'is_main_image']
     date_hiearchy = 'created_on'
     search_fields = ['name', 'original']
     list_filter = ['is_main_image']
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            re_path(
+                r'^upload-images$',
+                AdminUploadImageView.as_view(), None,
+                name='admin_upload_images'
+            )
+        ]
+        return urls + custom_urls
 
 
 @admin.register(Video)

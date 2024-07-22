@@ -1,10 +1,11 @@
+from django.db import models
 from django.db.models import Avg, Case, Count, F, Q, When
 from django.db.models.aggregates import Count
 from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from django.utils.translation import get_language_from_request
 from django.views.generic import TemplateView
-from django.db import models
+
 from shop.models import Product
 
 

@@ -35,7 +35,7 @@ export default {
       collections
     }
   },
-  mounted () {
+  created () {
     this.requestCollectionNames()
     // TODO: Analytics does not work
     // this.$analytics('event', 'page_view', {

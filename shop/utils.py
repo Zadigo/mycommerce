@@ -4,6 +4,7 @@ import unicodedata
 from decimal import ROUND_DOWN, Decimal
 
 import unidecode
+from urllib.parse import unquote
 from django.utils.crypto import get_random_string
 from django.utils.text import get_valid_filename
 
@@ -128,6 +129,7 @@ def process_file_name(value: str):
     """Changes the initial file name to a
     random more standard string"""
     basename, ext = value.split('.')
+    basename = unquote(basename)
     return get_valid_filename(basename).lower(), ext
 
 

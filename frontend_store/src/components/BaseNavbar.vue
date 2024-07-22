@@ -15,7 +15,7 @@
             </div>
   
             <router-link :to="{ name: 'shop_products' }" class="navbar-brand text-uppercase fw-bold text-center">
-              Shop
+              {{ companyDetails.name }}
             </router-link>
   
             <div class="navbar-nav">
@@ -77,6 +77,7 @@
 </template>
 
 <script>
+import { useCompany } from '@/composables/company';
 import { storeToRefs } from 'pinia'
 import { useAuthenticationComposable } from 'src/composables/authentication'
 import { useAuthentication } from 'src/stores/authentication'
@@ -89,6 +90,8 @@ export default {
     }
   },
   setup () {
+    const { companyDetails } = useCompany()
+
     const { logout } = useAuthenticationComposable()
 
     const authenticationStore = useAuthentication()
@@ -99,6 +102,7 @@ export default {
 
     return {
       logout,
+      companyDetails,
       showLoginDrawer,
       showCartDrawer,
       authenticationStore

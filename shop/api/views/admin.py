@@ -270,3 +270,12 @@ def toggle_product_state(request, method, **kwargs):
     serializer = shop_serializers.ProductSerializer(
         instance=products, many=True)
     return Response(serializer.data)
+
+
+class CartStatistics(APIView):
+    def get(self, requet, *args, **kwargs):
+        revenue_per_month = Cart.objects.annotate(month=ExtractMonth(
+            'created_on')).values('month').annotate(c=Sum('price'))
+
+        popular_products = Product.objects.annotate(xprice=Window(
+            expression=Rank(), order_by=F('unit_price').asc())).values('xprice')

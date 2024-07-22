@@ -36,16 +36,16 @@ const useShop = defineStore('shop', {
      * 
      * @param {Object} product The product object
      */
-    removeFromWishlist (product) {
-      const index = _.indexOf(this.likedProducts, product.id)
+    removeFromWishlist (productId) {
+      const index = _.indexOf(this.likedProducts, productId)
 
       if (index >= 0) {
         this.likedProducts.splice(index, 1)
       }
     },
     loadFromCache () {
-      this.visitedProducts = this.$localstorage.retrieve('visitedProducts') || []
-      this.likedProducts = this.$localstorage.retrieve('likedProducts') || []
+      this.likedProducts = this.$localstorage.retrieve('likedProducts')
+      this.visitedProducts = this.$localstorage.retrieve('visitedProducts')
     }
   },
   getters: {

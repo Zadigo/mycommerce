@@ -13,17 +13,16 @@
       </div>
     </section>
 
-    <section class="">
+    <section id="main-footer">
       <div class="container text-center text-md-start mt-5">
         <div class="row mt-3">
           <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
             <!-- Content -->
             <h6 class="text-uppercase fw-bold mb-4">
-              Boutique
+              {{ companyDetails.name }}
             </h6>
             <p>
-              Here you can use rows and columns to organize your footer content. Lorem ipsum
-              dolor sit amet, consectetur adipisicing elit.
+              {{ companyDetails.description }}
             </p>
           </div>
 
@@ -42,19 +41,29 @@
 
           <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
             <h6 class="text-uppercase fw-bold mb-4">Contact</h6>
-            <p class="mb-1"><font-awesome-icon :icon="['fas', 'home']" class="me-2" /> New York, NY 10012, US</p>
+            <p class="mb-1">
+              <font-awesome-icon :icon="['fas', 'home']" class="me-2" /> 
+              {{ companyDetails.address }}
+            </p>
+
             <p class="mb-1">
               <font-awesome-icon :icon="['fas', 'envelope']" class="me-2" />
-              <a href="mailto:info@example.com" class="text-muted">info@example.com</a>
+              <a :href="`mailto:${companyDetails.email}`" class="text-muted">
+                {{ companyDetails.email }}
+              </a>
             </p>
-            <p class="mb-1"><font-awesome-icon :icon="['fas', 'phone']" class="me-2" /> + 01 234 567 88</p>
+            
+            <p class="mb-1">
+              <font-awesome-icon :icon="['fas', 'phone']" class="me-2" />
+              {{ companyDetails.telephone }}
+            </p>
           </div>
         </div>
       </div>
     </section>
 
     <div class="d-flex justify-content-between align-items-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
-      <div class="copyright">© {{ $date.year() }} Copyright: <router-link :to="{ name: 'shop_products' }" class="text-reset fw-bold">Boutique</router-link></div>
+      <div class="copyright">© {{ $date.year() }} Copyright: <router-link :to="{ name: 'shop_products' }" class="text-reset fw-bold">{{ companyDetails.name }}</router-link></div>
       <div class="d-flex justify-content-around gap-4">
         <a href="http://" class="text-muted">Condition général d'achat</a>
         <a href="http://" class="text-muted">Politique de confidentialité</a>
@@ -66,14 +75,19 @@
 </template>
 
 <script>
+import { useCompany } from 'src/composables/company'
+
 import socials from 'src/data/socials.json'
 import footer from 'src/data/footer_links.json'
 
 export default {
   name: 'BaseFooter',
   setup () {
+    const { companyDetails } = useCompany()
+
     return {
       footer,
+      companyDetails,
       socials
     }
   }

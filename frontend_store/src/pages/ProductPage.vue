@@ -88,30 +88,21 @@
               <div class="actions d-flex justify-content-start gap-1">
                 <!-- TODO: Make as a reusable component -->
                 <button id="btn-add-to-cart" type="button" class="btn btn-primary btn-lg shadow-none btn-rounded" aria-label="Add to cart" @click="handleAddToCart">
-                  Ajouter au panier
+                  {{ $t('Ajouter au panier') }}
                 </button>
 
-                <button type="button" class="btn btn-lg shadow-none btn-rounded btn-light" aria-label="Like product" @click="handleLike">
+                <button type="button" class="btn btn-lg shadow-none btn-rounded btn-light" aria-label="Like product" @click="handleLike(currentProduct)">
                   <font-awesome-icon v-if="isLiked" :icon="['fas', 'heart']" />
                   <font-awesome-icon v-else :icon="['far', 'heart']" />
                 </button>
               </div>
 
               <!-- Delivery Types -->
-              <div class="list-group mt-5 fw-ecommerce-small-1">
-                <div class="list-group-item d-flex justify-content-start gap-3 align-items-center p-3">
-                  <font-awesome-icon :icon="['fas', 'shop']" />
-                  <span>Enlèvement en magasin</span>
-                  <span class="fw-bold text-uppercase text-success">Gratuit</span>
-                </div>
-
-                <div class="list-group-item d-flex justify-content-start gap-3 align-items-center p-3">
-                  <font-awesome-icon :icon="['fas', 'truck']" />
-                  <span>Livraison standard à domicile</span>
-                  <span class="fw-bold text-uppercase text-success">Gratuit</span>
-                </div>
-              </div>
-
+              <delivery-type>
+                <delivery-types icon-name="shop" text="Enlèvement en magasin"></delivery-types>
+                <delivery-types icon-name="truck" text="Livraison standard à domicile"></delivery-types>
+              </delivery-type>
+              
               <!-- Additional Information -->
               <div class="py-3 bg-white mt-4 d-flex justify-content-start align-items-center gap-2 fw-ecommerce-small-1">
                 <a href class="link-dark fw-bold" aria-label="Livraison et retour" @click.prevent="showCompositionDrawer = true">
@@ -176,7 +167,7 @@
 
             <div class="col-12 mt-4">
               <v-btn color="primary" block @click="handleAddToCart">
-                Ajouter au panier
+                {{ $t('Ajouter au panier') }}
               </v-btn>
             </div>
 
@@ -208,7 +199,7 @@
         </div>
       </v-navigation-drawer>
 
-      <!-- Delivery And Returns -->
+      <!-- Composition -->
       <v-navigation-drawer id="composition-modal" v-model="showCompositionDrawer" width="400" location="right" temporary>
         <div class="container my-4 fw-light">
           <h4 class="h5 mb-1 mt-3">Composition</h4>
@@ -224,8 +215,8 @@
       <v-navigation-drawer id="delivery-modal" v-model="showDeliveryDrawer" width="400" location="right" temporary>
         <div class="container my-4 fw-light">
           <div class="row">
-            <p class="fw-bold mb-1 mt-3">Livraison:</p>
-            <p>Livraison en magasinGRATUITE</p>
+            <p class="fw-bold mb-1 mt-3">Livraison</p>
+            <p>Livraison en magasin GRATUITE</p>
 
             <p class="fw-bold mb-1 mt-3">Dans le magasin de votre choix</p>
             <p>en 2-4 jours ouvrables</p>
@@ -294,7 +285,10 @@
               <li>Produits The Bershka Print Shop</li>
             </ul>
 
-            <a href="#" class="mt-3">Consulte ici les conditions et exceptions pour les retours et les échanges</a>
+            <a href="#" class="mt-3">
+              Consulte ici les conditions et exceptions 
+              pour les retours et les échanges
+            </a>
           </div>
         </div>
       </v-navigation-drawer>
@@ -304,6 +298,7 @@
 
 <script>
 import _ from 'lodash'
+import 'vue-image-zoomer/dist/style.css'
 
 import { ref, inject, defineAsyncComponent } from 'vue'
 import { mapActions, storeToRefs } from 'pinia'
@@ -312,7 +307,7 @@ import { useAuthentication } from 'src/stores/authentication'
 import { useShop } from  'src/stores/shop'
 // import { useSeoMeta } from 'unhead'
 // import { useSchemaOrg, defineProduct, defineBreadcrumb } from '@unhead/schema-org'
-// import { useRouter, useRoute } from 'vue-router'
+// import { useI18n } from 'vue-i18n'
 import { useShopComposable } from 'src/composables/shop'
 import { useIntersectionObserver } from '@vueuse/core'
 import { buildImagePath } from 'src/utils'
@@ -320,12 +315,10 @@ import { useCartComposable } from 'src/composables/cart'
 import { useUtilities } from 'src/composables/shop'
 
 // import { VueImageZoomer } from 'vue-image-zoomer'
-// import { createMockupProduct } from 'src/utils'
-// import { useI18n } from 'vue-i18n'
-
-import 'vue-image-zoomer/dist/style.css'
 
 import BaseSizeBlock from 'src/components/BaseSizeBlock.vue'
+import DeliveryType from 'src/components/product/DeliveryType.vue'
+import DeliveryTypes from 'src/components/product/DeliveryTypes.vue'
 import FiveImages from 'src/components/product/FiveImages.vue'
 import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
 import SixImages from 'src/components/product/SixImages.vue'
@@ -334,6 +327,8 @@ export default {
   name: 'ProductPage',
   components: {
     BaseSizeBlock,
+    DeliveryType,
+    DeliveryTypes,
     FiveImages,
     SixImages,
     LoadingRecommendationsBlock,
@@ -443,6 +438,7 @@ export default {
       isLiked,
       isLoading,
       productVariants,
+      showSizeSelectionWarning,
       addToCart,
       djangoMediaPath,
       parseMainImage,
@@ -450,7 +446,6 @@ export default {
       localImagePath,
       handleLike,
       buildImagePath,
-      showSizeSelectionWarning
     }
   },
   computed: {
@@ -497,11 +492,23 @@ export default {
     }
   },
   created () {
+    this.isLiked = this.localStorageData.likedProducts.includes(this.$route.params.id * 1)
     this.requestProduct()
   },
   mounted () {
     this.intersectionTarget = this.$refs.moreProductsIntersect
     this.addToHistory(this.currentProduct)
+
+    // TODO:
+    // useSeoMeta({
+    //   title: this.currentProduct.name,
+    //   description: null,
+    //   ogTitle: null,
+    //   ogDescription:null,
+    //   ogImage: null,
+    //   twitterCard: null,
+    //   ogSiteName: null
+    // })
   },
   beforeUpdate () {
     // useSeoMeta({
@@ -551,7 +558,6 @@ export default {
         const response = await this.$http.get(`shop/products/${this.$route.params.id}`)
         this.currentProduct = response.data
         this.isLoading = false
-        this.isLiked = this.localStorageData.likedProducts.includes(this.currentProduct.id)
       } catch (e) {
         if (e.response.status === 404) {
           this.$router.push({

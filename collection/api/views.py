@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+
 # from django.db.models
 from collection.api import serializers
 from collection.models import Collection
@@ -24,7 +25,7 @@ class ListCollectionProducts(ListAPIView):
     queryset = Product.objects.filter(active=True)
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
-    default_cache_timeout = 10
+    default_cache_timeout = 1200
 
     def list(self, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -59,7 +60,7 @@ class ListCollectionProducts(ListAPIView):
                 Q(created_on__gte=difference.date())
             )
             cache.set(
-                collection_name, 
+                collection_name,
                 queryset,
                 timeout=self.default_cache_timeout
             )
@@ -75,17 +76,22 @@ class ListCollectionProducts(ListAPIView):
 
             # We have two ways to create a collection of
             # items. Either via the Collection model (manual)
-            # or either dynamically using Product.category
+            # or either dynamically using Product.category.
+            # and this is the dynamic way
             if not queryset.exists():
-                queryset = queryset.filter(
+                newer_queryset = super().get_queryset()
+                queryset = newer_queryset.filter(
                     category__iexact=collection_name
                 )
-                
+
+                if not newer_queryset.exists():
+                    return []
+
             products = queryset.order_by('-created_on')
             cache_params['key'] = collection_name
             cache_params['value'] = products
             cache.set(**cache_params)
-            return products 
+            return products
 
 
 class ListCollectionNames(ListAPIView):
@@ -99,7 +105,7 @@ class ListCollectionNames(ListAPIView):
             queryset = products.values('id', 'category', 'sub_category')
             return queryset.distinct('category')
         return self.queryset
-    
+
 
 class SearchCollectionProducts(RetrieveAPIView):
     queryset = Collection.objects.all()

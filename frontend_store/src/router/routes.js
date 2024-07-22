@@ -96,6 +96,11 @@ export const routes = [
     ]
   },
   {
+    path: '/test',
+    name: 'test_page',
+    component: () => import('src/pages/TestPage.vue')
+  },
+  {
     path: '/404',
     name: 'not_found',
     component: () => import('pages/ErrorNotFound.vue')

@@ -119,6 +119,10 @@ class TestUtilities(TestCase):
             (
                 'some#invalid**filename.jpg',
                 r'someinvalidfilename_'
+            ),
+            (
+                'jupe-cargo-lani%C3%A8res.jpg',
+                r'jupe_cargo_lanières_'
             )
         ]
         for name, expected in filenames:
