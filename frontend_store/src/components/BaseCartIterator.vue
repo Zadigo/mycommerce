@@ -1,7 +1,6 @@
 <template>
   <div class="col-12">
     <article v-for="item in cartItems" :key="item.product__id" :aria-label="item.product__name" class="card shadow-none border mb-1">
-
       <div class="card-body p-2">
         <div class="d-flex justify-content-start gap-2">
           <!-- {{ item }} -->
@@ -19,8 +18,8 @@
               </div>
             </router-link>
 
-            <div v-if="isEditable" id="actions">
-              <v-btn class="me-2" size="x-small" variant="tonal" rounded @click="handleProductEdition('open', item)">
+            <div id="actions">
+              <v-btn v-if="isEditable" class="me-2" size="x-small" variant="tonal" rounded @click="handleProductEdition('open', item)">
                 <font-awesome-icon :icon="['fas', 'pen']" />
               </v-btn>
 
@@ -29,7 +28,6 @@
               </v-btn>
             </div>
           </div>
-
         </div>
       </div>
     </article>
@@ -38,6 +36,7 @@
 
 <script>
 import _ from 'lodash'
+
 import { storeToRefs } from 'pinia';
 import { useCart } from 'src/stores/cart';
 import { useUtilities } from 'src/composables/shop'
@@ -61,6 +60,7 @@ export default {
   setup () {
     const { parseMainImage } = useUtilities()
     const cartStore = useCart()
+    
     const { cache } = storeToRefs(cartStore)
 
     return {

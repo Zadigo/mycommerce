@@ -38,7 +38,8 @@
 
             <div id="products" class="card-body">
               <div class="list-group">
-                <article v-for="item in products" :key="item.id" :aria-label="item.product.name" class="list-group-item d-flex justify-content-start align-items-top gap-4 border-none ps-0">
+                <base-cart-iterator :is-editable="false" />
+                <!-- <article v-for="item in products" :key="item.id" :aria-label="item.product.name" class="list-group-item d-flex justify-content-start align-items-top gap-4 border-none ps-0">
                   <div class="col-auto">
                     <router-link :to="{ name: 'shop_product', params: { id: item.id } }">
                       <v-img :src="djangoMediaPath(item.product.get_main_image?.original)" :lazy-src="djangoMediaPath(item.product.get_main_image?.original)" :width="100" :alt="item.product.name" />
@@ -60,7 +61,7 @@
                       <font-awesome-icon :icon="['fas', 'trash']" />
                     </v-btn>
                   </div>
-                </article>
+                </article> -->
               </div>
             </div>
 
@@ -88,13 +89,19 @@
 </template>
 
 <script>
-import { mapActions, storeToRefs } from 'pinia'
+// import { mapActions, storeToRefs } from 'pinia'
+import { storeToRefs } from 'pinia'
 import { useCart } from 'src/stores/cart'
 import { useUtilities }  from 'composables/shop'
 import { useRefHistory } from '@vueuse/core'
 
+import BaseCartIterator from 'src/components/BaseCartIterator.vue'
+
 export default {
   name: 'PaymentLayout',
+  components: {
+    BaseCartIterator
+  },
   setup () {
     const cartStore = useCart()
     const { products } = storeToRefs(cartStore)
@@ -148,9 +155,10 @@ export default {
     // have the data. This allows us then to dynamically
     // calculate the items that the user has selected
     this.cartStore.products = this.sessionStorageData?.cart || []
+    this.cartStore.cache = this.sessionStorageData?.cart_cache || []
   },
   methods: {
-    ...mapActions(useCart, ['removeFromCart']),
+    // ...mapActions(useCart, ['removeFromCart']),
     calculateItemTotalCost (price, quantity) {
       // Calculate the individual price for the given
       // product with price and quantity variables

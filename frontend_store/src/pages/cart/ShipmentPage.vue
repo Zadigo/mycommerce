@@ -47,7 +47,7 @@ export default {
   },
   setup () {
     useHead({
-      title: 'Delivery options'
+      title: 'Options de livraison'
     })
 
     const store = useCart()
