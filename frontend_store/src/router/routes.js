@@ -22,7 +22,7 @@ export const routes = [
   {
     path: '/shop/:id',
     name: 'shop_product',
-    component: async () => import('../pages/ProductPage.vue'),
+    component: async () => import('src/pages/ProductPage.vue'),
     meta: {
       requiresAuthentication: false
     }

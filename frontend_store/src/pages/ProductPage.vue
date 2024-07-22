@@ -305,6 +305,7 @@ import { mapActions, storeToRefs } from 'pinia'
 import { useCart } from 'src/stores/cart'
 import { useAuthentication } from 'src/stores/authentication'
 import { useShop } from  'src/stores/shop'
+import { useHead } from 'unhead'
 // import { useSeoMeta } from 'unhead'
 // import { useSchemaOrg, defineProduct, defineBreadcrumb } from '@unhead/schema-org'
 // import { useI18n } from 'vue-i18n'
@@ -313,6 +314,7 @@ import { useIntersectionObserver } from '@vueuse/core'
 import { buildImagePath } from 'src/utils'
 import { useCartComposable } from 'src/composables/cart'
 import { useUtilities } from 'src/composables/shop'
+import { useCompany } from '@/composables/company'
 
 // import { VueImageZoomer } from 'vue-image-zoomer'
 
@@ -344,11 +346,9 @@ export default {
   //   })
   // },
   setup () {
+    const { createTitle } = useCompany()
     const documentVisible = inject('documentVisible')
 
-    // const router = useRouter()
-    // const route = useRoute()
-    
     const isLoading = ref(true)
     // Interceptor to check that the user has moved
     // down to the the "more-products" section of
@@ -373,6 +373,17 @@ export default {
 
     const currentProduct = ref({})
 
+    const productVariants = ref([])
+
+    useIntersectionObserver(intersectionTarget, ([{ isIntersecting }], observerElement) => {
+      observerElement
+      isIntersecting
+    })
+
+    useHead({
+      title: createTitle(currentProduct.value.name)
+    })
+    
     // const userSelection = ref({
     //   size: null,
     //   quantity: 1,
@@ -416,13 +427,6 @@ export default {
     //   ])
     // }, 800)
 
-    const productVariants = ref([])
-
-    useIntersectionObserver(intersectionTarget, ([{ isIntersecting }], observerElement) => {
-      observerElement
-      isIntersecting
-    })
-
     return {
       documentVisible,
       intersectionTarget,
@@ -439,6 +443,7 @@ export default {
       isLoading,
       productVariants,
       showSizeSelectionWarning,
+      createTitle,
       addToCart,
       djangoMediaPath,
       parseMainImage,
@@ -498,51 +503,6 @@ export default {
   mounted () {
     this.intersectionTarget = this.$refs.moreProductsIntersect
     this.addToHistory(this.currentProduct)
-
-    // TODO:
-    // useSeoMeta({
-    //   title: this.currentProduct.name,
-    //   description: null,
-    //   ogTitle: null,
-    //   ogDescription:null,
-    //   ogImage: null,
-    //   twitterCard: null,
-    //   ogSiteName: null
-    // })
-  },
-  beforeUpdate () {
-    // useSeoMeta({
-    //   title: this.currentProduct.name,
-    //   description: this.currentProduct.description,
-    //   ogTitle: this.currentProduct.name,
-    //   ogDescription: this.currentProduct.description,
-    //   ogImage: this.currentProduct.get_main_image.original,
-    //   twitterCard: 'summary_large_image',
-    //   ogSiteName: 'Ma Boutique'
-    // })
-
-    // useSchemaOrg([
-    //   defineProduct({
-    //     name: this.currentProduct.name,
-    //     itemCondition: 'NewCondition',
-    //     brand: 'My Brand',
-    //     logo: '',
-    //     description: this.currentProduct.description,
-    //     image: ['https://example.com/photos/16x9/photo.jpg'],
-    //     offers: [
-    //       {
-    //         price: this.currentProduct.price
-    //       }
-    //     ]
-    //   }),
-    //   defineBreadcrumb({
-    //     itemListElement: [
-    //       { name: 'Boutique', item: '/' },
-    //       { name: 'Soutien-Gorge', item: this.$route.fullPath },
-    //       { name: this.currentProduct.name },
-    //     ],
-    //   })
-    // ])
   },
   methods: {
     ...mapActions(useShop, ['addToHistory']),

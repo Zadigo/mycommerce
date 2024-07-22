@@ -21,16 +21,21 @@
 </template>
 
 <script>
-import { useHead } from 'unhead'
 import { ref } from 'vue'
+import { useHead } from 'unhead'
+import { useCompany } from '@/composables/company';
 
 export default {
   name: 'CollectionPage',
   setup () {
+    const { createTitle } = useCompany()
+    
     useHead({
-      title: 'Soutien-gorge'
+      title: createTitle('Collections')
     })
+
     const collections = ref([])
+    
     return {
       collections
     }
