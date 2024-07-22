@@ -65,10 +65,25 @@
     <div class="d-flex justify-content-between align-items-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
       <div class="copyright">© {{ $date.year() }} Copyright: <router-link :to="{ name: 'shop_collections' }" class="text-reset fw-bold">{{ companyDetails.name }}</router-link></div>
       <div class="d-flex justify-content-around gap-4">
-        <a href="http://" class="text-muted">Condition général d'achat</a>
-        <a href="http://" class="text-muted">Politique de confidentialité</a>
-        <a href="http://" class="text-muted">Mention légal</a>
-        <a href="http://" class="text-muted">Sitemap</a>
+        <a href class="text-muted" @click.prevent="showLanguageModal = true">
+          {{ languageOptions?.location }} | {{ languageOptions?.language }}
+        </a>
+        
+        <a href="http://" class="text-muted">
+          {{ $t("Condition général d'achat") }}
+        </a>
+
+        <a href="http://" class="text-muted">
+          {{ $t("Politique de confidentialité") }}
+        </a>
+        
+        <a href="http://" class="text-muted">
+          {{ $t("Mention légal") }}
+        </a>
+
+        <a href="http://" class="text-muted">
+          {{ $t("Sitemap") }}
+        </a>
       </div>
     </div>
   </footer>
@@ -76,6 +91,9 @@
 
 <script>
 import { useCompany } from 'src/composables/company'
+import { useVueSession } from '@/plugins/vue-storages'
+import { useShop } from '@/stores/shop'
+import { storeToRefs } from 'pinia'
 
 import socials from 'src/data/socials.json'
 import footer from 'src/data/footer_links.json'
@@ -83,10 +101,18 @@ import footer from 'src/data/footer_links.json'
 export default {
   name: 'BaseFooter',
   setup () {
+    const shopStore = useShop()
+    const { showLanguageModal } = storeToRefs(shopStore)
+
     const { companyDetails } = useCompany()
+    const { instance } = useVueSession()
+
+    const languageOptions = instance.retrieve('lang')
 
     return {
       footer,
+      showLanguageModal,
+      languageOptions,
       companyDetails,
       socials
     }
