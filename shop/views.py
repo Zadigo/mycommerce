@@ -22,7 +22,6 @@ class AdminUploadImageView(FormView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        # files = self.request.FILES.getlist('images')
         files = form.cleaned_data['images']
 
         file_name = form.cleaned_data['file_name']
