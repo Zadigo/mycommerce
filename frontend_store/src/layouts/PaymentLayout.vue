@@ -147,7 +147,7 @@ export default {
     // Preload the cart from the session if we actually
     // have the data. This allows us then to dynamically
     // calculate the items that the user has selected
-    this.cartStore.products = this.sessionStorage?.cart || []
+    this.cartStore.products = this.sessionStorageData?.cart || []
   },
   methods: {
     ...mapActions(useCart, ['removeFromCart']),
