@@ -7,17 +7,17 @@
             <div class="card-body text-center p-5 d-flex flex-column justify-content-center">
               <div class="information">
                 <font-awesome-icon :icon="['fas', 'star']" class="text-warning mb-4" size="4x" />
-                <h1 class="card-title h6">
+                
+                <h1 class="card-title h6 fw-bold mt-4 mb-3">
                   {{ $t('Conservation des favoris') }}
                 </h1>
+
                 <p class="fw-light">
-                  Crée un compte ou connecte-toi si tu en as déjà un et
-                  nous conserverons tes favoris pour que tu puisses les voir
-                  sur des dispositifs différents.
+                  {{ $t('Keep favorites text') }}
                 </p>
 
-                <v-btn color="secondary" rounded @click="showLoginDrawer = true">
-                  <font-awesome-icon :ucon="['fas', 'signin']" />
+                <v-btn color="secondary" flat rounded @click="showLoginDrawer = true">
+                  <font-awesome-icon :icon="['fas', 'right-to-bracket']" class="me-2" />
                   {{ $t('Se connecter') }}
                 </v-btn>
               </div>
@@ -27,9 +27,6 @@
 
         <template v-if="likedProducts.length > 0">
           <base-product-iterator :products="likedProducts" />
-          <!-- <div v-for="product in likedProducts" :key="product.id" class="col-sm-12 col-md-4">
-            <product-card :product="product" :show-like-button="false" />
-          </div> -->
         </template>
 
         <template v-else>
@@ -45,6 +42,7 @@
 </template>
 
 <script>
+import { useHead } from 'unhead'
 import { storeToRefs } from 'pinia'
 import { useShop } from 'src/stores/shop'
 import { useAuthentication } from 'src/stores/authentication'
@@ -62,6 +60,14 @@ export default {
 
     const shopStore = useShop()
     const { likedProducts } = storeToRefs(shopStore)
+
+    useHead({
+      title: 'Wishlist',
+      description: '',
+      meta: {
+        
+      }
+    })
     
     return {
       authenticationStore,
