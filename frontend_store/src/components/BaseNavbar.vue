@@ -19,57 +19,26 @@
             </router-link>
   
             <div class="navbar-nav">
-              <v-btn variant="tonal" class="nav-link" @click="$emit('display-search')">
+              <v-btn variant="text" class="nav-link" rounded @click="$emit('display-search')">
                 <font-awesome-icon :icon="['fas', 'fa-magnifying-glass']" />
               </v-btn>
   
               <router-link :to="{ name: 'wishlist' }" class="nav-link">
                 <font-awesome-icon :icon="['fas', 'fa-heart']" />
               </router-link>
-  
-              <a href class="nav-link" @click.prevent="() => { showCartDrawer = true }">
-                <font-awesome-icon :icon="['fas', 'fa-shopping-cart']" />
-              </a>
-  
+
               <router-link v-if="authenticationStore.isAuthenticated" :to="{ name: 'accounts_home' }" class="nav-link">
                 <font-awesome-icon :icon="['fas', 'user']" />
               </router-link>
+              <a href class="nav-link" @click.prevent="authenticationStore.showLoginDrawer = true">
+                <font-awesome-icon :icon="['fas', 'user']" />
+              </a>
+                
+              <a href class="nav-link" @click.prevent="() => { showCartDrawer = true }">
+                <font-awesome-icon :icon="['fas', 'fa-shopping-cart']" />
+              </a>
             </div>
           </div>
-          <!-- <div v-if="authenticationStore.isAuthenticated" class="navbar-nav">
-            <router-link :to="{ name: 'wishlist' }" class="nav-link">Wishlist</router-link>
-            <a href class="nav-link" @click.prevent="() => { showCartDrawer = true }">
-              Cart
-            </a>
-
-            <router-link :to="{ name: 'accounts_home' }" class="nav-link">
-              <font-awesome-icon :icon="['fas', 'user']" />
-            </router-link>
-
-            <v-btn class="nav-link" @click="handleLogout">
-              <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
-            </v-btn>
-
-            <v-btn @click="$emit('display-search')">Search</v-btn>
-          </div>
-
-          <div v-else class="navbar-nav">
-            <router-link :to="{ name: 'wishlist' }" class="nav-link">
-              Wishlist
-            </router-link>
-
-            <a href class="nav-link" @click.prevent="() => { showCartDrawer = true }">
-              Cart
-            </a>
-
-            <a href class="nav-link" @click.prevent="() => { showLoginDrawer = true }">
-              <font-awesome-icon :icon="['fas', 'user']" />
-            </a>
-
-            <v-btn @click="$emit('display-search')">
-              Search
-            </v-btn>
-          </div> -->
         </div>
       </div>
     </nav>
@@ -77,7 +46,7 @@
 </template>
 
 <script>
-import { useCompany } from '@/composables/company';
+import { useCompany } from '@/composables/company'
 import { storeToRefs } from 'pinia'
 import { useAuthenticationComposable } from 'src/composables/authentication'
 import { useAuthentication } from 'src/stores/authentication'
