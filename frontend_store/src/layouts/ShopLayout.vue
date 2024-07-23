@@ -18,14 +18,27 @@
         <div class="row">
           <div class="col-12">
             <div class="d-flex flex-column justify-content-center" style="height: 100vh;">
-              <h3 class="h5">{{ $t('Connecte-toi ou crée un compte') }}</h3>
+              <h3 class="h5 flew-grow">{{ $t('Connecte-toi ou crée un compte') }}</h3>
+
+              <v-btn variant="outlined" color="dark" size="x-large" class="mt-3 mb-5" rounded>
+                Google
+              </v-btn>
+
+              <p class="fw-light">
+                En me connectant avec mon identifiant social, j'accepte de lier mon 
+                compte conformément à la Politique de confidentialité
+              </p>
 
               <v-form id="form-login" @submit.prevent>
-                <v-text-field v-model="email" variant="outlined" type="email" placeholder="Email" autocomplete="email"></v-text-field>
-                <v-text-field v-model="password" variant="outlined" type="password" placeholder="Password" autocomplete="current-password"></v-text-field>
+                <v-text-field v-model="email" :placeholder="$t('Email')" variant="outlined" type="email" autocomplete="email"></v-text-field>
+                <v-text-field v-model="password" :placeholder="$t('Mot de passe')" variant="outlined" type="password" autocomplete="current-password"></v-text-field>
 
-                <v-btn color="primary" block @click="handleLogin">{{ $t('Se connecter') }}</v-btn>
+                <v-btn class="text-light" color="dark" size="x-large" block flat rounded @click="handleLogin">{{ $t('Se connecter') }}</v-btn>
               </v-form>
+
+              <p class="flex-grow text-center fw-light mt-3">
+                {{ $t('No account signup text') }}
+              </p>
             </div>
           </div>
         </div>
@@ -36,8 +49,12 @@
     <v-dialog id="dialog-search" v-model="showSearchModal" transition="dialog-bottom-transition" fullscreen>
       <v-card>
         <v-toolbar>
-          <v-toolbar-title class="fw-bold text-uppercase">Boutique</v-toolbar-title>
+          <v-toolbar-title class="fw-bold text-uppercase">
+            {{ companyDetails.name }}
+          </v-toolbar-title>
+
           <v-spacer></v-spacer>
+          
           <v-btn icon="mdi-close" @click="showSearchModal = false"></v-btn>
         </v-toolbar>
 
@@ -105,6 +122,7 @@
               </div>
             </div>
 
+            <!-- TODO: Iterate products -->
             <h4 class="text-center h5">{{ $t('Autres produits') }}</h4>
             <div class="row gx-1 gy-1 products-wrapper">
               <div v-for="i in 10" :key="i" class="col-4">
@@ -121,13 +139,13 @@
     <!-- Cart -->
     <v-navigation-drawer id="dialog-cart" v-model="showCartDrawer" location="right" width="400" temporary>
       <v-toolbar class="border-bottom" color="white">
-        <v-toolbar-title class="fw-bold">Panier ({{ cartStore.numberOfProducts }})</v-toolbar-title>
+        <v-toolbar-title class="fw-bold">{{ $t('Cart quantity', { n: cartStore.numberOfProducts }) }}</v-toolbar-title>
 
         <v-spacer></v-spacer>
 
         <v-btn :to="{ name: 'wishlist' }" rounded variant="outlined" @click="showCartDrawer = false">
           <font-awesome-icon :icon="['far', 'heart']" class="me-2" />
-          Favoris
+          {{ $t('Favoris') }}
         </v-btn>
       </v-toolbar>
 
@@ -162,7 +180,7 @@
           <base-cart-iterator class="my-2" @edit-product="handleProductEdition" />
 
           <div class="d-flex justify-content-between align-items-center py-4">
-            <span class="fw-light">Total (TVA comprise)</span>
+            <span class="fw-light">{{ $t('Total (TVA comprise)') }}</span>
             <span class="fw-bold">{{ $n(cartTotal, 'currency') }}</span>
           </div>
           
@@ -184,8 +202,7 @@
             <h3 class="h5 mb-3">{{ $t('Panier vide') }}</h3>
             
             <p class="fw-light">
-              Ton panier est encore vide, découvre tout 
-              ce que nous avons pour toi
+              {{ $t('Empty cart text') }}
             </p>
             
             <a href class="btn btn-block btn-primary btn-rounded btn-lg shadow-none" @click.prevent="handleCartButtonRedirection">
@@ -257,6 +274,7 @@ import { useAuthenticationComposable } from 'src/composables/authentication'
 import { useAuthentication } from 'src/stores/authentication'
 import { useUtilities } from 'src/composables/shop'
 import { useMessages } from 'src/stores/messages'
+import { useCompany } from 'src/composables/company'
 
 import BaseCartIterator from 'src/components/BaseCartIterator.vue'
 import BaseMessages from 'src/components/BaseMessages.vue'
@@ -280,6 +298,7 @@ export default {
     LoadingRecommendationsBlock
   },
   setup () {
+    const { companyDetails } = useCompany()
     const messagesStore = useMessages()
     const { messageItems } = storeToRefs(messagesStore)
 
@@ -314,6 +333,7 @@ export default {
       cartStore,
       currentEditedProduct,
       canShowSearch,
+      companyDetails,
       localImagePath,
       parseMainImage,
       authenticationStore,

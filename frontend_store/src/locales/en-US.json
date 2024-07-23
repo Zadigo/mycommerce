@@ -33,5 +33,12 @@
     "Mention légal": "Mention légal",
     "Sitemap": "Sitemap",
     "Sélectionnez votre langue": "Sélectionnez votre langue",
-    "Enregistrer mon choix": "Enregistrer mon choix"
+    "Enregistrer mon choix": "Enregistrer mon choix",
+    "Email": "Email",
+    "Mot de passe": "Mot de passe",
+    "No account signup text": "Tu n'as pas de compte ? Inscris-toi",
+    "Cart quantity": "Panier ({n})",
+    "Favoris": "Favoris",
+    "Total (TVA comprise)": "Total (TVA comprise)",
+    "Empty cart text": "Ton panier est encore vide, découvre tout ce que nous avons pour toi"
 }
