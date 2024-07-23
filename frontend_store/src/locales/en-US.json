@@ -40,5 +40,7 @@
     "Cart quantity": "Panier ({n})",
     "Favoris": "Favoris",
     "Total (TVA comprise)": "Total (TVA comprise)",
-    "Empty cart text": "Ton panier est encore vide, découvre tout ce que nous avons pour toi"
+    "Empty cart text": "Ton panier est encore vide, découvre tout ce que nous avons pour toi",
+    "Page not available text": "Cette page n'est pas disponible, mais nous en avons beaucoup d'autres à te montrer",
+    "Haut de page": "Haut de page"
 }
