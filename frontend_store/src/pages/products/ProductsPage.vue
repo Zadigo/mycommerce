@@ -4,24 +4,10 @@
       <div class="row">
         <div class="col-12">
           <div class="card shadow-none mb-1">
-            <div class="card-body d-flex flex-column justify-content-center align-items-center">
-              <h1 aria-labelledby="" class="text-uppercase fw-bold text-center">
+            <div class="card-body d-flex flex-row justify-content-start">
+              <h1 aria-labelledby="Soutien-Gorge corbeille" class="text-uppercase fw-bold h4">
                 Soutien-Gorge corbeille
               </h1>
-
-              <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                  <li class="breadcrumb-item">
-                    <router-link :to="{ name: 'shop_collections' }">
-                      Shop
-                    </router-link>
-                  </li>
-                  
-                  <li class="breadcrumb-item active" aria-current="page">
-                    Soutien-Gorge
-                  </li>
-                </ol>
-              </nav>
             </div>
           </div>
         </div>
@@ -39,9 +25,11 @@
         </div>
 
         <div v-if="products.length === 0" class="col-6 offset-md-3 text-center p-5">
-          <p class="h4 fw-light">Cette page n'est pas disponible, mais nous en avons beaucoup d'autres à te montrer.</p>
+          <p class="h4 fw-light">
+            {{ $t('Page not available text') }}
+          </p>
           <v-btn :to="{ name: 'shop_products_collection', params: { id: 'all' } }" class="mt-3" color="secondary" variant="tonal" rounded>
-            Haut de page
+            {{ $t('Haut de page') }}
           </v-btn>
         </div>
       </div>
@@ -50,20 +38,20 @@
 </template>
 
 <script>
-// import _ from 'lodash'
-// import { useHead } from 'unhead'
+import _ from 'lodash'
+
+import { useHead } from 'unhead';
 import { ref, provide } from 'vue'
+import { useRoute } from 'vue-router'
 import { defineAsyncComponent } from 'vue'
 import { useAuthentication } from 'src/stores/authentication'
-// import { defineProduct, useSchemaOrg } from '@unhead/schema-org'
+import { defineProduct, useSchemaOrg } from '@unhead/schema-org'
 
-// import DefaultFiltering from 'src/components/products/filtering/DefaultFiltering.vue'
 import LoadingProductsFeed from '@/components/products/LoadingProductsFeed.vue'
 
 export default {
   name: 'ProductsPage',
   components: {
-    // DefaultFiltering,
     AsyncProductsFeed: defineAsyncComponent({
       loader: () => import('src/components/products/AsyncProductsFeed.vue'),
       delay: 1000
@@ -71,26 +59,52 @@ export default {
     LoadingProductsFeed
   },
   setup () {
+    const route = useRoute()
     const products = ref({})
     const productsLoading = ref(true)
     const authenticationStore = useAuthentication()
 
     provide('productsLoading', productsLoading)
 
-    // useHead({
-    //   title: 'Collection name',
-    //   description: '',
-    //   ogTitle: '',
-    //   ogDescription: '',
-    //   ogImage: 'https://example.com/image.png',
-    //   twitterCard: 'summary_large_image',
-    //   ogSiteName: 'Ma Boutique'
-    // })
-    
+    const pageHead = useHead({
+      title: route.params.id.toUpperCase(),
+      description: '',
+      ogTitle: route.params.id.toUpperCase(),
+      // ogDescription: '',
+      // ogImage: 'https://example.com/image.png',
+      // twitterCard: 'summary_large_image',
+      // ogSiteName: 'Ma Boutique'
+    })
+
+    // TODO: Does not work
+    setTimeout(() => {
+      useSchemaOrg(_.map(products.value, (product) => {
+        return defineProduct({
+          name: product.name,
+          offers: [
+            {
+              price: product.price
+            }
+          ]
+        })
+      }))
+    }, 400);
+
     return {
+      pageHead,
       products,
       authenticationStore,
       productsLoading
+    }
+  },
+  watch: {
+    // TODO: Does not work
+    '$route.params.id' (n, o) {
+      if (n !== o) {
+        this.pageHead.patch({
+          title: this.$route.params.id.toUpperCase()
+        })
+      }
     }
   },
   beforeMount () {
@@ -113,21 +127,7 @@ export default {
     handleProducts (products) {
       this.products = products
       this.productsLoading = false
-      // this.handleSEO()
     }
-    // TODO: Implement the Schema for products
-    // handleSEO () {
-    //   useSchemaOrg(_.map(this.products, (product) => {
-    //     return defineProduct({
-    //       name: product.name,
-    //       offers: [
-    //         {
-    //           price: product.price
-    //         }
-    //       ]
-    //     })
-    //   }))
-    // }
   }
 }
 </script>
