@@ -89,7 +89,6 @@
 </template>
 
 <script>
-// import { mapActions, storeToRefs } from 'pinia'
 import { storeToRefs } from 'pinia'
 import { useCart } from 'src/stores/cart'
 import { useUtilities }  from 'composables/shop'
