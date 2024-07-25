@@ -29,13 +29,13 @@ import { createMockupProducts } from 'src/utils'
 import ProductCard from 'src/components/products/ProductCard.vue'
 
 export default {
-  name: 'PaymentSuccess',
+  name: 'PaymentSuccessPage',
   components: {
     ProductCard
   },
   setup () {
     useHead({
-      title: 'Payment success'
+      title: 'Paiement terminé'
     })
 
     const recommendations = ref(createMockupProducts(8))
