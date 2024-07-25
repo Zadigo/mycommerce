@@ -15,6 +15,8 @@
 
 <script>
 import { ref } from 'vue'
+import { useIndexDb } from 'src/plugins/vue-storages/database'
+
 export default {
   name: 'TestPage',
   beforeRouteEnter (to ,from , next) {
@@ -30,7 +32,7 @@ export default {
     from
     console.log(12, 'beforeRouteUpdate')
   },
-  setup() {
+  async setup() {
     const data = ref(0)
     console.log(1, 'setup')
     return {
@@ -57,7 +59,11 @@ export default {
   beforeMount() {
     console.log(4, 'beforeMount')
   },
-  mounted() {
+  async mounted() {
+    const { initializeDatabase } = useIndexDb('products', 'my store', 1)
+    const db = await initializeDatabase()
+    console.log(db)
+    
     console.log(5, 'mounted')
   },
   beforeUpdate() {
