@@ -36,6 +36,8 @@ class DeliveryOptionsSerializer(Serializer):
 
 class ValidateShipment(Serializer):
     session_id = fields.CharField()
+    source = fields.CharField(validators=[])
+    card_token = fields.CharField(validators=[])
     discount_code = fields.CharField(required=False)
     email = fields.CharField()
     firstname = fields.CharField()

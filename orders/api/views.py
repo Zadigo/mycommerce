@@ -13,7 +13,7 @@ from orders.api.serializers import (CustomerOrderSerializer,
                                     DeliveryOptionsSerializer,
                                     ValidateShipment)
 from orders.models import CustomerOrder, ProductHistory
-from orders.payment import payment_interface
+from orders.payment import PaymentInterface
 
 
 class ListCustomerOrders(ListAPIView):
@@ -93,11 +93,16 @@ def new_customer_order(request, **kwargs):
         total_to_pay = queryset.aggregate(total=Sum('price'))
 
         # 2. Execute the payment with Stripe
+        payment_interface = PaymentInterface()
         payment_interface.payment(
             request,
             total_to_pay['total'],
-            debug=True,
-            **params
+            debug=False,
+            stripe_params={
+                'source': shipment_serializer.validated_data['source'],
+                'card_token': shipment_serializer.validated_data['card_token'],
+                **params
+            }
         )
         if not payment_interface.completed:
             return payment_interface.get_fail_response()
@@ -106,7 +111,7 @@ def new_customer_order(request, **kwargs):
         # order in the datbase
         attrs = {
             'reference': get_random_string(12),
-            'stripe_charge': f'ch_{get_random_string(length=30)}',
+            'stripe_charge': payment_interface.payment_details.payment_intent_id,
             'user': request.user,
             'address': billing_address.address_line,
             'city': billing_address.city,
@@ -147,5 +152,6 @@ def new_customer_order(request, **kwargs):
         # webhooks = Webhook(request, '/my-path')
         # webhooks.send()
 
-        return Response({'state': True, 'reference': customer_order.reference, 'total': total_to_pay['total']})
+        return payment_interface.get_success_response(total=total_to_pay['total'])
+        # return Response({'state': True, 'reference': customer_order.reference, 'total': total_to_pay['total']})
     return Response({'message': 'Empty cart'}, status=status.HTTP_402_PAYMENT_REQUIRED)
