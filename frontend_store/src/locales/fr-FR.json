@@ -44,5 +44,9 @@
     "Page not available text": "Cette page n'est pas disponible, mais nous en avons beaucoup d'autres à te montrer",
     "Haut de page": "Haut de page",
     "Keep favorites text": "Crée un compte ou connecte-toi si tu en as déjà un et nous conserverons tes favoris pour que tu puisses les voir sur des dispositifs différents",
-    "Choississez votre mode de paiement": "Choississez votre mode de paiement"
+    "Choississez votre mode de paiement": "Choississez votre mode de paiement",
+    "Frais d'envoi": "Frais d'envoi",
+    "Gratuit": "Gratuit",
+    "Boutique": "Boutique",
+    "Payer somme": "Payer ({n})"
 }

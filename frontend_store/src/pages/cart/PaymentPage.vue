@@ -1,7 +1,7 @@
 <template>
   <div class="card shadow-sm">
     <div class="card-body">
-      <p class="fw-light">Choississez votre mode de paiement</p>
+      <p class="fw-light">{{ $t('Choississez votre mode de paiement') }}</p>
 
       <div class="list-group">
         <a v-for="paymentMethod in paymentMethods" :key="paymentMethod.name" href="#" :class="{ active: selectedPaymentMethod === paymentMethod.name }" class="list-group-item list-group-item-action p-3" @click.prevent="handlePaymentType(paymentMethod.name)">
@@ -13,19 +13,22 @@
       <hr v-if="hasSelectedPaymentMethod" class="my-5">
 
       <div v-if="hasSelectedPaymentMethod && selectedPaymentMethod !== 'Klarna'" class="payment">
-        <v-text-field placeholder="Card number" variant="outlined" autocomplete="cc-number"></v-text-field>
-
-        <div class="d-flex justify-content-start gap-1">
-          <v-text-field placeholder="Month" variant="outlined" autocomplete="cc-exp-month"></v-text-field>
-          <v-text-field placeholder="Year" variant="outlined" autocomplete="cc-exp-year"></v-text-field>
-          <v-text-field placeholder="CSV" variant="outlined" autocomplete="cc-csc"></v-text-field>
+        <div class="p-4">
+          <stripe-elements v-slot="{ elements }" ref="stripeElements" :stripe-key="stripeKey" :instance-options="instanceOptions" :elements-options="elementsOptions">
+            <stripe-element ref="card" :elements="elements" :options="cardOptions"></stripe-element>
+          </stripe-elements>
         </div>
 
-        <button type="button" class="btn btn-block btn-primary btn-rounded shadow-none fs-5 fw-bold" @click="handlePayment">
-          Payer ({{ translatePrice(cartStore.cartTotal) }})
+        <button type="button" class="btn btn-block btn-primary btn-rounded shadow-none fs-5 fw-bold" @click="handleStripe">
+          {{ $t('Payer somme', { n: translatePrice(cartStore.cartTotal) }) }}
         </button>
       </div>
       <div v-else-if="hasSelectedPaymentMethod && selectedPaymentMethod === 'Klarna'" id="klarna-payments-container"></div>
+    </div>
+
+    <div class="card-body d-flex gap-1 align-items-center justify-content-center">
+      <v-img src="/cards/mastercard.svg" height="30" width="30"></v-img>
+      <v-img src="/cards/visa.png" height="30" width="30"></v-img>
     </div>
   </div>
 </template>
@@ -38,26 +41,26 @@ import { storeToRefs } from 'pinia'
 import { useCart } from 'src/stores/cart'
 import { useUtilities } from 'src/composables/shop'
 import { useMessages } from 'src/stores/messages'
+import { StripeElements, StripeElement } from 'vue-stripe-js'
 
 const paymentMethods = [
   {
-    name: 'Mastercard',
+    name: 'Visa / Mastercard',
     icon: 'cc-mastercard'
   },
   {
-    name: 'Visa',
-    icon: 'cc-visa'
+    name: 'Klarna',
+    icon: 'klarna'
   }
-  // {
-  //   name: 'Klarna',
-  //   icon: 'klarna'
-  // }
 ]
 
 export default {
   name: 'PaymentPage',
+  components: {
+    StripeElements,
+    StripeElement
+  },
   setup () {
-    useScript({ src: 'https://js.stripe.com/v3' })
     useScript({ src: 'https://x.klarnacdn.net/kp/lib/v1/api.js' })
 
     const messagesStore = useMessages()
@@ -72,7 +75,25 @@ export default {
       return selectedPaymentMethod.value !== null
     })
 
+    const stripeKey = ref(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
+    const instanceOptions = ref({
+      // https://stripe.com/docs/js/initializing#init_stripe_js-options
+    })
+    const elementsOptions = ref({
+      // https://stripe.com/docs/js/elements_object/create#stripe_elements-options
+    })
+    const cardOptions = ref({
+      // https://stripe.com/docs/stripe.js#element-options
+      // value: {
+      //   postalCode: '12345',
+      // }
+    })
+
     return {
+      stripeKey,
+      instanceOptions,
+      elementsOptions,
+      cardOptions,
       cartStore,
       requestData,
       messagesStore,
@@ -83,6 +104,14 @@ export default {
     }
   },
   methods: {
+    /**
+     * @link https://github.com/ectoflow/vue-stripe-js 
+     */
+    async handleStripe () {
+      // Test card number: 4242424242424242
+      const result = await this.$refs.stripeElements.instance.createToken(this.$refs.card.stripeElement)
+      console.log(result)
+    },
     /**
      * Executes card tokenization and initiates the
      * payment on the backend side
