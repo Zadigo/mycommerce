@@ -306,6 +306,11 @@ class VueSession extends BaseStorage {
     }
   }
 
+  listContains (key, value) {
+    const result = this._getList(key)
+    return result.includes(value)
+  }
+
   toggle (key) {
     var result = this.retrieve(key)
     if (typeof result === 'boolean') {

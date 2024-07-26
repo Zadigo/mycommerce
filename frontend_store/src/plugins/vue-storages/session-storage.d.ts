@@ -63,6 +63,8 @@ declare class VueSession extends BaseStorage {
     /** */
     listCount(key: string, raiseError?: boolean): boolean
     /** */
+    listContains(key: string): boolean
+    /** */
     toggle(key: string): void
     /** */
     dictSet(key: string, subKey: string, value: unknown): void
