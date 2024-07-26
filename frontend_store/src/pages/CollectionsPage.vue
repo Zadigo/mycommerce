@@ -23,15 +23,17 @@
 <script>
 import { ref } from 'vue'
 import { useHead } from 'unhead'
-import { useCompany } from '@/composables/company';
+// import { useCompany } from '@/composables/company';
 
 export default {
   name: 'CollectionPage',
   setup () {
-    const { createTitle } = useCompany()
-    
     useHead({
-      title: createTitle('Collections')
+      title: 'Collections',
+      description: '',
+      meta: {
+
+      }
     })
 
     const collections = ref([])
