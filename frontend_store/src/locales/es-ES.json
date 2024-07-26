@@ -47,5 +47,9 @@
     "Choississez votre mode de paiement": "Choississez votre mode de paiement",
     "Frais d'envoi": "Frais d'envoi",
     "Gratuit": "Gratuit",
-    "Boutique": "Boutique"
+    "Boutique": "Boutique",
+    "Payer somme": "Payer ({n})",
+    "Voir plus de produits": "Voir plus de produits",
+    "Prix croissant": "Prix croissant",
+    "Prix décroissant": "Prix décroissant"
 }

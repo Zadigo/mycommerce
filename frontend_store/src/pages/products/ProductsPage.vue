@@ -46,6 +46,7 @@ import { useRoute } from 'vue-router'
 import { defineAsyncComponent } from 'vue'
 import { useAuthentication } from 'src/stores/authentication'
 import { defineProduct, useSchemaOrg } from '@unhead/schema-org'
+import { useUtilities } from 'src/composables/utils'
 
 import LoadingProductsFeed from '@/components/products/LoadingProductsFeed.vue'
 
@@ -59,6 +60,8 @@ export default {
     LoadingProductsFeed
   },
   setup () {
+    const { capitalizeFirstLetter } = useUtilities()
+
     const route = useRoute()
     const products = ref({})
     const productsLoading = ref(true)
@@ -67,7 +70,7 @@ export default {
     provide('productsLoading', productsLoading)
 
     const pageHead = useHead({
-      title: route.params.id.toUpperCase(),
+      title: capitalizeFirstLetter(route.params.id),
       description: '',
       ogTitle: route.params.id.toUpperCase(),
       // ogDescription: '',
@@ -88,7 +91,7 @@ export default {
           ]
         })
       }))
-    }, 400);
+    }, 400)
 
     return {
       pageHead,
@@ -115,6 +118,9 @@ export default {
     // if (this.$route.query.login === 0) {
     //   this.authenticationStore.showLoginDrawer = true
     // }
+  },
+  mounted () {
+    this.intersectionTarget = this.$refs.moreProductsIntersect
   },
   methods: {
     /**

@@ -17,7 +17,7 @@
               <ol v-else class="breadcrumb">
                 <li class="breadcrumb-item">
                   <router-link :to="{ name: 'shop_collections' }" class="link-dark">
-                    Shop
+                    {{ $t('Boutique') }}
                   </router-link>
                 </li>
 
@@ -305,17 +305,18 @@ import { mapActions, storeToRefs } from 'pinia'
 import { useCart } from 'src/stores/cart'
 import { useAuthentication } from 'src/stores/authentication'
 import { useShop } from  'src/stores/shop'
-import { useHead } from 'unhead'
 // import { useSeoMeta } from 'unhead'
-// import { useSchemaOrg, defineProduct, defineBreadcrumb } from '@unhead/schema-org'
 // import { useI18n } from 'vue-i18n'
+import { useSchemaOrg, defineProduct, defineBreadcrumb } from '@unhead/schema-org'
+import { useHead } from 'unhead'
 import { useShopComposable } from 'src/composables/shop'
 import { useIntersectionObserver } from '@vueuse/core'
 import { buildImagePath } from 'src/utils'
 import { useCartComposable } from 'src/composables/cart'
 import { useUtilities } from 'src/composables/shop'
 import { useCompany } from '@/composables/company'
-
+import { useRoute, useRouter } from 'vue-router'
+import { client } from 'src/plugins/axios'
 // import { VueImageZoomer } from 'vue-image-zoomer'
 
 import BaseSizeBlock from 'src/components/BaseSizeBlock.vue'
@@ -371,19 +372,37 @@ export default {
     const showDeliveryDrawer = ref(false)
     const showCompositionDrawer = ref(false)
 
+    const route = useRoute()
+    const router = useRouter()
     const currentProduct = ref({})
-
     const productVariants = ref([])
+
+    /**
+     * Request the details of the given product
+     * from the backend. This dos not use products
+     * that were preloaded in the products page but
+     * requests the product details on each page just
+     * like would do a static page
+     */
+    async function requestProduct () {
+      try {
+        const response = await client.get(`shop/products/${route.params.id}`)
+        currentProduct.value = response.data
+        isLoading.value = false
+      } catch (e) {
+        if (e.response.status === 404) {
+          router.push({ name: 'not_found' })
+        }
+      }
+    }
+
+    requestProduct()
 
     useIntersectionObserver(intersectionTarget, ([{ isIntersecting }], observerElement) => {
       observerElement
       isIntersecting
     })
 
-    useHead({
-      title: createTitle(currentProduct.value.name)
-    })
-    
     // const userSelection = ref({
     //   size: null,
     //   quantity: 1,
@@ -427,6 +446,54 @@ export default {
     //   ])
     // }, 800)
 
+    
+    useHead({
+      title: currentProduct.value.name,
+      // https://gist.github.com/whitingx/3840905
+      meta: [
+        {
+          name: 'language',
+          content: 'FR'
+        },
+        {
+          name: 'description',
+          content: currentProduct.value.description
+        },
+        {
+          name: 'robots',
+          content: 'index,follow'
+        }
+      ]
+    })
+
+    setTimeout(() => {
+      useSchemaOrg([
+        defineProduct({
+          // https://developers.google.com/search/docs/appearance/structured-data/product?hl=fr
+          name: currentProduct.value.name,
+          itemCondition: 'NewCondition',
+          image: currentProduct.value.get_main_image.original,
+          offers: [
+            {
+              price: currentProduct.value.price,
+              priceCurrency: 'EUR',
+              priceSpecification: 1
+            }
+          ]
+        }),
+        defineBreadcrumb([
+          { 
+            name: 'Boutique', 
+            item: '/' 
+          },
+          { 
+            name: currentProduct.value.category, 
+            item: router.resolve('shop_products_collection', { params: { id: currentProduct.value.category }}).fullPath
+          }
+        ])
+      ])
+    }, 300)
+
     return {
       documentVisible,
       intersectionTarget,
@@ -443,6 +510,7 @@ export default {
       isLoading,
       productVariants,
       showSizeSelectionWarning,
+      requestProduct,
       createTitle,
       addToCart,
       djangoMediaPath,
@@ -513,19 +581,19 @@ export default {
      * requests the product details on each page just
      * like would do a static page
      */
-    async requestProduct () {
-      try {
-        const response = await this.$http.get(`shop/products/${this.$route.params.id}`)
-        this.currentProduct = response.data
-        this.isLoading = false
-      } catch (e) {
-        if (e.response.status === 404) {
-          this.$router.push({
-            name: 'not_found'
-          })
-        }
-      }
-    },
+    // async requestProduct () {
+    //   try {
+    //     const response = await this.$http.get(`shop/products/${this.$route.params.id}`)
+    //     this.currentProduct = response.data
+    //     this.isLoading = false
+    //   } catch (e) {
+    //     if (e.response.status === 404) {
+    //       this.$router.push({
+    //         name: 'not_found'
+    //       })
+    //     }
+    //   }
+    // },
     /**
      * Handles the action of adding a product
      * to the current user's cart. Products that

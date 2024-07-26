@@ -67,7 +67,7 @@
 
         <div class="d-flex justify-content-right gap-1 align-items-center">
           <v-skeleton-loader v-if="productsLoading" type="text"></v-skeleton-loader>
-          <span v-else id="product-count" class="fw-bold me-2">{{ products.length }} produits trouvés</span>
+          <span v-else id="product-count" class="fw-bold me-2">{{ totalProductCount }} produits trouvés</span>
 
           <button type="button" :class="{ active: gridSize === 3 }" class="btn btn-sm btn-light shadow-none" @click="handleGridSize(3)">
             <font-awesome-icon :icon="['fas', 'table-cells-large']" />
@@ -83,8 +83,8 @@
 
             <v-menu activator="parent">
               <v-list>
-                <v-list-item v-for="(item, i) in sortingOptions" :key="i" :value="item">
-                  <v-list-item-title>{{ item }}</v-list-item-title>
+                <v-list-item v-for="(item, i) in sortingOptions" :key="i" :value="item" @click="$emit('update:sorting', item)">
+                  <v-list-item-title>{{ $t(item) }}</v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -96,10 +96,11 @@
 </template>
 
 <script>
+import _ from 'lodash'
+
 import { ref, inject } from 'vue'
 
 import sizes from 'src/data/sizes.json'
-import _ from 'lodash';
 
 const sortingOptions = [
   'Prix croissant',
@@ -112,10 +113,18 @@ export default {
     products: {
       type: Array,
       default: () => []
+    },
+    totalProductCount: {
+      type: Number,
+      default: 0
     }
   },
   emits: {
     'update-grid-size' () {
+      return true
+    },
+    'update:sorting' (value) {
+      console.log('update:sorting', value)
       return true
     }
   },
