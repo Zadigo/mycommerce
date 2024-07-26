@@ -6,7 +6,7 @@
           <div class="card shadow-none mb-1">
             <div class="card-body d-flex flex-row justify-content-start">
               <h1 aria-labelledby="Soutien-Gorge corbeille" class="text-uppercase fw-bold h4">
-                Soutien-Gorge corbeille
+                {{ $route.params.id }}
               </h1>
             </div>
           </div>
@@ -96,6 +96,7 @@ export default {
     return {
       pageHead,
       products,
+      capitalizeFirstLetter,
       authenticationStore,
       productsLoading
     }
