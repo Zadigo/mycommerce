@@ -36,7 +36,6 @@
 <script>
 import { ref } from 'vue'
 import { computed } from 'vue'
-import { useScript } from 'unhead'
 import { storeToRefs } from 'pinia'
 import { useCart } from 'src/stores/cart'
 import { useUtilities } from 'src/composables/shop'
@@ -61,8 +60,6 @@ export default {
     StripeElement
   },
   setup () {
-    useScript({ src: 'https://x.klarnacdn.net/kp/lib/v1/api.js' })
-
     const messagesStore = useMessages()
     const cartStore = useCart()
     const { requestData } = storeToRefs(cartStore)
