@@ -300,30 +300,28 @@
 import _ from 'lodash'
 import 'vue-image-zoomer/dist/style.css'
 
-import { ref, inject, defineAsyncComponent } from 'vue'
-import { mapActions, storeToRefs } from 'pinia'
-import { useCart } from 'src/stores/cart'
-import { useAuthentication } from 'src/stores/authentication'
-import { useShop } from  'src/stores/shop'
-// import { useSeoMeta } from 'unhead'
-// import { useI18n } from 'vue-i18n'
-import { useSchemaOrg, defineProduct, defineBreadcrumb } from '@unhead/schema-org'
-import { useHead } from 'unhead'
-import { useShopComposable } from 'src/composables/shop'
-import { useIntersectionObserver } from '@vueuse/core'
-import { buildImagePath } from 'src/utils'
-import { useCartComposable } from 'src/composables/cart'
-import { useUtilities } from 'src/composables/shop'
 import { useCompany } from '@/composables/company'
-import { useRoute, useRouter } from 'vue-router'
+import { defineBreadcrumb, defineProduct, useSchemaOrg } from '@unhead/schema-org'
+import { useIntersectionObserver } from '@vueuse/core'
+import { mapActions, storeToRefs } from 'pinia'
+import { useCartComposable } from 'src/composables/cart'
+import { useShopComposable, useUtilities } from 'src/composables/shop'
 import { client } from 'src/plugins/axios'
+import { useAuthentication } from 'src/stores/authentication'
+import { useCart } from 'src/stores/cart'
+import { useShop } from 'src/stores/shop'
+import { buildImagePath } from 'src/utils'
+import { useHead, useSeoMeta } from 'unhead'
+import { defineAsyncComponent, inject, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 // import { VueImageZoomer } from 'vue-image-zoomer'
 
 import BaseSizeBlock from 'src/components/BaseSizeBlock.vue'
+import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
 import DeliveryType from 'src/components/product/DeliveryType.vue'
 import DeliveryTypes from 'src/components/product/DeliveryTypes.vue'
 import FiveImages from 'src/components/product/FiveImages.vue'
-import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
 import SixImages from 'src/components/product/SixImages.vue'
 
 export default {
@@ -337,16 +335,12 @@ export default {
     LoadingRecommendationsBlock,
     // VueImageZoomer,
     AsyncRecommendationBlock: defineAsyncComponent({
-      loader: () => import('components/RecommendationsBlock.vue'),
+      loader: () => import('src/components/RecommendationsBlock.vue'),
       delay: 500
     })
   },
-  // beforeRouteEnter (to, from, next) {
-  //   next(vm => {
-  //     vm.handleViewingHistory(vm.currentProduct)
-  //   })
-  // },
   setup () {
+    const { locale } = useI18n()
     const { createTitle } = useCompany()
     const documentVisible = inject('documentVisible')
 
@@ -396,8 +390,6 @@ export default {
       }
     }
 
-    requestProduct()
-
     useIntersectionObserver(intersectionTarget, ([{ isIntersecting }], observerElement) => {
       observerElement
       isIntersecting
@@ -408,60 +400,22 @@ export default {
     //   quantity: 1,
     // })
 
-    // const productPath = router.resolve({ name: 'shop_product', params: { id: route.params.id } })
-    // setTimeout(() => {
-    //   useSeoMeta({
-    //     title: currentProduct.value.name,
-    //     description: currentProduct.value.description,
-    //     ogTitle: currentProduct.value.name,
-    //     ogDescription: currentProduct.value.description,
-    //     ogImage: buildImagePath(currentProduct.value.get_main_image.original),
-    //     twitterCard: 'summary_large_image',
-    //     ogSiteName: 'Ma Boutique'
-    //   })
-
-    //   useSchemaOrg([
-    //     defineProduct({
-    //       name: currentProduct.value.name,
-    //       itemCondition: 'NewCondition',
-    //       brand: 'My Brand',
-    //       logo: '',
-    //       description: currentProduct.value.description,
-    //       image: [
-    //         buildImagePath(currentProduct.value.get_main_image.original)
-    //       ],
-    //       offers: [
-    //         { 
-    //           price: currentProduct.value.price
-    //         }
-    //       ]
-    //     }),
-    //     defineBreadcrumb({
-    //       itemListElement: [
-    //         { name: 'Boutique', item: '/' },
-    //         { name: 'Soutien-Gorge', item: productPath.fullPath },
-    //         { name: currentProduct.value.name },
-    //       ],
-    //     })
-    //   ])
-    // }, 800)
-
+    useSeoMeta({
+      // https://gist.github.com/whitingx/3840905
+      title: currentProduct.value.name,
+      description: currentProduct.value.description,
+      robots: 'index,follow',
+      ogTitle: currentProduct.value.name,
+      ogImage: currentProduct.value.get_main_image?.original,
+    }, {
+      
+    })
     
     useHead({
-      title: currentProduct.value.name,
-      // https://gist.github.com/whitingx/3840905
       meta: [
         {
           name: 'language',
-          content: 'FR'
-        },
-        {
-          name: 'description',
-          content: currentProduct.value.description
-        },
-        {
-          name: 'robots',
-          content: 'index,follow'
+          content: locale.value
         }
       ]
     })
@@ -472,7 +426,7 @@ export default {
           // https://developers.google.com/search/docs/appearance/structured-data/product?hl=fr
           name: currentProduct.value.name,
           itemCondition: 'NewCondition',
-          image: currentProduct.value.get_main_image.original,
+          image: currentProduct.value.get_main_image?.original,
           offers: [
             {
               price: currentProduct.value.price,
@@ -567,33 +521,16 @@ export default {
   created () {
     this.isLiked = this.localStorageData.likedProducts.includes(this.$route.params.id * 1)
     this.requestProduct()
+    
+    setTimeout(() => {
+      this.addToHistory(this.currentProduct)
+    }, 5000)
   },
   mounted () {
     this.intersectionTarget = this.$refs.moreProductsIntersect
-    this.addToHistory(this.currentProduct)
   },
   methods: {
     ...mapActions(useShop, ['addToHistory']),
-    /**
-     * Request the details of the given product
-     * from the backend. This dos not use products
-     * that were preloaded in the products page but
-     * requests the product details on each page just
-     * like would do a static page
-     */
-    // async requestProduct () {
-    //   try {
-    //     const response = await this.$http.get(`shop/products/${this.$route.params.id}`)
-    //     this.currentProduct = response.data
-    //     this.isLoading = false
-    //   } catch (e) {
-    //     if (e.response.status === 404) {
-    //       this.$router.push({
-    //         name: 'not_found'
-    //       })
-    //     }
-    //   }
-    // },
     /**
      * Handles the action of adding a product
      * to the current user's cart. Products that
