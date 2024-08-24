@@ -1,10 +1,9 @@
+from accounts.choices import Genders
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-
-from accounts.choices import Genders
 
 
 class Address(models.Model):
@@ -58,7 +57,7 @@ class Address(models.Model):
     @property
     def get_full_name(self):
         return f'{self.firstname} {self.lastname}'
-    
+
     @property
     def get_full_address_line(self):
         return f'{self.address_line}, {self.city}, {self.zip_code}'
