@@ -394,7 +394,7 @@ export default {
     searchProducts: _.debounce(async function () {
       try {
         if (this.search && this.search !== "") {
-          const response = await this.$http.get('shop/search', {
+          const response = await this.$http.get('shop/products/search', {
             params: {
               q: this.search
             }

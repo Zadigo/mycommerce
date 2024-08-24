@@ -41,22 +41,20 @@ urlpatterns = [
     re_path(
         r'^products/(?P<pk>\d+)$',
         shop_views.GetProduct.as_view()
-        # shop_views.get_product
     ),
     re_path(
-        r'^search$',
-        shop_views.SearchShop.as_view()
-        # shop_views.get_product
+        r'^products/search$',
+        shop_views.SearchShop.as_view(),
+        name='api_products_search'
     ),
     re_path(
-        r'^recommendations$',
-        # shop_views.list_recommendations
-        shop_views.ListRecommendations.as_view()
+        r'^products/recommendations$',
+        shop_views.ListRecommendations.as_view(),
+        name='api_list_recommendations'
     ),
     re_path(
         r'^products$',
         shop_views.ListProducts.as_view(),
         name='api_list_products'
-        # shop_views.list_products
     )
 ]

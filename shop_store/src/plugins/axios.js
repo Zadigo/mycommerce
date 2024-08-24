@@ -25,7 +25,7 @@ function getApiUrl () {
  * Client -> Quart/Flask 
  */
 const quartClient = axios.create({
-  baseURL: 'http://127.0.0.1:5000/api/v2/',
+  baseURL: 'http://127.0.0.1:5000/api/v1/',
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
   timeout: 10000

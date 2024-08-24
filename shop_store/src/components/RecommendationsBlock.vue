@@ -48,7 +48,7 @@ export default {
     
     async function requestRecommendations () {
       try {
-        const response = await client.get('shop/recommendations', {
+        const response = await client.get('shop/products/recommendations', {
           params: {
             p: route.params.id,
             q: props.quantity

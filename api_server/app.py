@@ -13,7 +13,7 @@ cors_app = cors(
 )
 
 
-@cors_app.route('/api/v2/test', methods=['post'])
+@cors_app.route('/api/v1/test', methods=['post'])
 def testing():
     return jsonify({'state': True})
 

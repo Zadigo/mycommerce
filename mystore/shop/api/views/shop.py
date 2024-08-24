@@ -2,6 +2,7 @@ import random
 
 import pandas
 import spacy
+from django.core.cache import cache
 from django.db.models import Case, Q, When
 from django.db.models.functions.window import Rank
 from django.shortcuts import get_object_or_404
@@ -10,7 +11,6 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.mixins import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-
 from shop.api import CustomPagination
 from shop.api.serializers import admin as admin_serializers
 from shop.api.serializers import shop as shop_serializers
@@ -26,7 +26,7 @@ class ListProducts(ListAPIView):
     def get_queryset(self):
         queryset = self.queryset.filter(active=True)
 
-        search = self.request.GET.get('q', None)
+        search = self.request.GET.get('q')
         if search is not None:
             logic = (
                 Q(name=search) |
@@ -70,10 +70,6 @@ class GetProduct(RetrieveAPIView):
     http_method_names = ['get']
 
     def retrieve(self, request, *args, **kwargs):
-        is_admin = request.GET.get('admin', False)
-        if is_admin == 'true':
-            self.serializer_class = admin_serializers.AdminProductSerializer
-
         product = self.get_object()
         serializer = self.get_serializer(product)
 

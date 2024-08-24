@@ -1,15 +1,11 @@
-import json
 from mimetypes import guess_type
 
 import pandas
 from django.core.validators import FileExtensionValidator
 from django.db import IntegrityError
-from django.db.models import Value
 from rest_framework import fields
 from rest_framework.exceptions import ValidationError
-from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.serializers import Serializer
-
 from shop.api.serializers.shop import ImageSerializer
 from shop.api.validators import validate_image_ids
 from shop.models import Image, Product
@@ -87,7 +83,6 @@ class ValidateFileUpload(Serializer):
         df.name = df.name.map(clean_text)
         empty_names = df[df.name.isna()]
         df = df.loc[~df.name.isna()]
-        print(df)
         setattr(self, '_db_creation_errors', [])
 
         def create_new_products():
