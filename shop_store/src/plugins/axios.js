@@ -21,6 +21,19 @@ function getApiUrl () {
   }
 }
 
+/**
+ * Client -> Quart/Flask 
+ */
+const quartClient = axios.create({
+  baseURL: 'http://127.0.0.1:5000/api/v2/',
+  headers: { 'Content-Type': 'application/json' },
+  withCredentials: true,
+  timeout: 10000
+})
+
+/**
+ * Client -> Django 
+ */
 const client = axios.create({
   baseURL: getApiUrl(),
   headers: { 'Content-Type': 'application/json' },
@@ -59,6 +72,7 @@ client.interceptors.response.use(
 )
 
 export {
-  client
+  client,
+  quartClient
 }
 
