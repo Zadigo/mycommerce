@@ -1,0 +1,129 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-depl
+spec:
+  selector:
+    matchLabels:
+      app: django-app
+  template:
+    metadata:
+      labels:
+        app: django-app
+    spec:
+      containers:
+      - name: django-app
+        image: python:latest
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+          name: django-config
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8000
+          name: django-port
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vite-depl
+spec:
+  selector:
+    matchLabels:
+      app: vite-app
+  template:
+    metadata:
+      labels:
+        app: vite-app
+    spec:
+      volumes:
+      - name: shop-store-storage
+        persistentVolumeClaim:
+          claimName: django-pvc
+      containers:
+      - name: vite-app
+        image: node:latest
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: VITE_STRIPE_PUBLISHABLE_KEY
+            valueFrom:
+              secretKeyRef:
+                key: admin-secret
+                name: admin-Secret
+          - name: VITE_STRIPE_ACCOUNT
+            valueFrom:
+              secretKeyRef:
+                key: admin-secret
+                name: admin-Secret
+          - name: VITE_API_VERSION
+            value: "2024-06-20"
+          - name: VITE_STRIPE_LOCALE
+            value: fr
+          - name: VITE_DEVELOPMENT_API_URL
+            valueFrom:
+              configMapKeyRef:
+                key: development_api_url
+          - name: VITE_PRODUCTION_API_URL
+            valueFrom:
+              configMapKeyRef:
+                key: production_api_url
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5173
+          name: vite-port
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-depl
+spec:
+  selector:
+    matchLabels:
+      app: admin-app
+  template:
+    metadata:
+      labels:
+        app: admin-app
+    spec:
+      volumes:
+        - name: admin-storage
+          persistentVolumeClaim:
+            claimName: django-pvc
+      containers:
+      - name: admin-app
+        image: node:latest
+        imagePullPolicy: Always
+        env:
+        - name: VITE_STRIPE_PUBLISHABLE_KEY
+          valueFrom:
+            secretKeyRef:
+              key: admin-secret
+              name: admin-Secret
+        - name: VITE_STRIPE_ACCOUNT
+          valueFrom:
+            secretKeyRef:
+              key: admin-secret
+              name: admin-Secret
+        - name: VITE_API_VERSION
+          value: "2024-06-20"
+        - name: VITE_STRIPE_LOCALE
+          value: fr
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5174
+          name: quasar-port

@@ -1,0 +1,5 @@
+/dist
+/node_modules
+.eslintrc.js
+index.d.ts
+/dev-dist

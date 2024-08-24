@@ -8,7 +8,7 @@
             "name": "Django: Fashion E-commerce",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}\\manage.py",
+            "program": "${workspaceFolder}\\mystore\\manage.py",
             "args": [
                 "runserver"
             ],
@@ -19,17 +19,21 @@
             "request": "launch",
             "name": "vuejs:edge",
             "url": "http://localhost:5173/",
-            "webRoot": "${workspaceFolder}/frontend_store/",
+            "webRoot": "${workspaceFolder}/shop_store/",
             "preLaunchTask": "e-commerce: start",
             "vueComponentPaths": [
-                "${workspaceFolder}/frontend_store/src/**/*.vue"
+                "${workspaceFolder}/shop_store/src/**/*.vue"
             ],
             "sourceMapPathOverrides": {
-                "webpack:///src/compsables/*.js": "${webRoot}/src/**/*.js"
+                "*": "${workspaceFolder}/shop_store/src/*",
+                "/src/": "${workspaceFolder}/shop_store/src/*",
+                "webpack:/*": "${workspaceFolder}/shop_store/*",
+                // "/./*": "${workspaceFolder}/shop_store/*",
+                // "webpack:///src/compsables/*.js": "${webRoot}/src/**/*.js"
             },
             "skipFiles": [
-                "${workspaceFolder}/frontend_store/node_modules/**/*.js",
-                "${webRoot}/node_modules/*",
+                "${workspaceFolder}/shop_store/node_modules/**/*.js",
+                "${workspaceFolder}/node_modules/*",
                 "<node_internals>/**"
             ],
             "env": {}
