@@ -1,0 +1,28 @@
+{% extends "base_site.html" %}
+{% load i18n cache %}
+
+{% block title %}{% trans "" %}{% endblock %}
+
+{% block title %}{% trans "Créer un compte" %}{% endblock %}
+
+{% block style %}
+<style>
+    body {
+        background-color: rgb(251, 251, 251);
+    }
+</style>
+{% endblock %}
+
+{% block container %}
+    <div class="row d-flex justify-content-center my-5">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body pb-1">
+                    <a href="{{ redirect_url }}?login=1" class="btn btn-block btn-primary btn-rounded btn-lg shadow-none mt-4">
+                        {% trans "Se connecter" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -73,6 +73,7 @@ urlpatterns = [
 
     re_path(r'^test', views.TestPage.as_view()),
 
+    path('accounts/', include('accounts.urls')),
     path('collection/', include('collection.urls')),
     path('shop/', include('shop.urls')),
     path('admin/', admin.site.urls),
@@ -87,7 +88,11 @@ urlpatterns = [
 
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL,
-                          document_root=settings.STATIC_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )
+    urlpatterns += static(
+        settings.STATIC_URL,
+        document_root=settings.STATIC_ROOT
+    )

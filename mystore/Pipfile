@@ -31,6 +31,7 @@ django-allauth = {extras = ["socialaccount"], version = "*"}
 django-ckeditor-5 = "*"
 drf-spectacular = "*"
 markdown = "*"
+pyotp = "*"
 
 [dev-packages]
 autopep8 = "*"

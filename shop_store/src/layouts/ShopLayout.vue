@@ -33,11 +33,16 @@
                 <v-text-field v-model="email" :placeholder="$t('Email')" variant="outlined" type="email" autocomplete="email"></v-text-field>
                 <v-text-field v-model="password" :placeholder="$t('Mot de passe')" variant="outlined" type="password" autocomplete="current-password"></v-text-field>
 
-                <v-btn class="text-light" color="dark" size="x-large" block flat rounded @click="handleLogin">{{ $t('Se connecter') }}</v-btn>
+                <v-btn class="text-light" color="dark" size="x-large" block flat rounded @click="handleLogin">
+                  {{ $t('Se connecter') }}
+                </v-btn>
               </v-form>
 
               <p class="flex-grow text-center fw-light mt-3">
-                {{ $t('No account signup text') }}
+                {{ $t('No account signup text') }} 
+                <a :href="signupUrl" target="_blank" rel="noopener noreferrer">
+                  Inscris-toi
+                </a>
               </p>
             </div>
           </div>
@@ -349,6 +354,18 @@ export default {
   },
   computed: {
     ...mapState(useCart, ['cartTotal']),
+    /**
+     * Returns the Django signup url that will be
+     * used to create a new user
+     * 
+     * @returns {String}
+     */
+    signupUrl () {
+      const url = import.meta.env.VITE_DEVELOPMENT_SIGNUP_URL
+      const query = new URLSearchParams()
+      query.append('c', this.$route.path)
+      return url + `?${query}`
+    }
   },
   created () {
     this.cartStore.loadFromCache()

@@ -38,17 +38,19 @@ INSTALLED_APPS = [
     'django_extensions',
     'django.contrib.sitemaps',
     'django.contrib.sites',
+    'django.contrib.humanize',
+
 
     'corsheaders',
     'drf_spectacular',
     'rest_framework',
     'rest_framework.authtoken',
-    'django.contrib.humanize',
     'debug_toolbar',
     'import_export',
     'django_ckeditor_5',
 
     'allauth',
+    'allauth.usersessions',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
@@ -278,6 +280,17 @@ AUTHENTICATION_BACKENDS = [
 # Django All Auth for more information
 # on the settings for django-allauth
 # https://docs.allauth.org/en/latest/socialaccount/provider_configuration.html
+# For two factor authentication, see:
+# https://stackoverflow.com/questions/54908541/django-two-factor-authentication
+# https://github.com/pyauth/pyotp?tab=readme-ov-file
+# https://github.com/soldair/node-qrcode
+
+USERSESSIONS_TRACK_ACTIVITY = False
+
+SOCIALACCOUNT_FORMS = {
+    'signup': 'accounts.forms.SocialSignupForm',
+    'disconnect': 'accounts.forms.SocialLogoutForm',
+}
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
