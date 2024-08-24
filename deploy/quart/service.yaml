@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: quart-app
+spec:
+  selector:
+    app: quart
+  ports:
+  - port: 5000
+    targetPort: quart-port
