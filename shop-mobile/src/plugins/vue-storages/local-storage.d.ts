@@ -14,7 +14,7 @@ declare class VueLocalStorage extends BaseStorage {
   setup(app: App): void
 }
 
-export let VueLocalStorageInstance: VueLocalStorage
+export let VueLocalStorageInstance: VueLocalStorage | null
 
 declare global {
 
@@ -32,7 +32,7 @@ declare function useVueLocalStorage(): {
   data: Ref<object>
   /** */
   sessionId: Ref<string | number>
-  instance: VueLocalStorage
+  instance: VueLocalStorage | null
 }
 
 declare module '@vue/runtime-core' {

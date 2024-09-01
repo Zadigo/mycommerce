@@ -1,8 +1,10 @@
 import { createApp } from 'vue'
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import { createVueLocalStorage, createVueSession } from './plugins/vue-storages';
 
 import App from './App.vue'
 import router from './router';
+import '@/plugins/index'
 
 import { IonicVue } from '@ionic/vue';
 
@@ -35,13 +37,21 @@ import '@ionic/vue/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import { createPinia } from 'pinia';
 
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'mdb-ui-kit/css/mdb.min.css'
+// import 'bootstrap/dist/css/bootstrap.min.css'
+// import 'mdb-ui-kit/css/mdb.min.css'
+
+const localstorage = createVueLocalStorage()
+const session = createVueSession()
+const pinia = createPinia()
 
 const app = createApp(App)
   .use(IonicVue)
   .use(router)
+  .use(localstorage)
+  .use(session)
+  .use(pinia)
   .component("FontAwesomeIcon", FontAwesomeIcon);
 
 router.isReady().then(() => {

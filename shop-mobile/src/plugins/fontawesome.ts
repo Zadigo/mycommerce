@@ -1,5 +1,13 @@
 import { library } from "@fortawesome/fontawesome-svg-core"
-import { faHome } from "@fortawesome/free-solid-svg-icons"
-
+import { faChevronLeft, faHeart, faHome, faShoppingBag, faShoppingCart, faSliders, faTableCells, faTableCellsLarge } from "@fortawesome/free-solid-svg-icons"
+import { faSquare as farSquare } from '@fortawesome/free-regular-svg-icons'
 
 library.add(faHome)
+library.add(faShoppingBag)
+library.add(faShoppingCart)
+library.add(farSquare);
+library.add(faTableCellsLarge)
+library.add(faTableCells)
+library.add(faChevronLeft)
+library.add(faSliders)
+library.add(faHeart)

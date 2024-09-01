@@ -21,16 +21,8 @@
           <p>Cela peut t'intéresser</p>
 
           <ion-row>
-            <ion-col v-for="i in 30" :key="i" size="6">
-              <ion-img :src="`/img1.jpg`"></ion-img>
-
-              <div class="ion-flex ion-justify-content-between">
-                <p class="fw-light">Some product {{ i }}</p>
-                <ion-icon :icon="heart"></ion-icon>
-              </div>
-              <p class="price fw-bold">12.44€</p>
-              <!-- <ion-card>
-              </ion-card> -->
+            <ion-col v-for="product in products" :key="product.id" size="6">
+              <product-card :product="product":show-add-to-favorite="true" />              
             </ion-col>
           </ion-row>
         </ion-col>
@@ -40,17 +32,23 @@
 </template>
 
 <script setup lang="ts">
-import { IonCol, IonContent, IonIcon, IonImg, IonInput, IonHeader, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/vue';
-import { heart } from 'ionicons/icons';
+import { IonCol, IonContent, IonHeader, IonInput, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/vue';
 import { onBeforeMount, ref } from 'vue';
 
-const products = ref([])
+import ProductCard from '@/components/products/ProductCard.vue';
 
-const getProducts = async function () {
-  products.value = []
-}
+const products = ref([])
 
 onBeforeMount(() => {
   getProducts()
 })
+
+const getProducts = async function () {
+  products.value = Array.from({ length: 30 }, (a, b) => {
+    return {
+      id: b,
+      name: `Product ${b}`
+    }
+  })
+}
 </script>
