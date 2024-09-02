@@ -3,7 +3,7 @@
     <ion-header :translucent="true">
       <ion-toolbar>
         <ion-buttons>
-          <ion-button slot="start">
+          <ion-button slot="start" @click="router.back()">
             <font-awesome-icon :icon="['fas', 'chevron-left']"></font-awesome-icon>
           </ion-button>
         </ion-buttons>
@@ -18,19 +18,34 @@
       <ion-grid style="padding-left: 0; padding-right: 0;">
         <ion-row>
           <ion-col id="img-block" size="12" style="padding-left: 0; padding-right: 0; padding-top: 0;">
-            <ion-img src="/img1.jpg"></ion-img>
+            <!-- <ion-img src="/img1.jpg"></ion-img> -->
+            <!-- https://swiperjs.com/element -->
+            <swiper-container pagination="true" @swiperslidechange="() => {}">
+              <swiper-slide lazy="true">
+                <img src="/img1.jpg" loading="lazy" />
+              </swiper-slide>
+              <swiper-slide lazy="true">
+                <img src="/img2.jpg" loading="lazy" />
+              </swiper-slide>
+              <swiper-slide lazy="true">
+                <img src="/img3.jpg" loading="lazy" />
+              </swiper-slide>
+              <swiper-slide lazy="true">
+                <img src="/img4.jpg" loading="lazy" />
+              </swiper-slide>
+            </swiper-container>
 
-            <ion-button id="btn-heart" color="light" shape="round">
-              <font-awesome-icon :icon="['fas', 'heart']"></font-awesome-icon>
+            <ion-button id="btn-share" color="light" shape="round" fill="clear" style="z-index: 2000;">
+              <ion-icon :icon="shareSocial"></ion-icon>
             </ion-button>
-            <ion-button id="btn-share" color="light" shape="round">
-              <font-awesome-icon :icon="['fas', 'share']"></font-awesome-icon>
+            <ion-button id="btn-heart" color="light" shape="round" style="z-index: 2000;">
+              <font-awesome-icon :icon="['far', 'heart']"></font-awesome-icon>
             </ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>
 
-      <ion-modal :is-open="true" :initial-breakpoint="0.25" :breakpoints="[0.25, 0.75, 1]" :backdrop-dismiss="false" :backdrop-breakpoint="0.5" handle-behavior="cycle">
+      <!-- <ion-modal :is-open="true" :initial-breakpoint="0.25" :breakpoints="[0.25, 0.75, 1]" :backdrop-dismiss="false" :backdrop-breakpoint="0.5" handle-behavior="cycle">
         <ion-content class="ion-padding">
           <ion-col size="12">
             <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -55,21 +70,47 @@
             <grid-display :products="recommendations" :columns="2"></grid-display>
           </ion-col>
         </ion-content>
-      </ion-modal>
+      </ion-modal> -->
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import GridDisplay from '@/components/products/GridDisplay.vue';
+import {
+  IonButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonPage,
+  IonRow,
+  IonToolbar,
+  useIonRouter
+} from '@ionic/vue';
+
+import { useShop } from '@/stores/shop';
 import { Product } from '@/types/collections';
-import { IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonImg, IonItem, IonList, IonModal, IonPage, IonRow, IonToolbar } from '@ionic/vue';
-import { onBeforeMount, ref } from 'vue';
+import { shareSocial } from 'ionicons/icons';
+import _ from 'lodash';
+import { storeToRefs } from 'pinia';
+import { register } from 'swiper/element';
+import { computed, onBeforeMount, ref } from 'vue';
+
+register()
 
 const recommendations = ref<Product[]>([])
+const router = useIonRouter()
+const store = useShop()
+const { likedProducts, currentProduct } = storeToRefs(store)
 
 onBeforeMount(() => {
   requestRecommendations()
+})
+
+const isLiked = computed((): boolean => {
+  const product =  _.find(likedProducts.value, { id: currentProduct.value.id })
+  return product === null ? false : true
 })
 
 const requestRecommendations = async function () {
@@ -83,14 +124,20 @@ const requestRecommendations = async function () {
 </script>
 
 <style scoped>
+ion-grid {
+  padding-top: 0;
+}
+
 #img-block {
   position: relative;
 }
+
 #btn-share {
   position: absolute;
   right: 3%;
   bottom: 3%;
 }
+
 #btn-heart {
   position: absolute;
   right: 3%;

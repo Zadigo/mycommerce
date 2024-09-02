@@ -1,21 +1,21 @@
 <template>
-  <ion-card>
+  <ion-card id="product">
     <ion-img src="/img5.jpg" @click="handleGoToProduct"></ion-img>
     
-    <ion-card-content v-if="showProductInfo" class="ion-padding-left-none">
+    <ion-card-content v-if="showProductInfo">
       <div class="product-info">
         <div class="info">
           <h5>{{ product.name }}</h5>
-          <p>56.4€</p>
+
+          <ion-button v-if="showAddToFavorite" shape="round" fill="clear" color="dark" size="small">
+            <font-awesome-icon :icon="['far', 'heart']"></font-awesome-icon>
+          </ion-button>
+          <ion-button v-else shape="round" size="small" fill="clear" color="dark" @click="emit('show-product-sizes', product)">
+            <font-awesome-icon :icon="['fas', 'shopping-cart']"></font-awesome-icon>
+          </ion-button> 
         </div>
 
-        <ion-button v-if="showAddToFavorite" shape="round" size="small">
-          <font-awesome-icon :icon="['fas', 'heart']"></font-awesome-icon>
-        </ion-button>
-             
-        <ion-button v-else shape="round" size="small" @click="emit('show-product-sizes', product)">
-          <font-awesome-icon :icon="['fas', 'shopping-cart']"></font-awesome-icon>
-        </ion-button> 
+        <p class="price">56.4€</p>
       </div>
     </ion-card-content>
   </ion-card>
@@ -49,9 +49,18 @@ const { handleGoToProduct } = useProducts()
 </script>
 
 <style scoped>
-.product-info {
+#product h5 {
+  font-weight: 400;
+}
+
+#product .price {
+  font-weight: 700;
+}
+
+.product-info .info {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .product-info h5 {
@@ -66,5 +75,11 @@ ion-card {
   border-radius: 0;
   box-shadow: none;
   margin: 0;
+}
+
+ion-card-content {
+  padding-top: 5px;
+  padding-left: 7px;
+  padding-right: 7px;
 }
 </style>

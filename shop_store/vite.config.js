@@ -17,7 +17,6 @@ export default defineConfig(({ mode }) => {
   return {
     root,
     resolve: {
-      extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.vue'],
       alias: {
         '@': resolve(__dirname, './src'),
         'src': resolve(__dirname, './src'),
@@ -25,6 +24,7 @@ export default defineConfig(({ mode }) => {
         'layouts': resolve(__dirname, './src/layouts'),
         'pages': resolve(__dirname, './src/pages'),
         'stores': resolve(__dirname, './src/stores'),
+        'plugins': resolve(__dirname, './src/plugins'),
         'data': resolve(__dirname, './src/data'),
         'composables': resolve(__dirname, './src/composables'),
         'assets': resolve(__dirname, './src/assets')
@@ -71,10 +71,7 @@ export default defineConfig(({ mode }) => {
       })
     ],
     test: {
-      alias: {
-        '@/': resolve(__dirname, './src'),
-        'src': resolve(__dirname, './src')
-      },
+      globals: true,
       browser: {
         enabled: true,
         name: 'chrome'

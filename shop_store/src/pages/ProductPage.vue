@@ -296,7 +296,7 @@
   </shop-layout>
 </template>
 
-<script>
+<script lang="ts">
 import _ from 'lodash'
 import 'vue-image-zoomer/dist/style.css'
 
@@ -312,7 +312,7 @@ import { useCart } from 'src/stores/cart'
 import { useShop } from 'src/stores/shop'
 import { buildImagePath } from 'src/utils'
 import { useHead, useSeoMeta } from 'unhead'
-import { defineAsyncComponent, inject, ref } from 'vue'
+import { defineAsyncComponent, inject, ref, defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 // import { VueImageZoomer } from 'vue-image-zoomer'
@@ -323,8 +323,9 @@ import DeliveryType from 'src/components/product/DeliveryType.vue'
 import DeliveryTypes from 'src/components/product/DeliveryTypes.vue'
 import FiveImages from 'src/components/product/FiveImages.vue'
 import SixImages from 'src/components/product/SixImages.vue'
+import { Product } from '@/types/shop'
 
-export default {
+export default defineComponent({
   name: 'ProductPage',
   components: {
     BaseSizeBlock,
@@ -368,7 +369,7 @@ export default {
 
     const route = useRoute()
     const router = useRouter()
-    const currentProduct = ref({})
+    const currentProduct = ref<Product>({})
     const productVariants = ref([])
 
     /**
@@ -570,7 +571,7 @@ export default {
       }
     }
   }
-}
+})
 </script>
 
 <style scoped>

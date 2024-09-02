@@ -22,7 +22,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = get_debug()
 
-ALLOWED_HOSTS = ['127.0.0.1', '*.ngrok-free.app']
+ALLOWED_HOSTS = ['localhost', 'capacitor://localhost',
+                 '127.0.0.1', '*.ngrok-free.app']
 
 
 # Application definition
@@ -192,18 +193,22 @@ CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOW_CREDENTIALS = True
 
+CORS_ALLOWED_ORIGIN_REGEXES = []
+
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8100',
     'http://localhost:8080',
     'http://localhost:5200',
     'http://localhost:5173',
+    'http://localhost:8100',
+    'capacitor://localhost:8100'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8100',
     'http://localhost:8080',
     'http://localhost:5200',
     'http://localhost:5173',
+    'http://localhost:8100',
+    'capacitor://localhost:8100'
 ]
 
 

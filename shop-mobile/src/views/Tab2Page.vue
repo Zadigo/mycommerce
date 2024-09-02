@@ -1,23 +1,11 @@
 <template>
   <ion-page>
-    <!-- <ion-header>
-      <ion-toolbar>
-        <ion-title>Search</ion-title>
-      </ion-toolbar>
-    </ion-header> -->
     <ion-content :fullscreen="true">
       <ion-row>
-        <ion-col size="12">
-          <h1>Rechercher</h1>
-        </ion-col>
-        <ion-col size="12">
-          <ion-input fill="outline" placeholder="Rechercher">
-            <ion-icon slot="start" :icon="search" aria-hidden="true"></ion-icon>
-            <ion-button fill="clear" slot="end" aria-label="Show/hide">
-              <ion-icon slot="icon-only" :icon="close" aria-hidden="true"></ion-icon>
-            </ion-button>
-          </ion-input>
-        </ion-col>
+        <transition name="slide" mode="out-in">
+          <SimpleSearch v-if="showHeader" @search-focused="showHeader=false" />
+          <FocusedSearch v-else @search-unfocused="showHeader=true" />
+        </transition>
 
         <ion-col size="12">
           <p>Cela peut t'intéresser</p>
@@ -40,8 +28,11 @@ import { close, search } from 'ionicons/icons';
 import { onBeforeMount, ref } from 'vue';
 
 import ProductCard from '@/components/products/ProductCard.vue';
+import SimpleSearch from '@/components/search/SimpleSearch.vue';
+import FocusedSearch from '@/components/search/FocusedSearch.vue';
 
 const products = ref<Product[]>([])
+const showHeader = ref<boolean>(true)
 
 onBeforeMount(() => {
   getProducts()
@@ -56,3 +47,22 @@ const getProducts = async function () {
   })
 }
 </script>
+
+<style scoped>
+.slide-enter-active,
+.slide-leave-active {
+  transition: all .15s ease-in-out;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  opacity: 1;
+  transform: translateY(0px)
+}
+
+.slide-enter-to,
+.slide-leave-from {
+  opacity: 0;
+  transform: translateY(-25px)
+}
+</style>

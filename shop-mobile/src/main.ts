@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia';
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { createVueLocalStorage, createVueSession } from './plugins/vue-storages';
 
@@ -37,10 +38,6 @@ import '@ionic/vue/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import { createPinia } from 'pinia';
-
-// import 'bootstrap/dist/css/bootstrap.min.css'
-// import 'mdb-ui-kit/css/mdb.min.css'
 
 const localstorage = createVueLocalStorage()
 const session = createVueSession()

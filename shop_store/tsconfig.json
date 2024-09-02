@@ -15,8 +15,8 @@
     "allowJs": true,                                     // Allow JavaScript files to be compiled
     "baseUrl": ".",                                      // Base directory to resolve non-relative module names
     "paths": {
-      "@/*": ["src/*"],                                  // Path mapping for modules
-      "src": ["src/*"]
+      "@/*": ["./src/*"],                                // Path mapping for modules
+      "src": ["./src/*"]
     },
     "outDir": "./dist",
     "noEmit": true
@@ -24,6 +24,7 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
+    "src/**/*.tsx",
     "src/**/*.vue",
     "test/**/*.ts",
     "typings/**/*.ts"

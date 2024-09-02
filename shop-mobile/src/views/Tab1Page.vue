@@ -2,11 +2,13 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title style="font-weight: 800;text-transform: uppercase;text-align: center;font-size: 1.4rem;">My commerce</ion-title>
+        <ion-title style="font-weight: 800;text-transform: uppercase;text-align: center;font-size: 1.4rem;">
+          My commerce
+        </ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <HomeExplorer />
+      <HomeExplorer :collections="collections" />
     </ion-content>
   </ion-page>
 </template>
@@ -18,7 +20,7 @@ import { ProductCollections } from '@/types/collections';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
 import { onBeforeMount, ref } from 'vue';
 
-import HomeExplorer from '@/components/home/HomeExplorer.vue';
+import HomeExplorer from '@/components/HomeExplorer.vue';
 
 const { instance } = useVueSession()
 const collections = ref<ProductCollections[]>([])
@@ -42,12 +44,6 @@ const requestCollectionNames = async function (): Promise<void> {
     console.error('CollectionPage', e)
   }
 }
-
-/**
- */
-// handleGridSize (size: number): void {
-//   currentGridSize = size
-// }
 
 onBeforeMount(() => {
   requestCollectionNames()

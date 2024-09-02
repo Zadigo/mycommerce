@@ -20,14 +20,14 @@ module.exports = {
     'vue/setup-compiler-macros': true
   },
   extends: [
-    // Optional: Used for parsing d.ts files
-    'plugin:@typescript-eslint/recommended',
     // Base ESLint recommended rules. See:
     // https://github.com/eslint/eslint/blob/main/packages/js/src/configs/eslint-recommended.js
     'eslint:recommended',
     // Priority B: Strongly Recommended (Improving Readability)
     // See https://eslint.vuejs.org/rules/#available-rules
     'plugin:vue/vue3-strongly-recommended',
+    // Optional: Used for parsing d.ts files
+    'plugin:@typescript-eslint/recommended',
     // 'plugin:vue/vue3-recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
     // https://github.com/prettier/eslint-config-prettier#installation
     // usage with Prettier, provided by 'eslint-config-prettier'.

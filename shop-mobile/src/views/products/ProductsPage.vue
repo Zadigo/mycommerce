@@ -19,7 +19,7 @@
       <ion-grid>
         <ion-row>
           <ion-col size="12" style="padding-top: 1.25rem;padding-bottom: 1.25rem;">
-            <ion-button color="dark" fill="outline" size="small">Tous</ion-button>
+            <ion-button color="dark" fill="solid" size="small">Tous</ion-button>
             <ion-button color="dark" fill="outline" size="small">Jupes</ion-button>
             <ion-button color="dark" fill="outline" size="small">Corsets</ion-button>
           </ion-col>
@@ -27,7 +27,7 @@
         <ion-row id="top-bar" class="ion-justify-content-between" style="border-top: 1px solid black;">
           <!-- Grids -->
           <ion-col size="6">
-            <ion-button v-for="grid in grids" :key="grid.value" color="dark" fill="outline" size="small" @click="handleGridDisplay(grid.value)">
+            <ion-button v-for="grid in grids" :key="grid.value" :fill="currentGridDisplay === grid.value ? 'solid':'outline'" color="dark" size="small" @click="handleGridDisplay(grid.value)">
               <font-awesome-icon :icon="grid.icon"></font-awesome-icon>
             </ion-button>
           </ion-col>
@@ -66,8 +66,16 @@
         </ion-content>
       </ion-modal>
       <!-- Action Sheet -->
-      <ion-modal :is-open="showSizeChoices" :initial-breakpoint="0.25" :breakpoints="[0.25, 0.5, 0.75]" :backdrop-dismiss="false" :backdrop-breakpoint="0.5" handle-behavior="cycle">
+      <ion-modal :is-open="showSizeChoices" :initial-breakpoint="0.5" :backdrop-breakpoint="0" handle-behavior="cycle" @onDidDismiss="showSizeChoices=false">
         <ion-content class="ion-padding">
+          <div class="infos">
+            <p>Ajouter au panier</p>
+
+            <ion-button fill="clear" size="small" color="dark">
+              <ion-icon :icon="calculatorOutline"></ion-icon>
+              Guide des tailles
+            </ion-button>
+          </div>
           <ion-list>
             <ion-item>XS</ion-item>
             <ion-item>S</ion-item>
@@ -80,12 +88,13 @@
 
 <script setup lang="ts">
 import { useVueLocalStorage } from '@/plugins/vue-storages/local-storage';
-import { InfiniteScrollCustomEvent, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonList, IonModal, IonPage, IonRow, IonTitle, IonToolbar, useIonRouter } from '@ionic/vue';
+import { Product } from '@/types/collections';
+import { InfiniteScrollCustomEvent, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonList, IonModal, IonPage, IonRow, IonTitle, IonToolbar, useIonRouter } from '@ionic/vue';
+import { calculatorOutline } from 'ionicons/icons';
 import { onBeforeMount, ref } from 'vue';
 
 import ClassicDisplay from '@/components/products/ClassicDisplay.vue';
 import GridDisplay from '@/components/products/GridDisplay.vue';
-import { Product } from '@/types/collections';
 
 const currentGridDisplay = ref(1)
 const showProductsFilterModal = ref(false)
@@ -180,5 +189,18 @@ const handleGridDisplay = function (grid: number) {
 ion-grid {
   padding-left: 0px;
   padding-right: 0px;
+}
+
+.infos {
+  display: flex;
+  justify-content: space-between;
+}
+
+.infos p:first-child {
+  font-weight: 500;
+}
+
+.infos ion-button {
+  justify-content: end;
 }
 </style>
