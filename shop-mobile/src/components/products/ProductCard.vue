@@ -24,10 +24,11 @@
 
 <script setup lang="ts">
 import { useProducts } from '@/composables/shop';
+import { Product } from '@/types/collections';
 import { IonButton, IonCard, IonCardContent, IonImg } from '@ionic/vue';
-import { defineEmits, defineProps } from 'vue';
+import { defineEmits, defineProps, PropType } from 'vue';
 
-const emit = defineEmits(["show-product-sizes"]);
+const emit = defineEmits(['show-product-sizes']);
 defineProps({
   showProductInfo: {
     type: Boolean,
@@ -38,7 +39,7 @@ defineProps({
     default: false
   },
   product: {
-    type: Object,
+    type: Object as PropType<Product>,
     required: true,
     default: () => {}
   },

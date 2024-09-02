@@ -1,8 +1,8 @@
 <template>
-  <ion-grid>
+  <ion-grid style="padding-left: 0;padding-right: 0;padding-top: 0;">
     <!-- Collections -->
-    <ion-row id="carousel" class="ion-justify-content-around">
-      <ion-col size="12">
+    <ion-row>
+      <ion-col size="12" style="padding-left: 0;padding-right: 0;padding-top: 0;">
         <div id="video-container">
           <video autoplay muted loop>
             <source src="/vid1.mp4" type="video/mp4">
@@ -12,7 +12,7 @@
 
       <ion-col v-for="i in 4" :key="i" size="3">
         <ion-img :src="`/img${i}.jpg`" @click="handleGoToProduct(i)"></ion-img>
-        {{ `Collection ${i}` }}
+        <p style="font-size: .6rem;text-align: center;">{{ `Collection ${i}` }}</p>
       </ion-col>
     </ion-row>
 
@@ -61,11 +61,11 @@ const handleGoToProduct = function (product: number): void {
 
 #video-container {
   width: 100%;
-  height: 500px;
+  height: auto;
 }
 
 #video-container video {
-  height: 100%;
+  /* height: 100%; */
   width: 100%;
 }
 </style>

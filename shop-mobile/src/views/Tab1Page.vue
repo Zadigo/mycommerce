@@ -2,16 +2,10 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Home</ion-title>
+        <ion-title style="font-weight: 800;text-transform: uppercase;text-align: center;font-size: 1.4rem;">My commerce</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Bershka</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
       <HomeExplorer />
     </ion-content>
   </ion-page>
@@ -20,14 +14,14 @@
 <script setup lang="ts">
 import { client } from '@/plugins/axios';
 import { useVueSession } from '@/plugins/vue-storages';
-import { Collections } from '@/types/collections';
+import { ProductCollections } from '@/types/collections';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
 import { onBeforeMount, ref } from 'vue';
 
 import HomeExplorer from '@/components/home/HomeExplorer.vue';
 
 const { instance } = useVueSession()
-const collections = ref<Collections[]>([])
+const collections = ref<ProductCollections[]>([])
 
 /**
  * Gets all the names of the collections that are
@@ -35,7 +29,7 @@ const collections = ref<Collections[]>([])
  * 
  * @listens
  */
-const requestCollectionNames = async function () {
+const requestCollectionNames = async function (): Promise<void> {
   try {
     const numberOfItems = instance.listCount('collections', false)
     if (numberOfItems === 0) {

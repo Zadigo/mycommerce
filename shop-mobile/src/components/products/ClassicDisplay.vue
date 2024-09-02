@@ -12,11 +12,12 @@ import { IonCol, IonRow } from '@ionic/vue';
 import { defineEmits, defineProps } from 'vue';
 
 import ProductCard from './ProductCard.vue';
+import { Product } from '@/types/collections';
 
 const emit = defineEmits(['show-product-sizes'])
 defineProps({
   products: {
-    type: Array,
+    type: Array<Product>,
     default: () => []
   }
 })

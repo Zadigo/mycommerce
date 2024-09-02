@@ -1,20 +1,22 @@
 <template>
   <ion-page>
-    <ion-header>
+    <!-- <ion-header>
       <ion-toolbar>
         <ion-title>Search</ion-title>
       </ion-toolbar>
-    </ion-header>
+    </ion-header> -->
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Rechercher</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
       <ion-row>
         <ion-col size="12">
-          <ion-input label="Rechercher"></ion-input>
+          <h1>Rechercher</h1>
+        </ion-col>
+        <ion-col size="12">
+          <ion-input fill="outline" placeholder="Rechercher">
+            <ion-icon slot="start" :icon="search" aria-hidden="true"></ion-icon>
+            <ion-button fill="clear" slot="end" aria-label="Show/hide">
+              <ion-icon slot="icon-only" :icon="close" aria-hidden="true"></ion-icon>
+            </ion-button>
+          </ion-input>
         </ion-col>
 
         <ion-col size="12">
@@ -22,7 +24,7 @@
 
           <ion-row>
             <ion-col v-for="product in products" :key="product.id" size="6">
-              <product-card :product="product":show-add-to-favorite="true" />              
+              <product-card :product="product" :show-add-to-favorite="true" />              
             </ion-col>
           </ion-row>
         </ion-col>
@@ -32,12 +34,14 @@
 </template>
 
 <script setup lang="ts">
-import { IonCol, IonContent, IonHeader, IonInput, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/vue';
+import { Product } from '@/types/collections';
+import { IonButton, IonCol, IonContent, IonIcon, IonInput, IonPage, IonRow } from '@ionic/vue';
+import { close, search } from 'ionicons/icons';
 import { onBeforeMount, ref } from 'vue';
 
 import ProductCard from '@/components/products/ProductCard.vue';
 
-const products = ref([])
+const products = ref<Product[]>([])
 
 onBeforeMount(() => {
   getProducts()

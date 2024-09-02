@@ -1,23 +1,24 @@
 import { defineStore } from 'pinia'
 
-const useAuthentication = defineStore('authentication', {
-  state: () => ({
+type State = {
+  showLoginDrawer: boolean;
+  token: string | null;
+  profile: {};
+};
+
+const useAuthentication = defineStore("authentication", {
+  state: (): State => ({
     showLoginDrawer: false,
     token: null,
-    profile: {}
+    profile: {},
   }),
   getters: {
     /**
      * Indicates whether the user is authenticated
-     * 
-     * @returns {Boolean} 
      */
-    isAuthenticated () {
-      return (
-        this.token !== null &&
-        typeof this.token !== 'undefined'
-      )
-    }
+    isAuthenticated(): boolean {
+      return this.token !== null && typeof this.token !== "undefined";
+    },
   },
   actions: {
     /**
@@ -25,13 +26,13 @@ const useAuthentication = defineStore('authentication', {
      * from the cache in order to determine if the user
      * is still authenticated
      */
-    loadFromCache () {
-      const data = this.$session.retrieve('authentication') || {}
-      this.token = data.token
-      this.profile = data.user
-    }
-  }
-})
+    loadFromCache(): void {
+      const data = this.$session.retrieve("authentication") || {};
+      this.token = data.token;
+      this.profile = data.user;
+    },
+  },
+});
 
 export {
   useAuthentication

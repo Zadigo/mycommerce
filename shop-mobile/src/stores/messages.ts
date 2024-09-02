@@ -1,8 +1,19 @@
 import _, { isUndefined } from 'lodash'
 import { defineStore } from 'pinia'
 
+type Message = {
+  id: number;
+  type: string;
+  title: string;
+  message: string;
+};
+
+type State = {
+  messageItems: Message[];
+};
+
 const useMessages = defineStore('messages', {
-  state: () => ({
+  state: (): State => ({
     messageItems: []
   }),
   getters: {
@@ -11,7 +22,7 @@ const useMessages = defineStore('messages', {
      * 
      * @returns {Boolean} Whether there are messages to display 
      */
-    hasMessages () {
+    hasMessages (): boolean {
       return this.messageItems.length > 0
     }
   },
@@ -24,7 +35,7 @@ const useMessages = defineStore('messages', {
      * @param {String} title The messgaae title 
      * @param {String} message The message text
      */
-    addMessage (type, title, message) {
+    addMessage (type: string, title: string, message: string) {
       let id
       const lastMessage = _.last(this.messageItems)
 
@@ -51,7 +62,7 @@ const useMessages = defineStore('messages', {
      * @param {String} title The messgaae title 
      * @param {String} message The message text
      */
-    addErrorMessage (title, message) {
+    addErrorMessage (title: string, message: string): void {
       this.addMessage('error', title, message)
     },
     /**
@@ -60,7 +71,7 @@ const useMessages = defineStore('messages', {
      * @param {String} title The messgaae title 
      * @param {String} message The message text
      */
-    addInfoMessage (title, message) {
+    addInfoMessage (title: string, message: string) {
       this.addMessage('info', title, message)
     },
     /**
@@ -69,7 +80,7 @@ const useMessages = defineStore('messages', {
      * @param {String} title The messgaae title 
      * @param {String} message The message text
      */
-    addSuccessMessage (title, message) {
+    addSuccessMessage (title: string, message: string) {
       this.addMessage('success', title, message)
     },
     /**
@@ -85,7 +96,7 @@ const useMessages = defineStore('messages', {
     clearAll () {
       this.messageItems = []
     },
-    removeMessage (message) {
+    removeMessage (message: string) {
       const index = _.indexOf(this.messageItems, { id: message.id * 1 })
       this.messageItems.splice(index, 1)
     } 

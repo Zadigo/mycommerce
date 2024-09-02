@@ -7,6 +7,7 @@
 </template>
 
 <script setup lang="ts">
+import { Product } from '@/types/collections';
 import { IonCol, IonRow } from '@ionic/vue';
 import { computed, defineEmits, defineProps } from 'vue';
 
@@ -19,7 +20,7 @@ const props = defineProps({
     default: 2
   },
   products: {
-    type: Array,
+    type: Array<Product>,
     default: () => []    
   }
 });

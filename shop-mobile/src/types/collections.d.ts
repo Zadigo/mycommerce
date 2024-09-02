@@ -1,3 +1,8 @@
-export interface Collections {
-    id: number
+export interface Product {
+  id: number;
+  name: string;
+}
+
+export interface ProductCollections {
+  id: number;
 }

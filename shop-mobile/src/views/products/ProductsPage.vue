@@ -7,7 +7,7 @@
             <font-awesome-icon :icon="['fas', 'chevron-left']"></font-awesome-icon>
           </ion-button>
         </ion-buttons>
-        <ion-title>Collection n°1</ion-title>
+        <ion-title style="text-align: center;">Collection n°1</ion-title>
         <ion-buttons slot="end">
           <ion-button size="large" shape="round" @click="showProductsFilterModal=true">
             <font-awesome-icon :icon="['fas', 'sliders']"></font-awesome-icon>
@@ -17,22 +17,25 @@
     </ion-header>
     <ion-content :fullscreen="true">
       <ion-grid>
-        <ion-row id="top-bar" class="ion-justify-content-between">
+        <ion-row>
+          <ion-col size="12" style="padding-top: 1.25rem;padding-bottom: 1.25rem;">
+            <ion-button color="dark" fill="outline" size="small">Tous</ion-button>
+            <ion-button color="dark" fill="outline" size="small">Jupes</ion-button>
+            <ion-button color="dark" fill="outline" size="small">Corsets</ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row id="top-bar" class="ion-justify-content-between" style="border-top: 1px solid black;">
+          <!-- Grids -->
           <ion-col size="6">
-            <ion-button fill="solid" size="small" shape="round" @click="handleGridDisplay(1)">
-              <font-awesome-icon :icon="['far', 'square']"></font-awesome-icon>
-            </ion-button>
-            <ion-button fill="solid" size="small" shape="round" @click="handleGridDisplay(2)">
-              <font-awesome-icon :icon="['fas', 'table-cells-large']"></font-awesome-icon>
-            </ion-button>
-            <ion-button fill="solid" size="small" shape="round" @click="handleGridDisplay(3)">
-              <font-awesome-icon :icon="['fas', 'table-cells']"></font-awesome-icon>
+            <ion-button v-for="grid in grids" :key="grid.value" color="dark" fill="outline" size="small" @click="handleGridDisplay(grid.value)">
+              <font-awesome-icon :icon="grid.icon"></font-awesome-icon>
             </ion-button>
           </ion-col>
+          <!-- Filters -->
           <ion-col size="6">
-            <p>209 résultats</p>
+            <p>{{ products.length }} résultats</p>
             <span>|</span>
-            <ion-button size="small" shape="round" @click="showProductsFilterModal=true">
+            <ion-button color="dark" fill="outline" size="small" @click="showProductsFilterModal=true">
               <font-awesome-icon :icon="['fas', 'sliders']"></font-awesome-icon>
             </ion-button>
           </ion-col>
@@ -82,11 +85,26 @@ import { onBeforeMount, ref } from 'vue';
 
 import ClassicDisplay from '@/components/products/ClassicDisplay.vue';
 import GridDisplay from '@/components/products/GridDisplay.vue';
+import { Product } from '@/types/collections';
 
 const currentGridDisplay = ref(1)
 const showProductsFilterModal = ref(false)
 const showSizeChoices = ref(false)
-const products = ref([])
+const products = ref<Product[]>([])
+const grids = ref([
+  {
+    value: 1,
+    icon: ['far', 'square'],
+  },
+  {
+    value: 2,
+    icon: ['fas', 'table-cells-large'],
+  },
+  {
+    value: 3,
+    icon: ['fas', 'table-cells'],
+  }
+])
 
 const router = useIonRouter()
 const { data, instance } = useVueLocalStorage()
