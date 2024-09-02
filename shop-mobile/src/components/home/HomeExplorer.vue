@@ -10,28 +10,30 @@
         </div>
       </ion-col>
 
-      <ion-col v-for="i in 4" :key="i" size="3">
-        <ion-img :src="`/img${i}.jpg`" @click="handleGoToProduct(i)"></ion-img>
-        <p style="font-size: .6rem;text-align: center;">{{ `Collection ${i}` }}</p>
+      <ion-col v-for="collection in collections" :key="collection.id" size="3">
+        <ion-img :src="`/img3.jpg`" @click="handleGoToCollection(collection)"></ion-img>
+        <p style="font-size: .6rem;text-align: center;">{{ `Collection ${collection.id}` }}</p>
       </ion-col>
     </ion-row>
 
-    <!-- Highlight -->
+    <!-- Product Highlight -->
     <ion-row>
       <ion-col size="12">
         <ion-img src="/img3.jpg"></ion-img>
       </ion-col>
     </ion-row>
 
-    <!-- Recommendations -->
+    <!-- Product Recommendations -->
     <ion-row>
-      <ion-col v-for="i in 4" :key="i" size="6">
-        <ion-img :src="`/img${i}.jpg`"></ion-img>
+      <ion-col v-for="sampleProduct in sampleProducts" :key="sampleProduct.id" size="6">
+        <ion-img :src="`/img3.jpg`" @click="handleGoToProduct(sampleProduct)"></ion-img>
       </ion-col>
 
       <ion-col size="12">
         <div class="ion-justify-content-center">
-          <ion-button fill="outline">Voir tout les styles</ion-button>
+          <ion-button fill="outline">
+            Voir tout les styles
+          </ion-button>
         </div>
       </ion-col>
     </ion-row>
@@ -40,17 +42,53 @@
 
 <script setup lang="ts">
 import { useShop } from '@/stores/shop';
+import { Product, ProductCollections } from '@/types/collections';
 import { IonButton, IonCol, IonGrid, IonImg, IonRow, useIonRouter } from '@ionic/vue';
 import { storeToRefs } from 'pinia';
+import { onBeforeMount, PropType, ref } from 'vue';
 
 const store = useShop()
 const router = useIonRouter()
 
-const { currentProduct } = storeToRefs(store)
+const { currentProduct, currentCollection } = storeToRefs(store)
+const sampleProducts = ref<Product[]>([])
 
-const handleGoToProduct = function (product: number): void {
-  currentProduct.value = product
+defineProps({
+  collections: {
+    type: Array as PropType<ProductCollections[]>,
+    required: true
+  }
+})
+
+onBeforeMount(() => {
+  requestSampleProducts()
+})
+
+const requestSampleProducts = async function () {
+  Array.from({ length: 4 }, (a, b) => {
+    sampleProducts.value.push({
+      id: b,
+      name: `Product ${b}`
+    })
+  })
+}
+
+/**
+ * See the details for the current given collection
+ * in the collection's page 
+ */
+const handleGoToCollection = function (collection: ProductCollections): void {
+  currentCollection.value = collection
   router.push('/tabs/tab1/products')
+}
+
+/**
+ * See the details for the current given collection
+ * in the collection's page 
+ */
+const handleGoToProduct = function (product: Product): void {
+  currentProduct.value = product
+  router.push('/tabs/tab1/product')
 }
 </script>
 

@@ -1,4 +1,4 @@
-import { Product } from '@/types/collections';
+import { Product, ProductCollections } from '@/types/collections';
 import _ from 'lodash';
 import { defineStore } from 'pinia';
 
@@ -6,6 +6,7 @@ type State = {
   visitedProducts: Product[];
   likedProducts: Product[];
   showLanguageModal: boolean;
+  currentCollection: ProductCollections;
   currentProduct: Product;
 };
 
@@ -15,6 +16,7 @@ const useShop = defineStore("shop", {
     likedProducts: [],
 
     showLanguageModal: false,
+    currentCollection: {},
     currentProduct: {},
   }),
   actions: {
