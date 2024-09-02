@@ -1,5 +1,14 @@
 import { createApp } from 'vue'
-import './style.css'
+import { createVueLocalStorage, createVueSession } from './plugins/vue-storages'
+
 import App from './App.vue'
 
-createApp(App).mount('#app')
+import './style.css'
+
+const localstorage = createVueLocalStorage()
+const session = createVueSession()
+
+const app = createApp(App)
+app.use(localstorage)
+app.use(session)
+app.mount('#app')
