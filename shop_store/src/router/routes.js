@@ -6,7 +6,7 @@ export const routes = [
   {
     path: '/shop',
     name: 'shop_collections',
-    component: async () => import('src/pages/CollectionsPage.vue'),
+    component: async () => import('../pages/CollectionsPage.vue'),
     meta: {
       requiresAuthentication: false
     }
@@ -14,7 +14,7 @@ export const routes = [
   {
     path: '/shop/collection/:id',
     name: 'shop_products_collection',
-    component: async () => import('../pages/products/ProductsPage.vue'),
+    component: async () => import('../pages/ProductsPage.vue'),
     meta: {
       requiresAuthentication: false
     }
@@ -22,7 +22,7 @@ export const routes = [
   {
     path: '/shop/:id',
     name: 'shop_product',
-    component: async () => import('src/pages/ProductPage.vue'),
+    component: async () => import('../pages/ProductPage.vue'),
     meta: {
       requiresAuthentication: false
     }
@@ -98,15 +98,15 @@ export const routes = [
   {
     path: '/test',
     name: 'test_page',
-    component: () => import('src/pages/TestPage.vue')
+    component: () => import('../pages/TestPage.vue')
   },
   {
     path: '/404',
     name: 'not_found',
-    component: () => import('pages/ErrorNotFound.vue')
+    component: () => import('../pages/ErrorNotFound.vue')
   },
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue')
+    component: () => import('../pages/ErrorNotFound.vue')
   }
 ]
