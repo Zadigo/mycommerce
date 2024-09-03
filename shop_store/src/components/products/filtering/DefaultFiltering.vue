@@ -1,6 +1,6 @@
 <template>
   <div class="card shadow-none mb-3">
-    <div class="card-body px-0 text-center">
+    <div class="card-body pt-1 text-center">
       <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex justify-content-left gap-1">
           <div class="d-flex justify-content-between align-items-center me-3 gap-1">
@@ -11,83 +11,23 @@
             <v-btn v-for="category in productCategories" :key="category" :to="{ name: 'shop_products_collection', params: { id: category.toLowerCase() } }" variant="tonal">
               {{ category }}
             </v-btn>
+
+            <v-btn variant="tonal" class="ms-3" @click="$emit('show-product-filters')">
+              <font-awesome-icon :icon="['fas', 'sliders']" class="me-2" /> Filtres
+            </v-btn>
           </div>
-
-          <v-btn variant="tonal" flat>
-            {{ $t('Taille') }}
-            <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
-
-            <v-menu activator="parent">
-              <v-list style="width: 250px;">
-                <v-list-item>
-                  <p class="text-tertiary">{{ $t('Tailles standard') }}</p>
-                  <div class="d-flex justify-content-start gap-1 flex-wrap">
-                    <v-btn v-for="size in sizes.clothes" :key="size" variant="outlined" rounded>
-                      {{ size }}
-                    </v-btn>
-                  </div>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </v-btn>
-
-          <!-- <button type="button" class="btn btn-sm btn-light shadow-none">
-            Trier
-            <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
-          </button> -->
-          <!-- <button type="button" class="btn btn-sm btn-light shadow-none">
-            Taille
-            <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
-          </button> -->
-          <!-- <button type="button" class="btn btn-sm btn-light shadow-none">
-            Couleurs
-            <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
-          </button>
-          <button type="button" class="btn btn-sm btn-light shadow-none">
-            Matières
-            <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
-          </button>
-          <button type="button" class="btn btn-sm btn-light shadow-none">
-            Prix
-            <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
-          </button>
-          <button type="button" class="btn btn-sm btn-light shadow-none">
-            Formes
-            <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
-          </button>
-          <button type="button" class="btn btn-sm btn-light shadow-none">
-            Armatures
-            <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
-          </button>
-          <button type="button" class="btn btn-sm btn-light shadow-none">
-            Coques
-            <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
-          </button> -->
         </div>
 
         <div class="d-flex justify-content-right gap-1 align-items-center">
           <v-skeleton-loader v-if="productsLoading" type="text"></v-skeleton-loader>
           <span v-else id="product-count" class="fw-bold me-2">{{ totalProductCount }} produits trouvés</span>
 
-          <button type="button" :class="{ active: gridSize === 3 }" class="btn btn-sm btn-light shadow-none" @click="handleGridSize(3)">
+          <v-btn :active="gridSize === 3" variant="tonal" flat @click="handleGridSize(3)">
             <font-awesome-icon :icon="['fas', 'table-cells-large']" />
-          </button>
-          
-          <button type="button" :class="{ active: gridSize === 4 }" class="btn btn-sm btn-light shadow-none" @click="handleGridSize(4)">
-            <font-awesome-icon :icon="['fas', 'table-cells']" />
-          </button>
+          </v-btn>
 
-          <v-btn variant="tonal" flat>
-            {{ $t('Trier') }}
-            <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
-
-            <v-menu activator="parent">
-              <v-list>
-                <v-list-item v-for="(item, i) in sortingOptions" :key="i" :value="item" @click="$emit('update:sorting', item)">
-                  <v-list-item-title>{{ $t(item) }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
+          <v-btn :active="gridSize === 4" variant="tonal" flat @click="handleGridSize(4)">
+            <font-awesome-icon :icon="['fas', 'table-cells-large']" />
           </v-btn>
         </div>
       </div>
@@ -125,6 +65,9 @@ export default {
     },
     'update:sorting' (value) {
       console.log('update:sorting', value)
+      return true
+    },
+    'show-product-filters' () {
       return true
     }
   },

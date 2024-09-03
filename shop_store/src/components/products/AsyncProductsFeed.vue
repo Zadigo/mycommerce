@@ -1,7 +1,7 @@
 <template>
-  <section class="row">
+  <section id="product-feed" class="row">
     <div class="col-12">
-      <default-filtering :products="products" :total-product-count="totalProductCount" @update-sorting="handleSorting" @update-grid-size="handleGridSize" />
+      <default-filtering :products="products" :total-product-count="totalProductCount" @show-product-filters="showProductFilters=!showProductFilters" @update-grid-size="handleGridSize" />
     </div>
 
     <div class="row gx-1 gy-1">
@@ -23,6 +23,86 @@
         </v-btn>
       </div>
     </div>
+
+    <!-- Filters -->
+    <teleport to="body">
+      <v-navigation-drawer id="product-filters-modal" v-model="showProductFilters" location="right" width="400" temporary>
+        <div class="d-flex flex-column justify-content-around">
+          <v-container class="border-bottom d-flex justify-content-between align-items-center">
+            <h4 class="m-0">Filtrer</h4>
+            <v-btn variant="tonal" @click="showProductFilters=false">
+              <font-awesome-icon icon="['fas', 'close']" round />
+            </v-btn>
+          </v-container>
+                
+          <v-container>
+            <v-expansion-panels>
+              <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
+                <v-expansion-panel-title>Trier par</v-expansion-panel-title>
+                <v-expansion-panel-text>
+                  <div class="price-filters p-2">
+                    <div class="d-flex justify-content-around gap-2">
+                      <v-btn variant="outlined" size="small" rounded @click="handleFilterSelection('sorted by', 'New')">Nouveautés</v-btn>
+                      <v-btn variant="outlined" size="small" rounded @click="handleFilterSelection('sorted by', 'Price up')">Prix croissant</v-btn>
+                      <v-btn variant="outlined" size="small" rounded @click="handleFilterSelection('sorted by', 'Price down')">Prix décroissant</v-btn>
+                    </div>
+                  </div>
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+
+              <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
+                <v-expansion-panel-title>
+                  Typologie
+                </v-expansion-panel-title>
+              </v-expansion-panel>
+
+              <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
+                <v-expansion-panel-title>
+                  Couleur
+                </v-expansion-panel-title>
+              </v-expansion-panel>
+
+              <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
+                <v-expansion-panel-title>
+                  Taille
+                  <div v-if="selectedFilters.sizes.length > 0" class="badge badge-success ms-3">
+                    {{ selectedFilters.sizes.length }}
+                  </div>
+                </v-expansion-panel-title>
+
+                <v-expansion-panel-text>
+                  <v-btn v-for="size in sizes.clothes" :key="size" :active="selectedFilters.sizes.includes(size)" size="small" variant="outlined" class="ms-2" rounded @click="handleFilterSelection('sizes', size)">
+                    {{ size }}
+                  </v-btn>
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+
+              <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
+                <v-expansion-panel-title>
+                  Prix
+                </v-expansion-panel-title>
+                
+                <v-expansion-panel-text>
+                  <v-btn v-for="priceFilter in priceFilters" :key="priceFilter.value" :active="priceFilter.value===selectedFilters.price" class="me-2 mb-2" variant="outlined" size="small" color="dark" rounded @click="handleFilterSelection('price', priceFilter.value)">
+                    {{ priceFilter.text }}
+                  </v-btn>
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-container>
+
+          <v-container class="border-top d-flex justify-content-around gap-2">
+            <v-btn color="secondary" variant="outlined" rounded @click="handleFiltersReset">
+              Supprimer
+            </v-btn>
+            
+            <v-btn color="secondary" variant="tonal" rounded @click="showProductFilters=false">
+              Voir résulats ({{ products.length }})
+            </v-btn>
+          </v-container>
+        </div>
+      </v-navigation-drawer>
+    </teleport>
   </section>
 </template>
 
@@ -32,11 +112,40 @@ import { ref, computed } from 'vue'
 import { useVueSession } from 'src/plugins/vue-storages'
 import { useRoute, useRouter } from 'vue-router'
 import { useMessages } from 'src/stores/messages'
-import { reactify, useIntersectionObserver } from '@vueuse/core'
+import { reactify, useIntersectionObserver, watchArray } from '@vueuse/core'
 import { scrollToTop, useUtilities } from '@/composables/utils'
+
+import sizes from 'src/data/sizes.json'
 
 import DefaultFiltering from 'src/components/products/filtering/DefaultFiltering.vue'
 import BaseProductIterator from 'src/components/BaseProductIterator.vue'
+
+const priceFilters = [
+  {
+    text: "Jusqu'à 15€",
+    value: 'Up to 15'
+  },
+  {
+    text: "Jusqu'à 20€",
+    value: 'Up to 20'
+  },
+  {
+    text: "Jusqu'à 25€",
+    value: 'Up to 25'
+  },
+  {
+    text: "Jusqu'à 30€",
+    value: 'Up to 30'
+  },
+  {
+    text: "Jusqu'à 35€",
+    value: 'Up to 40',
+  },
+  {
+    text: "Jusqu'à 50€",
+    value: 'Up to 50'
+  }
+]
 
 /**
  * This product iterator requests a specific collection
@@ -57,7 +166,15 @@ export default {
     }
   },
   async setup () {
-    const { capitalizeFirstLetter } = useUtilities()
+    const showProductFilters = ref(false)
+    const selectedFilters = ref({
+      sorted_by: 'New',
+      typology: [],
+      colors: [],
+      sizes: [],
+      price: null
+    })
+    const { capitalizeFirstLetter, listManager } = useUtilities()
 
     const router = useRouter()
     const route = useRoute()
@@ -149,8 +266,6 @@ export default {
       return [limit, offset]
     })
 
-    const currentSorting = ref(null)
-
     useIntersectionObserver(intersectionTarget, ([{ isIntersecting }]) => {
       if (isIntersecting && nextPageUrl.value !== null) {
         const offset = urlLimitOffsetValues(nextPageUrl)
@@ -163,7 +278,28 @@ export default {
     }, {
     })
 
+    /**
+     * Main function for requesting new products based
+     * on the filters that were selected by the user 
+     */
+    // async function requestFilteredProducts () {
+    //   try {
+    //     const response = []
+    //     products.value = response
+    //   } catch (e) {
+    //     console.log (e)
+    //   }
+    // }
+
+    watchArray(selectedFilters.value.sizes, (n) => {
+      console.log(n)
+      // requestFilteredProducts()
+    }, {
+      deep: true
+    })
+
     return {
+      sizes,
       products,
       nextPageUrl,
       intersectionTarget,
@@ -171,7 +307,10 @@ export default {
       currentGridSize,
       isLoadingMoreProducts,
       isEndOfPage,
-      currentSorting,
+      showProductFilters,
+      selectedFilters,
+      priceFilters,
+      listManager,
       capitalizeFirstLetter,
       scrollToTop,
       urlLimitOffsetValues,
@@ -211,11 +350,54 @@ export default {
       this.currentGridSize = size
     },
     /**
-     * @param {String} sorting The sorting value
+     *  
      */
-    handleSorting (sorting) {
-      this.currentSorting = sorting
+    handleFilterSelection (action, value) {
+      switch (action) {
+        case 'sorted by':
+          this.selectedFilters.sorted_by = value
+          break;
+
+        case 'typology':
+          this.listManager(this.selectedFilters.typology, value)
+          break;
+
+        case 'colors':
+          this.listManager(this.selectedFilters.colors, value)
+          break;
+
+        case 'sizes':
+          this.listManager(this.selectedFilters.sizes, value)
+          break;
+
+        case 'price':
+          this.selectedFilters.price = value
+          break;
+      
+        default:
+          break;
+      }
+    },
+    handleFiltersReset () {
+      this.selectedFilters = {
+        sorted_by: 'New',
+        typology: [],
+        colors: [],
+        sizes: [],
+        price: null
+      }
     }
   }
 }
 </script>
+
+<style scoped>
+.price-filters {
+  overflow-x: scroll;
+}
+
+.price-filters::-webkit-scrollbar {
+  display: none;
+  scrollbar-width: none;
+}
+</style>

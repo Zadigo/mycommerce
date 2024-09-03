@@ -31,3 +31,36 @@ function createGoogleAnalytics (options) {
 
 app.use(createGoogleAnalytics({ id: 'G-CVKFG2XPVGv' }))
 
+
+<!-- <button type="button" class="btn btn-sm btn-light shadow-none">
+  Trier
+  <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
+</button> -->
+<!-- <button type="button" class="btn btn-sm btn-light shadow-none">
+  Taille
+  <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
+</button> -->
+<!-- <button type="button" class="btn btn-sm btn-light shadow-none">
+  Couleurs
+  <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
+</button>
+<button type="button" class="btn btn-sm btn-light shadow-none">
+  Matières
+  <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
+</button>
+<button type="button" class="btn btn-sm btn-light shadow-none">
+  Prix
+  <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
+</button>
+<button type="button" class="btn btn-sm btn-light shadow-none">
+  Formes
+  <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
+</button>
+<button type="button" class="btn btn-sm btn-light shadow-none">
+  Armatures
+  <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
+</button>
+<button type="button" class="btn btn-sm btn-light shadow-none">
+  Coques
+  <font-awesome-icon :icon="['fas', 'caret-down']" class="ms-2" />
+</button> -->

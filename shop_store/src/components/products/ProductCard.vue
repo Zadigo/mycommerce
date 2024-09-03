@@ -8,7 +8,7 @@
       <div class="row text-center">
         <div class="col-12">
           <div v-if="requiresSizeItems" class="size-items">
-            <p class="fw-bold">Sélectionne la taille</p>
+            <p class="fw-light">Sélectionne la taille</p>
             <div class="d-flex justify-content-around flex-wrap gap-1">
               <base-size-button v-for="size in product.sizes" :key="size.id" :size="size" @update:selected-size="handleSelectedSize" />
             </div>
@@ -27,8 +27,8 @@
     </button>
 
     <router-link v-show="showPrices" :to="{ name: 'shop_product', params: { id: product.id } }" class="link-dark">
-      <div class="card-body pt-0 px-0 pb-0">
-        <p class="mb-0 mt-1 fw-light" :aria-label="product.name">{{ product.name }}</p>
+      <div class="card-body pt-0 px-2 pb-0">
+        <p id="product-name" class="mb-0 mt-1 fw-light" :aria-label="product.name">{{ product.name }}</p>
         <p class="fw-bold">{{ $n(parseFloat(product.get_price), 'currency') }}</p>
       </div>
     </router-link>
@@ -72,33 +72,45 @@ export default {
     const { isLiked, handleLike } = useShopComposable()
     const isHovered = ref(false)
 
-    // Once the liked products are loaded from the storage,
-    // check if they were liked by the user
+    // Once the liked products are loaded from the 
+    // storage, check if they were liked by the user
     const { instance } = useVueLocalStorage()
     isLiked.value = instance.data.likedProducts.includes(props.product.id)
 
     return {
       isLiked,
       isHovered,
-      quickAddToCart,
       quickAddToCartNoSize,
+      quickAddToCart,
       parseMainImage,
       handleLike
     }
   },
   computed: {
+    /**
+     * Checks if the product requires a
+     * size to be selected
+     * 
+     * @returns boolean 
+     */
     requiresSizeItems () {
       return this.product.sizes.length > 0
     }
   },
   methods: {
-    /** */
+    /**
+     * Proxy to add a product to the cart
+     * 
+     * @param {string | number} size The product size 
+     */
     handleSelectedSize (size) {
       this.quickAddToCart(this.product, size, () => {
         this.isHovered = false
       })
     },
-    /** */
+    /** 
+     * Proxy to add a product which has no size to the cart 
+     */
     handleSelectedNoSize () {
       this.quickAddToCartNoSize(this.product, () => {
         this.isHovered = false
@@ -140,6 +152,10 @@ export default {
   .card-cover-leave-to {
     opacity: 1;
     /* transform: translateY(20%); */
+  }
+
+  p#product-name {
+    font-size: .85rem;
   }
 </style>
 

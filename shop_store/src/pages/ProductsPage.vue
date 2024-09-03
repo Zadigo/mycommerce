@@ -1,11 +1,11 @@
 <template>
   <shop-layout>
-    <section class="container-fluid space-section">
+    <section class="container-fluid space-section-1">
       <div class="row">
         <div class="col-12">
-          <div class="card shadow-none mb-1">
-            <div class="card-body d-flex flex-row justify-content-start">
-              <h1 aria-labelledby="Soutien-Gorge corbeille" class="text-uppercase fw-bold h4">
+          <div class="card shadow-none">
+            <div class="card-body pb-1 d-flex flex-row justify-content-start">
+              <h1 :aria-labelledby="$route.params.id" class="text-uppercase fw-bold h4">
                 {{ $route.params.id }}
               </h1>
             </div>
@@ -28,8 +28,9 @@
           <p class="h4 fw-light">
             {{ $t('Page not available text') }}
           </p>
+
           <v-btn :to="{ name: 'shop_products_collection', params: { id: 'all' } }" class="mt-3" color="secondary" variant="tonal" rounded>
-            {{ $t('Haut de page') }}
+            {{ $t('Voir toute la collection') }}
           </v-btn>
         </div>
       </div>
@@ -72,11 +73,7 @@ export default {
     const pageHead = useHead({
       title: capitalizeFirstLetter(route.params.id),
       description: '',
-      ogTitle: route.params.id.toUpperCase(),
-      // ogDescription: '',
-      // ogImage: 'https://example.com/image.png',
-      // twitterCard: 'summary_large_image',
-      // ogSiteName: 'Ma Boutique'
+      ogTitle: capitalizeFirstLetter(route.params.id),
     })
 
     // TODO: Does not work
@@ -100,25 +97,6 @@ export default {
       authenticationStore,
       productsLoading
     }
-  },
-  watch: {
-    // TODO: Does not work
-    '$route.params.id' (n, o) {
-      if (n !== o) {
-        this.pageHead.patch({
-          title: this.$route.params.id.toUpperCase()
-        })
-      }
-    }
-  },
-  beforeMount () {
-    // Some pages will redirect to this page indicating
-    // that login is required via the ?login=0 query
-    // DEBUG: Does not get the query
-    // console.log('mounted', this.$route.query)
-    // if (this.$route.query.login === 0) {
-    //   this.authenticationStore.showLoginDrawer = true
-    // }
   },
   mounted () {
     this.intersectionTarget = this.$refs.moreProductsIntersect
