@@ -1,36 +1,19 @@
 <template>
   <shop-layout>
-    <section id="product" class="container-fluid space-section">
+    <section id="product" class="container-fluid space-section-1">
       <!-- Product -->
       <div class="row gy-1">
-        <div id="product-image" class="col-12">
+        <div id="product-information" class="col-12">
           <div class="row row-cols-5">
-            <div id="product-main-image" class="col-6">
+            <div id="product-images" class="col-6">
               <div id="main-image">
                 <v-img :src="parseMainImage(currentProduct)" :lazy-src="parseMainImage(currentProduct)" :alt="currentProduct.name" />
               </div>
             </div>
 
-            <!-- TODO: Detect which sections can be reusable components -->
-            <div id="product-information" class="col-4 ms-5">
-              <v-skeleton-loader v-if="isLoading" type="text"></v-skeleton-loader>
-              <ol v-else class="breadcrumb">
-                <li class="breadcrumb-item">
-                  <router-link :to="{ name: 'shop_collections' }" class="link-dark">
-                    {{ $t('Boutique') }}
-                  </router-link>
-                </li>
-
-                <li class="breadcrumb-item">
-                  <router-link :to="{ name: 'shop_products_collection', params: { id: currentProduct.category?.toLowerCase() } }" class="link-dark">
-                    {{ currentProduct.category }}
-                  </router-link>
-                </li>
-
-                <li class="breadcrumb-item active" aria-current="page">
-                  {{ currentProduct.name }}
-                </li>
-              </ol>
+            <div id="product-aside" class="col-4 ms-5">
+              <!-- Breadcrumb -->
+              <breadcrumb-block />
 
               <!-- Information -->
               <h1 class="h3 fw-light" aria-label="Product name">{{ currentProduct.name }}</h1>
@@ -48,15 +31,7 @@
               </v-skeleton-loader>
 
               <!-- Reviews -->
-              <div class="fw-bold d-flex justify-content-start gap-1">
-                <div aria-label="3 stars" data-rating="3" class="stars">
-                  <font-awesome-icon v-for="i in 5" :key="i" :icon="['fas', 'star']" />
-                </div>
-
-                <span class="fs-6 fw-light text-body-secondary">
-                  ({{ $t('avis', { n: 45 }) }})
-                </span>
-              </div>
+              <reviews-block />
 
               <!-- Variants -->
               <div v-if="hasColorVariants" id="variants" class="d-flex justify-content-start align-items-center gap-1 my-4">
@@ -67,19 +42,17 @@
                 </div>
               </div>
 
+              <hr class="my-5 text-body-tertiary">
+
               <!-- Sizes -->
-              <base-size-block :sizes="currentProduct.sizes" @update-size="(size) => { userSelection.size = size }" @show-size-guide-drawer="sizeGuideDrawer = true" />
+              <base-size-block :sizes="currentProduct.sizes" @update-size="(size) => { userSelection.size = size }" @show-size-guide-drawer="sizeGuideDrawer=true" />
 
               <!-- Size Guide -->
-              <p class="mt-4 d-flex justify-content-start gap-3">
+              <div class="d-flex justify-content-start gap-3 mt-4 mb-2">
                 <a href class="btn btn-light btn-rounded fw-bold shadow-none" @click.prevent="sizeGuideDrawer = true">
                   <v-icon icon="mdi-ruler" class="me-2" /> {{ $t('Guide des tailles') }}
                 </a>
-
-                <!-- <span class="fw-light">
-                  {{ $t('Taille porté', { size: 'S' }) }} | {{ $t('Taille du mannequin', { heigth: 176 }) }}
-                </span> -->
-              </p>
+              </div>
 
               <transition id="choose-size" tag="div" name="opacity">
                 <p v-if="showSizeSelectionWarning" class="text-danger fs-6 fw-light mb-1">Tu dois sélectionner une taille</p>
@@ -104,15 +77,7 @@
               </delivery-type>
               
               <!-- Additional Information -->
-              <div class="py-3 bg-white mt-4 d-flex justify-content-start align-items-center gap-2 fw-ecommerce-small-1">
-                <a href class="link-dark fw-bold" aria-label="Livraison et retour" @click.prevent="showCompositionDrawer = true">
-                  Composition, soin et traçabilité
-                </a> |
-
-                <a href class="link-dark fw-bold" aria-label="Livraison et retour" @click.prevent="showDeliveryDrawer = true">
-                  Livraison et retour
-                </a>
-              </div>
+              <additional-info-block />
             </div>
           </div>
         </div>
@@ -137,166 +102,73 @@
       </div>
 
       <!-- Modals -->
-
       <!-- Size Guide -->
-      <v-navigation-drawer id="size-guide-modal" v-model="sizeGuideDrawer" width="400" location="right" temporary>
-        <v-toolbar class="border-bottom" color="white">
-          <v-toolbar-title class="fw-bold">Guide des tailles</v-toolbar-title>
+      <teleport to="body">
+        <v-navigation-drawer id="size-guide-modal" v-model="sizeGuideDrawer" width="400" location="right" temporary>
+          <v-toolbar class="border-bottom" color="white">
+            <v-toolbar-title class="fw-bold">Guide des tailles</v-toolbar-title>
 
-          <v-spacer></v-spacer>
+            <v-spacer></v-spacer>
 
-          <v-btn icon="mdi-close" @click="sizeGuideDrawer = false"></v-btn>
-        </v-toolbar>
+            <v-btn icon="mdi-close" @click="sizeGuideDrawer = false"></v-btn>
+          </v-toolbar>
 
-        <div class="container my-4">
-          <div class="row g-1">
-            <div class="col-12">
-              <p class="fs-6 fw-bold mb-1">Sélectionne une taille</p>
-              <base-size-block :sizes="currentProduct.sizes" @update-size="(size) => { userSelection.size = size }" @show-size-guide-drawer="sizeGuideDrawer = true" />
+          <div class="container my-4">
+            <div class="row g-1">
+              <div class="col-12">
+                <p class="fs-6 fw-bold mb-1">Sélectionne une taille</p>
+                <base-size-block :sizes="currentProduct.sizes" @update-size="(size) => { userSelection.size = size }" @show-size-guide-drawer="sizeGuideDrawer = true" />
 
-              <p class="fs-6 fw-bold mt-4 mb-1">Mensurations</p>
-              <p class="fw-light text-body-secondary text-uppercase">Corps</p>
+                <p class="fs-6 fw-bold mt-4 mb-1">Mensurations</p>
+                <p class="fw-light text-body-secondary text-uppercase">Corps</p>
 
-              <div class="sizes">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="col-auto">Tour de Poitrine</div>
-                  <div class="col-auto">82</div>
+                <div class="sizes">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="col-auto">Tour de Poitrine</div>
+                    <div class="col-auto">82</div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="col-12 mt-4">
-              <v-btn color="primary" block @click="handleAddToCart">
-                {{ $t('Ajouter au panier') }}
-              </v-btn>
-            </div>
+              <div class="col-12 mt-4">
+                <v-btn color="primary" block @click="handleAddToCart">
+                  {{ $t('Ajouter au panier') }}
+                </v-btn>
+              </div>
 
-            <div class="col-12 mt-4">
-              <p class="fs-6 fw-bold">Comprendre tes mesures ?</p>
-              <v-img :src="localImagePath('size-guide.jpg')" :lazy-src="localImagePath('size-guide.jpg')" :width="300"></v-img>
-            </div>
+              <div class="col-12 mt-4">
+                <p class="fs-6 fw-bold">Comprendre tes mesures ?</p>
+                <v-img :src="localImagePath('size-guide.jpg')" :lazy-src="localImagePath('size-guide.jpg')" :width="300"></v-img>
+              </div>
 
-            <div class="col-12 mt-4">
-              <p class="fs-6 fw-bold mb-1">Tour de Poitrine</p>
-              <p class="fw-light text-body-secondary mb-4">
-                Pour mesurer la circonférence de ta poitrine, utilise un mètre
-                ruban et place-le autour de la partie la plus large de ta poitrine.
-              </p>
+              <div class="col-12 mt-4">
+                <p class="fs-6 fw-bold mb-1">Tour de Poitrine</p>
+                <p class="fw-light text-body-secondary mb-4">
+                  Pour mesurer la circonférence de ta poitrine, utilise un mètre
+                  ruban et place-le autour de la partie la plus large de ta poitrine.
+                </p>
 
-              <p class="fs-6 fw-bold mb-1">Tour de Taille</p>
-              <p class="fw-light text-body-secondary mb-4">
-                Place le mètre ruban autour de la partie la plus
-                étroite de ta taille.
-              </p>
+                <p class="fs-6 fw-bold mb-1">Tour de Taille</p>
+                <p class="fw-light text-body-secondary mb-4">
+                  Place le mètre ruban autour de la partie la plus
+                  étroite de ta taille.
+                </p>
 
-              <p class="fs-6 fw-bold mb-1">Tour de Hanches</p>
-              <p class="fw-light text-body-secondary mb-4">
-                Mets tes pieds l'un contre l'autre et place le mètre ruban
-                autour de la partie la plus large de ton tour de hanche.
-              </p>
+                <p class="fs-6 fw-bold mb-1">Tour de Hanches</p>
+                <p class="fw-light text-body-secondary mb-4">
+                  Mets tes pieds l'un contre l'autre et place le mètre ruban
+                  autour de la partie la plus large de ton tour de hanche.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </v-navigation-drawer>
-
-      <!-- Composition -->
-      <v-navigation-drawer id="composition-modal" v-model="showCompositionDrawer" width="400" location="right" temporary>
-        <div class="container my-4 fw-light">
-          <h4 class="h5 mb-1 mt-3">Composition</h4>
-          <ul>
-            <li>75% viscose</li>
-            <li>22% polyamide</li>
-            <li>3% élasthanne</li>
-          </ul>
-        </div>
-      </v-navigation-drawer>
-
-      <!-- Delivery And Returns -->
-      <v-navigation-drawer id="delivery-modal" v-model="showDeliveryDrawer" width="400" location="right" temporary>
-        <div class="container my-4 fw-light">
-          <div class="row">
-            <p class="fw-bold mb-1 mt-3">Livraison</p>
-            <p>Livraison en magasin GRATUITE</p>
-
-            <p class="fw-bold mb-1 mt-3">Dans le magasin de votre choix</p>
-            <p>en 2-4 jours ouvrables</p>
-
-            <div>
-              <div class="d-flex justify-content-between fw-bold">
-                <span>Standard</span>
-                <span>4.95€</span>
-              </div>
-              <p>En 2-5 jours ouvrables</p>
-            </div>
-
-            <div>
-              <div class="d-flex justify-content-between fw-bold">
-                <span>Express</span>
-                <span>9.95€</span>
-              </div>
-              <p>En 2-3 jours ouvrables</p>
-            </div>
-
-            <div>
-              <div class="d-flex justify-content-between fw-bold">
-                <span>Point Relais Colis</span>
-                <span>3.95€</span>
-              </div>
-              <p>En 2-4 jours ouvrables</p>
-            </div>
-
-            <h4 class="h5">Remboursement:</h4>
-
-            <p class="fw-bold mb-1 mt-3">Remboursement</p>
-            <p>Vous disposez de 30 jours à compter de la date d'expédition de la commande Les retours en magasin sont toujours GRATUITS</p>
-
-            <p>Vous pouvez restituer un produit dans l'un de nos magasins situé dans le pays dans lequel vous avez effectué votre achat.</p>
-
-            <p class="fw-bold mb-1 mt-3">Retour en point relais</p>
-            <p>
-              Tu peux demander à retourner un article via l'un de nos points relais dans la
-              section « Mon Compte » de notre site en sélectionnant « Retour en point relais ».
-              Cette option est gratuite si tu effectues ton premier retour en point relais dans les 15 premiers
-              jours de la période de retour. Si tu effectues ton retour en point relais une fois les 15 premiers
-              jours de la période de retour passés, ou si c'est ta deuxième demande de retour pour la même commande,
-              les frais de retour seront de 4,95€.
-            </p>
-
-            <div class="mt-3">
-              <div class="d-flex justify-content-between fw-bold">
-                <span>Retour à domicile</span>
-                <span>5,95€</span>
-              </div>
-              <p>
-                Vous pouvez demander le retour d'un produit via un
-                ramassage par un transporteur en visitant la section "Mon Compte" sur notre
-                site Web et en sélectionnant "Retour à domicile". Cette option a un coût de 5,95€.
-              </p>
-            </div>
-
-            <p class="fw-bold mb-1 mt-3">Ne peuvent être ni échangés ni retournés :</p>
-            <ul>
-              <li>Les articles personnalisés</li>
-              <li>Les sous-vêtements</li>
-              <li>Les boucles d'oreilles</li>
-              <li>Les accessoires pour les cheveux</li>
-              <li>Les casquettes et les chapeaux</li>
-              <li>Articles imprimés sur demande</li>
-              <li>Produits The Bershka Print Shop</li>
-            </ul>
-
-            <a href="#" class="mt-3">
-              Consulte ici les conditions et exceptions 
-              pour les retours et les échanges
-            </a>
-          </div>
-        </div>
-      </v-navigation-drawer>
+        </v-navigation-drawer>
+      </teleport>
     </section>
   </shop-layout>
 </template>
 
-<script lang="ts">
+<script>
 import _ from 'lodash'
 import 'vue-image-zoomer/dist/style.css'
 
@@ -312,26 +184,30 @@ import { useCart } from 'src/stores/cart'
 import { useShop } from 'src/stores/shop'
 import { buildImagePath } from 'src/utils'
 import { useHead, useSeoMeta } from 'unhead'
-import { defineAsyncComponent, inject, ref, defineComponent } from 'vue'
+import { defineAsyncComponent, inject, ref, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-// import { VueImageZoomer } from 'vue-image-zoomer'
 
+import AdditionalInfoBlock from '@/components/product/AdditionalInfoBlock.vue'
+import BreadcrumbBlock from '@/components/product/BreadcrumbBlock.vue'
 import BaseSizeBlock from 'src/components/BaseSizeBlock.vue'
 import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
 import DeliveryType from 'src/components/product/DeliveryType.vue'
 import DeliveryTypes from 'src/components/product/DeliveryTypes.vue'
 import FiveImages from 'src/components/product/FiveImages.vue'
+import ReviewsBlock from '@/components/product/ReviewsBlock.vue'
 import SixImages from 'src/components/product/SixImages.vue'
-import { Product } from '@/types/shop'
 
-export default defineComponent({
+export default {
   name: 'ProductPage',
   components: {
+    AdditionalInfoBlock,
+    BreadcrumbBlock,
     BaseSizeBlock,
     DeliveryType,
     DeliveryTypes,
     FiveImages,
+    ReviewsBlock,
     SixImages,
     LoadingRecommendationsBlock,
     // VueImageZoomer,
@@ -369,8 +245,11 @@ export default defineComponent({
 
     const route = useRoute()
     const router = useRouter()
-    const currentProduct = ref<Product>({})
+    const currentProduct = ref({})
     const productVariants = ref([])
+
+    provide('currentProduct', currentProduct)
+    provide('isLoading', isLoading)
 
     /**
      * Request the details of the given product
@@ -571,7 +450,7 @@ export default defineComponent({
       }
     }
   }
-})
+}
 </script>
 
 <style scoped>

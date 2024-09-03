@@ -1,5 +1,4 @@
 <template>
-  <!-- Sizes -->
   <div id="sizes" class="d-flex justify-content-start gap-1" aria-label="Product sizes">
     <base-size-button v-for="size in sizes" :key="size.id" v-model:selectedSize="selectedSize" :size="size" @click="handleSizeSelection(size)" />
   </div>
@@ -45,6 +44,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * 
+     */
     handleSizeSelection () {
       this.$emit('update-size', this.selectedSize)
     }

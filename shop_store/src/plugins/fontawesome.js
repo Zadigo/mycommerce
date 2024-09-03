@@ -1,7 +1,7 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCcMastercard, faCcVisa, faFacebookF, faInstagram, faTiktok, faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons'
-import { faEnvelope, faComment, faCircleCheck, faUser, faPen, faFlag, faArrowUp, faArrowRight, faHeart, faEllipsisVertical, faCaretDown, faCaretUp, faFilter, faArrowDown, faImage, faStar, faShoppingBag, faCartShopping, faTableCellsLarge, faTableCells, faShop, faTruck, faTrash, faArrowLeft, faRightFromBracket, faCaretLeft, faAngleLeft, faHome, faPhone, faClockRotateLeft, faMagnifyingGlass, faSignIn, faRightToBracket, faCog, faSliders, faClose } from '@fortawesome/free-solid-svg-icons'
+import { faEnvelope, faComment, faCircleCheck, faUser, faPen, faFlag, faArrowUp, faArrowRight, faHeart, faEllipsisVertical, faCaretDown, faCaretUp, faFilter, faArrowDown, faImage, faStar, faShoppingBag, faCartShopping, faTableCellsLarge, faTableCells, faShop, faTruck, faTrash, faArrowLeft, faRightFromBracket, faCaretLeft, faAngleLeft, faHome, faPhone, faClockRotateLeft, faMagnifyingGlass, faSignIn, faRightToBracket, faCog, faSliders, faClose, faCaretRight } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faArrowUp)
 library.add(faArrowRight)
@@ -11,8 +11,10 @@ library.add(faArrowDown)
 library.add(faComment)
 library.add(faCircleCheck)
 library.add(faCcVisa)
+library.add(faClose)
 library.add(faCaretDown)
 library.add(faCcMastercard)
+library.add(faCaretRight)
 library.add(faCaretLeft)
 library.add(faCartShopping)
 library.add(faCaretDown)
@@ -46,4 +48,3 @@ library.add(faTrash)
 library.add(faUser)
 library.add(faClockRotateLeft)
 library.add(faMagnifyingGlass)
-library.add(faClose)
