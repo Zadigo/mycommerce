@@ -1,20 +1,7 @@
 import _ from 'lodash'
-import { ref, watchEffect } from 'vue'
 
 function raiseError (functionName, message) {
   throw new Error(`${functionName} - ${message}`)
-}
-
-export function loadView (name) {
-  return () => import(`@/views/${name}.vue`)
-}
-
-export function loadLayout (name) {
-  return () => import(`@/layouts/${name}.vue`)
-}
-
-export function loadComponent (name) {
-  return () => import(`@/components/${name}.vue`)
 }
 
 export function scrollToTop () {
@@ -168,74 +155,12 @@ export function useUtilities () {
     incrementLastId,
     increaseIndex,
     listManager,
-    loadComponent,
-    loadLayout,
-    loadView,
     quickSort,
     readFile,
     readMultipleFiles,
     scrollToSection,
     scrollToTop,
     truncate
-  }
-}
-
-export function useSocket () {
-  const socket = ref(null)
-
-  watchEffect(() => {
-    if (socket.value === null) {
-      return false
-    } else {
-      const result = socket.value === socket.value.OPEN
-      console.log(result)
-      return true
-    }
-  }, {
-    onTrigger(e) {
-      console.log('watchEffect', e)
-    }
-  })
-
-  function getWebsocketProtocole () {
-    var protocol = window.location.protocol
-    return protocol === 'https' ? 'wss://' : 'ws://'
-  }
-
-  function websocketRootAddress (path) {
-    var protocol = getWebsocketProtocole()
-    var host = process.env.HOST_ADDRESS || '127.0.0.1:8000'
-    return new URL(path, protocol + host).toString()
-  }
-
-  function createWebsocket (path, listeners = {}) {
-    // const socket = new WebSocket(websocketRootAddress(path))
-
-    // socket.onopen = listeners.onopen
-    // socket.onclose = listeners.onclose
-    // socket.onmessage = listeners.onmessage
-    // socket.onerror = listeners.onerror
-    
-    // return socket
-
-    const instance = new WebSocket(websocketRootAddress(path))
-    socket.value = instance
-    socket.value.onopen = listeners.onopen
-    socket.value.onclose = listeners.onclose
-    socket.value.onmessage = listeners.onmessage
-    socket.value.onerror = listeners.onerror
-  }
-
-  function send (type, items = {}) {
-    return JSON.stringify({ type: type, ...items })
-  }
-
-  return {
-    socket,
-    getWebsocketProtocole,
-    websocketRootAddress,
-    createWebsocket,
-    send
   }
 }
 

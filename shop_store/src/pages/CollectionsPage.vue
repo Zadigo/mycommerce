@@ -8,7 +8,6 @@
               <router-link :to="{ name: 'shop_products_collection', params: { id: 'all'} }">
                 <article class="card shadow-none" aria-label="">
                   <img src="src/assets/img3.jpeg" alt="" class="card-img">
-                  <!-- <v-img src="src/assets/img3.jpeg" lazy-src="src/assets/img3.jpeg" alt="" class="card-img"></v-img> -->
                   <h1 class="text-white text-center">Collection n° {{ i }}</h1>
                 </article>
               </router-link>
@@ -23,33 +22,24 @@
 <script>
 import { ref } from 'vue'
 import { useHead } from 'unhead'
-// import { useCompany } from '@/composables/company';
 
 export default {
-  name: 'CollectionPage',
+  name: 'CollectionsPage',
   setup () {
     useHead({
       title: 'Collections',
       description: '',
-      meta: {
-
-      }
+      meta: {}
     })
 
     const collections = ref([])
-    
+
     return {
       collections
     }
   },
   created () {
     this.requestCollectionNames()
-    // TODO: Analytics does not work
-    // this.$analytics('event', 'page_view', {
-    //   page_title: 'Soutien-Gorge',
-    //   page_location: window.location.origin,
-    //   page_path: this.$route.fullPath,
-    // })
   },
   methods: {
     /**

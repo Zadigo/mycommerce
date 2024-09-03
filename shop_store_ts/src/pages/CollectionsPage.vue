@@ -24,7 +24,7 @@
 <script lang="ts">
 import { useHead } from 'unhead';
 import { defineComponent, ref } from 'vue';
-import { ProductCollection } from 'src/types/shop'
+import { ProductCollection } from '@/types/shop'
 
 export default defineComponent({
   name: 'CollectionPage',

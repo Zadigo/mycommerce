@@ -7,7 +7,6 @@
     </router-view>
 
     <!-- Modals -->
-    
     <v-bottom-sheet id="language-modal" v-model="shopStore.showLanguageModal" :persistent="languageModalIsPersistent">
       <v-card>
         <div class="container p-5">
@@ -103,7 +102,6 @@ export default {
       this.languageModalIsPersistent = true
       this.shopStore.showLanguageModal = true
     }
-    // this.currentLanguage = this.sessionStorageData.language || 'fr'
   },
   methods: {
     /**

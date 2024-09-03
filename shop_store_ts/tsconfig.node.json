@@ -4,6 +4,7 @@
     "lib": ["ES2022"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "composite": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -11,7 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": true,
+    "noEmit": false,
 
     /* Linting */
     "strict": true,

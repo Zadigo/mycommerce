@@ -2,10 +2,9 @@ import App from './App.vue'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { createPinia } from 'pinia'
-import { createHead, useScript } from 'unhead'
+import { createHead } from 'unhead'
 import { createApp, toRaw } from 'vue'
 import { createVuetify } from 'vuetify'
-// import { CapoPlugin } from 'unhead'
 import { createVueLocalStorage, createVueSession, VueLocalStorageInstance, VueSessionInstance } from './plugins/vue-storages'
 
 import DayJsAdapter from '@date-io/dayjs'
@@ -15,14 +14,12 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import colors from 'vuetify/util/colors'
-// import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
-// import { aliases, fa } from 'vuetify/iconsets/fa'
 
-import './style.css'
 import '@mdi/font/css/materialdesignicons.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'mdb-ui-kit/css/mdb.min.css'
 import 'vuetify/styles'
+import './style.css'
 
 import './plugins'
 
@@ -30,9 +27,7 @@ import ShopLayout from './layouts/ShopLayout.vue'
 import installPlugins from './plugins'
 
 const head = createHead({
-  plugins: [
-    // CapoPlugin()
-  ]
+  plugins: []
 })
 
 // https://vite-pwa-org.netlify.app/guide/pwa-minimal-requirements.html
@@ -89,8 +84,6 @@ pinia.use(({ store }) => {
     if (mutation.storeId === 'shop') {
       VueLocalStorageInstance.create('likedProducts', state.likedProducts)
       VueLocalStorageInstance.create('visitedProducts', state.visitedProducts)
-      // VueSessionInstance.create('likedProducts', state.likedProducts)
-      // VueSessionInstance.create('visitedProducts', state.visitedProducts)
     }
   })
 })
@@ -118,47 +111,15 @@ const vuetify = createVuetify({
     aliases,
     sets: {
       mdi
-      // fa
     }
   }
 })
-
-// TODO: Google Analytics does not work
-function createGoogleAnalytics (options) {
-  const { gtag } = useScript(`https://www.googletagmanager.com/gtag/js?id=${options.id}`, {
-    beforeInit () {
-      window.dataLayer = window.dataLayer || []
-      window.gtag = function gtag (...p) {
-        window.dataLayer.push(p)
-      }
-      window.gtag('js', new Date())
-      window.gtag('config', options.id, { debug: 'true' })
-    },
-    use () {
-      return { gtag: window.gtag }
-    }
-  })
-
-  return {
-    install: (app) => {
-      app.config.globalProperties.$analytics = gtag
-      app.mixin({
-        data () {
-          return {
-            analyticsTag: options.id
-          }
-        }
-      })
-    }
-  }
-}
 
 const app = createApp(App)
 // https://vuejs.org/guide/best-practices/performance
 // https://javascript.works-hub.com/learn/how-to-make-your-vue-js-application-faster-a7219
 app.config.performance = true
 app.use(router)
-app.use(createGoogleAnalytics({ id: 'G-CVKFG2XPVGv' }))
 app.use(pinia)
 app.use(vuetify)
 app.use(plugins)

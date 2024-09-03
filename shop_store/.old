@@ -1,0 +1,33 @@
+import { createHead, useScript } from 'unhead'
+
+function createGoogleAnalytics (options) {
+  const { gtag } = useScript(`https://www.googletagmanager.com/gtag/js?id=${options.id}`, {
+    beforeInit () {
+      window.dataLayer = window.dataLayer || []
+      window.gtag = function gtag (...p) {
+        window.dataLayer.push(p)
+      }
+      window.gtag('js', new Date())
+      window.gtag('config', options.id, { debug: 'true' })
+    },
+    use () {
+      return { gtag: window.gtag }
+    }
+  })
+
+  return {
+    install: (app) => {
+      app.config.globalProperties.$analytics = gtag
+      app.mixin({
+        data () {
+          return {
+            analyticsTag: options.id
+          }
+        }
+      })
+    }
+  }
+}
+
+app.use(createGoogleAnalytics({ id: 'G-CVKFG2XPVGv' }))
+

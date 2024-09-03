@@ -1,6 +1,6 @@
-import { routes } from './routes'
 import { useAuthentication } from 'stores/authentication'
 import { createRouter, createWebHistory, isNavigationFailure } from 'vue-router'
+import { routes } from './routes'
 
 const router = createRouter({
   scrollBehavior: () => ({ top: 0, left: 0 }),

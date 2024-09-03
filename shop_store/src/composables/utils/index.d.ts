@@ -1,11 +1,5 @@
 import { Ref } from 'vue'
 
-/** Load component from "views" folder */ 
-declare function loadView (name: string): Promise<any>
-/** Load component from "layouts" folder */ 
-declare function loadLayout (name: string): Promise<any>
-/** Load component from "components" folder */ 
-declare function loadComponent (name: string): Promise<any>
 /** Scroll to the top of a page */
 declare function scrollToTop (): void
 

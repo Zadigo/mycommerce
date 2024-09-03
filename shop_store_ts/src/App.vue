@@ -5,13 +5,13 @@
 <script lang="ts">
 import { defineOrganization, useSchemaOrg } from '@unhead/schema-org'
 import { useDocumentVisibility, useMediaQuery, useScreenOrientation } from '@vueuse/core'
-import { useAuthentication } from 'src/stores/authentication'
-import { useShop } from 'src/stores/shop'
+import { useAuthentication } from '@/stores/authentication'
+import { useShop } from '@/stores/shop'
 import { provide, ref, watch, defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import countries from 'src/data/countries.json'
-import organization from 'src/data/organization.json'
+import countries from '@/data/countries.json'
+import organization from '@/data/organization.json'
 
 export default defineComponent({
   name: 'App',

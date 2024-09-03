@@ -49,7 +49,6 @@ export default defineConfig(({ mode }) => {
           short_name: 'boutique',
           description: 'My shop description',
           theme_color: '#ffffff',
-          // To generate the images see:
           // https://www.pwabuilder.com/imageGenerator
           icons: [
             {
