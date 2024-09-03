@@ -35,11 +35,6 @@ export default {
       default: true
     }
   },
-  setup () {
-    return {
-
-    }
-  },
   computed: {
     gridClass () {
       return {

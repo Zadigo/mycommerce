@@ -88,8 +88,6 @@ pinia.use(({ store }) => {
   })
 })
 
-const plugins = installPlugins()
-
 const vuetify = createVuetify({
   components,
   directives,
@@ -122,7 +120,7 @@ app.config.performance = true
 app.use(router)
 app.use(pinia)
 app.use(vuetify)
-app.use(plugins)
+app.use(installPlugins())
 app.use(sessionPlugin)
 app.use(localStoragePlugin)
 app.component('FontAwesomeIcon', FontAwesomeIcon)

@@ -38,7 +38,7 @@
 <script>
 import { ref } from 'vue'
 import { useCartComposable } from 'src/composables/cart'
-import { useShopComposable, useUtilities } from 'src/composables/shop'
+import { useShopComposable, useShopUtilities } from 'src/composables/shop'
 import { useVueLocalStorage } from '@/plugins/vue-storages'
 
 import BaseSizeButton from '../BaseSizeButton.vue'
@@ -67,7 +67,7 @@ export default {
     }
   },
   setup (props) {
-    const { parseMainImage } = useUtilities()
+    const { parseMainImage } = useShopUtilities()
     const { quickAddToCart, quickAddToCartNoSize } = useCartComposable()
     const { isLiked, handleLike } = useShopComposable()
     const isHovered = ref(false)

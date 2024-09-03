@@ -39,7 +39,7 @@ import _ from 'lodash'
 
 import { storeToRefs } from 'pinia';
 import { useCart } from 'src/stores/cart';
-import { useUtilities } from 'src/composables/shop'
+import { useShopUtilities } from 'src/composables/shop'
 
 export default {
   name: 'BaseCartIterator',
@@ -58,7 +58,7 @@ export default {
     }
   },
   setup () {
-    const { parseMainImage } = useUtilities()
+    const { parseMainImage } = useShopUtilities()
     const cartStore = useCart()
     
     const { cache } = storeToRefs(cartStore)

@@ -15,7 +15,7 @@
         <div class="col-12">
           <suspense>
             <template #default>
-              <async-products-feed @update-products="handleProducts" />
+              <async-products-feed @update-products="handleProductsLoaded" />
             </template>
 
             <template #fallback>
@@ -39,17 +39,16 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import _ from 'lodash';
 
+import { defineProduct, useSchemaOrg } from '@unhead/schema-org';
+import { useUtilities } from 'src/composables/utils';
+import { useAuthentication } from 'src/stores/authentication';
 import { useHead } from 'unhead';
-import { ref, provide } from 'vue'
-import { useRoute } from 'vue-router'
-import { defineAsyncComponent } from 'vue'
-import { useAuthentication } from 'src/stores/authentication'
-import { defineProduct, useSchemaOrg } from '@unhead/schema-org'
-import { useUtilities } from 'src/composables/utils'
+import { defineAsyncComponent, provide, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
-import LoadingProductsFeed from '@/components/products/LoadingProductsFeed.vue'
+import LoadingProductsFeed from '@/components/products/LoadingProductsFeed.vue';
 
 export default {
   name: 'ProductsPage',
@@ -109,7 +108,7 @@ export default {
      * 
      * @param {Array} products 
      */
-    handleProducts (products) {
+    handleProductsLoaded (products) {
       this.products = products
       this.productsLoading = false
     }

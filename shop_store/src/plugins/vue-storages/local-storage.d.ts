@@ -17,7 +17,6 @@ declare class VueLocalStorage extends BaseStorage {
 export let VueLocalStorageInstance: VueLocalStorage
 
 declare global {
-
   interface Window {
     VueLocalStorage: VueLocalStorage
   }

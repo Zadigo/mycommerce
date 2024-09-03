@@ -78,7 +78,7 @@ export function useCartComposable () {
    */
   async function addToCart (product, callback) {
     try {
-      if (userSelection.value.size === null && product.has_size) {
+      if (userSelection.value.size === null && product.has_sizes) {
         showSizeSelectionWarning.value = true
       } else {
         userSelection.value.product = product

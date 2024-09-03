@@ -1,9 +1,11 @@
 <template>
   <section id="product-feed" class="row">
+    <!-- Filtering -->
     <div class="col-12">
       <default-filtering :products="products" :total-product-count="totalProductCount" @show-product-filters="showProductFilters=!showProductFilters" @update-grid-size="handleGridSize" />
     </div>
 
+    <!-- Products -->
     <div class="row gx-1 gy-1">
       <base-product-iterator :products="products" :columns="currentGridSize" />
     </div>
@@ -275,8 +277,7 @@ export default {
       } else {
         isLoadingMoreProducts.value = false
       }
-    }, {
-    })
+    }, {})
 
     /**
      * Main function for requesting new products based
@@ -350,7 +351,8 @@ export default {
       this.currentGridSize = size
     },
     /**
-     *  
+     * @param {string} action The action register
+     * @param {string} value The value to register under the given action
      */
     handleFilterSelection (action, value) {
       switch (action) {
@@ -378,6 +380,9 @@ export default {
           break;
       }
     },
+    /**
+     *  
+     */
     handleFiltersReset () {
       this.selectedFilters = {
         sorted_by: 'New',

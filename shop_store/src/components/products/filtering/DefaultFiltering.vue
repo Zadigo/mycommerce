@@ -17,10 +17,13 @@
             </v-btn>
           </div>
         </div>
-
+        
         <div class="d-flex justify-content-right gap-1 align-items-center">
-          <v-skeleton-loader v-if="productsLoading" type="text"></v-skeleton-loader>
-          <span v-else id="product-count" class="fw-bold me-2">{{ totalProductCount }} produits trouvés</span>
+          <v-skeleton-loader :is-loading="productsLoading" type="text">
+            <span id="product-count" class="fw-bold me-2">
+              {{ totalProductCount }} produits trouvés
+            </span>
+          </v-skeleton-loader>
 
           <v-btn :active="gridSize === 3" variant="tonal" flat @click="handleGridSize(3)">
             <font-awesome-icon :icon="['fas', 'table-cells-large']" />

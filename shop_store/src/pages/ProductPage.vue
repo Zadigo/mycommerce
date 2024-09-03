@@ -11,7 +11,7 @@
               </div>
             </div>
 
-            <div id="product-aside" class="col-4 ms-5">
+            <div id="product-aside" class="col-4 ms-5 mt-4">
               <!-- Breadcrumb -->
               <breadcrumb-block />
 
@@ -177,12 +177,11 @@ import { defineBreadcrumb, defineProduct, useSchemaOrg } from '@unhead/schema-or
 import { useIntersectionObserver } from '@vueuse/core'
 import { mapActions, storeToRefs } from 'pinia'
 import { useCartComposable } from 'src/composables/cart'
-import { useShopComposable, useUtilities } from 'src/composables/shop'
+import { useShopComposable, useShopUtilities } from 'src/composables/shop'
 import { client } from 'src/plugins/axios'
 import { useAuthentication } from 'src/stores/authentication'
 import { useCart } from 'src/stores/cart'
 import { useShop } from 'src/stores/shop'
-import { buildImagePath } from 'src/utils'
 import { useHead, useSeoMeta } from 'unhead'
 import { defineAsyncComponent, inject, ref, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -227,7 +226,7 @@ export default {
     // the product page
     const intersectionTarget = ref(null)
 
-    const { localImagePath, parseMainImage, djangoMediaPath, translatePrice } = useUtilities()
+    const { localImagePath, parseMainImage, djangoMediaPath, translatePrice } = useShopUtilities()
 
     const { addToCart, showSizeSelectionWarning, userSelection } = useCartComposable()
 
@@ -240,8 +239,6 @@ export default {
     const { showAddedProductDrawer } = storeToRefs(cartStore)
 
     const sizeGuideDrawer = ref(false)
-    const showDeliveryDrawer = ref(false)
-    const showCompositionDrawer = ref(false)
 
     const route = useRoute()
     const router = useRouter()
@@ -334,8 +331,6 @@ export default {
       cartStore,
       shopStore,
       sizeGuideDrawer,
-      showCompositionDrawer,
-      showDeliveryDrawer,
       showAddedProductDrawer,
       userSelection,
       currentProduct,
@@ -351,8 +346,7 @@ export default {
       parseMainImage,
       translatePrice,
       localImagePath,
-      handleLike,
-      buildImagePath,
+      handleLike
     }
   },
   computed: {
@@ -401,10 +395,7 @@ export default {
   created () {
     this.isLiked = this.localStorageData.likedProducts.includes(this.$route.params.id * 1)
     this.requestProduct()
-    
-    setTimeout(() => {
-      this.addToHistory(this.currentProduct)
-    }, 5000)
+    this.addToHistory(this.currentProduct)
   },
   mounted () {
     this.intersectionTarget = this.$refs.moreProductsIntersect
