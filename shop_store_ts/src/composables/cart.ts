@@ -5,6 +5,8 @@ import { getCurrentInstance, ref } from 'vue'
 import { AddToCartData, UserSelection } from '../types/composables/cart'
 import { Product } from '../types/shop'
 
+type CallbackFunction = (...args: unknown[]) => void
+
 /**
  * The cart composable is a function that allows
  * the implementation of cart functionnalities all
@@ -27,7 +29,7 @@ export function useCartComposable () {
     session_id: null
   })
 
-  const showSizeSelectionWarning = ref<Boolean>(false)
+  const showSizeSelectionWarning = ref<boolean>(false)
   const stockDetailsResponse = ref({})
 
   /**
@@ -51,19 +53,19 @@ export function useCartComposable () {
    * @param {Object} data
    * @returns {Object}
    */
-  async function requestAddToCart (data: AddToCartData) {
+  async function requestAddToCart(data: AddToCartData) {
     try {
-      const sessionId = instance.retrieve('session_id')
+      const sessionId = instance.retrieve("session_id");
       // By changing this, it updates in the underlying
       // proxy in the ref since data is that proxy
-      userSelection.value.session_id = sessionId || null
+      userSelection.value.session_id = sessionId || null;
 
-      const response = await client.post('cart/add', data)
-      await requestCheckStock()
-      return response
+      const response = await client.post("cart/add", data);
+      await requestCheckStock();
+      return response;
     } catch (e) {
-      console.error(e)
-      return {}
+      console.error(e);
+      return {};
     }
   }
 
@@ -72,26 +74,23 @@ export function useCartComposable () {
    * page to communicate between the page and 
    * `requestAddToCart`. This requires a size
    * selection
-   * 
-   * @param {Object} product The product object
-   * @param {Function} callback The callback function to execute
    */
-  async function addToCart (product: Product, callback: Function) {
+  async function addToCart(product: Product, callback: CallbackFunction) {
     try {
       if (userSelection.value.size === null && product.has_sizes) {
-        showSizeSelectionWarning.value = true
+        showSizeSelectionWarning.value = true;
       } else {
-        userSelection.value.product = product
-        const response = await requestAddToCart(userSelection.value)
-        instance.create('cart_cache', response.data)
-        cartStore.updateCart(response.data)
+        userSelection.value.product = product;
+        const response = await requestAddToCart(userSelection.value);
+        instance.create("cart_cache", response.data);
+        cartStore.updateCart(response.data);
 
-        if (typeof callback === 'function') {
-          callback.call(app, response.data)
+        if (typeof callback === "function") {
+          callback.call(app, response.data);
         }
       }
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
   }
 
@@ -99,16 +98,16 @@ export function useCartComposable () {
    * Adds a product to the customer's cart when the
    * the product size or other caracteristics are
    * available in a list (e.g. ProductsPage, CollectionsPage...) 
-   * 
-   * @param {Object} product The product object
-   * @param {String | Number} size The product's size attribute
-   * @param {Function} callback The callback function to execute
    */
-  async function quickAddToCart(product: Product, size: string, callback: Function) {
-    userSelection.value.size = size
-    userSelection.value.id = product.id
-    userSelection.value.product = product
-    await addToCart(product, callback)
+  async function quickAddToCart(
+    product: Product,
+    size: string,
+    callback: CallbackFunction
+  ) {
+    userSelection.value.size = size;
+    userSelection.value.id = product.id;
+    userSelection.value.product = product;
+    await addToCart(product, callback);
   }
 
   async function deleteFromCart (product: Product) {

@@ -79,5 +79,5 @@ export type Order = {
 };
 
 export type CartCache = {
-  
+  id: number
 }

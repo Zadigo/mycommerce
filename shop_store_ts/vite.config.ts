@@ -41,7 +41,8 @@ export default defineConfig(({ mode }) => {
       }),
       VueI18nPlugin({
         include: resolve(
-          dirname(fileURLToPath(import.meta.url), "./src/locales/**")
+          dirname(fileURLToPath(import.meta.url)),
+          "./src/locales/**"
         ),
         fullInstall: false,
         compositionOnly: true,

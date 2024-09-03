@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import { ref, watchEffect } from 'vue'
 
 function raiseError (functionName, message) {
   throw new Error(`${functionName} - ${message}`)
@@ -187,7 +186,7 @@ export function useUrls () {
   }
 
   function mediaUrl (path) {
-    var rootUrl = process.env.rootUrl || 'http://127.0.0.1:8000'
+    var rootUrl = import.meta.env.BASE_URL || 'http://127.0.0.1:8000'
     // if (!path && useDefault) {
     //   return require('@/assets/placeholder.png')
     // }

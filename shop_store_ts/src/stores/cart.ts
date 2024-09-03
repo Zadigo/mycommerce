@@ -19,7 +19,7 @@ declare type RequestData = {
 
 declare type RootState = {
   requestData: RequestData;
-  cache: {};
+  cache: {id: number};
   products: CartProduct[];
 
   showAddedProductDrawer: boolean;

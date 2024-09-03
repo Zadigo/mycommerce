@@ -12,7 +12,7 @@ import { Product } from '../types/shop'
  */ 
 export function useShopComposable () {
   const shopStore = useShop()
-  const isLiked = ref<Boolean>(false)
+  const isLiked = ref<boolean>(false)
 
   /**
    * Function that manages products that were
