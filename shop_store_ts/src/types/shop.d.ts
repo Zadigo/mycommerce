@@ -81,3 +81,20 @@ export type Order = {
 export type CartCache = {
   id: number
 }
+
+export type CartStatistics = {
+  product__id: number
+  product__name: string
+  quantity: number
+  total: number
+}
+
+export type AddToCartResponse = {
+  session_id: string;
+  results: CartProduct[];
+  statistics: CartStatistics[];
+  total: number
+};
+
+
+export type LikedProducts = number[]

@@ -21,7 +21,7 @@ const useShop = defineStore("shop", {
      * products that were historically
      * visited by the user in the store
      */
-    addToHistory(product: Product): void {
+    addToHistory(product: Product) {
       if (product) {
         this.visitedProducts.push(product.id);
       }
@@ -32,7 +32,7 @@ const useShop = defineStore("shop", {
      * subscription which allows the data to sync to
      * the local storage
      */
-    addToWishlist(productId: number): void {
+    addToWishlist(productId: number) {
       if (!this.likedProducts.includes(productId)) {
         this.likedProducts.push(productId);
       }
@@ -50,7 +50,7 @@ const useShop = defineStore("shop", {
         this.likedProducts.splice(index, 1);
       }
     },
-    loadFromCache(): void {
+    loadFromCache() {
       this.likedProducts = this.$localstorage.retrieve("likedProducts");
       this.visitedProducts = this.$localstorage.retrieve("visitedProducts");
     },
