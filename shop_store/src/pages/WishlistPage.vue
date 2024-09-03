@@ -26,7 +26,7 @@
         </div>
 
         <template v-if="likedProducts.length > 0">
-          <base-product-iterator :products="likedProducts" />
+          <!-- <base-product-iterator :products="likedProducts" /> -->
         </template>
 
         <template v-else>
@@ -46,13 +46,14 @@ import { useHead } from 'unhead'
 import { storeToRefs } from 'pinia'
 import { useShop } from 'src/stores/shop'
 import { useAuthentication } from 'src/stores/authentication'
+import { ref } from 'vue';
 
-import BaseProductIterator from '@/components/BaseProductIterator.vue'
+// import BaseProductIterator from '@/components/BaseProductIterator.vue'
 
 export default {
   name: 'WishlistPage',
   components: {
-    BaseProductIterator
+    // BaseProductIterator
   },
   setup () {
     const authenticationStore = useAuthentication()
@@ -60,16 +61,15 @@ export default {
 
     const shopStore = useShop()
     const { likedProducts } = storeToRefs(shopStore)
+    const products = ref([])
 
     useHead({
       title: 'Wishlist',
-      description: '',
-      meta: {
-        
-      }
+      description: ''
     })
-    
+    console.log(likedProducts.value)
     return {
+      products,
       authenticationStore,
       likedProducts,
       showLoginDrawer
@@ -78,7 +78,14 @@ export default {
   methods: {
     /** */
     async requestLikedProducts () {
-
+      try {
+        const response = await this.$http.post('products', {
+          products: this.likedProducts
+        })
+        this.products = response.data
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }
