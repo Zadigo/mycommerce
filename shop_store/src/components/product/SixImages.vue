@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { useUtilities } from 'src/composables/shop'
+import { useShopUtilities } from 'src/composables/shop'
 
 export default {
   name: 'SixImages',
@@ -21,7 +21,7 @@ export default {
     }
   },
   setup () {
-    const { djangoMediaPath } = useUtilities()
+    const { djangoMediaPath } = useShopUtilities()
     return {
       djangoMediaPath
     }

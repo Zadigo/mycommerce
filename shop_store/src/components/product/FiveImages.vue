@@ -14,7 +14,7 @@
 
 <script>
 import { computed } from 'vue'
-import { useUtilities } from 'src/composables/shop'
+import { useShopUtilities } from 'src/composables/shop'
 
 export default {
   name: 'SixImages',
@@ -26,7 +26,7 @@ export default {
     }
   },
   setup (props) {
-    const { djangoMediaPath } = useUtilities()
+    const { djangoMediaPath } = useShopUtilities()
 
     const firstImages = computed(() => {
       return props.images.slice(0, 2)
@@ -44,4 +44,3 @@ export default {
   }
 }
 </script>
-v
