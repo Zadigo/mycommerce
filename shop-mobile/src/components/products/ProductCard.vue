@@ -1,14 +1,16 @@
 <template>
   <ion-card id="product">
-    <ion-img src="/img5.jpg" @click="handleGoToProduct"></ion-img>
+    <!-- <ion-img src="/img5.jpg" @click="handleGoToProduct"></ion-img> -->
+    <ion-img :src="conditionalImagePath(product.get_main_image?.original)" @click="handleGoToProduct(product)"></ion-img>
     
     <ion-card-content v-if="showProductInfo">
       <div class="product-info">
         <div class="info">
           <h5>{{ product.name }}</h5>
 
-          <ion-button v-if="showAddToFavorite" shape="round" fill="clear" color="dark" size="small">
-            <font-awesome-icon :icon="['far', 'heart']"></font-awesome-icon>
+          <ion-button v-if="showAddToFavorite" shape="round" fill="clear" color="dark" size="small" @click="handleLike(product)">
+            <font-awesome-icon v-if="isLiked" :icon="['fas', 'heart']"></font-awesome-icon>
+            <font-awesome-icon v-else :icon="['far', 'heart']"></font-awesome-icon>
           </ion-button>
           <ion-button v-else shape="round" size="small" fill="clear" color="dark" @click="emit('show-product-sizes', product)">
             <font-awesome-icon :icon="['fas', 'shopping-cart']"></font-awesome-icon>
@@ -23,12 +25,14 @@
 
 
 <script setup lang="ts">
-import { useProducts } from '@/composables/shop';
-import { Product } from '@/types/collections';
+import { useShopComposable, useShopUtilities } from '@/composables/shop';
+import { Product } from '@/types/shop';
 import { IonButton, IonCard, IonCardContent, IonImg } from '@ionic/vue';
 import { defineEmits, defineProps, PropType } from 'vue';
 
 const emit = defineEmits(['show-product-sizes']);
+const { conditionalImagePath } = useShopUtilities()
+
 defineProps({
   showProductInfo: {
     type: Boolean,
@@ -45,7 +49,8 @@ defineProps({
   },
 });
 
-const { handleGoToProduct } = useProducts()
+const { handleGoToProduct } = useShopComposable()
+const { isLiked, handleLike } = useShopComposable()
 </script>
 
 <style scoped>

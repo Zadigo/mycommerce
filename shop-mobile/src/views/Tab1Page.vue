@@ -7,45 +7,23 @@
         </ion-title>
       </ion-toolbar>
     </ion-header>
+
     <ion-content :fullscreen="true">
-      <HomeExplorer :collections="collections" />
+      <Suspense>
+        <template #default>
+          <AsyncHomeExplorer />
+        </template>
+      </Suspense>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { client } from '@/plugins/axios';
-import { useVueSession } from '@/plugins/vue-storages';
-import { ProductCollections } from '@/types/collections';
+import { defineAsyncComponent } from 'vue';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
-import { onBeforeMount, ref } from 'vue';
 
-import HomeExplorer from '@/components/HomeExplorer.vue';
-
-const { instance } = useVueSession()
-const collections = ref<ProductCollections[]>([])
-
-/**
- * Gets all the names of the collections that are
- * available to be displayed on this page
- * 
- * @listens
- */
-const requestCollectionNames = async function (): Promise<void> {
-  try {
-    const numberOfItems = instance.listCount('collections', false)
-    if (numberOfItems === 0) {
-      const response = await client.get('collection')
-      instance.create('collections', response.data)
-    }
-
-    collections.value = instance.retrieve('collections')
-  } catch (e) {
-    console.error('CollectionPage', e)
-  }
-}
-
-onBeforeMount(() => {
-  requestCollectionNames()
+const AsyncHomeExplorer = defineAsyncComponent({
+  loader: () => import('@/components/home/HomeExplorer.vue'),
+  timeout: 5000
 })
 </script>

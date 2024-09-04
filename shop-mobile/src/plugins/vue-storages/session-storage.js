@@ -7,6 +7,7 @@
 import { setupDevtoolsPlugin } from '@vue/devtools-api'
 // import { ref } from 'vue'
 import { BaseStorage } from './base'
+import { isNull } from 'lodash'
 
 let VueSessionInstance
 
@@ -139,7 +140,7 @@ class VueSession extends BaseStorage {
     this.create('expirations', data)
   }
 
-  getOrExpire (key) {
+  getOrExpire (key, callback) {
     const data = this.retrieve('expirations')
 
     if (!data) {
@@ -155,7 +156,12 @@ class VueSession extends BaseStorage {
     const currentDate = new Date()
 
     if (currentDate > expirationDate) {
+      callback.call(data[key])
       delete data[key]
+      
+      if (typeof callback !== 'function') {
+        throw new Error('Callback of getOrExpire should be a function')
+      }
       return null
     } else {
       return value
@@ -164,6 +170,15 @@ class VueSession extends BaseStorage {
 
   getType (key) {
     return typeof this.data[key]
+  }
+
+  keyExists (key) {
+    const storedData = this.data
+    const expirations = storedData.expirations
+    return (
+      Object.keys(storedData).includes(key) ||
+        isNull(expirations) ? false : Object.keys(expirations).includes(key)
+    )
   }
 
   renameKey (key, newKey) {

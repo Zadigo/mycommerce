@@ -1,8 +1,8 @@
 <template>
   <div class="focused-search ion-padding">    
     <ion-col size="12">
-      <ion-input ref="input" fill="outline" placeholder="Rechercher" @ion-blur="emit('search-unfocused')">
-        <ion-icon slot="start" :icon="search" aria-hidden="true"></ion-icon>
+      <ion-input v-model="search" ref="input" fill="outline" placeholder="Rechercher" @ion-blur="emit('search-unfocused')" @keypress="requestSearchProducts">
+        <ion-icon slot="start" :icon="searchIcon" aria-hidden="true"></ion-icon>
         <ion-button fill="clear" slot="end" aria-label="Show/hide" @click="emit('search-unfocused')">
           <ion-icon slot="icon-only" :icon="close" aria-hidden="true"></ion-icon>
         </ion-button>
@@ -15,19 +15,33 @@
         Jupes
       </ion-button>
     </ion-col>
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { useProducts } from '@/composables/shop';
+import { useShopComposable } from '@/composables/shop';
+import { client } from '@/plugins/axios';
 import { IonButton, IonCol, IonIcon, IonInput } from '@ionic/vue';
-import { close, search, thermometerOutline } from 'ionicons/icons';
+import { close, search as searchIcon, thermometerOutline } from 'ionicons/icons';
+import _ from 'lodash';
 import { onMounted, ref } from 'vue';
 
-const emit = defineEmits(['search-focused', 'search-unfocused'])
-// const input = ref<HTMLElement>()
-const { handleGoToCollectionByName } = useProducts()
+const emit = defineEmits(['search-focused', 'search-unfocused', 'update-search'])
+const { handleGoToCollectionByName } = useShopComposable()
+const search = ref<string>(null)
+
+const requestSearchProducts = _.debounce(async () => {
+  try {
+    const response = await client.get('/shop/products/search', {
+      params: {
+        q: search.value
+      }
+    })
+    emit('update-search', response.data)
+  } catch (e) {
+    console.log(e)
+  }
+}, 400)
 
 onMounted(() => {
   // input.value?.focus()

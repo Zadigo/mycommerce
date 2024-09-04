@@ -1,7 +1,7 @@
-import { createApp } from 'vue'
+import { createApp, toRaw } from 'vue'
 import { createPinia } from 'pinia';
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { createVueLocalStorage, createVueSession } from './plugins/vue-storages';
+import { createVueLocalStorage, createVueSession, VueSessionInstance, VueLocalStorageInstance } from './plugins/vue-storages';
 
 import App from './App.vue'
 import router from './router';
@@ -39,9 +39,34 @@ import '@ionic/vue/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 
-const localstorage = createVueLocalStorage()
+const localstorage = createVueLocalStorage({
+  afterMount ({ instance }) {
+    if (!instance.keyExists('likedProducts')) {
+      instance.create('likedProducts', [])
+    }
+
+    if (!instance.keyExists('visitedProducts')) {
+      instance.create('visitedProducts', [])
+    }
+  }
+})
+
 const session = createVueSession()
+
 const pinia = createPinia()
+
+pinia.use(({ store }) => {
+  store.$router = toRaw(router);
+  store.$session = toRaw(VueSessionInstance);
+  store.$localstorage = toRaw(VueLocalStorageInstance);
+
+  store.$subscribe((mutation, state) => {
+    if (mutation.storeId === 'shop') {
+      VueLocalStorageInstance?.create("likedProducts", state.likedProducts);
+      VueLocalStorageInstance?.create("visitedProducts", state.visitedProducts);
+    }
+  })
+})
 
 const app = createApp(App)
   .use(IonicVue)

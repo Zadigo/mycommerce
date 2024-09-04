@@ -1,14 +1,17 @@
-import { Product, ProductCollections } from '@/types/collections';
-import _ from 'lodash';
-import { defineStore } from 'pinia';
+import _ from "lodash";
+import { defineStore } from "pinia";
+import { Product, ProductCollection } from "@/types/shop";
 
 type State = {
-  visitedProducts: Product[];
-  likedProducts: Product[];
+  visitedProducts: number[];
+  likedProducts: number[];
   showLanguageModal: boolean;
-  currentCollection: ProductCollections;
+  currentCollectionName: string,
+  currentCollection: ProductCollection;
   currentProduct: Product;
 };
+
+type NumberOrString = number | string;
 
 const useShop = defineStore("shop", {
   state: (): State => ({
@@ -16,6 +19,7 @@ const useShop = defineStore("shop", {
     likedProducts: [],
 
     showLanguageModal: false,
+    currentCollectionName: null,
     currentCollection: {},
     currentProduct: {},
   }),
@@ -40,7 +44,7 @@ const useShop = defineStore("shop", {
      * the local storage
      *
      */
-    addToWishlist(productId: number): void {
+    addToWishlist(productId: number) {
       if (!this.likedProducts.includes(productId)) {
         this.likedProducts.push(productId);
       }
@@ -50,14 +54,14 @@ const useShop = defineStore("shop", {
      * wishlist on the frontend
      *
      */
-    removeFromWishlist(productId: number | string): void {
+    removeFromWishlist(productId: NumberOrString) {
       const index = _.indexOf(this.likedProducts, productId);
 
       if (index >= 0) {
         this.likedProducts.splice(index, 1);
       }
     },
-    loadFromCache(): void {
+    loadFromCache() {
       this.likedProducts = this.$localstorage.retrieve("likedProducts");
       this.visitedProducts = this.$localstorage.retrieve("visitedProducts");
     },
@@ -82,7 +86,4 @@ const useShop = defineStore("shop", {
   },
 });
 
-export {
-  useShop
-};
-
+export { useShop };

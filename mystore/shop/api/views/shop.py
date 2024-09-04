@@ -2,28 +2,36 @@ import random
 
 import pandas
 import spacy
-from django.core.cache import cache
 from django.db.models import Case, Q, When
-from django.db.models.functions.window import Rank
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
+from drf_spectacular.utils import extend_schema
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.mixins import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from shop.api import CustomPagination
-from shop.api.serializers import admin as admin_serializers
 from shop.api.serializers import shop as shop_serializers
 from shop.api.serializers.shop import ProductSerializer
 from shop.models import Product
-from drf_spectacular.utils import extend_schema
 
 
 @extend_schema('List Products')
 class ListProducts(ListAPIView):
+    """List the products in the database and accepts
+    a set of query parameters that can be used to
+    filter the elements by type:
+    
+    * `q` - Searches the products by name
+    * `colors` - Filters the prodcuts by color
+    * `min_price` - `max_price` - Returns the products between
+      the selected price range
+    * `sizes` - Filters the products by a given size
+    """
+    
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     pagination_class = CustomPagination
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         queryset = self.queryset.filter(active=True)
@@ -55,14 +63,6 @@ class ListProducts(ListAPIView):
         sizes = self.request.GET.getlist('sizes', [])
         if sizes:
             queryset = queryset.filter(size__name__in=sizes)
-
-        is_admin = self.request.GET.get('admin')
-        if is_admin == 'true':
-            product_name = self.request.GET.get('name')
-            if product_name:
-                queryset = queryset.filter(name__icontains=product_name)
-
-            self.serializer_class = admin_serializers.AdminProductSerializer
         return queryset
 
 
@@ -70,7 +70,6 @@ class ListProducts(ListAPIView):
 class GetProduct(RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    http_method_names = ['get']
 
     def retrieve(self, request, *args, **kwargs):
         product = self.get_object()
@@ -90,17 +89,26 @@ class GetProduct(RetrieveAPIView):
 class ListRecommendations(ListAPIView):
     """This endpoint allows the pages that require displaying
     a set of recommended products to be called by passing a
-    quantity of items to be displayed. Recommandations can be
-    filtered using either a `collection_name` or a `product_id`"""
+    quantity of items to be displayed. Recommendations are
+    based on the caracteristics of the product that is currently
+    visited. For example if you're visiting skirts then the
+    recommended products will be related to that category
+    
+    * `p` - Return products from a specific collection name or
+      in the same product range as the one currently visited
+    * `q` - Quantity of products to return
+    * `for_mobile` - On mobile phones, the home page recommends
+      products that are not necessarily relate to a visited product
+      this indicates to return a random set of items
+    """
 
-    http_method_names = ['get']
     queryset = Product.objects.filter(active=True)
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
 
     def recommendation_by_randomness(self, products, quantity):
         selected_items = []
-        for _ in range(quantity):
+        for _ in range(int(quantity)):
             selected_items.append(random.choice(products))
         return selected_items
 
@@ -146,6 +154,19 @@ class ListRecommendations(ListAPIView):
         have a high popularity in the shop"""
         product_id_or_collection_name = self.request.GET.get('p')
         quantity = self.request.GET.get('q', 30)
+        for_mobile = self.request.GET.get('m', 0)
+        with_images = self.request.GET.get('i', 0)
+        # A set of previously liked products can also be
+        # passed in, in order to generate recommended products
+        # liked_products = self.request.GET.getlist('l')
+
+        if for_mobile == '1':
+            queryset = super().get_queryset()
+            if with_images == '1':
+                logic = When(Q(images=None), False)
+                case = Case(logic, default=True)
+                queryset = queryset.annotate(has_images=case).filter(has_images=True)
+            return self.recommendation_by_randomness(queryset, quantity)
 
         if product_id_or_collection_name is None:
             return []

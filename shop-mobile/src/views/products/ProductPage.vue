@@ -7,6 +7,7 @@
             <font-awesome-icon :icon="['fas', 'chevron-left']"></font-awesome-icon>
           </ion-button>
         </ion-buttons>
+
         <ion-buttons slot="end">
           <ion-button>
             <font-awesome-icon :icon="['fas', 'heart']"></font-awesome-icon>
@@ -14,32 +15,25 @@
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
+    
     <ion-content>
       <ion-grid style="padding-left: 0; padding-right: 0;">
         <ion-row>
           <ion-col id="img-block" size="12" style="padding-left: 0; padding-right: 0; padding-top: 0;">
-            <!-- <ion-img src="/img1.jpg"></ion-img> -->
             <!-- https://swiperjs.com/element -->
             <swiper-container pagination="true" @swiperslidechange="() => {}">
-              <swiper-slide lazy="true">
-                <img src="/img1.jpg" loading="lazy" />
-              </swiper-slide>
-              <swiper-slide lazy="true">
-                <img src="/img2.jpg" loading="lazy" />
-              </swiper-slide>
-              <swiper-slide lazy="true">
-                <img src="/img3.jpg" loading="lazy" />
-              </swiper-slide>
-              <swiper-slide lazy="true">
-                <img src="/img4.jpg" loading="lazy" />
+              <swiper-slide v-for="image in currentProduct.images" :key="image.id">
+                <img :src="conditionalImagePath(image?.original)" />
               </swiper-slide>
             </swiper-container>
 
             <ion-button id="btn-share" color="light" shape="round" fill="clear" style="z-index: 2000;">
               <ion-icon :icon="shareSocial"></ion-icon>
             </ion-button>
-            <ion-button id="btn-heart" color="light" shape="round" style="z-index: 2000;">
-              <font-awesome-icon :icon="['far', 'heart']"></font-awesome-icon>
+
+            <ion-button id="btn-heart" color="light" shape="round" style="z-index: 2000;" @click="handleLike(currentProduct)">
+              <font-awesome-icon v-if="isLiked" :icon="['fas', 'heart']"></font-awesome-icon>
+              <font-awesome-icon v-else :icon="['far', 'heart']"></font-awesome-icon>
             </ion-button>
           </ion-col>
         </ion-row>
@@ -83,19 +77,20 @@ import {
   IonContent,
   IonGrid,
   IonHeader,
+  IonIcon,
   IonPage,
   IonRow,
   IonToolbar,
   useIonRouter
 } from '@ionic/vue';
 
+import { useShopComposable, useShopUtilities } from '@/composables/shop';
 import { useShop } from '@/stores/shop';
 import { Product } from '@/types/collections';
 import { shareSocial } from 'ionicons/icons';
-import _ from 'lodash';
 import { storeToRefs } from 'pinia';
 import { register } from 'swiper/element';
-import { computed, onBeforeMount, ref } from 'vue';
+import { onBeforeMount, onMounted, ref } from 'vue';
 
 register()
 
@@ -103,16 +98,22 @@ const recommendations = ref<Product[]>([])
 const router = useIonRouter()
 const store = useShop()
 const { likedProducts, currentProduct } = storeToRefs(store)
+const { conditionalImagePath } = useShopUtilities()
+const { isLiked, handleLike } = useShopComposable()
 
 onBeforeMount(() => {
   requestRecommendations()
 })
 
-const isLiked = computed((): boolean => {
-  const product =  _.find(likedProducts.value, { id: currentProduct.value.id })
-  return product === null ? false : true
+onMounted(() => {
+  if (likedProducts.value.includes(currentProduct.value.id)) {
+    isLiked.value = true
+  }
 })
 
+/**
+ * 
+ */
 const requestRecommendations = async function () {
   recommendations.value = Array.from({ length: 40}, (a, b) => {
     return {

@@ -7,7 +7,9 @@
             <font-awesome-icon :icon="['fas', 'chevron-left']"></font-awesome-icon>
           </ion-button>
         </ion-buttons>
-        <ion-title style="text-align: center;">Collection n°1</ion-title>
+    
+        <ion-title style="text-align: center;">{{ currentCollectionName }}</ion-title>
+    
         <ion-buttons slot="end">
           <ion-button size="large" shape="round" @click="showProductsFilterModal=true">
             <font-awesome-icon :icon="['fas', 'sliders']"></font-awesome-icon>
@@ -15,6 +17,7 @@
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
+
     <ion-content :fullscreen="true">
       <ion-grid>
         <ion-row>
@@ -31,23 +34,27 @@
               <font-awesome-icon :icon="grid.icon"></font-awesome-icon>
             </ion-button>
           </ion-col>
+          
           <!-- Filters -->
           <ion-col size="6">
-            <p>{{ products.length }} résultats</p>
+            <p>{{ products?.length }} résultats</p>
             <span>|</span>
             <ion-button color="dark" fill="outline" size="small" @click="showProductsFilterModal=true">
               <font-awesome-icon :icon="['fas', 'sliders']"></font-awesome-icon>
             </ion-button>
           </ion-col>
         </ion-row>
+
         <!-- Products -->
         <ClassicDisplay v-if="currentGridDisplay===1" :products="products" @show-product-sizes="handleAddToCart" />
         <GridDisplay v-else-if="currentGridDisplay===2" :products="products" :columns="2" @show-product-sizes="handleAddToCart" />
         <GridDisplay v-else-if="currentGridDisplay===3" :products="products" :columns="3" @show-product-sizes="handleAddToCart" />
+        
         <ion-infinite-scroll @ionInfinite="requestProductsProxy">
           <ion-infinite-scroll-content></ion-infinite-scroll-content>
         </ion-infinite-scroll>
       </ion-grid>
+      
       <!-- Modals -->
       <ion-modal :is-open="showProductsFilterModal" @willDismiss="handleShowProductFilters">
         <ion-header>
@@ -87,11 +94,14 @@
 </template>
 
 <script setup lang="ts">
+import { client } from '@/plugins/axios';
 import { useVueLocalStorage } from '@/plugins/vue-storages/local-storage';
-import { Product } from '@/types/collections';
+import { useShop } from '@/stores/shop';
+import { APIResponse } from '@/types/shop';
 import { InfiniteScrollCustomEvent, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonList, IonModal, IonPage, IonRow, IonTitle, IonToolbar, useIonRouter } from '@ionic/vue';
 import { calculatorOutline } from 'ionicons/icons';
-import { onBeforeMount, ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { computed, onBeforeMount, ref } from 'vue';
 
 import ClassicDisplay from '@/components/products/ClassicDisplay.vue';
 import GridDisplay from '@/components/products/GridDisplay.vue';
@@ -99,7 +109,7 @@ import GridDisplay from '@/components/products/GridDisplay.vue';
 const currentGridDisplay = ref(1)
 const showProductsFilterModal = ref(false)
 const showSizeChoices = ref(false)
-const products = ref<Product[]>([])
+const cachedResponse = ref<APIResponse>()
 const grids = ref([
   {
     value: 1,
@@ -118,10 +128,17 @@ const grids = ref([
 const router = useIonRouter()
 const { data, instance } = useVueLocalStorage()
 
+const storeShop = useShop()
+const { currentCollectionName } = storeToRefs(storeShop)
+
+const products = computed(() => {
+  return cachedResponse.value?.results
+})
+
 onBeforeMount(() => {
   requestProducts()
   
-  if (data.value.gridDisplay) {
+  if (data.value?.gridDisplay) {
     currentGridDisplay.value = data.value.gridDisplay
   }
 })
@@ -134,21 +151,66 @@ const handleRemoveFilters = function () {}
 /**
  * 
  */
-const requestProducts = async function () {
-  products.value = Array.from({ length: 50 }, (a, b) => {
-    return {
-      id: b,
-      name: `Product ${b}`,
-    };
-  })
+// const requestProducts = async function () {
+//   products.value = Array.from({ length: 50 }, (a, b) => {
+//     return {
+//       id: b,
+//       name: `Product ${b}`,
+//     };
+//   })
+// }
+
+async function requestProducts () {
+  try {
+    const collectionUrlPath = `collection/${currentCollectionName.value.toLowerCase()}`
+
+    // if (instance.keyExists(collectionUrlPath)) {
+    //   cachedResponse.value = instance.retrieve(collectionUrlPath)
+    // } else {
+    // }
+    const response = await client.get(collectionUrlPath)
+    instance.create(collectionUrlPath, response.data)
+    cachedResponse.value = response.data
+    instance.create('products', products.value)
+  } catch (e) {
+    console.log(e)
+    // If we fail to get the collectionName
+    // redirect to the 404 page
+    // messagesStore.addNetworkError()
+
+    // if (e.response.status === 404) {
+    //   router.push({ name: 'not_found' })
+    // }
+  }
 }
 
 /**
- * 
+ * This function allows us to paginate through the rest
+ * of the collection by parsing the limit and offset
+ * search parameters of the next url from the response
  */
-const requestProductsProxy = function (e: InfiniteScrollCustomEvent) {
-  requestProducts()
-  setTimeout(() => e.target.complete(), 500);
+const requestProductsProxy = async function (e: InfiniteScrollCustomEvent) {
+  try {
+    if (cachedResponse.value?.next !== null) {
+      const url = new URL(cachedResponse.value?.next)
+      const limit = url.searchParams.get('limit')
+      const offset = url.searchParams.get('offset')
+
+      const collectionUrlPath = `collection/${currentCollectionName.value.toLowerCase()}`
+
+      const response = await client.get(collectionUrlPath, {
+        params: {
+          limit,
+          offset
+        }
+      })
+      cachedResponse.value.next = response.data.next
+      cachedResponse.value?.results.push(...response.data.results)
+    }
+    setTimeout(() => e.target.complete(), 500);
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 /**

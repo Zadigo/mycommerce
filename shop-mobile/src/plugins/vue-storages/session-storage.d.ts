@@ -29,7 +29,7 @@ declare class VueSession extends BaseStorage {
     /** */
     persist(key: string): void
     /** */
-    getOrExpire(key: string): unknown | null
+    getOrExpire(key: string, callback: (oldData: unknown) => void): unknown | null
     /** */
     getType(key: string): string
     /** */

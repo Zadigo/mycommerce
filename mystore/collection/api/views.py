@@ -11,7 +11,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from shop.api.serializers.shop import ProductSerializer
 from shop.models import Product
-
+from drf_spectacular.utils import extend_schema
 from mystore.utils import PaginationHelper
 
 
@@ -21,6 +21,7 @@ def build_colors(colors):
     return map(build_color, colors)
 
 
+@extend_schema('Products By Collection')
 class ListCollectionProducts(ListAPIView):
     queryset = Product.objects.filter(active=True)
     serializer_class = ProductSerializer
@@ -94,6 +95,7 @@ class ListCollectionProducts(ListAPIView):
             return products
 
 
+@extend_schema('Collection Names')
 class ListCollectionNames(ListAPIView):
     queryset = Collection.objects.all()
     serializer_class = serializers.CollectionSerializer
@@ -107,6 +109,7 @@ class ListCollectionNames(ListAPIView):
         return self.queryset
 
 
+@extend_schema('Search Collection Products')
 class SearchCollectionProducts(RetrieveAPIView):
     queryset = Collection.objects.all()
     serializer_class = ProductSerializer

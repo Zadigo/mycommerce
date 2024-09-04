@@ -4,17 +4,25 @@
       <ion-row>
         <transition name="slide" mode="out-in">
           <SimpleSearch v-if="showHeader" @search-focused="showHeader=false" />
-          <FocusedSearch v-else @search-unfocused="showHeader=true" />
+          <FocusedSearch v-else @update-search="handleSearchedProducts" @search-unfocused="showHeader=true" />
         </transition>
-
+        
         <ion-col size="12">
-          <p>Cela peut t'intéresser</p>
-
-          <ion-row>
-            <ion-col v-for="product in products" :key="product.id" size="6">
-              <product-card :product="product" :show-add-to-favorite="true" />              
-            </ion-col>
-          </ion-row>
+          <div v-if="hasSearch" class="search">
+            <div class="product-types">
+              <ion-button>Tous</ion-button>
+            </div>
+            <hr style="color: black;">
+            <div class="infos">
+              <p>{{ searchedProducts.length }} résultats</p>
+            </div>
+            <ProductIterator :products="searchedProducts" :show-add-to-favorite="true" />
+          </div>
+          
+          <div v-else class="recommendations">
+            <p>Cela peut t'intéresser</p>
+            <ProductIterator :products="recommendedProducts" :show-add-to-favorite="true" />
+          </div>
         </ion-col>
       </ion-row>
     </ion-content>
@@ -22,29 +30,29 @@
 </template>
 
 <script setup lang="ts">
-import { Product } from '@/types/collections';
-import { IonButton, IonCol, IonContent, IonIcon, IonInput, IonPage, IonRow } from '@ionic/vue';
-import { close, search } from 'ionicons/icons';
-import { onBeforeMount, ref } from 'vue';
+import { useShopComposable } from '@/composables/shop';
+import { Product } from '@/types/shop';
+import { IonCol, IonContent, IonPage, IonRow, IonButton } from '@ionic/vue';
+import { computed, onBeforeMount, ref } from 'vue';
 
-import ProductCard from '@/components/products/ProductCard.vue';
-import SimpleSearch from '@/components/search/SimpleSearch.vue';
+import ProductIterator from '@/components/ProductIterator.vue';
 import FocusedSearch from '@/components/search/FocusedSearch.vue';
+import SimpleSearch from '@/components/search/SimpleSearch.vue';
 
-const products = ref<Product[]>([])
 const showHeader = ref<boolean>(true)
+const searchedProducts = ref<Product>([])
+const { recommendedProducts, handleGetRecommendations } = useShopComposable()
 
 onBeforeMount(() => {
-  getProducts()
+  handleGetRecommendations(20)
 })
 
-const getProducts = async function () {
-  products.value = Array.from({ length: 30 }, (a, b) => {
-    return {
-      id: b,
-      name: `Product ${b}`
-    }
-  })
+const hasSearch = computed(() => {
+  return searchedProducts.value.length > 0
+})
+
+const handleSearchedProducts = (products: Product[]) => {
+  searchedProducts.value = products
 }
 </script>
 
