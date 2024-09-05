@@ -53,10 +53,15 @@
         <ion-content>
           <ion-row class="ion-padding">
             <ion-col size="12">
-              <ion-input type="email" class="ion-margin-bottom" fill="outline" placeholder="Email"></ion-input>
-              <ion-input type="password" fill="outline" placeholder="Password"></ion-input>
+              <ion-input v-model="requestData.email" type="email" class="ion-margin-bottom" fill="outline" placeholder="Email"></ion-input>
+              <ion-input v-model="requestData.password" type="password" fill="outline" placeholder="Password"></ion-input>
+              
               <p>Tu as oublié ton mot de passe ?</p>
-              <ion-button color="dark" expand="block">Se connecter</ion-button>
+              
+              <ion-button color="dark" expand="block" @click="requestLogin">
+                Se connecter
+              </ion-button>
+              
               <p>Tu n'as pas de compte ? Inscris-toi</p>
             </ion-col>
           </ion-row>
@@ -67,12 +72,39 @@
 </template>
 
 <script setup lang="ts">
+import { client } from '@/plugins/axios';
+import { useVueSession } from '@/plugins/vue-storages';
+import { useAuthentication } from '@/stores/authentication';
+import { AuthenticationAPIResponse } from '@/types/authentication';
 import { IonButton, IonButtons, IonCol, IonContent, IonHeader, IonIcon, IonInput, IonModal, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/vue';
-import { logoFacebook, logoGoogle, logoInstagram, logoTiktok, mail } from 'ionicons/icons';
-import { close } from 'ionicons/icons';
+import { close, logoFacebook, logoGoogle, logoInstagram, logoTiktok, mail } from 'ionicons/icons';
+import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 
 const showLoginModal = ref<boolean>(false)
+const requestData = ref<{ email: string, password: string}>({
+  email: '',
+  password: ''
+})
+const { instance } = useVueSession()
+const authenticationStore = useAuthentication()
+const { token, profile } = storeToRefs(authenticationStore)
+
+const requestLogin = async () => {
+  try {
+    const response = await client.post<AuthenticationAPIResponse>('accounts/login', requestData.value)
+    token.value = response.data.token
+    profile.value = response.data.user.userprofile
+    showLoginModal.value = false
+
+    requestData.value.email = ''
+    requestData.value.password = ''
+    
+    instance.create('authentication', response.data)
+  } catch (e) {
+    console.log(e)
+  }
+}
 </script>
 
 <style scoped>
@@ -83,6 +115,5 @@ h1 {
 .legal {
   font-size: .7rem;
   font-weight: 400;
-  
 }
 </style>

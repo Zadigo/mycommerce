@@ -28,6 +28,7 @@
     "@vueuse/core": "^10.9.0",
     "@vueuse/integrations": "^10.9.0",
     "axios": "^1.6.8",
+    "webfontloader": "^1.6.28",
     "bootstrap": "^5.3.3",
     "dayjs": "^1.11.10",
     "ionicons": "^7.0.0",

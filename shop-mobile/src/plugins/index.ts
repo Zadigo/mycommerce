@@ -1,1 +1,2 @@
 import './fontawesome'
+import './fonts'

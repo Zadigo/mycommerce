@@ -1,10 +1,11 @@
 import { client } from "@/plugins/axios";
+import { useVueLocalStorage } from "@/plugins/vue-storages";
 import { useShop } from "@/stores/shop";
-import { Product, ProductCollection } from "@/types/shop";
+import { APIResponse, Product, ProductCollection } from "@/types/shop";
 import { useIonRouter } from "@ionic/vue";
 import { isUndefined } from "lodash";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { getCurrentInstance, ref } from "vue";
 // import { useI18n } from "vue-i18n";
 
 
@@ -27,6 +28,9 @@ export function useShopComposable() {
   } = storeToRefs(shopStore);
 
   const recommendedProducts = ref<Product[]>([])
+
+  const { instance } = useVueLocalStorage()
+  const app = getCurrentInstance()
 
   /**
    * Function that manages products that were
@@ -108,9 +112,34 @@ export function useShopComposable() {
     recommendedProducts.value = response.data;
   }
 
+  async function requestProductsFromCollection(callback: (data: APIResponse) => void): Promise<APIResponse> {
+    try {
+      const collectionUrlPath = `collection/${currentCollectionName.value.toLowerCase()}`;
+
+      if (instance.keyExists(collectionUrlPath)) {
+        callback.call(app, instance.retrieve(collectionUrlPath));
+      } else {
+        const response = await client.get<APIResponse>(collectionUrlPath);
+        instance.create(collectionUrlPath, response.data);
+        instance.create("products", response.data.results);
+        callback.call(app, response.data)
+      }
+    } catch (e) {
+      console.log(e);
+      // If we fail to get the collectionName
+      // redirect to the 404 page
+      // messagesStore.addNetworkError()
+
+      // if (e.response.status === 404) {
+      //   router.push({ name: 'not_found' })
+      // }
+    }
+  }
+
   return {
     isLiked,
     recommendedProducts,
+    requestProductsFromCollection,
     handleLike,
     handleAnonymousLike,
     handleAuthenticatedLike,

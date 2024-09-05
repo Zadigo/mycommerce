@@ -26,11 +26,11 @@
 </template>
 
 <script setup lang="ts">
-import { useProducts } from '@/composables/shop';
+import { useShopComposable } from '@/composables/shop';
 import { IonRow, IonCol, IonCard, IonImg, IonButton, IonIcon, useIonRouter } from '@ionic/vue';
 import { pencil, trash } from 'ionicons/icons';
 
-const { handleGoToProduct } = useProducts()
+const { handleGoToProduct } = useShopComposable()
 
 const router = useIonRouter()
 

@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model, login
+from django.db.models import EmailField
 from django.shortcuts import get_object_or_404
 from rest_framework import fields
 from rest_framework.authtoken.models import Token
@@ -7,6 +8,7 @@ from rest_framework.serializers import Serializer
 
 from accounts.models import Address
 from accounts.validators import check_password_validator
+from drf_spectacular.utils import inline_serializer
 
 USER_MODEL = get_user_model()
 
@@ -15,27 +17,35 @@ class LoginUserSerializer(Serializer):
     email = fields.EmailField()
     password = fields.CharField()
 
-    def save(self, request, **kwargs):
-        email = self.validated_data['email']
-        password = self.validated_data['password']
+    def __init__(self, request, **kwargs):
+        self._request = request
+        self._token_cache = None
+        super().__init__(**kwargs)
+
+    @property
+    def get_serializer_data(self):
+        user_serializer = UserSerializer(instance=self._request.user)
+        return {'token': self._token_cache.key, 'user': user_serializer.data}
+
+    def create(self, validated_data):
+        email = validated_data['email']
+        password = validated_data['password']
 
         user = get_object_or_404(USER_MODEL, email=email)
         result = user.check_password(password)
         if not result:
-            raise AuthenticationFailed(detail='Could not authenticate user')
+            raise AuthenticationFailed(**{
+                'detail': 'Could not authenticate user'
+            })
 
-        setattr(self, '_user', user)
-        instance = super().save(**kwargs)
-        serializer = UserSerializer(instance=user)
-        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-        return {'token': instance.key, 'user': serializer.data}
+        login(self._request, user, backend='django.contrib.auth.backends.ModelBackend')
 
-    def create(self, validated_data):
         instance, state = Token.objects.get_or_create(
-            defaults={'user': self._user},
+            defaults={'user': user},
             user__email=validated_data['email']
         )
-        return instance
+        self._token_cache = instance
+        return instance.user
 
 
 class SignupUserSerializer(Serializer):
@@ -138,10 +148,21 @@ class ValidateAddressSerializer(Serializer):
             setattr(instance, key, value)
         instance.save()
         return instance
-    
+
     def create(self, validated_data):
         instance = Address.objects.create(
             user_profile=self._request.user.user_profile,
             **validated_data
         )
         return instance
+
+
+LOGIN_RESPONSE_SERIALIZER = inline_serializer(
+    'Login',
+    {
+        'token': fields.CharField(),
+        'user': {
+            'email': fields.EmailField()
+        }
+    }
+)

@@ -7,19 +7,23 @@
 </template>
 
 <script setup lang="ts">
-// import { useProducts } from '@/composables/shop';
+import { useShopComposable } from '@/composables/shop';
+import { APIResponse, Product } from '@/types/shop';
 import { IonCol, IonRow } from '@ionic/vue';
-import { defineEmits, defineProps } from 'vue';
+import { Type } from 'typescript';
+import { defineEmits, ref } from 'vue';
 
 import ProductCard from './ProductCard.vue';
-import { Product } from '@/types/collections';
 
-const emit = defineEmits(['show-product-sizes'])
-defineProps({
-  products: {
-    type: Array<Product>,
-    default: () => []
-  }
+const emit = defineEmits(['show-product-sizes', 'update-next-url'])
+const products = ref<Product[]>([])
+const cachedResponse = ref<APIResponse | Record<string, Type>>({})
+const { requestProductsFromCollection } = useShopComposable()
+
+requestProductsFromCollection((data) => {
+  cachedResponse.value = data
+  products.value = data.results
+  emit('update-next-url', cachedResponse.value)
 })
 </script>
 

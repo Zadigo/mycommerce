@@ -22,15 +22,20 @@
       <ion-grid>
         <ion-row>
           <ion-col size="12" style="padding-top: 1.25rem;padding-bottom: 1.25rem;">
-            <ion-button color="dark" fill="solid" size="small">Tous</ion-button>
-            <ion-button color="dark" fill="outline" size="small">Jupes</ion-button>
-            <ion-button color="dark" fill="outline" size="small">Corsets</ion-button>
+            <ion-button color="dark" fill="solid" size="small" class="btn-flat">
+              Tous
+            </ion-button>
+            
+            <ion-button v-for="subCategory in subCategories" :key="subCategory" color="dark" fill="outline" size="small" class="btn-tonal">
+              {{ subCategory }}
+            </ion-button>
           </ion-col>
         </ion-row>
+
         <ion-row id="top-bar" class="ion-justify-content-between" style="border-top: 1px solid black;">
           <!-- Grids -->
           <ion-col size="6">
-            <ion-button v-for="grid in grids" :key="grid.value" :fill="currentGridDisplay === grid.value ? 'solid':'outline'" color="dark" size="small" @click="handleGridDisplay(grid.value)">
+            <ion-button v-for="grid in grids" :key="grid.display" :fill="currentGridDisplay === grid.display ? 'solid':'outline'" color="dark" size="small" class="btn-plain" @click="handleGridDisplay(grid.display)">
               <font-awesome-icon :icon="grid.icon"></font-awesome-icon>
             </ion-button>
           </ion-col>
@@ -46,9 +51,17 @@
         </ion-row>
 
         <!-- Products -->
-        <ClassicDisplay v-if="currentGridDisplay===1" :products="products" @show-product-sizes="handleAddToCart" />
-        <GridDisplay v-else-if="currentGridDisplay===2" :products="products" :columns="2" @show-product-sizes="handleAddToCart" />
-        <GridDisplay v-else-if="currentGridDisplay===3" :products="products" :columns="3" @show-product-sizes="handleAddToCart" />
+        <Suspense>
+          <template #default>
+            <AsyncClassicDisplay v-if="currentGridDisplay===1" @update-next-url="(data) => cachedResponse = data" @show-product-sizes="handleAddToCart" />
+            <AsyncGridDisplay v-else-if="currentGridDisplay===2" @update-next-url="(data) => cachedResponse = data" :columns="2"  @show-product-sizes="handleAddToCart" />
+            <AsyncGridDisplay v-else-if="currentGridDisplay===3" @update-next-url="(data) => cachedResponse = data" :columns="3"  @show-product-sizes="handleAddToCart" />
+          </template>
+
+          <template #fallback>
+            <LoadingProducts :columns="currentGridDisplay" /> 
+          </template>
+        </Suspense>
         
         <ion-infinite-scroll @ionInfinite="requestProductsProxy">
           <ion-infinite-scroll-content></ion-infinite-scroll-content>
@@ -60,18 +73,59 @@
         <ion-header>
           <ion-toolbar>
             <ion-buttons slot="start">
-              <ion-button @click="showProductsFilterModal=false">Cancel</ion-button>
+              <ion-button @click="showProductsFilterModal=false">
+                <ion-icon :icon="closeIcon"></ion-icon>
+              </ion-button>
             </ion-buttons>
-            <ion-title>Welcome</ion-title>
+
+            <ion-title style="text-align: center;">Filtrer</ion-title>
+            
             <ion-buttons slot="end">
-              <ion-button :strong="true" @click="handleRemoveFilters">Supprimer</ion-button>
+              <ion-button :strong="true" @click="handleRemoveFilters">
+                Supprimer
+              </ion-button>
             </ion-buttons>
           </ion-toolbar>
         </ion-header>
+
         <ion-content class="ion-padding">
-          Filter the products
+          <div class="block-1">
+            <p>Trier par</p>
+            <ion-button>Nouveautés</ion-button>
+          </div>
+
+          <hr>
+
+          <div class="block-1">
+            <p>Typologie</p>
+            <ion-button>Nouveautés</ion-button>
+          </div>
+
+          <hr>
+
+          <div class="block-1">
+            <p>Color</p>
+            <ion-button>Blue</ion-button>
+          </div>
+
+          <hr>
+
+          <div class="block-1">
+            <p>Taille</p>
+            <ion-button>XS</ion-button>
+          </div>
+          
+          <hr>
+
+          <div class="block-1">
+            <p>Prix</p>
+            <ion-button>Jusqu'à 15€</ion-button>
+          </div>
+
+          <ion-button expand="block">Voir les résulats</ion-button>
         </ion-content>
       </ion-modal>
+
       <!-- Action Sheet -->
       <ion-modal :is-open="showSizeChoices" :initial-breakpoint="0.5" :backdrop-breakpoint="0" handle-behavior="cycle" @onDidDismiss="showSizeChoices=false">
         <ion-content class="ion-padding">
@@ -98,29 +152,30 @@ import { client } from '@/plugins/axios';
 import { useVueLocalStorage } from '@/plugins/vue-storages/local-storage';
 import { useShop } from '@/stores/shop';
 import { APIResponse } from '@/types/shop';
-import { InfiniteScrollCustomEvent, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonList, IonModal, IonPage, IonRow, IonTitle, IonToolbar, useIonRouter } from '@ionic/vue';
-import { calculatorOutline } from 'ionicons/icons';
+import { InfiniteScrollCustomEvent, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonList, IonModal, IonPage, IonRow, IonSkeletonText, IonTitle, IonToolbar, useIonRouter } from '@ionic/vue';
+import { calculatorOutline, close as closeIcon } from 'ionicons/icons';
+import _ from 'lodash';
 import { storeToRefs } from 'pinia';
-import { computed, onBeforeMount, ref } from 'vue';
+import { Type } from 'typescript';
+import { computed, defineAsyncComponent, onBeforeMount, ref } from 'vue';
 
-import ClassicDisplay from '@/components/products/ClassicDisplay.vue';
-import GridDisplay from '@/components/products/GridDisplay.vue';
+import LoadingProducts from '@/components/products/LoadingProducts.vue';
 
-const currentGridDisplay = ref(1)
+const currentGridDisplay = ref<1 | 2 | 3>(1)
 const showProductsFilterModal = ref(false)
 const showSizeChoices = ref(false)
-const cachedResponse = ref<APIResponse>()
+const cachedResponse = ref<APIResponse | Record<string, Type>>({})
 const grids = ref([
   {
-    value: 1,
+    display: 1,
     icon: ['far', 'square'],
   },
   {
-    value: 2,
+    display: 2,
     icon: ['fas', 'table-cells-large'],
   },
   {
-    value: 3,
+    display: 3,
     icon: ['fas', 'table-cells'],
   }
 ])
@@ -135,9 +190,25 @@ const products = computed(() => {
   return cachedResponse.value?.results
 })
 
-onBeforeMount(() => {
-  requestProducts()
-  
+
+const AsyncClassicDisplay = defineAsyncComponent({
+  loader: () => import('@/components/products/ClassicDisplay.vue'),
+  timeout: 3000
+})
+
+const AsyncGridDisplay = defineAsyncComponent({
+  loader: () => import('@/components/products/GridDisplay.vue'),
+  timeout: 3000
+})
+
+const subCategories = computed<string[]>(() => {
+  const result = _.map(cachedResponse.value.results, (product) => {
+    return product.sub_category
+  })
+  return _.uniq(result)
+})
+
+onBeforeMount(() => {  
   if (data.value?.gridDisplay) {
     currentGridDisplay.value = data.value.gridDisplay
   }
@@ -148,41 +219,6 @@ onBeforeMount(() => {
  */
 const handleRemoveFilters = function () {}
 
-/**
- * 
- */
-// const requestProducts = async function () {
-//   products.value = Array.from({ length: 50 }, (a, b) => {
-//     return {
-//       id: b,
-//       name: `Product ${b}`,
-//     };
-//   })
-// }
-
-async function requestProducts () {
-  try {
-    const collectionUrlPath = `collection/${currentCollectionName.value.toLowerCase()}`
-
-    // if (instance.keyExists(collectionUrlPath)) {
-    //   cachedResponse.value = instance.retrieve(collectionUrlPath)
-    // } else {
-    // }
-    const response = await client.get(collectionUrlPath)
-    instance.create(collectionUrlPath, response.data)
-    cachedResponse.value = response.data
-    instance.create('products', products.value)
-  } catch (e) {
-    console.log(e)
-    // If we fail to get the collectionName
-    // redirect to the 404 page
-    // messagesStore.addNetworkError()
-
-    // if (e.response.status === 404) {
-    //   router.push({ name: 'not_found' })
-    // }
-  }
-}
 
 /**
  * This function allows us to paginate through the rest
@@ -198,14 +234,18 @@ const requestProductsProxy = async function (e: InfiniteScrollCustomEvent) {
 
       const collectionUrlPath = `collection/${currentCollectionName.value.toLowerCase()}`
 
-      const response = await client.get(collectionUrlPath, {
+      const response = await client.get<APIResponse>(collectionUrlPath, {
         params: {
           limit,
           offset
         }
       })
+      
       cachedResponse.value.next = response.data.next
-      cachedResponse.value?.results.push(...response.data.results)
+
+      if (Array.isArray(cachedResponse.value?.results)) {
+        cachedResponse.value?.results.push(...response.data.results)
+      }
     }
     setTimeout(() => e.target.complete(), 500);
   } catch (e) {
@@ -216,19 +256,19 @@ const requestProductsProxy = async function (e: InfiniteScrollCustomEvent) {
 /**
  * 
  */
-const handleShowProductFilters = function () {}
+const handleShowProductFilters = () => {}
 
 /**
  * 
  */
-const handleAddToCart = function () {
+const handleAddToCart = () => {
   showSizeChoices.value = !showSizeChoices.value
 }
 
 /**
  * 
  */
-const handleGridDisplay = function (grid: number) {
+const handleGridDisplay = (grid: number) => {
   currentGridDisplay.value = grid
   instance?.create('gridDisplay', grid)
 }
@@ -264,5 +304,27 @@ ion-grid {
 
 .infos ion-button {
   justify-content: end;
+}
+
+ion-button.btn-plain::part(native) {
+  opacity: .62;
+}
+
+/* ion-button::part(native) {
+  border-width: 1px;
+  border-style: solid;
+} */
+
+ion-button.btn-flat::part(native) {
+  box-shadow: none;
+}
+
+ion-button.btn-tonal::part(native) {
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  border-style: solid;
+  border-width: 0;
+  background-color: rgba(0, 0, 0, 0.12);
 }
 </style>

@@ -1,15 +1,17 @@
-import { defineStore } from 'pinia'
+import { UserProfile } from '@/types/authentication';
+import { defineStore } from 'pinia';
+import { Type } from 'typescript';
 
 type State = {
   showLoginDrawer: boolean;
-  token: string | null;
-  profile: {};
+  token: string;
+  profile: UserProfile | Record<string, Type>;
 };
 
 const useAuthentication = defineStore("authentication", {
   state: (): State => ({
     showLoginDrawer: false,
-    token: null,
+    token: '',
     profile: {},
   }),
   getters: {
@@ -17,7 +19,7 @@ const useAuthentication = defineStore("authentication", {
      * Indicates whether the user is authenticated
      */
     isAuthenticated(): boolean {
-      return this.token !== null && typeof this.token !== "undefined";
+      return this.token !== null && this.token !== '' && typeof this.token !== "undefined";
     },
   },
   actions: {
@@ -26,7 +28,7 @@ const useAuthentication = defineStore("authentication", {
      * from the cache in order to determine if the user
      * is still authenticated
      */
-    loadFromCache(): void {
+    loadFromCache() {
       const data = this.$session.retrieve("authentication") || {};
       this.token = data.token;
       this.profile = data.user;
@@ -36,4 +38,5 @@ const useAuthentication = defineStore("authentication", {
 
 export {
   useAuthentication
-}
+};
+

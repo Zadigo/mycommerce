@@ -97,7 +97,7 @@ register()
 const recommendations = ref<Product[]>([])
 const router = useIonRouter()
 const store = useShop()
-const { likedProducts, currentProduct } = storeToRefs(store)
+const { likedProducts, visitedProducts, currentProduct } = storeToRefs(store)
 const { conditionalImagePath } = useShopUtilities()
 const { isLiked, handleLike } = useShopComposable()
 
@@ -106,9 +106,12 @@ onBeforeMount(() => {
 })
 
 onMounted(() => {
-  if (likedProducts.value.includes(currentProduct.value.id)) {
+  const currentProductId = currentProduct.value.id
+  if (likedProducts.value.includes(currentProductId)) {
     isLiked.value = true
   }
+
+  visitedProducts.value.push(currentProductId)
 })
 
 /**

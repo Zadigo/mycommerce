@@ -8,10 +8,13 @@
 import { IonApp, IonRouterOutlet } from '@ionic/vue';
 import { onBeforeMount } from 'vue';
 import { useShop } from './stores/shop';
+import { useAuthentication } from './stores/authentication';
 
 const shopStore = useShop()
+const authenticationStore = useAuthentication()
 
 onBeforeMount(() => {
   shopStore.loadFromCache()
+  authenticationStore.loadFromCache()
 })
 </script>

@@ -28,7 +28,7 @@ import { onMounted, ref } from 'vue';
 
 const emit = defineEmits(['search-focused', 'search-unfocused', 'update-search'])
 const { handleGoToCollectionByName } = useShopComposable()
-const search = ref<string>(null)
+const search = ref<string>('')
 
 const requestSearchProducts = _.debounce(async () => {
   try {

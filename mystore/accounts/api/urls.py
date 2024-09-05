@@ -8,5 +8,9 @@ urlpatterns = [
     re_path(r'^update$', views.AccountUpdate.as_view()),
     re_path(r'^profile', views.profile),
     re_path(r'^logout', views.logout),
-    re_path(r'^login', views.login),
+    re_path(
+        r'^login',
+        views.Login.as_view(),
+        name='login'
+    )
 ]

@@ -5,6 +5,7 @@
         <ion-title>Panier</ion-title>
       </ion-toolbar>
     </ion-header>
+    
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
         <ion-toolbar>
@@ -43,14 +44,12 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonHeader, IonPage, IonTitle, IonButton, IonCol, IonRow, IonToolbar, useIonRouter } from '@ionic/vue';
-import { useShop } from '@/stores/shop';
+import { useCart } from '@/stores/cart';
+import { IonButton, IonCol, IonContent, IonHeader, IonPage, IonRow, IonTitle, IonToolbar, useIonRouter } from '@ionic/vue';
+import { storeToRefs } from 'pinia';
 
 
 import CartItems from '@/components/cart/CartItems.vue';
-import EmptyCart from '@/components/cart/EmptyCart.vue';
-import { storeToRefs } from 'pinia';
-import { useCart } from '@/stores/cart';
 // import EmptyCart from '@/components/cart/EmptyCart.vue';
 
 
@@ -61,7 +60,7 @@ const { products } = storeToRefs(storeShop)
 /**
  * 
  */
-const handleGoToCollection = function (name: string) {
+const handleGoToCollection = (name: string) => {
   name
   router.push('/tabs/tab1/products')
 }

@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import { useShopComposable } from '@/composables/shop';
 import { Product } from '@/types/shop';
-import { IonCol, IonContent, IonPage, IonRow, IonButton } from '@ionic/vue';
+import { IonButton, IonCol, IonContent, IonPage, IonRow } from '@ionic/vue';
 import { computed, onBeforeMount, ref } from 'vue';
 
 import ProductIterator from '@/components/ProductIterator.vue';
@@ -40,14 +40,14 @@ import FocusedSearch from '@/components/search/FocusedSearch.vue';
 import SimpleSearch from '@/components/search/SimpleSearch.vue';
 
 const showHeader = ref<boolean>(true)
-const searchedProducts = ref<Product>([])
+const searchedProducts = ref<Product[]>([])
 const { recommendedProducts, handleGetRecommendations } = useShopComposable()
 
 onBeforeMount(() => {
   handleGetRecommendations(20)
 })
 
-const hasSearch = computed(() => {
+const hasSearch = computed<boolean>(() => {
   return searchedProducts.value.length > 0
 })
 
