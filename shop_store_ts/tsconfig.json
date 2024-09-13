@@ -5,6 +5,7 @@
     "strict": true,
     "baseUrl": "./",
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "paths": {
       "@/*": ["src/*"],
       "src": ["src/*"]

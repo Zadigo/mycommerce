@@ -40,14 +40,15 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import _ from 'lodash'
 
 import { storeToRefs } from 'pinia';
 import { useCart } from 'src/stores/cart';
 import { useShopUtilities } from 'src/composables/shop'
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
   name: 'BaseCartIterator',
   props: {
     isEditable: {
@@ -107,5 +108,5 @@ export default {
       this.$emit('edit-product', { action, product: item })
     }
   }
-}
+})
 </script>

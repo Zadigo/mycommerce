@@ -12,11 +12,11 @@
   </div>
 </template>
 
-<script>
-import { computed } from 'vue'
+<script lang="ts">
+import { computed, defineComponent } from 'vue'
 import { useShopUtilities } from 'src/composables/shop'
 
-export default {
+export default defineComponent({
   name: 'SixImages',
   props: {
     images: {
@@ -42,5 +42,5 @@ export default {
       djangoMediaPath
     }
   }
-}
+})
 </script>

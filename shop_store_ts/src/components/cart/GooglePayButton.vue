@@ -4,8 +4,8 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue'
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
 import { useScript } from 'unhead'
 
 // https://developers.google.com/pay/api/web/reference/request-objects#CardParameters|CardParameters
@@ -20,7 +20,7 @@ const allowedCardAuthMethods = [
   "CRYPTOGRAM_3DS"
 ]
 
-export default {
+export default defineComponent({
   name: 'GooglePayButton',
   props: {
     totalPrice: {
@@ -194,5 +194,5 @@ export default {
   //     onGooglePayLoaded()
   //   }
   // }
-}
+})
 </script>

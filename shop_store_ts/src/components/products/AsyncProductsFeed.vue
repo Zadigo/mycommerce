@@ -120,19 +120,24 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
 import { client } from 'src/plugins/axios'
-import { ref, computed } from 'vue'
+import { ref, computed, defineComponent } from 'vue'
 import { useVueSession } from 'src/plugins/vue-storages'
 import { useRoute, useRouter } from 'vue-router'
 import { useMessages } from 'src/stores/messages'
 import { reactify, useIntersectionObserver, watchArray } from '@vueuse/core'
 import { scrollToTop, useUtilities } from '@/composables/utils'
 
-import sizes from 'src/data/sizes.json'
+import { Product } from '@/types/shop'
 
-import DefaultFiltering from 'src/components/products/filtering/DefaultFiltering.vue'
-import BaseProductIterator from 'src/components/BaseProductIterator.vue'
+import sizes from '@/data/sizes.json'
+
+import DefaultFiltering from '@/components/products/filtering/DefaultFiltering.vue'
+import BaseProductIterator from '@/components/BaseProductIterator.vue'
+
+
+declare type Actions = 'sorted by' | 'typology' | 'colors' | 'sizes' | 'price'
 
 const priceFilters = [
   {
@@ -168,14 +173,15 @@ const priceFilters = [
  * requires the products to be loaded from the database
  * on initialization 
  */
-export default {
+export default  defineComponent({
   name: 'AsyncProductsFeed',
   components: {
     BaseProductIterator,
     DefaultFiltering
   },
   emits: {
-    'update-products' () {
+    'update-products' (products: Product[]) {
+      products
       return true
     }
   },
@@ -197,7 +203,7 @@ export default {
     const currentGridSize = ref(3)
 
     const cachedResponse = ref({})
-    const products = ref([])
+    const products = ref<Product[]>([])
 
     const messagesStore = useMessages()
     const intersectionTarget = ref(null)
@@ -235,7 +241,7 @@ export default {
 
     // Provide the total product count for all children
     // since they do not have that information on load
-    const totalProductCount = ref(cachedResponse.value.count)
+    const totalProductCount = ref<number>(cachedResponse.value.count)
     const isLoadingMoreProducts = ref(false)
     const offsetsList = ref([])
     
@@ -243,10 +249,8 @@ export default {
      * This is the main pagination function that is
      * used to load more products on the page when
      * the trigger section is reached
-     * 
-     * @param {String} offset The value to offset by
      */
-    async function requestOffsetProducts (offset) {
+    async function requestOffsetProducts (offset: string | number) {
       try {
         const collectionUrlPath = `${route.path.toString().replace('/shop/', '/')}?offset=${offset}`
         const response = await client.get(collectionUrlPath)
@@ -271,7 +275,7 @@ export default {
      * Get the limit offset values for an url in order to
      * return the offset products 
      */
-    const urlLimitOffsetValues  = reactify((url) => {
+    const urlLimitOffsetValues  = reactify((url: string) => {
       const urlObject = new URL(url)
       const limit = urlObject.searchParams.get('limit')
       const offset = urlObject.searchParams.get('offset')
@@ -290,19 +294,6 @@ export default {
         isLoadingMoreProducts.value = false
       }
     }, {})
-
-    /**
-     * Main function for requesting new products based
-     * on the filters that were selected by the user 
-     */
-    // async function requestFilteredProducts () {
-    //   try {
-    //     const response = []
-    //     products.value = response
-    //   } catch (e) {
-    //     console.log (e)
-    //   }
-    // }
 
     watchArray(selectedFilters.value.sizes, (n) => {
       console.log(n)
@@ -356,17 +347,14 @@ export default {
      * Changes the size of the grid to
      * reduce or increase the amount of
      * products displayed on the screen
-     * 
-     * @param {Number} size 
      */
-    handleGridSize (size) {
+    handleGridSize (size: number) {
       this.currentGridSize = size
     },
     /**
-     * @param {string} action The action register
-     * @param {string} value The value to register under the given action
+     * 
      */
-    handleFilterSelection (action, value) {
+    handleFilterSelection (action: Actions, value: string) {
       switch (action) {
         case 'sorted by':
           this.selectedFilters.sorted_by = value
@@ -405,7 +393,7 @@ export default {
       }
     }
   }
-}
+})
 </script>
 
 <style scoped>

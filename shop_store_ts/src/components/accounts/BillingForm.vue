@@ -81,14 +81,14 @@
   </div>
 </template>
 
-<script>
-import { ref, computed, inject } from 'vue'
+<script lang="ts">
+import { ref, computed, inject, defineComponent } from 'vue'
 import { useRefHistory, syncRef, reactify, extendRef } from '@vueuse/core'
 import { dayjs } from 'src/plugins'
 
-import cities from 'src/data/fr_cities.json'
+import cities from '@/data/fr_cities.json'
 
-export default {
+export default defineComponent({
   name: 'BillingForm',
   props: {
     address: {
@@ -151,5 +151,5 @@ export default {
       this.showBillingForm = false
     }
   }
-}
+})
 </script>

@@ -8,11 +8,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapActions, storeToRefs } from 'pinia'
 import { useMessages } from 'src/stores/messages'
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   name: 'BaseMessages',
   setup() {
     const messagesStore = useMessages()
@@ -26,5 +27,5 @@ export default {
   methods: {
     ...mapActions(useMessages, ['removeMessage'])
   }
-}
+})
 </script>

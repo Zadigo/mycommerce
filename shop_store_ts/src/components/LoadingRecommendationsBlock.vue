@@ -12,8 +12,10 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   name: 'LoadingRecommendationsBlock',
   props: {
     blockTitle: {
@@ -32,5 +34,5 @@ export default {
       this.$refs.productsRow.classList.add('products-wrapper')
     }
   }
-}
+})
 </script>

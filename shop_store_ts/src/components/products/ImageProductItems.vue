@@ -6,11 +6,11 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue'
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
 import { client } from '../../plugins/axios'
 
-export default {
+export default defineComponent({
   async setup () {
     const products = ref([])
     async function requestProducts () {
@@ -28,5 +28,5 @@ export default {
       products
     }
   },
-}
+})
 </script>

@@ -42,15 +42,15 @@
   </article>
 </template>
 
-<script>
-import { ref } from 'vue'
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
 import { useCartComposable } from 'src/composables/cart'
 import { useShopComposable, useShopUtilities } from 'src/composables/shop'
 import { useVueLocalStorage } from '@/plugins/vue-storages'
 
 import BaseSizeButton from '../BaseSizeButton.vue'
 
-export default {
+export default defineComponent({
   name: 'ProductCard',
   components: {
     BaseSizeButton
@@ -124,7 +124,7 @@ export default {
       })
     }
   }
-}
+})
 </script>
 
 <style scoped>

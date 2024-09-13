@@ -134,10 +134,10 @@
   </div>
 </template>
 
-<script>
-import { inject, ref } from 'vue'
+<script lang="ts">
+import { defineComponent, inject, ref } from 'vue'
 
-export default {
+export default defineComponent({
   name: 'AdditionalInfoBlock',
   setup () {
     const showDeliveryDrawer = ref(false)
@@ -150,5 +150,5 @@ export default {
       showCompositionDrawer
     }
   }
-}
+})
 </script>

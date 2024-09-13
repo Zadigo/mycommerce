@@ -10,15 +10,15 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue'
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { client } from 'src/plugins/axios'
 import { useVueSession } from 'src/plugins/vue-storages'
 
 import BaseProductIterator from 'src/components/BaseProductIterator.vue'
 
-export default {
+export default defineComponent({
   name: 'RecommendationsBlock',
   components: {
     BaseProductIterator
@@ -83,7 +83,7 @@ export default {
       this.$refs.productsRow.classList.add('products-wrapper')
     }
   }
-}
+})
 </script>
 
 <style scoped>

@@ -98,7 +98,7 @@
   </footer>
 </template>
 
-<script>
+<script lang="ts">
 import { useCompany } from 'src/composables/company'
 import { useVueSession } from '@/plugins/vue-storages'
 import { useShop } from '@/stores/shop'
@@ -106,8 +106,9 @@ import { storeToRefs } from 'pinia'
 
 import socials from 'src/data/socials.json'
 import footer from 'src/data/footer_links.json'
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   name: 'BaseFooter',
   setup () {
     const shopStore = useShop()
@@ -126,5 +127,5 @@ export default {
       socials
     }
   }
-}
+})
 </script>

@@ -38,10 +38,10 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import _ from 'lodash'
 
-import { ref, inject } from 'vue'
+import { ref, inject, defineComponent } from 'vue'
 
 import sizes from 'src/data/sizes.json'
 
@@ -50,7 +50,7 @@ const sortingOptions = [
   'Prix décroissant'
 ]
 
-export default {
+export default defineComponent({
   name: 'DefaultFiltering',
   props: {
     products: {
@@ -113,7 +113,7 @@ export default {
       this.$emit('update-grid-size', size)
     }
   }
-}
+})
 </script>
 
 <style scoped>

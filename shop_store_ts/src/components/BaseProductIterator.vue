@@ -6,8 +6,9 @@
   </transition-group>
 </template>
 
-<script>
+<script lang="ts">
 import ProductCard from 'src/components/products/ProductCard.vue'
+import { defineComponent } from 'vue'
 
 /**
  * This is a simple product iterator component that
@@ -15,7 +16,7 @@ import ProductCard from 'src/components/products/ProductCard.vue'
  * products anywhere in the application. This
  * allows a consistent formatting accross the website 
  */
-export default {
+export default defineComponent({
   name: 'BaseProductIterator',
   components: {
     ProductCard
@@ -43,5 +44,5 @@ export default {
       }
     }
   }
-}
+})
 </script>

@@ -4,8 +4,10 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   name: 'DeliveryType'
 }
 </script>
@@ -13,5 +15,5 @@ export default {
 <style scoped>
 .fw-ecommerce-small-1 {
   font-size: 0.9rem;
-}
+})
 </style>

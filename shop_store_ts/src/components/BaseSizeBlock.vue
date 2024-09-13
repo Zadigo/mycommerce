@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * 
  * Provides the correct section for the consumer on products
@@ -12,12 +12,12 @@
  * the model that is carrying clothing
  * 
  */ 
-import { ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useRefHistory } from '@vueuse/core'
 
 import BaseSizeButton from './BaseSizeButton.vue'
 
-export default {
+export default defineComponent({
   name: 'BaseSizeBlock',
   components: {
     BaseSizeButton
@@ -51,5 +51,5 @@ export default {
       this.$emit('update-size', this.selectedSize)
     }
   }
-}
+})
 </script>

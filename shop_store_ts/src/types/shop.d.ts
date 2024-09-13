@@ -54,22 +54,17 @@ export type Product = {
   created_on: string;
 };
 
-
-
-
-
-
-
-
-
-
-
-export type APIResponse = {
+export type ProductsAPIResponse = {
     count: number
     next: string
     previous: string
     results: Product[]
 }
+
+
+
+
+
 
 
 export type CartProduct = {

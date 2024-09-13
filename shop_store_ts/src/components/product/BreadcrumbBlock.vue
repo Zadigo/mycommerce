@@ -20,10 +20,10 @@
   </v-skeleton-loader>
 </template>
 
-<script>
-import { inject } from 'vue';
+<script lang="ts">
+import { defineComponent, inject } from 'vue';
 
-export default {
+export default defineComponent({
   name: 'BreadcrumbBlock',
   setup () {
     const currentProduct = inject('currentProduct')
@@ -33,5 +33,5 @@ export default {
       currentProduct
     }
   }
-}
+})
 </script>

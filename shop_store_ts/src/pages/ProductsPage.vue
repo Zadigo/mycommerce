@@ -86,8 +86,6 @@ export default defineComponent({
      * Returns the products from the child
      * component to the parent so that we
      * can process them e.g. SEO here
-     * 
-     * @param {Array} products 
      */
     handleProductsLoaded (products: Product[]) {
       this.products = products

@@ -45,14 +45,15 @@
   </header>
 </template>
 
-<script>
+<script lang="ts">
 import { useCompany } from '@/composables/company'
 import { storeToRefs } from 'pinia'
 import { useAuthenticationComposable } from 'src/composables/authentication'
 import { useAuthentication } from 'src/stores/authentication'
 import { useCart } from 'src/stores/cart'
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   emits: {
     'display-search' () {
       return true
@@ -89,5 +90,5 @@ export default {
       })
     }
   }
-}
+})
 </script>
