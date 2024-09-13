@@ -2,7 +2,7 @@
 /*eslint no-use-before-define: "off"*/
 
 import { App, Ref } from 'vue'
-import { BaseStorage, BaseStorageOptions, storageData } from './base'
+import { BaseStorage, BaseStorageOptions, SavedStorageData } from './base'
 
 interface VueLocalStorageOptions extends BaseStorageOptions {
   afterMount?: (options: { instance: VueLocalStorage }) => void
@@ -17,7 +17,6 @@ declare class VueLocalStorage extends BaseStorage {
 export let VueLocalStorageInstance: VueLocalStorage
 
 declare global {
-
   interface Window {
     VueLocalStorage: VueLocalStorage
   }
@@ -37,7 +36,7 @@ declare function useVueLocalStorage(): {
 
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
-    localStorageData: storageData
+    localStorageData: SavedStorageData
     $localstorage: VueLocalStorage
   }
 }

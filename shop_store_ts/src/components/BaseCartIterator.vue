@@ -41,11 +41,11 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash'
+import _ from 'lodash';
 
 import { storeToRefs } from 'pinia';
+import { useShopUtilities } from 'src/composables/shop';
 import { useCart } from 'src/stores/cart';
-import { useShopUtilities } from 'src/composables/shop'
 import { defineComponent } from 'vue';
 
 export default defineComponent({

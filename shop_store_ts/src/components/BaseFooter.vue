@@ -99,14 +99,14 @@
 </template>
 
 <script lang="ts">
-import { useCompany } from 'src/composables/company'
 import { useVueSession } from '@/plugins/vue-storages'
 import { useShop } from '@/stores/shop'
 import { storeToRefs } from 'pinia'
-
-import socials from 'src/data/socials.json'
-import footer from 'src/data/footer_links.json'
+import { useCompany } from 'src/composables/company'
 import { defineComponent } from 'vue'
+
+import footer from '@/data/footer_links.json'
+import socials from '@/data/socials.json'
 
 export default defineComponent({
   name: 'BaseFooter',

@@ -2,7 +2,7 @@
 /*eslint no-use-before-define: "off"*/
 
 import { App, Ref } from 'vue'
-import { BaseStorage, BaseStorageOptions, storageData } from './base'
+import { BaseStorage, BaseStorageOptions, SavedStorageData } from './base'
 
 interface VueSessionOptions extends BaseStorageOptions {
     persistent?: boolean,
@@ -108,7 +108,7 @@ declare function useVueSession(): {
 
 declare module '@vue/runtime-core' {
     export interface ComponentCustomProperties {
-        sessionStorageData: storageData
+        sessionStorageData: SavedStorageData
         $session: VueSession
     }
 }

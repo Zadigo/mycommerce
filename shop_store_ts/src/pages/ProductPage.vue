@@ -1,6 +1,6 @@
 <template>
   <shop-layout>
-    <section id="product" class="container-fluid space-section-1">
+    <section id="product" class="container-fluid" style="margin-top: 2%;">
       <!-- Product -->
       <div class="row gy-1">
         <div id="product-information" class="col-12">
@@ -52,7 +52,7 @@
               <!-- Size Guide -->
               <div class="d-flex justify-content-start gap-3 mt-4 mb-2">
                 <a href class="btn btn-light btn-rounded fw-bold shadow-none" @click.prevent="sizeGuideDrawer = true">
-                  <v-icon icon="mdi-ruler" class="me-2" /> {{ $t('Guide des tailles') }}
+                  <font-awesome-icon icon="ruler" class="me-2" /> {{ $t('Guide des tailles') }}
                 </a>
               </div>
 
@@ -197,8 +197,6 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash'
-
 import 'vue-image-zoomer/dist/style.css'
 
 import { useCompany } from '@/composables/company'
@@ -223,6 +221,7 @@ import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBl
 import DeliveryType from 'src/components/product/DeliveryType.vue'
 import DeliveryTypes from 'src/components/product/DeliveryTypes.vue'
 import FiveImages from 'src/components/product/FiveImages.vue'
+import ShopLayout from '@/layouts/ShopLayout.vue'
 import SixImages from 'src/components/product/SixImages.vue'
 
 import { Product } from '@/types/shop'
@@ -237,6 +236,7 @@ export default defineComponent({
     DeliveryTypes,
     FiveImages,
     ReviewsBlock,
+    ShopLayout,
     SixImages,
     LoadingRecommendationsBlock,
     // VueImageZoomer,
@@ -254,7 +254,7 @@ export default defineComponent({
     // Interceptor to check that the user has moved
     // down to the the "more-products" section of
     // the product page
-    const intersectionTarget = ref(null)
+    const intersectionTarget = ref<HTMLElement | null>(null)
 
     const { localImagePath, parseMainImage, djangoMediaPath, translatePrice } = useShopUtilities()
 
@@ -339,10 +339,8 @@ export default defineComponent({
     /**
      * Returns the proper image component to display
      * the remaining images for the given product
-     * 
-     * @returns {String} The name of the image component
      */
-    imageComponent () {
+    imageComponent (): string {
       if (this.currentProduct.images?.length === 6) {
         return 'six-images'
       } else if (this.currentProduct.images?.length === 5) {
@@ -352,15 +350,18 @@ export default defineComponent({
       }
     },
     /**
-     * Indicates if the product has other color variants
-     * 
-     * @returns {Boolean}
+     * Indicates if the product has other color variants     * 
      */
-    hasColorVariants () {
-      const variants = _.filter(this.currentProduct.variants, (product) => {
+    // FIXME: currentProduct.variants exists?
+    hasColorVariants (): boolean {
+      const variants = this.currentProduct.variants.filter((product) => {
         return product.id !== this.currentProduct.id
       })
       return variants.length > 0
+      // const variants = _.filter(this.currentProduct.variants, (product) => {
+      //   return product.id !== this.currentProduct.id
+      // })
+      // return variants.length > 0
     }
   },
   watch: {

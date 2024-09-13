@@ -1,4 +1,5 @@
 {
+  "extends": "./tsconfig.json" /* This seems to resolve the @ errors in .ts files */,
   "compilerOptions": {
     "target": "ES2022",
     "useDefineForClassFields": true,

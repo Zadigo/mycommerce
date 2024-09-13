@@ -1,6 +1,6 @@
 <template>
   <shop-layout>
-    <section class="container-fluid space-section-1">
+    <section class="container-fluid section-margin">
       <div class="row">
         <div class="col-12">
           <div class="card shadow-none">
@@ -47,15 +47,17 @@ import { defineAsyncComponent, defineComponent, provide, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import LoadingProductsFeed from '@/components/products/LoadingProductsFeed.vue';
+import ShopLayout from '@/layouts/ShopLayout.vue';
 
 export default defineComponent({
   name: 'ProductsPage',
   components: {
     AsyncProductsFeed: defineAsyncComponent({
-      loader: () => import('src/components/products/AsyncProductsFeed.vue'),
+      loader: () => import('@/components/products/AsyncProductsFeed.vue'),
       delay: 1000
     }),
-    LoadingProductsFeed
+    LoadingProductsFeed,
+    ShopLayout
   },
   setup () {
     const { capitalizeFirstLetter } = useUtilities()

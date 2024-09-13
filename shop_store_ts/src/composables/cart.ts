@@ -1,9 +1,9 @@
-import { client } from 'src/plugins/axios'
-import { useVueSession } from 'src/plugins/vue-storages'
-import { useCart } from 'src/stores/cart'
+import { client } from '@/plugins/axios'
+import { useVueSession } from '@/plugins/vue-storages'
+import { useCart } from '@/stores/cart'
+import { AddToCartData, UserSelection } from '@/types/composables/cart'
+import { Product } from '@/types/shop'
 import { getCurrentInstance, ref } from 'vue'
-import { AddToCartData, UserSelection } from '../types/composables/cart'
-import { Product } from '../types/shop'
 
 type CallbackFunction = (...args: unknown[]) => void
 
@@ -49,9 +49,6 @@ export function useCartComposable () {
   /**
    * Function used to communicate to the backend
    * that a product was added to the cart
-   * 
-   * @param {Object} data
-   * @returns {Object}
    */
   async function requestAddToCart(data: AddToCartData) {
     try {

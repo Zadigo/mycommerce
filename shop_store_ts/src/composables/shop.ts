@@ -1,8 +1,10 @@
-import { ref } from 'vue'
-import { useShop } from 'src/stores/shop'
-import { useI18n } from "vue-i18n"
+import { useShop } from '@/stores/shop'
 import { isUndefined } from 'lodash'
+import { ref } from 'vue'
+import { useI18n } from "vue-i18n"
 import { Product } from '../types/shop'
+
+declare type ImageSizes = 'original' | 'mid_size' | 'thumbnail'
 
 /**
  * A composable that implements default
@@ -130,9 +132,10 @@ export function useShopUtilities () {
    * From a product object parse the path
    * for the main image 
    */
-  function parseMainImage(product: Product, size: string = 'original') {
+  function parseMainImage(product: Product, size: ImageSizes = 'original') {
     const data = product.get_main_image
-    if (data === null || typeof data === 'undefined') {
+
+    if (data === null) {
       return localImagePath('placeholder.svg')
     } else {
       return djangoMediaPath(data[size])

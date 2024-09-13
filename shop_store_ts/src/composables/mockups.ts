@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { Product } from "../types/shop";
-import { useUtilities } from "./shop";
+import { useShopUtilities } from "./shop";
 
 /**
  * A special composable that generates products
@@ -8,7 +8,7 @@ import { useUtilities } from "./shop";
  */
 export function useMockups() {
   const testProducts = ref({});
-  const { djangoMediaPath } = useUtilities();
+  const { djangoMediaPath } = useShopUtilities();
 
   /**
    *

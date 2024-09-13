@@ -73,7 +73,7 @@ export default defineComponent({
     /**
      * @param {Number} size The grid size
      */
-    handleGridSize (size) {
+    handleGridSize (size: string) {
       this.currentGridSize = size
     }
   }

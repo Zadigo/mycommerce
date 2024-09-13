@@ -13,10 +13,8 @@ export function useCompany () {
   const companyDetails = ref(company)
 
   /**
-   * @param {String} title The title of the page
-   * @returns {String} The name of the page
    */
-  function createTitle (title) {
+  function createTitle (title: string): string {
     return `${title} | ${companyDetails.value.name}`
   }
 

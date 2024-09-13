@@ -48,9 +48,9 @@
 <script lang="ts">
 import { useCompany } from '@/composables/company'
 import { storeToRefs } from 'pinia'
-import { useAuthenticationComposable } from 'src/composables/authentication'
-import { useAuthentication } from 'src/stores/authentication'
-import { useCart } from 'src/stores/cart'
+import { useAuthenticationComposable } from '@/composables/authentication'
+import { useAuthentication } from '@/stores/authentication'
+import { useCart } from '@/stores/cart'
 import { defineComponent } from 'vue'
 
 export default defineComponent({

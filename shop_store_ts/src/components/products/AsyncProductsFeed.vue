@@ -111,7 +111,7 @@
             </v-btn>
             
             <v-btn color="secondary" variant="tonal" rounded @click="showProductFilters=false">
-              Voir résulats ({{ products.length }})
+              Voir résulats ({{ products?.length }})
             </v-btn>
           </v-container>
         </div>
@@ -133,8 +133,8 @@ import { Product } from '@/types/shop'
 
 import sizes from '@/data/sizes.json'
 
-import DefaultFiltering from '@/components/products/filtering/DefaultFiltering.vue'
 import BaseProductIterator from '@/components/BaseProductIterator.vue'
+import DefaultFiltering from '@/components/products/filtering/DefaultFiltering.vue'
 
 
 declare type Actions = 'sorted by' | 'typology' | 'colors' | 'sizes' | 'price'
@@ -217,13 +217,14 @@ export default  defineComponent({
         const collectionName = route.params.id        
         const collectionUrlPath = `collection/${collectionName}`
 
-        if (instance.keyExists(collectionUrlPath)) {
-          cachedResponse.value = instance.retrieve(collectionUrlPath)
-        } else {
-          const response = await client.get(collectionUrlPath)
-          instance.create(collectionUrlPath, response.data)
-          cachedResponse.value = response.data
-        }
+        // if (instance.keyExists(collectionUrlPath)) {
+        //   cachedResponse.value = instance.retrieve(collectionUrlPath)
+        // } else {
+        // }
+        const response = await client.get(collectionUrlPath)
+        instance.create(collectionUrlPath, response.data)
+        cachedResponse.value = response.data
+        
         products.value = cachedResponse.value.results
         instance.create('products', products.value)
       } catch (e) {
@@ -275,21 +276,30 @@ export default  defineComponent({
      * Get the limit offset values for an url in order to
      * return the offset products 
      */
-    const urlLimitOffsetValues  = reactify((url: string) => {
-      const urlObject = new URL(url)
-      const limit = urlObject.searchParams.get('limit')
-      const offset = urlObject.searchParams.get('offset')
-      
-      offsetsList.value.push(offset)
-      return [limit, offset]
+    const urlLimitOffsetValues  = reactify((url: string): Array<number> | boolean => {
+      try {
+        const urlObject = new URL(url)
+        const limit = urlObject.searchParams.get('limit')
+        const offset = urlObject.searchParams.get('offset')
+        
+        offsetsList.value.push(offset)
+        return [limit, offset]
+
+      } catch (e) {
+        return false
+      }
     })
 
     useIntersectionObserver(intersectionTarget, ([{ isIntersecting }]) => {
       if (isIntersecting && nextPageUrl.value !== null) {
         const offset = urlLimitOffsetValues(nextPageUrl)
-
-        isLoadingMoreProducts.value = isIntersecting
-        requestOffsetProducts(offset.value[1])
+        
+        if (offset) {
+          isLoadingMoreProducts.value = isIntersecting
+          requestOffsetProducts(offset.value[1])
+        } else {
+          isLoadingMoreProducts.value = false
+        }
       } else {
         isLoadingMoreProducts.value = false
       }

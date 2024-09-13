@@ -1,9 +1,9 @@
-import { computed, getCurrentInstance, ref } from 'vue'
 import { whenever } from '@vueuse/core'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { client } from 'src/plugins/axios'
-import { useAuthentication } from 'src/stores/authentication'
 import { useVueSession } from 'src/plugins/vue-storages'
+import { useAuthentication } from 'src/stores/authentication'
+import { computed, getCurrentInstance, ref } from 'vue'
 
 /**
  * This Vue composable provides functionality for managing 
@@ -59,7 +59,7 @@ export function useAuthenticationComposable () {
    * @param {Function} func
    * @returns void
    */
-  function executeCallback(func) {
+  function executeCallback(func: () => void) {
     if (typeof func === 'function') {
       func.call(app)
     }
@@ -72,7 +72,7 @@ export function useAuthenticationComposable () {
    * @param {Function} callback
    * @returns void
    */
-  async function login (callback) {
+  async function login (callback: () => void) {
     try {
       const response = await client.post('accounts/login', {
         email: email.value,
@@ -99,7 +99,7 @@ export function useAuthenticationComposable () {
    * @param {Function} callback
    * @returns void
    */
-  async function logout (callback) {
+  async function logout (callback: () => void) {
     try {
       await client.post('accounts/logout')
 

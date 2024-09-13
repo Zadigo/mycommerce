@@ -2,7 +2,7 @@
 
 import { App } from 'vue'
 
-export type storageData = {
+export interface SavedStorageData {
   sessionId: number
 }
 
@@ -20,10 +20,10 @@ declare class BaseStorage {
   /**
    * Retrieves all items saved in the storage under the default key
    * 
-   * @returns {storageData} The parsed data object stored in the storage
+   * @returns {SavedStorageData} The parsed data object stored in the storage
    * @returns {number} returns.sessionId The ID of the session
    */
-  readonly data: storageData
+  readonly data: SavedStorageData
   /**
    * Checks if the default key name exists in the storage, 
    * and initializes it with a new session ID if it doesn't. 

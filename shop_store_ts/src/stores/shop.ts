@@ -51,8 +51,8 @@ const useShop = defineStore("shop", {
       }
     },
     loadFromCache() {
-      this.likedProducts = this.$localstorage.retrieve("likedProducts");
-      this.visitedProducts = this.$localstorage.retrieve("visitedProducts");
+      this.likedProducts = this.$localstorage.retrieve("likedProducts") || [];
+      this.visitedProducts = this.$localstorage.retrieve("visitedProducts") || [];
     },
   },
   getters: {

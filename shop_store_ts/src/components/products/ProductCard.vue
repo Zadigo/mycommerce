@@ -11,6 +11,7 @@
             <p class="fw-light">
               {{ $t("Sélectionne la taille") }}
             </p>
+            
             <div class="d-flex justify-content-around flex-wrap gap-1">
               <base-size-button v-for="size in product.sizes" :key="size.id" :size="size" @update:selected-size="handleSelectedSize" />
             </div>
@@ -43,10 +44,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 import { useCartComposable } from 'src/composables/cart'
-import { useShopComposable, useShopUtilities } from 'src/composables/shop'
+import { useShopComposable, useShopUtilities } from '@/composables/shop'
 import { useVueLocalStorage } from '@/plugins/vue-storages'
+
+import { Product } from '@/types/shop'
 
 import BaseSizeButton from '../BaseSizeButton.vue'
 
@@ -57,7 +60,7 @@ export default defineComponent({
   },
   props: {
     product: {
-      type: Object,
+      type: Object as PropType<Product>,
       required: true
     },
     showLikeButton: {
@@ -107,10 +110,8 @@ export default defineComponent({
   methods: {
     /**
      * Proxy to add a product to the cart
-     * 
-     * @param {string | number} size The product size 
      */
-    handleSelectedSize (size) {
+    handleSelectedSize (size: string | number) {
       this.quickAddToCart(this.product, size, () => {
         this.isHovered = false
       })

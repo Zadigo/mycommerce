@@ -26,7 +26,7 @@ export type ProductCollection = {
   sub_category: string;
   number_of_items: number;
   illustration: string;
-  tags: string[];
+  tags: string[] | null;
   get_view_name: string;
 };
 

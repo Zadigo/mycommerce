@@ -25,8 +25,10 @@ import {
   faEnvelope,
   faFilter,
   faFlag,
+  faCaretRight,
   faHeart,
   faHome,
+  faRuler,
   faImage,
   faMagnifyingGlass,
   faPen,
@@ -54,6 +56,7 @@ library.add(faCircleCheck);
 library.add(faCcVisa);
 library.add(faCaretDown);
 library.add(faCcMastercard);
+library.add(faCaretRight);
 library.add(faCaretLeft);
 library.add(faCartShopping);
 library.add(faCaretDown);
@@ -70,6 +73,7 @@ library.add(faInstagram);
 library.add(faImage);
 library.add(faRightToBracket);
 library.add(faRightFromBracket);
+library.add(faRuler);
 library.add(faShop);
 library.add(faShoppingBag);
 library.add(faTiktok);

@@ -1,11 +1,11 @@
 import { Product } from "../shop";
 
 export type UserSelection = {
-  id: number;
-  size: string;
-  quantity: number;
-  product: Product;
-  session_id: string;
+  id: number | null;
+  size: string | null;
+  quantity: number | null;
+  product: Product | object;
+  session_id: string | null;
 };
 
 export type AddToCartData = {

@@ -9,7 +9,7 @@ declare function loadComponent (name: string): Promise<any>
 /** Scroll to the top of a page */
 declare function scrollToTop (): void
 
-declare function useUtilities (): {
+export declare function useUtilities (): {
     /** Check if a list of items has null values */
     hasNull (items: []): boolean
     /** Adds an "id" attribute to each item in a list of items */
@@ -40,7 +40,7 @@ declare function useUtilities (): {
     quickSort (items: [], ascending?: boolean): []
 }
  
-declare function useUrls(): {
+export declare function useUrls(): {
     /** Reconcile a path to a root url */
     rebuildPath (path: string): string
     /** Reconcile a media path to a root backend media url. Useful for returning the full url of images, videos on the backend */

@@ -2,7 +2,9 @@
   <div class="list-group-item d-flex justify-content-start gap-3 align-items-center p-3">
     <font-awesome-icon :icon="['fas', `${iconName}`]" />
     <span>{{ text }}</span>
-    <span class="fw-bold text-uppercase text-success">Gratuit</span>
+    <span class="fw-bold text-uppercase text-success">
+      {{ $t("Gratuit") }}
+    </span>
   </div>
 </template>
 

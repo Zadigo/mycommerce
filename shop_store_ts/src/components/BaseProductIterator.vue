@@ -7,8 +7,9 @@
 </template>
 
 <script lang="ts">
-import ProductCard from 'src/components/products/ProductCard.vue'
 import { defineComponent } from 'vue'
+
+import ProductCard from '@/components/products/ProductCard.vue'
 
 /**
  * This is a simple product iterator component that
