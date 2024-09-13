@@ -1,40 +1,59 @@
-import { createApp, toRaw } from 'vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { createVueLocalStorage, createVueSession, VueLocalStorageInstance, VueSessionInstance } from './plugins/vue-storages'
+import { createApp, toRaw } from "vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { createPinia } from "pinia";
+import { createVuetify } from "vuetify";
+import {
+  createVueLocalStorage,
+  createVueSession,
+  VueLocalStorageInstance,
+  VueSessionInstance,
+} from "./plugins/vue-storages";
 import { createHead } from "unhead";
+import installPlugins, { i18n } from "./plugins";
 
-import App from './App.vue'
+import App from "./App.vue";
+import router from "./router";
+import DayJsAdapter from "@date-io/dayjs";
 
-import './style.css'
-import { createPinia } from 'pinia'
+import * as components from "vuetify/components";
+import * as directives from "vuetify/directives";
+import { aliases, mdi } from "vuetify/iconsets/mdi";
+import colors from "vuetify/util/colors";
+
+
+import "bootstrap/dist/css/bootstrap.min.css"
+import "mdb-ui-kit/css/mdb.min.css"
+import "./style.css";
+
+const app = createApp(App);
 
 const localstorage = createVueLocalStorage({
-    afterMount ({ instance }) {
-        if (!instance.keyExists('likedProducts')) {
-            instance.create('likedProducts', [])
-        }
-
-        if (!instance.keyExists('visitedProducts')) {
-            instance.create('visitedProducts ', [])
-        }
+  afterMount({ instance }) {
+    if (!instance.keyExists("likedProducts")) {
+      instance.create("likedProducts", []);
     }
-})
+
+    if (!instance.keyExists("visitedProducts")) {
+      instance.create("visitedProducts ", []);
+    }
+  },
+});
 
 const session = createVueSession({
-    afterMount ({ instance }) {
-        instance.bulkCreate({
-            likedProducts: [],
-            visitedProducts: []
-        })
-    }
-})
+  afterMount({ instance }) {
+    instance.bulkCreate({
+      likedProducts: [],
+      visitedProducts: [],
+    });
+  },
+});
 
-const pinia = createPinia()
+const pinia = createPinia();
 
 pinia.use(({ store }) => {
-  // store.$router = toRaw(router);
-  store.$session = toRaw(session);
-  store.$localstorage = toRaw(localstorage);
+  store.$router = toRaw(router);
+  store.$session = toRaw(VueSessionInstance);
+  store.$localstorage = toRaw(VueLocalStorageInstance);
 
   // Intercept actions on adding a product in
   // the cart so that the items can be stored
@@ -58,22 +77,50 @@ pinia.use(({ store }) => {
     if (mutation.storeId === "shop") {
       VueLocalStorageInstance.create("likedProducts", state.likedProducts);
       VueLocalStorageInstance.create("visitedProducts", state.visitedProducts);
-      // VueSessionInstance.create('likedProducts', state.likedProducts)
-      // VueSessionInstance.create('visitedProducts', state.visitedProducts)
     }
   });
-})
+});
 
 // https://vite-pwa-org.netlify.app/guide/pwa-minimal-requirements.html
 const head = createHead({
-    plugins: []
-})
+  plugins: [],
+});
 
 head.push({ titleTemplate: "%s - Boutique" });
 
-const app = createApp(App)
-app.use(localstorage)
-app.use(session)
-app.use(pinia)
-app.component('FontAwesomeIcon', FontAwesomeIcon)
-app.mount('#app')
+const vuetify = createVuetify({
+  components,
+  directives,
+  date: {
+    adapter: DayJsAdapter,
+  },
+  theme: {
+    themes: {
+      light: {
+        dark: false,
+        colors: {
+          primary: colors.red.darken1,
+        },
+      },
+    },
+  },
+  icons: {
+    defaultSet: "mdi",
+    aliases,
+    sets: {
+      mdi,
+    },
+  },
+});
+
+app.use(localstorage);
+app.use(session);
+app.use(pinia);
+app.use(router)
+app.use(i18n)
+app.use(vuetify)
+app.use(installPlugins())
+
+app.component("FontAwesomeIcon", FontAwesomeIcon);
+
+app.mount("#app");

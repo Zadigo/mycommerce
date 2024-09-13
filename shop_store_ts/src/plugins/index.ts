@@ -1,5 +1,6 @@
-import cookies from 'universal-cookie'
+// import cookies from 'universal-cookie'
 import { client, quartClient } from './axios.js'
+import { App } from 'vue'
 
 import './fontawesome.js'
 import './webfontloader.js'
@@ -13,12 +14,12 @@ if (import.meta.env.DEV) {
   window.lodash = _
   window.DjangoClient = client
   window.QuartClient = quartClient
-  window.UniversalCookie = cookies
+  // window.UniversalCookie = cookies
 }
 
 export default function installPlugins () {
   return {
-    install: (app) => {
+    install: (app: App) => {
       app.use(i18n)
       app.config.globalProperties.$http = client
       app.config.globalProperties.$httpQuart = quartClient

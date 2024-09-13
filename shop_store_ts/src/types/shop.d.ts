@@ -54,6 +54,16 @@ export type Product = {
   created_on: string;
 };
 
+
+
+
+
+
+
+
+
+
+
 export type APIResponse = {
     count: number
     next: string

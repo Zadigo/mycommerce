@@ -94,6 +94,12 @@ module.exports = {
         ]
       }
     ],
+    "vue/max-attributes-per-line": ["warn", {
+        "singleline": {
+          "max": 15
+        },
+      },
+    ],
     "vue/v-bind-style": ["error", "shorthand"]
   }
 }

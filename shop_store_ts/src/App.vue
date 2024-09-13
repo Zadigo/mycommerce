@@ -1,9 +1,55 @@
 <template>
-  Something
+  <v-app>
+    <router-view v-slot="{ Component }">
+      <transition name="opacity">
+        <component :is="Component" />
+      </transition>
+    </router-view>
+
+    <!-- Modals -->
+    <v-bottom-sheet id="language-modal" v-model="shopStore.showLanguageModal" :persistent="languageModalIsPersistent">
+      <v-card>
+        <div class="container p-5">
+          <div class="row">
+            <div class="col-6">
+              <p class="fw-bold">
+                {{ $t('Sélectionnez votre emplacement') }}
+              </p>
+
+              <v-autocomplete v-model="languageOptions.location" :items="countries" variant="solo-filled" flat>
+                <v-text-field type="text" />
+              </v-autocomplete>
+            </div>
+            
+            <div class="col-6">
+              <p class="fw-bold">
+                {{ $t('Sélectionnez votre langue') }}
+              </p>
+
+              <div class="d-flex gap-1">
+                <v-btn :active="languageOptions.language === 'fr'" variant="outlined" rounded @click="languageOptions.language = 'fr'">
+                  FR
+                </v-btn>
+                
+                <v-btn :active="languageOptions.language === 'en'" variant="outlined" rounded @click="languageOptions.language = 'en'">
+                  EN
+                </v-btn>
+              </div>
+            </div>
+
+            <div class="col-12 d-flex justify-content-end">
+              <v-btn variant="tonal" color="primary" rounded @click="handleLanguageSelection">
+                {{ $t('Enregistrer mon choix') }}
+              </v-btn>
+            </div>
+          </div>
+        </div>
+      </v-card>
+    </v-bottom-sheet>
+  </v-app>
 </template>
 
 <script lang="ts">
-import { defineOrganization, useSchemaOrg } from '@unhead/schema-org'
 import { useDocumentVisibility, useMediaQuery, useScreenOrientation } from '@vueuse/core'
 import { useAuthentication } from '@/stores/authentication'
 import { useShop } from '@/stores/shop'
@@ -11,13 +57,19 @@ import { provide, ref, watch, defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import countries from '@/data/countries.json'
-import organization from '@/data/organization.json'
+
+declare type Languages = 'fr' | 'en'
+
+declare type LanguageOptions = {
+  location: string,
+  language: Languages
+}
 
 export default defineComponent({
   name: 'App',
   setup () {
     const i18n = useI18n()
-    const currentLanguage = ref('fr')
+    const currentLanguage = ref<Languages>('fr')
     
     const { value } = useMediaQuery('(min-width: 320px)')
     const { isSupported } = useScreenOrientation()
@@ -26,8 +78,8 @@ export default defineComponent({
     const shopStore = useShop()
     const authenticationStore = useAuthentication()
 
-    const languageModalIsPersistent = ref<boolean>(false)
-    const languageOptions = ref({
+    const languageModalIsPersistent = ref(false)
+    const languageOptions = ref<LanguageOptions>({
       location: 'France',
       language: 'fr'
     })
@@ -43,10 +95,6 @@ export default defineComponent({
     provide('isMobile', value)
     provide('screenOrientation', isSupported)
     provide('documentVisible', documentVisible)
-
-    useSchemaOrg([
-      defineOrganization(organization)
-    ])
 
     return {
       countries,

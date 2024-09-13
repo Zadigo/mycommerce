@@ -1,7 +1,7 @@
-import { VueSessionInstance } from "./vue-storages";
-import { useAuthentication } from "src/stores/authentication";
+import { useAuthentication } from "@/stores/authentication";
+import { useMessages } from "@/stores/messages";
 import { useCookies } from "@vueuse/integrations/useCookies";
-import { useMessages } from "src/stores/messages";
+import { VueSessionInstance } from "./vue-storages";
 
 import axios from "axios";
 
@@ -65,3 +65,4 @@ client.interceptors.response.use((response) => {
 });
 
 export { client, quartClient };
+

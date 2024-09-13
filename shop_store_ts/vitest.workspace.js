@@ -6,7 +6,7 @@ export default defineWorkspace([
     test: {
       include: ['tests/**/*.{node}.test.{ts,js}'],
       name: 'node',
-      environment: 'node'
+      environment: 'node',
     }
   }
 ])

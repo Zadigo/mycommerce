@@ -1,26 +1,44 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2022",
     "useDefineForClassFields": true,
-    "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "skipLibCheck": true,
+    
+    /* Set by us */
+    "forceConsistentCasingInFileNames": true,
     "composite": true,
-
+    "emitDeclarationOnly": true, /* need to be set or raises error */
+    "resolveJsonModule": true,
+    "allowJs": true,
+    
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": false,
+    "noEmit": false, /* true raises error */
     "jsx": "preserve",
-
+    
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue"
+  ],
+  /* Set by us */
+  "exclude": [
+    "./dist",
+    "./node_modules"
+  ]
 }

@@ -10,28 +10,27 @@ import UnheadVite from "@unhead/addons/vite";
 import eslint from "vite-plugin-eslint";
 import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
 
+console.log(resolve(__dirname, "./src/"));
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const root = process.cwd();
   const env = loadEnv(mode, root);
   process.env = { ...process.env, ...env };
-
+  console.log(root)
   return {
     root,
     resolve: {
-      alias: {
-        "@": resolve(__dirname, "./src"),
-        src: resolve(__dirname, "./src"),
-        components: resolve(__dirname, "./src/components"),
-        layouts: resolve(__dirname, "./src/layouts"),
-        pages: resolve(__dirname, "./src/pages"),
-        stores: resolve(__dirname, "./src/stores"),
-        plugins: resolve(__dirname, "./src/plugins"),
-        data: resolve(__dirname, "./src/data"),
-        composables: resolve(__dirname, "./src/composables"),
-        assets: resolve(__dirname, "./src/assets"),
-      },
+      alias: [
+        {
+          find: "@",
+          replacement: resolve(__dirname, "src"),
+        },
+        {
+          find: "src",
+          replacement: resolve(__dirname, 'src')
+        }
+      ],
     },
     plugins: [
       vue(),

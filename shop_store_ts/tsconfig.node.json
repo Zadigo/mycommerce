@@ -1,24 +1,33 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2022"],
+    "lib": [
+      "ES2022"
+    ],
     "module": "ESNext",
     "skipLibCheck": true,
-    "composite": true,
 
+    /* Set by us */
+    "forceConsistentCasingInFileNames": true,
+    "composite": true,
+    "emitDeclarationOnly": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
-    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": false,
-
+    "noEmit": false, /* true raises error */
+    
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["vite.config.ts"]
+  "include": [
+    "vite.config.ts"
+  ]
 }

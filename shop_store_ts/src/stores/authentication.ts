@@ -3,8 +3,8 @@ import { Profile } from '../types/authentication';
 
 declare type RootState = {
   showLoginDrawer: boolean;
-  token: string;
-  profile: Profile;
+  token: string | null;
+  profile: Profile | object;
 };
 
 const useAuthentication = defineStore('authentication', {

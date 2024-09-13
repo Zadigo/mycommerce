@@ -7,7 +7,7 @@
             <article v-for="i in 6" :key="i" class="col-sm-12 col-md-4 my-1">
               <router-link :to="{ name: 'shop_products_collection', params: { id: 'all'} }">
                 <article class="card shadow-none" aria-label="">
-                  <img src="src/assets/img3.jpeg" alt="" class="card-img">
+                  <img src="/img3.jpeg" alt="" class="card-img">
                   <h1 class="text-white text-center">
                     Collection n° {{ i }}
                   </h1>
@@ -21,13 +21,17 @@
   </shop-layout>
 </template>
 
-<script lang="ts">
-import { useHead } from 'unhead';
-import { defineComponent, ref } from 'vue';
-import { ProductCollection } from '@/types/shop'
+<script>
+import { ref } from 'vue'
+import { useHead } from 'unhead'
 
-export default defineComponent({
-  name: 'CollectionPage',
+import ShopLayout from '@/layouts/ShopLayout.vue';
+
+export default {
+  name: 'CollectionsPage',
+  components: {
+    ShopLayout
+  },
   setup () {
     useHead({
       title: 'Collections',
@@ -35,8 +39,8 @@ export default defineComponent({
       meta: {}
     })
 
-    const collections = ref<ProductCollection[]>([])
-    
+    const collections = ref([])
+
     return {
       collections
     }
@@ -66,12 +70,13 @@ export default defineComponent({
       }
     },
     /**
+     * @param {Number} size The grid size
      */
-    handleGridSize (size: string) {
+    handleGridSize (size) {
       this.currentGridSize = size
     }
   }
-})
+}
 </script>
 
 <style scoped>
