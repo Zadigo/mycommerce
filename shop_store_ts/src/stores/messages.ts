@@ -93,6 +93,7 @@ const useMessages = defineStore("messages", {
     clearAll() {
       this.messageItems = [];
     },
+    /** FIXME: Message should be an object */    
     removeMessage(message: string) {
       const index = _.indexOf(this.messageItems, { id: message.id * 1 });
       this.messageItems.splice(index, 1);

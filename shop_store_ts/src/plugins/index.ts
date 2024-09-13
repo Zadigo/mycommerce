@@ -1,4 +1,4 @@
-// import cookies from 'universal-cookie'
+import cookies from 'universal-cookie'
 import { client, quartClient } from './axios.js'
 import { App } from 'vue'
 
@@ -10,11 +10,11 @@ import _ from 'lodash'
 import i18n from './i18n.js'
 
 if (import.meta.env.DEV) {
-  window.dayjs = dayjs
-  window.lodash = _
+  window.DayJs = dayjs
+  window.Lodash = _
   window.DjangoClient = client
   window.QuartClient = quartClient
-  // window.UniversalCookie = cookies
+  window.UniversalCookie = cookies
 }
 
 export default function installPlugins () {

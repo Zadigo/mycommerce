@@ -18,6 +18,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.1",
     "@intlify/unplugin-vue-i18n": "^4.0.0",
     "@mdi/font": "^6.7.96",
+    "@types/webfontloader": "^1.6.38",
     "@vueuse/core": "^10.9.0",
     "@vueuse/integrations": "^10.9.0",
     "autoprefixer": "^10.4.2",
@@ -41,6 +42,7 @@
     "@stripe/stripe-js": "^4.1.0",
     "@types/lodash": "^4.17.7",
     "@types/node": "^22.5.4",
+    "@types/vue": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^7.16.1",
     "@typescript-eslint/parser": "^7.16.1",
     "@unhead/addons": "^1.9.7",
@@ -54,6 +56,6 @@
     "vite-plugin-pwa": "^0.20.0",
     "vitest": "^1.5.0",
     "vue-stripe-js": "^1.0.2",
-    "vue-tsc": "^2.0.29"
+    "vue-tsc": "^2.1.6"
   }
 }

@@ -70,15 +70,17 @@
   </section>
 </template>
 
-<script>
-import { provide, ref } from 'vue'
+<script lang="ts">
+import { defineComponent, provide, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAuthentication } from 'src/stores/authentication'
 import { useMessages } from 'src/stores/messages'
 
 import BillingForm from 'src/components/accounts/BillingForm.vue'
 
-export default {
+declare type CredentialsMethod = 'email' | 'password'
+
+export default defineComponent({
   name: 'UserPage',
   components: {
     BillingForm
@@ -118,10 +120,8 @@ export default {
     /**
      * Requests an update for the password and/or
      * the email address by the user 
-     * 
-     * @param {String} method 
      */
-    async requestChangeEmailPassword (method) {
+    async requestChangeEmailPassword (method: CredentialsMethod) {
       try {
         await this.$http.post('accounts/update', this.emailPasswordData)
 
@@ -166,5 +166,5 @@ export default {
       }
     }
   }
-}
+})
 </script>

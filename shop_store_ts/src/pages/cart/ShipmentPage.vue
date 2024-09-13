@@ -38,14 +38,15 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useHead } from 'unhead'
 import { storeToRefs } from 'pinia'
 import { useCart } from 'src/stores/cart'
 
 import NavigationCardFooter from 'src/components/cart/NavigationCardFooter.vue'
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   name: 'ShipmentPage',
   components: {
     NavigationCardFooter
@@ -100,5 +101,5 @@ export default {
       }
     }
   }
-}
+})
 </script>

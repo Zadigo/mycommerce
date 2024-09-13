@@ -21,7 +21,7 @@
             </div>
       
             <div class="col-8">
-              <router-view></router-view>
+              <router-view />
             </div>
           </div>
         </div>
@@ -31,9 +31,11 @@
 </template>
 
 
-<script>
-import BaseMessages from 'src/components/BaseMessages.vue'
-import BaseNavbar from 'components/BaseNavbar.vue'
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+import BaseMessages from '@/components/BaseMessages.vue'
+import BaseNavbar from '@/components/BaseNavbar.vue'
 
 const links = [
   {
@@ -46,7 +48,7 @@ const links = [
   }
 ]
 
-export default {
+export default defineComponent({
   components: {
     BaseMessages,
     BaseNavbar
@@ -56,5 +58,5 @@ export default {
       links
     }
   }
-}
+})
 </script>

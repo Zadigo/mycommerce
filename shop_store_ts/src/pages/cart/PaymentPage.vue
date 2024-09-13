@@ -35,17 +35,16 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue'
-import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useCart } from 'src/stores/cart'
-import { useShopUtilities } from 'src/composables/shop'
-import { useMessages } from 'src/stores/messages'
-import { StripeElements, StripeElement } from 'vue-stripe-js'
-import { useSeoMeta } from 'unhead'
-import { useI18n } from 'vue-i18n'
+<script lang="ts">
 import { useVueLocalStorage } from '@/plugins/vue-storages'
+import { storeToRefs } from 'pinia'
+import { useShopUtilities } from 'src/composables/shop'
+import { useCart } from 'src/stores/cart'
+import { useMessages } from 'src/stores/messages'
+import { useSeoMeta } from 'unhead'
+import { computed, defineComponent, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { StripeElement, StripeElements } from 'vue-stripe-js'
 
 const paymentMethods = [
   {
@@ -58,7 +57,7 @@ const paymentMethods = [
   }
 ]
 
-export default {
+export default defineComponent({
   name: 'PaymentPage',
   components: {
     StripeElements,
@@ -169,5 +168,5 @@ export default {
       this.selectedPaymentMethod = cardType
     }
   }
-}
+})
 </script>

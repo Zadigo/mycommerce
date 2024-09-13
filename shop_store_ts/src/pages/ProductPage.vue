@@ -196,13 +196,12 @@
   </shop-layout>
 </template>
 
-<script>
+<script lang="ts">
 import _ from 'lodash'
 
 import 'vue-image-zoomer/dist/style.css'
 
 import { useCompany } from '@/composables/company'
-import { defineBreadcrumb, defineProduct, useSchemaOrg } from '@unhead/schema-org'
 import { useIntersectionObserver } from '@vueuse/core'
 import { mapActions, storeToRefs } from 'pinia'
 import { useCartComposable } from 'src/composables/cart'
@@ -211,22 +210,24 @@ import { client } from 'src/plugins/axios'
 import { useAuthentication } from 'src/stores/authentication'
 import { useCart } from 'src/stores/cart'
 import { useShop } from 'src/stores/shop'
-import { useHead, useSeoMeta } from 'unhead'
-import { defineAsyncComponent, inject, ref, provide } from 'vue'
+import { useHead } from 'unhead'
+import { defineAsyncComponent, defineComponent, inject, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 
 import AdditionalInfoBlock from '@/components/product/AdditionalInfoBlock.vue'
 import BreadcrumbBlock from '@/components/product/BreadcrumbBlock.vue'
+import ReviewsBlock from '@/components/product/ReviewsBlock.vue'
 import BaseSizeBlock from 'src/components/BaseSizeBlock.vue'
 import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
 import DeliveryType from 'src/components/product/DeliveryType.vue'
 import DeliveryTypes from 'src/components/product/DeliveryTypes.vue'
 import FiveImages from 'src/components/product/FiveImages.vue'
-import ReviewsBlock from '@/components/product/ReviewsBlock.vue'
 import SixImages from 'src/components/product/SixImages.vue'
 
-export default {
+import { Product } from '@/types/shop'
+
+export default defineComponent({
   name: 'ProductPage',
   components: {
     AdditionalInfoBlock,
@@ -271,7 +272,7 @@ export default {
 
     const route = useRoute()
     const router = useRouter()
-    const currentProduct = ref({})
+    const currentProduct = ref<Product | object>({})
     const productVariants = ref([])
 
     provide('currentProduct', currentProduct)
@@ -301,22 +302,6 @@ export default {
       isIntersecting
     })
 
-    // const userSelection = ref({
-    //   size: null,
-    //   quantity: 1,
-    // })
-
-    useSeoMeta({
-      // https://gist.github.com/whitingx/3840905
-      title: currentProduct.value.name,
-      description: currentProduct.value.description,
-      robots: 'index,follow',
-      ogTitle: currentProduct.value.name,
-      ogImage: currentProduct.value.get_main_image?.original,
-    }, {
-      
-    })
-    
     useHead({
       meta: [
         {
@@ -325,34 +310,6 @@ export default {
         }
       ]
     })
-
-    setTimeout(() => {
-      useSchemaOrg([
-        defineProduct({
-          // https://developers.google.com/search/docs/appearance/structured-data/product?hl=fr
-          name: currentProduct.value.name,
-          itemCondition: 'NewCondition',
-          image: currentProduct.value.get_main_image?.original,
-          offers: [
-            {
-              price: currentProduct.value.price,
-              priceCurrency: 'EUR',
-              priceSpecification: 1
-            }
-          ]
-        }),
-        defineBreadcrumb([
-          { 
-            name: 'Boutique', 
-            item: '/' 
-          },
-          { 
-            name: currentProduct.value.category, 
-            item: router.resolve('shop_products_collection', { params: { id: currentProduct.value.category }}).fullPath
-          }
-        ])
-      ])
-    }, 300)
 
     return {
       documentVisible,
@@ -470,7 +427,7 @@ export default {
       }
     }
   }
-}
+})
 </script>
 
 <style scoped>

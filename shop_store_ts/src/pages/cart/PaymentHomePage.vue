@@ -14,8 +14,8 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue'
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
 import { useHead } from 'unhead'
 import { useCart } from 'src/stores/cart'
 import { storeToRefs } from 'pinia'
@@ -23,7 +23,7 @@ import { useVueSession } from 'src/plugins/vue-storages'
 
 import NavigationCardFooter from 'src/components/cart/NavigationCardFooter.vue'
 
-export default {
+export default defineComponent({
   name: 'PaymentHomePage',
   components: {
     NavigationCardFooter
@@ -65,5 +65,5 @@ export default {
       }
     }
   }
-}
+})
 </script>

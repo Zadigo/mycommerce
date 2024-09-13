@@ -4,8 +4,10 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "baseUrl": "./",
+    "esModuleInterop": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"],
+      "src": ["src/*"]
     }
   },
   "references": [

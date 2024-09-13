@@ -1,6 +1,6 @@
 <template>
   <shop-layout>
-    <section id="collections" class="container-fluid space-section">
+    <section id="collections" class="container-fluid section-margin">
       <div class="row">
         <div class="col-sm-12 col-md-10 offset-md-1">
           <div class="row g-1">
@@ -8,6 +8,7 @@
               <router-link :to="{ name: 'shop_products_collection', params: { id: 'all'} }">
                 <article class="card shadow-none" aria-label="">
                   <img src="/img3.jpeg" alt="" class="card-img">
+                  
                   <h1 class="text-white text-center">
                     Collection n° {{ i }}
                   </h1>
@@ -21,13 +22,13 @@
   </shop-layout>
 </template>
 
-<script>
-import { ref } from 'vue'
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
 import { useHead } from 'unhead'
 
 import ShopLayout from '@/layouts/ShopLayout.vue';
 
-export default {
+export default defineComponent({
   name: 'CollectionsPage',
   components: {
     ShopLayout
@@ -76,7 +77,7 @@ export default {
       this.currentGridSize = size
     }
   }
-}
+})
 </script>
 
 <style scoped>

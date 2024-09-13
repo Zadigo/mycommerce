@@ -3,7 +3,9 @@
     <header>
       <nav class="navbar fixed-top navbar-dark bg-white d-flex justify-content-center shadow-none text-uppercase">
         <router-link :to="{ name: 'shop_collections'}" class="link-dark">
-          <h1 class="h2 fw-bold">{{ $t('Boutique') }}</h1>
+          <h1 class="h2 fw-bold">
+            {{ $t('Boutique') }}
+          </h1>
         </router-link>
       </nav>
     </header>
@@ -11,7 +13,7 @@
     <div class="container">
       <div v-if="isSuccessPage" class="row my-5">
         <div class="col-8 offset-md-2">
-          <router-view></router-view>
+          <router-view />
         </div>
       </div>
 
@@ -20,20 +22,22 @@
           <nav aria-label="breadcrumb">
             <v-breadcrumbs :items="paymentLinks">
               <template #divider>
-                <v-icon icon="mdi-chevron-right"></v-icon>
+                <v-icon icon="mdi-chevron-right" />
               </template>
             </v-breadcrumbs>
           </nav>
         </div>
 
         <div class="col-6">
-          <router-view></router-view>
+          <router-view />
         </div>
 
         <div class="col-6">
           <div class="card shadow-none bg-light">
             <div class="card-header border-none">
-              <h1 class="fs-5 fw-bold my-2">Résumé ({{ cartStore.numberOfProducts }})</h1>
+              <h1 class="fs-5 fw-bold my-2">
+                Résumé ({{ cartStore.numberOfProducts }})
+              </h1>
             </div>
 
             <div id="products" class="card-body">
@@ -88,15 +92,16 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
+import { useRefHistory } from '@vueuse/core'
+import { useShopUtilities } from 'src/composables/shop'
 import { storeToRefs } from 'pinia'
 import { useCart } from 'src/stores/cart'
-import { useUtilities }  from 'composables/shop'
-import { useRefHistory } from '@vueuse/core'
+import { defineComponent } from 'vue'
 
 import BaseCartIterator from 'src/components/BaseCartIterator.vue'
 
-export default {
+export default defineComponent({
   name: 'PaymentLayout',
   components: {
     BaseCartIterator
@@ -104,9 +109,7 @@ export default {
   setup () {
     const cartStore = useCart()
     const { products } = storeToRefs(cartStore)
-    const { djangoMediaPath } = useUtilities()
-
-    const { translatePrice } = useUtilities()
+    const { djangoMediaPath, translatePrice } = useShopUtilities()
 
     const { history } = useRefHistory(products)
 
@@ -157,14 +160,15 @@ export default {
     this.cartStore.cache = this.sessionStorageData?.cart_cache || []
   },
   methods: {
-    // ...mapActions(useCart, ['removeFromCart']),
-    calculateItemTotalCost (price, quantity) {
-      // Calculate the individual price for the given
-      // product with price and quantity variables
+    /**
+     * Calculate the individual price for the given
+     * product with price and quantity variables
+     */
+    calculateItemTotalCost (price: number, quantity: number) {
       return price * quantity
     }
   }
-}
+})
 </script>
 
 <style scoped>

@@ -38,19 +38,17 @@
   </shop-layout>
 </template>
 
-<script>
-import _ from 'lodash';
-
-import { defineProduct, useSchemaOrg } from '@unhead/schema-org';
+<script lang="ts">
+import { Product } from '@/types/shop';
 import { useUtilities } from 'src/composables/utils';
 import { useAuthentication } from 'src/stores/authentication';
 import { useHead } from 'unhead';
-import { defineAsyncComponent, provide, ref } from 'vue';
+import { defineAsyncComponent, defineComponent, provide, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import LoadingProductsFeed from '@/components/products/LoadingProductsFeed.vue';
 
-export default {
+export default defineComponent({
   name: 'ProductsPage',
   components: {
     AsyncProductsFeed: defineAsyncComponent({
@@ -63,7 +61,7 @@ export default {
     const { capitalizeFirstLetter } = useUtilities()
 
     const route = useRoute()
-    const products = ref({})
+    const products = ref<Product[]>([])
     const productsLoading = ref(true)
     const authenticationStore = useAuthentication()
 
@@ -75,20 +73,6 @@ export default {
       ogTitle: capitalizeFirstLetter(route.params.id),
     })
 
-    // TODO: Does not work
-    setTimeout(() => {
-      useSchemaOrg(_.map(products.value, (product) => {
-        return defineProduct({
-          name: product.name,
-          offers: [
-            {
-              price: product.price
-            }
-          ]
-        })
-      }))
-    }, 400)
-
     return {
       pageHead,
       products,
@@ -96,9 +80,6 @@ export default {
       authenticationStore,
       productsLoading
     }
-  },
-  mounted () {
-    this.intersectionTarget = this.$refs.moreProductsIntersect
   },
   methods: {
     /**
@@ -108,10 +89,10 @@ export default {
      * 
      * @param {Array} products 
      */
-    handleProductsLoaded (products) {
+    handleProductsLoaded (products: Product[]) {
       this.products = products
       this.productsLoading = false
     }
   }
-}
+})
 </script>

@@ -4,17 +4,17 @@ import { defineStore } from 'pinia';
 import { AddToCartResponse, CartProduct, Product } from '../types/shop';
 
 declare type RequestData = {
-  session_id: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  telephone: string;
-  address_line: string;
-  zip_code: string;
-  country: string;
-  city: string;
-  delivery: string;
-  card_token: string | null;
+  session_id: string | null;
+  firstname: string | null;
+  lastname: string | null;
+  email: string | null;
+  telephone: string | null;
+  address_line: string | null;
+  zip_code: string | null;
+  country: string | null;
+  city: string | null;
+  delivery: string | null;
+  card_token: string | null | null;
 };
 
 declare type RootState = {

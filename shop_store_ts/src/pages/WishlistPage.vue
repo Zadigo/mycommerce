@@ -41,27 +41,23 @@
   </shop-layout>
 </template>
 
-<script>
-import { useHead } from 'unhead'
-import { storeToRefs } from 'pinia'
-import { useShop } from 'src/stores/shop'
-import { useAuthentication } from 'src/stores/authentication'
-import { ref } from 'vue';
+<script lang="ts">
+import { Product } from '@/types/shop';
+import { storeToRefs } from 'pinia';
+import { useAuthentication } from 'src/stores/authentication';
+import { useShop } from 'src/stores/shop';
+import { useHead } from 'unhead';
+import { defineComponent, ref } from 'vue';
 
-// import BaseProductIterator from '@/components/BaseProductIterator.vue'
-
-export default {
+export default defineComponent({
   name: 'WishlistPage',
-  components: {
-    // BaseProductIterator
-  },
   setup () {
     const authenticationStore = useAuthentication()
     const { showLoginDrawer } = storeToRefs(authenticationStore)
 
     const shopStore = useShop()
     const { likedProducts } = storeToRefs(shopStore)
-    const products = ref([])
+    const products = ref<Product[]>([])
 
     useHead({
       title: 'Wishlist',
@@ -88,5 +84,5 @@ export default {
       }
     }
   }
-}
+})
 </script>

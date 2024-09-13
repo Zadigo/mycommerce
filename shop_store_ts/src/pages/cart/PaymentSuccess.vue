@@ -22,14 +22,14 @@
   </section>
 </template>
 
-<script>
-import { ref } from 'vue'
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
 import { useHead } from 'unhead'
 import { createMockupProducts } from 'src/utils'
 
 import ProductCard from 'src/components/products/ProductCard.vue'
 
-export default {
+export default defineComponent({
   name: 'PaymentSuccessPage',
   components: {
     ProductCard
@@ -46,5 +46,5 @@ export default {
   beforeMount () {
     this.$session.create('cart', [])
   }
-}
+})
 </script>

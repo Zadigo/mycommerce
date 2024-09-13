@@ -10,14 +10,12 @@ import UnheadVite from "@unhead/addons/vite";
 import eslint from "vite-plugin-eslint";
 import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
 
-console.log(resolve(__dirname, "./src/"));
-
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const root = process.cwd();
   const env = loadEnv(mode, root);
   process.env = { ...process.env, ...env };
-  console.log(root)
+
   return {
     root,
     resolve: {

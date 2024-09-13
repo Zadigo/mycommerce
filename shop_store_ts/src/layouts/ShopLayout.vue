@@ -6,9 +6,7 @@
     <!-- Messages -->
     <base-messages />
     
-    <main>
-      <slot />
-    </main>
+    <slot />
 
     <!-- Footer -->
     <base-footer />
@@ -20,7 +18,9 @@
           <div class="row">
             <div class="col-12">
               <div class="d-flex flex-column justify-content-center" style="height: 100vh;">
-                <h3 class="h5 flew-grow">{{ $t('Connecte-toi ou crée un compte') }}</h3>
+                <h3 class="h5 flew-grow">
+                  {{ $t('Connecte-toi ou crée un compte') }}
+                </h3>
 
                 <v-btn variant="outlined" color="dark" size="x-large" class="mt-3 mb-5" rounded>
                   Google
@@ -305,10 +305,10 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
 import _ from 'lodash'
 
-import { ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { defineAsyncComponent, computed } from 'vue'
 import { whenever, useRefHistory } from '@vueuse/core'
 import { storeToRefs, mapState } from 'pinia'
@@ -327,7 +327,7 @@ import BaseFooter from 'src/components/BaseFooter.vue'
 import BaseProductIterator from 'src/components/BaseProductIterator.vue'
 import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
 
-export default {
+export default defineComponent({
   name: 'ShopLayout',
   components: {
     AsyncRecommendationsBlock: defineAsyncComponent({
@@ -519,7 +519,7 @@ export default {
       }
     }
   }
-}
+})
 </script>
 
 <style scoped>
