@@ -3,7 +3,7 @@
   <footer class="text-center text-lg-start bg-body-tertiary text-muted">
     <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
       <div class="me-5 d-none d-lg-block">
-        <span>Get connected with us on social networks:</span>
+        <span>{{ $t("Get connected with us on social networks") }}:</span>
       </div>
 
       <div>
@@ -105,6 +105,8 @@ import { storeToRefs } from 'pinia'
 import { useCompany } from 'src/composables/company'
 import { defineComponent } from 'vue'
 
+import { LanguageOptions } from '@/types/languages'
+
 import footer from '@/data/footer_links.json'
 import socials from '@/data/socials.json'
 
@@ -117,7 +119,7 @@ export default defineComponent({
     const { companyDetails } = useCompany()
     const { instance } = useVueSession()
 
-    const languageOptions = instance.retrieve('lang')
+    const languageOptions = instance.retrieve<LanguageOptions>('lang')
 
     return {
       footer,

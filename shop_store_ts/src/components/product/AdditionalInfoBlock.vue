@@ -137,12 +137,14 @@
 <script lang="ts">
 import { defineComponent, inject, ref } from 'vue'
 
+import { Product } from '@/types/shop';
+
 export default defineComponent({
   name: 'AdditionalInfoBlock',
   setup () {
     const showDeliveryDrawer = ref(false)
     const showCompositionDrawer = ref(false)
-    const currentProduct = inject('currentProduct')
+    const currentProduct = inject<Product>('currentProduct')
 
     return {
       currentProduct,

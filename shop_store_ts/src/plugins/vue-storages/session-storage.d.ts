@@ -51,7 +51,7 @@ declare class VueSession extends BaseStorage {
     /** */
     decrementDictBy(key: string, keyToUpdate: string, k?: number): void
     /** */
-    getOrCreate(key: string, value: unknown): unknown
+    getOrCreate<T>(key: string, value: unknown): T
     /** */
     listPush(key: string, value: unknown): void
     /** */
@@ -73,13 +73,13 @@ declare class VueSession extends BaseStorage {
     /** */
     dictSet(key: string, subKey: string, value: unknown): void
     /** */
-    dictGet(key: string, subKey: string): unknown
+    dictGet<T>(key: string, subKey: string): T
     /** */
     dictExists(key: string, subKey: string): unknown
     /** */
     dictClear(key: string): void
     /** */
-    dictRemove(key: string, subKey: string): unknown
+    dictRemove<T>(key: string, subKey: string): T
     /** */
     contains(key: string): boolean
     /** */

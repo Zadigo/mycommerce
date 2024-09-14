@@ -1,7 +1,8 @@
 //// @ts-nocheck <- Uncomment to stop check on the file
+import { CartItem, CartUpdateAPIResponse } from '@/types/composables/cart';
 import _ from 'lodash';
 import { defineStore } from 'pinia';
-import { AddToCartResponse, CartProduct, Product } from '../types/shop';
+import { Product } from '../types/shop';
 
 declare type RequestData = {
   session_id: string | null;
@@ -14,13 +15,13 @@ declare type RequestData = {
   country: string | null;
   city: string | null;
   delivery: string | null;
-  card_token: string | null | null;
+  card_token: string | null;
 };
 
 declare type RootState = {
   requestData: RequestData;
-  cache: AddToCartResponse;
-  products: CartProduct[];
+  cache: CartUpdateAPIResponse;
+  products: CartItem[];
 
   showAddedProductDrawer: boolean;
   showEditProductDrawer: boolean;
@@ -74,10 +75,8 @@ const useCart = defineStore("cart", {
      * the user's cart. This is mainly for
      * the dialog that shows the last product
      * that was added to the cart
-     *
-     * @returns {Object} The last product object
      */
-    lastAddedProduct(): Product {
+    lastAddedProduct(): CartItem {
       return _.last(this.products) || {};
     },
     /**
@@ -120,7 +119,7 @@ const useCart = defineStore("cart", {
      * does not exist, it is created otherwise, its quantity
      * is upgraded
      */
-    updateCart(data: AddToCartResponse) {
+    updateCart(data: CartUpdateAPIResponse) {
       this.cache = data;
       this.products = data.results;
     },

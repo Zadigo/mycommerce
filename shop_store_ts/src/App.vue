@@ -28,12 +28,8 @@
                 </p>
 
                 <div class="d-flex gap-1">
-                  <v-btn :active="languageOptions.language === 'fr'" variant="outlined" rounded @click="languageOptions.language = 'fr'">
-                    FR
-                  </v-btn>
-                  
-                  <v-btn :active="languageOptions.language === 'en'" variant="outlined" rounded @click="languageOptions.language = 'en'">
-                    EN
+                  <v-btn v-for="value in languages" :key="value" :active="languageOptions.language === value" variant="outlined" rounded @click="languageOptions.language = value">
+                    {{ value.toUpperCase() }}
                   </v-btn>
                 </div>
               </div>
@@ -58,20 +54,15 @@ import { useDocumentVisibility, useMediaQuery, useScreenOrientation } from '@vue
 import { defineComponent, provide, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import { LanguageOptions } from './types/languages'
+
 import countries from '@/data/countries.json'
-
-declare type Languages = 'fr' | 'en'
-
-declare type LanguageOptions = {
-  location: string,
-  language: Languages
-}
 
 export default defineComponent({
   name: 'App',
   setup () {
     const i18n = useI18n()
-    const currentLanguage = ref<Languages>('fr')
+    const currentLanguage = ref('fr')
     
     const { value } = useMediaQuery('(min-width: 320px)')
     const { isSupported } = useScreenOrientation()
@@ -86,6 +77,8 @@ export default defineComponent({
       language: 'fr'
     })
     
+    const languages = ref<string[]>(i18n.availableLocales)
+    
     provide('currentLanguage', currentLanguage)
     
     watch(currentLanguage, (n) => {
@@ -99,6 +92,7 @@ export default defineComponent({
     provide('documentVisible', documentVisible)
 
     return {
+      languages,
       countries,
       shopStore,
       languageModalIsPersistent,

@@ -27,3 +27,18 @@ export type Profile = {
   username: string;
   email: string;
 };
+
+export interface User {
+  id: number
+  userprofile: Profile
+  first_name: string
+  last_name: string
+  get_full_name: string
+  username: string
+  email: string
+}
+
+export interface LoginAPIResponse {
+  token: string
+  user: User
+}

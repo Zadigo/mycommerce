@@ -23,7 +23,7 @@
                 </h3>
 
                 <v-btn variant="outlined" color="dark" size="x-large" class="mt-3 mb-5" rounded>
-                  Google
+                  <font-awesome-icon :icon="[ 'fab', 'google' ]" />
                 </v-btn>
 
                 <p class="fw-light">
@@ -43,7 +43,7 @@
                 <p class="flex-grow text-center fw-light mt-3">
                   {{ $t('No account signup text') }} 
                   <a :href="signupUrl" target="_blank" rel="noopener noreferrer">
-                    Inscris-toi
+                    {{ $t("Inscris-toi") }}
                   </a>
                 </p>
               </div>
@@ -149,7 +149,7 @@
               <div class="row gx-1 gy-1 products-wrapper">
                 <div v-for="i in 10" :key="i" class="col-4">
                   <router-link :to="{ name: 'shop_product', params: { id: i } }" class="link-dark">
-                    <img src="../assets/img7.jpeg" alt="" class="img-fluid">
+                    <v-img src="img7.jpeg" alt="" class="img-fluid" />
                   </router-link>
                 </div>
               </div>
@@ -310,7 +310,7 @@ import _ from 'lodash'
 
 import { defineComponent, ref } from 'vue'
 import { defineAsyncComponent, computed } from 'vue'
-import { whenever, useRefHistory } from '@vueuse/core'
+import { useRefHistory } from '@vueuse/core'
 import { storeToRefs, mapState } from 'pinia'
 import { useShop } from 'src/stores/shop'
 import { useCart } from 'src/stores/cart'
@@ -320,18 +320,22 @@ import { useShopUtilities } from 'src/composables/shop'
 import { useMessages } from 'src/stores/messages'
 import { useCompany } from 'src/composables/company'
 
-import BaseCartIterator from 'src/components/BaseCartIterator.vue'
-import BaseMessages from 'src/components/BaseMessages.vue'
-import BaseNavbar from 'src/components/BaseNavbar.vue'
-import BaseFooter from 'src/components/BaseFooter.vue'
-import BaseProductIterator from 'src/components/BaseProductIterator.vue'
-import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
+import { Product } from '@/types/shop'
+
+import BaseCartIterator from '@/components/BaseCartIterator.vue'
+import BaseMessages from '@/components/BaseMessages.vue'
+import BaseNavbar from '@/components/BaseNavbar.vue'
+import BaseFooter from '@/components/BaseFooter.vue'
+import BaseProductIterator from '@/components/BaseProductIterator.vue'
+import LoadingRecommendationsBlock from '@/components/LoadingRecommendationsBlock.vue'
+
+type Action = 'open' | 'close'
 
 export default defineComponent({
   name: 'ShopLayout',
   components: {
     AsyncRecommendationsBlock: defineAsyncComponent({
-      loader: async () => import('src/components/RecommendationsBlock.vue'),
+      loader: async () => import('@/components/RecommendationsBlock.vue'),
       delay: 3000
     }),
     BaseCartIterator,
@@ -356,18 +360,18 @@ export default defineComponent({
     const { showCartDrawer, showAddedProductDrawer, showEditProductDrawer } = storeToRefs(cartStore)
 
     const showSearchModal = ref(false)
-    const search = ref(null)
-    const searchedProducts = ref([])
+    const search = ref<string | null>(null)
+    const searchedProducts = ref<Product[]>([])
     const canShowSearch = computed(() => {
       return searchedProducts.value.length > 0
     })
-    const currentEditedProduct = ref({})
+    const currentEditedProduct = ref<Product | object>({})
 
     const { history } = useRefHistory(search)
 
-    whenever(canShowSearch, () => {
-      canShowSearch.value = true
-    })
+    // whenever(canShowSearch, () => {
+    //   canShowSearch.value = true
+    // })
 
     return {
       login,
@@ -396,12 +400,11 @@ export default defineComponent({
     /**
      * Returns the Django signup url that will be
      * used to create a new user
-     * 
-     * @returns {String}
      */
-    signupUrl () {
+    signupUrl (): string {
       const url = import.meta.env.VITE_DEVELOPMENT_SIGNUP_URL
       const query = new URLSearchParams()
+
       query.append('c', this.$route.path)
       return url + `?${query}`
     }
@@ -434,9 +437,9 @@ export default defineComponent({
      */
     async handleAuthenticateCart () {
       try {
-        if (!this.$session.retrieve('authenticated_cart')) {
+        if (!this.$session.retrieve<boolean>('authenticated_cart')) {
           await this.$http.post('cart/authenticate', {
-            session_id: this.$session.retrieve('session_id')
+            session_id: this.$session.retrieve<string>('session_id')
           })
           this.$session.toggle('authenticated_cart')
         }
@@ -495,12 +498,8 @@ export default defineComponent({
      * Handle the opening or the closing of 
      * the product edition dialog by ensuring
      * that cartDrawer is closed
-     * 
-     * @param {String} action Open or close the drawer
-     * @param {Object} product Product object to edit
      */
-    handleProductEdition ({ action, product }) {
-      console.info(action, product)
+    handleProductEdition ({ action, product }: { action: Action, product: Product }) {
       this.currentEditedProduct = product || {}
 
       switch (action) {

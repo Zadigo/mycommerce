@@ -5,7 +5,7 @@
 
     <!-- Information -->
     <h1 class="h3 fw-light" aria-label="Product name">
-      {{ currentProduct.name }}
+      {{ currentProduct?.name || 'Put loader...' }}
     </h1>
 
     <!-- Reference -->
@@ -14,11 +14,11 @@
     </p>
 
     <!-- Price -->
-    <v-skeleton-loader :loading="isLoading" type="text" style="margin-left: 0;">
+    <base-skeleton :loading="isLoading" class="mb-3" width="50px">
       <p class="h5 fw-bold mb-3" aria-label="Product price">
         {{ translatePrice(currentProduct.get_price) }}
       </p>
-    </v-skeleton-loader>
+    </base-skeleton>
 
     <!-- Reviews -->
     <reviews-block />
@@ -35,11 +35,11 @@
     <hr class="my-5 text-body-tertiary">
 
     <!-- Sizes -->
-    <base-size-block :sizes="currentProduct.sizes" @update-size="(size) => { userSelection.size = size }" @show-size-guide-drawer="() => {}" />
+    <base-size-block :sizes="currentProduct.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="() => {}" />
 
     <!-- Size Guide -->
     <div class="d-flex justify-content-start gap-3 mt-4 mb-2">
-      <a href class="btn btn-light btn-rounded fw-bold shadow-none" @click.prevent="$emit('show-size-guide')">
+      <a href class="btn btn-light btn-rounded fw-bold shadow-none" @click.prevent="showSizeGuideDrawer=true">
         <font-awesome-icon icon="ruler" class="me-2" /> {{ $t('Guide des tailles') }}
       </a>
     </div>
@@ -51,7 +51,6 @@
     </transition>
 
     <div class="actions d-flex justify-content-start gap-1">
-      <!-- TODO: Make as a reusable component -->
       <button id="btn-add-to-cart" type="button" class="btn btn-primary btn-lg shadow-none btn-rounded" aria-label="Add to cart" @click="handleAddToCart">
         {{ $t('Ajouter au panier') }}
       </button>
@@ -70,11 +69,99 @@
     
     <!-- Additional Information -->
     <additional-info-block />
+
+    <!-- Modals -->
+    <!-- Size Guide -->
+    <teleport to="body">
+      <v-navigation-drawer id="size-guide-modal" v-model="showSizeGuideDrawer" width="400" location="right" temporary>
+        <v-toolbar class="border-bottom" color="white">
+          <v-toolbar-title class="fw-bold">
+            {{ $t("Guide des tailles") }}
+          </v-toolbar-title>
+
+          <v-spacer />
+
+          <v-btn icon="mdi-close" @click="showSizeGuideDrawer = false" />
+        </v-toolbar>
+
+        <div class="container my-4">
+          <div class="row g-1">
+            <div class="col-12">
+              <p class="fs-6 fw-bold mb-1">
+                {{ $t("Sélectionne une taille") }}
+              </p>
+              
+              <base-size-block :sizes="currentProduct.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="showSizeGuideDrawer = true" />
+
+              <p class="fs-6 fw-bold mt-4 mb-1">
+                {{ $t("Mensurations") }}
+              </p>
+
+              <p class="fw-light text-body-secondary text-uppercase">
+                {{ $t("Corps") }}
+              </p>
+
+              <div class="sizes">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="col-auto">
+                    {{ $t("Tour de Poitrine") }}
+                  </div>
+                  
+                  <div class="col-auto">
+                    82
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 mt-4">
+              <v-btn color="primary" block @click="handleAddToCart">
+                {{ $t('Ajouter au panier') }}
+              </v-btn>
+            </div>
+
+            <div class="col-12 mt-4">
+              <p class="fs-6 fw-bold">
+                {{ $t("Comprendre tes mesures ?") }}
+              </p>
+
+              <v-img :src="localImagePath('size-guide.jpg')" :lazy-src="localImagePath('size-guide.jpg')" :width="300" />
+            </div>
+
+            <div class="col-12 mt-4">
+              <p class="fs-6 fw-bold mb-1">
+                {{ $t("Tour de Poitrine") }}
+              </p>
+              <p class="fw-light text-body-secondary mb-4">
+                Pour mesurer la circonférence de ta poitrine, utilise un mètre
+                ruban et place-le autour de la partie la plus large de ta poitrine.
+              </p>
+
+              <p class="fs-6 fw-bold mb-1">
+                {{ $t("Tour de Taille") }}
+              </p>
+              <p class="fw-light text-body-secondary mb-4">
+                Place le mètre ruban autour de la partie la plus
+                étroite de ta taille.
+              </p>
+
+              <p class="fs-6 fw-bold mb-1">
+                {{ $t("Tour de Hanches") }}
+              </p>
+              <p class="fw-light text-body-secondary mb-4">
+                Mets tes pieds l'un contre l'autre et place le mètre ruban
+                autour de la partie la plus large de ton tour de hanche.
+              </p>
+            </div>
+          </div>
+        </div>
+      </v-navigation-drawer>
+    </teleport>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, inject } from 'vue';
+import { defineComponent, inject, ref } from 'vue';
 import { useCartComposable  } from '@/composables/cart'
 import { useShopComposable, useShopUtilities } from '@/composables/shop'
 import { Product } from '@/types/shop';
@@ -82,22 +169,29 @@ import { useCart } from '@/stores/cart';
 import { storeToRefs } from 'pinia';
 
 import AdditionalInfoBlock from './AdditionalInfoBlock.vue';
+import BaseSkeleton from '@/layouts/BaseSkeleton.vue';
 import BaseSizeBlock from '../BaseSizeBlock.vue';
+import BreadcrumbBlock from './BreadcrumbBlock.vue';
 import DeliveryType from './DeliveryType.vue';
 import DeliveryTypes from './DeliveryTypes.vue';
-import BreadcrumbBlock from './BreadcrumbBlock.vue';
+import ReviewsBlock from './ReviewsBlock.vue';
 
 export default defineComponent({
   name: 'ProductAside',
   components: {
     AdditionalInfoBlock,
+    BaseSkeleton,
     BaseSizeBlock,
     BreadcrumbBlock,
     DeliveryType,
-    DeliveryTypes
+    DeliveryTypes,
+    ReviewsBlock
   },
   emits: {
-    'show-size-guide' () {
+    'size-guide' () {
+      return true
+    },
+    'add-to-cart' () {
       return true
     }
   },
@@ -105,20 +199,23 @@ export default defineComponent({
     const currentProduct = inject<Product>('currentProduct')
     const isLoading = inject<boolean>('isLoading')
 
-    const { translatePrice, parseMainImage } = useShopUtilities()
+    const { translatePrice, parseMainImage, localImagePath } = useShopUtilities()
     const { isLiked, handleLike } = useShopComposable()
     const { addToCart, showSizeSelectionWarning, userSelection } = useCartComposable()
 
     const cartStore = useCart()
     const { showAddedProductDrawer } = storeToRefs(cartStore)
+    const showSizeGuideDrawer = ref(false)
 
     return {
       isLiked,
       isLoading,
       currentProduct,
+      showAddedProductDrawer,
+      showSizeGuideDrawer,
       showSizeSelectionWarning,
       userSelection,
-      showAddedProductDrawer,
+      localImagePath,
       addToCart,
       parseMainImage,
       handleLike,
@@ -131,10 +228,11 @@ export default defineComponent({
      */
     // FIXME: currentProduct.variants exists?
     hasColorVariants (): boolean {
-      const variants = this.currentProduct.variants.filter((product) => {
-        return product.id !== this.currentProduct.id
-      })
-      return variants.length > 0
+      return false
+      // const variants = this.currentProduct.variants.filter((product) => {
+      //   return product.id !== this.currentProduct.id
+      // })
+      // return variants.length > 0
       // const variants = _.filter(this.currentProduct.variants, (product) => {
       //   return product.id !== this.currentProduct.id
       // })
@@ -142,6 +240,9 @@ export default defineComponent({
     }
   },
   methods: {
+    handleSizeSelection (size: string) {
+      this.userSelection.size = size
+    },
     /**
      * Handles the action of adding a product
      * to the current user's cart. Products that
@@ -151,13 +252,15 @@ export default defineComponent({
      * @listens click
      */
     async handleAddToCart () {
-      this.addToCart(this.currentProduct, (data) => {
-        this.showAddedProductDrawer = true
-        
-        if (!this.$session.keyExists('session_id')) {
-          this.$session.create('session_id', data.session_id)
-        }
-      })
+      if (this.currentProduct) {
+        this.addToCart(this.currentProduct, (data) => {
+          this.showAddedProductDrawer = true
+          
+          if (!this.$session.keyExists('session_id')) {
+            this.$session.create('session_id', data.session_id)
+          }
+        })
+      }
     },
   }
 })

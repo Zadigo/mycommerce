@@ -1,11 +1,9 @@
 import { client } from '@/plugins/axios'
 import { useVueSession } from '@/plugins/vue-storages'
 import { useCart } from '@/stores/cart'
-import { AddToCartData, UserSelection } from '@/types/composables/cart'
+import { CartUpdateAPIResponse, UserSelection } from '@/types/composables/cart'
 import { Product } from '@/types/shop'
 import { getCurrentInstance, ref } from 'vue'
-
-type CallbackFunction = (...args: unknown[]) => void
 
 /**
  * The cart composable is a function that allows
@@ -37,32 +35,32 @@ export function useCartComposable () {
    * to get details on the current stock of a given
    * product in the database
    */
-  async function requestCheckStock (id: number) {
-    try {
-      id
-      stockDetailsResponse.value = {}
-    } catch (e) {
-      console.error(e)
-    }
-  }
+  // async function requestCheckStock (id: number) {
+  //   try {
+  //     id
+  //     stockDetailsResponse.value = {}
+  //   } catch (e) {
+  //     console.error(e)
+  //   }
+  // }
   
   /**
    * Function used to communicate to the backend
    * that a product was added to the cart
    */
-  async function requestAddToCart(data: AddToCartData) {
+  async function requestAddToCart(data: UserSelection) {
     try {
       const sessionId = instance.retrieve("session_id");
       // By changing this, it updates in the underlying
       // proxy in the ref since data is that proxy
       userSelection.value.session_id = sessionId || null;
 
-      const response = await client.post("cart/add", data);
-      await requestCheckStock();
+      const response = await client.post<CartUpdateAPIResponse>("cart/add", data);
+      // await requestCheckStock();
       return response;
     } catch (e) {
       console.error(e);
-      return {};
+      return false;
     }
   }
 
@@ -72,17 +70,21 @@ export function useCartComposable () {
    * `requestAddToCart`. This requires a size
    * selection
    */
-  async function addToCart(product: Product, callback: CallbackFunction) {
+  async function addToCart(
+    product: Product,
+    callback: (data: CartUpdateAPIResponse) => void
+  ) {
     try {
       if (userSelection.value.size === null && product.has_sizes) {
         showSizeSelectionWarning.value = true;
       } else {
         userSelection.value.product = product;
-        const response = await requestAddToCart(userSelection.value);
-        instance.create("cart_cache", response.data);
-        cartStore.updateCart(response.data);
 
-        if (typeof callback === "function") {
+        const response = await requestAddToCart(userSelection.value);
+
+        if (response) {
+          instance.create("cart_cache", response.data);
+          cartStore.updateCart(response.data);
           callback.call(app, response.data);
         }
       }
@@ -99,7 +101,7 @@ export function useCartComposable () {
   async function quickAddToCart(
     product: Product,
     size: string,
-    callback: CallbackFunction
+    callback: () => void
   ) {
     userSelection.value.size = size;
     userSelection.value.id = product.id;

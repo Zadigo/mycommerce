@@ -1,12 +1,12 @@
 <template>
   <shop-layout>
-    <section id="wishlist" class="container space-section">
+    <section id="wishlist" class="container section-margin">
       <div class="row g-2">
         <div v-if="!authenticationStore.isAuthenticated" class="col-sm-12 col-md-4">
           <div class="card shadow-sm" style="height: 557px;">
             <div class="card-body text-center p-5 d-flex flex-column justify-content-center">
               <div class="information">
-                <font-awesome-icon :icon="['fas', 'star']" class="text-warning mb-4" size="4x" />
+                <font-awesome-icon icon="star" class="text-warning mb-4" size="4x" />
                 
                 <h1 class="card-title h6 fw-bold mt-4 mb-3">
                   {{ $t('Conservation des favoris') }}
@@ -26,7 +26,7 @@
         </div>
 
         <template v-if="likedProducts.length > 0">
-          <!-- <base-product-iterator :products="likedProducts" /> -->
+          <base-product-iterator :products="likedProducts" />
         </template>
 
         <template v-else>
@@ -49,8 +49,15 @@ import { useShop } from 'src/stores/shop';
 import { useHead } from 'unhead';
 import { defineComponent, ref } from 'vue';
 
+import BaseProductIterator from '@/components/BaseProductIterator.vue';
+import ShopLayout from '@/layouts/ShopLayout.vue';
+
 export default defineComponent({
   name: 'WishlistPage',
+  components: {
+    BaseProductIterator,
+    ShopLayout
+  },
   setup () {
     const authenticationStore = useAuthentication()
     const { showLoginDrawer } = storeToRefs(authenticationStore)
@@ -63,7 +70,7 @@ export default defineComponent({
       title: 'Wishlist',
       description: ''
     })
-    console.log(likedProducts.value)
+
     return {
       products,
       authenticationStore,
@@ -72,7 +79,10 @@ export default defineComponent({
     }
   },
   methods: {
-    /** */
+    /**
+     * Gets the list of products that were liked
+     * by the current user 
+     */
     async requestLikedProducts () {
       try {
         const response = await this.$http.post('products', {

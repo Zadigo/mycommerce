@@ -1,17 +1,21 @@
 import { defineStore } from 'pinia'
-import { Profile } from '../types/authentication';
+import { LoginAPIResponse, Profile } from '@/types/authentication';
 
 declare type RootState = {
   showLoginDrawer: boolean;
   token: string | null;
   profile: Profile | object;
+  accessToken: string | null;
+  refreshToken: string | null;
 };
 
 const useAuthentication = defineStore('authentication', {
   state: (): RootState => ({
     showLoginDrawer: false,
     token: null,
-    profile: {}
+    profile: {},
+    accessToken: null,
+    refreshToken: null
   }),
   getters: {
     /**
@@ -31,9 +35,12 @@ const useAuthentication = defineStore('authentication', {
      * is still authenticated
      */
     loadFromCache () {
-      const data = this.$session.retrieve('authentication') || {}
-      this.token = data.token
-      this.profile = data.user
+      const data = this.$session.retrieve<LoginAPIResponse>('authentication')
+      
+      if ('token' in data) {
+        this.token = data.token
+        this.profile = data.user
+      }
     }
   }
 })

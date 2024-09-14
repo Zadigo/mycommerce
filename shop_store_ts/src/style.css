@@ -1,4 +1,26 @@
+/* Margins */
+
 .section-margin {
     margin-top: 5rem;
     margin-bottom: 5rem;
+}
+
+
+/* transitions */
+.opacity-enter-active {
+    transition: all .15s ease-in-out;
+}
+
+.opacity-enter-from,
+.opacity-leave-to {
+    opacity: 0;
+}
+
+.opacity-enter-to,
+.opacity-leave-from {
+    opacity: 1;
+}
+
+.opacity-move {
+    transition: all .15s ease-in-out;
 }

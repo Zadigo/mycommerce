@@ -70,17 +70,15 @@ export default defineComponent({
     provide('productsLoading', productsLoading)
 
     const pageHead = useHead({
-      title: capitalizeFirstLetter(route.params.id),
-      description: '',
-      ogTitle: capitalizeFirstLetter(route.params.id),
+      title: capitalizeFirstLetter(route.params.id)      
     })
 
     return {
       pageHead,
       products,
-      capitalizeFirstLetter,
       authenticationStore,
-      productsLoading
+      productsLoading,
+      capitalizeFirstLetter,
     }
   },
   methods: {

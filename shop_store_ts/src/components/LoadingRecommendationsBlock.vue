@@ -5,8 +5,10 @@
     </h2>
 
     <div ref="productsRow" class="row g-1">
-      <div v-for="product in quantity" :key="product.id" class="col-3">
-        <v-skeleton-loader type="image" />
+      <div v-for="i in quantity" :key="i" class="col-3">
+        <base-skeleton :loading="true" height="329px" />
+        <base-skeleton :loading="true" class="my-1" height="22px" width="50%" />
+        <base-skeleton :loading="true" height="22px" width="25%" />
       </div>
     </div>
   </div>
@@ -15,8 +17,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
+import BaseSkeleton from '@/layouts/BaseSkeleton.vue';
+
 export default defineComponent({
   name: 'LoadingRecommendationsBlock',
+  components: {
+    BaseSkeleton
+  },
   props: {
     blockTitle: {
       type: String,

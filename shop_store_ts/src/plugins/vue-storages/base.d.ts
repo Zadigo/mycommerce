@@ -43,14 +43,14 @@ declare class BaseStorage {
    * @param {string} key The key of the element to retrieve from the stored data
    * @param {any | unknown} value The value associated with the key, or undefined if the key does not exist
    */
-  retrieve(key: string): unknown
+  retrieve<T>(key: string): T
   /**
    * Adds a new key-value pair to the stored data and saves it
    * 
    * @param {string} key The key under which the value will be stored
    * @param {any} value The value to be stored
    */
-  create(key: string, value: unknown): void
+  create<T>(key: string, value: T): void
   /**
    * Adds multiple key-value pairs to the stored data and saves it
    * 

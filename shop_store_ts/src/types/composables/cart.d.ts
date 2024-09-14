@@ -2,9 +2,9 @@ import { Product } from "../shop";
 
 export type UserSelection = {
   id: number | null;
-  size: string | null;
-  quantity: number | null;
   product: Product | object;
+  size: number | string | null;
+  quantity: number | 1;
   session_id: string | null;
 };
 
@@ -16,3 +16,25 @@ export type AddToCartData = {
   size: string;
   session_id: string;
 };
+
+export interface CartItem {
+  id: number;
+  product: Product;
+  size: string | null;
+  price: number;
+  created_on: string;
+}
+
+interface CartStatistic {
+  product__id: number;
+  product__name: string;
+  quantity: number;
+  total: number;
+}
+
+export interface CartUpdateAPIResponse {
+  session_id: string;
+  results: CartItem[];
+  statistics: CartStatistic[];
+  total: number;
+}

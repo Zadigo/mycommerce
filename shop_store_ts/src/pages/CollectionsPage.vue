@@ -6,10 +6,10 @@
           <div class="row g-1">
             <article v-for="i in 6" :key="i" class="col-sm-12 col-md-4 my-1">
               <router-link :to="{ name: 'shop_products_collection', params: { id: 'all'} }">
-                <article class="card shadow-none" aria-label="">
-                  <img src="/img3.jpeg" alt="" class="card-img">
+                <article :aria-label="`Collection n°${i}`" class="card shadow-none">
+                  <img :alt="`Collection n°${i}`" src="/img4.jpeg" class="card-img">
                   
-                  <h1 class="text-white text-center">
+                  <h1 class="text-white text-left h3 fw-bold text-uppercase px-2 py-4">
                     Collection n° {{ i }}
                   </h1>
                 </article>
@@ -23,8 +23,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { useHead } from 'unhead'
+import { CollectionName } from '@/types/collections';
+import { useHead } from 'unhead';
+import { defineComponent, ref } from 'vue';
 
 import ShopLayout from '@/layouts/ShopLayout.vue';
 
@@ -35,12 +36,10 @@ export default defineComponent({
   },
   setup () {
     useHead({
-      title: 'Collections',
-      description: '',
-      meta: {}
+      title: 'Collections'
     })
 
-    const collections = ref([])
+    const collections = ref<CollectionName[]>([])
 
     return {
       collections
@@ -61,11 +60,11 @@ export default defineComponent({
         const numberOfItems = this.$session.listCount('collections', false)
 
         if (numberOfItems === 0) {
-          const response = await this.$http.get('collection')
+          const response = await this.$http.get<CollectionName>('collection')
           this.$session.create('collections', response.data)
         }
 
-        this.collections = this.$session.retrieve('collections')
+        this.collections = this.$session.retrieve<CollectionName[]>('collections')
       } catch (e) {
         console.error('CollectionPage', e)
       }

@@ -1,8 +1,9 @@
+import { client } from '@/plugins/axios'
+import { useVueSession } from '@/plugins/vue-storages'
+import { useAuthentication } from '@/stores/authentication'
+import { LoginAPIResponse } from '@/types/authentication'
 import { whenever } from '@vueuse/core'
 import { useCookies } from '@vueuse/integrations/useCookies'
-import { client } from 'src/plugins/axios'
-import { useVueSession } from 'src/plugins/vue-storages'
-import { useAuthentication } from 'src/stores/authentication'
 import { computed, getCurrentInstance, ref } from 'vue'
 
 /**
@@ -18,8 +19,8 @@ export function useAuthenticationComposable () {
   const authenticationStore = useAuthentication()
   const cookies = useCookies(['authentication'])
 
-  const email = ref(null)
-  const password = ref(null)
+  const email = ref<string | null>(null)
+  const password = ref<string | null>(null)
   const authenticationFailuresCounter = ref(0)
   
   /**
@@ -53,39 +54,27 @@ export function useAuthenticationComposable () {
   })
 
   /**
-   * Proxy function used to execute a callback by
-   * passing in the current app context
-   * 
-   * @param {Function} func
-   * @returns void
-   */
-  function executeCallback(func: () => void) {
-    if (typeof func === 'function') {
-      func.call(app)
-    }
-  }
-  
-  /**
    * Method that handles the login to the
    * backend
    * 
    * @param {Function} callback
    * @returns void
    */
-  async function login (callback: () => void) {
+  async function login (callback: (data: LoginAPIResponse) => void) {
     try {
-      const response = await client.post('accounts/login', {
+      const response = await client.post<LoginAPIResponse>('accounts/login', {
         email: email.value,
         password: password.value
       })
+
       instance.create('authentication', response.data)
-      cookies.set('token', instance.dictGet('authentication', 'token'))
+      cookies.set('token', response.data.token)
       authenticationFailuresCounter.value = 0
 
       authenticationStore.token = authToken.value
       authenticationStore.profile = response.data.user
 
-      executeCallback(callback)
+      callback.call(app, response.data)
     } catch (e) {
       authenticationFailuresCounter.value += 1
       console.error(e)
@@ -109,7 +98,7 @@ export function useAuthenticationComposable () {
       authenticationFailuresCounter.value = 0
       authenticationStore.token = null
 
-      executeCallback(callback)
+      callback.call(app)
     } catch (e) {
       console.error(e)
     }
@@ -121,14 +110,14 @@ export function useAuthenticationComposable () {
    */
   async function refresh () {
     try {
-      cookies.get('token')
+      cookies.get<string>('token')
     } catch (e) {
       console.error(e)
     }
   }
 
   function authenticateFromCache () {
-    return instance.retrieve('token')
+    return instance.retrieve<string>('token')
   }
 
   return {

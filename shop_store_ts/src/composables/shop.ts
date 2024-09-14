@@ -133,12 +133,12 @@ export function useShopUtilities () {
    * for the main image 
    */
   function parseMainImage(product: Product, size: ImageSizes = 'original') {
-    const data = product.get_main_image
+    const mainImage = product.get_main_image
 
-    if (data === null) {
+    if (mainImage === null || Object.keys(product).length === 0) {
       return localImagePath('placeholder.svg')
     } else {
-      return djangoMediaPath(data[size])
+      return djangoMediaPath(mainImage[size])
     }
   }
 

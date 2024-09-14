@@ -13,14 +13,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { useShopUtilities } from 'src/composables/shop'
+
+import { ProductImage } from '@/types/shop';
 
 export default defineComponent({
   name: 'SixImages',
   props: {
     images: {
-      type: Array,
+      type: Array as PropType<ProductImage[]>,
       required: true,
       default: () => []
     }
