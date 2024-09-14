@@ -16,6 +16,7 @@ import {
   faArrowUp,
   faCaretDown,
   faCaretLeft,
+  faCaretRight,
   faCaretUp,
   faCartShopping,
   faCircleCheck,
@@ -25,19 +26,19 @@ import {
   faEnvelope,
   faFilter,
   faFlag,
-  faCaretRight,
   faHeart,
   faHome,
-  faRuler,
   faImage,
   faMagnifyingGlass,
   faPen,
   faPhone,
   faRightFromBracket,
   faRightToBracket,
+  faRuler,
   faShop,
   faShoppingBag,
   faSignIn,
+  faSliders,
   faStar,
   faTableCells,
   faTableCellsLarge,
@@ -80,6 +81,7 @@ library.add(faTiktok);
 library.add(faPhone);
 library.add(faPen);
 library.add(faSignIn);
+library.add(faSliders);
 library.add(faStar);
 library.add(faTableCellsLarge);
 library.add(faTableCells);

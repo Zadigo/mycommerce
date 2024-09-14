@@ -11,9 +11,7 @@ declare function scrollToTop (): void
 
 export declare function useUtilities (): {
     /** Check if a list of items has null values */
-    hasNull (items: []): boolean
-    /** Adds an "id" attribute to each item in a list of items */
-    indexElements (items: []): object[]
+    hasNull <T>(items: T): boolean
     /** From a list of items, get the incremented last "id" attribute */
     incrementLastId (items: object[]): number | null
     /** Read a user uploaded file */
@@ -25,19 +23,19 @@ export declare function useUtilities (): {
     /** Truncate a string based on it's length */
     conditionalTruncate (text: string, limit: number, k: number): string
     /** Manage the items of a list by adding or removing non-existing elements accordingly */
-    listManager (items: [], item: object): []
+    listManager <T>(items: array<T[]>, item: string | number): T
     /** Based on the ID attribute of an element on the page, scroll to that element */
     scrollToSection (elementId: string): void
     /** Capitalize the first letter of a string */
-    capitalizeFirstLetter (value): string
+    capitalizeFirstLetter (value: string): string
     /** Capitalize the first letters of a string */
-    capitalizeLetters (value): string
+    capitalizeLetters (value: string): string
     /** Format a number as a percentage */
     formatAsPercentage (value: number, negative?: boolean): string
     /** Get the percentage of the current element that was scrolled */
     getVerticalScrollPercentage (el: HTMLElement): number
     /** Quickly sort a list of items */
-    quickSort (items: [], ascending?: boolean): []
+    quickSort <T extends { items: string[] | number[] }>(items: T, ascending?: boolean): T
 }
  
 export declare function useUrls(): {

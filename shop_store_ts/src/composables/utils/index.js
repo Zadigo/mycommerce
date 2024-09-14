@@ -33,17 +33,6 @@ export function useUtilities () {
     })
   }
 
-  function indexElements (items) {
-    items.forEach((item) => {
-      if (!(typeof item === 'object')) {
-        raiseError('indexElements', `${item} is not a dictionnary`)
-        return null
-      } else {
-        item.id = 1
-        return item
-      }
-    })
-  }
   function incrementLastId (items) {
     var lastItem = _.last(items)
     if (!(typeof lastItem === 'object')) {
@@ -163,7 +152,6 @@ export function useUtilities () {
     formatAsPercentage,
     getVerticalScrollPercentage,
     hasNull,
-    indexElements,
     incrementLastId,
     increaseIndex,
     listManager,

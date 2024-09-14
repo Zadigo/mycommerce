@@ -7,7 +7,7 @@
 
     <!-- Products -->
     <div class="row gx-1 gy-1">
-      <base-product-iterator :products="products" :columns="currentGridSize" />
+      <base-product-iterator :products="priceLimitProducts" :columns="currentGridSize" />
     </div>
 
     <div ref="moreProductsIntersect" class="fw-bold text-uppercase d-flex justify-content-center mt-5">
@@ -36,7 +36,7 @@
             </h4>
 
             <v-btn variant="tonal" @click="showProductFilters=false">
-              <font-awesome-icon icon="['fas', 'close']" round />
+              <font-awesome-icon icon="close" round />
             </v-btn>
           </v-container>
                 
@@ -47,16 +47,8 @@
                 <v-expansion-panel-text>
                   <div class="price-filters p-2">
                     <div class="d-flex justify-content-around gap-2">
-                      <v-btn variant="outlined" size="small" rounded @click="handleFilterSelection('sorted by', 'New')">
-                        {{ $t("Nouveautés") }}
-                      </v-btn>
-
-                      <v-btn variant="outlined" size="small" rounded @click="handleFilterSelection('sorted by', 'Price up')">
-                        {{ $t("Prix croissant") }}
-                      </v-btn>
-                      
-                      <v-btn variant="outlined" size="small" rounded @click="handleFilterSelection('sorted by', 'Price down')">
-                        {{ $t("Prix décroissant") }}
+                      <v-btn v-for="sortingFilter in sortingFilters" :key="sortingFilter[0]" :active="selectedFilters.sorted_by===sortingFilter[0]" variant="outlined" size="small" rounded @click="handleFilterSelection('sorted by', sortingFilter[0])">
+                        {{ $t(sortingFilter[1]) }}
                       </v-btn>
                     </div>
                   </div>
@@ -111,7 +103,7 @@
             </v-btn>
             
             <v-btn color="secondary" variant="tonal" rounded @click="showProductFilters=false">
-              Voir résulats ({{ products?.length }})
+              Voir résulats ({{ priceLimitProducts.length }})
             </v-btn>
           </v-container>
         </div>
@@ -129,7 +121,7 @@ import { useMessages } from 'src/stores/messages'
 import { reactify, useIntersectionObserver, watchArray } from '@vueuse/core'
 import { scrollToTop, useUtilities } from '@/composables/utils'
 
-import { Product } from '@/types/shop'
+import { Product, ProductsAPIResponse } from '@/types/shop'
 
 import sizes from '@/data/sizes.json'
 
@@ -137,7 +129,15 @@ import BaseProductIterator from '@/components/BaseProductIterator.vue'
 import DefaultFiltering from '@/components/products/filtering/DefaultFiltering.vue'
 
 
-declare type Actions = 'sorted by' | 'typology' | 'colors' | 'sizes' | 'price'
+type Actions = 'sorted by' | 'typology' | 'colors' | 'sizes' | 'price'
+
+interface SelectedFilters {
+  sorted_by: string,
+  typology: string[],
+  colors: string[],
+  sizes: string[],
+  price: string | null
+}
 
 const priceFilters = [
   {
@@ -166,6 +166,12 @@ const priceFilters = [
   }
 ]
 
+const sortingFilters = [
+  ['New', 'Nouveautés'],
+  ['Price up', 'Prix croissant'],
+  ['Price down', 'Prix décroissant']
+]
+
 /**
  * This product iterator requests a specific collection
  * on setup(). This is an async component that is used
@@ -187,7 +193,7 @@ export default  defineComponent({
   },
   async setup () {
     const showProductFilters = ref(false)
-    const selectedFilters = ref({
+    const selectedFilters = ref<SelectedFilters>({
       sorted_by: 'New',
       typology: [],
       colors: [],
@@ -202,12 +208,12 @@ export default  defineComponent({
 
     const currentGridSize = ref(3)
 
-    const cachedResponse = ref({})
+    const cachedResponse = ref<ProductsAPIResponse | object>({})
     const products = ref<Product[]>([])
 
     const messagesStore = useMessages()
     const intersectionTarget = ref(null)
-
+    
     /**
      * Returns the collection of products based
      * on the limit offset values 
@@ -221,11 +227,11 @@ export default  defineComponent({
         //   cachedResponse.value = instance.retrieve(collectionUrlPath)
         // } else {
         // }
-        const response = await client.get(collectionUrlPath)
+        const response = await client.get<ProductsAPIResponse>(collectionUrlPath)
         instance.create(collectionUrlPath, response.data)
+
         cachedResponse.value = response.data
-        
-        products.value = cachedResponse.value.results
+        products.value = response.data.results
         instance.create('products', products.value)
       } catch (e) {
         // If we fail to get the collectionName
@@ -254,11 +260,12 @@ export default  defineComponent({
     async function requestOffsetProducts (offset: string | number) {
       try {
         const collectionUrlPath = `${route.path.toString().replace('/shop/', '/')}?offset=${offset}`
-        const response = await client.get(collectionUrlPath)
+        const response = await client.get<ProductsAPIResponse>(collectionUrlPath)
 
         instance.create(collectionUrlPath, response.data)
         cachedResponse.value = response.data
-        products.value.push(...cachedResponse.value.results)
+
+        products.value.push(...response.data.results)
         instance.create('products', products.value)
       } catch (e) {
         console.error(e)
@@ -276,7 +283,7 @@ export default  defineComponent({
      * Get the limit offset values for an url in order to
      * return the offset products 
      */
-    const urlLimitOffsetValues  = reactify((url: string): Array<number> | boolean => {
+    const urlLimitOffsetValues  = reactify((url: string): Array<string> | boolean => {
       try {
         const urlObject = new URL(url)
         const limit = urlObject.searchParams.get('limit')
@@ -323,6 +330,7 @@ export default  defineComponent({
       isEndOfPage,
       showProductFilters,
       selectedFilters,
+      sortingFilters,
       priceFilters,
       listManager,
       capitalizeFirstLetter,
@@ -332,6 +340,9 @@ export default  defineComponent({
     }
   },
   computed: {
+    /**
+     * 
+     */
     gridClass () {
       return [
         {
@@ -339,6 +350,69 @@ export default  defineComponent({
           'col-sm-6 col-md-4': this.currentGridSize === 3
         }
       ]
+    },
+    /**
+     * Sorts the products shown by price
+     */
+    sortedProducts () {
+      const products = [...this.products]
+
+      if (this.selectedFilters.sorted_by === 'New') {
+        return this.products
+      } else if (this.selectedFilters.sorted_by === 'Price up') {
+        return products.sort((a, b) => {
+          return b.get_price - a.get_price
+        })
+      } else if (this.selectedFilters.sorted_by === 'Price down') {
+        return products.sort((a, b) => {
+          return a.get_price - b.get_price
+        })
+      } else {
+        return this.products
+      }
+    },
+    /**
+     * Return products whose price is lower or equal
+     * to the specified price limit 
+     */
+    priceLimitProducts () {
+      let limitNumber
+
+      switch (this.selectedFilters.price) {
+        case 'Up to 15':
+          limitNumber = 15
+          break;
+        
+        case 'Up to 20':
+          limitNumber = 20
+          break;
+
+        case 'Up to 25':
+          limitNumber = 25
+          break;
+
+        case 'Up to 30':
+          limitNumber = 30
+          break;
+        
+        case 'Up to 35':
+          limitNumber = 35
+          break;
+
+        case 'Up to 50':
+          limitNumber = 50
+          break;
+      
+        default:
+          limitNumber = null
+          break;
+      }
+
+      if (!limitNumber) {
+        return this.sortedProducts
+      } else {
+        return this.sortedProducts.filter((product) => product.get_price <= limitNumber)
+      }
     }
   },
   watch: {
@@ -371,15 +445,15 @@ export default  defineComponent({
           break;
 
         case 'typology':
-          this.listManager(this.selectedFilters.typology, value)
+          this.listManager<string[]>(this.selectedFilters.typology, value)
           break;
 
         case 'colors':
-          this.listManager(this.selectedFilters.colors, value)
+          this.listManager<string[]>(this.selectedFilters.colors, value)
           break;
 
         case 'sizes':
-          this.listManager(this.selectedFilters.sizes, value)
+          this.listManager<string[]>(this.selectedFilters.sizes, value)
           break;
 
         case 'price':
