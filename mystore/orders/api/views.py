@@ -25,7 +25,8 @@ class ListCustomerOrders(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user)
 
 
 class ListDeliveryOptions(ListAPIView):

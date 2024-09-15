@@ -79,10 +79,7 @@ export default defineConfig(({ mode }) => {
     ],
     test: {
       globals: true,
-      browser: {
-        enabled: true,
-        name: "chrome",
-      },
+      environment: 'happy-dom'
     },
   };
 });

@@ -4,9 +4,9 @@ export default defineWorkspace([
   'packages/*',
   {
     test: {
-      include: ['tests/**/*.{node}.test.{ts,js}'],
-      name: 'node',
-      environment: 'node',
+      name: 'shop_store_ts',
+      environment: 'happy-dom',
+      include: ['tests/**/*.{browser}.test.{ts,js}'],
     }
   }
 ])

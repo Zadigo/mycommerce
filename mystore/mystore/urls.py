@@ -24,11 +24,11 @@ urlpatterns = [
     ),
 
     path(
-        'api/v1/stocks/', 
+        'api/v1/stocks/',
         include('stocks.api.urls')
     ),
     path(
-        'api/v1/orders/', 
+        'api/v1/orders/',
         include('orders.api.urls')
     ),
     path(
@@ -83,15 +83,15 @@ urlpatterns = [
         name='token_refresh'
     ),
     path(
-        'ckeditor5/', 
+        'ckeditor5/',
         include('django_ckeditor_5.urls')
     ),
     path(
-        'all-accounts/', 
+        'all-accounts/',
         include('allauth.urls')
     ),
     re_path(
-        r'^test', 
+        r'^test',
         views.TestPage.as_view()
     ),
 
@@ -99,7 +99,6 @@ urlpatterns = [
     path('collection/', include('collection.urls')),
     path('shop/', include('shop.urls')),
     path('admin/', admin.site.urls),
-    path('cart/', include('cart.urls')),
     path('legal/', include('legal.urls')),
     re_path(r'^$', views.HomeView.as_view(), name='home')
 ]

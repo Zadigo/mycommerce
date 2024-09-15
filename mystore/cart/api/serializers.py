@@ -1,10 +1,9 @@
+from cart.models import Cart
+from cart.validators import validate_quantity
 from django.db.models import Count, Sum
 from django.shortcuts import get_object_or_404
 from rest_framework import fields
 from rest_framework.serializers import Serializer
-
-from cart.models import Cart
-from cart.validators import validate_quantity
 from shop.api.serializers.shop import ProductSerializer
 from shop.choices import ClotheSizesChoices
 from shop.models import Product
