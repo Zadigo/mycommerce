@@ -8,10 +8,11 @@ from rest_framework.generics import (DestroyAPIView, ListAPIView,
                                      RetrieveAPIView)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-
+from drf_spectacular.utils import extend_schema
 from mystore.responses import simple_api_response
 
 
+@extend_schema(operation_id='List All Carts')
 class ListAllCarts(ListAPIView):
     """Returns all the carts in the current shop
     that were created by the users (authenticated
@@ -19,17 +20,16 @@ class ListAllCarts(ListAPIView):
 
     serializer_class = serializers.CartSerializer
     queryset = Cart.objects.all()
-    http_method_names = ['get']
     permission_classes = [IsAuthenticated]
 
 
+@extend_schema(operation_id='List Cart')
 class ListCart(RetrieveAPIView):
     """Return all items that were saved
     in the specific user's cart"""
 
     serializer_class = serializers.CartSerializer
     queryset = Cart.objects.all()
-    http_method_names = ['get']
     permission_classes = [AllowAny]
 
 

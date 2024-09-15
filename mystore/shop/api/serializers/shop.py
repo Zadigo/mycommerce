@@ -69,4 +69,16 @@ class ProductSerializer(Serializer):
 
 
 class LikeSerializer(Serializer):
-    pass
+    id = fields.IntegerField(read_only=True)
+    product_ids = fields.ListField(write_only=True)
+    name = fields.CharField(read_only=True)
+    get_price = fields.IntegerField(read_only=True)
+
+    def validate(self, attrs):
+        product_ids = attrs['product_ids']
+        for item in product_ids:
+            if not isinstance(item, int):
+                raise fields.ValidationError(detail={
+                    'product_ids': 'ID is not valid'
+                })
+        return attrs

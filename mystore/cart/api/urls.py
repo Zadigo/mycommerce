@@ -28,6 +28,6 @@ urlpatterns = [
     re_path(
         r'^$',
         views.ListAllCarts.as_view(),
-        name='api_list_carts'
+        name='list_carts'
     )
 ]

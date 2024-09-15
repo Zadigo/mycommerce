@@ -11,8 +11,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from shop.api import CustomPagination
 from shop.api.serializers import shop as shop_serializers
-from shop.api.serializers.shop import ProductSerializer
-from shop.models import Product
+from shop.api.serializers.shop import LikeSerializer, ProductSerializer
+from shop.models import Like, Product
 
 
 @extend_schema('List Products')
@@ -20,14 +20,14 @@ class ListProducts(ListAPIView):
     """List the products in the database and accepts
     a set of query parameters that can be used to
     filter the elements by type:
-    
+
     * `q` - Searches the products by name
     * `colors` - Filters the prodcuts by color
     * `min_price` - `max_price` - Returns the products between
       the selected price range
     * `sizes` - Filters the products by a given size
     """
-    
+
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     pagination_class = CustomPagination
@@ -93,7 +93,7 @@ class ListRecommendations(ListAPIView):
     based on the caracteristics of the product that is currently
     visited. For example if you're visiting skirts then the
     recommended products will be related to that category
-    
+
     * `p` - Return products from a specific collection name or
       in the same product range as the one currently visited
     * `q` - Quantity of products to return
@@ -134,14 +134,14 @@ class ListRecommendations(ListAPIView):
         high_similarity = df.loc[lambda x: x.similarity > 0.8]
 
         selected_items = random.choices(
-            high_similarity.id.to_list(), 
+            high_similarity.id.to_list(),
             k=quantity
         )
         return queryset.filter(id__in=selected_items)
 
     def get(self, request, *args, **kwargs):
         serializer = self.get_serializer(
-            instance=self.get_queryset(), 
+            instance=self.get_queryset(),
             many=True
         )
         return Response(serializer.data)
@@ -165,7 +165,8 @@ class ListRecommendations(ListAPIView):
             if with_images == '1':
                 logic = When(Q(images=None), False)
                 case = Case(logic, default=True)
-                queryset = queryset.annotate(has_images=case).filter(has_images=True)
+                queryset = queryset.annotate(
+                    has_images=case).filter(has_images=True)
             return self.recommendation_by_randomness(queryset, quantity)
 
         if product_id_or_collection_name is None:
@@ -201,30 +202,53 @@ class ListRecommendations(ListAPIView):
             return products[:quantity]
 
 
-@extend_schema('Search')
-class SearchShop(ListAPIView):
-    """Enpoint that allows the user to search
-    products in the shop by name"""
+# @extend_schema('Search')
+# class SearchShop(ListAPIView):
+#     """Enpoint that allows the user to search
+#     products in the shop by name"""
 
-    http_method_names = ['get']
-    serializer_class = ProductSerializer
-    queryset = Product.objects.filter(active=True)
+#     http_method_names = ['get']
+#     serializer_class = ProductSerializer
+#     queryset = Product.objects.filter(active=True)
+#     permission_classes = [AllowAny]
+
+#     def get(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(
+#             instance=self.get_queryset(), many=True)
+#         return Response(serializer.data)
+
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+
+#         search = self.request.GET.get('q', None)
+#         if search is None:
+#             return []
+
+#         logic = (
+#             Q(name=search) |
+#             Q(name__icontains=search)
+#         )
+#         return queryset.filter(logic)
+
+
+@extend_schema(operation_id='Liked Products')
+class LikedProductsView(ListAPIView):
+    serializer_class = LikeSerializer
+    queryset = Product.objects.all()
     permission_classes = [AllowAny]
+    http_method_names = ['post']
 
-    def get(self, request, *args, **kwargs):
-        serializer = self.get_serializer(
-            instance=self.get_queryset(), many=True)
-        return Response(serializer.data)
+    def post(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        search = self.request.GET.get('q', None)
-        if search is None:
-            return []
+        serializer = self.get_serializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
 
-        logic = (
-            Q(name=search) |
-            Q(name__icontains=search)
-        )
-        return queryset.filter(logic)
+        queryset = queryset.filter(
+            id__in=serializer.validated_data['product_ids'])
+        if self.request.user.is_authenticated:
+            pass
+        return queryset

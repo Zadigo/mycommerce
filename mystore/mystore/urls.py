@@ -6,6 +6,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
 from drf_spectacular.views import (SpectacularAPIView, SpectacularRedocView,
                                    SpectacularSwaggerView)
+from rest_framework_simplejwt import views as jwt_views
 
 from mystore import views
 from mystore.sitemaps import SITEMAPS
@@ -46,7 +47,6 @@ urlpatterns = [
         'api/v1/collection/',
         include('collection.api.urls')
     ),
-
     path(
         'api/schema/',
         SpectacularAPIView.as_view(),
@@ -62,16 +62,38 @@ urlpatterns = [
         SpectacularRedocView.as_view(url_name='schema'),
         name='redoc'
     ),
-
     path(
         'api/rest/',
         include('rest_framework.urls'),
         name='rest_framework'
     ),
-    path('ckeditor5/', include('django_ckeditor_5.urls')),
-    path('all-accounts/', include('allauth.urls')),
-
-    re_path(r'^test', views.TestPage.as_view()),
+    path(
+        'auth/v1/token/verify/',
+        jwt_views.TokenVerifyView.as_view(),
+        name='token_verify'
+    ),
+    path(
+        'auth/v1/token/',
+        jwt_views.TokenObtainPairView.as_view(),
+        name='token_obtain_pair'
+    ),
+    path(
+        'auth/v1/token/refresh/',
+        jwt_views.TokenRefreshView.as_view(),
+        name='token_refresh'
+    ),
+    path(
+        'ckeditor5/', 
+        include('django_ckeditor_5.urls')
+    ),
+    path(
+        'all-accounts/', 
+        include('allauth.urls')
+    ),
+    re_path(
+        r'^test', 
+        views.TestPage.as_view()
+    ),
 
     path('accounts/', include('accounts.urls')),
     path('collection/', include('collection.urls')),

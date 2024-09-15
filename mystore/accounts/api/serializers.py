@@ -1,14 +1,12 @@
+from accounts.models import Address
+from accounts.validators import check_password_validator
 from django.contrib.auth import get_user_model, login
-from django.db.models import EmailField
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import inline_serializer
 from rest_framework import fields
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.serializers import Serializer
-
-from accounts.models import Address
-from accounts.validators import check_password_validator
-from drf_spectacular.utils import inline_serializer
 
 USER_MODEL = get_user_model()
 
@@ -17,17 +15,18 @@ class LoginUserSerializer(Serializer):
     email = fields.EmailField()
     password = fields.CharField()
 
-    def __init__(self, request, **kwargs):
-        self._request = request
+    def __init__(self, **kwargs):
         self._token_cache = None
         super().__init__(**kwargs)
 
     @property
     def get_serializer_data(self):
-        user_serializer = UserSerializer(instance=self._request.user)
+        request = self._context['request']
+        user_serializer = UserSerializer(instance=request.user)
         return {'token': self._token_cache.key, 'user': user_serializer.data}
 
     def create(self, validated_data):
+        request = self._context['request']
         email = validated_data['email']
         password = validated_data['password']
 
@@ -38,7 +37,7 @@ class LoginUserSerializer(Serializer):
                 'detail': 'Could not authenticate user'
             })
 
-        login(self._request, user, backend='django.contrib.auth.backends.ModelBackend')
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
         instance, state = Token.objects.get_or_create(
             defaults={'user': user},
@@ -101,11 +100,11 @@ class UserProfileSerializer(Serializer):
 class UserSerializer(Serializer):
     id = fields.CharField(read_only=True)
     userprofile = UserProfileSerializer()
-    first_name = fields.CharField(allow_null=True)
-    last_name = fields.CharField(allow_null=True)
-    get_full_name = fields.CharField(required=False)
-    username = fields.CharField(allow_null=True)
-    email = fields.CharField(allow_null=True)
+    first_name = fields.CharField()
+    last_name = fields.CharField()
+    get_full_name = fields.CharField()
+    username = fields.CharField()
+    email = fields.CharField()
 
 
 class ValidateUpdateAccount(Serializer):
@@ -139,10 +138,6 @@ class ValidateAddressSerializer(Serializer):
     gender = fields.IntegerField()
     is_active = fields.BooleanField(default=False)
 
-    def __init__(self, request=None, **kwargs):
-        super().__init__(**kwargs)
-        self._request = request
-
     def update(self, instance, validated_data):
         for key, value in validated_data.items():
             setattr(instance, key, value)
@@ -150,8 +145,10 @@ class ValidateAddressSerializer(Serializer):
         return instance
 
     def create(self, validated_data):
+        request = self._context['request']
+
         instance = Address.objects.create(
-            user_profile=self._request.user.user_profile,
+            user_profile=request.user.user_profile,
             **validated_data
         )
         return instance

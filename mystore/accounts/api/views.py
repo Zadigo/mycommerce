@@ -1,4 +1,5 @@
-from accounts.api.serializers import (LOGIN_RESPONSE_SERIALIZER, USER_MODEL, LoginUserSerializer,
+from accounts.api.serializers import (LOGIN_RESPONSE_SERIALIZER, USER_MODEL,
+                                      LoginUserSerializer,
                                       SignupUserSerializer, UserSerializer,
                                       ValidateAddressSerializer,
                                       ValidateUpdateAccount)
@@ -9,7 +10,9 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import CreateAPIView, UpdateAPIView
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, RetrieveAPIView,
+                                     RetrieveUpdateAPIView, UpdateAPIView)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -17,16 +20,11 @@ from rest_framework.response import Response
 @extend_schema('Login', responses=LOGIN_RESPONSE_SERIALIZER)
 class Login(CreateAPIView):
     """Logs the user in using standard username
-    and password data
+    and password data which returns a basic token
     """
 
     serializer_class = LoginUserSerializer
     permission_classes = [AllowAny]
-
-    def get_serializer(self, *args, **kwargs):
-        serializer_class = self.get_serializer_class()
-        kwargs.setdefault('context', self.get_serializer_context())
-        return serializer_class(self.request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(*args, data=request.data, **kwargs)
@@ -46,6 +44,7 @@ class Login(CreateAPIView):
         return serializer.save()
 
 
+@extend_schema(operation_id='Signup')
 class Signup(APIView):
     http_method_names = ['post']
     serializer_class = SignupUserSerializer
@@ -91,23 +90,11 @@ class AccountUpdate(APIView):
         return Response({'state': True}, headers=headers)
 
 
-class UpdateAddress(UpdateAPIView):
-    http_method_names = ['patch']
+@extend_schema(operation_id='Update Addresses')
+class UpdateAddressesView(UpdateAPIView):
     queryset = Address.objects.all()
     serializer_class = ValidateAddressSerializer
     permission_classes = [IsAuthenticated]
-
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        serializer = self.serializer_class(
-            request=self.request,
-            instance=self.get_object(),
-            data=self.request.data,
-            partial=partial
-        )
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -140,12 +127,20 @@ def logout(request, **kwargs):
     return Response({'state': True})
 
 
-def signup(request, **kwargs):
-    pass
+@extend_schema(operation_id='Logout')
+class LogoutView(DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = get_object_or_404(USER_MODEL, id=request.user.id)
+        user.auth_token.delete()
+        return Response({'status': True})
 
 
-@api_view(['get'])
-@permission_classes([IsAuthenticated])
-def profile(request, **kwargs):
-    serializer = UserSerializer(instance=request.user)
-    return Response(serializer.data)
+@extend_schema(operation_id='Profile')
+class ProfileView(RetrieveAPIView):
+    queryset = USER_MODEL.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'pk'
+    lookup_url_kwarg = 'pk'

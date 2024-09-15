@@ -1,6 +1,8 @@
 import os
-import dotenv
+from datetime import timedelta
 from pathlib import Path
+
+import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -191,7 +193,7 @@ STRIPE_TOKENS = [
     ()
 ]
 
-# Cors
+# CORS
 
 CORS_ALLOW_ALL_ORIGINS = False
 
@@ -219,20 +221,30 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.ngrok-free.app'
 ]
 
-
-# Sites
-
-SITE = 1
-
-
-# Rest
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication'
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
 }
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    'SLIDING_TOKEN_LIFETIME': timedelta(days=30),
+    'SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER': timedelta(days=1),
+    'SLIDING_TOKEN_LIFETIME_LATE_USER': timedelta(days=30),
+    'UPDATE_LAST_LOGIN': True,
+    'AUTH_HEADER_TYPES': ['Token']
+}
+
+
+
+# Sites
+
+SITE = 1
 
 
 # Locales
