@@ -1,5 +1,5 @@
 <template>
-  <section id="shop">
+  <section id="shop" class="position-relative">
     <!-- Navbar -->
     <base-navbar @display-search="showSearchModal = true" />
     

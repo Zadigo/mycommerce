@@ -6,28 +6,38 @@ app_name = 'cart_api'
 
 urlpatterns = [
     re_path(
-        r'^(?P<pk>\d+)$',
-        views.ListCart.as_view()
+        r'^(?P<unique_id>[a-zA-Z0-9]+)/items$',
+        views.ListCartView.as_view(),
+        name='cart'
     ),
     re_path(
-        r'^remove$',
-        views.delete_from_cart
+        r'^(?P<unique_id>[a-zA-Z0-9]+)/delete$',
+        views.DeleteFromCart.as_view(),
+        name='cart'
+    ),
+    re_path(
+        r'^(?P<unique_id>\d+)/update$',
+        views.UpdateInCartView.as_view(),
+        name='update_cart'
     ),
     re_path(
         r'^add$',
-        views.add_to_cart
+        views.AddToCartView.as_view(),
+        name='add_to_cart'
     ),
     re_path(
         r'^authenticate$',
-        views.authenticate_user_cart
+        views.authenticate_user_cart,
+        name='authenticate_cart'
     ),
     re_path(
-        r'^update$',
-        views.update_in_cart
+        r'^session-id$',
+        views.CreateSessionID.as_view(),
+        name='create_session_id'
     ),
     re_path(
         r'^$',
-        views.ListAllCarts.as_view(),
+        views.ListCartsView.as_view(),
         name='list_carts'
     )
 ]

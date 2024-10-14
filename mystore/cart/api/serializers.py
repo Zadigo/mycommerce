@@ -3,6 +3,7 @@ from cart.validators import validate_quantity
 from django.db.models import Count, Sum
 from django.shortcuts import get_object_or_404
 from rest_framework import fields
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 from shop.api.serializers.shop import ProductSerializer
 from shop.choices import ClotheSizesChoices
@@ -70,6 +71,7 @@ class CartSerializer(Serializer):
     # color = fields.CharField()
     price = fields.DecimalField(5, 2)
     created_on = fields.DateTimeField()
+    session_id = fields.CharField(write_only=True)
 
 
 class ValidateVariants(Serializer):
@@ -99,24 +101,36 @@ class ValidateCart(Serializer):
     """Validates the data used to create a
     new cart object in the database"""
 
-    def __init__(self, request, **kwargs):
-        super().__init__(**kwargs)
-        self._request = request
-
-    product = ValidateProduct()
-    size = fields.CharField(allow_null=True)
+    product = ValidateProduct(write_only=True)
+    size = fields.CharField(
+        write_only=True,
+        default='Unique'
+    )
     session_id = fields.CharField(allow_null=True)
+    results = fields.JSONField(read_only=True)
+    statistics = fields.JSONField(read_only=True)
+    total = fields.FloatField(read_only=True)
 
     def create(self, validated_data):
+        request = self._context['request']
+
         data = validated_data.copy()
         product_id = data.pop('product')['id']
         product = get_object_or_404(Product, id=product_id)
-        return Cart.objects.rest_api_add_to_cart(self._request, product, **data)
+        return Cart.objects.rest_api_add_to_cart(request, product, **data)
 
-    def delete(self, **kwargs):
+    def update(self, instance, validated_data):
+        product_id = validated_data['product']['id']
+        if instance.id == product_id:
+            if instance.size == validated_data['size']:
+                pass
+        return instance
+
+    def perform_destroy(self, instance):
+        request = self._context['request']
         product_id = self.validated_data['product']
         session_id = self.validated_data['session_id']
-        return Cart.objects.remove_from_cart(self._request, product_id, session_id)
+        return Cart.objects.remove_from_cart(request, product_id, session_id)
 
 
 class ValidateIncreaseDecreaseSerializer(Serializer):
@@ -132,19 +146,19 @@ class ValidateIncreaseDecreaseSerializer(Serializer):
 
     def update(self, instance, validated_data):
         product = get_object_or_404(
-            Product, 
+            Product,
             id=validated_data['product']['id']
         )
 
         stock = instance.stock_set.all()
         if stock.exists():
             pass
-        
+
         if validated_data['method'] == 'Increase':
             new_objects = map(
-                    Cart(product=product), 
-                    range(1, validated_data['quantity']
-                )
+                Cart(product=product),
+                range(1, validated_data['quantity']
+                      )
             )
             instances = Cart.objects.bulk_create(new_objects)
         elif validated_data['method'] == 'Decrease':

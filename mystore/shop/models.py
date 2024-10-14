@@ -387,7 +387,9 @@ class Wishlist(AbstractUserList):
     Wishlists enhance the shopping experience by helping users 
     organize and keep track of their desired items"""
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(
+        max_length=100
+    )
 
     class Meta:
         verbose_name = _('Wishlist')

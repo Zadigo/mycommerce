@@ -1,6 +1,6 @@
 <template>
   <shop-layout>
-    <section class="container-fluid section-margin">
+    <section class="container-fluid section-margin">      
       <div class="row">
         <div class="col-12">
           <div class="card shadow-none">

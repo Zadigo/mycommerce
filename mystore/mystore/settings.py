@@ -46,12 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'django.contrib.humanize',
-
-
+    
     'corsheaders',
     'drf_spectacular',
-    'rest_framework',
-    'rest_framework.authtoken',
     'debug_toolbar',
     'import_export',
     'django_ckeditor_5',
@@ -61,6 +58,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+
+    'rest_framework',
+    'rest_framework.authtoken',
 
     'legal',
     'accounts',

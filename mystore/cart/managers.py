@@ -1,13 +1,13 @@
 import datetime
 
 import pytz
+from cart.exceptions import ProductActiveError
 from django.db.models import QuerySet
 from django.db.models.aggregates import Sum
 from django.db.models.expressions import Q
 from django.utils.crypto import get_random_string, salted_hmac
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-
-from cart.exceptions import ProductActiveError
+from rest_framework.exceptions import ValidationError
 
 CART_SESSION_NAME = 'cart_session_id'
 
@@ -103,7 +103,9 @@ class SessionManager:
         ).hexdigest()
 
         encoded_date = urlsafe_base64_encode(
-            bytes(str(current_date).encode('utf-8'))
+            bytes(
+                str(current_date).encode('utf-8')
+            )
         )
         return f'{cls.default_prefix}_{final_signature}-{encoded_date}-{unique_identifier}'
 
@@ -166,7 +168,7 @@ class CartManager(QuerySet):
         are properly managed and associated with the correct 
         session or user"""
         if not product.active:
-            raise ProductActiveError({'product': 'Product is not active'})
+            raise ProductActiveError(detail={'product': 'Product is not active'})
 
         # The user might have other items in his cart
         # with different session_id keys, mark them
@@ -176,14 +178,27 @@ class CartManager(QuerySet):
         # the same user that are more difficult to track
         if request.user.is_authenticated:
             authenticated_items = self.filter(
-                user=request.user, is_paid_for=False)
+                user=request.user, 
+                is_paid_for=False
+            )
             authenticated_items.update(is_stale=True)
+
+        size = kwargs.get('size')
+        if size != 'Unique':
+            message = f'Product with size {size} is no available'
+            sizes = product.size_set.filter(name=size)
+            if sizes.exists():
+                size = sizes.get(name=size)
+                if not size.active or not size.availability:
+                    raise ValidationError(detail={'size': message})
+            else:
+                raise ValidationError(detail={'size': message})
 
         params = {
             'session_id': session_id,
             'product': product,
             'price': product.get_price,
-            'size': kwargs.get('size'),
+            'size': size,
             'is_anonymous': not request.user.is_authenticated
         }
 
