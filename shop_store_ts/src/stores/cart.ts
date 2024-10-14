@@ -1,6 +1,5 @@
 //// @ts-nocheck <- Uncomment to stop check on the file
 import { CartItem, CartUpdateAPIResponse } from '@/types/composables/cart';
-import _ from 'lodash';
 import { defineStore } from 'pinia';
 import { Product } from '../types/shop';
 
@@ -65,7 +64,8 @@ const useCart = defineStore("cart", {
      */
     numberOfProducts(): number {
       if (this.hasProducts) {
-        return _.sum(_.map(this.cache.statistics, (item) => item.quantity));
+        // return _.sum(_.map(this.cache.statistics, (item) => item.quantity));
+        return this.cache.statistics.map(x => x.quantity).reduce((a, b) => a + b, 0)
       } else {
         return 0;
       }
@@ -76,8 +76,14 @@ const useCart = defineStore("cart", {
      * the dialog that shows the last product
      * that was added to the cart
      */
-    lastAddedProduct(): CartItem {
-      return _.last(this.products) || {};
+    lastAddedProduct(): CartItem | null {
+      if (this.products.length > 0) {
+        return this.products[this.products.length - 1]
+      } else {
+        return null
+      }
+      // return _.last(this.products) || {};
+      // return this.products[this.products.length - 1]
     },
     /**
      * Calculate the cart total dynamically which is
@@ -88,7 +94,8 @@ const useCart = defineStore("cart", {
      */
     cartTotal(): number {
       if (this.hasProducts) {
-        return _.sum(_.map(this.cache.statistics, (item) => item.total));
+        // return _.sum(_.map(this.cache.statistics, (item) => item.total));
+        return this.cache.statistics.map(x => x.total).reduce((a, b) => a + b, 0)
       } else {
         return 0;
       }
@@ -128,7 +135,8 @@ const useCart = defineStore("cart", {
      * regardless of quantity
      */
     removeFromCart(product: Product) {
-      const index = _.findIndex(this.products, { id: product.id });
+      // const index = _.findIndex(this.products, { id: product.id });
+      const index = this.products.findIndex(x => x.id === product.id)
       this.products.splice(index, 1);
     },
   },

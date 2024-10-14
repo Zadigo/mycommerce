@@ -105,6 +105,7 @@ export function useShopUtilities () {
    */
   function conditionalImagePath (path: string, fallback: string = 'placeholder.svg') {
     const result  = djangoMediaPath(path)
+    
     if (!result) {
       return localImagePath(fallback)
     } else {
@@ -132,13 +133,17 @@ export function useShopUtilities () {
    * From a product object parse the path
    * for the main image 
    */
-  function parseMainImage(product: Product, size: ImageSizes = 'original') {
-    const mainImage = product.get_main_image
-
-    if (mainImage === null || Object.keys(product).length === 0) {
-      return localImagePath('placeholder.svg')
+  function parseMainImage(product: Product | null | undefined, size: ImageSizes = 'original') {
+    if (product) {
+      const mainImage = product.get_main_image
+  
+      if (mainImage === null || Object.keys(product).length === 0) {
+        return localImagePath('placeholder.svg')
+      } else {
+        return djangoMediaPath(mainImage[size])
+      }
     } else {
-      return djangoMediaPath(mainImage[size])
+      return localImagePath("placeholder.svg")
     }
   }
 

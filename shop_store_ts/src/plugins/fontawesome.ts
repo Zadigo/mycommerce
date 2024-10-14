@@ -5,6 +5,7 @@ import {
   faFacebookF,
   faInstagram,
   faTiktok,
+  faGoogle,
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { faHeart as farHeart } from "@fortawesome/free-regular-svg-icons";
@@ -21,6 +22,7 @@ import {
   faCartShopping,
   faCircleCheck,
   faClockRotateLeft,
+  faClose,
   faComment,
   faEllipsisVertical,
   faEnvelope,
@@ -62,11 +64,14 @@ library.add(faCaretLeft);
 library.add(faCartShopping);
 library.add(faCaretDown);
 library.add(faCaretUp);
+library.add(faClose)
+library.add(faClockRotateLeft);
 library.add(faEllipsisVertical);
 library.add(faEnvelope);
 library.add(faFlag);
 library.add(faFilter);
 library.add(faFacebookF);
+library.add(faGoogle)
 library.add(faHeart);
 library.add(faHome);
 library.add(farHeart);
@@ -89,5 +94,4 @@ library.add(faTwitter);
 library.add(faTruck);
 library.add(faTrash);
 library.add(faUser);
-library.add(faClockRotateLeft);
 library.add(faMagnifyingGlass);

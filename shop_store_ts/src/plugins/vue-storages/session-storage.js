@@ -266,11 +266,17 @@ class VueSession extends BaseStorage {
     this.create(key, result)
   }
 
-  listPushUnique (key, value) {
+  listPushUnique (key, value, sort = false) {
     const result = this._getList(key)
-    if (!result.includes(value)) {
-      result.push(value)
-      this.create(key, result)
+
+    result.push(value)
+    if (sort) {
+      const sortedResult = result.sort((a, b) => {
+        return a - b
+      })
+      this._save([...new Set(sortedResult)])
+    } else {
+      this._save([...new Set(result)])
     }
   }
 

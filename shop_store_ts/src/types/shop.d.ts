@@ -19,6 +19,13 @@ export type ProductImage = {
   mid_size: string;
 };
 
+export interface ProductVariants {
+  id: number
+  color: string
+  get_main_image: ProductImage
+  active: boolean
+}
+
 export type ProductCollection = {
   id: number;
   name: string;
@@ -50,56 +57,16 @@ export type Product = {
   active: boolean;
   display_new: boolean;
   slug: string;
+  variants: ProductVariants[]
   modified_on: string;
   created_on: string;
 };
 
 export type ProductsAPIResponse = {
-    count: number
-    next: string
-    previous: string
-    results: Product[]
+  count: number
+  next: string
+  previous: string
+  results: Product[]
 }
-
-
-
-
-
-
-
-export type CartProduct = {
-  id: number;
-  product: Product;
-  size: string;
-  price: string | number;
-  created_on: string;
-};
-
-export type Order = {
-  id: number;
-  reference: string;
-  products: Product[];
-  total: string;
-  created_on: string;
-};
-
-export type CartCache = {
-  id: number
-}
-
-export type CartStatistics = {
-  product__id: number
-  product__name: string
-  quantity: number
-  total: number
-}
-
-export type AddToCartResponse = {
-  session_id: string;
-  results: CartProduct[];
-  statistics: CartStatistics[];
-  total: number
-};
-
 
 export type LikedProducts = number[]

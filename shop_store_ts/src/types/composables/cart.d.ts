@@ -38,3 +38,8 @@ export interface CartUpdateAPIResponse {
   statistics: CartStatistic[];
   total: number;
 }
+
+
+export interface ProductToEdit extends CartStatistic {
+  product_info: CartItem | undefined
+}

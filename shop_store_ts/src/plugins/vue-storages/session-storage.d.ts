@@ -17,7 +17,7 @@ declare class VueSession extends BaseStorage {
     /** */
     protected _getValueForOperation(key: string): number
     /** */
-    protected _getList(key: string): string[] | number[] | object []
+    protected _getList<T>(key: string): T
     /** */
     b64Create(key: string, value: unknown): void
     /** */
@@ -25,11 +25,11 @@ declare class VueSession extends BaseStorage {
     /** */
     b64GetDelete(key: string): string
     /** */
-    expire(key: string, value: unknown, timeout?: number): void
+    expire<T>(key: string, value: T, timeout?: number): void
     /** */
     persist(key: string): void
     /** */
-    getOrExpire(key: string): unknown | null
+    getOrExpire<T>(key: string): T | null
     /** */
     getType(key: string): string
     /** */
@@ -37,7 +37,7 @@ declare class VueSession extends BaseStorage {
     /** */
     isEmpty(key: string): boolean
     /** */
-    getDelete(key: string): unknown
+    getDelete<T>(key: string): T
     /** */
     increment(key: string): void
     /** */
@@ -53,13 +53,13 @@ declare class VueSession extends BaseStorage {
     /** */
     getOrCreate<T>(key: string, value: unknown): T
     /** */
-    listPush(key: string, value: unknown): void
+    listPush<T>(key: string, value: T): void
     /** */
-    listPushUnique(key: string, value: unknown): void
+    listPushUnique<T>(key: string, value: T, sort: boolean = false): void
     /** */
-    defaultList(key: string, value: unknown): void
+    defaultList<T>(key: string, value: T): void
     /** */
-    listMerge(key: string, values: string[] | number[] | object[]): unknown
+    listMerge<T extends string[] | number[] | object[]>(key: string, values: T): void
     /** */
     listCount(key: string, raiseError?: boolean): number
     /** */
@@ -75,7 +75,7 @@ declare class VueSession extends BaseStorage {
     /** */
     dictGet<T>(key: string, subKey: string): T
     /** */
-    dictExists(key: string, subKey: string): unknown
+    dictExists(key: string, subKey: string): boolean
     /** */
     dictClear(key: string): void
     /** */
@@ -106,15 +106,15 @@ declare function useVueSession(): {
     instance: VueSession
 }
 
-declare module '@vue/runtime-core' {
-    export interface ComponentCustomProperties {
+declare module 'vue' {
+    interface ComponentCustomProperties {
         sessionStorageData: SavedStorageData
         $session: VueSession
     }
 }
 
 declare module 'pinia' {
-    export interface PiniaCustomProperties {
+    interface PiniaCustomProperties {
         $session: VueSession
     }
 }

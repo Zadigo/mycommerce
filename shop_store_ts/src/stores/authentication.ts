@@ -36,6 +36,10 @@ const useAuthentication = defineStore('authentication', {
      */
     loadFromCache () {
       const data = this.$session.retrieve<LoginAPIResponse>('authentication')
+
+      if (data === null || typeof data === 'undefined') {
+        return
+      }
       
       if ('token' in data) {
         this.token = data.token

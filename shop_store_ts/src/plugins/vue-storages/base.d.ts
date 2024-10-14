@@ -8,12 +8,14 @@ export interface SavedStorageData {
 
 export interface BaseStorageOptions {
   sessionKey?: string
-  storage?: localStorage | sessionStorage
+  storage?: Storage
 }
+
+declare type AnyValues = string | number | object | string[] | number[] | object[] | null
 
 declare class BaseStorage {
   DEFAULT_KEY_NAME: string
-  storage: localStorage | sessionStorage
+  storage: Storage
   _history: [string, unknown][]
 
   constructor(options?: BaseStorageOptions)
@@ -36,14 +38,18 @@ declare class BaseStorage {
    * 
    * @param {object} data - The data object to save in the storage
    */
-  protected _save(data: Record<string | object, unknown>): void
+  protected _save<T>(data: T): void
+  /**
+   * 
+   */
+  _checkNull<T>(value: T): T
   /**
    * Retrieves the value associated with the specified key from the stored data
    * 
    * @param {string} key The key of the element to retrieve from the stored data
    * @param {any | unknown} value The value associated with the key, or undefined if the key does not exist
    */
-  retrieve<T>(key: string): T
+  retrieve<T>(key: string, defaultValue: AnyValues = null): T
   /**
    * Adds a new key-value pair to the stored data and saves it
    * 
@@ -57,7 +63,7 @@ declare class BaseStorage {
    * @param {string} key An object containing key-value pairs to be stored
    * @param {any} value The number of keys that were added to the stored data
    */
-  bulkCreate(data: Record<object, unknown>): number
+  bulkCreate<T>(data: T): number
    /**
     * Checks if a key exists in the stored data
     * 

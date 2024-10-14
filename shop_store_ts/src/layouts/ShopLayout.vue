@@ -111,7 +111,7 @@
 
               <div class="row">
                 <div class="col-4">
-                  <v-img :src="parseMainImage(cartStore.lastAddedProduct.product)" :lazy-:src="parseMainImage(cartStore.lastAddedProduct.product)" :alt="cartStore.lastAddedProduct.product.name" />
+                  <v-img :src="parseMainImage(cartStore.lastAddedProduct?.product)" :lazy-:src="parseMainImage(cartStore.lastAddedProduct?.product)" :alt="cartStore.lastAddedProduct?.product.name" />
                 </div>
 
                 <div class="col-8">
@@ -120,11 +120,11 @@
                   </p>
                   
                   <p class="mb-2">
-                    {{ cartStore.lastAddedProduct.product.name }}
+                    {{ cartStore.lastAddedProduct?.product.name }}
                   </p>
                   
                   <p class="text-body-secondary">
-                    Taille: {{ cartStore.lastAddedProduct.size }}
+                    Taille: {{ cartStore.lastAddedProduct?.size }}
                   </p>
                 </div>
               </div>
@@ -203,7 +203,7 @@
               </div>
             </div>
 
-            <base-cart-iterator class="my-2" @edit-product="handleProductEdition" />
+            <base-cart-iterator class="my-2" @edit-product="handleOpenProductEdition" />
 
             <div class="d-flex justify-content-between align-items-center py-4">
               <span class="fw-light">{{ $t('Total (TVA comprise)') }}</span>
@@ -246,14 +246,14 @@
     <teleport to="body">
       <v-navigation-drawer id="dialog-edit-product" v-model="showEditProductDrawer" location="right" width="400" temporary>
         <v-toolbar class="border-bottom" color="white">
-          <v-btn variant="text" rounded @click="handleProductEdition({ action: 'close' })">
+          <v-btn variant="text" rounded @click="handleCloseProductEdition">
             <font-awesome-icon :icon="['fas', 'angle-left']" />
           </v-btn>
 
           <v-toolbar-title>{{ $t('Modifier') }}</v-toolbar-title>
         </v-toolbar>
 
-        <div class="container my-5">
+        <div v-if="currentEditedProduct" class="container my-5">
           <div class="row">
             <div class="col-12">
               <v-img :src="localImagePath('size-guide.jpg')" />
@@ -294,7 +294,7 @@
                 <v-text-field type="number" min="1" max="999" variant="outlined" style="width:50%;" />
               </div>
 
-              <v-btn color="primary" block @click="handleProductEdition({ action: 'close' })">
+              <v-btn color="primary" block @click="handleCloseProductEdition">
                 {{ $t('Enregistrer') }}
               </v-btn>
             </div>
@@ -308,28 +308,26 @@
 <script lang="ts">
 import _ from 'lodash'
 
-import { defineComponent, ref } from 'vue'
-import { defineAsyncComponent, computed } from 'vue'
 import { useRefHistory } from '@vueuse/core'
-import { storeToRefs, mapState } from 'pinia'
-import { useShop } from 'src/stores/shop'
-import { useCart } from 'src/stores/cart'
+import { mapState, storeToRefs } from 'pinia'
 import { useAuthenticationComposable } from 'src/composables/authentication'
-import { useAuthentication } from 'src/stores/authentication'
-import { useShopUtilities } from 'src/composables/shop'
-import { useMessages } from 'src/stores/messages'
 import { useCompany } from 'src/composables/company'
+import { useShopUtilities } from 'src/composables/shop'
+import { useAuthentication } from 'src/stores/authentication'
+import { useCart } from 'src/stores/cart'
+import { useMessages } from 'src/stores/messages'
+import { useShop } from 'src/stores/shop'
+import { computed, defineAsyncComponent, defineComponent, ref } from 'vue'
+import { ProductToEdit } from '@/types/composables/cart'
 
 import { Product } from '@/types/shop'
 
 import BaseCartIterator from '@/components/BaseCartIterator.vue'
+import BaseFooter from '@/components/BaseFooter.vue'
 import BaseMessages from '@/components/BaseMessages.vue'
 import BaseNavbar from '@/components/BaseNavbar.vue'
-import BaseFooter from '@/components/BaseFooter.vue'
 import BaseProductIterator from '@/components/BaseProductIterator.vue'
 import LoadingRecommendationsBlock from '@/components/LoadingRecommendationsBlock.vue'
-
-type Action = 'open' | 'close'
 
 export default defineComponent({
   name: 'ShopLayout',
@@ -368,10 +366,6 @@ export default defineComponent({
     const currentEditedProduct = ref<Product | object>({})
 
     const { history } = useRefHistory(search)
-
-    // whenever(canShowSearch, () => {
-    //   canShowSearch.value = true
-    // })
 
     return {
       login,
@@ -494,27 +488,22 @@ export default defineComponent({
         }
       })
     },
+    handleCloseProductEdition () {
+      this.showEditProductDrawer = false
+      this.showCartDrawer = true
+    },
     /**
      * Handle the opening or the closing of 
      * the product edition dialog by ensuring
      * that cartDrawer is closed
+     * 
+     * TODO: Refactor this function
      */
-    handleProductEdition ({ action, product }: { action: Action, product: Product }) {
-      this.currentEditedProduct = product || {}
-
-      switch (action) {
-        case 'open':
-          this.showCartDrawer = false
-          this.showEditProductDrawer = true
-          break
-        
-        case 'close':
-          this.showEditProductDrawer = false
-          this.showCartDrawer = true
-          break
-      
-        default:
-          break
+    handleOpenProductEdition (editedProduct: ProductToEdit) {
+      if (editedProduct) {
+        this.currentEditedProduct = editedProduct
+        this.showCartDrawer = false
+        this.showEditProductDrawer = true
       }
     }
   }

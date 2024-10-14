@@ -50,7 +50,7 @@ export function useCartComposable () {
    */
   async function requestAddToCart(data: UserSelection) {
     try {
-      const sessionId = instance.retrieve("session_id");
+      const sessionId = instance.retrieve<string>("session_id");
       // By changing this, it updates in the underlying
       // proxy in the ref since data is that proxy
       userSelection.value.session_id = sessionId || null;

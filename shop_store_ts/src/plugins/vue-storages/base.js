@@ -40,13 +40,34 @@ class BaseStorage {
     this.storage.setItem(this.DEFAULT_KEY_NAME, JSON.stringify(data))
   }
 
-  retrieve (key) {
-    return this.data[key]
+  _checkNull (value) {
+    // A function that standadizes the null return
+    // values for the retrieve functions
+    if (typeof value === 'undefined' || value === "" || value === null) {
+      return null
+    } else {
+      return value
+    }
+  }
+
+  retrieve (key, defaultValue = null) {
+    try {
+      const result = this._checkNull(this.data[key])
+      return defaultValue || result
+    } catch (e) {
+      return defaultValue
+    }
   }
 
   create (key, value) {
-    const storedData = this.data
-    storedData[key] = value
+    let storedData = this.data
+
+    if (storedData) {
+      storedData[key] = value
+    } else {
+      storedData = { [`${key}`]: value }
+    }
+
     this._save(storedData)
   }
 

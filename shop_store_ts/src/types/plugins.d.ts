@@ -12,17 +12,17 @@ declare module "pinia" {
 
 declare module "vue" {
   interface ComponentCustomProperties {
-    $http: Axios;
-    $httpQuart: Axios;
-    $date: dayjs;
-    localStorageData: {
+    readonly $http: Axios;
+    readonly $httpQuart: Axios;
+    readonly $date: dayjs;
+    readonly localStorageData: {
       likedProducts: number[];
       visitedProducts: number[];
     }
   }
 }
 
-declare module "@/plugins/vue-storages/local-storage" {
+declare module "@/plugins/vue-storages" {
   interface SavedStorageData {
     likedProducts: number[];
     visitedProducts: number[];

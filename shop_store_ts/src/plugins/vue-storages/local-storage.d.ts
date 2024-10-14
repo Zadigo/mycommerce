@@ -28,22 +28,22 @@ declare function createVueLocalStorage(options?: VueLocalStorageOptions): {
 
 declare function useVueLocalStorage(): {
   /** */
-  data: Ref<object>
+  data: Ref<string | number | object | string[] | number[] | object[]>
   /** */
-  sessionId: Ref<string | number>
+  sessionId: string | number
   instance: VueLocalStorage
 }
 
-declare module '@vue/runtime-core' {
-  export interface ComponentCustomProperties {
+declare module 'vue' {
+  interface ComponentCustomProperties {
     localStorageData: SavedStorageData
     $localstorage: VueLocalStorage
   }
 }
 
 declare module 'pinia' {
-    export interface PiniaCustomProperties {
-        $localstorage: VueLocalStorage
+    interface PiniaCustomProperties {
+      $localstorage: VueLocalStorage
     }
 }
 

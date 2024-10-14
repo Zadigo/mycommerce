@@ -6,8 +6,11 @@
         <div id="product-information" class="col-12">
           <div class="row row-cols-5">
             <div id="product-images" class="col-6">
+              <!-- Main Image -->
               <div id="main-image">
-                <v-img :src="parseMainImage(currentProduct)" :lazy-src="parseMainImage(currentProduct)" :alt="currentProduct.name" />
+                <BaseSkeleton :loading="isLoading" height="836px">
+                  <v-img :src="parseMainImage(currentProduct)" :lazy-src="parseMainImage(currentProduct)" :alt="currentProduct.name" />
+                </BaseSkeleton>
               </div>
             </div>
             
@@ -43,6 +46,7 @@ import 'vue-image-zoomer/dist/style.css'
 
 import { useCompany } from '@/composables/company'
 import { useIntersectionObserver } from '@vueuse/core'
+import { AxiosError } from 'axios'
 import { mapActions, storeToRefs } from 'pinia'
 import { useShopComposable, useShopUtilities } from 'src/composables/shop'
 import { client } from 'src/plugins/axios'
@@ -53,28 +57,29 @@ import { useHead } from 'unhead'
 import { defineAsyncComponent, defineComponent, inject, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
+import { Product, ProductVariants } from '@/types/shop'
 
-import AdditionalInfoBlock from '@/components/product/AdditionalInfoBlock.vue'
+// import AdditionalInfoBlock from '@/components/product/AdditionalInfoBlock.vue'
 import BreadcrumbBlock from '@/components/product/BreadcrumbBlock.vue'
+import ProductAside from '@/components/product/ProductAside.vue'
 import ReviewsBlock from '@/components/product/ReviewsBlock.vue'
+import ShopLayout from '@/layouts/ShopLayout.vue'
+import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
 import DeliveryType from 'src/components/product/DeliveryType.vue'
 import DeliveryTypes from 'src/components/product/DeliveryTypes.vue'
 import FiveImages from 'src/components/product/FiveImages.vue'
-import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
-import ProductAside from '@/components/product/ProductAside.vue'
-import ShopLayout from '@/layouts/ShopLayout.vue'
 import SixImages from 'src/components/product/SixImages.vue'
-
-import { Product } from '@/types/shop'
+import BaseSkeleton from '@/layouts/BaseSkeleton.vue'
 
 export default defineComponent({
   name: 'ProductPage',
   components: {
-    AdditionalInfoBlock,
+    // AdditionalInfoBlock,
     AsyncRecommendationBlock: defineAsyncComponent({
       loader: () => import('src/components/RecommendationsBlock.vue'),
       delay: 500
     }),
+    BaseSkeleton,
     BreadcrumbBlock,
     DeliveryType,
     DeliveryTypes,
@@ -109,8 +114,31 @@ export default defineComponent({
 
     const route = useRoute()
     const router = useRouter()
-    const currentProduct = ref<Product | object>({})
-    const productVariants = ref([])
+    const currentProduct = ref<Product>({
+      id: 0,
+      name: '',
+      color: '',
+      category: '',
+      sub_category: '',
+      sizes: [],
+      has_sizes: false,
+      get_price: 0,
+      sale_value: 0,
+      sale_price: 0,
+      on_sale: false,
+      collection_set: [],
+      get_main_image: null,
+      images: [],
+      color_variant_name: '',
+      is_new: false,
+      active: false,
+      display_new: false,
+      slug: '',
+      variants: [],
+      modified_on: '',
+      created_on: ''
+    })
+    const productVariants = ref<ProductVariants[]>([])
 
     provide('currentProduct', currentProduct)
     provide('isLoading', isLoading)
@@ -124,12 +152,14 @@ export default defineComponent({
      */
     async function requestProduct () {
       try {
-        const response = await client.get(`shop/products/${route.params.id}`)
+        const response = await client.get<Product>(`shop/products/${route.params.id}`)
         currentProduct.value = response.data
         isLoading.value = false
       } catch (e) {
-        if (e.response.status === 404) {
-          router.push({ name: 'not_found' })
+        if (e instanceof AxiosError && e.response) {
+          if (e.response.status === 404) {
+            router.push({ name: 'not_found' })
+          }
         }
       }
     }
@@ -140,6 +170,7 @@ export default defineComponent({
     })
 
     useHead({
+      title: `${currentProduct.value?.name}`,
       meta: [
         {
           name: 'language',

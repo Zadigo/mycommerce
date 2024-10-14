@@ -1,19 +1,8 @@
 import _ from 'lodash'
+import { useRouter } from 'vue-router'
 
 function raiseError (functionName, message) {
   throw new Error(`${functionName} - ${message}`)
-}
-
-export function loadView (name) {
-  return () => import(`@/views/${name}.vue`)
-}
-
-export function loadLayout (name) {
-  return () => import(`@/layouts/${name}.vue`)
-}
-
-export function loadComponent (name) {
-  return () => import(`@/components/${name}.vue`)
 }
 
 export function scrollToTop () {
@@ -144,7 +133,18 @@ export function useUtilities () {
     })
   }
 
+  function debounce (fn, delay) {
+    let timer;
+    
+    return function (...args) {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn(...args), delay);
+    };
+  }
+
+
   return {
+    debounce,
     capitalizeFirstLetter,
     capitalizeLetters,
     conditionalTruncate,
@@ -155,9 +155,6 @@ export function useUtilities () {
     incrementLastId,
     increaseIndex,
     listManager,
-    loadComponent,
-    loadLayout,
-    loadView,
     quickSort,
     readFile,
     readMultipleFiles,
@@ -213,5 +210,21 @@ export function useUrls () {
     getPageFromParams,
     mediaUrl,
     rebuildPath
+  }
+}
+
+export function useAxiosUtilities () {
+  const router = useRouter()
+
+  function handleAxiosError (e) {
+    if (e.response?.status === 404) {
+      router.push({ name: 'not_found' });
+    } else {
+      console.error("An error occurred", e.message);
+    }
+  }
+  
+  return {
+    handleAxiosError
   }
 }

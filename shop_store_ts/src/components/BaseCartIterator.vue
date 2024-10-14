@@ -5,7 +5,7 @@
         <div class="d-flex justify-content-start gap-2">
           <!-- {{ item }} -->
           <div class="col-auto">
-            <v-img :src="parseMainImage(item.product_info.product)" :lazy-src="parseMainImage(item.product_info.product)" :alt="item.product__name" :width="150" :height="150" />
+            <v-img :src="parseMainImage(item.product_info?.product)" :lazy-src="parseMainImage(item.product_info.product)" :alt="item.product__name" :width="150" :height="150" />
           </div>
 
           <div class="infos">
@@ -25,7 +25,7 @@
             </router-link>
 
             <div id="actions">
-              <v-btn v-if="isEditable" class="me-2" size="x-small" variant="tonal" rounded @click="handleProductEdition('open', item)">
+              <v-btn v-if="isEditable" class="me-2" size="x-small" variant="tonal" rounded @click="handleProductEdition(item)">
                 <font-awesome-icon :icon="['fas', 'pen']" />
               </v-btn>
 
@@ -41,12 +41,16 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
+import { ProductToEdit } from '@/types/composables/cart';
 
 import { storeToRefs } from 'pinia';
 import { useShopUtilities } from 'src/composables/shop';
 import { useCart } from 'src/stores/cart';
 import { defineComponent } from 'vue';
+
+// declare interface CustomCartStatistics extends CartStatistic {
+//   product_info: string
+// }
 
 export default defineComponent({
   name: 'BaseCartIterator',
@@ -57,7 +61,7 @@ export default defineComponent({
     }
   },
   emits: {
-    'edit-product' () {
+    'edit-product' (_editedProduct: ProductToEdit) {
       return true
     },
     'show-cart-drawer' () {
@@ -79,33 +83,28 @@ export default defineComponent({
     /**
      * Computed function that get the items from the session
      * and iterates on each statistic object to be displayed 
+     * 
+     * TODO: Refactor this function
      */
-    cartItems () {
-      // const cachedCart = this.sessionStorage.cart_cache || {}
+    cartItems (): ProductToEdit[] {
       const cachedCart = this.cache || {}
       const statistics = cachedCart.statistics || []
-
-      return _.map(statistics, (item) => {
-        const productInfo = _.find(cachedCart.results, (result) => {
-          return result.product.id === item.product__id
+      
+      return statistics.map((item) => {
+        const productInfo = cachedCart.results.find((cartItem) => {
+          return cartItem.product.id === item.product__id
         })
-        item.product_info = productInfo
-        return item
+
+        return { ...item, product_info: productInfo }
       })
     }
-  },
-  beforeUpdate () {
-    console.log('BaseCartIterator', 'beforeUpdate')
   },
   methods: {
     /**
      * Function to open the product edition drawer
-     * 
-     * @param {String} action Action to use: open or close the drawer
-     * @param {Object} item Product in the cart to edit
      */
-    handleProductEdition (action, item) {
-      this.$emit('edit-product', { action, product: item })
+    handleProductEdition (item: ProductToEdit) {
+      this.$emit('edit-product', item)
     }
   }
 })
