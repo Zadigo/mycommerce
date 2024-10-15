@@ -10,13 +10,13 @@
 
     <!-- Reference -->
     <p class="fw-light text-body-secondary mb-2" aria-label="Product reference">
-      Ref. 3970/623/800
+      Ref. 1/2/3
     </p>
 
     <!-- Price -->
     <base-skeleton :loading="isLoading" class="mb-3" width="50px">
       <p class="h5 fw-bold mb-3" aria-label="Product price">
-        {{ translatePrice(currentProduct.get_price) }}
+        {{ translatePrice(currentProduct?.get_price) }}
       </p>
     </base-skeleton>
 
@@ -25,8 +25,8 @@
 
     <!-- Variants -->
     <div v-if="hasColorVariants" id="variants" class="d-flex justify-content-start align-items-center gap-1 my-4">
-      <div v-for="variant in currentProduct.variants" :key="variant.id" class="variant">
-        <router-link :to="{ name: 'shop_product', params: { id: variant.id } }" :aria-label="`${variant.name} ${variant.color}`">
+      <div v-for="variant in currentProduct?.variants" :key="variant.id" class="variant">
+        <router-link :to="{ name: 'shop_product', params: { id: variant.id } }" :aria-label="`${variant.id} ${variant.color}`">
           <v-img :src="parseMainImage(variant, 'original')" :lazy-src="parseMainImage(variant, 'original')" :alt="variant.color" width="50" />
         </router-link>
       </div>
@@ -35,7 +35,7 @@
     <hr class="my-5 text-body-tertiary">
 
     <!-- Sizes -->
-    <base-size-block :sizes="currentProduct.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="() => {}" />
+    <base-size-block :sizes="currentProduct?.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="() => {}" />
 
     <!-- Size Guide -->
     <div class="d-flex justify-content-start gap-3 mt-4 mb-2">
@@ -132,6 +132,7 @@
               <p class="fs-6 fw-bold mb-1">
                 {{ $t("Tour de Poitrine") }}
               </p>
+              
               <p class="fw-light text-body-secondary mb-4">
                 Pour mesurer la circonférence de ta poitrine, utilise un mètre
                 ruban et place-le autour de la partie la plus large de ta poitrine.
@@ -148,6 +149,7 @@
               <p class="fs-6 fw-bold mb-1">
                 {{ $t("Tour de Hanches") }}
               </p>
+
               <p class="fw-light text-body-secondary mb-4">
                 Mets tes pieds l'un contre l'autre et place le mètre ruban
                 autour de la partie la plus large de ton tour de hanche.
@@ -226,17 +228,12 @@ export default defineComponent({
     /**
      * Indicates if the product has other color variants     * 
      */
-    // FIXME: currentProduct.variants exists?
     hasColorVariants (): boolean {
-      return false
-      // const variants = this.currentProduct.variants.filter((product) => {
-      //   return product.id !== this.currentProduct.id
-      // })
-      // return variants.length > 0
-      // const variants = _.filter(this.currentProduct.variants, (product) => {
-      //   return product.id !== this.currentProduct.id
-      // })
-      // return variants.length > 0
+      if (this.currentProduct) {
+        return this.currentProduct.variants.length > 0
+      } else {
+        return false
+      }
     }
   },
   methods: {

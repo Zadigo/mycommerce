@@ -28,6 +28,13 @@ const quartClient = axios.create({
   timeout: 10000,
 });
 
+const authClient = axios.create({
+  baseURL: "http://127.0.0.1:8000/auth/v1/",
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true,
+  timeout: 10000,
+})
+
 /**
  * Client -> Django
  */
@@ -42,7 +49,8 @@ client.interceptors.request.use((config) => {
   const store = useAuthentication();
 
   if (store.isAuthenticated) {
-    config.headers.Authorization = `Token ${store.token}`;
+    // config.headers.Authorization = `Token ${store.token}`;
+    config.headers.Authorization = `Token ${store.accessToken}`;
   }
 
   return config;
@@ -51,10 +59,12 @@ client.interceptors.request.use((config) => {
 client.interceptors.response.use((response) => {
   if (response.status === 401) {
     const cookies = useCookies();
+    const store = useAuthentication()
 
     VueSessionInstance.remove("authentication");
     VueSessionInstance.remove("profile");
     cookies.remove("token");
+    store.logout()
   }
 
   if ([404, 500].includes(response.status)) {
@@ -64,5 +74,5 @@ client.interceptors.response.use((response) => {
   return response;
 });
 
-export { client, quartClient };
+export { client, quartClient, authClient };
 

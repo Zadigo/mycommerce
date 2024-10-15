@@ -1,13 +1,12 @@
 <template>
   <div class="card shadow-sm">
     <div class="card-body">
-      <!-- <h2 class="card-title h5">Enlèvement en magasin</h2> -->
       <h2 class="card-title h5">
         {{ $t("Adresse de livraison") }}
       </h2>
 
-      <v-text-field v-model="requestData.address_line" variant="outlined" autocomplete="street-address" />
-      <v-text-field v-model="requestData.city" variant="outlined" autocomplete="address-level1" />
+      <v-text-field v-model="requestData.address_line" placeholder="Addresse" variant="outlined" autocomplete="street-address" />
+      <v-text-field v-model="requestData.city" variant="outlined" placeholder="Ville" autocomplete="address-level1" />
 
       <div class="d-flex justify-content-between gap-1">
         <v-text-field v-model="requestData.zip_code" :rules="[ rules.postalCode ]" placeholder="Zip code" variant="outlined" autocomplete="postal-code" />
@@ -30,7 +29,7 @@
         <v-text-field v-model="requestData.telephone" placeholder="Téléphone" variant="outlined" autocomplete="tel" />
       </div>
 
-      <v-switch label="Sauvegarder mes données" inset />
+      <v-switch v-model="saveShipmentDetails" label="Sauvegarder mes données" inset />
     </div>
 
     <!-- @navigate:next-page="handleNewPaymentIntent" -->
@@ -39,12 +38,12 @@
 </template>
 
 <script lang="ts">
-import { useHead } from 'unhead'
 import { storeToRefs } from 'pinia'
 import { useCart } from 'src/stores/cart'
+import { useHead } from 'unhead'
+import { defineComponent, ref } from 'vue'
 
 import NavigationCardFooter from 'src/components/cart/NavigationCardFooter.vue'
-import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'ShipmentPage',
@@ -52,28 +51,28 @@ export default defineComponent({
     NavigationCardFooter
   },
   beforeRouteLeave (to, from, next) {
+    console.log(to.name)
     if (to.name === 'shop_payment') {
       this.handleNewPaymentIntent()
-      next()
     }
+    next()
   },
   setup () {
     useHead({ title: 'Options de livraison' })
 
     const store = useCart()
     const { requestData } = storeToRefs(store)
+    const saveShipmentDetails = ref(false)
 
     return {
       store,
+      saveShipmentDetails,
       requestData,
       rules: {
         /**
          * Verifies that the postal code is correct
-         * 
-         * @param {String} zipCode The postal code
-         * @returns {Boolean} Whether the postal code is valid
          */
-        postalCode: zipCode => {
+        postalCode: (zipCode: string) => {
           const regex = /\d{5}/
           return regex.test(zipCode) || 'Zip code is not valid'
         }
@@ -84,21 +83,25 @@ export default defineComponent({
     /**
      * Requests a new payment intent and returns an
      * intent ID that will be used to confirm the payment
-     * in the payment page
+     * on the actual payment page
      */
     async handleNewPaymentIntent () {
       try {
         if (!this.$localstorage.keyExists('payment_intent')) {
-          const session_id = this.$session.retrieve('session_id')
-          const response = await this.$http.post('orders/intent', {
-            session_id,
-            ...this.requestData
-          })
+          this.requestData.session_id = this.$session.retrieve<string>('session_id')
+          const response = await this.$http.post('orders/intent', this.requestData)
           this.$localstorage.create('payment_intent', response.data)
         }
       } catch (e) {
+        // Handle error
         console.log(e)
       }
+    },
+    /**
+     * 
+     */
+    async handleSaveShipmentInfo () {
+      
     }
   }
 })

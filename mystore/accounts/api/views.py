@@ -1,9 +1,9 @@
-from accounts.api.serializers import (LOGIN_RESPONSE_SERIALIZER, USER_MODEL,
+from accounts.api.serializers import (LOGIN_RESPONSE_SERIALIZER, USER_MODEL, EmailTokenObtainSerializer,
                                       LoginUserSerializer,
-                                      SignupUserSerializer, UserSerializer,
+                                      SignupUserSerializer, UserProfileSerializer, UserSerializer,
                                       ValidateAddressSerializer,
                                       ValidateUpdateAccount)
-from accounts.models import Address
+from accounts.models import Address, UserProfile
 from django.shortcuts import get_object_or_404
 from drf_spectacular.extensions import OpenApiViewExtension
 from drf_spectacular.utils import extend_schema
@@ -15,6 +15,7 @@ from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      RetrieveUpdateAPIView, UpdateAPIView)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 @extend_schema('Login', responses=LOGIN_RESPONSE_SERIALIZER)
@@ -139,8 +140,17 @@ class LogoutView(DestroyAPIView):
 
 @extend_schema(operation_id='Profile')
 class ProfileView(RetrieveAPIView):
+    """Returns the user profile"""
     queryset = USER_MODEL.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
-    lookup_field = 'pk'
-    lookup_url_kwarg = 'pk'
+
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        obj = get_object_or_404(queryset, pk=self.request.user.pk)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+
+class EmailTokenObtainPairView(TokenObtainPairView):
+    serializer_class = EmailTokenObtainSerializer

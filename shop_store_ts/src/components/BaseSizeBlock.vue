@@ -1,6 +1,6 @@
 <template>
   <div id="sizes" class="d-flex justify-content-start gap-1" aria-label="Product sizes">
-    <base-size-button v-for="size in sizes" :key="size.id" v-model:selectedSize="selectedSize" :size="size" @click="handleSizeSelection(size)" />
+    <base-size-button v-for="size in sizes" :key="size.id" v-model:selectedSize="selectedSize" :size="size" @click="handleSizeSelection" />
   </div>
 </template>
 
@@ -12,10 +12,11 @@
  * the model that is carrying clothing
  * 
  */ 
-import { defineComponent, ref } from 'vue'
-import { useRefHistory } from '@vueuse/core'
+import { ProductSizes } from '@/types/shop';
+import { useRefHistory } from '@vueuse/core';
+import { defineComponent, PropType, ref } from 'vue';
 
-import BaseSizeButton from './BaseSizeButton.vue'
+import BaseSizeButton from './BaseSizeButton.vue';
 
 export default defineComponent({
   name: 'BaseSizeBlock',
@@ -24,18 +25,18 @@ export default defineComponent({
   },
   props: {
     sizes: {
-      type: Array,
+      type: Array as PropType<ProductSizes[]>,
       required: true,
       default: () => []
     }
   },
   emits: {
-    'update-size' () {
+    'update-size' (_size: string | null) {
       return true
     }
   },
   setup () {
-    const selectedSize = ref(null)
+    const selectedSize = ref<string | null>(null)
     const { history } = useRefHistory(selectedSize)
 
     return {

@@ -363,3 +363,51 @@ CKEDITOR_5_CONFIGS = {
         ]
     }
 }
+
+
+# Celery
+
+if not DEBUG:
+    # Use Redis as backend for caching instead of
+    # the file system caching that we use for debugging
+    REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
+
+    REDIS_URL = f'redis://:{REDIS_PASSWORD}@redis:6379'
+
+    RABBITMQ_HOST = os.getenv('RABBITMQ_HOST')
+
+    RABBITMQ_USER = os.getenv('RABBITMQ_DEFAULT_USER')
+
+    RABBITMQ_PASSWORD = os.getenv('RABBITMQ_DEFAULT_PASS')
+
+    CELERY_BROKER_URL = 'amqp://{user}:{password}@rabbitmq:5672'.format(
+        user=RABBITMQ_USER,
+        password=RABBITMQ_PASSWORD
+    )
+
+    CELERY_RESULT_BACKEND = f'redis://:{REDIS_PASSWORD}@redis:6379'
+else:
+    CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672'
+
+    CELERY_RESULT_BACKEND = 'rpc://'
+
+
+CELERY_ACCEPT_CONTENT = ['json']
+
+CELERY_TASK_SERIALIZER = 'json'
+
+CELERY_RESULT_SERIALIZER = 'json'
+
+CELERY_TIMEZONE = 'Europe/Oslo'
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+
+# HTTPS
+
+if os.getenv('USES_HTTP_SCHEME', 'http') == 'https':
+    SESSION_COOKIE_SECURE = True
+
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    SECURE_PROXY_SSL_HEADERSSL_REDIRECT = True

@@ -66,7 +66,7 @@ const router = createRouter({
           name: "shop_payment",
           component: async () => import("../pages/cart/PaymentPage.vue"),
           meta: {
-            requiresAuthentication: false,
+            requiresAuthentication: true,
           },
         },
         {
@@ -129,10 +129,10 @@ router.beforeEach((to, _, next) => {
           login: 0
         }
       })
-      return 
     }
+  } else {
+    next()
   }
-  next()
 })
 
 router.afterEach((to, from, failure) => {

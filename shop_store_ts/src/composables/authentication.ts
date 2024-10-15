@@ -1,4 +1,4 @@
-import { client } from '@/plugins/axios'
+import { client, authClient } from '@/plugins/axios'
 import { useVueSession } from '@/plugins/vue-storages'
 import { useAuthentication } from '@/stores/authentication'
 import { LoginAPIResponse } from '@/types/authentication'
@@ -62,17 +62,30 @@ export function useAuthenticationComposable () {
    */
   async function login (callback: (data: LoginAPIResponse) => void) {
     try {
-      const response = await client.post<LoginAPIResponse>('accounts/login', {
+      // Classic Token
+      // const response = await client.post<LoginAPIResponse>('accounts/login', {
+      // JWT
+      const response = await authClient.post<LoginAPIResponse>('/token/', {
+        username: email.value, // Temporary fix for being able to login with JWT. This should be refactored
         email: email.value,
         password: password.value
       })
 
       instance.create('authentication', response.data)
-      cookies.set('token', response.data.token)
+      cookies.set('accessToken', response.data.access)
+
       authenticationFailuresCounter.value = 0
 
-      authenticationStore.token = authToken.value
-      authenticationStore.profile = response.data.user
+      authenticationStore.accessToken = response.data.access
+      authenticationStore.refreshToken = response.data.refresh
+
+      // Classic Token
+      // instance.create('authentication', response.data)
+      // cookies.set('token', response.data.token)
+      // authenticationFailuresCounter.value = 0
+
+      // authenticationStore.token = authToken.value
+      // authenticationStore.profile = response.data.user
 
       callback.call(app, response.data)
     } catch (e) {

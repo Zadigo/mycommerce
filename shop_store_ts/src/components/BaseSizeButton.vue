@@ -4,19 +4,20 @@
   </button>
 
   <button v-else-if="!size.availability" type="button" :class="buttonClass" @click="handleSizeSelection(size)">
-    <font-awesome-icon :icon="[ 'fas', 'clock-rotate-left' ]" class="text-warning me-2" />
+    <font-awesome-icon icon="clock-rotate-left" class="text-warning me-2" />
     {{ size.name }}
   </button>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { ProductSizes } from '@/types/shop';
+import { defineComponent, PropType, ref } from 'vue'
 
 export default defineComponent({
   name: 'BaseSizeButton',
   props: {
     size: {
-      type: Object,
+      type: Object as PropType<ProductSizes>,
       required: true
     },
     selectedSize: {
@@ -29,15 +30,18 @@ export default defineComponent({
     }
   },
   emits: {
-    'update:selectedSize' () {
+    'update:selectedSize' (_size: string) {
       return true
     }
   },
-  setup (props) {
-    props
+  setup () {
+    const modelValue = ref<ProductSizes | null>(null)
+    return {
+      modelValue
+    }
   },
   computed: {
-    currentSize () {
+    currentSize (): ProductSizes | null {
       return this.modelValue
     },
     isSelected () {
@@ -55,7 +59,8 @@ export default defineComponent({
     }
   },
   methods: {
-    handleSizeSelection (size) {
+    handleSizeSelection (size: ProductSizes) {
+      this.modelValue = size
       this.$emit('update:selectedSize', size.name)
     }
   }

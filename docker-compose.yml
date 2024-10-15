@@ -1,0 +1,98 @@
+volumes:
+  ShopData: {}
+
+networks:
+  bridge:
+    ecommerce
+
+services:
+  shop:
+    build: ./mystore
+    container_name: app_shop
+    networks:
+      - ecommerce
+
+  shop_celery:
+    build: ./mystore
+    container_name: app_shop_celery
+    networks:
+      - ecommerce
+    depends_on:
+      - rabbitmq
+
+  shop_celery_beat:
+    build: ./mystore
+    container_name: app_shop_celery_beat
+    networks:
+      - ecommerce
+    depends_on:
+      - shop_celery
+
+  shop_flower:
+    build: ./mystore
+    container_name: app_shop_flower
+    networks:
+      - ecommerce
+    depends_on:
+      - shop_celery
+
+  db:
+    build: postgres:latest
+    container_name: app_database
+    networks:
+      - ecommerce
+  
+  pgadmin:
+    build: pgadmin:latest
+    container_name: app_pgadmin
+    networks:
+      - ecommerce  
+  
+  api:
+    build: ./api_server
+    container_name: app_api
+    networks:
+      - ecommerce
+
+  admin:
+    build : ./shop_admin
+    container_name: app_frontend_admin
+    networks:
+      - ecommerce
+
+  frontend_shop:
+    build: ./shop_store_ts
+    container_name: app_frontend_shop
+    networks:
+      - ecommerce
+
+  redis:
+    image: redis:latest
+    container_name: app_redis
+    networks:
+      - ecommerce
+
+  rabbitmq:
+    image: rabbitmq:latest
+    container_name: app_rabbitmq
+    networks:
+      - ecommerce
+
+  memcache:
+    image: memcache:latest
+    container_name: app_memcache
+    networks:
+      - ecommerce
+
+  uptime:
+    image: loislam/uptimekuma:latest
+    container_name: app_uptime_kuma
+    networks:
+      - ecommerce
+
+  automation:
+    image: n8n:latest
+    container_name: app_automation
+    networks:
+      - ecommerce
+  

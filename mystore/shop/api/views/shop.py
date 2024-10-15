@@ -15,7 +15,6 @@ from shop.api.serializers.shop import LikeSerializer, ProductSerializer
 from shop.models import Like, Product
 
 
-@extend_schema('List Products')
 class ListProducts(ListAPIView):
     """List the products in the database and accepts
     a set of query parameters that can be used to

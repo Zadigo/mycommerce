@@ -44,7 +44,7 @@
         </v-form>
         
         <v-btn v-else class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block @click="showEditEmail = true">
-          <span class="me-2">{{ profile.email }}</span>
+          <span class="me-2">{{ profile?.email }}</span>
           <font-awesome-icon :icon="['fas', 'pen']" />
         </v-btn>
 
@@ -58,7 +58,7 @@
     </div>
 
     <!-- Billing -->
-    <div id="billing" class="card shadow-sm mt-2">
+    <div v-if="profile" id="billing" class="card shadow-sm mt-2">
       <div class="card-header">
         <h1 class="h6 text-uppercase fw-bold my-3">
           {{ $t('Information pour la facturation') }}

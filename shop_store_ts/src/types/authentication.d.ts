@@ -39,6 +39,8 @@ export interface User {
 }
 
 export interface LoginAPIResponse {
-  token: string
-  user: User
+  // token: string
+  // user: User
+  access: string
+  refresh: string
 }

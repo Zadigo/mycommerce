@@ -1,10 +1,11 @@
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-
 from cart.models import Cart
 from discounts.api.serializers import DiscountSerializer
 from discounts.models import Discount
 from discounts.utils import calculate_discount
+from django.shortcuts import get_object_or_404
+from rest_framework.generics import UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from shop.models import Product
 
 

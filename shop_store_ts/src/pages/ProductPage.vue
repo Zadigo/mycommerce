@@ -57,7 +57,7 @@ import { useHead } from 'unhead'
 import { defineAsyncComponent, defineComponent, inject, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { Product, ProductVariants } from '@/types/shop'
+import { Product, ProductVariant } from '@/types/shop'
 
 // import AdditionalInfoBlock from '@/components/product/AdditionalInfoBlock.vue'
 import BreadcrumbBlock from '@/components/product/BreadcrumbBlock.vue'
@@ -138,7 +138,7 @@ export default defineComponent({
       modified_on: '',
       created_on: ''
     })
-    const productVariants = ref<ProductVariants[]>([])
+    const productVariants = ref<ProductVariant[]>([])
 
     provide('currentProduct', currentProduct)
     provide('isLoading', isLoading)

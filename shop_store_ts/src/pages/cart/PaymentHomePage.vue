@@ -15,11 +15,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { useHead } from 'unhead'
-import { useCart } from 'src/stores/cart'
+import { DeliveryOption } from '@/types/cart'
 import { storeToRefs } from 'pinia'
 import { useVueSession } from 'src/plugins/vue-storages'
+import { useCart } from 'src/stores/cart'
+import { useHead } from 'unhead'
+import { defineComponent, ref } from 'vue'
 
 import NavigationCardFooter from 'src/components/cart/NavigationCardFooter.vue'
 
@@ -35,7 +36,7 @@ export default defineComponent({
     const { instance } = useVueSession()
     requestData.value.session_id = instance.retrieve('session_id')
 
-    const deliveryOptions = ref([])
+    const deliveryOptions = ref<DeliveryOption[]>([])
 
     useHead({
       title: 'Options de livraison'
@@ -58,10 +59,15 @@ export default defineComponent({
      */
     async requestDeliveryOptions () {
       try {
-        const response = await this.$http.get('orders/delivery-options')
-        this.deliveryOptions = response.data
+        if (this.$localstorage.keyExists('deliveryOptions')) {
+          this.deliveryOptions = this.$localstorage.retrieve<DeliveryOption>('deliveryOptions')
+        } else {
+          const response = await this.$http.get<DeliveryOption[]>('orders/delivery-options')
+          this.deliveryOptions = response.data
+          this.$localstorage.create('deliveryOptions', response.data)
+        }
       } catch (e) {
-        console.log(e)
+        // Handle error
       }
     }
   }

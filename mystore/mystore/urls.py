@@ -1,3 +1,4 @@
+from accounts.api.views import EmailTokenObtainPairView
 from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
@@ -74,6 +75,7 @@ urlpatterns = [
     ),
     path(
         'auth/v1/token/',
+        # EmailTokenObtainPairView.as_view(),
         jwt_views.TokenObtainPairView.as_view(),
         name='token_obtain_pair'
     ),

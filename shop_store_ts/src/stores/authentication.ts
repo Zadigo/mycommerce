@@ -4,7 +4,7 @@ import { LoginAPIResponse, Profile } from '@/types/authentication';
 declare type RootState = {
   showLoginDrawer: boolean;
   token: string | null;
-  profile: Profile | object;
+  profile: Profile | null;
   accessToken: string | null;
   refreshToken: string | null;
 };
@@ -13,7 +13,7 @@ const useAuthentication = defineStore('authentication', {
   state: (): RootState => ({
     showLoginDrawer: false,
     token: null,
-    profile: {},
+    profile: null,
     accessToken: null,
     refreshToken: null
   }),
@@ -22,9 +22,13 @@ const useAuthentication = defineStore('authentication', {
      * Indicates whether the user is authenticated
      */
     isAuthenticated (): boolean {
+      // return (
+      //   this.token !== null &&
+      //   typeof this.token !== 'undefined'
+      // )
       return (
-        this.token !== null &&
-        typeof this.token !== 'undefined'
+        this.accessToken !== null &&
+        typeof this.accessToken !== 'undefined'
       )
     }
   },
@@ -41,10 +45,19 @@ const useAuthentication = defineStore('authentication', {
         return
       }
       
-      if ('token' in data) {
-        this.token = data.token
-        this.profile = data.user
+      // if ('token' in data) {
+      //   this.token = data.token
+      //   this.profile = data.user
+      // }
+      if ('access' in data) {
+        this.accessToken = data.access
+        this.refreshToken = data.refresh
       }
+    },
+    logout () {
+      this.accessToken = null
+      this.refreshToken = null
+      this.token = null
     }
   }
 })

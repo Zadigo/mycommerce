@@ -2,7 +2,7 @@ import { useShop } from '@/stores/shop'
 import { isUndefined } from 'lodash'
 import { ref } from 'vue'
 import { useI18n } from "vue-i18n"
-import { Product } from '../types/shop'
+import { Product, ProductVariant } from '../types/shop'
 
 declare type ImageSizes = 'original' | 'mid_size' | 'thumbnail'
 
@@ -118,11 +118,15 @@ export function useShopUtilities () {
    * as a string and then returns the currency
    * version of said number 
    */
-  function translatePrice (price: string): string {
+  function translatePrice (price: number | string | null | undefined): string {
     const { n } = useI18n()
 
     if (!price || typeof price === 'undefined') {
       return n(0, 'currency')
+    }
+
+    if (typeof price === 'number') {
+      return n(price, 'currency')
     }
     
     const priceNumber = parseFloat(price)
@@ -133,7 +137,7 @@ export function useShopUtilities () {
    * From a product object parse the path
    * for the main image 
    */
-  function parseMainImage(product: Product | null | undefined, size: ImageSizes = 'original') {
+  function parseMainImage(product: Product | ProductVariant | null | undefined, size: ImageSizes = 'original') {
     if (product) {
       const mainImage = product.get_main_image
   

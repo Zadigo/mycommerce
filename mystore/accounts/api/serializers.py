@@ -7,6 +7,7 @@ from rest_framework import fields
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.serializers import Serializer
+from rest_framework_simplejwt.serializers import TokenObtainSerializer
 
 USER_MODEL = get_user_model()
 
@@ -163,3 +164,10 @@ LOGIN_RESPONSE_SERIALIZER = inline_serializer(
         }
     }
 )
+
+
+class EmailTokenObtainSerializer(TokenObtainSerializer):
+    """Custom token seralizer used to substitute the
+    user name field by email for JWT authentication"""
+
+    username_field = 'email'

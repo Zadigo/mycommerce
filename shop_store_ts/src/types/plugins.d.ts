@@ -12,9 +12,10 @@ declare module "pinia" {
 
 declare module "vue" {
   interface ComponentCustomProperties {
-    readonly $http: Axios;
-    readonly $httpQuart: Axios;
-    readonly $date: dayjs;
+    $http: Axios;
+    $httpQuart: Axios;
+    $authClient: Axios
+    $date: dayjs;
     readonly localStorageData: {
       likedProducts: number[];
       visitedProducts: number[];

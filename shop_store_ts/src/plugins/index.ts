@@ -1,5 +1,5 @@
 import cookies from 'universal-cookie'
-import { client, quartClient } from './axios.js'
+import { authClient, client, quartClient } from './axios.js'
 import { App } from 'vue'
 
 import _ from 'lodash'
@@ -24,6 +24,7 @@ export default function installPlugins () {
       app.config.globalProperties.$http = client
       app.config.globalProperties.$httpQuart = quartClient
       app.config.globalProperties.$date = dayjs()
+      app.config.globalProperties.$auth_client = authClient
     }
   }
 }

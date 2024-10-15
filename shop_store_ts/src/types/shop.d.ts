@@ -19,7 +19,7 @@ export type ProductImage = {
   mid_size: string;
 };
 
-export interface ProductVariants {
+export interface ProductVariant {
   id: number
   color: string
   get_main_image: ProductImage
@@ -57,7 +57,7 @@ export type Product = {
   active: boolean;
   display_new: boolean;
   slug: string;
-  variants: ProductVariants[]
+  variants: ProductVariant[]
   modified_on: string;
   created_on: string;
 };
