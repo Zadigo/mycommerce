@@ -9,11 +9,19 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+  - package-ecosystem: "pip"
+    directory: "/api_server"
+    schedule:
+      interval: "monthly"
   - package-ecosystem: "npm"
     directory: "/frontend_store"
     schedule:
       interval: "monthly"
   - package-ecosystem: "npm"
     directory: "/frontend_quasar"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "npm"
+    directory: "/shop-mobile"
     schedule:
       interval: "monthly"
