@@ -7,12 +7,14 @@ import dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-dotenv.load_dotenv(BASE_DIR / '.env')
-
 
 def get_debug():
     debug = os.getenv('DEBUG')
     return True if debug == '1' else False
+
+
+if BASE_DIR.joinpath('.env').exists():
+    dotenv.load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,10 +27,10 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = get_debug()
 
 ALLOWED_HOSTS = [
-    'localhost', 
+    '127.0.0.1',
+    'localhost',
     'capacitor://localhost',
-    '127.0.0.1', 
-    '*.ngrok-free.app'
+    '.ngrok-free.app'
 ]
 
 
@@ -46,7 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'django.contrib.humanize',
-    
+
     'corsheaders',
     'drf_spectacular',
     'debug_toolbar',
@@ -187,13 +189,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 INTERNAL_IPS = ['127.0.0.1']
 
 
-# Shop
-
-STRIPE_TOKENS = [
-    ()
-]
-
 # CORS
+# https://github.com/adamchainz/django-cors-headers
 
 CORS_ALLOW_ALL_ORIGINS = False
 
@@ -221,6 +218,10 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.ngrok-free.app'
 ]
 
+
+# RestFrameWork
+# https://www.django-rest-framework.org/
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -241,12 +242,6 @@ SIMPLE_JWT = {
 }
 
 
-
-# Sites
-
-SITE = 1
-
-
 # Locales
 
 LOCALE_PATHS = [
@@ -256,39 +251,17 @@ LOCALE_PATHS = [
 LANGUAGE_CODE = 'fr'
 
 
-# Caching
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': BASE_DIR / 'cache'
-    }
-}
-
-if not DEBUG:
-    CACHES['default'] = {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://username:password@127.0.0.1:6379',
-        'OPTIONS': {
-            'CLIENT_CLASS': "django_redis.client.DefaultClient"
-        },
-        'KEY_PREFIX': 'example'
-    }
-
-
 # Emailing
 
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
 
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 EMAIL_USE_TLS = True
 
 EMAIL_PORT = 587
-
-# EMAIL_TIMEOUT = 5000
 
 
 # Sites
@@ -307,6 +280,7 @@ AUTHENTICATION_BACKENDS = [
 # Django All Auth for more information
 # on the settings for django-allauth
 # https://docs.allauth.org/en/latest/socialaccount/provider_configuration.html
+
 # For two factor authentication, see:
 # https://stackoverflow.com/questions/54908541/django-two-factor-authentication
 # https://github.com/pyauth/pyotp?tab=readme-ov-file
@@ -366,11 +340,13 @@ CKEDITOR_5_CONFIGS = {
 
 
 # Celery
+# https://docs.celeryq.dev/en/stable/
+
+REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
 
 if not DEBUG:
     # Use Redis as backend for caching instead of
     # the file system caching that we use for debugging
-    REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
 
     REDIS_URL = f'redis://:{REDIS_PASSWORD}@redis:6379'
 
@@ -401,6 +377,26 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Europe/Oslo'
 
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+
+# Caching
+
+if DEBUG:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+            'LOCATION': BASE_DIR / 'cache'
+        }
+    }
+else:
+    CACHES = {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': f'redis://:{REDIS_PASSWORD}@redis:6379',
+        'OPTIONS': {
+            'CLIENT_CLASS': "django_redis.client.DefaultClient"
+        },
+        'KEY_PREFIX': 'ecommerce'
+    }
 
 
 # HTTPS

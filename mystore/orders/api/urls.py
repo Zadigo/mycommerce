@@ -14,11 +14,6 @@ urlpatterns = [
         views.CapturePaymentIntent.as_view(),
         name='create'
     ),
-    # re_path(
-    #     r'^create$',
-    #     views.new_customer_order,
-    #     name='create'
-    # ),
     re_path(
         r'^intent$',
         views.CreatePaymentIntent.as_view(),

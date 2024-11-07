@@ -69,7 +69,4 @@ class Shipment(models.Model):
         ]
 
     def __str__(self):
-        return f'Shipment: {self.transporter}'
-
-    def get_absolute_url(self):
-        pass
+        return f'{self.transporter}'

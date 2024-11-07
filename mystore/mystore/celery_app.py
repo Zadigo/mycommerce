@@ -3,7 +3,7 @@ import os
 from celery import Celery
 from celery.schedules import crontab
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myemailing.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mystore.settings')
 
 
 def get_broker():
@@ -17,7 +17,7 @@ def get_backend():
 
 
 app = Celery(
-    'emailing',
+    'mystore',
     broker=get_broker(),
     backend=get_backend(),
     logger='celery_app.log'
@@ -40,14 +40,18 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.autodiscover_tasks()
 
-# app.conf.beat_schedule = {
-#     'query-sequences': {
-#         'task': 'query_sequences',
-#         'schedule': crontab(minute=1)
-#     }
-# }
+app.conf.beat_schedule = {
+    'check-orders': {
+        'task': 'check_orders',
+        'schedule': crontab(day_of_week='mon-fri', hour=6)
+    }
+}
 
 
-@app.task(bind=True)
-def debug_task(self):
-    print(f'Request: {self.request!r}')
+@app.task(queue='orders', ignore_result=True)
+def check_orders():
+    """A scheduler that goes through the
+    database to check if there are new
+    orders to process of the day. This
+    triggers a 'process order' workflow"""
+    return NotImplemented

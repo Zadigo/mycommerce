@@ -37,7 +37,8 @@ class DeliveryOptionsSerializer(Serializer):
 
 class ValidateShipment(Serializer):
     """Serializer used to validate the shipping
-    options for the given user"""
+    options for the given user. This used
+    by the shipment page"""
 
     def __init__(self, request, **kwargs):
         super().__init__(**kwargs)
@@ -55,7 +56,7 @@ class ValidateShipment(Serializer):
     discount_code = fields.CharField(required=False)
     delivery_option = fields.ChoiceField(
         ShipmentChoices.choices,
-        default=ShipmentChoices.CHRONOPOST
+        default='Chronopost'
     )
 
     def create(self, validated_data):
@@ -86,8 +87,8 @@ class ValidateShipment(Serializer):
 
 
 class ValidateOrder(Serializer):
-    """Create a new customer order and confirm
-    the payment intent"""
+    """Serializer used to create a new customer order
+    by capturing a pre-existing payment intent"""
 
     token = fields.CharField(validators=[])
     session_id = fields.CharField(validators=[])
@@ -96,12 +97,5 @@ class ValidateOrder(Serializer):
     client_ip = fields.IPAddressField()
     delivery_option = fields.ChoiceField(
         ShipmentChoices.choices,
-        default=ShipmentChoices.CHRONOPOST
+        default='Chronopost'
     )
-
-    def __init__(self, request, **kwargs):
-        super().__init__(**kwargs)
-        self._request = request
-
-    def create(self, validated_data):
-        pass

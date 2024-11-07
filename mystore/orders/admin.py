@@ -15,13 +15,42 @@ class CustomerOrderAdmin(admin.ModelAdmin):
     search_fields = ['reference', 'products__name']
     readonly_fields = ['reference', 'stripe_charge']
     fieldsets = [
-        ['References', {'fields': ['reference', 'stripe_charge']}],
-        ['Order', {'fields': ['total', 'products']}],
-        ['User information', {'fields': [
-            'user', 'address', 'city', 'zip_code', 'country', 'notes']}],
+        [
+            'References',
+            {
+                'fields': [
+                    'reference',
+                    'stripe_charge'
+                ]
+            }
+        ],
+        [
+            'Order',
+            {
+                'fields': [
+                    'total',
+                    'products'
+                ]
+            }
+        ],
+        [
+            'User information',
+            {
+                'fields': [
+                    'user',
+                    'address',
+                    'city',
+                    'zip_code',
+                    'country',
+                    'notes'
+                ]
+            }
+        ]
     ]
-    actions = ['send_email_confirmation', 'download_pdf',
-               'download_csv', 'send_order_cancelled_email']
+    actions = [
+        'send_email_confirmation', 'download_pdf',
+        'download_csv', 'send_order_cancelled_email'
+    ]
     filter_horizontal = ['products']
     date_hiearchy = 'created_on'
 
