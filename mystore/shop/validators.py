@@ -12,5 +12,6 @@ def validate_video_file_extension(name):
 
 def price_validator(value):
     if value <= 0:
-        raise ValidationError(_("The product's price should be at least above 0"))
+        raise ValidationError(
+            _("The product's price should be at least above 0"))
     return value

@@ -5,16 +5,6 @@ from shop.forms import UploadImagesForm
 from shop.models import Image, Product
 
 
-class ProductView(DetailView):
-    """Shows the details for a
-    specific given product"""
-
-    model = Product
-    queryset = Product.objects.filter(active=True)
-    template_name = 'product.html'
-    context_object_name = 'product'
-
-
 class AdminUploadImageView(FormView):
     template_name = 'upload_images.html'
     form_class = UploadImagesForm

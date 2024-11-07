@@ -1,5 +1,4 @@
 from django.contrib.sitemaps import Sitemap
-
 from shop.models import Product
 
 

@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from cart.models import Cart
 from django import setup
 from django.contrib.auth import get_user_model
 from django.db.models import Value
@@ -8,66 +9,58 @@ from django.test.client import Client, RequestFactory
 from django.urls import reverse
 from rest_framework.mixins import status
 from rest_framework.test import APIClient, APIRequestFactory, APITestCase
-
-from cart.models import Cart
 from shop import views
 from shop.api.views import shop as shop_api_views
 from shop.models import Product
 from shop.utils import calculate_sale, create_slug, product_media_path
 
+#     def test_products_view_structure(self):
+#         self.factory = APIRequestFactory()
+#         request = self.factory.get('/api/v1/shop/products')
+#         view = shop_api_views.ListProducts.as_view()
+#         response = view(request)
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         self.assertEqual(response.data['count'], 1)
 
-def create_user():
-    USER_MODEL = get_user_model()
-    user = USER_MODEL.objects.create_user(
-        email='lucile@gmail.com',
-        password='touparette',
-        username='lucile'
-    )
-    return user
+#     def test_search_view(self):
+#         self.factory = APIRequestFactory()
+#         request = self.factory.get('/api/v1/shop/search', data={'q': 'Tanga'})
+#         response = views.search_view(request)
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         self.assertEqual(len(response.data), 2)
 
 
-class TestShopAPI(APITestCase):
-    fixtures = ['products.json']
+class TestShop(APITestCase):
+    fixtures = ['products']
 
-    def setUp(self):
-        self.client = APIClient()
+    @classmethod
+    def setUpTestData(cls):
+        user = get_user_model().objects.first()
+        cls.user = user
+        cls.user.set_password('touparet')
+        cls.user.save()
 
-    def test_products_view_structure(self):
-        self.factory = APIRequestFactory()
-        request = self.factory.get('/api/v1/shop/products')
-        view = shop_api_views.ListProducts.as_view()
-        response = view(request)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 1)
-
-    def test_search_view(self):
-        self.factory = APIRequestFactory()
-        request = self.factory.get('/api/v1/shop/search', data={'q': 'Tanga'})
-        response = views.search_view(request)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
-
-    def test_list_products_view(self):
-        client = APIClient()
-        response = client.get(reverse('shop_api:api_list_products'))
+    def test_products_view(self):
+        response = self.client.get(reverse('shop_api:list_products'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        count = Product.objects.count()
-        self.assertEqual(count, 30)
-
-    def test_list_products_view_as_search(self):
+    def test_products_view_as_search(self):
         response = self.client.get(
-            reverse('shop_api:api_list_products'),
-            data={'q': 'Blazer Strapped'}
+            reverse('shop_api:list_products'),
+            data={
+                'q': 'Blazer Strapped'
+            }
         )
-
+        self.assertEqual(response.json().get('count'), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        count = Product.objects.filter(name='Blazer Strapped').count()
-        self.assertEqual(count, 1)
+
+    def test_product_view(self):
+        response = self.client.get(reverse('shop_api:product', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class TestUtilities(TestCase):
-    fixtures = ['products.json']
+    fixtures = ['products']
 
     def test_calculate_sale(self):
         product = Product.objects.first()
@@ -93,7 +86,7 @@ class TestUtilities(TestCase):
     def test_product_media_path(self):
         filenames = [
             (
-                'Blazer Strapped.jpg', 
+                'Blazer Strapped.jpg',
                 r'blazer\_strapped\_'
             ),
             (

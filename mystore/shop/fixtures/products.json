@@ -1,5 +1,15 @@
 [
     {
+        "model": "auth.User",
+        "pk": 1,
+        "fields": {
+            "email": "juliette@test-mail.com",
+            "last_name": "Juliette",
+            "first_name": "Lopez",
+            "username": "juliette"
+        }
+    },
+    {
         "model": "shop.Product",
         "pk": 1,
         "fields": {
