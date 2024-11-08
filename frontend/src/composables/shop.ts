@@ -41,13 +41,15 @@ export function useShopComposable () {
    * and therefore adding it to the user's
    * wishlist
    */
-  async function handleLike(product: Product) {
-    isLiked.value = !isLiked.value
-
-    if (isLiked.value) {
-      shopStore.addToWishlist(product.id)
-    } else {
-      shopStore.removeFromWishlist(product.id)
+  async function handleLike(product: Product | undefined) {
+    if  (typeof product !== 'undefined') {
+      isLiked.value = !isLiked.value
+  
+      if (isLiked.value) {
+        shopStore.addToWishlist(product.id)
+      } else {
+        shopStore.removeFromWishlist(product.id)
+      }
     }
   }
   

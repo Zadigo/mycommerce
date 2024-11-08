@@ -16,11 +16,11 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue'
-import { useIndexDb } from 'src/plugins/vue-storages/database'
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
+import { useIndexDb } from '@/plugins/vue-storages/database'
 
-export default {
+export default defineComponent({
   name: 'TestPage',
   beforeRouteEnter (to ,from , next) {
     next(vm => {
@@ -81,5 +81,5 @@ export default {
       console.log(9, 'add')
     }
   }
-}
+})
 </script>

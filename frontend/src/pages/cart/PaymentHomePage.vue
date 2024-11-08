@@ -16,10 +16,11 @@
 
 <script lang="ts">
 import { DeliveryOption } from '@/types/cart'
+import { AxiosError } from 'axios'
 import { storeToRefs } from 'pinia'
 import { useVueSession } from 'src/plugins/vue-storages'
 import { useCart } from 'src/stores/cart'
-import { useHead } from 'unhead'
+import { useSeoMeta } from 'unhead'
 import { defineComponent, ref } from 'vue'
 
 import NavigationCardFooter from 'src/components/cart/NavigationCardFooter.vue'
@@ -38,8 +39,9 @@ export default defineComponent({
 
     const deliveryOptions = ref<DeliveryOption[]>([])
 
-    useHead({
-      title: 'Options de livraison'
+    useSeoMeta({
+      title: 'Options de paiement',
+      description: ''
     })
 
     return {
@@ -67,7 +69,9 @@ export default defineComponent({
           this.$localstorage.create('deliveryOptions', response.data)
         }
       } catch (e) {
-        // Handle error
+        if (e instanceof AxiosError && e.response) {
+          // Handle error
+        }
       }
     }
   }

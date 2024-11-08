@@ -16,7 +16,7 @@
     "composite": true,
     "emitDeclarationOnly": true, /* need to be set or raises error */
     "resolveJsonModule": true,
-    "allowJs": true,
+    "allowJs": false,
     
     /* Bundler mode */
     "moduleResolution": "bundler",

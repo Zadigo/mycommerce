@@ -24,7 +24,7 @@ import colors from "vuetify/util/colors";
 import "bootstrap/dist/css/bootstrap.min.css"
 import "mdb-ui-kit/css/mdb.min.css"
 import "vuetify/styles";
-import "./style.css";
+import "./style.scss";
 
 const app = createApp(App);
 

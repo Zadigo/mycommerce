@@ -3,7 +3,7 @@
     <div class="col-12 mb-4">
       <div class="card shadow-sm">
         <div class="card-body text-center">
-          <h1>Thank you</h1>
+          <h1>{{ $t("Merci") }}</h1>
 
           <v-btn :to="{ name: 'shop_collections' }" color="secondary" variant="tonal" rounded>
             {{ $t("Notre nouvelle collection") }}
@@ -14,34 +14,27 @@
 
     <div class="col-12">
       <div class="row gx-1 gy-1">
-        <div v-for="product in recommendations" :key="product" class="col-3">
-          <product-card :product="product" :show-like-button="false" />
-        </div>
+        <recommendations-block :quantity="10" />
       </div>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { useHead } from 'unhead'
-import { createMockupProducts } from 'src/utils'
+import { useHead } from 'unhead';
+import { defineComponent } from 'vue';
 
-import ProductCard from 'src/components/products/ProductCard.vue'
+import RecommendationsBlock from '@/components/RecommendationsBlock.vue';
 
 export default defineComponent({
   name: 'PaymentSuccessPage',
   components: {
-    ProductCard
+    RecommendationsBlock
   },
   setup () {
     useHead({ title: 'Paiement terminé' })
 
-    const recommendations = ref(createMockupProducts(8))
-
-    return {
-      recommendations
-    }
+    return {}
   },
   beforeMount () {
     this.$session.create('cart', [])

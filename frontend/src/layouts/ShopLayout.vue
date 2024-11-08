@@ -211,11 +211,11 @@
             </div>
             
             <div class="col-12">
-              <v-btn v-if="authenticationStore.isAuthenticated" :to="{ name: 'shop_payment_home' }" color="primary" block>
+              <v-btn v-if="authenticationStore.isAuthenticated" :to="{ name: 'shop_payment_home' }" color="secondary" rounded flat block>
                 {{ $t('Passer commande') }}
               </v-btn>
 
-              <v-btn v-else color="primary" block @click="showCartDrawer = false, authenticationStore.showLoginDrawer = true">
+              <v-btn v-else color="secondary" rounded flat block @click="showCartDrawer = false, authenticationStore.showLoginDrawer = true">
                 {{ $t('Passer commande') }}
               </v-btn>
             </div>

@@ -37,6 +37,7 @@
 
 <script lang="ts">
 import { useVueLocalStorage } from '@/plugins/vue-storages'
+import { AxiosError } from 'axios'
 import { storeToRefs } from 'pinia'
 import { useShopUtilities } from 'src/composables/shop'
 import { useCart } from 'src/stores/cart'
@@ -81,7 +82,7 @@ export default defineComponent({
 
     const { translatePrice } = useShopUtilities()
     
-    const selectedPaymentMethod = ref(null)
+    const selectedPaymentMethod = ref<string | null>(null)
 
     const hasSelectedPaymentMethod = computed(() => {
       return selectedPaymentMethod.value !== null
@@ -107,7 +108,7 @@ export default defineComponent({
       robots: 'noindex,nofollow'
     })
 
-    const paymentIntent = ref(instance.retrieve('payment_intent'))
+    const paymentIntent = ref(instance.retrieve<{ intent: string }>('payment_intent'))
 
     return {
       paymentIntent,
@@ -135,14 +136,16 @@ export default defineComponent({
       // Test card number: 5200828282828210
       const result = await this.$refs.stripeElements.instance.createToken(this.$refs.card.stripeElement)
       const token = result.token
-      console.log(token)
+
       this.tokenData.session_id = this.$session.retrieve('session_id')
       this.tokenData.card = token.card.id
       this.tokenData.intent = this.paymentIntent.intent
       this.tokenData.token = token.id
       this.tokenData.client_ip = token.client_ip
+
       // this.requestData.card = this.tokenData
       // this.$session.create('payment_intent', this.tokenData.token_id)
+
       this.handlePayment()
     },
     /**
@@ -152,19 +155,23 @@ export default defineComponent({
     async handlePayment () {
       try {
         const response = await this.$http.post('orders/create', this.tokenData)
+
         this.$session.create('payment_response', response.data)
         this.$localstorage.remove('payment_intent')
+        
         this.$router.push({ name: 'shop_payment_success' })
       } catch (e) {
-        this.messagesStore.addErrorMessage('Payment error', e.response)
-        console.error(e)
+        if (e instanceof AxiosError && e.response) {
+          console.error(e)
+          this.messagesStore.addErrorMessage('Payment error', e.response.statusText)
+        }
       }
     },
     /**
      * Executes card tokenization and initiates the
      * payment on the backend side
      */
-    handlePaymentType (cardType) {
+    handlePaymentType (cardType: string) {
       this.selectedPaymentMethod = cardType
     }
   }

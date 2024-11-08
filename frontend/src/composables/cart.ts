@@ -3,6 +3,7 @@ import { useVueSession } from '@/plugins/vue-storages'
 import { useCart } from '@/stores/cart'
 import { CartUpdateAPIResponse, UserSelection } from '@/types/composables/cart'
 import { Product } from '@/types/shop'
+import { AxiosError } from 'axios'
 import { getCurrentInstance, ref } from 'vue'
 
 /**
@@ -59,8 +60,10 @@ export function useCartComposable () {
       // await requestCheckStock();
       return response;
     } catch (e) {
-      console.error(e);
-      return false;
+      if (e instanceof AxiosError && e.response) {
+        // Handle error
+      }
+      return false
     }
   }
 
@@ -79,17 +82,24 @@ export function useCartComposable () {
         showSizeSelectionWarning.value = true;
       } else {
         userSelection.value.product = product;
+        
+        // if the product does not have sizes
+        // to choose from always use "Unique"
+        // this is more for precautions here
+        if (!product.has_sizes) {
+          userSelection.value.size = 'Unique'
+        }
 
         const response = await requestAddToCart(userSelection.value);
 
         if (response) {
-          instance.create("cart_cache", response.data);
+          instance.create('cart_cache', response.data);
           cartStore.updateCart(response.data);
           callback.call(app, response.data);
         }
       }
-    } catch (e) {
-      console.error(e);
+    } catch {
+      // Handle error
     }
   }
 

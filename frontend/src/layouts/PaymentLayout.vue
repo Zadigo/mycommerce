@@ -43,29 +43,6 @@
             <div id="products" class="card-body">
               <div class="list-group">
                 <base-cart-iterator :is-editable="false" />
-                <!-- <article v-for="item in products" :key="item.id" :aria-label="item.product.name" class="list-group-item d-flex justify-content-start align-items-top gap-4 border-none ps-0">
-                  <div class="col-auto">
-                    <router-link :to="{ name: 'shop_product', params: { id: item.id } }">
-                      <v-img :src="djangoMediaPath(item.product.get_main_image?.original)" :lazy-src="djangoMediaPath(item.product.get_main_image?.original)" :width="100" :alt="item.product.name" />
-                    </router-link>
-                  </div>
-
-                  <div class="col">
-                    <router-link :to="{ name: 'shop_product', params: { id: item.product.id } }" class="link-dark">
-                      <p class="fw-bold mb-1">{{ translatePrice(calculateItemTotalCost(item.product.get_price, item.quantity)) }}</p>
-                      <p class="h6 mb-1">{{ item.product.name }}</p>
-                      <div class="d-flex justify-content-start align-items-center gap-2 fw-light fs-6">
-                        <span>{{ item.size }}</span>
-                        <span>{{ item.quantity }}x</span>
-                        <span>{{ translatePrice(item.product.get_price) }}</span>
-                      </div>
-                    </router-link>
-
-                    <v-btn v-show="$route.name === 'shop_payment_home'" size="small" rounded color="secondary" flat @click="removeFromCart(item)">
-                      <font-awesome-icon :icon="['fas', 'trash']" />
-                    </v-btn>
-                  </div>
-                </article> -->
               </div>
             </div>
 
@@ -76,8 +53,13 @@
               </div>
 
               <div class="delivery d-flex justify-content-between my-2">
-                <span>{{ $t("Frais d'envoi") }}</span>
-                <span class="fw-bold text-uppercase text-success">{{ $t('Gratuit') }}</span>
+                <span>
+                  {{ $t("Frais d'envoi") }}
+                </span>
+
+                <span class="fw-bold text-uppercase text-success">
+                  {{ $t('Gratuit') }}
+                </span>
               </div>
 
               <div class="total d-flex justify-content-between">
@@ -93,13 +75,13 @@
 </template>
 
 <script lang="ts">
+import { useShopUtilities } from '@/composables/shop'
+import { useCart } from '@/stores/cart'
 import { useRefHistory } from '@vueuse/core'
-import { useShopUtilities } from 'src/composables/shop'
 import { storeToRefs } from 'pinia'
-import { useCart } from 'src/stores/cart'
 import { defineComponent } from 'vue'
 
-import BaseCartIterator from 'src/components/BaseCartIterator.vue'
+import BaseCartIterator from '@/components/BaseCartIterator.vue'
 
 export default defineComponent({
   name: 'PaymentLayout',

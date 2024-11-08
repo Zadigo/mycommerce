@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-sm-12 col-md-10 offset-md-1">
           <div class="row g-1">
-            <article v-for="i in 6" :key="i" class="col-sm-12 col-md-4 my-1">
+            <article v-for="i in 3" :key="i" class="col-sm-12 col-md-4 my-1">
               <router-link :to="{ name: 'shop_products_collection', params: { id: 'all'} }">
                 <article :aria-label="`Collection n°${i}`" class="card shadow-none">
                   <img :alt="`Collection n°${i}`" src="/img4.jpeg" class="card-img">
@@ -24,6 +24,7 @@
 
 <script lang="ts">
 import { CollectionName } from '@/types/collections';
+import { AxiosError } from 'axios';
 import { useHead } from 'unhead';
 import { defineComponent, ref } from 'vue';
 
@@ -36,7 +37,7 @@ export default defineComponent({
   },
   setup () {
     useHead({
-      title: 'Collections'
+      title: 'Achat en ligne de vêtements'
     })
 
     const collections = ref<CollectionName[]>([])
@@ -52,13 +53,11 @@ export default defineComponent({
     /**
      * Gets all the names of the collections that are
      * available to be displayed on this page
-     * 
-     * @listens
      */
     async requestCollectionNames () {
       try {
         const numberOfItems = this.$session.listCount('collections', false)
-
+        
         if (numberOfItems === 0) {
           const response = await this.$http.get<CollectionName>('collection')
           this.$session.create('collections', response.data)
@@ -66,14 +65,10 @@ export default defineComponent({
 
         this.collections = this.$session.retrieve<CollectionName[]>('collections')
       } catch (e) {
-        console.error('CollectionPage', e)
+        if (e instanceof AxiosError && e.response) {
+          // Handle error
+        }
       }
-    },
-    /**
-     * @param {Number} size The grid size
-     */
-    handleGridSize (size: string) {
-      this.currentGridSize = size
     }
   }
 })

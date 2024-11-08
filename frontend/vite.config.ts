@@ -1,14 +1,14 @@
 /// <reference types="vitest" />
 
-import { defineConfig, loadEnv } from "vite";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
+import { defineConfig, loadEnv } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
-import vue from "@vitejs/plugin-vue";
-import UnheadVite from "@unhead/addons/vite";
-import eslint from "vite-plugin-eslint";
 import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
+import UnheadVite from "@unhead/addons/vite";
+import vue from "@vitejs/plugin-vue";
+import eslint from "vite-plugin-eslint";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -79,7 +79,12 @@ export default defineConfig(({ mode }) => {
     ],
     test: {
       globals: true,
-      environment: 'happy-dom'
+      environment: 'jsdom',
+      // browser: {
+      //   name: 'chromium',
+      //   enabled: true,
+      //   provider: 'playwright'
+      // }
     },
   };
 });
