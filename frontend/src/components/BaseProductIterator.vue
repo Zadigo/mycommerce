@@ -40,8 +40,9 @@ export default defineComponent({
   computed: {
     gridClass () {
       return {
-        'col-md-3 col-sm-6': this.columns === 3,
-        'col-md-4 col-sm-6': this.columns === 4
+        [`col-md-${this.columns} col-sm-6`]: true
+        // 'col-md-3 col-sm-6': this.columns === 3,
+        // 'col-md-4 col-sm-6': this.columns === 4
       }
     }
   }

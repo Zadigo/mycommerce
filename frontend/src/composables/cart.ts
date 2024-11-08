@@ -100,7 +100,7 @@ export function useCartComposable () {
    */
   async function quickAddToCart(
     product: Product,
-    size: string,
+    size: string | number,
     callback: () => void
   ) {
     userSelection.value.size = size;

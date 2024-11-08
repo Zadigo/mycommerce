@@ -1,14 +1,14 @@
 import cookies from 'universal-cookie'
-import { authClient, client, quartClient } from './axios.js'
+import { authClient, client, quartClient } from './axios.ts'
 import { App } from 'vue'
 
 import _ from 'lodash'
 
-import './fontawesome.js'
-import './webfontloader.js'
+import './fontawesome.ts'
+import './fonts.ts'
 
 import dayjs from 'dayjs'
-import i18n from './i18n.js'
+import i18n from './i18n.ts'
 
 if (import.meta.env.DEV) {
   window.DayJs = dayjs

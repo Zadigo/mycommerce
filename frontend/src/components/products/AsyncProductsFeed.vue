@@ -42,6 +42,7 @@
                 
           <v-container>
             <v-expansion-panels>
+              <!-- Filter By -->
               <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
                 <v-expansion-panel-title>Trier par</v-expansion-panel-title>
                 <v-expansion-panel-text>
@@ -60,13 +61,15 @@
                   {{ $t("Typologie") }}
                 </v-expansion-panel-title>
               </v-expansion-panel>
-
+              
+              <!-- Color -->
               <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
                 <v-expansion-panel-title>
                   {{ $t("Couleur") }}
                 </v-expansion-panel-title>
               </v-expansion-panel>
 
+              <!-- Size -->
               <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
                 <v-expansion-panel-title>
                   {{ $t("Taille") }}
@@ -83,6 +86,7 @@
                 </v-expansion-panel-text>
               </v-expansion-panel>
 
+              <!-- Price -->
               <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
                 <v-expansion-panel-title>
                   {{ $t("Prix") }}
@@ -113,21 +117,20 @@
 </template>
 
 <script lang="ts">
-import { client } from 'src/plugins/axios'
-import { ref, computed, defineComponent } from 'vue'
-import { useVueSession } from 'src/plugins/vue-storages'
-import { useRoute, useRouter } from 'vue-router'
-import { useMessages } from 'src/stores/messages'
-import { reactify, useIntersectionObserver, watchArray } from '@vueuse/core'
 import { scrollToTop, useUtilities } from '@/composables/utils'
-
+import { client } from '@/plugins/axios'
+import { useVueSession } from '@/plugins/vue-storages'
+import { useMessages } from '@/stores/messages'
 import { Product, ProductsAPIResponse } from '@/types/shop'
+import { reactify, useIntersectionObserver, watchArray } from '@vueuse/core'
+import { AxiosError } from 'axios'
+import { computed, defineComponent, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import sizes from '@/data/sizes.json'
 
 import BaseProductIterator from '@/components/BaseProductIterator.vue'
 import DefaultFiltering from '@/components/products/filtering/DefaultFiltering.vue'
-
 
 type Actions = 'sorted by' | 'typology' | 'colors' | 'sizes' | 'price'
 
@@ -179,15 +182,14 @@ const sortingFilters = [
  * requires the products to be loaded from the database
  * on initialization 
  */
-export default  defineComponent({
+export default defineComponent({
   name: 'AsyncProductsFeed',
   components: {
     BaseProductIterator,
     DefaultFiltering
   },
   emits: {
-    'update-products' (products: Product[]) {
-      products
+    'update-products' (_products: Product[]) {
       return true
     }
   },
@@ -208,11 +210,11 @@ export default  defineComponent({
 
     const currentGridSize = ref(3)
 
-    const cachedResponse = ref<ProductsAPIResponse | object>({})
+    const cachedResponse = ref<ProductsAPIResponse>()
     const products = ref<Product[]>([])
 
     const messagesStore = useMessages()
-    const intersectionTarget = ref(null)
+    const intersectionTarget = ref<HTMLElement | null>(null)
     
     /**
      * Returns the collection of products based
@@ -222,25 +224,20 @@ export default  defineComponent({
       try {
         const collectionName = route.params.id        
         const collectionUrlPath = `collection/${collectionName}`
-
-        // if (instance.keyExists(collectionUrlPath)) {
-        //   cachedResponse.value = instance.retrieve(collectionUrlPath)
-        // } else {
-        // }
         const response = await client.get<ProductsAPIResponse>(collectionUrlPath)
+
         instance.create(collectionUrlPath, response.data)
 
         cachedResponse.value = response.data
         products.value = response.data.results
         instance.create('products', products.value)
       } catch (e) {
-        // If we fail to get the collectionName
-        // redirect to the 404 page
-        messagesStore.addNetworkError()
-        console.error(e)
-
-        if (e.response.status === 404) {
-          router.push({ name: 'not_found' })
+        if (e instanceof AxiosError && e.response) {
+          if (e.response.status === 404) {
+            router.push({ name: 'not_found' })
+          } else {
+            messagesStore.addNetworkError()
+          }
         }
       }
     }
@@ -248,9 +245,16 @@ export default  defineComponent({
 
     // Provide the total product count for all children
     // since they do not have that information on load
-    const totalProductCount = ref<number>(cachedResponse.value.count)
+    const totalProductCount = computed(() => {
+      if (cachedResponse.value) {
+        return cachedResponse.value.count
+      } else {
+        return 0
+      }
+    })
+
     const isLoadingMoreProducts = ref(false)
-    const offsetsList = ref([])
+    const offsetsList = ref<string[]>([])
     
     /**
      * This is the main pagination function that is
@@ -260,6 +264,10 @@ export default  defineComponent({
     async function requestOffsetProducts (offset: string | number) {
       try {
         const collectionUrlPath = `${route.path.toString().replace('/shop/', '/')}?offset=${offset}`
+
+        // TODO: If the user has applied filters to the products, we need
+        // to request products with the exact same filters
+
         const response = await client.get<ProductsAPIResponse>(collectionUrlPath)
 
         instance.create(collectionUrlPath, response.data)
@@ -268,31 +276,43 @@ export default  defineComponent({
         products.value.push(...response.data.results)
         instance.create('products', products.value)
       } catch (e) {
-        console.error(e)
+        if (e instanceof AxiosError && e.response) {
+          messagesStore.addNetworkError()
+        }
       }
     }
 
     const nextPageUrl = computed(() => {
-      return cachedResponse.value.next
+      if (cachedResponse.value) {
+        return cachedResponse.value.next
+      } else {
+        return ''
+      }
     })
+
     const isEndOfPage = computed(() => {
-      return nextPageUrl.value === null
+      return (
+        nextPageUrl.value === null ||
+        nextPageUrl.value === ''
+      )
     })
 
     /**
      * Get the limit offset values for an url in order to
      * return the offset products 
      */
-    const urlLimitOffsetValues  = reactify((url: string): Array<string> | boolean => {
+    const urlLimitOffsetValues  = reactify((url: string): (string | null)[] | boolean => {
       try {
         const urlObject = new URL(url)
         const limit = urlObject.searchParams.get('limit')
         const offset = urlObject.searchParams.get('offset')
         
-        offsetsList.value.push(offset)
-        return [limit, offset]
+        if (offset) {
+          offsetsList.value.push(offset)
+        }
 
-      } catch (e) {
+        return [limit, offset]
+      } catch {
         return false
       }
     })
@@ -312,9 +332,8 @@ export default  defineComponent({
       }
     }, {})
 
-    watchArray(selectedFilters.value.sizes, (n) => {
-      console.log(n)
-      // requestFilteredProducts()
+    watchArray(selectedFilters.value.sizes, (_n) => {
+      // Logic
     }, {
       deep: true
     })
@@ -424,7 +443,7 @@ export default  defineComponent({
   },
   mounted () {
     this.$emit('update-products', this.products)
-    this.intersectionTarget = this.$refs.moreProductsIntersect
+    this.intersectionTarget = this.$refs.moreProductsIntersect as HTMLElement | null
   },
   methods: {
     /**
@@ -436,7 +455,7 @@ export default  defineComponent({
       this.currentGridSize = size
     },
     /**
-     * 
+     * Receives a filter and then sorts
      */
     handleFilterSelection (action: Actions, value: string) {
       switch (action) {

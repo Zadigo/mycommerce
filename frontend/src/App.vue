@@ -27,6 +27,8 @@
                   {{ $t('Sélectionnez votre langue') }}
                 </p>
 
+
+
                 <div class="d-flex gap-1">
                   <v-btn v-for="value in languages" :key="value" :active="languageOptions.language === value" variant="outlined" rounded @click="languageOptions.language = value">
                     {{ value.toUpperCase() }}
@@ -35,7 +37,7 @@
               </div>
 
               <div class="col-12 d-flex justify-content-end">
-                <v-btn variant="tonal" color="primary" rounded @click="handleLanguageSelection">
+                <v-btn id="btn-select-language" variant="tonal" color="primary" rounded @click="handleLanguageSelection">
                   {{ $t('Enregistrer mon choix') }}
                 </v-btn>
               </div>

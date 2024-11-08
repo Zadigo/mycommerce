@@ -24,18 +24,20 @@
       </div>
     </div>
 
+    <!-- Heart -->
     <button v-if="showLikeButton" id="btn-like-product" type="button" class="btn btn-light btn-floating" aria-label="Like product" @click="handleLike(product)">
       <font-awesome-icon v-if="isLiked" :icon="['fas', 'heart']" />
       <font-awesome-icon v-else :icon="['far', 'heart']" />
     </button>
 
+    <!-- Like -->
     <router-link v-show="showPrices" :to="{ name: 'shop_product', params: { id: product.id } }" class="link-dark">
       <div class="card-body pt-0 px-2 pb-0">
         <p id="product-name" class="mb-0 mt-1 fw-light" :aria-label="product.name">
           {{ product.name }}
         </p>
         
-        <p class="fw-bold">
+        <p class="pricing fw-bold">
           {{ $n(parseFloat(product.get_price), 'currency') }}
         </p>
       </div>
@@ -78,7 +80,7 @@ export default defineComponent({
   },
   setup (props) {
     const { parseMainImage } = useShopUtilities()
-    const { quickAddToCart, quickAddToCartNoSize } = useCartComposable()
+    const { quickAddToCart } = useCartComposable()
     const { isLiked, handleLike } = useShopComposable()
     const isHovered = ref(false)
 
@@ -90,7 +92,6 @@ export default defineComponent({
     return {
       isLiked,
       isHovered,
-      quickAddToCartNoSize,
       quickAddToCart,
       parseMainImage,
       handleLike
@@ -120,7 +121,7 @@ export default defineComponent({
      * Proxy to add a product which has no size to the cart 
      */
     handleSelectedNoSize () {
-      this.quickAddToCartNoSize(this.product, () => {
+      this.quickAddToCart(this.product, 'Unique', () => {
         this.isHovered = false
       })
     }
@@ -128,42 +129,46 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-  #btn-like-product {
-    position: absolute;
-    top: 5%;
-    right: 5%;
-  }
+<style lang="scss" scoped>
+#btn-like-product {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+}
 
-  .card-cover {
-    position: absolute;
-    bottom: 16%;
-    left: 2%;
-    right: 2%;
-    height: auto;
-    width: 96%;
-    background-color: white;
-  }
+.card-cover {
+  position: absolute;
+  bottom: 16%;
+  left: 2%;
+  right: 2%;
+  height: auto;
+  width: 96%;
+  background-color: white;
+}
 
-  .card-cover-enter-active,
-  .card-cover-leave-active {
+.card-cover {
+  &-enter-active,
+  &-leave-active {
     transition: all .3s ease-in;
   }
 
-  .card-cover-enter-to,
-  .card-cover-leave-from {
+  &-enter-to,
+  &-enter-from {
     opacity: 0;
-    /* transform: translateY(0%); */
   }
 
-  .card-cover-enter-from,
-  .card-cover-leave-to {
+  &-enter-from,
+  &-enter-to {
     opacity: 1;
-    /* transform: translateY(20%); */
   }
+}
 
-  p#product-name {
-    font-size: .85rem;
-  }
+p#product-name {
+  font-size: .85rem;
+}
+
+.pricing {
+  font-size: 0.90rem;
+}
 </style>
 

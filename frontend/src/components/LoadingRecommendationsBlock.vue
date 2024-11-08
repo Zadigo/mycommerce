@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 import BaseSkeleton from '@/layouts/BaseSkeleton.vue';
 
@@ -34,6 +34,13 @@ export default defineComponent({
     quantity: {
       type: Number,
       default: 20
+    }
+  },
+  setup	() {
+    const scrollable = ref(false)
+
+    return {
+      scrollable
     }
   },
   mounted () {

@@ -5,16 +5,16 @@
     </h2>
 
     <div ref="productsRow" class="row g-1">
-      <base-product-iterator :products="recommendations" :columns="3" />
+      <base-product-iterator :products="recommendations" :columns="columns" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { useRoute } from 'vue-router'
 import { client } from 'src/plugins/axios'
 import { useVueSession } from 'src/plugins/vue-storages'
+import { defineComponent, ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 import BaseProductIterator from 'src/components/BaseProductIterator.vue'
 

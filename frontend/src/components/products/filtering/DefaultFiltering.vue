@@ -13,7 +13,7 @@
             </v-btn>
 
             <v-btn variant="tonal" class="ms-3" @click="$emit('show-product-filters')">
-              <font-awesome-icon :icon="['fas', 'sliders']" class="me-2" /> Filtres
+              <font-awesome-icon icon="sliders" class="me-2" /> Filtres
             </v-btn>
           </div>
         </div>
@@ -26,11 +26,11 @@
           </v-skeleton-loader>
 
           <v-btn :active="gridSize === 3" variant="tonal" flat @click="handleGridSize(3)">
-            <font-awesome-icon :icon="['fas', 'table-cells-large']" />
+            <font-awesome-icon icon="table-cells-large" />
           </v-btn>
 
           <v-btn :active="gridSize === 4" variant="tonal" flat @click="handleGridSize(4)">
-            <font-awesome-icon :icon="['fas', 'table-cells-large']" />
+            <font-awesome-icon icon="table-cells-large" />
           </v-btn>
         </div>
       </div>
@@ -39,11 +39,10 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash'
+import { Product } from '@/types/shop';
+import { defineComponent, inject, PropType, ref } from 'vue';
 
-import { ref, inject, defineComponent } from 'vue'
-
-import sizes from 'src/data/sizes.json'
+import sizes from '@/data/sizes.json';
 
 const sortingOptions = [
   'Prix croissant',
@@ -54,7 +53,7 @@ export default defineComponent({
   name: 'DefaultFiltering',
   props: {
     products: {
-      type: Array,
+      type: Array as PropType<Product[]>,
       default: () => []
     },
     totalProductCount: {
@@ -63,12 +62,11 @@ export default defineComponent({
     }
   },
   emits: {
-    'update-grid-size' () {
-      return true
+    'update:grid-size' (size: number) {
+      return [3, 4].includes(size);
     },
-    'update:sorting' (value) {
-      console.log('update:sorting', value)
-      return true
+    'update:sorting' (value: string) {
+      return sortingOptions.includes(value)
     },
     'show-product-filters' () {
       return true
@@ -87,15 +85,19 @@ export default defineComponent({
   },
   computed: {
     productCategories () {
-      return _.uniq(_.map(this.products, (product) => {
+      // return _.uniq(_.map(this.products, (product) => {
+      //   return product.category
+      // }))
+      const items = this.products.map(product => {
         return product.category
-      }))
+      })
+      return new Set(items)
     }
   },
   beforeMount() {
     if (this.$session.keyExists('grid-size')) {
       this.gridSize = this.$session.retrieve('grid-size')
-      this.$emit('update-grid-size')
+      this.$emit('update:grid-size', this.gridSize)
     } else {
       this.$session.create('grid-size', 3)
     }
@@ -105,12 +107,10 @@ export default defineComponent({
      * Changes the size of the grid to
      * reduce or increase the amount of
      * products displayed on the screen
-     * 
-     * @param {String | Number} size 
      */
-    handleGridSize (size) { 
+    handleGridSize (size: number) { 
       this.gridSize = size
-      this.$emit('update-grid-size', size)
+      this.$emit('update:grid-size', size)
     }
   }
 })

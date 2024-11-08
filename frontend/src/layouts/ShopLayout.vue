@@ -98,7 +98,7 @@
       </v-dialog>
     </teleport>
 
-    <!-- Confirmation Product Confirmation -->
+    <!-- Confirmation Product -->
     <teleport to="body">
       <v-navigation-drawer id="dialog-product-confirmation" v-model="showAddedProductDrawer" location="right" width="400" temporary>
         <div class="container">

@@ -54,7 +54,7 @@ export default defineComponent({
   components: {
     AsyncProductsFeed: defineAsyncComponent({
       loader: () => import('@/components/products/AsyncProductsFeed.vue'),
-      delay: 1000
+      delay: 500
     }),
     LoadingProductsFeed,
     ShopLayout
@@ -87,7 +87,7 @@ export default defineComponent({
      * component to the parent so that we
      * can process them e.g. SEO here
      */
-    handleProductsLoaded (products: Product[]) {
+    handleProductsLoaded (products: Product[]) {   
       this.products = products
       this.productsLoading = false
     }

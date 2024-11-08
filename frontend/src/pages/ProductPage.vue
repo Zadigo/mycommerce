@@ -28,7 +28,7 @@
         <div id="more-products" class="col-12">
           <suspense>
             <template #default>
-              <async-recommendation-block :quantity="30" />
+              <async-recommendation-block :columns="2" :quantity="30" />
             </template>
 
             <template #fallback>
@@ -45,6 +45,7 @@
 import 'vue-image-zoomer/dist/style.css'
 
 import { useCompany } from '@/composables/company'
+import { Product, ProductVariant } from '@/types/shop'
 import { useIntersectionObserver } from '@vueuse/core'
 import { AxiosError } from 'axios'
 import { mapActions, storeToRefs } from 'pinia'
@@ -57,26 +58,25 @@ import { useHead } from 'unhead'
 import { defineAsyncComponent, defineComponent, inject, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { Product, ProductVariant } from '@/types/shop'
 
 // import AdditionalInfoBlock from '@/components/product/AdditionalInfoBlock.vue'
+import LoadingRecommendationsBlock from '@/components/LoadingRecommendationsBlock.vue'
 import BreadcrumbBlock from '@/components/product/BreadcrumbBlock.vue'
+import DeliveryType from '@/components/product/DeliveryType.vue'
+import DeliveryTypes from '@/components/product/DeliveryTypes.vue'
+import FiveImages from '@/components/product/FiveImages.vue'
 import ProductAside from '@/components/product/ProductAside.vue'
 import ReviewsBlock from '@/components/product/ReviewsBlock.vue'
-import ShopLayout from '@/layouts/ShopLayout.vue'
-import LoadingRecommendationsBlock from 'src/components/LoadingRecommendationsBlock.vue'
-import DeliveryType from 'src/components/product/DeliveryType.vue'
-import DeliveryTypes from 'src/components/product/DeliveryTypes.vue'
-import FiveImages from 'src/components/product/FiveImages.vue'
-import SixImages from 'src/components/product/SixImages.vue'
+import SixImages from '@/components/product/SixImages.vue'
 import BaseSkeleton from '@/layouts/BaseSkeleton.vue'
+import ShopLayout from '@/layouts/ShopLayout.vue'
 
 export default defineComponent({
   name: 'ProductPage',
   components: {
     // AdditionalInfoBlock,
     AsyncRecommendationBlock: defineAsyncComponent({
-      loader: () => import('src/components/RecommendationsBlock.vue'),
+      loader: () => import('@/components/RecommendationsBlock.vue'),
       delay: 500
     }),
     BaseSkeleton,
@@ -280,7 +280,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .variant {
   cursor: pointer;
 }
@@ -317,15 +317,5 @@ h1 {
 
 #product-main-image {
   position: relative;
-}
-
-#main-image {
-  position: sticky;
-  top: 0;
-  left: 0;
-}
-
-.v-skeleton-loader__image {
-  height: 655px;
 }
 </style>
