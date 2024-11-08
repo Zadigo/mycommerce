@@ -8,7 +8,8 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import NotFound
-from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, UpdateAPIView
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, UpdateAPIView)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -30,7 +31,6 @@ class CartMixin:
         return items
 
 
-@extend_schema(operation_id='List All Carts')
 class ListCartsView(ListAPIView):
     """Returns all the carts in the current shop
     that were created by the users (authenticated
@@ -41,7 +41,6 @@ class ListCartsView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
 
-@extend_schema(operation_id='List Cart')
 class ListCartView(ListAPIView):
     """Return all items that were saved
     in the specific user's cart"""
@@ -104,7 +103,6 @@ class DeleteFromCart(DestroyAPIView):
         return queryset.filter(logic)
 
 
-@extend_schema(operation_id='Add To Cart')
 class AddToCartView(CreateAPIView):
     """Add a product to the cart. This allows the customer
     to add products being anonymous or logged in. In the
@@ -145,7 +143,6 @@ def authenticate_user_cart(request, **kwargs):
     return Response({'status': True})
 
 
-@extend_schema(operation_id='Update In Cart')
 class UpdateInCartView(CartMixin, UpdateAPIView):
     """Update item in cart (quantity, size...)"""
 
@@ -183,7 +180,6 @@ class UpdateInCartView(CartMixin, UpdateAPIView):
         return Response(data=data)
 
 
-@extend_schema(operation_id='Delete From Cart')
 class DeleteFromCart(DestroyAPIView):
     """Delete one or multiple products
     from the user cart"""
@@ -240,7 +236,6 @@ class DeleteFromCart(DestroyAPIView):
         return Response(data=data, status=status.HTTP_204_NO_CONTENT)
 
 
-@extend_schema(operation_id='Create Session ID')
 class CreateSessionID(CreateAPIView):
     permission_classes = [AllowAny]
 

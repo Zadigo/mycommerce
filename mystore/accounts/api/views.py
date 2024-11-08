@@ -1,6 +1,8 @@
-from accounts.api.serializers import (LOGIN_RESPONSE_SERIALIZER, USER_MODEL, EmailTokenObtainSerializer,
+from accounts.api.serializers import (LOGIN_RESPONSE_SERIALIZER, USER_MODEL,
+                                      EmailTokenObtainSerializer,
                                       LoginUserSerializer,
-                                      SignupUserSerializer, UserProfileSerializer, UserSerializer,
+                                      SignupUserSerializer,
+                                      UserProfileSerializer, UserSerializer,
                                       ValidateAddressSerializer,
                                       ValidateUpdateAccount)
 from accounts.models import Address, UserProfile
@@ -18,7 +20,6 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
-@extend_schema('Login', responses=LOGIN_RESPONSE_SERIALIZER)
 class Login(CreateAPIView):
     """Logs the user in using standard username
     and password data which returns a basic token
@@ -45,7 +46,6 @@ class Login(CreateAPIView):
         return serializer.save()
 
 
-@extend_schema(operation_id='Signup')
 class Signup(APIView):
     http_method_names = ['post']
     serializer_class = SignupUserSerializer
@@ -91,7 +91,6 @@ class AccountUpdate(APIView):
         return Response({'state': True}, headers=headers)
 
 
-@extend_schema(operation_id='Update Addresses')
 class UpdateAddressesView(UpdateAPIView):
     queryset = Address.objects.all()
     serializer_class = ValidateAddressSerializer
@@ -128,7 +127,6 @@ def logout(request, **kwargs):
     return Response({'state': True})
 
 
-@extend_schema(operation_id='Logout')
 class LogoutView(DestroyAPIView):
     permission_classes = [IsAuthenticated]
 
@@ -138,7 +136,6 @@ class LogoutView(DestroyAPIView):
         return Response({'status': True})
 
 
-@extend_schema(operation_id='Profile')
 class ProfileView(RetrieveAPIView):
     """Returns the user profile"""
     queryset = USER_MODEL.objects.all()
