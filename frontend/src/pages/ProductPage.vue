@@ -4,7 +4,7 @@
       <!-- Product -->
       <div class="row gy-1">
         <div id="product-information" class="col-12">
-          <div class="row row-cols-5">
+          <div class="row">
             <!-- Main Image -->
             <div id="product-images" class="col-6">
               <div id="main-image">
@@ -13,7 +13,19 @@
                 </BaseSkeleton>
               </div>
             </div>
-            
+
+            <!-- <div class="col-4">
+              <BaseSkeleton :loading="isLoading" height="836px">
+                <v-img :src="parseMainImage(currentProduct)" :lazy-src="parseMainImage(currentProduct)" :alt="currentProduct.name" />
+              </BaseSkeleton>
+            </div>
+
+            <div class="col-4">
+              <BaseSkeleton :loading="isLoading" height="836px">
+                <v-img :src="parseMainImage(currentProduct)" :lazy-src="parseMainImage(currentProduct)" :alt="currentProduct.name" />
+              </BaseSkeleton>
+            </div> -->
+
             <!-- Aside -->
             <product-aside />
           </div>
@@ -45,15 +57,15 @@
 import 'vue-image-zoomer/dist/style.css'
 
 import { useCompany } from '@/composables/company'
+import { useShopComposable, useShopUtilities } from '@/composables/shop'
+import { client } from '@/plugins/axios'
+import { useAuthentication } from '@/stores/authentication'
+import { useCart } from '@/stores/cart'
+import { useShop } from '@/stores/shop'
 import { Product, ProductVariant } from '@/types/shop'
 import { useIntersectionObserver } from '@vueuse/core'
 import { AxiosError } from 'axios'
 import { mapActions, storeToRefs } from 'pinia'
-import { useShopComposable, useShopUtilities } from 'src/composables/shop'
-import { client } from 'src/plugins/axios'
-import { useAuthentication } from 'src/stores/authentication'
-import { useCart } from 'src/stores/cart'
-import { useShop } from 'src/stores/shop'
 import { useHead } from 'unhead'
 import { defineAsyncComponent, defineComponent, inject, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'

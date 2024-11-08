@@ -26,7 +26,7 @@
     <!-- Variants -->
     <div v-if="hasColorVariants" id="variants" class="d-flex justify-content-start align-items-center gap-1 my-4">
       <div v-for="variant in currentProduct?.variants" :key="variant.id" class="variant">
-        <router-link :to="{ name: 'shop_product', params: { id: variant.id } }" :aria-label="`${variant.id} ${variant.color}`">
+        <router-link id="product-variant" :to="{ name: 'shop_product', params: { id: variant.id } }" :aria-label="`${variant.id} ${variant.color}`">
           <v-img :src="parseMainImage(variant, 'original')" :lazy-src="parseMainImage(variant, 'original')" :alt="variant.color" width="50" />
         </router-link>
       </div>
@@ -35,11 +35,11 @@
     <hr class="my-5 text-body-tertiary">
 
     <!-- Sizes -->
-    <base-size-block :sizes="currentProduct?.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="() => {}" />
+    <base-size-block v-if="currentProduct" :sizes="currentProduct.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="() => {}" />
 
     <!-- Size Guide -->
     <div class="d-flex justify-content-start gap-3 mt-4 mb-2">
-      <a href class="btn btn-light btn-rounded fw-bold shadow-none" @click.prevent="showSizeGuideDrawer=true">
+      <a href="#" class="btn btn-light btn-rounded fw-bold shadow-none" @click.prevent="showSizeGuideDrawer=true">
         <font-awesome-icon icon="ruler" class="me-2" /> {{ $t('Guide des tailles') }}
       </a>
     </div>
@@ -84,14 +84,14 @@
           <v-btn icon="mdi-close" @click="showSizeGuideDrawer = false" />
         </v-toolbar>
 
-        <div class="container my-4">
+        <div v-if="currentProduct" class="container my-4">
           <div class="row g-1">
             <div class="col-12">
               <p class="fs-6 fw-bold mb-1">
                 {{ $t("Sélectionne une taille") }}
               </p>
               
-              <base-size-block :sizes="currentProduct.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="showSizeGuideDrawer = true" />
+              <base-size-block :sizes="currentProduct.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="showSizeGuideDrawer=true" />
 
               <p class="fs-6 fw-bold mt-4 mb-1">
                 {{ $t("Mensurations") }}
@@ -163,16 +163,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref } from 'vue';
-import { useCartComposable  } from '@/composables/cart'
-import { useShopComposable, useShopUtilities } from '@/composables/shop'
-import { Product } from '@/types/shop';
+import { useCartComposable } from '@/composables/cart';
+import { useShopComposable, useShopUtilities } from '@/composables/shop';
 import { useCart } from '@/stores/cart';
+import { Product } from '@/types/shop';
 import { storeToRefs } from 'pinia';
+import { defineComponent, inject, ref } from 'vue';
 
-import AdditionalInfoBlock from './AdditionalInfoBlock.vue';
 import BaseSkeleton from '@/layouts/BaseSkeleton.vue';
 import BaseSizeBlock from '../BaseSizeBlock.vue';
+import AdditionalInfoBlock from './AdditionalInfoBlock.vue';
 import BreadcrumbBlock from './BreadcrumbBlock.vue';
 import DeliveryType from './DeliveryType.vue';
 import DeliveryTypes from './DeliveryTypes.vue';
@@ -237,8 +237,10 @@ export default defineComponent({
     }
   },
   methods: {
-    handleSizeSelection (size: string) {
-      this.userSelection.size = size
+    handleSizeSelection (size: string | undefined) {
+      if (typeof size !== 'undefined') {
+        this.userSelection.size = size
+      }
     },
     /**
      * Handles the action of adding a product
@@ -262,3 +264,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+#product-variant.router-link-exact-active {
+  opacity: 0.5;
+}
+</style>

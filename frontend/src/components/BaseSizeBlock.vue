@@ -31,12 +31,12 @@ export default defineComponent({
     }
   },
   emits: {
-    'update-size' (_size: string | null) {
+    'update-size' (_size: string | undefined) {
       return true
     }
   },
   setup () {
-    const selectedSize = ref<string | null>(null)
+    const selectedSize = ref<string>()
     const { history } = useRefHistory(selectedSize)
 
     return {
