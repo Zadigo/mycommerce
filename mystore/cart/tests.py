@@ -1,11 +1,18 @@
+import time
+
 from cart.api import views
 from cart.managers import SessionManager
 from cart.models import Cart
 from django.contrib.auth import get_user_model
-from django.test import Client, RequestFactory, TestCase
+from django.test import Client, LiveServerTestCase, RequestFactory, TestCase
 from django.urls import reverse
 from rest_framework.mixins import status
 from rest_framework.test import APIClient, APIRequestFactory, APITestCase
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.wait import WebDriverWait
 from shop.models import Product
 
 
@@ -48,7 +55,7 @@ class TestCart(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_add_to_cart(self):
-        product = Product.objects.values().first()
+        product = Product.objects.first()
         response = self.client.post(
             reverse('cart_api:create_session_id')
         )
@@ -56,16 +63,25 @@ class TestCart(APITestCase):
         self.assertIsNotNone(token)
 
         data = {
-            'product': list(product)[0],
-            'size': 'Unique',
-            'session_id': token
+            "product": {
+                "id": product.id,
+                "size": "Unique",
+                "color": "Blue"
+            },
+            "size": "Unique",
+            "session_id": token
         }
         response = self.client.post(
             reverse('cart_api:add_to_cart'),
+            # content_type='application/json',
+            format='json',
             data=data
         )
-        print(response.json())
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertIsNotNone(data['session_id'])
+        self.assertEqual(data['statistics']['total'], 15.2)
 
     # def test_list_all_carts_view_not_authenticated(self):
     #     factory = APIRequestFactory()
@@ -121,3 +137,48 @@ class TestSessionManager(TestCase):
     def test_result(self):
         key = self.session.create_session_key()
         self.assertTrue(self.session.test_key(key))
+
+
+class TestLiveCart(LiveServerTestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.browser = webdriver.Edge()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.browser.quit()
+        super().tearDownClass()
+
+    def test_cart(self):
+        self.browser.get('http://localhost:5173/')
+
+        WebDriverWait(self.browser, 10).until(
+            ec.element_to_be_clickable(
+                (
+                    By.ID,
+                    'btn-select-language'
+                )
+            )
+        )
+
+        language_button = self.browser.find_element(
+            By.ID,
+            'btn-select-language'
+        )
+        language_button.click()
+
+        time.sleep(2)
+
+        section = self.browser.find_element(
+            By.CSS_SELECTOR,
+            'section#collections'
+        )
+        collections = section.find_elements(
+            By.TAG_NAME,
+            'article'
+        )
+        first_collection = collections[0]
+        first_collection.click()
+
+        time.sleep(10)
