@@ -5,8 +5,8 @@
       <div class="row gy-1">
         <div id="product-information" class="col-12">
           <div class="row row-cols-5">
+            <!-- Main Image -->
             <div id="product-images" class="col-6">
-              <!-- Main Image -->
               <div id="main-image">
                 <BaseSkeleton :loading="isLoading" height="836px">
                   <v-img :src="parseMainImage(currentProduct)" :lazy-src="parseMainImage(currentProduct)" :alt="currentProduct.name" />
