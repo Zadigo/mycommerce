@@ -5,14 +5,39 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "test": "nuxt test",
+    "eslint": "nuxt eslint",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxt/eslint": "^0.7.0",
+    "@nuxtjs/google-fonts": "^3.2.0",
+    "@pinia/nuxt": "^0.7.0",
+    "@vesp/nuxt-fontawesome": "^1.1.0",
+    "@vueuse/core": "^11.2.0",
+    "@vueuse/nuxt": "^11.2.0",
+    "axios": "^1.7.7",
+    "bootstrap": "^5.3.3",
+    "mdb-ui-kit": "^8.1.0",
     "nuxt": "^3.14.1592",
+    "pinia": "^2.2.6",
     "vue": "latest",
     "vue-router": "latest"
   },
-  "packageManager": "pnpm@9.13.2+sha512.88c9c3864450350e65a33587ab801acf946d7c814ed1134da4a924f6df5a2120fd36b46aab68f7cd1d413149112d53c7db3a4136624cfd00ff1846a0c6cef48a"
+  "packageManager": "pnpm@9.13.2+sha512.88c9c3864450350e65a33587ab801acf946d7c814ed1134da4a924f6df5a2120fd36b46aab68f7cd1d413149112d53c7db3a4136624cfd00ff1846a0c6cef48a",
+  "devDependencies": {
+    "@fortawesome/free-brands-svg-icons": "^6.6.0",
+    "@fortawesome/free-regular-svg-icons": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@nuxt/test-utils": "^3.14.4",
+    "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^15.11.6",
+    "sass-embedded": "^1.81.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5",
+    "vue-tsc": "^2.1.10",
+    "vuetify-nuxt-module": "^0.18.3"
+  }
 }
