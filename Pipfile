@@ -25,7 +25,7 @@ django-import-export = "*"
 psycopg = {extras = ["binary", "pool"], version = "*"}
 unidecode = "*"
 spacy = "*"
-numpy = "==1.26.4"
+numpy = "==2.0.2"
 jwt = "*"
 django-allauth = {extras = ["socialaccount"], version = "*"}
 django-ckeditor-5 = "*"
