@@ -3,6 +3,11 @@ import path from 'path'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
+  app: {
+    head: {
+      charset: 'utf-8'
+    }
+  },
   devtools: {
     enabled: true,
     timeline: {
