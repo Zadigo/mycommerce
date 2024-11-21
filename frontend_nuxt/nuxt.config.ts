@@ -27,13 +27,20 @@ export default defineNuxtConfig({
           Ubuntu: true
         }
       }
-    ]
+    ],
+    'nuxt-gtag',
+    'nuxt-clarity-analytics',
+    '@unlok-co/nuxt-stripe'
   ],
   alias: {
     '@': path.resolve(__dirname, './')
   },
   eslint: {
     
+  },
+  gtag: {
+    enabled: process.env.NODE_ENV === 'production',
+    id: 'G-XX'
   },
   css: [
     '~/node_modules/bootstrap/dist/css/bootstrap.min.css',
