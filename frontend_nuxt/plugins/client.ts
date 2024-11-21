@@ -1,9 +1,23 @@
 import type { AxiosInstance } from 'axios'
 import axios from 'axios'
 
+export function getBaseUrl(secure = false, port = '8000') {
+    let domain = `127.0.0.1:${port}`
+
+    if (process.env.DEV === 'production') {
+        domain = process.env.DJANGO_PROD_URL
+    }
+
+    const loc = secure ? 'https://' : 'http://'
+    const bits = [loc, domain, 'api/v1/']
+    const url = bits.join('')
+    
+    return new URL(url).toString()
+}
+
 export default defineNuxtPlugin((nuxtApp) => {
     const client: AxiosInstance = axios.create({
-        baseURL: process.env.BASE_URL,
+        baseURL: getBaseUrl(),
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
         timeout: 5000

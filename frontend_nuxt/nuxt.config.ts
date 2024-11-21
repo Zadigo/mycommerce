@@ -8,6 +8,11 @@ export default defineNuxtConfig({
       charset: 'utf-8'
     }
   },
+  vite: {
+    server: {
+      
+    }
+  },
   devtools: {
     enabled: true,
     timeline: {
@@ -25,14 +30,7 @@ export default defineNuxtConfig({
     'vuetify-nuxt-module',
     '@nuxtjs/google-fonts',
     '@nuxt/test-utils/module',
-    [
-      '@nuxtjs/google-fonts',
-      {
-        families: {
-          Ubuntu: true
-        }
-      }
-    ],
+    '@nuxtjs/google-fonts',
     'nuxt-gtag',
     'nuxt-clarity-analytics',
     '@unlok-co/nuxt-stripe'
@@ -42,6 +40,11 @@ export default defineNuxtConfig({
   },
   eslint: {
     
+  },
+  googleFonts: {
+    families: {
+      Ubuntu: true
+    }
   },
   gtag: {
     enabled: process.env.NODE_ENV === 'production',
@@ -64,13 +67,13 @@ export default defineNuxtConfig({
       solid: []
     }
   },
+  test: true,
   testUtils: {
     vitestConfig: {
       alias: {
         '@': path.resolve(__dirname, './')
       },
       css: true,
-      dir: path.resolve(__dirname, './tests'),
       deps: {
         optimizer: {
           ssr: {
