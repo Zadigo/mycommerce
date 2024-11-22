@@ -10,7 +10,8 @@
 
 <script lang="ts" setup>
 definePageMeta({
-  layout: 'payment-layout'
+  layout: 'payment-layout',
+  middleware: ['auth']
 })
 
 useHead({
