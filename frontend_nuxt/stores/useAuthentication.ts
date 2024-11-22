@@ -1,6 +1,6 @@
 import { useUtilities } from '@/composables/utils'
 import { defineStore } from 'pinia'
-import type { UserProfile, StringNull } from '~/types'
+import type { UserProfile, StringNull, LoginAPIResponse } from '~/types'
 
 export const useAuthentication = defineStore('authentication', () => {
     const { isNull } = useUtilities()
@@ -29,9 +29,15 @@ export const useAuthentication = defineStore('authentication', () => {
         refreshToken.value = null
     }
 
+    function setTokens (data: LoginAPIResponse) {
+        accessToken.value = data.access
+        refreshToken.value = data.refresh
+    }
+
     return {
         logout,
         loadFromCache,
+        setTokens,
         isAuthenticated,
         showLoginDrawer,
         profile,

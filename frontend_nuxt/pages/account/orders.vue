@@ -12,7 +12,7 @@
 definePageMeta({
   layout: 'account-layout',
   middleware: [
-    'authentication'
+    'auth'
   ]
 })
 </script>

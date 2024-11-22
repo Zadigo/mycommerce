@@ -45,8 +45,6 @@ export function useAuthencationComposable() {
 
     async function logout(callback: () => void) {
         try {
-            await nuxtApp.$client.post('accounts/logout')
-
             const accessToken = useCookie('access')
             const refreshToken = useCookie('refresh')
             
@@ -63,10 +61,21 @@ export function useAuthencationComposable() {
 
     }
 
+    async function testLogin (callback: () => void) {
+        const accessToken = useCookie('access')
+        const refreshToken = useCookie('refresh')
+
+        accessToken.value = 'test token'
+        refreshToken.value = 'refresh token' 
+
+        callback()
+    }
+
     return {
         email,
         password,
         authenticationFailuresCounter,
+        testLogin,
         authenticate,
         login,
         logout,
