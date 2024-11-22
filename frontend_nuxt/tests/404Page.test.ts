@@ -7,7 +7,6 @@ import ErrorPage from '~/pages/404.vue'
 
 describe('404Page', () => {
     setup({
-        // Mock any specific Nuxt configuration if needed
         nuxtConfig: {
             ssr: true,
         },
