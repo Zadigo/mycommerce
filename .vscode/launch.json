@@ -37,6 +37,26 @@
                 "<node_internals>/**"
             ],
             "env": {}
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Nuxt Test Files",
+            "autoAttachChildProcesses": true,
+            "skipFiles": [
+                "<node_internals>/**",
+                "**/node_modules/**"
+            ],
+            "program": "${workspaceFolder}/frontend_nuxt/node_modules/vitest/vitest.mjs",
+            "args": [
+                "run",
+                "${relativeFile}"
+            ],
+            "smartStep": true,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_DEV_URL": "127.0.0.1:8000"
+            }
         }
     ]
 }

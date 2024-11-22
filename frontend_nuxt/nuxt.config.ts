@@ -13,6 +13,11 @@ export default defineNuxtConfig({
       
     }
   },
+  runtimeConfig: {
+    public: {
+      DJANGO_PROD_URL: process.env.NUXT_DJANGO_PROD_URL 
+    }
+  },
   devtools: {
     enabled: true,
     timeline: {

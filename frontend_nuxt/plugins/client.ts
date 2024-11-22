@@ -1,21 +1,25 @@
 import type { AxiosInstance } from 'axios'
 import axios from 'axios'
 
+/**
+ * A helper function that creates and retuns 
+ * the base url to use for Axios
+ */
 export function getBaseUrl(secure = false, port = '8000') {
     let domain = `127.0.0.1:${port}`
 
     if (process.env.DEV === 'production') {
-        domain = process.env.DJANGO_PROD_URL
+        domain = process.env.NUXT_DJANGO_PROD_URL || ''
     }
 
-    const loc = secure ? 'https://' : 'http://'
-    const bits = [loc, domain, 'api/v1/']
+    const loc = secure || process.env.DEV === 'production' ? 'https://' : 'http://'
+    const bits = [loc, domain]
     const url = bits.join('')
     
-    return new URL(url).toString()
+    return new URL('/api/v1/', url).toString()
 }
 
-export default defineNuxtPlugin((nuxtApp) => {
+export function createClient(): AxiosInstance {
     const client: AxiosInstance = axios.create({
         baseURL: getBaseUrl(),
         headers: { 'Content-Type': 'application/json' },
@@ -47,6 +51,10 @@ export default defineNuxtPlugin((nuxtApp) => {
             return Promise.reject(error);
         }
     )
+    
+    return client
+}
 
-    nuxtApp.provide('client', client)
+export default defineNuxtPlugin((nuxtApp) => {
+    nuxtApp.provide('client', createClient())
 })
