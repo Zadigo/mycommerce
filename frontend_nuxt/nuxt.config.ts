@@ -4,6 +4,10 @@ import path from 'path'
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   app: {
+    pageTransition: { 
+      name: 'page', 
+      mode: 'out-in' 
+    },
     head: {
       charset: 'utf-8'
     }
