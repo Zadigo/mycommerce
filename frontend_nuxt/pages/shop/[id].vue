@@ -5,6 +5,10 @@
     <NuxtLink to="/cart/">
       Go to cart
     </NuxtLink>
+
+    <NuxtLink to="/wishlist/">
+      Go to wishlist
+    </NuxtLink>
   </div>
 </template>
 

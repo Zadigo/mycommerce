@@ -6,7 +6,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "test": "nuxt test",
-    "test:vi": "vitest --run",
+    "test:vi": "vitest",
     "eslint": "nuxt eslint",
     "generate": "nuxt generate",
     "preview": "nuxt preview",

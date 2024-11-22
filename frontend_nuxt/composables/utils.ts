@@ -7,11 +7,19 @@ type RefArrayAnyValues = ArrayAnyValues | Ref<(string | number)[]>
 
 export function useUtilities () {
     function isNull<T>(item: T): boolean {
+        let trueValue
+
+        if (isRef(item)) {
+            trueValue = item.value
+        } else {
+            trueValue = item
+        }
+
         return (
-            item === null ||
-            typeof item  === 'undefined' ||
-            item === '' ||
-            item === ' '
+            trueValue === null ||
+            typeof trueValue  === 'undefined' ||
+            trueValue === '' ||
+            trueValue === ' '
         )
     }
 
@@ -61,18 +69,18 @@ export function useUtilities () {
         return []
     }
 
-    function debounce<F extends (...args[]: any[]) => void>(fn: F, delay: number): (...args: Parameters<F>) => void {
-        let timer: ReturnType<typeof setTimeout>
+    // function debounce<F extends (...args[]: any[]) => void>(fn: F, delay: number): (...args: Parameters<F>) => void {
+    //     let timer: ReturnType<typeof setTimeout>
 
-        return function (...args: Parameters<F>) {
-            clearTimeout(timer)
-            timer = setTimeout(() => fn(...args), delay)
-        };
-    }
+    //     return function (...args: Parameters<F>) {
+    //         clearTimeout(timer)
+    //         timer = setTimeout(() => fn(...args), delay)
+    //     };
+    // }
 
     return {
         isNull,
-        debounce,
+        // debounce,
         hasNull,
         readFile,
         readFiles

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h1>Catch all page does not exist</h1>
+    <h1>Account - orders</h1>
+
     <NuxtLink to="/">
       Back to home
     </NuxtLink>
@@ -8,7 +9,10 @@
 </template>
 
 <script lang="ts" setup>
-useHead({
-  title: 'Page does not exist'
+definePageMeta({
+  layout: 'account-layout',
+  middleware: [
+    'authentication'
+  ]
 })
 </script>

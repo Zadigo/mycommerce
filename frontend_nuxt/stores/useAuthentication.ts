@@ -7,12 +7,11 @@ export const useAuthentication = defineStore('authentication', () => {
     
     const showLoginDrawer = ref(false)
     const profile = ref<UserProfile>()
-    const token = ref<StringNull>('')
     const accessToken = ref<StringNull>('')
     const refreshToken = ref<StringNull>('')
     
     const isAuthenticated = computed(() => {
-        return isNull(accessToken.value)
+        return !isNull(accessToken.value)
     })
 
     function loadFromCache () {
@@ -28,7 +27,6 @@ export const useAuthentication = defineStore('authentication', () => {
     function logout() {
         accessToken.value = null
         refreshToken.value = null
-        token.value = null
     }
 
     return {
@@ -36,7 +34,6 @@ export const useAuthentication = defineStore('authentication', () => {
         loadFromCache,
         isAuthenticated,
         showLoginDrawer,
-        token,
         profile,
         accessToken,
         refreshToken

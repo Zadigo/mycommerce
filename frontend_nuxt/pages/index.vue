@@ -1,8 +1,13 @@
 <template>
   <div>
     <h1>Collections page</h1>
+
     <NuxtLink :to="`/shop/collection/all`">
       All products
+    </NuxtLink>
+    
+    <NuxtLink to="/account/">
+      Profile
     </NuxtLink>
   </div>
 </template>
