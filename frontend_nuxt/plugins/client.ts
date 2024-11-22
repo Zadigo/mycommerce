@@ -5,7 +5,7 @@ import axios from 'axios'
  * A helper function that creates and retuns 
  * the base url to use for Axios
  */
-export function getBaseUrl(secure = false, port = '8000') {
+export function getBaseUrl(path = '/api/v1/', secure = false, port = '8000') {
     let domain = `127.0.0.1:${port}`
 
     if (process.env.DEV === 'production') {
@@ -16,12 +16,12 @@ export function getBaseUrl(secure = false, port = '8000') {
     const bits = [loc, domain]
     const url = bits.join('')
     
-    return new URL('/api/v1/', url).toString()
+    return new URL(path, url).toString()
 }
 
-export function createClient(): AxiosInstance {
+export function createClient(path = '/api/v1/'): AxiosInstance {
     const client: AxiosInstance = axios.create({
-        baseURL: getBaseUrl(),
+        baseURL: getBaseUrl(path),
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
         timeout: 5000

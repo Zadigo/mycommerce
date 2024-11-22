@@ -25,9 +25,12 @@ export default defineNuxtConfig({
     }
   },
   ssr: true,
-  // routeRules: {
-  //   '/': { ssr: true }
-  // }
+  routeRules: {
+    '/': { ssr: false },
+    'accounts/**': { ssr: false, robots: false },
+    '/wishlist': { ssr: false, robots: true },
+    '/404': { ssr: false, robots: true }
+  },
   modules: [
     '@nuxt/eslint',
     '@pinia/nuxt',
@@ -38,10 +41,13 @@ export default defineNuxtConfig({
     '@nuxtjs/google-fonts',
     'nuxt-gtag',
     'nuxt-clarity-analytics',
-    '@unlok-co/nuxt-stripe'
+    '@unlok-co/nuxt-stripe',
+    'nuxt-openapi-docs-module',
+    '@nuxtjs/sitemap'
   ],
   alias: {
-    '@': path.resolve(__dirname, './')
+    '@': path.resolve(__dirname, './'),
+    '@types': './types'
   },
   eslint: {
     
@@ -57,7 +63,9 @@ export default defineNuxtConfig({
   },
   css: [
     '~/node_modules/bootstrap/dist/css/bootstrap.min.css',
-    '~/node_modules/mdb-ui-kit/css/mdb.min.css'
+    '~/node_modules/mdb-ui-kit/css/mdb.min.css',
+    '~/node_modules/animate.css/animate.min.css',
+    '@/assets/style.scss'
   ],
   vuetify: {
     moduleOptions: {

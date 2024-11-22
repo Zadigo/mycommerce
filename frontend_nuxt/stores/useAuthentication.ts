@@ -1,17 +1,44 @@
+import { useUtilities } from '@/composables/utils'
 import { defineStore } from 'pinia'
-
-// export default defineStore('authentication', {
-//     state: () => ({
-        
-//     })
-// })
+import type { UserProfile, StringNull } from '~/types'
 
 export const useAuthentication = defineStore('authentication', () => {
-    const token = ref('')
-    const isAuthenticated = ref(false)
+    const { isNull } = useUtilities()
+    
+    const showLoginDrawer = ref(false)
+    const profile = ref<UserProfile>()
+    const token = ref<StringNull>('')
+    const accessToken = ref<StringNull>('')
+    const refreshToken = ref<StringNull>('')
+    
+    const isAuthenticated = computed(() => {
+        return isNull(accessToken.value)
+    })
+
+    function loadFromCache () {
+        const cookie = useCookie('access')
+
+        if (isNull(cookie.value)) {
+            return 
+        } else {
+            accessToken.value = cookie.value
+        }
+    }
+
+    function logout() {
+        accessToken.value = null
+        refreshToken.value = null
+        token.value = null
+    }
 
     return {
+        logout,
+        loadFromCache,
+        isAuthenticated,
+        showLoginDrawer,
         token,
-        isAuthenticated
+        profile,
+        accessToken,
+        refreshToken
     }
 })

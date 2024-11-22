@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h1>Cart - Index</h1>
+    <h1>Success</h1>
 
-    <NuxtLink to="/cart/shipment/">
-      Shipment
+    <NuxtLink to="/">
+      Back to home
     </NuxtLink>
   </div>
 </template>
@@ -14,6 +14,6 @@ definePageMeta({
 })
 
 useHead({
-  title: 'Cart'
+  title: 'Success'
 })
 </script>

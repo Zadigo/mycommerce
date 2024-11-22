@@ -1,7 +1,20 @@
 <template>
   <div>
-    Something
+    <h1>Collections page</h1>
+    <NuxtLink :to="`/shop/collection/all`">
+      All products
+    </NuxtLink>
   </div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+useHead({
+  title: 'Collections',
+  meta: [
+    {
+      key: 'description',
+      content: ''
+    }
+  ]
+})
+</script>

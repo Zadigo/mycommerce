@@ -6,6 +6,15 @@ type RefArrayAnyValues = ArrayAnyValues | Ref<(string | number)[]>
 
 
 export function useUtilities () {
+    function isNull<T>(item: T): boolean {
+        return (
+            item === null ||
+            typeof item  === 'undefined' ||
+            item === '' ||
+            item === ' '
+        )
+    }
+
     function hasNull<T extends ArrayAnyValues>(items: T): boolean {
         return items.some(v => {
             return v === null || v === '' || typeof v === 'undefined'
@@ -62,6 +71,7 @@ export function useUtilities () {
     }
 
     return {
+        isNull,
         debounce,
         hasNull,
         readFile,
