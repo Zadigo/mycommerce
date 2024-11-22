@@ -1,5 +1,9 @@
-import type { AxiosError } from "axios"
-import { ref, isRef } from 'vue'
+import type { AxiosError, AxiosInstance } from "axios"
+import { isRef, ref } from 'vue'
+import { useRouter } from "vue-router"
+
+import axios from 'axios'
+
 
 type ArrayAnyValues = (string | number)[]
 type RefArrayAnyValues = ArrayAnyValues | Ref<(string | number)[]>
@@ -119,20 +123,6 @@ export function useListManager () {
     }
 }
 
-export function useAxiosUtilities () {
-    const router = useRouter()
-
-    function handleError (e: AxiosError) {
-        if (e.response?.status === 404) {
-            router.push('/404')
-        }
-    }
-
-    return {
-        handleError
-    }
-}
-
 export function useDjangoUtilies () {
     const secure = ref(false)
     const port = ref(8000)
@@ -152,10 +142,14 @@ export function useDjangoUtilies () {
         return new URL(url).toString()
     }
 
-    function mediaPath (path: string | null | undefined): string | null {
+    function mediaPath (path: string | null | undefined): string | null | undefined {
         const baseUrl = getBaseUrl()
 
         if (path) {
+            if (path.startsWith('http')) {
+                return path
+            }
+
             const fullPath = path.startsWith('/') ? `/media${path}` : `/media/${path}`
             return new URL(fullPath, baseUrl).toString()
         } else {
@@ -187,5 +181,57 @@ export function useDjangoUtilies () {
         mediaPath,
         getBaseUrl,
         builLimitOffset
+    }
+}
+
+/**
+ * An interface that abstracts Axios in order
+ * to send requests to the different endpoints
+ * of the Django backend 
+ */
+export function useAxiosClient () {
+    // const router = useRouter()
+
+    // TODO: Must be used in a component because
+    // of inject()
+    // function handleError(e: AxiosError) {
+    //     if (e.response?.status === 404) {
+    //         router.push('/404')
+    //     }
+    // }
+
+    /**
+     * A helper function that creates and retuns 
+     * the base url to use for Axios
+     */
+    function getBaseUrl(path = '/api/v1/', secure = false, port = '8000') {
+        let domain = `127.0.0.1:${port}`
+
+        if (process.env.DEV === 'production') {
+            domain = process.env.NUXT_DJANGO_PROD_URL || ''
+        }
+
+        const loc = secure || process.env.DEV === 'production' ? 'https://' : 'http://'
+        const bits = [loc, domain]
+        const url = bits.join('')
+
+        return new URL(path, url).toString()
+    }
+
+    function createClient(path = '/api/v1/'): AxiosInstance {
+        const client: AxiosInstance = axios.create({
+            baseURL: getBaseUrl(path),
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: true,
+            timeout: 10000
+        })
+
+        return client
+    }
+
+    return {
+        getBaseUrl,
+        // handleError,
+        createClient
     }
 }

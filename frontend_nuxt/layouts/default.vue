@@ -1,13 +1,18 @@
 <template>
-  <div class="container">
-    <slot />
+  <section class="site">
+    <!-- Navbar -->
+    <BaseNavbar />
 
-    <v-navigation-drawer v-model="shouldShowLoginDrawer" location="right" temporary>
-      <v-btn @click="proxyLogin">
-        Login 
-      </v-btn>
-    </v-navigation-drawer>
-  </div>
+    <div class="container">
+      <slot />
+
+      <v-navigation-drawer v-model="shouldShowLoginDrawer" location="right" temporary>
+        <v-btn @click="proxyLogin">
+          Login 
+        </v-btn>
+      </v-navigation-drawer>
+    </div>
+  </section>
 </template>
 
 <script lang="ts" setup>

@@ -11,6 +11,7 @@ export default defineNuxtRouteMiddleware((_to, _from): ReturnType<NavigationGuar
                 login: '0'
             }
         })
+        return false
     } else {
         return true
     }

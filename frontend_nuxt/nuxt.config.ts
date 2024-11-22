@@ -26,24 +26,27 @@ export default defineNuxtConfig({
   },
   ssr: true,
   routeRules: {
-    '/': { ssr: false },
-    'accounts/**': { ssr: false, robots: false },
+    '/': { ssr: true, robots: true },
     '/wishlist': { ssr: false, robots: true },
+    '/shop/**': { ssr: true, robots: true },
+    '/cart/**': { ssr: false, robots: true },
+    '/account/**': { ssr: false, robots: false },
     '/404': { ssr: false, robots: true }
   },
   modules: [
     '@nuxt/eslint',
     '@pinia/nuxt',
     '@vesp/nuxt-fontawesome',
-    'vuetify-nuxt-module',
     '@nuxtjs/google-fonts',
     '@nuxt/test-utils/module',
     '@nuxtjs/google-fonts',
+    '@unlok-co/nuxt-stripe',
+    'vuetify-nuxt-module',
+    '@nuxtjs/sitemap',
     'nuxt-gtag',
     'nuxt-clarity-analytics',
-    '@unlok-co/nuxt-stripe',
     'nuxt-openapi-docs-module',
-    '@nuxtjs/sitemap'
+    '@nuxt/image'
   ],
   alias: {
     '@': path.resolve(__dirname, './'),
@@ -80,6 +83,20 @@ export default defineNuxtConfig({
       solid: []
     }
   },
+  stripe: {
+    server: {
+      key: process.env.NUXT_STRIPE_PUBLISHABLE_KEY,
+      options: {
+
+      }
+    },
+    client: {
+      key: process.env.NUXT_STRIPE_PUBLISHABLE_KEY,
+      options: {
+
+      }
+    }
+  },
   test: true,
   testUtils: {
     vitestConfig: {
@@ -98,13 +115,13 @@ export default defineNuxtConfig({
   },
   nitro: {
     storage: {
-      redis: {
-        driver: 'redis',
-        port: 6379,
-        host: 'driver',
-        username: '',
-        password: ''
-      }
+      // redis: {
+      //   driver: 'redis',
+      //   port: 6379,
+      //   host: 'driver',
+      //   username: '',
+      //   password: ''
+      // }
     }
   }
 })
