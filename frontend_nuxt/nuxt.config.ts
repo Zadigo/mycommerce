@@ -50,7 +50,8 @@ export default defineNuxtConfig({
     'nuxt-gtag',
     'nuxt-clarity-analytics',
     'nuxt-openapi-docs-module',
-    '@nuxt/image'
+    '@nuxt/image',
+    '@nuxtjs/i18n'
   ],
   alias: {
     '@': path.resolve(__dirname, './'),
@@ -84,7 +85,27 @@ export default defineNuxtConfig({
   },
   fontawesome: {
     icons: {
-      solid: []
+      solid: [
+        'arrow-up',
+        'arrow-down',
+        'user',
+        'clock-rotate-left',
+        'heart',
+        'home',
+        'phone',
+        'envelope',
+        'sliders',
+        'table-cells-large',
+        'close'
+      ],
+      regular: [
+        'heart'
+      ],
+      brands: [
+        'instagram',
+        'facebook-f',
+        'twitter'
+      ]
     }
   },
   stripe: {
@@ -116,6 +137,15 @@ export default defineNuxtConfig({
         }
       }
     }
+  },
+  i18n: {
+    baseUrl: './',
+    langDir: './locales',
+    defaultLocale: 'fr',
+    locales: [
+      { code: 'en', language: 'en-US', file: 'en-US.json', dir: 'ltr' },
+      { code: 'fr', language: 'fr-FR', file: 'fr-FR.json', dir: 'ltr' }
+    ]
   },
   nitro: {
     storage: {

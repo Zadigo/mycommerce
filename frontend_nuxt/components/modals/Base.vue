@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="showModal" location="right" temporary @close="showModal=false">
+  <v-navigation-drawer v-model="showModal" width="400" location="right" temporary @close="showModal=false">
     <slot />
   </v-navigation-drawer>
 </template>

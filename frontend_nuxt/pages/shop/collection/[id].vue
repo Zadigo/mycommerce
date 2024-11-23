@@ -1,27 +1,59 @@
 <template>
-  <div>
-    <h1>Products for the collection</h1>
+  <section class="section-margin-2">
+    <div class="row">
+      <!-- Page Title -->
+      <div class="col-12">
+        <div class="card shadow-none">
+          <div class="card-body pb-1 d-flex flex-row justify-content-start">
+            <h1 :aria-labelledby="$route.params.id as string" class="text-uppercase fw-bold h4">
+              {{ $route.params.id }}
+            </h1>
+          </div>
+        </div>
+      </div>
 
-    <div v-for="product in products" :key="product.id">
-      <NuxtLink :to="`/shop/${product.id}`">
-        {{ product.id }} - {{ product.name }} - {{ product.get_main_image }}
-      </NuxtLink>
+      <!-- Feed -->
+      <div class="col-12">
+        <!-- Products -->
+        <Suspense>
+          <template #default>
+            <AsyncFeed @products-loaded="handleLoadedProducts" />
+          </template>
+
+          <template #fallback>
+            <ProductsLoadingFeed />
+          </template>
+        </Suspense>
+      </div>
+
+      <div v-if="products.length === 0" class="col-6 offset-md-3 text-center p-5">
+        <p class="h4 fw-light">
+          {{ $t('Page not available text') }}
+        </p>
+
+        <NuxtLink to="/shop/collections/all" class="mt-3" color="secondary" variant="tonal" rounded>
+          {{ $t('Voir toute la collection') }}
+        </NuxtLink>
+      </div>
     </div>
 
-    <NuxtLink :to="`/shop/1`">
-      Go to product
-    </NuxtLink>
-  </div>
+    <ModalsProductFilters :show="showProductFilters" @close="showProductFilters=false" />
+  </section>
 </template>
 
 <script lang="ts" setup>
 import { useChangeCase } from '@vueuse/integrations/useChangeCase'
-import type { ProductsAPIResponse } from '~/types';
+import type { Product } from '~/types';
 
 const route = useRoute()
+const productsLoading = ref(true)
+const products = ref<Product[]>([])
+const showProductFilters = ref(true)
+
+provide('productsLoading', productsLoading)
 
 useHead({
-  title: useChangeCase(route.params.id, 'capitalCase'),
+  title: useChangeCase(route.params.id as string, 'capitalCase'),
   meta: [
     {
       key: 'description',
@@ -30,13 +62,12 @@ useHead({
   ]
 })
 
-const { data } = await useFetch<ProductsAPIResponse>(`/api/collections/${route.params.id}`, {
-  method: 'GET',
-  transform: (data) => {
-    return data
-  }
+const AsyncFeed = defineAsyncComponent({
+  loader: async () => import('@/components/products/AsyncFeed.vue')
 })
-const products = computed(() => {
-  return data.value?.results ?? []
-})
+
+function handleLoadedProducts(data: Product[]) {
+  productsLoading.value = false
+  products.value = data
+}
 </script>

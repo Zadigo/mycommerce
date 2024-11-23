@@ -8,7 +8,7 @@
 
       <div>
         <a v-for="social in socials" :key="social.name" :href="social.href" class="me-4 text-reset">
-          <font-awesome-icon :icon="['fab', social.icon ]" />
+          <font-awesome :icon="['fab', social.icon ]" />
         </a>
       </div>
     </section>

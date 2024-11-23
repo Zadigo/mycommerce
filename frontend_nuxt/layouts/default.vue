@@ -1,5 +1,5 @@
 <template>
-  <section class="site">
+  <section id="shop" class="position-relative">
     <!-- Navbar -->
     <BaseNavbar />
 
@@ -9,6 +9,9 @@
       <!-- Modals -->
       <ModalsLogin />
     </div>
+
+    <!-- Footer -->
+    <BaseFooter />
   </section>
 </template>
 

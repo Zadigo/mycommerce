@@ -1,6 +1,5 @@
-import type { AxiosError, AxiosInstance } from "axios"
+import type { AxiosInstance } from "axios"
 import { isRef, ref } from 'vue'
-import { useRouter } from "vue-router"
 
 import axios from 'axios'
 
@@ -10,6 +9,11 @@ type RefArrayAnyValues = ArrayAnyValues | Ref<(string | number)[]>
 
 
 export function useUtilities () {
+    function scrollToTop () {
+        window.scroll({ top: 0, behavior: 'smooth' })
+    }
+
+    // TODO: Remove. Use as simple function
     function isNull<T>(item: T): boolean {
         let trueValue
 
@@ -84,6 +88,7 @@ export function useUtilities () {
 
     return {
         isNull,
+        scrollToTop,
         // debounce,
         hasNull,
         readFile,
@@ -142,7 +147,7 @@ export function useDjangoUtilies () {
         return new URL(url).toString()
     }
 
-    function mediaPath (path: string | null | undefined): string | null | undefined {
+    function mediaPath (path: string | null | undefined, altImage?: string | undefined): string | undefined {
         const baseUrl = getBaseUrl()
 
         if (path) {
@@ -150,10 +155,10 @@ export function useDjangoUtilies () {
                 return path
             }
 
-            const fullPath = path.startsWith('/') ? `/media${path}` : `/media/${path}`
+            const fullPath = path.startsWith('/media') ? `${path}` : `/media/${path}`
             return new URL(fullPath, baseUrl).toString()
         } else {
-            return null
+            return altImage
         }
     }
 
