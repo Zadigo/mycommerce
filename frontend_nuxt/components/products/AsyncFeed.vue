@@ -1,7 +1,7 @@
 <template>
   <ProductsFeedLayout>
     <template #filtering>
-      <ProductsFeedHeader />
+    <ProductsFeedHeader :count="totalProductCount" @update:grid-size="handleGridSize"  @show-product-filters="showProductFilters=true" />
     </template>
 
     <template #default>
@@ -24,24 +24,18 @@
           </v-btn>
         </div>
       </div>
+
+      <ModalsProductFilters :show="showProductFilters" @close="showProductFilters=false" />
     </template>
   </ProductsFeedLayout>
 </template>
 
 <script lang="ts" setup>
-import { useStorageAsync  } from '@vueuse/core'
+// import { useStorageAsync  } from '@vueuse/core'
 import type { Product, ProductsAPIResponse } from '~/types';
 const { scrollToTop } = useUtilities()
+
 // type Actions = 'sorted by' | 'typology' | 'colors' | 'sizes' | 'price'
-
-interface SelectedFilters {
-  sorted_by: string,
-  typology: string[],
-  colors: string[],
-  sizes: string[],
-  price: string | null
-}
-
 
 const emit = defineEmits({
   'products-loaded' (_data: Product[]) {
@@ -50,21 +44,22 @@ const emit = defineEmits({
 })
 
 const route = useRoute()
-const idbConnection = createConnection('e-commerce')
-const storage = useIDBStorage(idbConnection)
+// const idbConnection = createConnection('e-commerce')
+// const storage = useIDBStorage(idbConnection)
 const currentGridSize = ref(3)
 
 const isLoadingMoreProducts = ref(false)
 const offsetsList = ref<string[]>([])
 const intersectionTarget = ref<HTMLElement | null>(null)
+const showProductFilters = ref(false)
 
-const cache = useStorageAsync(route.params.id as string, '', storage, {
-    deep: true,
-    initOnMounted: true,
-    onError: (e) => {
-      console.log('useStorageAsync [id].vue', e)
-    }
-})
+// const cache = useStorageAsync(route.params.id as string, '', storage, {
+//     deep: true,
+//     initOnMounted: true,
+//     onError: (e) => {
+//       console.log('useStorageAsync [id].vue', e)
+//     }
+// })
 
 // console.info('cache.value', cache.value)
 // if (cache.value.length > 0) {
@@ -74,7 +69,6 @@ const cache = useStorageAsync(route.params.id as string, '', storage, {
 const { data, status } = await useFetch<ProductsAPIResponse>(`/api/collections/${route.params.id}`, {
   method: 'GET',
   transform: (data) => {
-    cache.value = JSON.stringify(data)
     return data
   }
 })
@@ -110,5 +104,9 @@ const totalProductCount = computed(() => {
 
 if (status.value === 'success') {
   emit('products-loaded', products.value)
+}
+
+function handleGridSize(grid: number) {
+  currentGridSize.value = grid
 }
 </script>

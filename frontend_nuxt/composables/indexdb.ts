@@ -1,26 +1,33 @@
 export async function createConnection(name: string): Promise<IDBDatabase> {
-    return await new Promise<IDBDatabase>((resolve, reject) => {
-        const request = indexedDB.open(name)
-
-        /**
-         * The upgradeneeded event is fired when an attempt 
-         * was made to open a database with a version number 
-         * higher than its current version
-         */
-        request.onupgradeneeded = (_event) => {
-            const db = request.result
-
-            if (!db.objectStoreNames.contains('storage')) {
-                db.createObjectStore('storage')
+    return await new Promise<IDBDatabase>((resolve, reject) => {        
+        try {
+            console.log('Connect')
+            const request = indexedDB.open(name)
+    
+            /**
+             * The upgradeneeded event is fired when an attempt 
+             * was made to open a database with a version number 
+             * higher than its current version
+             */
+            request.onupgradeneeded = (_event) => {
+                const db = request.result
+    
+                if (!db.objectStoreNames.contains('storage')) {
+                    db.createObjectStore('storage')
+                }
             }
-        }
-
-        request.onsuccess = () => {
-            return resolve(request.result)
-        }
-        
-        request.onerror = () => {
-            return reject(request.error)
+    
+            request.onsuccess = () => {
+                console.log('request.onsucess')
+                return resolve(request.result)
+            }
+            
+            request.onerror = (e) => {
+                console.log('request.onerror', e)
+                return reject(request.error)
+            }
+        } catch (e) {
+            console.log('Could not connect to IDB', e)
         }
     })
 }

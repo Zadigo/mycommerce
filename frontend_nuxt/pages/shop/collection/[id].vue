@@ -36,8 +36,6 @@
         </NuxtLink>
       </div>
     </div>
-
-    <ModalsProductFilters :show="showProductFilters" @close="showProductFilters=false" />
   </section>
 </template>
 
@@ -48,7 +46,6 @@ import type { Product } from '~/types';
 const route = useRoute()
 const productsLoading = ref(true)
 const products = ref<Product[]>([])
-const showProductFilters = ref(true)
 
 provide('productsLoading', productsLoading)
 

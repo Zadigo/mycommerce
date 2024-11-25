@@ -95,6 +95,11 @@ export default defineNuxtConfig({
         'phone',
         'envelope',
         'sliders',
+        'ruler',
+        'pen',
+        'trash',
+        'circle-check',
+        'shopping-bag',
         'table-cells-large',
         'close'
       ],

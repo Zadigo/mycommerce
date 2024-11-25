@@ -1,4 +1,4 @@
-import { useStorage } from "@vueuse/core";
+import { useSessionStorage } from "@vueuse/core";
 import { AxiosError } from "axios";
 import type { CartUpdateAPIResponse, Product, UserSelection } from "~/types";
 
@@ -12,7 +12,7 @@ import type { CartUpdateAPIResponse, Product, UserSelection } from "~/types";
  */
 export function useCartComposable () {
     const { $client, vueApp } = useNuxtApp()
-    const userselection = ref<UserSelection>({
+    const userSelection = ref<UserSelection>({
         id: null,
         size: null,
         quantity: 1,
@@ -30,25 +30,27 @@ export function useCartComposable () {
      */
     async function addToCart (product: Product, size?: string | number | null, callback?: (data: CartUpdateAPIResponse) => void) {
         try {
-            const sessionId = null
+            const sessionId = useSessionStorage('session_id', userSelection.value.session_id)
 
             // By changing this, it updates in the underlying
             // proxy in the ref since data is that proxy
-            userselection.value.session_id = sessionId || null
-            userselection.value.size = size || 'Unique'
-            userselection.value.product = product
+            userSelection.value.session_id = sessionId.value || null
+            userSelection.value.product = product
 
-            if (product.has_sizes && (userselection.value.size === 'Unique' || userselection.value.size === null)) {
+            if (size) {
+                userSelection.value.size = size
+            }
+
+            if (product.has_sizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null)) {
                 showSizeSelectionWarning.value = true
                 return
             }
 
-            const response = await $client.post('/', userselection.value)
+            const response = await $client.post('/cart/add', userSelection.value)
 
-            if (response.status === 200) {
+            if (response.status === 201) {
                 cartStore.updateCart(response.data)
-                useStorage('cart', response.data, localStorage)
-
+                
                 if (callback && typeof callback === 'function') {
                     callback.call(vueApp, response.data)
                 }
@@ -74,7 +76,7 @@ export function useCartComposable () {
     }
 
     return {
-        userselection,
+        userSelection,
         showSizeSelectionWarning,
         stockDetailsResponse,
         deleteFromCart,

@@ -44,8 +44,8 @@ import { AxiosError } from 'axios';
 import type { CollectionName } from '~/types';
 
 console.info('index.vue', window)
-const storageConnection = createConnection('e-commerce')
-const storage = useIDBStorage(storageConnection)
+const idbConnection = createConnection('e-commerce')
+const storage = useIDBStorage(idbConnection)
 const { $client } = useNuxtApp()
 
 useHead({
@@ -75,6 +75,7 @@ async function requestCollectionNames () {
     if (result.value.length === 0) {
       const response = await $client.get<CollectionName[]>('collection')
       collections.value = response.data
+      result.value = response.data
     }
   } catch (e) {
     if (e instanceof AxiosError && e.response) {

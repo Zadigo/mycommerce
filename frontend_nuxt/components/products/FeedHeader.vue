@@ -4,11 +4,11 @@
       <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex justify-content-left gap-1">
           <div class="d-flex justify-content-between align-items-center me-3 gap-1">
-            <v-btn :to="{ name: 'shop_products_collection', params: { id: 'all' } }" variant="tonal">
+            <v-btn to="/shop/collection/all" variant="tonal">
               {{ $t('Afficher tout') }}
             </v-btn>
 
-            <v-btn v-for="category in productCategories" :key="category" :to="{ name: 'shop_products_collection', params: { id: category.toLowerCase() } }" variant="tonal">
+            <v-btn v-for="category in productCategories" :key="category" :to="`/shop/collection/${category.toLowerCase()}`" variant="tonal">
               {{ category }}
             </v-btn>
 
@@ -21,7 +21,7 @@
         <div class="d-flex justify-content-right gap-1 align-items-center">
           <v-skeleton-loader :is-loading="productsLoading" type="text">
             <span id="product-count" class="fw-bold me-2">
-              {{ totalProductCount }} produits trouvés
+              {{ count }} produits trouvés
             </span>
           </v-skeleton-loader>
 
@@ -51,7 +51,7 @@ const props = defineProps({
     type: Array as PropType<Product[]>,
     default: () => []
   },
-  totalProductCount: {
+  count: {
     type: Number,
     default: 0
   }
@@ -77,7 +77,7 @@ const productCategories = computed(() => {
   const items = props.products.map(product => {
     return product.category
   })
-  return new Set(items)
+  return Array.from(new Set(items))
 })
 
 /**

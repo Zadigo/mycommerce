@@ -7,7 +7,7 @@
 
       <div>
         <a v-for="social in socialLinks" :key="social.name" :href="social.href" class="me-4 text-reset">
-          <font-awesome :icon="social.icon" />
+          <font-awesome :icon="['fab', social.icon]" />
         </a>
       </div>
     </section>

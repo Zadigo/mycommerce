@@ -1,10 +1,6 @@
 <template>
   <button v-if="size.availability" type="button" :class="buttonClass" @click="handleSizeSelection(size)">
-    {{ size.name }}
-  </button>
-
-  <button v-else-if="!size.availability" type="button" :class="buttonClass" @click="handleSizeSelection(size)">
-    <font-awesome icon="clock-rotate-left" class="text-warning me-2" />
+    <font-awesome v-if="!size.availability" icon="clock-rotate-left" class="text-warning me-2" />
     {{ size.name }}
   </button>
 </template>
@@ -13,7 +9,7 @@
 import type { ProductSizes } from '~/types';
 
 const emit = defineEmits({
-  'update:selectedSize' (_size: string | number) {
+  'select-size' (_size: string | number) {
     return true
   }
 })
@@ -24,7 +20,7 @@ const props = defineProps({
     required: true
   },
   selectedSize: {
-    type: String,
+    type: [String, Number],
     default: null
   },
   selectable: {
@@ -49,6 +45,6 @@ const buttonClass = computed(() => {
 })
 
 function handleSizeSelection (size: ProductSizes) {
-  emit('update:selectedSize', size.name)
+  emit('select-size', size.name)
 }
 </script>

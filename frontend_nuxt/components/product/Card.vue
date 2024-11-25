@@ -75,7 +75,7 @@ const props = defineProps({
   }
 })
 
-const { } = useShop
+const { isLiked } = useShopComposable()
 const { addToCart } = useCartComposable()
 const { mediaPath } = useDjangoUtilies()
 const isHovered = ref(false)
