@@ -11,12 +11,34 @@
           <ProductDetailsAside :product="product" :is-loading="isLoading" />
         </div>
       </div>
+
+      <!-- More Product Images -->
+      <component :is="imageComponent" :images="product?.images" />
+    </div>
+
+    <!-- More Products -->
+    <div ref="moreProductsIntersect" class="row g-1 my-5">
+      <div id="more-products" class="col-12">
+        <Suspense>
+          <template #default>
+            <AsyncBaseRecommendationBlock :columns="3" :quantity="30" />
+          </template>
+
+          <template #fallback>
+            <BaseLoadingRecommendations :quantity="30" />
+          </template>
+        </Suspense>
+      </div>
     </div>
   </section>
 </template>
 
 <script lang="ts" setup>
+import type { ConcreteComponent } from 'vue';
 import type { Product } from '~/types';
+
+const ProductDetailsFiveImages = resolveComponent('ProductDetailsFiveImages')
+const ProductDetailsSixImages = resolveComponent('ProductDetailsSixImages')
 
 const route = useRoute()
 
@@ -24,7 +46,12 @@ const { data, status } = await useFetch<Product>(`/api/products/${route.params.i
   method: 'GET'
 })
 
+const AsyncBaseRecommendationBlock = defineAsyncComponent({
+  loader: async () => import('@/components/BaseRecommendations.vue')
+})
+
 const product = ref<Product | null>(data.value)
+const moreProductsIntersect = ref<HTMLElement>()
 
 useHead({
   title: () => {
@@ -44,5 +71,22 @@ useHead({
 
 const isLoading = computed(() => {
   return status.value !== 'success' || product.value === null
+})
+
+/**
+ * Returns the proper image component to display
+ * the remaining images for the given product
+ */
+const imageComponent = computed((): string | ConcreteComponent => {
+  if (product.value) {
+    if ('images' in product.value) {
+      if (product.value.images.length === 6) {
+        return ProductDetailsSixImages
+      } else if (product.value.images.length === 5) {
+        return ProductDetailsFiveImages
+      }
+    }
+  }
+  return ProductDetailsFiveImages
 })
 </script>

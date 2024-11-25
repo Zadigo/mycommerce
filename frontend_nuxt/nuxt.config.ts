@@ -88,6 +88,7 @@ export default defineNuxtConfig({
       solid: [
         'arrow-up',
         'arrow-down',
+        'caret-right',
         'user',
         'clock-rotate-left',
         'heart',
@@ -96,6 +97,8 @@ export default defineNuxtConfig({
         'envelope',
         'sliders',
         'ruler',
+        'shop',
+        'truck',
         'pen',
         'trash',
         'circle-check',
@@ -147,6 +150,7 @@ export default defineNuxtConfig({
     baseUrl: './',
     langDir: './locales',
     defaultLocale: 'fr',
+    vueI18n: './i18n.config.ts',
     locales: [
       { code: 'en', language: 'en-US', file: 'en-US.json', dir: 'ltr' },
       { code: 'fr', language: 'fr-FR', file: 'fr-FR.json', dir: 'ltr' }

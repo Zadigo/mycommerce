@@ -20,8 +20,8 @@ export function useShopComposable () {
             } else {
                 price = value
             }
-
-            return $i18n.n(price)
+            
+            return $i18n.n(price, 'currency')
         } else {
             return '0'
         }

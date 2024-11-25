@@ -28,7 +28,7 @@ export function useCartComposable () {
      * the product size or other caracteristics are
      * available in a list (e.g. ProductsPage, CollectionsPage...) 
      */
-    async function addToCart (product: Product, size?: string | number | null, callback?: (data: CartUpdateAPIResponse) => void) {
+    async function addToCart(product: Product, size?: string | number | null, callback?: (data: CartUpdateAPIResponse) => void) {
         try {
             const sessionId = useSessionStorage('session_id', userSelection.value.session_id)
 
@@ -75,10 +75,15 @@ export function useCartComposable () {
         }
     }
 
+    function handleSizeSelection(size: string | number | undefined) {
+        userSelection.value.size = size || 'Unique'
+    }
+
     return {
         userSelection,
         showSizeSelectionWarning,
         stockDetailsResponse,
+        handleSizeSelection,
         deleteFromCart,
         addToCart
     }

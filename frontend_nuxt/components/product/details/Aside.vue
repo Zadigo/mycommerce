@@ -54,6 +54,18 @@
         <font-awesome v-else :icon="['far', 'heart']" />
       </button>
     </div>
+
+    <!-- Additional Information -->
+    <ProductDetailsAdditionalInfo />
+
+    <!-- Delivery Types -->
+    <ProductDetailsDeliveryType>
+      <ProductDetailsDeliveryTypes icon-name="shop" text="Enlèvement en magasin" />
+      <ProductDetailsDeliveryTypes icon-name="truck" text="Livraison standard à domicile" />
+    </ProductDetailsDeliveryType>
+
+    <!-- Modals -->
+    <ModalsSizeGuide :product="product" :show-modal="showSizeGuideDrawer" />
   </div>
 </template>
 
@@ -77,10 +89,12 @@ const props = defineProps({
     default: true
   },
   product: {
-    type: Object as PropType<Product>,
+    type: Object as PropType<Product | null>,
     required: true
   }
 })
+
+provide('userSelection', userSelection)
 
 const showSizeGuideDrawer = ref(false)
 
