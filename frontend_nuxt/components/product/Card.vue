@@ -38,7 +38,7 @@
           {{ product.name }}
         </p>
         
-        <p v-if="typeof product.get_price === 'number'" class="pricing fw-bold">
+        <p class="pricing fw-bold">
           <template v-if="typeof product.get_price === 'number'">
             {{ $n(product.get_price, 'currency') }}
           </template>

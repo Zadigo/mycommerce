@@ -6,7 +6,7 @@ import axios from 'axios'
 
 type ArrayAnyValues = (string | number)[]
 type RefArrayAnyValues = ArrayAnyValues | Ref<(string | number)[]>
-
+type RefObjectAnyValues = Ref<Record<string, (string | number)[] | string | number>>
 
 export function useUtilities () {
     function scrollToTop () {
@@ -97,9 +97,43 @@ export function useUtilities () {
 }
 
 export function useListManager () {
+    const managedObject = ref<Record<string, (string | number)[] | string | number | null>>()
     const managedList = ref<RefArrayAnyValues>([])
     const history = ref<ArrayAnyValues>([])
     const deletions = ref<ArrayAnyValues>([])
+
+    function updateList<T extends RefArrayAnyValues>(items: T, value: string | number) {
+        if (Array.isArray(items)) {
+            if (items.includes(value)) {
+                const index = items.indexOf(value)
+                items.splice(index, 1)
+            } else {
+                items.push(value)
+            }
+        } else {
+            if (items.value.includes(value)) {
+                const index = items.value.indexOf(value)
+                items.value.splice(index, 1)
+            } else {
+                items.value.push(value)
+            }
+        }
+    }
+
+    function update(key: string, value: string | number): boolean {
+        if (managedObject.value) {
+            if (Array.isArray(managedObject.value[key])) {
+                if (managedObject.value[key].includes(value)) {
+                    const index = managedObject.value[key].indexOf(value)
+                    managedObject.value[key].splice(index, 1)
+                } else {
+                    managedObject.value[key].push(value)
+                }
+                return true
+            }
+        }
+        return false
+    }
 
     function save<T extends RefArrayAnyValues>(items: T, item: string | number) {
         if (managedList.value.length === 0) {
@@ -122,8 +156,11 @@ export function useListManager () {
 
     return {
         deletions,
+        managedObject,
         managedList,
         history,
+        updateList,
+        update,
         save
     }
 }
@@ -176,10 +213,13 @@ export function useDjangoUtilies () {
             defaultOffset = potentialOffset || offset
         }
 
-        return new URLSearchParams({ 
-            limit: defaultLimit.toString(), 
-            offset: defaultOffset.toString() 
-        }).toString()
+        const query = new URLSearchParams({ limit: defaultLimit.toString(), offset: defaultOffset.toString() }).toString()
+        
+        return {
+            query,
+            limit: defaultLimit,
+            offset: defaultOffset 
+        }
     }
 
     return {

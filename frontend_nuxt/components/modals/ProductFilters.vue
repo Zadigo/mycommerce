@@ -18,7 +18,7 @@
             <v-expansion-panel-title>Trier par</v-expansion-panel-title>
             <v-expansion-panel-text>
               <div class="price-filters p-2">
-                <div class="d-flex justify-content-around gap-2">
+                <div class="d-flex justify-content-start flex-wrap gap-2">
                   <v-btn v-for="sortingFilter in sortingFilters" :key="sortingFilter[0]" :active="selectedFilters.sorted_by===sortingFilter[0]" variant="outlined" size="small" rounded @click="handleFilterSelection('sorted by', sortingFilter[0])">
                     {{ $t(sortingFilter[1]) }}
                   </v-btn>
@@ -78,8 +78,7 @@
         </v-btn>
         
         <v-btn color="secondary" variant="tonal" rounded @click="showProductFilters=false">
-          <!-- Voir résulats ({{ priceLimitProducts.length }}) -->
-          Voir résultats
+          Voir résulats ({{ count }})
         </v-btn>
       </v-container>
     </div>
@@ -100,16 +99,23 @@ interface SelectedFilters {
 const props = defineProps({
   show: {
     type: Boolean
+  },
+  count: {
+    type: Number,
+    default: 0
   }
 })
 
 const emit = defineEmits({
   close (_data: boolean) {
     return true
+  },
+  'update-products' (_data: string) {
+    return true
   }
 })
 
-const { save } = useListManager()
+const { updateList } = useListManager()
 
 const sizes = {
   "clothes": [
@@ -162,6 +168,24 @@ const selectedFilters = ref<SelectedFilters>({
   price: null
 })
 
+const queryString = computed(() => {
+  const typology = selectedFilters.value.typology.join(',')
+  const colors = selectedFilters.value.colors.join(',')
+  const sizes = selectedFilters.value.sizes.join(',')
+  const params = [
+    `sorted_by=${selectedFilters.value.sorted_by}`,
+    `colors=${colors}`,
+    `sizes=${sizes}`,
+    `typology=${typology}`
+  ]
+
+  if (selectedFilters.value.price) {
+    params.push(`price=${selectedFilters.value.price}`)
+  }
+
+  return params.filter(x => !x.endsWith('=')).join('&')
+})
+
 /**
  * Receives a filter and then sorts
  */
@@ -172,15 +196,15 @@ function handleFilterSelection (action: Actions, value: string) {
       break;
 
     case 'typology':
-      save<string[]>(selectedFilters.value.typology, value)
+      updateList<string[]>(selectedFilters.value.typology, value)
       break;
 
     case 'colors':
-      save<string[]>(selectedFilters.value.colors, value)
+      updateList<string[]>(selectedFilters.value.colors, value)
       break;
 
     case 'sizes':
-      save<string[]>(selectedFilters.value.sizes, value)
+      updateList<string[]>(selectedFilters.value.sizes, value)
       break;
 
     case 'price':
@@ -190,6 +214,7 @@ function handleFilterSelection (action: Actions, value: string) {
     default:
       break;
   }
+  emit('update-products', queryString.value)
 }
 
 /**
@@ -205,10 +230,15 @@ function handleFiltersReset () {
   }
 }
 
+/**
+ * 
+ */
 const showProductFilters = computed({
   get: () => props.show,
   set: (value) => {
     emit('close', value)
   }
 })
+
+
 </script>
