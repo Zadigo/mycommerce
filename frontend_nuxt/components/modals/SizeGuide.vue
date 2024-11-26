@@ -1,5 +1,5 @@
 <template>
-  <ModalsBase :show-modal="showModal">
+  <v-navigation-drawer v-model="proxyShow" width="400" location="right" temporary @close="emit('close')">
     <v-toolbar class="border-bottom" color="white">
       <v-toolbar-title class="fw-bold">
         {{ $t("Guide des tailles") }}
@@ -7,7 +7,7 @@
 
       <v-spacer />
 
-      <v-btn icon="mdi-close" @click="showSizeGuideDrawer = false" />
+      <v-btn icon="mdi-close" @click="emit('close')" />
     </v-toolbar>
 
     <div v-if="product" class="container my-4">
@@ -51,7 +51,7 @@
             {{ $t("Comprendre tes mesures ?") }}
           </p>
 
-          <v-img :src="mediaPath('size-guide.jpg')" :lazy-src="mediaPath('size-guide.jpg')" :width="300" />
+          <!-- <v-img src="/size-guide.jpg" :width="300" /> -->
         </div>
 
         <div class="col-12 mt-4">
@@ -81,7 +81,7 @@
         </div>
       </div>
     </div>
-  </ModalsBase>
+  </v-navigation-drawer>
 </template>
 
 <script lang="ts" setup>
@@ -98,6 +98,18 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits({
+  close() {
+    return true
+  }
+})
+
 const { mediaPath } = useDjangoUtilies()
 const { addToCart, handleSizeSelection } = useCartComposable()
+const proxyShow = computed({
+  get: () => props.showModal,
+  set: () => {
+    emit('close')
+  }
+})
 </script>

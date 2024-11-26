@@ -1,5 +1,5 @@
 <template>
-  <ModalsBase :show-modal="showProductFilters">
+  <v-navigation-drawer v-model="show" width="400" location="right" temporary>
     <div class="d-flex flex-column justify-content-around">
       <v-container class="border-bottom d-flex justify-content-between align-items-center">
         <h4 class="m-0">
@@ -82,7 +82,7 @@
         </v-btn>
       </v-container>
     </div>
-  </ModalsBase>
+  </v-navigation-drawer>
 </template>
 
 <script lang="ts" setup>
@@ -107,9 +107,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits({
-  close (_data: boolean) {
-    return true
-  },
   'update-products' (_data: string) {
     return true
   }
@@ -233,12 +230,5 @@ function handleFiltersReset () {
 /**
  * 
  */
-const showProductFilters = computed({
-  get: () => props.show,
-  set: (value) => {
-    emit('close', value)
-  }
-})
-
-
+const show = ref(props.show)
 </script>

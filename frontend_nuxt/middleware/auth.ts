@@ -5,13 +5,12 @@ export default defineNuxtRouteMiddleware((_to, _from): ReturnType<NavigationGuar
     const store = useAuthentication()
 
     if (!store.isAuthenticated) {
-        return navigateTo({
-            path: '/',
-            query: {
-                login: '0'
-            }
-        })
-        return false
+        // return navigateTo({
+        //     path: '/',
+        //     query: {
+        //         login: '0'
+        //     }
+        // })
     } else {
         return true
     }

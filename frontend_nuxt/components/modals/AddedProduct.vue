@@ -1,5 +1,5 @@
 <template>
-  <ModalsBase :show-modal="showAddedProductDrawer">
+  <v-navigation-drawer v-model="showAddedProductDrawer" width="400" location="right" temporary @close="showAddedProductDrawer=false">
     <div class="container">
       <div class="row my-3">
         <div v-if="hasProducts" class="col-12">
@@ -10,7 +10,7 @@
 
           <div class="row">
             <div class="col-4">
-              <NuxtImg :src="mediaPath(lastAddedProduct?.product)" :alt="lastAddedProduct?.product.name" />
+              <!-- <NuxtImg v-if="lastAddedProduct" :src="mediaPath(lastAddedProduct.product.get_main_image.original)" :alt="lastAddedProduct?.product.name" class="img-fluid" /> -->
             </div>
 
             <div class="col-8">
@@ -55,7 +55,7 @@
         </div>
       </div>
     </div>
-  </ModalsBase>
+  </v-navigation-drawer>
 </template>
 
 <script lang="ts" setup>
@@ -75,7 +75,7 @@ const router = useRouter()
 function handleNotAuthenticatedOrdering () {
   if (authenticationStore.isAuthenticated) {
     showAddedProductDrawer.value = false
-    router.push({ name: 'shop_payment_home' })
+    router.push('/cart/')
   } else {
     showCartDrawer.value = false
     showAddedProductDrawer.value = false

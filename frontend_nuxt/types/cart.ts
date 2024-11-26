@@ -42,3 +42,8 @@ export interface CartUpdateAPIResponse {
 export interface ProductToEdit extends CartStatistic {
     product_info: CartItem | undefined
 }
+
+export interface DeliveryOption {
+    id: number
+    name: string
+}

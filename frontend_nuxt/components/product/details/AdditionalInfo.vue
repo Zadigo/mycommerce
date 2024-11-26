@@ -11,10 +11,10 @@
     </a>
 
     <!-- Composition -->
-    <ModalsComposition :show-modal="showCompositionDrawer" />
+    <ModalsComposition :show-modal="showCompositionDrawer" @close="showCompositionDrawer=false" />
 
     <!-- Delivery And Returns -->
-    <ModalsDelivery :show-modal="showDeliveryDrawer" />
+    <ModalsDelivery :show-modal="showDeliveryDrawer" @close="showDeliveryDrawer=false" />
   </div>
 </template>
 

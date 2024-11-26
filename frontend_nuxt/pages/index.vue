@@ -1,11 +1,11 @@
 <template>
   <section id="collections" class="section-margin-2">
     <div class="row">
-      <div class="col-sm-12 col-md-10 offset-md-1">
+      <!-- <div class="col-sm-12 col-md-10 offset-md-1">
         <h1 class="mb-5">
           {{ $t("Nos collections") }}
         </h1>
-      </div>
+      </div> -->
 
       <div class="col-sm-12 col-md-10 offset-md-1">
         <div class="row g-1">

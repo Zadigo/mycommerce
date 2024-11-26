@@ -5,9 +5,9 @@ export default defineNuxtPlugin((nuxtApp) => {
     client.interceptors.request.use(
         config => {
             const token = useCookie('access')
-            console.log(token)
-            if (token) {
-                config.headers.Authorization = `Bearer ${token}`
+
+            if (token.value) {
+                config.headers.Authorization = `Token ${token.value}`
             }
             return config
         },

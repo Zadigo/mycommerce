@@ -1,30 +1,5 @@
-import { isNull } from '@/utils'
 import { defineStore } from 'pinia'
 import type { CartItem, CartUpdateAPIResponse, Product } from '~/types'
-
-// declare type RequestData = {
-//     session_id: string | null;
-//     firstname: string | null;
-//     lastname: string | null;
-//     email: string | null;
-//     telephone: string | null;
-//     address_line: string | null;
-//     zip_code: string | null;
-//     country: string | null;
-//     city: string | null;
-//     delivery: string | null;
-//     card_token: string | null;
-// };
-
-// declare type RootState = {
-//     requestData: RequestData;
-//     cache: CartUpdateAPIResponse;
-//     products: CartItem[];
-
-//     showAddedProductDrawer: boolean;
-//     showEditProductDrawer: boolean;
-//     showCartDrawer: boolean;
-// };
 
 export const useCart = defineStore('cart', () => {
     const requestData  = ref({
@@ -48,6 +23,10 @@ export const useCart = defineStore('cart', () => {
     const showEditProductDrawer = ref(false)
     const showCartDrawer = ref(false)
 
+    const sessionId = computed(() => {
+        return cache.value?.session_id
+    })
+
     /**
      * Indicates if the cart has products
      */
@@ -62,7 +41,7 @@ export const useCart = defineStore('cart', () => {
      */
     const numberOfProducts = computed((): number => {
         if (hasProducts.value) {
-            if (!isNull(cache)) {
+            if (cache.value) {
                 return cache.value.statistics.map(x => x.quantity).reduce((a, b) => a + b, 0)
             }
         }
@@ -146,6 +125,7 @@ export const useCart = defineStore('cart', () => {
         hasProducts,
         numberOfProducts,
         lastAddedProduct,
+        sessionId,
         cache,
         products,
         showAddedProductDrawer,

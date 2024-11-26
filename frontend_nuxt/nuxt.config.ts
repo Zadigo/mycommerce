@@ -110,6 +110,7 @@ export default defineNuxtConfig({
         'heart'
       ],
       brands: [
+        'google',
         'instagram',
         'facebook-f',
         'twitter'

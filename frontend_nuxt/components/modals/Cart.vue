@@ -1,5 +1,5 @@
 <template>
-  <ModalsBase :show-modal="showCartDrawer">
+  <v-navigation-drawer v-model="showCartDrawer" width="400" location="right" temporary @close="showCartDrawer=false">
     <v-toolbar class="border-bottom" color="white">
       <v-toolbar-title class="fw-bold">
         {{ $t('Cart quantity', { n: numberOfProducts }) }}
@@ -49,7 +49,7 @@
         </div>
         
         <div class="col-12">
-          <v-btn v-if="isAuthenticated" :to="{ name: 'shop_payment_home' }" color="secondary" rounded flat block>
+          <v-btn v-if="isAuthenticated" to="/cart" color="secondary" rounded flat block>
             {{ $t('Passer commande') }}
           </v-btn>
 
@@ -77,7 +77,7 @@
         </div>
       </div>
     </div>
-  </ModalsBase>
+  </v-navigation-drawer>
 </template>
 
 <script lang="ts" setup>

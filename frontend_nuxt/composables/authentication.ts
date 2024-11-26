@@ -1,4 +1,5 @@
 import type { LoginAPIResponse, StringNull } from "~/types"
+import {  useAxiosClient } from '@/composables/utils'
 
 export function useAuthencationComposable() {
     const nuxtApp = tryUseNuxtApp()
@@ -14,17 +15,14 @@ export function useAuthencationComposable() {
     async function authenticate(path: string, callback: (data: LoginAPIResponse) => void) {
         try {
             if (nuxtApp) {
-                const response = await nuxtApp.$client.post<LoginAPIResponse>(path, {
+                const { createClient } = useAxiosClient()
+                const authClient = createClient('/auth/v1/')
+
+                const response = await authClient.post<LoginAPIResponse>(path, {
                     username: email.value,
                     email: email.value,
                     password: password.value
                 })
-
-                const accessToken = useCookie('access')
-                const refreshToken = useCookie('refresh')
-                
-                accessToken.value = response.data.access
-                refreshToken.value = response.data.refresh
     
                 authenticationFailuresCounter.value = 0
     

@@ -1,5 +1,5 @@
 <template>
-  <ModalsBase :show-modal="showModal">
+  <v-navigation-drawer v-model="proxyShow" width="400" location="right" temporary @close="emit('close')">
     <div class="container my-4 fw-light">
       <h4 class="h5 mb-1 mt-3">
         {{ $t("Composition") }}
@@ -11,13 +11,26 @@
         <li>3% élasthanne</li>
       </ul>
     </div>
-  </ModalsBase>
+  </v-navigation-drawer>
 </template>
 
 <script lang="ts" setup>
-defineProps({
+const props = defineProps({
   showModal: {
     type: Boolean
+  }
+})
+
+const emit = defineEmits({
+  close() {
+    return true
+  }
+})
+
+const proxyShow = computed({
+  get: () => props.showModal,
+  set: () => {
+    emit('close')
   }
 })
 </script>>

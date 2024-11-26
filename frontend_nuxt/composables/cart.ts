@@ -1,6 +1,6 @@
-import { useSessionStorage } from "@vueuse/core";
 import { AxiosError } from "axios";
-import type { CartUpdateAPIResponse, Product, UserSelection } from "~/types";
+import { useAxiosClient } from '@/composables/utils'
+import type { CartUpdateAPIResponse, LoginAPIResponse, Product, UserSelection } from "~/types";
 
 /**
  * The cart composable is a function that allows
@@ -28,13 +28,13 @@ export function useCartComposable () {
      * the product size or other caracteristics are
      * available in a list (e.g. ProductsPage, CollectionsPage...) 
      */
-    async function addToCart(product: Product, size?: string | number | null, callback?: (data: CartUpdateAPIResponse) => void) {
+    async function addToCart(product: Product, size?: string | number | null, callback?: (data: CartUpdateAPIResponse) => void, authCallback?: (data: LoginAPIResponse) => void) {
         try {
-            const sessionId = useSessionStorage('session_id', userSelection.value.session_id)
+            const cart = useCart()
 
             // By changing this, it updates in the underlying
             // proxy in the ref since data is that proxy
-            userSelection.value.session_id = sessionId.value || null
+            userSelection.value.session_id = cart.sessionId || null
             userSelection.value.product = product
 
             if (size) {
@@ -44,6 +44,8 @@ export function useCartComposable () {
             if (product.has_sizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null)) {
                 showSizeSelectionWarning.value = true
                 return
+            } else {
+                userSelection.value.size = 'Unique'
             }
 
             const response = await $client.post('/cart/add', userSelection.value)
@@ -59,7 +61,21 @@ export function useCartComposable () {
             }
         } catch (e) {
             if (e instanceof AxiosError && e.response) {
-                // Handle error
+                if (e.status === 401) {
+                    // If the user tries to add a product in his basket
+                    // but in between the access token has expired,
+                    // just refresh it as opposed to forcing a login
+                    const { createClient } = useAxiosClient()
+                    const authClient = createClient('/auth/v1/')
+                    const refreshToken = useCookie('refresh')
+                    const response = await authClient.post('token/refresh/', {
+                        refresh: refreshToken.value
+                    })
+
+                    if (authCallback && typeof authCallback === 'function') {
+                        authCallback.call(vueApp, response.data)
+                    }
+                }
             }
         }
     }

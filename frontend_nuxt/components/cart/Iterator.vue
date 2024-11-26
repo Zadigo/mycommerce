@@ -5,7 +5,7 @@
         <div class="d-flex justify-content-start gap-2">
           <!-- {{ item }} -->
           <div class="col-auto">
-            <v-img :src="mediaPath(item.product_info?.product)" :alt="item.product__name" :width="150" :height="150" />
+            <v-img :src="mediaPath(item.product_info?.product.get_main_image.original)" :alt="item.product__name" :width="150" :height="150" />
           </div>
 
           <div class="infos">
@@ -19,7 +19,7 @@
               </div>
               
               <div class="fs-light fs-6 mb-1 d-flex justify-content-start align-items-center gap-3">
-                <span v-if="item.product_info.size">
+                <span v-if="item.product_info">
                   {{ item.product_info.size }}
                 </span>
 
@@ -65,7 +65,6 @@ const emit = defineEmits({
 })
 
 const cartStore = useCart()
-
 const { mediaPath } = useDjangoUtilies()
 const { cache } = storeToRefs(cartStore)
 

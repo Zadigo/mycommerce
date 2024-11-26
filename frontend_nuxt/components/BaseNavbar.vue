@@ -30,10 +30,15 @@
 </template>
 
 <script lang="ts" setup>
+// TODO: Create one unique dictionnary
+const accessToken = useCookie('access')
+const refereshToken = useCookie('refresh')
 const store = useAuthentication()
 
 function proxyLogout () {
   store.logout()
   store.showLoginDrawer = false
+  accessToken.value = null
+  refereshToken.value = null
 }
 </script> 

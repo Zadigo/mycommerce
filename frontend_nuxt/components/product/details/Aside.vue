@@ -65,12 +65,12 @@
     </ProductDetailsDeliveryType>
 
     <!-- Modals -->
-    <ModalsSizeGuide :product="product" :show-modal="showSizeGuideDrawer" />
+    <ModalsSizeGuide :product="product" :show-modal="showSizeGuideDrawer" @close="showSizeGuideDrawer=false" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useSessionStorage, useLocalStorage } from '@vueuse/core';
+import { useSessionStorage } from '@vueuse/core';
 import type { PropType } from 'vue';
 import type { CartUpdateAPIResponse, Product } from '~/types';
 
@@ -80,8 +80,17 @@ const { translatePrice, isLiked, handleLike } = useShopComposable()
 const { mediaPath } = useDjangoUtilies()
 const { showSizeSelectionWarning, addToCart, userSelection } = useCartComposable()
 
-const cart = useLocalStorage<CartUpdateAPIResponse>('cart', null)
-const sessionId = useSessionStorage<string | null>('session_id', null)
+const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
+  deep: true,
+  serializer: {
+    read (raw) {
+      return JSON.parse(raw)
+    },
+    write (value) {
+      return JSON.stringify(value)
+    },
+  }
+})
 
 const props = defineProps({
   isLoading: {
@@ -124,10 +133,17 @@ async function handleAddToCart () {
     addToCart(props.product, null, (data) => {
       showAddedProductDrawer.value = true
       cart.value = data
-      sessionId.value = data.session_id
-      
-      // if (!sessionId.value) {
-      // }
+    }, (data) => {
+      const accessToken = useCookie('access')
+      const refreshToken = useCookie('refresh')
+
+      accessToken.value = data.access
+      refreshToken.value = data.refresh
+
+      addToCart(props.product, null, (cartData) => {
+        showAddedProductDrawer.value = true
+        cart.value = cartData
+      })
     })
   }
 }
