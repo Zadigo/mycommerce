@@ -17,6 +17,7 @@ export type ProductImage = {
     original: string;
     thumbnail: string;
     mid_size: string;
+    is_main_image: boolean;
 };
 
 export interface ProductVariant {

@@ -34,6 +34,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useLocalStorage } from '@vueuse/core';
 import type { ConcreteComponent } from 'vue';
 import type { Product } from '~/types';
 
@@ -41,6 +42,17 @@ const ProductDetailsFiveImages = resolveComponent('ProductDetailsFiveImages')
 const ProductDetailsSixImages = resolveComponent('ProductDetailsSixImages')
 
 const route = useRoute()
+const visitedProducts = useLocalStorage<number[]>('visited', null, {
+  deep: true,
+  serializer: {
+    read (raw) {
+      return JSON.parse(raw)
+    },
+    write (value) {
+      return JSON.stringify(value)
+    },
+  }
+})
 
 const { data, status } = await useFetch<Product>(`/api/products/${route.params.id}`, {
   method: 'GET'
@@ -88,5 +100,17 @@ const imageComponent = computed((): string | ConcreteComponent => {
     }
   }
   return ProductDetailsFiveImages
+})
+
+onBeforeMount(() => {
+  setTimeout(() => {
+    if (product.value) {
+      if (visitedProducts.value) {
+        visitedProducts.value.push(product.value.id)
+      } else {
+        visitedProducts.value = [product.value.id]
+      }
+    }
+  }, 1000)
 })
 </script>

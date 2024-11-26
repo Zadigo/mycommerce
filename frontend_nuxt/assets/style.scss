@@ -24,3 +24,9 @@ $factors: (
     margin-bottom: calc($base_section_margin / $factor);
   }
 }
+
+
+.no-scroll {
+  height: 100%;
+  overflow: hidden;
+}

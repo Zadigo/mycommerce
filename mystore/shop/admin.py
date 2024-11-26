@@ -2,13 +2,14 @@ import random
 
 from django.contrib import admin
 from django.core.exceptions import ValidationError
+from django.db.models import Count
 from django.urls import re_path
 from import_export.admin import ImportExportModelAdmin
 from import_export.resources import ModelResource
-
 from shop.models import Image, Like, Product, Video, Wishlist
 from shop.utils import create_slug
 from shop.views import AdminUploadImageView
+from django.contrib import messages
 
 
 class ProductResource(ModelResource):
@@ -32,8 +33,27 @@ class ProductAdmin(ImportExportModelAdmin):
                                 'sale_value', 'sale_price', 'on_sale']}],
         ['Other', {'fields': ['display_new', 'active', 'slug']}]
     ]
-    actions = ['activate', 'deactivate', 'download_csv',
-               'copy_products', 'create_default_sizes']
+    actions = [
+        'activate', 'deactivate', 'download_csv',
+        'copy_products', 'create_default_sizes',
+        'activate_products_with_images'
+    ]
+
+    def activate_products_with_images(self, request, queryset):
+        annotation = queryset.annotate(images_count=Count('images'))
+
+        with_images = annotation.filter(images_count__gt=0)
+        with_no_images = annotation.filter(images_count=0)
+
+        for item in with_images:
+            item.active = True
+            item.save()
+
+        for item in with_no_images:
+            item.active = False
+            item.save()
+
+        messages.success(request, f'Updated {len(with_images)} products')
 
     def activate(self, request, queryset):
         queryset.update(active=True)

@@ -26,7 +26,7 @@
           </v-skeleton-loader>
 
           <v-btn :active="gridSize === 3" variant="tonal" flat @click="handleGridSize(3)">
-            <font-awesome icon="table-cells-large" />
+            <font-awesome icon="table-cells" />
           </v-btn>
 
           <v-btn :active="gridSize === 4" variant="tonal" flat @click="handleGridSize(4)">

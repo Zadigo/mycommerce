@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="showCartDrawer" width="400" location="right" temporary @close="showCartDrawer=false">
+  <v-navigation-drawer v-model="showCartDrawer" width="400" location="right" sticky temporary @close="showCartDrawer=false">
     <v-toolbar class="border-bottom" color="white">
       <v-toolbar-title class="fw-bold">
         {{ $t('Cart quantity', { n: numberOfProducts }) }}
@@ -81,6 +81,7 @@
 </template>
 
 <script lang="ts" setup>
+import { whenever } from '@vueuse/core';
 import type { Product, ProductToEdit } from '~/types';
 
 const router = useRouter()
@@ -90,6 +91,14 @@ const { showCartDrawer, numberOfProducts, hasProducts, freeDeliveryTarget, cartT
 
 const currentEditedProduct = ref<Product | object>({})
 
+whenever(showCartDrawer, (value) => {
+  if (value) {
+    document.body.classList.add('no-scroll')
+  } else {
+    document.body.classList.remove('no-scroll')
+  }
+})
+
 /**
  * Handles the redirection to the correct page
  * if the user clicks on the discover button
@@ -97,7 +106,7 @@ const currentEditedProduct = ref<Product | object>({})
  */
 function handleCartButtonRedirection () {
   showCartDrawer.value = false
-  router.push('/shop/collections/novelties')
+  router.push('/shop/collection/novelties')
 }
 
 /**

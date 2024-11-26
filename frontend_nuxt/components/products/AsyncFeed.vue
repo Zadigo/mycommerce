@@ -26,13 +26,13 @@
       </div>
       
       <!-- Modals -->
-      <ModalsProductFilters :show="showProductFilters" :count="products.length" @update-products="requestFilteredProducts" @close="showProductFilters=false" />
+      <ModalsProductFilters :show-modal="showProductFilters" :count="products.length" @update-products="requestFilteredProducts" @close="showProductFilters=false" />
     </template>
   </ProductsFeedLayout>
 </template>
 
 <script lang="ts" setup>
-import { useIntersectionObserver, watchArray  } from '@vueuse/core'
+import { useIntersectionObserver, useLocalStorage, watchArray  } from '@vueuse/core'
 import { AxiosError } from 'axios';
 import type { Product, ProductsAPIResponse } from '~/types';
 
@@ -47,7 +47,7 @@ const emit = defineEmits({
 // const idbConnection = createConnection('e-commerce')
 // const storage = useIDBStorage(idbConnection)
 const route = useRoute()
-const currentGridSize = ref(3)
+const currentGridSize = useLocalStorage('grid', 3, { initOnMounted: true })
 const { $client } = useNuxtApp()
 const { scrollToTop } = useUtilities()
 const { builLimitOffset } = useDjangoUtilies()

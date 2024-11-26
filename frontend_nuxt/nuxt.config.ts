@@ -103,6 +103,7 @@ export default defineNuxtConfig({
         'trash',
         'circle-check',
         'shopping-bag',
+        'table-cells',
         'table-cells-large',
         'close'
       ],

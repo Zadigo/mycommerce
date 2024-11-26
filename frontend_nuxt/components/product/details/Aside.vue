@@ -70,7 +70,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useSessionStorage } from '@vueuse/core';
+import { useLocalStorage, useSessionStorage } from '@vueuse/core';
 import type { PropType } from 'vue';
 import type { CartUpdateAPIResponse, Product } from '~/types';
 
@@ -106,19 +106,34 @@ const props = defineProps({
 provide('userSelection', userSelection)
 
 const showSizeGuideDrawer = ref(false)
+const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
+  deep: true,
+  serializer: {
+    read (raw) {
+      return JSON.parse(raw)
+    },
+    write (value) {
+      return JSON.stringify(value)
+    },
+  }
+})
 
 /**
  * Indicates if the product has other color variants     * 
  */
 const hasColorVariants = computed(() => {
-  return props.product.variants.length > 0
+  if (props.product) {
+    return props.product.variants.length > 0
+  } else {
+    return false
+  }
 })
 
 /**
  * Actions where the user selects a given size
  * for a given product 
  */
-function handleSizeSelection (size: string | number | undefined) {
+function handleSizeSelection (size: string | number | null | undefined) {
   userSelection.value.size = size
 }
 

@@ -1,12 +1,12 @@
 <template>
-  <v-navigation-drawer v-model="show" width="400" location="right" temporary>
+  <v-navigation-drawer v-model="proxyShow" width="400" location="right" sticky temporary @close="$emit('close')">
     <div class="d-flex flex-column justify-content-around">
       <v-container class="border-bottom d-flex justify-content-between align-items-center">
         <h4 class="m-0">
           {{ $t("Filtrer") }}
         </h4>
 
-        <v-btn variant="tonal" @click="showProductFilters=false">
+        <v-btn variant="tonal" @click="emit('close')">
           <font-awesome icon="close" round />
         </v-btn>
       </v-container>
@@ -77,7 +77,7 @@
           {{ $t("Supprimer") }}
         </v-btn>
         
-        <v-btn color="secondary" variant="tonal" rounded @click="showProductFilters=false">
+        <v-btn color="secondary" variant="tonal" rounded @click="proxyShow=false">
           Voir résulats ({{ count }})
         </v-btn>
       </v-container>
@@ -97,7 +97,7 @@ interface SelectedFilters {
 }
 
 const props = defineProps({
-  show: {
+  showModal: {
     type: Boolean
   },
   count: {
@@ -108,6 +108,9 @@ const props = defineProps({
 
 const emit = defineEmits({
   'update-products' (_data: string) {
+    return true
+  },
+  close() {
     return true
   }
 })
@@ -230,5 +233,10 @@ function handleFiltersReset () {
 /**
  * 
  */
-const show = ref(props.show)
+const proxyShow = computed({
+  get: () => props.showModal,
+  set: () => {
+    emit('close')
+  }
+})
 </script>

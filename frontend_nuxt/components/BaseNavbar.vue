@@ -4,9 +4,9 @@
       <div class="container">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <NuxtLink to="/cart/" class="nav-link">
+            <a href="#" class="nav-link" @click.prevent="showCartDrawer=true">
               Cart
-            </NuxtLink>
+            </a>
           </li>
           <li v-if="!store.isAuthenticated" class="nav-item">
             <a href="#" class="nav-link" @click.prevent="store.showLoginDrawer=true">
@@ -34,6 +34,7 @@
 const accessToken = useCookie('access')
 const refereshToken = useCookie('refresh')
 const store = useAuthentication()
+const { showCartDrawer } = storeToRefs(useCart())
 
 function proxyLogout () {
   store.logout()

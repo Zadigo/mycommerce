@@ -3,7 +3,7 @@ import type { Product } from "./shop";
 export type UserSelection = {
     id: number | null;
     product: Product | object;
-    size: number | string | null;
+    size: number | string | null | undefined;
     quantity: number | 1;
     session_id: string | null;
 };

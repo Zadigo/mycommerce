@@ -26,6 +26,7 @@ class ImageSerializer(Serializer):
     original = fields.FileField()
     thumbnail = fields.FileField()
     mid_size = fields.FileField()
+    is_main_image= fields.BooleanField()
 
 
 class ColorVariantProductSerializer(Serializer):

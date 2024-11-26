@@ -34,8 +34,8 @@ export function useShopComposable () {
      * and therefore adding it to the user's
      * wishlist
      */
-    async function handleLike(product: Product | undefined) {
-        if (!isNull(product)) {
+    async function handleLike(product: Product | null | undefined) {
+        if (product) {
             isLiked.value = !isLiked.value
             shopStore.updateWishlist(product)
         }
