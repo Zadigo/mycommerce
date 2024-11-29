@@ -2,14 +2,16 @@
   <bar :data="chartData" :options="options" />
 </template>
 
-<script>
+<script lang="ts">
 import _ from 'lodash'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+
+import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js'
+import { defineComponent } from 'vue'
 import { Bar } from 'vue-chartjs'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
-export default {
+export default defineComponent({
   name: 'SalesChart',
   components: {
     Bar
@@ -18,18 +20,18 @@ export default {
     return {
       options: {
         scales: {
-          y: {
-            ticks: {
-              callback: function (value, index, ticks) {
-                return '$' + value;
-              }
-            }
-          }
+          // y: {
+          //   ticks: {
+          //     callback: function (value: number, _index: number, _ticks: string) {
+          //       return '$' + value
+          //     }
+          //   }
+          // }
         },
         plugins: {
           title: {
             display: true,
-            text: 'Number of sales',
+            text: 'Number of sales'
             // padding: {
             //   bottom: 30
             // }
@@ -55,5 +57,5 @@ export default {
       // Pass
     }, 1000)
   }
-}
+})
 </script>

@@ -2,14 +2,15 @@
   <line-chart :data="chartData" :options="options" />
 </template>
 
-<script>
+<script lang="ts">
 import _ from 'lodash'
-import {   Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 import { Line as LineChart } from 'vue-chartjs'
+import { defineComponent } from 'vue'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
-export default {
+export default defineComponent({
   name: 'CartsChart',
   components: {
     LineChart
@@ -18,18 +19,18 @@ export default {
     return {
       options: {
         scales: {
-          y: {
-            ticks: {
-              callback: function (value, index, ticks) {
-                return '$' + value;
-              }
-            }
-          }
+          // y: {
+          //   ticks: {
+          //     callback: function (value: number, _index: number, _ticks: string) {
+          //       return '$' + value
+          //     }
+          //   }
+          // }
         },
         plugins: {
           title: {
             display: true,
-            text: 'Number of sales',
+            text: 'Number of sales'
             // padding: {
             //   bottom: 30
             // }
@@ -55,5 +56,5 @@ export default {
       // Pass
     }, 1000)
   }
-}
+})
 </script>
