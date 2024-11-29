@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: async () => import('layouts/MainLayout.vue'),
     children: [
       {
         path: '',
@@ -13,17 +13,17 @@ const routes: RouteRecordRaw[] = [
           title: 'Home',
           isAdminLink: true
         }
-      }
-      // {
-      //   path: 'products',
-      //   component: async () => import('pages/ProductsPage.vue'),
-      //   name: 'products_view'
-      // },
-      // {
-      //   path: 'products/:id(\\d+)',
-      //   component: async () => import('pages/ProductPage.vue'),
-      //   name: 'product_view'
-      // },
+      },
+      {
+        path: 'products',
+        component: async () => import('pages/ProductsPage.vue'),
+        name: 'products_view'
+      },
+      {
+        path: 'products/:id(\\d+)',
+        component: async () => import('pages/ProductPage.vue'),
+        name: 'product_view'
+      },
       // {
       //   path: 'carts',
       //   component: async () => import('pages/CartsPage.vue'),
@@ -64,11 +64,11 @@ const routes: RouteRecordRaw[] = [
       //   component: async () => import('pages/OrderPage.vue'),
       //   name: 'order_view'
       // },
-      // {
-      //   path: 'images',
-      //   component: async () => import('pages/ImagesPage.vue'),
-      //   name: 'images_view'
-      // },
+      {
+        path: 'images',
+        component: async () => import('pages/ImagesPage.vue'),
+        name: 'images_view'
+      }
       // {
       //   path: 'images/:id(\\d+)',
       //   component: async () => import('pages/ImagePage.vue'),

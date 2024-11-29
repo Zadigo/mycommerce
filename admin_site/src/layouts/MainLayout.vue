@@ -31,7 +31,13 @@ const leftDrawerOpen = ref(false)
 const linksList = [
   {
     title: 'Home',
+    icon: 'fas fa-table',
     link: 'home_view'
+  },
+  {
+    title: 'Products',
+    icon: 'fas fa-table',
+    link: 'products_view'
   }
 ]
 

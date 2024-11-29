@@ -1,5 +1,5 @@
 <template>
-  <q-item clickable tag="a" :to="{ name: 'home_view' }">
+  <q-item clickable :to="{ name: link }">
     <q-item-section v-if="icon" avatar>
       <q-icon :name="icon" />
     </q-item-section>
