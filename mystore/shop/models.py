@@ -126,6 +126,8 @@ class AbstractProduct(models.Model):
         blank=True,
         null=True
     )
+    # section_name = None # Woman, Man...
+    # category_en = None
     category = models.CharField(
         max_length=100,
         choices=CategoryChoices.choices,
@@ -136,6 +138,7 @@ class AbstractProduct(models.Model):
             "products that fit under the given category"
         )
     )
+    # sub_category_end = None
     sub_category = models.CharField(
         max_length=100,
         verbose_name=_('Sub-category'),

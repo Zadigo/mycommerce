@@ -62,7 +62,10 @@ export default defineNuxtConfig({
   },
   googleFonts: {
     families: {
-      Ubuntu: true
+      Ubuntu: true,
+      Roboto: true,
+      Lato: true,
+      "Noto Sans": true
     }
   },
   gtag: {

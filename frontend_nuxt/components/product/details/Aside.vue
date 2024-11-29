@@ -1,13 +1,13 @@
 <template>
-  <div id="product-aside" class="col-4 ms-5 mt-4">
+  <div id="product-aside" class="col-3 ms-2 mt-4">
     <!-- Information -->
-    <h1 class="h3 fw-light" aria-label="Product name">
+    <h1 class="h3" aria-label="Product name">
       {{ product?.name }}
     </h1>
 
     <!-- Reference -->
-    <p class="fw-light text-body-secondary mb-2" aria-label="Product reference">
-      Ref. {{ product?.id }}
+    <p class="fw-light text-body-secondary mb-2" aria-label="Product color and reference">
+      {{ product?.color }} · Ref. 0623/152/505
     </p>
 
     <!-- Price -->
@@ -26,14 +26,14 @@
       </div>
     </div>
 
-    <hr class="my-5 text-body-tertiary">
+    <hr class="my-4 text-body-tertiary">
 
     <!-- Sizes -->
     <ProductSizeBlock v-if="product" :sizes="product.sizes" @update-size="handleSizeSelection" />
 
     <!-- Size Guide -->
     <div class="d-flex justify-content-start gap-3 mt-4 mb-2">
-      <a href="#" class="btn btn-light btn-rounded fw-bold shadow-none" @click.prevent="showSizeGuideDrawer=true">
+      <a href="#" class="btn btn-rounded fw-bold shadow-none btn-link" @click.prevent="showSizeGuideDrawer=true">
         <font-awesome icon="ruler" class="me-2" /> {{ $t('Guide des tailles') }}
       </a>
     </div>
@@ -44,7 +44,7 @@
       </p>
     </transition>
 
-    <div class="actions d-flex justify-content-start gap-1">
+    <div class="actions d-flex justify-content-start gap-1 my-5">
       <button id="btn-add-to-cart" type="button" class="btn btn-primary btn-lg shadow-none btn-rounded" aria-label="Add to cart" @click="handleAddToCart">
         {{ $t('Ajouter au panier') }}
       </button>
@@ -165,6 +165,10 @@ async function handleAddToCart () {
 </script>
 
 <style lang="scss" scoped>
+h1.h3 {
+  font-size: 1.3rem;
+}
+
 #product-variant.router-link-exact-active {
   opacity: 0.5;
 }

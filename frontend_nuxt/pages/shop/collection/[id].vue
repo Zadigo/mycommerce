@@ -1,5 +1,5 @@
 <template>
-  <section class="section-margin-2">
+  <section class="section-margin-1 mb-5">
     <div class="row">
       <!-- Page Title -->
       <div class="col-12">

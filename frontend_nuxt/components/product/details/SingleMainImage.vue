@@ -1,5 +1,5 @@
 <template>
-  <div id="product-images" class="col-6">
+  <div id="product-images" class="col-8">
     <div id="main-image">
       <BaseSkeleton :loading="isLoading" height="836px">
         <v-img :src="mediaPath(product?.get_main_image?.original)" :alt="product?.name" />

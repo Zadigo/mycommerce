@@ -11,17 +11,26 @@
 import { useSessionStorage } from '@vueuse/core';
 import type { CartUpdateAPIResponse, Profile } from './types';
 
-const serializer = {
+const profile = useSessionStorage<Profile>('profile', null, {
+  serializer: {
     read (raw) {
       return JSON.parse(raw)
     },
     write (value) {
       return JSON.stringify(value)
-    },
+    }
   }
-
-const profile = useSessionStorage<Profile>('profile', null, { serializer })
-const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, { serializer })
+})
+const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
+  serializer: {
+    read (raw) {
+      return JSON.parse(raw)
+    },
+    write (value) {
+      return JSON.stringify(value)
+    }
+  }
+})
 
 const authenticationStore = useAuthentication()
 const cartStore = useCart()
@@ -29,10 +38,11 @@ const cartStore = useCart()
 const accessToken = useCookie('access')
 const refreshToken = useCookie('refresh')
 
-onMounted(() => {
+onBeforeMount(() => {
   authenticationStore.accessToken = accessToken.value
   authenticationStore.refreshToken = refreshToken.value
   authenticationStore.profile = profile.value
   cartStore.cache = cart.value
+  console.log('default.vue', cart.value)
 })
 </script>

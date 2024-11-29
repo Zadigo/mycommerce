@@ -8,8 +8,9 @@
 
       <!-- Modals -->
       <ModalsLogin />
-      <ModalsCart />
+      <ModalsCart @edit-product="handleProductEdition" />
       <ModalsAddedProduct />
+      <ModalsEditProduct />
     </div>
 
     <!-- Footer -->
@@ -19,9 +20,13 @@
 
 <script lang="ts" setup>
 import { useLocalStorage } from '@vueuse/core';
-import type { CartUpdateAPIResponse } from '~/types';
+import type { CartUpdateAPIResponse, ProductToEdit } from '~/types';
 
 const cartStore = useCart()
+const { showCartDrawer, showEditProductDrawer } = storeToRefs(cartStore)
+const currentEditedProduct = ref<ProductToEdit>()
+
+provide('currentEditedProduct', currentEditedProduct)
 
 const cart = useLocalStorage<CartUpdateAPIResponse>('cart', null, {
   serializer: {
@@ -33,6 +38,14 @@ const cart = useLocalStorage<CartUpdateAPIResponse>('cart', null, {
     }
   }
 })
+
+function handleProductEdition (data: ProductToEdit) {
+  if (data) {
+    currentEditedProduct.value = data
+    showCartDrawer.value = false
+    showEditProductDrawer.value = true
+  }
+}
 
 onMounted(() => {
   cartStore.cache = cart.value

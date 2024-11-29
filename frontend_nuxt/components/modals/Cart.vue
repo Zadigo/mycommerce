@@ -82,14 +82,18 @@
 
 <script lang="ts" setup>
 import { whenever } from '@vueuse/core';
-import type { Product, ProductToEdit } from '~/types';
+import type { ProductToEdit } from '~/types';
 
 const router = useRouter()
 
 const { isAuthenticated, showLoginDrawer } = storeToRefs(useAuthentication())
 const { showCartDrawer, numberOfProducts, hasProducts, freeDeliveryTarget, cartTotal, showEditProductDrawer } = storeToRefs(useCart())
 
-const currentEditedProduct = ref<Product | object>({})
+const emit = defineEmits({
+  'edit-product' (_product: ProductToEdit) {
+    return true
+  }
+})
 
 whenever(showCartDrawer, (value) => {
   if (value) {
@@ -117,10 +121,6 @@ function handleCartButtonRedirection () {
  * TODO: Refactor this function
  */
 function handleOpenProductEdition (editedProduct: ProductToEdit) {
-  if (editedProduct) {
-    currentEditedProduct.value = editedProduct
-    showCartDrawer.value = false
-    showEditProductDrawer.value = true
-  }
+  emit('edit-product', editedProduct)
 }
 </script>

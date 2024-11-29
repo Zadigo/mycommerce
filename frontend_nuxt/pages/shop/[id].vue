@@ -1,5 +1,5 @@
 <template>
-  <section id="product" class="container-fluid px-0" style="margin-top: 1%;margin-bottom: 2%;">
+  <section id="product" class="container-fluid px-0 section-margin-1 mb-5">
     <!-- Product -->
     <div class="row gy-1">
       <div id="product-information" class="col-12">
@@ -21,7 +21,7 @@
       <div id="more-products" class="col-12">
         <Suspense>
           <template #default>
-            <AsyncBaseRecommendationBlock :columns="3" :quantity="30" />
+            <AsyncBaseRecommendationBlock :columns="2" :quantity="30" />
           </template>
 
           <template #fallback>
