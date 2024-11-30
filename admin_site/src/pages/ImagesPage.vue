@@ -333,7 +333,7 @@ export default defineComponent({
     async handleProductAssociation () {
       try {
         if (this.productToAssociate) {
-          await this.$api.post('shop/images/associate', {
+          await this.$api.post('shop/admin/images/associate', {
             product: this.productToAssociate.id,
             images: this.selectedImages
           })
@@ -370,16 +370,16 @@ export default defineComponent({
       await this.requestImages()
     }, 1000),
     /***/
-    requestFilteredImages: _.debounce(async function () {
-      try {
-        const response = await this.$api.post('shop/filter-images', {
-          image_filters: this.imageFilters
-        })
-        this.images = response.data
-      } catch (e) {
-        console.log(e)
-      }
-    }, 1000),
+    // requestFilteredImages: _.debounce(async function () {
+    //   try {
+    //     const response = await this.$api.post('shop/filter-images', {
+    //       image_filters: this.imageFilters
+    //     })
+    //     this.images = response.data
+    //   } catch (e) {
+    //     console.log(e)
+    //   }
+    // }, 1000),
     /***/
     handleAddFilter (column: string) {
       this.imageFilters.push({

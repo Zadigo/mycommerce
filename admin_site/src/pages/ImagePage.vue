@@ -166,7 +166,7 @@ export default defineComponent({
   },
   methods: {
     setMainImage () {
-      const imageId = parseInt(this.$route.params.id)
+      const imageId = parseInt(this.$route.params.id, 2)
       this.store.images = this.cachedImages
       this.store.currentImage = this.store.images.find(x => x.id === imageId)
     },
@@ -175,7 +175,7 @@ export default defineComponent({
      */
     filterSelection (value: string, update: (fn: () => void) => void, _abort: () => void) {
       if (this.searchedProducts !== null) {
-        update()
+        update(() => {})
         return
       }
 
@@ -221,7 +221,7 @@ export default defineComponent({
         }
 
         const currentImage = this.store.images[result]
-        this.$router.push({ name: 'image_view', params: { id: currentImage.id }})
+        this.$router.push({ name: 'image_view', params: { id: currentImage.id } })
       }
     }
   }
