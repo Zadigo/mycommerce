@@ -215,7 +215,11 @@ export default defineComponent({
         this.isLoading = false
       } catch (e) {
         if (e instanceof AxiosError && e.response) {
-          // Do something
+          this.notify({
+            color: 'amber-1',
+            message: 'Network error',
+            position: 'top'
+          })
         }
       }
     },
