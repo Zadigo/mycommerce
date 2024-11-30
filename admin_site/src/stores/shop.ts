@@ -4,16 +4,20 @@ import { ref } from 'vue'
 
 const useShop = defineStore('shop', () => {
   const products = ref<Product[]>([])
-  const currentProduct = ref<Product>()
+  const images = ref<ProductImage[]>([])
+  
   const previousProductId = ref<Product>()
   const nextProductId = ref<Product>()
-  const images = ref<ProductImage[]>([])
+
+  const currentProduct = ref<Product>()
+  const currentImage = ref<ProductImage>()
 
   return {
     images,
+    currentProduct,
+    currentImage,
     previousProductId,
     nextProductId,
-    currentProduct,
     products
   }
 })

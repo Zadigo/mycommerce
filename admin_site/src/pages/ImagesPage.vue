@@ -33,11 +33,11 @@
 
           <q-card class="q-mb-lg">
             <q-card-section>
-              <q-btn :rounded="true" @click="showUploadImagesDialog = true">
+              <q-btn :rounded="true" color="blue-12" flat @click="showUploadImagesDialog = true">
                 Upload images
               </q-btn>
 
-              <q-btn :rounded="true" :disable="!enableProductAssociationButton" @click="showProductAssociationDialog = true">
+              <q-btn :rounded="true" color="blue-12" flat :disable="!enableProductAssociationButton" @click="showProductAssociationDialog = true">
                 Associate images
               </q-btn>
             </q-card-section>
@@ -116,10 +116,7 @@
                 Cancel
               </q-btn>
 
-              <!-- <q-btn flat @click="handleUploadImages">
-                Upload
-              </q-btn> -->
-              <q-btn color="primary" flat @click="handleUploadImages2">
+              <q-btn :loading="isUploading" color="primary" flat @click="handleUploadImages">
                 <q-icon name="upload" class="q-mr-sm" />
                 Upload
               </q-btn>
@@ -128,7 +125,13 @@
         </q-dialog>
 
         <q-dialog v-model="showProductAssociationDialog">
-          <q-card>
+          <q-card style="width:400px;">
+            <q-card-section>
+              <h2 class="text-h5 q-ma-none">
+                Select a product
+              </h2>
+            </q-card-section>
+
             <q-card-section>
               <q-select v-model="productToAssociate" :options="searchedProducts" option-label="name" option-value="id" filled use-input hide-selected fill-input input-debounce="0" label="Select a product" @filter="handleFilterProducts" @filter-abort="abortFilterProducts">
                 <template #no-option>
@@ -160,7 +163,7 @@
 <script lang="ts">
 import _ from 'lodash'
 
-import { whenever } from '@vueuse/core'
+import { useSessionStorage, whenever } from '@vueuse/core'
 import { Product, ProductImage } from 'app/types'
 import { AxiosError } from 'axios'
 import { storeToRefs } from 'pinia'
@@ -188,9 +191,11 @@ export default defineComponent({
   name: 'ImagesPage',
   setup () {
     const { notify } = useQuasar()
+    const { mediaPath } = useDjangoUtilies()
+    
     const shop = useShop()
     const { images } = storeToRefs(shop)
-
+    
     const searchedData = ref({
       name: null
     })
@@ -217,13 +222,11 @@ export default defineComponent({
       console.log('whenever', items)
     })
 
-    const selectedImages = ref([])
+    const selectedImages = ref<ProductImage[]>([])
     const enableProductAssociationButton = ref(false)
     const showProductAssociationDialog = ref(false)
-    const searchedProducts = ref([])
+    const searchedProducts = ref<Product[]>([])
     const productToAssociate = ref<Product | null>(null)
-
-    const { mediaPath } = useDjangoUtilies()
 
     whenever(selectedImages, (items) => {
       if (items.length > 0) {
@@ -233,7 +236,21 @@ export default defineComponent({
       }
     })
 
+    const isUploading = ref(false)
+    const cachedImages = useSessionStorage('images', null, {
+      serializer: {
+        read (raw) {
+          return JSON.parse(raw)
+        },
+        write (value) {
+          return JSON.stringify(value)
+        }
+      }
+    })
+
     return {
+      cachedImages,
+      isUploading,
       selectedFilesBaseName,
       notify,
       selectedFiles,
@@ -260,50 +277,27 @@ export default defineComponent({
       try {
         const formData = new FormData()
 
-        this.requestData.files.forEach(file => {
-          if (file.content) {
-            formData.append('files', file.content, file.name)
-            formData.append('name', file.name)
-          }
+        this.isUploading = true
+        this.selectedFiles.forEach((file, i) => {
+          formData.append('files', file, file.name)
+          formData.append('file_names', `${this.selectedFilesBaseName} ${i}`)
         })
 
-        const response = await this.$api.post<ProductImage[]>('shop/admin/images/', formData, {
+        const response = await this.$api.post('shop/admin/images/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         })
 
         this.images = response.data
-        this.requestData.files = [{
-          name: '',
-          content: null
-        }]
+        this.selectedFiles = []
+        this.selectedFilesBaseName = null
+        this.showUploadImagesDialog = false
+        this.isUploading = false
       } catch (e) {
         if (e instanceof AxiosError && e.response) {
           // Handle
         }
-      }
-    },
-    /***/
-    async handleUploadImages2 () {
-      try {
-        const formData = new FormData()
-
-        this.selectedFiles.forEach((file, i) => {
-          formData.append('files', file, file.name)
-          formData.append('name', `${this.selectedFilesBaseName} ${i}`)
-        })
-
-        const response = await this.$api.post('shop/images/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        this.images = response.data
-        this.selectedFiles = []
-        this.selectedFilesBaseName = null
-      } catch (e) {
-        console.log(e)
       }
     },
     /***/
@@ -313,6 +307,7 @@ export default defineComponent({
           params: this.searchedData
         })
         this.images = response.data
+        this.cachedImages = response.data
       } catch (e) {
         if (e instanceof AxiosError && e.response) {
           // Handle
@@ -322,7 +317,7 @@ export default defineComponent({
     /***/
     async handleSearchProducts (search: string) {
       try {
-        const response = await this.$api.get('shop/search', {
+        const response = await this.$api.get<Product[]>('shop/admin/products', {
           params: {
             q: search
           }
@@ -357,9 +352,10 @@ export default defineComponent({
       }
     },
     /***/
-    handleFilterProducts (val: string, update: (fn: () => void) => void, _abort: () => void) {
+    handleFilterProducts (value: string, update: (fn: () => void) => void, _abort: () => void) {
+      console.log(value)
       update(() => {
-        this.handleSearchProducts(val)
+        this.handleSearchProducts(value)
       })
     },
     /***/

@@ -206,6 +206,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://localhost:8100',
     'http://localhost:3000',
+    'http://localhost:9000',
     'https://*.ngrok-free.app',
     'capacitor://localhost:8100'
 ]
@@ -216,6 +217,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
     'http://localhost:8100',
     'http://localhost:3000',
+    'http://localhost:9000',
     'capacitor://localhost:8100',
     'https://*.ngrok-free.app'
 ]

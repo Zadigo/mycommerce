@@ -19,20 +19,28 @@ adminpatterns = [
         admin_views.filter_images
     ),
     re_path(
-        r'^images$',
-        admin_views.ListImages.as_view()
-    ),
-    re_path(
         r'^images/associate$',
         admin_views.associate_images
     ),
     re_path(
-        r'^images/upload$',
-        admin_views.upload_images
-    ),
-    re_path(
         r'^products/upload$',
         admin_views.upload_products
+    ),
+    re_path(
+        r'^images/upload$',
+        # admin_views.UploadImages.as_view(),
+        admin_views.upload_images,
+        name='admin_upload_images'
+    ),
+    re_path(
+        r'^images$',
+        admin_views.ListImages.as_view(),
+        name='admin_list_images'
+    ),
+    re_path(
+        r'^products$',
+        admin_views.ListProducts.as_view(),
+        name='admin_list_products'
     )
 ]
 

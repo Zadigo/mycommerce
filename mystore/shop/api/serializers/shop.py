@@ -20,13 +20,13 @@ class ImageProductSerializer(Serializer):
 
 
 class ImageSerializer(Serializer):
-    id = fields.IntegerField()
-    name = fields.CharField()
-    product_set = ImageProductSerializer(many=True)
-    original = fields.FileField()
-    thumbnail = fields.FileField()
-    mid_size = fields.FileField()
-    is_main_image= fields.BooleanField()
+    id = fields.IntegerField(read_only=True)
+    name = fields.CharField(read_only=True)
+    product_set = ImageProductSerializer(read_only=True, many=True)
+    original = fields.FileField(read_only=True)
+    thumbnail = fields.FileField(read_only=True)
+    mid_size = fields.FileField(read_only=True)
+    is_main_image = fields.BooleanField(read_only=True)
 
 
 class ColorVariantProductSerializer(Serializer):

@@ -68,20 +68,17 @@ const routes: RouteRecordRaw[] = [
         path: 'images',
         component: async () => import('pages/ImagesPage.vue'),
         name: 'images_view'
+      },
+      {
+        path: 'images/:id(\\d+)',
+        component: async () => import('pages/ImagePage.vue'),
+        name: 'image_view'
+      },
+      {
+        path: '/:catchAll(.*)*',
+        component: () => import('pages/ErrorNotFound.vue')
       }
-      // {
-      //   path: 'images/:id(\\d+)',
-      //   component: async () => import('pages/ImagePage.vue'),
-      //   name: 'image_view'
-      // },
-    
-      // Always leave this as last one,
-      // but you can also remove it
     ]
-  },
-  {
-    path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue')
   }
 ]
 

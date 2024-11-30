@@ -12,10 +12,9 @@ from django.db.models.functions.window import Rank
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import make_aware, now
 from orders.models import CustomerOrder
+from rest_framework import status
 from rest_framework.decorators import api_view
-from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import ListModelMixin
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from shop.api.serializers import admin as admin_serializers
@@ -25,42 +24,48 @@ from shop.models import Image, Product
 from mystore.utils import remove_accents
 
 
-@api_view(['get'])
-def list_images(request, **kwargs):
-    queryset = Image.objects.all()
-
-    image_name = request.GET.get('name', None)
-    if image_name is not None:
-        queryset = queryset.filter(name__icontains=image_name)
-
-    serializer = admin_serializers.ImageSerializer(
-        instance=queryset,
-        many=True
-    )
-    return Response(serializer.data)
-
-
-class ListImages(ListModelMixin, GenericAPIView):
-    """List all the images avaible in the database"""
-
-    serializer_class = admin_serializers.ImageSerializer
-    # permission_classes = [IsAuthenticated, IsAdminUser]
+class ListProducts(ListAPIView):
+    serializer_class = admin_serializers.AdminProductSerializer
     queryset = Product.objects.all()
+    permission_classes = []
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        image_name = self.request.GET.get('name')
+        search = self.request.GET.get('q')
+        if search:
+            logic = (
+                Q(name__icontains=search) |
+                Q(name=search)
+            )
+            return queryset.filter(logic)
+        return queryset
 
-        if image_name is not None:
-            return queryset.filter(name__icontains=image_name)
+
+class ListImages(ListAPIView):
+    serializer_class = admin_serializers.ImageSerializer
+    # permission_classes = [IsAuthenticated, IsAdminUser]
+    queryset = Image.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search = self.request.GET.get('name')
+
+        if search == '':
+            return queryset
+
+        if search is not None:
+            return queryset.filter(name__icontains=search)
+
         return queryset
 
 
 @api_view(http_method_names=['post'])
 def upload_images(request, **kwargs):
-    # print(request.POST, request.data)
-    names = request.data.getlist('name', [])
+    names = request.data.getlist('file_names', [])
     files = request.data.getlist('files', [])
+
+    if not names:
+        return Response([], status=status.HTTP_304_NOT_MODIFIED)
 
     association = []
     for i, name in enumerate(names):
@@ -80,7 +85,7 @@ def upload_images(request, **kwargs):
         validator(image)
 
         Image.objects.create(
-            name=Value(item[0], output_field=CharField()),
+            name=item[0],
             original=image
         )
 
