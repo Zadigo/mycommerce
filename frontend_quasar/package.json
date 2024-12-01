@@ -33,7 +33,7 @@
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",
     "postcss": "^8.4.47",
-    "prettier": "^2.5.1"
+    "prettier": "^3.4.1"
   },
   "engines": {
     "node": "^20 || ^18 || ^16",
