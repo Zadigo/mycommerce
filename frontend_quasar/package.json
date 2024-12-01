@@ -13,7 +13,7 @@
     "build": "quasar build"
   },
   "dependencies": {
-    "@quasar/extras": "^1.16.4",
+    "@quasar/extras": "^1.16.14",
     "@vueuse/core": "^11.1.0",
     "axios": "^1.2.1",
     "chart.js": "^4.4.1",
