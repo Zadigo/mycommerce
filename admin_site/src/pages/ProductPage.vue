@@ -18,7 +18,7 @@
                   </div>
 
                   <q-btn color="primary" unelevated rounded @click="handleSaveProduct">
-                    <q-spinner-cube size="xs" color="white" class="q-mr-sm" />
+                    <q-spinner-cube v-if="isSaving" size="xs" color="white" class="q-mr-sm" />
                     Save
                   </q-btn>
                 </div>
@@ -50,7 +50,7 @@
             </q-card>
             
             <!-- Images -->
-            <ImagesBlock />
+            <ImagesBlock @update-product="handleUpdateProduct" @update-images="handleUpdateImages" />
 
             <!-- Sizes -->
             <SizeBlock />
@@ -74,7 +74,7 @@
 
 <script lang="ts">
 import { watchDeep } from '@vueuse/core'
-import { Product } from 'app/types'
+import { Product, ProductImage } from 'app/types'
 import { AxiosError } from 'axios'
 import { mapState, storeToRefs } from 'pinia'
 import { useQuasar } from 'quasar'
@@ -96,7 +96,8 @@ export default defineComponent({
     const store = useShop()
     const { currentProduct } = storeToRefs(store)
 
-    const requestData = ref<Product | undefined>(currentProduct.value)
+    const isSaving = ref(false)
+    const requestData = ref<Product | undefined>()
 
     watchDeep(requestData, (product) => {
       if (product && requestData.value) {
@@ -109,9 +110,10 @@ export default defineComponent({
     const { mediaPath } = useDjangoUtilies()
     const showUploadImagesDialog = ref(false)
     
-    provide('currentProduct', currentProduct)
+    provide('currentProduct', requestData)
 
     return {
+      isSaving,
       notify,
       showUploadImagesDialog,
       mediaPath,
@@ -137,8 +139,9 @@ export default defineComponent({
     /***/
     async requestProduct () {
       try {
-        const response = await this.$api.get(`shop/admin/products/${this.$route.params.id}`)
+        const response = await this.$api.get(`admin/products/${this.$route.params.id}`)
         this.currentProduct = response.data
+        this.requestData = response.data
       } catch (e) {
         if (e instanceof AxiosError && e.response) {
           this.notify({
@@ -154,19 +157,42 @@ export default defineComponent({
     /***/
     async handleSaveProduct () {
       try {
-        const response = await this.$api.post(`shop/admin/products/${this.$route.params.id}/update`, this.requestData)
+        this.isSaving = true
+        const response = await this.$api.patch(`admin/products/${this.$route.params.id}`, this.requestData)
         this.currentProduct = response.data
         this.showUploadImagesDialog = false
+        this.isSaving = false
         this.notify({
-          color: 'amber-1',
-          message: 'Saving product',
+          color: 'dark',
+          textColor: 'accent',
+          message: 'Product saved',
           progress: true,
-          timeout: 5000
+          timeout: 2000
         })
       } catch (e) {
         if (e instanceof AxiosError && e.response) {
-          // Do something
+          this.notify({
+            color: 'red-1',
+            textColor: 'dark',
+            closeBtn: true,
+            position: 'bottom',
+            message: 'Failed to save product'
+          })
         }
+      }
+    },
+    /***/
+    handleUpdateProduct (data: Product) {
+      if (Object.keys(data).length > 0) {
+        const index = this.store.products.findIndex(x => x.id === data.id)
+        this.store.products[index] = data
+      }
+    },
+    /***/
+    handleUpdateImages (data: { product: Product, images: ProductImage[] }) {
+      if (data.images.length > 0) {
+        const index = this.store.products.findIndex(x => x.id === data.product.id)
+        this.store.products[index].images = data.images
       }
     }
   }

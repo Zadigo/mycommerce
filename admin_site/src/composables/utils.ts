@@ -72,14 +72,15 @@ export function useImagesUpload () {
 
   const images = ref({})
   const selectedFiles = ref<File[]>([])
-  const selectedFilesBaseName = ref(null)
+  const selectedFilesBaseName = ref<string>('')
+  const isRunning = ref(false)
 
   function createFormData () {
     const formData = new FormData()
 
     selectedFiles.value.forEach((file, i) => {
       formData.append('files', file, file.name)
-      formData.append('name', `${selectedFilesBaseName.value} ${i}`)
+      formData.append('file_names', `${selectedFilesBaseName.value} ${i}`)
     })
     return formData
   }
@@ -88,16 +89,11 @@ export function useImagesUpload () {
    * Upload images without associating them to
    * any product in the database 
    */
-  async function handleUploadImages () {
+  async function handleUploadImages (callback: (data: Product) => void) {
     try {
-      // const formData = new FormData()
+      isRunning.value = true
 
-      // selectedFiles.value.forEach((file, i) => {
-      //   formData.append('files', file, file.name)
-      //   formData.append('name', `${selectedFilesBaseName.value} ${i}`)
-      // })
       const formData = createFormData()
-
       const response = await api.post('shop/images/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -106,7 +102,12 @@ export function useImagesUpload () {
 
       images.value = response.data
       selectedFiles.value = []
-      selectedFilesBaseName.value = null
+      selectedFilesBaseName.value = ''
+      isRunning.value = false
+
+      if (typeof callback === 'function') {
+        callback.call(app, response.data)
+      }
     } catch (e) {
       if (e instanceof AxiosError && e.response) {
         // Handle
@@ -117,22 +118,23 @@ export function useImagesUpload () {
   /**
    * Upload images to a specific given product
    */
-  async function uploadImagesToProduct (product: Product | null | undefined, callback: () => void) {
+  async function uploadImagesToProduct (product: Product | null | undefined, callback: (data: Product) => void) {
     try {
       if (product) {
         const formData = createFormData()
-  
-        await api.post(`shop/products/${product.id}/upload-images`, formData, {
+        isRunning.value = true
+        const response = await api.post(`admin/products/${product.id}/upload-images`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         })
   
         selectedFiles.value = []
-        selectedFilesBaseName.value = null
-  
+        selectedFilesBaseName.value = ''
+        isRunning.value = false
+
         if (typeof callback === 'function') {
-          callback.call(app)
+          callback.call(app, response.data)
         }
       }
     } catch (e) {
@@ -144,6 +146,7 @@ export function useImagesUpload () {
 
   return {
     images,
+    isRunning,
     selectedFiles,
     selectedFilesBaseName,
     uploadImagesToProduct,

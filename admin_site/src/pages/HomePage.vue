@@ -6,36 +6,19 @@
           <div class="col-12">
             <div class="row">
               <div class="col-3">
-                <q-card class="bg-green-4">
-                  <q-card-section class="text-center">
-                    <h1 class="text-h3 text-weight-bold q-ma-none q-mb-sm">45</h1>
-                    <p>Some indicator</p>
-                  </q-card-section>
-                </q-card>
+                <BaseStatisticCard title="Nombres de produits" statistic="145" />
               </div>
+
               <div class="col-3 q-px-sm">
-                <q-card class="bg-green-4">
-                  <q-card-section class="text-center">
-                    <h1 class="text-h3 text-weight-bold q-ma-none q-mb-sm">45</h1>
-                    <p>Some indicator</p>
-                  </q-card-section>
-                </q-card>
+                <BaseStatisticCard title="Commandes" :statistic="statistics?.id__count" />
               </div>
+
               <div class="col-3 q-pr-sm">
-                <q-card class="bg-green-4">
-                  <q-card-section class="text-center">
-                    <h1 class="text-h3 text-weight-bold q-ma-none q-mb-sm">45</h1>
-                    <p>Some indicator</p>
-                  </q-card-section>
-                </q-card>
+                <BaseStatisticCard title="Nombres de produits" statistic="145" />
               </div>
+
               <div class="col-3">
-                <q-card class="bg-green-4">
-                  <q-card-section class="text-center">
-                    <h1 class="text-h3 text-weight-bold q-ma-none q-mb-sm">45</h1>
-                    <p>Some indicator</p>
-                  </q-card-section>
-                </q-card>
+                <BaseStatisticCard title="Nombres de produits" statistic="145" />
               </div>
             </div>
           </div>
@@ -86,15 +69,19 @@
 </template>
 
 <script lang="ts">
-import { date } from 'quasar'
+import { AxiosError } from 'axios'
+import { date, useQuasar } from 'quasar'
 import { defineComponent, ref } from 'vue'
+import { StatisticsResponseAPI } from './home'
 
+import BaseStatisticCard from 'src/components/BaseStatisticCard.vue'
 import CartsChart from '../components/charts/CartsChart.vue'
 import SalesChart from '../components/charts/SalesChart.vue'
 
 export default defineComponent({
   name: 'HomePage',
   components: {
+    BaseStatisticCard,
     CartsChart,
     SalesChart
   },
@@ -131,7 +118,13 @@ export default defineComponent({
       'Last 12 months',
       'This year'
     ]
+
+    const { notify } = useQuasar()
+    const statistics = ref<StatisticsResponseAPI>()
+
     return {
+      statistics,
+      notify,
       date,
       jsDate: d,
       dateOptions,
@@ -176,7 +169,23 @@ export default defineComponent({
       }
     }
   },
+  beforeMount () {
+    this.requestStatistics()
+  },
   methods: {
+    async requestStatistics () {
+      try {
+        const response = await this.$api.get<StatisticsResponseAPI>('admin/statistics')
+        this.statistics = response.data
+      } catch (e) {
+        if (e instanceof AxiosError && e.response) {
+          this.notify({
+            color: 'amber-1',
+            message: 'Network error'
+          })
+        }
+      }
+    }
   }
 })
 </script>

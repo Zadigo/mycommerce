@@ -8,13 +8,13 @@
 
     <q-separator />
 
-    <q-card-section>
-      <div v-if="currentProduct" class="row q-gutter-sm flex justify-center">
+    <q-card-section v-if="currentProduct">
+      <div v-if="currentProduct.images.length > 0" class="row q-gutter-sm flex justify-center">
         <div v-for="image in currentProduct.images" :key="image.id" class="col-3">
           <q-img :src="mediaPath(image.original)" width="100">
-            <div class="absolute-bottom text-h6">
-              <q-btn color="primary" size="sm">
-                <q-icon name="delete" />
+            <div class="absolute-bottom text-h6 flex justify-center">
+              <q-btn color="primary" size="sm" :unelevated="true" @click="handleUnlinkImage(image)">
+                <q-icon name="fa fa-unlink" />
               </q-btn>
             </div>
           </q-img>
@@ -41,7 +41,7 @@
       <q-separator />
 
       <q-card-section>
-        <q-input v-model="selectedFilesBaseName" class="q-mb-sm" outlined />
+        <q-input v-model="selectedFilesBaseName" :rules="[isNotNull]" placeholder="Files base name" class="q-mb-sm" outlined />
         <q-file v-model="selectedFiles" :multiple="true" outlined label="Outlined" />
       </q-card-section>
 
@@ -51,8 +51,8 @@
         </q-btn>
 
         <!-- data => currentProduct.images = data -->
-        <q-btn color="primary" @click="uploadImagesToProduct(currentProduct, () => {})">
-          <q-spinner-cube size="xs" color="white" class="q-mr-sm" />
+        <q-btn color="primary" @click="uploadImagesToProduct(currentProduct, uploadCallback)">
+          <q-spinner-cube v-if="isRunning" size="xs" color="white" class="q-mr-sm" />
           <q-icon name="upload" class="q-mr-sm" />
           Upload
         </q-btn>
@@ -62,13 +62,68 @@
 </template>
 
 <script lang="ts" setup>
-import { Product } from 'app/types'
+import { Product, ProductImage } from 'app/types'
+import { useQuasar } from 'quasar'
 import { useDjangoUtilies, useImagesUpload } from 'src/composables/utils'
-import { inject, ref } from 'vue'
+import { inject, onBeforeMount, ref } from 'vue'
+import { api } from 'src/boot/axios'
+import { AxiosError } from 'axios'
 
+const { notify } = useQuasar()
 const { mediaPath } = useDjangoUtilies()
-const { selectedFiles, selectedFilesBaseName, uploadImagesToProduct } = useImagesUpload()
+const { selectedFiles, selectedFilesBaseName, uploadImagesToProduct, isRunning } = useImagesUpload()
 
 const currentProduct = inject<Product>('currentProduct')
 const showUploadImagesDialog = ref(false)
+
+const emit = defineEmits({
+  'update-product' (_data: Product) {
+    return true
+  },
+  'update-images' (_data: { product: Product, images: ProductImage[] }) {
+    return true
+  }
+})
+
+onBeforeMount(() => {
+  if (currentProduct) {
+    selectedFilesBaseName.value = currentProduct.name
+  }
+})
+
+async function handleUnlinkImage (image: ProductImage) {
+  try {
+    if (currentProduct) {
+      const response = await api.patch<ProductImage[]>('admin/images/associate', {
+        product: currentProduct.id,
+        image: image.id,
+        method: 'Dissociate'
+      })
+      currentProduct.images = response.data
+      emit('update-images', {
+        product: currentProduct,
+        images: response.data
+      })
+    }
+  } catch (e) {
+    if (e instanceof AxiosError && e.response) {
+      // Handle
+    }
+  }
+}
+
+function isNotNull (value: string) {
+  return value !== '' || 'Cannot be empty'
+}
+
+function uploadCallback (data: Product) {
+  emit('update-product', data)
+  notify({
+    color: 'red-1',
+    textColor: 'dark',
+    closeBtn: true,
+    position: 'bottom',
+    message: 'Failed to save product'
+  })
+}
 </script>
