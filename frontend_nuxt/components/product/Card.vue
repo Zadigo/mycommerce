@@ -13,12 +13,12 @@
               {{ $t("Sélectionne la taille") }}
             </p>
             
-            <div class="d-flex justify-content-around flex-wrap gap-1">
+            <div class="d-flex justify-content-center flex-wrap gap-1">
               <ProductSizeButton v-for="size in product.sizes" :key="size.id" :size="size" @update:selected-size="handleAddToCart" />
             </div>
           </div>
 
-          <v-btn v-else variant="outlined" color="primary" block rounded @click="handleAddToCart">
+          <v-btn v-else variant="outlined" color="dark" block rounded @click="handleAddToCart">
             {{ $t('Ajouter au panier') }}
           </v-btn>
         </div>
@@ -53,6 +53,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useSessionStorage } from '@vueuse/core';
 import type { PropType } from 'vue';
 import type { Product } from '~/types';
 
@@ -75,9 +76,23 @@ const props = defineProps({
   }
 })
 
+const cartStore = useCart()
+const { showAddedProductDrawer } = storeToRefs(cartStore)
 const { isLiked } = useShopComposable()
 const { addToCart } = useCartComposable()
 const { mediaPath } = useDjangoUtilies()
+
+const cachedCart = useSessionStorage('cart', null, {
+  serializer: {
+    read (raw) {
+      return JSON.parse(raw)
+    },
+    write (value) {
+      return JSON.stringify(value)
+    }
+  }
+})
+
 const isHovered = ref(false)
 
 const requiresSizeItems = computed(() => {
@@ -85,8 +100,10 @@ const requiresSizeItems = computed(() => {
 })
 
 async function handleAddToCart (size?: string | number) {
-  await addToCart(props.product,  size, (_data) => {
-  
+  await addToCart(props.product,  size, (data) => {
+    showAddedProductDrawer.value = true
+    cachedCart.value = data
+    cartStore.cache = cachedCart.value
   })
 }
 

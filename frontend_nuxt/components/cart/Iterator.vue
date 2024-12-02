@@ -3,7 +3,6 @@
     <article v-for="item in cartItems" :key="item.product__id" :aria-label="item.product__name" class="card shadow-none border mb-1">
       <div class="card-body p-2">
         <div class="d-flex justify-content-start gap-2">
-          <!-- {{ item }} -->
           <div class="col-auto">
             <v-img :src="mediaPath(item.product_info?.product.get_main_image.original)" :alt="item.product__name" :width="150" :height="150" />
           </div>

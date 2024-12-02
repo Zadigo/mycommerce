@@ -10,7 +10,8 @@
 
           <div class="row">
             <div class="col-4">
-              <!-- <NuxtImg v-if="lastAddedProduct" :src="mediaPath(lastAddedProduct.product.get_main_image.original)" :alt="lastAddedProduct?.product.name" class="img-fluid" /> -->
+              <NuxtImg v-if="lastAddedProduct" :src="mediaPath(lastAddedProduct.product.get_main_image.original)" :alt="lastAddedProduct.product.name" class="img-fluid" />
+              <NuxtImg v-else src="/placeholder.svg" class="img-fluid" />
             </div>
 
             <div class="col-8">
@@ -39,9 +40,11 @@
               </v-btn>
             </div>
           </div>
-
+          
+          <!-- Recommendations -->
+          <BaseRecommendations :quantity="20" :columns="2" />
           <!-- TODO: Iterate products -->
-          <h4 class="text-center h5">
+          <!-- <h4 class="text-center h5">
             {{ $t('Autres produits') }}
           </h4>
 
@@ -51,7 +54,18 @@
                 <v-img src="/img7.jpeg" alt="" class="img-fluid" />
               </NuxtLink>
             </div>
+          </div> -->
+        </div>
+
+        <div v-else class="col-12">
+          <BaseSkeleton :loading="true" class="mb-1" height="30px" />
+
+          <div class="d-flex justify-content-between gap-2 mb-4">
+            <BaseSkeleton :loading="true" height="30px" />
+            <BaseSkeleton :loading="true" height="30px" />
           </div>
+
+          <BaseSkeleton :loading="true" height="300px" />
         </div>
       </div>
     </div>
@@ -59,11 +73,14 @@
 </template>
 
 <script lang="ts" setup>
+import { useSessionStorage } from '@vueuse/core';
+
+const cartStore = useCart()
+const { lastAddedProduct, showAddedProductDrawer, showCartDrawer, hasProducts } = storeToRefs(cartStore)
+
 const { mediaPath } = useDjangoUtilies()
-const { lastAddedProduct, showAddedProductDrawer, showCartDrawer, hasProducts } = storeToRefs(useCart())
 
 const authenticationStore = useAuthentication()
-
 const router = useRouter()
 
 /**

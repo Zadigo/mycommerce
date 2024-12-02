@@ -47,8 +47,6 @@ const route = useRoute()
 const productsLoading = ref(true)
 const products = ref<Product[]>([])
 
-provide('productsLoading', productsLoading)
-
 useHead({
   title: useChangeCase(route.params.id as string, 'capitalCase'),
   meta: [
@@ -62,6 +60,8 @@ useHead({
 const AsyncFeed = defineAsyncComponent({
   loader: async () => import('@/components/products/AsyncFeed.vue')
 })
+
+provide('productsLoading', productsLoading)
 
 function handleLoadedProducts(data: Product[]) {
   productsLoading.value = false

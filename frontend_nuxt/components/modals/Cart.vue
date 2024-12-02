@@ -40,7 +40,8 @@
             </div>
           </div>
         </div>
-
+        
+        <!-- Products -->
         <CartIterator class="my-2" @edit-product="handleOpenProductEdition" />
 
         <div class="d-flex justify-content-between align-items-center py-4">
@@ -53,7 +54,7 @@
             {{ $t('Passer commande') }}
           </v-btn>
 
-          <v-btn v-else color="secondary" rounded flat block @click="showCartDrawer = false, showLoginDrawer = true">
+          <v-btn v-else color="secondary" rounded flat block @click="showCartDrawer=false, showLoginDrawer=true">
             {{ $t('Passer commande') }}
           </v-btn>
         </div>

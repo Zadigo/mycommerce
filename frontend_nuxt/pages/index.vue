@@ -1,23 +1,23 @@
 <template>
   <section id="collections" class="section-margin-2">
     <div class="row">
-      <!-- <div class="col-sm-12 col-md-10 offset-md-1">
-        <h1 class="mb-5">
-          {{ $t("Nos collections") }}
-        </h1>
-      </div> -->
-
       <div class="col-sm-12 col-md-10 offset-md-1">
-        <div class="row g-1">
+        <div v-if="isLoading" class="row g-1">
+          <div v-for="i in 3" :key="i" class="col-sm-12 col-md-4 my-1">
+            <BaseSkeleton :loading="true" height="400px" />
+          </div>
+        </div>
+        
+        <div v-else class="row g-1">
           <article class="col-sm-12 col-md-4 my-1">
             <NuxtLink to="/shop/collection/all">
-              <article aria-label="Toute la collection" class="card shadow-none">
+              <div aria-label="Toute la collection" class="card shadow-none">
                 <NuxtImg alt="Toute la collection" src="/img5.jpeg" class="card-img" />
                 
                 <h1 class="text-white text-left h3 fw-bold text-uppercase px-2 py-4">
                   Toute notre collection
                 </h1>
-              </article>
+              </div>
             </NuxtLink>
           </article>
 
@@ -43,7 +43,6 @@ import { useStorageAsync } from '@vueuse/core';
 import { AxiosError } from 'axios';
 import type { CollectionName } from '~/types';
 
-console.info('index.vue', window)
 const idbConnection = createConnection('e-commerce')
 const storage = useIDBStorage(idbConnection)
 const { $client } = useNuxtApp()
@@ -58,6 +57,7 @@ useHead({
   ]
 })
 
+const isLoading = ref(true)
 const collections = ref<CollectionName[]>([])
 
 /**
@@ -76,6 +76,7 @@ async function requestCollectionNames () {
       const response = await $client.get<CollectionName[]>('collection')
       collections.value = response.data
       result.value = response.data
+      isLoading.value = false
     }
   } catch (e) {
     if (e instanceof AxiosError && e.response) {

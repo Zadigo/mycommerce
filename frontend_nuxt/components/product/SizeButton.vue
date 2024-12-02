@@ -38,7 +38,7 @@ const buttonClass = computed(() => {
     'btn',
     'btn-rounded',
     { 
-      'btn-outline-secondary': !isSelected.value,
+      'btn-outline-dark': !isSelected.value,
       'btn-secondary': isSelected.value && props.selectable
     }
   ]

@@ -17,7 +17,7 @@ export const useCart = defineStore('cart', () => {
     })
 
     const cache = ref<CartUpdateAPIResponse>()
-    const products = ref<CartItem[]>([])
+    // const products = ref<CartItem[]>([])
 
     const showAddedProductDrawer = ref(false)
     const showEditProductDrawer = ref(false)
@@ -25,6 +25,14 @@ export const useCart = defineStore('cart', () => {
 
     const sessionId = computed(() => {
         return cache.value?.session_id
+    })
+
+    const products = computed(() => {
+        if (cache.value) {
+            return cache.value.results
+        } else {
+            return []
+        }
     })
 
     /**
@@ -69,7 +77,11 @@ export const useCart = defineStore('cart', () => {
      */
     const cartTotal = computed((): number => {
         if (hasProducts.value) {
-            return cache.value.statistics.map(x => x.total).reduce((a, b) => a + b, 0)
+            if (cache.value) {
+                return cache.value.statistics.map(x => x.total).reduce((a, b) => a + b, 0)
+            } else {
+                return 0
+            }
         } else {
             return 0;
         }
@@ -86,6 +98,7 @@ export const useCart = defineStore('cart', () => {
     })
 
     /**
+     * TODO: Remove
      * Preload the cart from the session if we actually
      * have the data. This allows us then to dynamically
      * calculate the items that the user has selected
@@ -97,6 +110,7 @@ export const useCart = defineStore('cart', () => {
     }
 
     /**
+     * TODO: Remove
      * This is the main function that adds a product to
      * the user's cart in the store. When the product
      * does not exist, it is created otherwise, its quantity

@@ -1,8 +1,8 @@
 <template>
-  <transition name="opacity">
-    <div v-if="loading" ref="skeletonEl" class="card-skeleton" />
-    <slot v-else />
-  </transition>
+  <div v-if="loading" ref="skeletonEl" class="card-skeleton" />
+  <slot v-else />
+  <!-- <transition name="opacity">
+  </transition> -->
 </template>
 
 <script lang="ts" setup>
@@ -27,6 +27,20 @@ const props = defineProps({
 const skeletonEl = ref<HTMLElement>()
 
 onMounted(() => {
+  if (skeletonEl.value) {
+    skeletonEl.value.style.height = props.height
+
+    if (props.width) {
+      skeletonEl.value.style.width = props.width
+    }
+
+    if (props.borderRadius) {
+      skeletonEl.value.style.borderRadius = '0.5rem'
+    }
+  }
+})
+
+onUpdated(() => {
   if (skeletonEl.value) {
     skeletonEl.value.style.height = props.height
 

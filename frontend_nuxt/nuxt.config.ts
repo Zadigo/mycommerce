@@ -89,6 +89,7 @@ export default defineNuxtConfig({
   fontawesome: {
     icons: {
       solid: [
+        'angle-left',
         'arrow-up',
         'arrow-down',
         'caret-right',

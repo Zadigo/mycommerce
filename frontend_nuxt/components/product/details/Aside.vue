@@ -80,6 +80,17 @@ const { translatePrice, isLiked, handleLike } = useShopComposable()
 const { mediaPath } = useDjangoUtilies()
 const { showSizeSelectionWarning, addToCart, userSelection } = useCartComposable()
 
+const props = defineProps({
+  isLoading: {
+    type: Boolean,
+    default: true
+  },
+  product: {
+    type: Object as PropType<Product | null>,
+    required: true
+  }
+})
+
 const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
   deep: true,
   serializer: {
@@ -92,20 +103,6 @@ const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
   }
 })
 
-const props = defineProps({
-  isLoading: {
-    type: Boolean,
-    default: true
-  },
-  product: {
-    type: Object as PropType<Product | null>,
-    required: true
-  }
-})
-
-provide('userSelection', userSelection)
-
-const showSizeGuideDrawer = ref(false)
 const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
   deep: true,
   serializer: {
@@ -114,9 +111,13 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
     },
     write (value) {
       return JSON.stringify(value)
-    },
+    }
   }
 })
+
+const showSizeGuideDrawer = ref(false)
+
+provide('userSelection', userSelection)
 
 /**
  * Indicates if the product has other color variants     * 

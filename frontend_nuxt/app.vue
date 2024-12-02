@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <NuxtLoadingIndicator />
+    
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
@@ -21,6 +22,7 @@ const profile = useSessionStorage<Profile>('profile', null, {
     }
   }
 })
+
 const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
   serializer: {
     read (raw) {
@@ -43,6 +45,5 @@ onBeforeMount(() => {
   authenticationStore.refreshToken = refreshToken.value
   authenticationStore.profile = profile.value
   cartStore.cache = cart.value
-  console.log('default.vue', cart.value)
 })
 </script>
