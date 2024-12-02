@@ -79,6 +79,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/ErrorNotFound.vue')
       }
     ]
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: async () => import('src/pages/LoginPage.vue')
   }
 ]
 

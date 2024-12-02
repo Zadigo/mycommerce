@@ -115,7 +115,7 @@
 
 <script lang="ts">
 import { useSessionStorage } from '@vueuse/core'
-import { Product } from 'app/types'
+import { Product, ProductImage } from 'app/types'
 import { AxiosError } from 'axios'
 import { useDjangoUtilies } from 'src/composables/utils'
 import { useShop } from 'src/stores/shop'
@@ -133,7 +133,7 @@ export default defineComponent({
     const searchedData = ref({
       name: null
     })
-    const cachedImages = useSessionStorage('images', null, {
+    const cachedImages = useSessionStorage<ProductImage[]>('images', null, {
       serializer: {
         read (raw) {
           return JSON.parse(raw)
@@ -165,10 +165,16 @@ export default defineComponent({
     }
   },
   methods: {
+    /**
+     * TODO:
+    */
     setMainImage () {
-      const imageId = parseInt(this.$route.params.id, 2)
-      this.store.images = this.cachedImages
-      this.store.currentImage = this.store.images.find(x => x.id === imageId)
+      if (typeof this.$route.params.id === 'string') {
+        const imageId = parseInt(this.$route.params.id, 2)
+
+        this.store.images = this.cachedImages
+        this.store.currentImage = this.store.images.find(x => x.id === imageId)
+      }
     },
     /**
      * TODO: 

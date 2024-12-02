@@ -7,6 +7,10 @@
         <q-toolbar-title>
           Ecommerce Admin
         </q-toolbar-title>
+
+        <router-link :to="{ name: 'login' }">
+          Login
+        </router-link>
       </q-toolbar>
     </q-header>
 

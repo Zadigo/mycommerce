@@ -40,34 +40,22 @@
               <q-btn :rounded="true" color="blue-12" flat :disable="!enableProductAssociationButton" @click="showProductAssociationDialog = true">
                 Associate images
               </q-btn>
+
+              <q-btn :active="columnDisplay===true" rounded unelevated @click="columnDisplay=true">
+                <q-icon name="fas fa-table" />
+              </q-btn>
+
+              <q-btn :active="columnDisplay!==true" rounded unelevated @click="columnDisplay=false">
+                <q-icon name="fas fa-list" />
+              </q-btn>
             </q-card-section>
           </q-card>
         </header>
 
         <!-- Images -->
         <div class="col-12">
-          <div class="row q-col-gutter-sm">
-            <div v-for="image in images" :key="image.id" class="col-3">
-              <q-card flat>
-                <q-img :src="mediaPath(image.mid_size)">
-                  <div class="absolute-top text-h6">
-                    <q-checkbox v-model="selectedImages" :val="image.id" label="Teal" color="teal" />
-                    {{ image.name }}
-                  </div>
-
-                  <div class="absolute-bottom bg-transparent justify-right">
-                    <q-btn color="primary" rounded>
-                      <q-icon name="add" />
-                    </q-btn>
-
-                    <q-btn :to="{ name: 'image_view', params: { id: image.id } }" color="primary" rounded>
-                      <q-icon name="link" />
-                    </q-btn>
-                  </div>
-                </q-img>
-              </q-card>
-            </div>
-          </div>
+          <ColumnDisplay v-if="columnDisplay" :images="images" />
+          <ListDisplay v-else :images="images" />
 
           <!-- <q-infinite-scroll :offset="1" class="row" @load="() => {}">
             <article v-for="(image, i) in images" :key="i" class="col-3 q-pa-sm">
@@ -172,6 +160,9 @@ import { useDjangoUtilies } from 'src/composables/utils'
 import { useShop } from 'src/stores/shop'
 import { defineComponent, ref } from 'vue'
 
+import ListDisplay from 'src/components/images/ListDisplay.vue'
+import ColumnDisplay from 'src/components/images/ColumnDisplay.vue'
+
 interface FileElement {
   name: string,
   content: File | Blob | null
@@ -189,6 +180,10 @@ interface ImageFilters {
 
 export default defineComponent({
   name: 'ImagesPage',
+  components: {
+    ColumnDisplay,
+    ListDisplay
+  },
   setup () {
     const { notify } = useQuasar()
     const { mediaPath } = useDjangoUtilies()
@@ -247,8 +242,10 @@ export default defineComponent({
         }
       }
     })
+    const columnDisplay = ref(true)
 
     return {
+      columnDisplay,
       cachedImages,
       isUploading,
       selectedFilesBaseName,
