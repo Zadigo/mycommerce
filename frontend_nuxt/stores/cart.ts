@@ -4,6 +4,7 @@ import type { CartItem, CartUpdateAPIResponse, Product } from '~/types'
 export const useCart = defineStore('cart', () => {
     const requestData  = ref({
         session_id: null,
+        card_token: null,
         firstname: null,
         lastname: null,
         email: null,
@@ -12,13 +13,10 @@ export const useCart = defineStore('cart', () => {
         zip_code: null,
         country: null,
         city: null,
-        delivery: "Chronopost",
-        card_token: null,
+        delivery: "Chronopost"
     })
 
-    const cache = ref<CartUpdateAPIResponse>()
-    // const products = ref<CartItem[]>([])
-
+    const cache = ref<CartUpdateAPIResponse | null>()
     const showAddedProductDrawer = ref(false)
     const showEditProductDrawer = ref(false)
     const showCartDrawer = ref(false)
