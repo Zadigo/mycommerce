@@ -138,13 +138,6 @@ class ListRecommendations(ListAPIView):
         )
         return queryset.filter(id__in=selected_items)
 
-    def get(self, request, *args, **kwargs):
-        serializer = self.get_serializer(
-            instance=self.get_queryset(),
-            many=True
-        )
-        return Response(serializer.data)
-
     def get_queryset(self):
         """Allows us to get similar products from the database
         using the spacy if a `product_id` is provided by the
