@@ -50,13 +50,14 @@ export default defineNuxtConfig({
     '@nuxt/test-utils/module',
     '@nuxtjs/google-fonts',
     '@unlok-co/nuxt-stripe',
-    'vuetify-nuxt-module',
     '@nuxtjs/sitemap',
+    '@nuxt/image',
+    '@nuxtjs/i18n',
     'nuxt-gtag',
     'nuxt-clarity-analytics',
     'nuxt-openapi-docs-module',
-    '@nuxt/image',
-    '@nuxtjs/i18n'
+    'vuetify-nuxt-module',
+    'vue-sonner/nuxt'
   ],
   alias: {
     '@': path.resolve(__dirname, './'),
