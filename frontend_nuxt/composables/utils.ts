@@ -230,24 +230,34 @@ export function useDjangoUtilies () {
 }
 
 /**
- * An interface that abstracts Axios in order
- * to send requests to the different endpoints
- * of the Django backend 
+ * 
+ * This composable provides an abstraction for configuring and using Axios 
+ * to interact with a Django backend. It simplifies the creation of an Axios 
+ * client and dynamically sets the base URL for API requests based on the 
+ * application's environment (development or production)
+ *
+ * Usage:
+ * ```typescript
+ * const { createClient, getBaseUrl } = useAxiosClient();
+ * 
+ * const client = createClient();
+ * client.get('/endpoint').then(response => {
+ *     console.log(response.data);
+ * });
+ * 
+ * console.log(getBaseUrl('/custom-path/', true, '8080'));
+ * ```
+ * 
+ * Notes:
+ * - Ensure environment variables like `NUXT_DJANGO_PROD_URL` are correctly 
+ *   set in production environments.
+ * - The `secure` flag will force HTTPS if enabled, even in development.
+ * - This composable is designed to work seamlessly with Nuxt and Django 
+ *   backends that support API endpoints under `/api/v1/`.
  */
 export function useAxiosClient () {
-    // const router = useRouter()
-
-    // TODO: Must be used in a component because
-    // of inject()
-    // function handleError(e: AxiosError) {
-    //     if (e.response?.status === 404) {
-    //         router.push('/404')
-    //     }
-    // }
-
     /**
-     * A helper function that creates and retuns 
-     * the base url to use for Axios
+     * Helper function for creating variations of the baseURL
      */
     function getBaseUrl(path = '/api/v1/', secure = false, port = '8000') {
         let domain = `127.0.0.1:${port}`
@@ -276,7 +286,6 @@ export function useAxiosClient () {
 
     return {
         getBaseUrl,
-        // handleError,
         createClient
     }
 }
