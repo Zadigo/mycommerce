@@ -42,6 +42,15 @@ class AbstractCart(models.Model):
         blank=True,
         null=True
     )
+    order_reference = models.CharField(
+        max_length=100,
+        help_text=_(
+            "A customer order reference which can be "
+            "used to link a cart item to an order"
+        ),
+        blank=True,
+        null=True
+    )
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE
