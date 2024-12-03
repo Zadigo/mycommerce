@@ -75,6 +75,15 @@
 </template>
 
 <script lang="ts" setup>
+useHead({
+  script: [
+    {
+      async: true,
+      src: 'https://js.stripe.com/v3/'
+    }
+  ]
+})
+
 const route = useRoute()
 
 const isSuccessPage = computed(() => {
