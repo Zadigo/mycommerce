@@ -11,7 +11,7 @@ class ProductHistoryAdmin(admin.ModelAdmin):
 
 @admin.register(CustomerOrder)
 class CustomerOrderAdmin(admin.ModelAdmin):
-    list_display = ['reference', 'user', 'total']
+    list_display = ['reference', 'user', 'total', 'created_on']
     search_fields = ['reference', 'products__name']
     readonly_fields = ['reference', 'stripe_charge']
     fieldsets = [

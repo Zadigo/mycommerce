@@ -107,7 +107,7 @@ class CustomerOrder(models.Model):
     class Meta:
         verbose_name = _('customer order')
         verbose_name_plural = _('customer orders')
-        ordering = ['created_on']
+        ordering = ['-created_on']
 
     def __str__(self):
         return f'CustomerOrder: {self.reference}'

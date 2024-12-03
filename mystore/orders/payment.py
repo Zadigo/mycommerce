@@ -70,6 +70,9 @@ class PaymentInterface(StripeInterfaceMixin):
         return Response(self.response_data, status=status.HTTP_201_CREATED)
 
     def create_new_source(self, customer, source):
+        if settings.DEBUG:
+            source = 'tok_visa'
+
         try:
             response = stripe.Customer.create_source(
                 customer,
@@ -84,7 +87,37 @@ class PaymentInterface(StripeInterfaceMixin):
                 return False
         return response
 
-    def payment_intent(self, request, amount, billing_adress, debug=False, products=[], stripe_params={}):
+    def update_intent(self, intent_id, billing_adress):
+        """Update a previously created intent with additonal
+        information from the shipment page"""
+        params = {
+            'shipping': {
+                'address': {
+                    'line1': getattr(billing_adress, 'address_line'),
+                    'line2': None,
+                    'postal_code': getattr(billing_adress, 'zip_code'),
+                    'city': getattr(billing_adress, 'city'),
+                    'state': None,
+                    'country': getattr(billing_adress, 'country'),
+                },
+                'name': billing_adress.get_full_name,
+                'phone': getattr(billing_adress, 'telephone'),
+                # 'carrier': None
+            }
+        }
+
+        try:
+            response = stripe.PaymentIntent.modify(intent_id, **params)
+        except stripe.StripeError as e:
+            self.errors['payment_error'] = e.args
+        except Exception as e:
+            self.errors['payment_error'] = e.args
+        finally:
+            if self.errors:
+                return False
+        return response
+
+    def payment_intent(self, request, amount, billing_adress=None, debug=False, products=[], stripe_params={}):
         session_id = stripe_params.get('session_id')
 
         params = {
@@ -99,19 +132,19 @@ class PaymentInterface(StripeInterfaceMixin):
             'customer': request.user.userprofile.stripe_id,
             'description': 'Customer order for products',
             'metadata': {},
-            'shipping': {
-                'address': {
-                    'line1': getattr(billing_adress, 'address_line'),
-                    'line2': None,
-                    'postal_code': getattr(billing_adress, 'zip_code'),
-                    'city': getattr(billing_adress, 'city'),
-                    'state': None,
-                    'country': getattr(billing_adress, 'country'),
-                },
-                'name': billing_adress.get_full_name,
-                'phone': getattr(billing_adress, 'telephone'),
-                'carrier': None
-            },
+            # 'shipping': {
+            #     'address': {
+            #         'line1': getattr(billing_adress, 'address_line'),
+            #         'line2': None,
+            #         'postal_code': getattr(billing_adress, 'zip_code'),
+            #         'city': getattr(billing_adress, 'city'),
+            #         'state': None,
+            #         'country': getattr(billing_adress, 'country'),
+            #     },
+            #     'name': billing_adress.get_full_name,
+            #     'phone': getattr(billing_adress, 'telephone'),
+            #     'carrier': None
+            # },
             'receipt_email': request.user.email,
         }
 
