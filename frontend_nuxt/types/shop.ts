@@ -82,3 +82,13 @@ export declare interface CollectionName {
     tags: string[] | null;
     get_view_name: string;
 }
+
+export interface ProductStock {
+    id: number
+    product: {
+        id: number
+        name: string
+    }
+    in_stock: boolean
+    
+}
