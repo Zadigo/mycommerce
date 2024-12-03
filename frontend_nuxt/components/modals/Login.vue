@@ -45,7 +45,6 @@ import { AxiosError } from 'axios';
 import { useSessionStorage } from '@vueuse/core'
 
 const route = useRoute()
-const router = useRouter()
 const authenticationStore = useAuthentication()
 const authenticatedCart = useSessionStorage('authenticated_cart', false)
 const sessionId = useCookie('session_id')
