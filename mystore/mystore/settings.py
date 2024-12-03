@@ -73,7 +73,9 @@ INSTALLED_APPS = [
     'orders',
     'shipments',
     'reviews',
-    'stocks'
+    'stocks',
+
+    'adminapi'
 ]
 
 MIDDLEWARE = [

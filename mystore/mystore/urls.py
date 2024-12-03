@@ -23,7 +23,10 @@ urlpatterns = [
         '__debug__/',
         include('debug_toolbar.urls')
     ),
-
+    path(
+        'api/v1/admin/', 
+        include('adminapi.urls')
+    ),
     path(
         'api/v1/stocks/',
         include('stocks.api.urls')
