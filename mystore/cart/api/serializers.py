@@ -102,10 +102,7 @@ class ValidateCart(Serializer):
     new cart object in the database"""
 
     product = ValidateProduct(write_only=True)
-    size = fields.CharField(
-        write_only=True,
-        default='Unique'
-    )
+    size = fields.CharField(write_only=True, default='Unique')
     session_id = fields.CharField(allow_null=True)
     results = fields.JSONField(read_only=True)
     statistics = fields.JSONField(read_only=True)
