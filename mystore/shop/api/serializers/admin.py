@@ -15,12 +15,17 @@ from shop.utils import clean_text
 class ValidateImageAssociation(Serializer):
     product = fields.IntegerField()
     images = fields.ListField(validators=[validate_image_ids])
+    method = fields.ChoiceField(('Associate', 'Dissociate'), write_only=True, default='Associate')
 
     def update(self, instance, validated_data):
+        method = validated_data['method']
         images = Image.objects.filter(pk__in=validated_data['images'])
-        if images.exists():
-            instance.images.add(*images)
-            instance.save()
+        if method == 'Associate':
+            if images.exists():
+                instance.images.add(*images)
+        elif method == 'Dissociate':
+            instance.images.remove(*images)
+        instance.save()
         return instance
 
 
