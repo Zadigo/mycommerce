@@ -32,7 +32,7 @@ class ValidateImageAssociation(Serializer):
 class ValidateUpdateProduct(Serializer):
     """Updates the characteristics of a
     given product in the store"""
-
+    
     active = fields.BooleanField(default=False)
 
     def validate(self, attrs):
