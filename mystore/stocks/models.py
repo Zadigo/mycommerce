@@ -1,8 +1,8 @@
 from django.db import models
-from django.db.models.signals import post_save, pre_save
+from django.db.models import F
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from django.db.models import F, DecimalField, ExpressionWrapper
 from shop.models import Product
 
 
@@ -114,27 +114,8 @@ class Stock(models.Model):
 
 
 @receiver(post_save, sender=Stock)
-def calculate_total(instance, created, **kwargs):
+def update_stock(instance, created, **kwargs):
     if created:
-        instance.total = ExpressionWrapper(
-            F('quantity') * instance.product.unit_price,
-            output_field=DecimalField()
-        )
+        calculation = F('quantity') * instance.product.unit_price
+        instance.total = calculation
         instance.save()
-
-# @receiver(post_save, sender=Stock)
-# def update_stock(instance, **kwargs):
-#     instance.total_quantity = instance.isle.total_capacity * instance.product.unit_price
-#     # When stock quantity is equals
-#     # to zero, we are out of stock
-#     # if instance.quantity == 0:
-#     #     instance.in_stock = False
-#     # else:
-#     #     instance.in_stock = True
-
-#     # If we have less than 10 products,
-#     # we are almost out of stock
-#     # if instance.quantity <= 10:
-#     #     instance.almost_sold_out = True
-#     # else:
-#     #     instance.almost_sold_out = False

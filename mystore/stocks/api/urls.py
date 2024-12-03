@@ -7,6 +7,12 @@ app_name = 'stock_api'
 urlpatterns = [
     re_path(
         r'^products/(?P<pk>\d+)$',
-        views.GetProductStockStatus.as_view()
+        views.GetProductStockStatus.as_view(),
+        name='product'
+    ),
+    re_path(
+        r'^update$',
+        views.UpdateStockStatus.as_view(),
+        name='update'
     )
 ]
