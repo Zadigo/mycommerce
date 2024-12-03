@@ -19,7 +19,12 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      DJANGO_PROD_URL: process.env.NUXT_DJANGO_PROD_URL 
+      DJANGO_PROD_URL: process.env.NUXT_DJANGO_PROD_URL,
+      STRIPE_SECRET_KEY: process.env.NUXT_STRIPE_TEST_SECRET_KEY,
+      STRIPE_PUBLISHABLE_KEY: process.env.NUXT_STRIPE_TEST_PUBLISHABLE_KEY,
+      STRIPE_ACCOUNT: process.env.NUXT_STRIPE_TEST_PUBLISHABLE_KEY,
+      STRIPE_API_VERSION: '2024-06-20',
+      STRIPE_LOCALE: 'fr'
     }
   },
   devtools: {
@@ -115,6 +120,7 @@ export default defineNuxtConfig({
         'heart'
       ],
       brands: [
+        'cc-mastercard',
         'google',
         'instagram',
         'facebook-f',
