@@ -100,12 +100,14 @@
 
 <script lang="ts" setup>
 import { socialLinks, footerLinks, useCompany } from '@/utils'
-// import type { LanguageOptions } from '~/types'
-// import { useStorage } from '@vueuse/core'
-// import type { LanguageOptions } from '~/types';
 
 const store = useShop()
 const { companyDetails } = useCompany()
 // const languageOption = useStorage<LanguageOptions>('language', { location: null, language: 'fr' }, Storage, { deep: true })
-const languageOption = { location: null, language: 'fr' }
+const languageOption = ref({ 
+  location: null, 
+  language: 'fr'
+})
+
+
 </script>

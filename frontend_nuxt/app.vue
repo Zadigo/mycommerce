@@ -5,12 +5,15 @@
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
+
+    <!-- Modals -->
+    <ModalsLanguage />
   </v-app>
 </template>
 
 <script lang="ts" setup>
-import { useSessionStorage } from '@vueuse/core';
-import type { CartUpdateAPIResponse, Profile } from './types';
+import { useMediaQuery, useScreenOrientation, useDocumentVisibility, useSessionStorage } from '@vueuse/core'
+import type { CartUpdateAPIResponse, Profile } from '~/types';
 
 const profile = useSessionStorage<Profile>('profile', null, {
   serializer: {
@@ -34,11 +37,31 @@ const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
   }
 })
 
+const shopStore = useShop()
 const authenticationStore = useAuthentication()
 const cartStore = useCart()
 
 const accessToken = useCookie('access')
 const refreshToken = useCookie('refresh')
+
+const currentLanguage = useSessionStorage<'en' | 'fr' | 'es'>('language', null)
+
+const { value } = useMediaQuery('(min-width: 320px)')
+const { isSupported } = useScreenOrientation()
+const documentVisible = useDocumentVisibility()
+
+
+provide('isMobile', value)
+provide('screenOrientation', isSupported)
+provide('documentVisible', documentVisible)
+
+// watch(currentLanguage, (newValue) => {
+//   if (newValue) {
+//     i18n.locale.value = newValue
+//   }
+// }, {
+//   immediate: true
+// })
 
 onBeforeMount(() => {
   authenticationStore.accessToken = accessToken.value
@@ -46,4 +69,13 @@ onBeforeMount(() => {
   authenticationStore.profile = profile.value
   cartStore.cache = cart.value
 })
+
+// TODO: Open the language modal when the user first
+// lands on the page. Problem is we have to sync it
+// with the session/cookie 
+// onMounted(() => {
+//   if (!currentLanguage.value) {
+//     shopStore.showLanguageModal = true
+//   }
+// })
 </script>

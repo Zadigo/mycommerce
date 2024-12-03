@@ -33,7 +33,7 @@
                 <font-awesome icon="pen" />
               </v-btn>
 
-              <v-btn variant="tonal" size="x-small" rounded>
+              <v-btn variant="tonal" size="x-small" rounded @click="deleteFromCart(callbackRemoveFromCart, callbackAuth)">
                 <font-awesome icon="trash" />
               </v-btn>
             </div>
@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { ProductToEdit } from '~/types';
+import type { LoginAPIResponse, ProductToEdit } from '~/types';
 
 const props = defineProps({
   isEditable: {
@@ -66,6 +66,9 @@ const emit = defineEmits({
 const cartStore = useCart()
 const { mediaPath } = useDjangoUtilies()
 const { cache } = storeToRefs(cartStore)
+const { deleteFromCart } = useCartComposable()
+const accessToken = useCookie('access_token')
+const refreshToken = useCookie('referesh_token')
 
  /**
    * Computed function that get the items from the session
@@ -91,5 +94,20 @@ const cartItems = computed((): ProductToEdit[] => {
  */
 function handleProductEdition (item: ProductToEdit) {
   emit('edit-product', item)
+}
+
+/**
+ * TODO: 
+ */
+function callbackRemoveFromCart () {
+  
+}
+
+/**
+ * 
+ */
+function callbackAuth (data: LoginAPIResponse) {
+  accessToken.value = data.access
+  refreshToken.value = data.refresh
 }
 </script>

@@ -2,6 +2,8 @@ import { AxiosError } from "axios";
 import { useAxiosClient } from '@/composables/utils'
 import type { CartUpdateAPIResponse, LoginAPIResponse, Product, UserSelection } from "~/types";
 
+type FunctionCallback = (data: CartUpdateAPIResponse) => void
+
 /**
  * The cart composable is a function that allows
  * the implementation of cart functionnalities all
@@ -23,12 +25,21 @@ export function useCartComposable () {
     const stockDetailsResponse = ref({})
     const cartStore = useCart()
 
+    const parsedSession = computed((): { a: string, b: string, c: string } | null => {
+        if (cartStore.sessionId) {
+            const tokens = cartStore.sessionId.split('-')
+            return { a: tokens[0], b: tokens[1], c: tokens[2] }
+        } else {
+            return null
+        }
+    })
+
     /**
      * Adds a product to the customer's cart when the
      * the product size or other caracteristics are
      * available in a list (e.g. ProductsPage, CollectionsPage...) 
      */
-    async function addToCart(product: Product, size?: string | number | null, callback?: (data: CartUpdateAPIResponse) => void, authCallback?: (data: LoginAPIResponse) => void) {
+    async function addToCart(product: Product, size?: string | number | null, callback?: FunctionCallback, authCallback?: (data: LoginAPIResponse) => void) {
         try {
             const cart = useCart()
 
@@ -83,11 +94,23 @@ export function useCartComposable () {
     /**
      * Removes a product to the customer's cart 
      */
-    async function deleteFromCart(product: Product) {
+    async function deleteFromCart(callback?: FunctionCallback, authCallback?: (data: LoginAPIResponse) => void) {
         try {
-            cartStore.removeFromCart(product)
+            if (parsedSession.value) {
+                const response = await $client.delete<CartUpdateAPIResponse>(`cart/${parsedSession.value.c}/delete`)
+                
+                // cartStore.removeFromCart(product)
+                if (callback && typeof callback === 'function') {
+                    callback.call(vueApp, response.data)
+                }
+            }
         } catch (e) {
-            console.error(e)
+            if (e instanceof AxiosError && e.response) {
+                if (e.status === 401) {
+                    const { refresh } = useAuthencationComposable()
+                    await refresh(authCallback)
+                }
+            }
         }
     }
 
@@ -96,6 +119,7 @@ export function useCartComposable () {
     }
 
     return {
+        parsedSession,
         userSelection,
         showSizeSelectionWarning,
         stockDetailsResponse,
