@@ -34,12 +34,17 @@
 </template>
 
 <script lang="ts" setup>
-import { useLocalStorage } from '@vueuse/core';
-import type { ConcreteComponent } from 'vue';
-import type { Product } from '~/types';
+import { useLocalStorage } from '@vueuse/core'
+import { AxiosError } from 'axios';
+import type { ConcreteComponent } from 'vue'
+import type { Product, ProductStock } from '~/types'
 
 const ProductDetailsFiveImages = resolveComponent('ProductDetailsFiveImages')
 const ProductDetailsSixImages = resolveComponent('ProductDetailsSixImages')
+
+const AsyncBaseRecommendationBlock = defineAsyncComponent({
+  loader: async () => import('@/components/BaseRecommendations.vue')
+})
 
 const route = useRoute()
 const visitedProducts = useLocalStorage<number[]>('visited', null, {
@@ -54,16 +59,19 @@ const visitedProducts = useLocalStorage<number[]>('visited', null, {
   }
 })
 
+/**
+ * WRITE DOCUMENTATION
+ */
 const { data, status } = await useFetch<Product>(`/api/products/${route.params.id}`, {
   method: 'GET'
 })
 
-const AsyncBaseRecommendationBlock = defineAsyncComponent({
-  loader: async () => import('@/components/BaseRecommendations.vue')
-})
-
+const stockState = ref<ProductStock>()
 const product = ref<Product | null>(data.value)
 const moreProductsIntersect = ref<HTMLElement>()
+const { $client } = useNuxtApp()
+
+provide('stockState', stockState)
 
 useHead({
   title: () => {
@@ -102,6 +110,23 @@ const imageComponent = computed((): string | ConcreteComponent => {
   return ProductDetailsFiveImages
 })
 
+/**
+ * Once we have the product, return the current
+ * stock state if present 
+ */
+async function requestProductStock () {
+  try {
+    if (product.value) {
+      const response = await $client.get<ProductStock>(`stocks/products/${product.value.id}`)
+      stockState.value = response.data
+    }
+  } catch (e) {
+    if (e instanceof AxiosError && e.response) {
+      // Handle
+    }
+  }
+}
+
 onBeforeMount(() => {
   setTimeout(() => {
     if (product.value) {
@@ -112,5 +137,9 @@ onBeforeMount(() => {
       }
     }
   }, 1000)
+})
+
+onMounted(async () => {
+  await requestProductStock()
 })
 </script>
