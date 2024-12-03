@@ -84,7 +84,6 @@ class GetProduct(RetrieveAPIView):
         return Response(data)
 
 
-@extend_schema('Get Recommendations')
 class ListRecommendations(ListAPIView):
     """This endpoint allows the pages that require displaying
     a set of recommended products to be called by passing a
@@ -186,7 +185,6 @@ class ListRecommendations(ListAPIView):
             )
             products = self.queryset.exclude(id=initial_product.id)
             return self.recommendation_by_randomness(products, quantity)
-            # return self.recommendation_by_similarity(queryset, products, initial_product, quantity)
         else:
             products = self.queryset.filter(
                 collection__name=product_id_or_collection_name
