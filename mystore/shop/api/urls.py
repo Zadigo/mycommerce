@@ -11,8 +11,9 @@ adminpatterns = [
         admin_views.upload_images_to_product
     ),
     re_path(
-        r'^products/(?P<pk>\d+)/update$',
-        admin_views.update_product
+        r'^products/(?P<pk>\d+)$',
+        admin_views.GetProduct.as_view(),
+        name='admin_product'
     ),
     re_path(
         r'^filter-images$',

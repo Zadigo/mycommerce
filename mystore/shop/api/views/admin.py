@@ -14,7 +14,7 @@ from django.utils.timezone import make_aware, now
 from orders.models import CustomerOrder
 from rest_framework import status
 from rest_framework.decorators import api_view
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from shop.api.serializers import admin as admin_serializers
@@ -152,6 +152,12 @@ def upload_images_to_product(request, pk, **kwargs):
         many=True
     )
     return Response(serializer.data)
+
+
+class GetProduct(RetrieveUpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = admin_serializers.ValidateUpdateProduct
+    permission_classes = []
 
 
 @api_view(['post'])
