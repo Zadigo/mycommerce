@@ -18,8 +18,7 @@
 import { useLocalStorage } from '@vueuse/core';
 import { AxiosError } from 'axios';
 import type { DeliveryOption } from '~/types';
-import { watch } from 'vue';
-const { stripe } = useClientStripe()
+import type { NewIntentAPIResponse } from './payment';
 
 definePageMeta({
   layout: 'payment-layout',
@@ -36,9 +35,10 @@ useHead({
   ]
 })
 
-const { $client } = useNuxtApp()
-// const deliveryOptions = ref<DeliveryOption[]>([])
 const store = useCart()
+const { $client } = useNuxtApp()
+
+
 const deliveryOptions = useLocalStorage<DeliveryOption[]>('delivery_options', null, {
   serializer: {
     read (raw) {
@@ -46,25 +46,21 @@ const deliveryOptions = useLocalStorage<DeliveryOption[]>('delivery_options', nu
     },
     write (value) {
       return JSON.stringify(value)
-    },
+    }
   }
 })
 
-
-// watch(stripe, async () => {
-//   console.log(stripe.value)
-//   if (stripe.value) {
-//     const { clientSecret, error } = $fetch<{ clientSecret: string, error: string | null}>('/api/payment', {
-//       method: 'GET'
-//     })
-
-//     if (error) {
-//       return
-//     }
-
-//     console.log(clientSecret, error)
-//   }
-// })
+const paymentIntent = useLocalStorage<NewIntentAPIResponse>('payment_intent', null, {
+  deep: true,
+  serializer: {
+    read (raw) {
+      return JSON.parse(raw)
+    },
+    write (value) {
+      return JSON.stringify(value)
+    }
+  }
+})
 
 /**
  * Get the delivery options from which the
@@ -84,7 +80,28 @@ async function requestDeliveryOptions () {
   }
 }
 
+/**
+ * Requests a new payment intent and returns an
+ * intent ID that will be used to confirm the payment
+ * on the actual payment page
+ */
+async function handleNewPaymentIntent () {
+  try {
+    if (!paymentIntent.value) {
+      const response = await $client.post<NewIntentAPIResponse>('orders/intent', {
+        session_id: store.sessionId
+      })
+      paymentIntent.value = response.data
+    }
+  } catch (e) {
+    if (e instanceof AxiosError && e.response) {
+      // Handle error
+    }
+  }
+}
+
 onMounted(async () => {
   await requestDeliveryOptions()
+  await handleNewPaymentIntent()
 })
 </script>

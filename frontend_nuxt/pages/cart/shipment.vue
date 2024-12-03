@@ -33,12 +33,14 @@
     </div>
 
     <!-- @navigate:next-page="handleNewPaymentIntent" -->
-    <CartNavigationCardFooter next-page="/shop/payment" />
+    <CartNavigationCardFooter next-page="/cart/payment" @navigate:next-page="handleUpdatePaymentIntent" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { AxiosError } from 'axios';
+import { useLocalStorage } from '@vueuse/core'
+import { AxiosError } from 'axios'
+import type { NewIntentAPIResponse } from './payment'
 
 definePageMeta({
   layout: 'payment-layout',
@@ -49,10 +51,9 @@ useHead({
   title: 'Options de livraison'
 })
 
-const store = useCart()
-const { requestData } = storeToRefs(store)
+const cartStore = useCart()
+const { requestData } = storeToRefs(cartStore)
 const saveShipmentDetails = ref(false)
-
 const rules = {
   /**
    * Verifies that the postal code is correct
@@ -62,27 +63,34 @@ const rules = {
     return regex.test(zipCode) || 'Zip code is not valid'
   }
 }
+const { $client } = useNuxtApp()
+
+const paymentIntent = useLocalStorage<NewIntentAPIResponse>('payment_intent', null, {
+  deep: true,
+  serializer: {
+    read (raw) {
+      return JSON.parse(raw)
+    },
+    write (value) {
+      return JSON.stringify(value)
+    }
+  }
+})
 
 /**
- * Requests a new payment intent and returns an
- * intent ID that will be used to confirm the payment
- * on the actual payment page
+ * Update an existing payment intent
  */
-async function handleNewPaymentIntent () {
+async function handleUpdatePaymentIntent () {
   try {
-    // if (!this.$localstorage.keyExists('payment_intent')) {
-    //   this.requestData.session_id = this.$session.retrieve<string>('session_id')
-    //   const response = await this.$http.post('orders/intent', this.requestData)
-    //   this.$localstorage.create('payment_intent', response.data)
-    // }
+    requestData.value.session_id = cartStore.sessionId
+    await $client.post('orders/intent/update', {
+      intent: paymentIntent.value.intent,
+      ...requestData.value
+    })
   } catch (e) {
     if (e instanceof AxiosError && e.response) {
       // Handle error
     }
   }
 }
-
-onBeforeRouteLeave(async () => {
-  await handleNewPaymentIntent()
-})
 </script>
