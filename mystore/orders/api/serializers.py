@@ -35,15 +35,16 @@ class DeliveryOptionsSerializer(Serializer):
     name = fields.CharField()
 
 
+class ValidateCreateIntent(Serializer):
+    session_id = fields.CharField()
+
+
 class ValidateShipment(Serializer):
     """Serializer used to validate the shipping
     options for the given user. This used
     by the shipment page"""
 
-    def __init__(self, request, **kwargs):
-        super().__init__(**kwargs)
-        self._request = request
-
+    intent = fields.CharField(allow_null=True, validators=[])
     session_id = fields.CharField()
     email = fields.CharField()
     firstname = fields.CharField()
@@ -60,7 +61,8 @@ class ValidateShipment(Serializer):
     )
 
     def create(self, validated_data):
-        billing_addresses = self._request.user.userprofile.address_set.all()
+        request = self._context['request']
+        billing_addresses = request.user.userprofile.address_set.all()
         params = {
             'firstname': validated_data['firstname'],
             'lastname': validated_data['lastname'],
@@ -69,7 +71,7 @@ class ValidateShipment(Serializer):
             'country': validated_data['country'],
             'city': validated_data['city'],
             'telephone': validated_data['telephone'],
-            'user_profile': self._request.user.userprofile
+            'user_profile': request.user.userprofile
         }
         billing_address, state = billing_addresses.update_or_create(
             defaults=params,
