@@ -8,20 +8,23 @@
               Cart
             </a>
           </li>
-          <li v-if="!store.isAuthenticated" class="nav-item">
-            <a href="#" class="nav-link" @click.prevent="store.showLoginDrawer=true">
-              Login
+          <li v-if="!authStore.isAuthenticated" class="nav-item">
+            <a href="#" class="nav-link" @click.prevent="authStore.showLoginDrawer=true">
+              {{ $t('Login') }}
             </a>
           </li>
-          <li v-if="store.isAuthenticated" class="nav-item">
+          <li v-if="authStore.isAuthenticated" class="nav-item">
             <a href="#" class="nav-link" @click.prevent="proxyLogout">
-              Logout
+              {{ $t('Logout') }}
             </a>
           </li>
           <li class="nav-item">
-            <NuxtLink to="/account/" class="nav-link">
-              Account
+            <NuxtLink v-if="authStore.isAuthenticated" to="/account/" class="nav-link">
+              {{ $t('Account') }}
             </NuxtLink>
+            <a v-else href="#" class="nav-link" @click.prevent="authStore.showLoginDrawer=true">
+              {{ $t('Account') }}
+            </a>
           </li>
         </ul>
       </div>
@@ -33,12 +36,12 @@
 // TODO: Create one unique dictionnary
 const accessToken = useCookie('access')
 const refereshToken = useCookie('refresh')
-const store = useAuthentication()
+const authStore = useAuthentication()
 const { showCartDrawer } = storeToRefs(useCart())
 
 function proxyLogout () {
-  store.logout()
-  store.showLoginDrawer = false
+  authStore.logout()
+  authStore.showLoginDrawer = false
   accessToken.value = null
   refereshToken.value = null
 }
