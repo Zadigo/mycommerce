@@ -4,9 +4,9 @@
   </div>
 
   <div v-else>
-    <button type="button" class="btn btn-block btn-dark shadow-none disabled">
-      Taille unique
-    </button>
+    <p class="fw-bold">
+      {{ $t("Taille unique") }}
+    </p>
   </div>
 </template>
 

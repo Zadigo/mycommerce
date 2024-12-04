@@ -35,3 +35,9 @@ $factors: (
   height: 100%;
   overflow: hidden;
 }
+
+.text {
+  &-small {
+    font-size: 0.8rem;
+  }
+}

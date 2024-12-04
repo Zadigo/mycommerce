@@ -1,5 +1,5 @@
 <template>
-  <div id="product-aside" class="col-3 ms-2 mt-4">
+  <div id="product-aside" class="col-4 mt-4">
     <!-- Information -->
     <h1 class="h3" aria-label="Product name">
       {{ product?.name }}
@@ -48,9 +48,9 @@
     <ProductSizeBlock v-if="product" :sizes="product.sizes" @update-size="handleSizeSelection" />
 
     <!-- Size Guide -->
-    <p class="mt-3 mb-1 model-height fw-light">Taille et hauteur du mannequin : S · 172 cm</p>
+    <p class="text-small mt-3 mb-1 fw-light">Taille et hauteur du mannequin : S · 172 cm</p>
     <div class="d-flex justify-content-start gap-3 mb-2">
-      <a href="#" class="size-guide fw-bold shadow-none btn-link" @click.prevent="showSizeGuideDrawer=true">
+      <a href="#" class="text-small fw-bold shadow-none btn-link" @click.prevent="showSizeGuideDrawer=true">
         <font-awesome icon="ruler" class="me-1" /> {{ $t('Guide des tailles') }}
       </a>
     </div>
@@ -76,9 +76,9 @@
     <ProductDetailsAdditionalInfo />
 
     <!-- Delivery Types -->
-    <ProductDetailsDeliveryType>
-      <ProductDetailsDeliveryTypes icon-name="shop" text="Enlèvement en magasin" />
-      <ProductDetailsDeliveryTypes icon-name="truck" text="Livraison standard à domicile" />
+    <ProductDetailsDeliveryType class="mt-3">
+      <ProductDetailsDeliveryTypes class="text-small" icon-name="shop" text="Enlèvement en magasin" />
+      <ProductDetailsDeliveryTypes class="text-small" icon-name="truck" text="Livraison standard à domicile" />
     </ProductDetailsDeliveryType>
 
     <!-- Modals -->
@@ -189,13 +189,5 @@ h1.h3 {
 
 #product-variant.router-link-exact-active {
   opacity: 0.5;
-}
-
-p.model-height {
-  font-size: 0.8rem;
-}
-
-a.size-guide {
-  font-size: 0.8rem;
 }
 </style>
