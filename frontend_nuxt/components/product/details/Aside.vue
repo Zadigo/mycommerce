@@ -1,5 +1,5 @@
 <template>
-  <div id="product-aside" class="col-4 mt-4">
+  <div id="product-aside" ref="productAside" class="position-relative">
     <!-- Information -->
     <h1 class="h3" aria-label="Product name">
       {{ product?.name }}
@@ -105,6 +105,10 @@ const props = defineProps({
   product: {
     type: Object as PropType<Product | null>,
     required: true
+  },
+  sticky: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -133,6 +137,7 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
 })
 
 const showSizeGuideDrawer = ref(false)
+const productAside = ref<HTMLElement>()
 
 provide('userSelection', userSelection)
 
@@ -146,6 +151,12 @@ const hasColorVariants = computed(() => {
     return false
   }
 })
+
+// onMounted(() => {
+//   if (props.sticky) {
+//     productAside.value?.classList.add('fixed-aside')
+//   }
+// })
 
 /**
  * Actions where the user selects a given size
@@ -189,5 +200,10 @@ h1.h3 {
 
 #product-variant.router-link-exact-active {
   opacity: 0.5;
+}
+
+.fixed-aside {
+  position: sticky;
+  top: 0;
 }
 </style>

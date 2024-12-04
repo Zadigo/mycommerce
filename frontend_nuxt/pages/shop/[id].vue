@@ -1,20 +1,37 @@
 <template>
   <section id="product" class="container-fluid px-0 mb-5" style="margin-top: 59px;">
     <!-- Product -->
-    <div class="row gy-1">
-      <div id="product-information" class="col-12">
+    <!-- Two blocks images -->
+    <div class="row gy-1 gx-3">
+      <div class="col-8">
+        <div class="row gy-2 gx-2">
+          <ProductDetailsTwoImages :product="product" :indexes="[0, 1]" @select-image="handleSelectedImage" />
+          <ProductDetailsTwoImages :product="product" :indexes="[2, 3]" @select-image="handleSelectedImage" />
+          <ProductDetailsTwoImages :product="product" :indexes="[4, 5]" @select-image="handleSelectedImage" />
+        </div>
+      </div>
+
+      <ProductDetailsAside :product="product" :is-loading="isLoading" class="col-4 mt-5" sticky />
+    </div>
+
+    <!-- Multi-Block Image -->
+    <div class="row gy-1 d-none">
+      <div id="product-multi-grid" class="col-12">
         <div class="row">
           <!-- Main Image -->
           <ProductDetailsSingleMainImage :product="product" />
 
           <!-- Aside -->
-          <ProductDetailsAside :product="product" :is-loading="isLoading" />
+          <ProductDetailsAside :product="product" :is-loading="isLoading" class="col-4 mt-4" />
         </div>
       </div>
 
       <!-- More Product Images -->
       <component :is="imageComponent" :images="product?.images" />
     </div>
+
+    <!-- Modals -->
+    <ModalsImageZoom :show="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" @close="handleCloseSelection" />
 
     <!-- More Products -->
     <div ref="moreProductsIntersect" class="row g-1 my-5">
@@ -131,6 +148,7 @@ const moreProductsIntersect = ref<HTMLElement>()
 const { product, isLoading } = useProductDetails()
 const { trackProduct } = useVisitedProducts(product)
 const { requestProductStock } = useProductSotck(product)
+const { showModal, selectedImage, handleSelectedImage, handleCloseSelection } = useImages()
 
 /**
  * Returns the proper image component to display
