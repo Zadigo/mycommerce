@@ -14,9 +14,9 @@ from django.utils.timezone import now, timedelta
 from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
+from shop import validators
 from shop.choices import ColorChoices
 from shop.utils import calculate_sale, create_slug, image_path, video_path
-from shop.validators import price_validator, validate_video_file_extension
 
 from mystore.choices import CategoryChoices, SubCategoryChoices
 
@@ -100,7 +100,7 @@ class Video(models.Model):
     )
     content = models.FileField(
         upload_to=video_path,
-        validators=[validate_video_file_extension]
+        validators=[validators.validate_video_file_extension]
     )
     created_on = models.DateField(auto_now=True)
 
@@ -126,6 +126,25 @@ class AbstractProduct(models.Model):
         blank=True,
         null=True
     )
+    model_height = models.CharField(
+        max_length=100,
+        validators=[validators.validate_model_height],
+        help_text=_(
+            "Indicates the height of the model wearing "
+            "the piece of clothing"
+        ),
+        blank=True,
+        null=True
+    )
+    model_size = models.CharField(
+        max_length=100,
+        help_text=_(
+            "Indicates the size of the clothe "
+            "weared by the model"
+        ),
+        blank=True,
+        null=True
+    )
     # section_name = None # Woman, Man...
     # category_en = None
     category = models.CharField(
@@ -138,7 +157,7 @@ class AbstractProduct(models.Model):
             "products that fit under the given category"
         )
     )
-    # sub_category_end = None
+    # sub_category_en = None
     sub_category = models.CharField(
         max_length=100,
         verbose_name=_('Sub-category'),
@@ -164,7 +183,7 @@ class AbstractProduct(models.Model):
         decimal_places=2,
         default=1,
         help_text=_('Cost value of the product'),
-        validators=[price_validator]
+        validators=[validators.price_validator]
     )
     sale_value = models.PositiveIntegerField(
         default=0,

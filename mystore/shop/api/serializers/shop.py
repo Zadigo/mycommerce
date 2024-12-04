@@ -60,6 +60,8 @@ class ProductSerializer(Serializer):
     collection_set = CollectionSerializer(many=True)
     get_main_image = ImageSerializer(required=False)
     images = ImageSerializer(many=True, required=False)
+    model_height = fields.CharField()
+    model_size = fields.CharField()
     # video = VideoSerializer(required=False)
     color_variant_name = fields.CharField()
     is_new = fields.BooleanField()

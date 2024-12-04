@@ -1,8 +1,6 @@
 <template>
   <div v-if="loading" ref="skeletonEl" class="card-skeleton" />
   <slot v-else />
-  <!-- <transition name="opacity">
-  </transition> -->
 </template>
 
 <script lang="ts" setup>
