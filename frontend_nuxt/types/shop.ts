@@ -55,7 +55,7 @@ export type Product = {
     get_main_image: ProductImage;
     images: ProductImage[];
     model_height: string
-    modle_size: string
+    model_size: string
     color_variant_name: string;
     is_new: boolean;
     active: boolean;
