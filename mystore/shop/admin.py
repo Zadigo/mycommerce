@@ -1,6 +1,6 @@
 import random
 
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
 from django.db.models import Count
 from django.urls import re_path
@@ -9,7 +9,6 @@ from import_export.resources import ModelResource
 from shop.models import Image, Like, Product, Video, Wishlist
 from shop.utils import create_slug
 from shop.views import AdminUploadImageView
-from django.contrib import messages
 
 
 class ProductResource(ModelResource):
@@ -26,12 +25,45 @@ class ProductAdmin(ImportExportModelAdmin):
     date_hiearchy = 'created_on'
     search_fields = ['name', 'id', 'slug']
     fieldsets = [
-        ['General', {'fields': ['name', 'sku']}],
-        ['Variant', {'fields': ['color', 'category', 'sub_category']}],
-        ['Media', {'fields': ['images', 'video']}],
-        ['Pricing', {'fields': ['unit_price',
-                                'sale_value', 'sale_price', 'on_sale']}],
-        ['Other', {'fields': ['display_new', 'active', 'slug']}]
+        [
+            'General',
+            {
+                'fields': ['name', 'sku']
+            }
+        ],
+        [
+            'Variant',
+            {
+                'fields': ['color', 'category', 'sub_category']
+            }
+        ],
+        [
+            'Media',
+            {
+                'fields': ['images', 'video']
+            }
+        ],
+        [
+            'Pricing',
+            {
+                'fields': [
+                    'unit_price', 'sale_value',
+                    'sale_price', 'on_sale'
+                ]
+            }
+        ],
+        [
+            'Fashion model',
+            {
+                'fields': ['model_height', 'model_size']
+            }
+        ],
+        [
+            'Other',
+            {
+                'fields': ['display_new', 'active', 'slug']
+            }
+        ]
     ]
     actions = [
         'activate', 'deactivate', 'download_csv',
@@ -57,9 +89,19 @@ class ProductAdmin(ImportExportModelAdmin):
 
     def activate(self, request, queryset):
         queryset.update(active=True)
+        self.message_user(
+            request, 
+            f'Activated {len(queryset)} products', 
+            messages.SUCCESS
+        )
 
     def deactivate(self, request, queryset):
         queryset.update(active=False)
+        self.message_user(
+            request,
+            f'Deactivated {len(queryset)} products',
+            messages.SUCCESS
+        )
 
     def download_csv(self, request, queryset):
         queryset = None
@@ -78,7 +120,9 @@ class ProductAdmin(ImportExportModelAdmin):
                     slug=slug
                 )
             )
-        Product.objects.bulk_create(new_products)
+        objs = Product.objects.bulk_create(new_products)
+        self.message_user(request, f'Copied {
+                          len(objs)} products', messages.SUCCESS)
 
     def create_default_sizes(self, request, queryset):
         """For selected products, create three basic
@@ -89,13 +133,20 @@ class ProductAdmin(ImportExportModelAdmin):
             for size in sizes:
                 try:
                     product.size_set.create(
-                        product=product, name=size, availability=False)
+                        product=product,
+                        name=size,
+                        vailability=False
+                    )
                 except ValidationError:
                     # If the size already exists for a given
                     # product, just fail silently
-                    pass
+                    continue
+
         self.message_user(
-            request, f'Created default sizes for {len(queryset)} products')
+            request,
+            f'Created default sizes for {len(queryset)} products',
+            messages.SUCCESS
+        )
 
 
 @admin.register(Image)
