@@ -46,6 +46,7 @@ export type Product = {
     sub_category: string;
     sizes: ProductSizes[];
     has_sizes: boolean;
+    unit_price: number
     get_price: number;
     sale_value: number;
     sale_price: number;

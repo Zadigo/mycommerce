@@ -12,7 +12,23 @@
 
     <!-- Price -->
     <BaseSkeleton :loading="isLoading" class="mb-3" width="50px">
-      <p class="h5 fw-bold mb-3" aria-label="Product price">
+      <p v-if="product?.on_sale" class="h5 fw-bold mb-3 d-flex gap-2">
+        <span class="text-danger">
+          {{ translatePrice(product?.sale_price) }}
+        </span>
+
+        <span class="text-danger">
+          {{ translatePrice(product?.sale_value) }}
+        </span>
+
+        <span>
+          <strike>
+            {{ translatePrice(product?.unit_price) }}
+          </strike>
+        </span>
+      </p>
+
+      <p v-else class="h5 fw-bold mb-3" aria-label="Product price">
         {{ translatePrice(product?.get_price) }}
       </p>
     </BaseSkeleton>
@@ -32,9 +48,10 @@
     <ProductSizeBlock v-if="product" :sizes="product.sizes" @update-size="handleSizeSelection" />
 
     <!-- Size Guide -->
-    <div class="d-flex justify-content-start gap-3 mt-4 mb-2">
-      <a href="#" class="btn btn-rounded fw-bold shadow-none btn-link" @click.prevent="showSizeGuideDrawer=true">
-        <font-awesome icon="ruler" class="me-2" /> {{ $t('Guide des tailles') }}
+    <p class="mt-3 mb-1 model-height fw-light">Taille et hauteur du mannequin : S · 172 cm</p>
+    <div class="d-flex justify-content-start gap-3 mb-2">
+      <a href="#" class="size-guide fw-bold shadow-none btn-link" @click.prevent="showSizeGuideDrawer=true">
+        <font-awesome icon="ruler" class="me-1" /> {{ $t('Guide des tailles') }}
       </a>
     </div>
 
@@ -44,7 +61,7 @@
       </p>
     </transition>
 
-    <div class="actions d-flex justify-content-start gap-1 my-5">
+    <div class="actions d-flex justify-content-start gap-1 my-4">
       <button id="btn-add-to-cart" type="button" class="btn btn-primary btn-lg shadow-none btn-rounded" aria-label="Add to cart" @click="handleAddToCart">
         {{ $t('Ajouter au panier') }}
       </button>
@@ -172,5 +189,13 @@ h1.h3 {
 
 #product-variant.router-link-exact-active {
   opacity: 0.5;
+}
+
+p.model-height {
+  font-size: 0.8rem;
+}
+
+a.size-guide {
+  font-size: 0.8rem;
 }
 </style>

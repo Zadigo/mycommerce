@@ -52,6 +52,7 @@ class ProductSerializer(Serializer):
     sub_category = fields.CharField()
     sizes = SizeSerializer(many=True)
     has_sizes = fields.BooleanField()
+    unit_price = fields.DecimalField(5, 2)
     get_price = fields.DecimalField(5, 2)
     sale_value = fields.IntegerField()
     sale_price = fields.DecimalField(5, 2)
