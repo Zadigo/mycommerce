@@ -9,94 +9,88 @@
         </div>
         
         <div v-else class="row g-1">
-          <article class="col-sm-12 col-md-4 my-1">
-            <NuxtLink to="/shop/collection/all">
-              <div aria-label="Toute la collection" class="card shadow-none">
-                <NuxtImg alt="Toute la collection" src="/img5.jpeg" class="card-img" />
-                
-                <h1 class="text-white text-left h3 fw-bold text-uppercase px-2 py-4">
-                  Toute notre collection
-                </h1>
-              </div>
-            </NuxtLink>
-          </article>
-
-          <article v-for="collection in collections" :key="collection.id" class="col-sm-12 col-md-4 my-1">
-            <NuxtLink :to="`/shop/collection/${collection.get_view_name}`">
-              <article :aria-label="collection.name" class="card shadow-none">
-                <NuxtImg :alt="collection.name" src="/img5.jpeg" class="card-img" />
-                
-                <h1 class="text-white text-left h3 fw-bold text-uppercase px-2 py-4">
-                  {{ collection.name }}
-                </h1>
-              </article>
-            </NuxtLink>
-          </article>
+          <BaseStaticCollectionCard name="All" view-name="all" image="/img4.jpeg" />
+          <BaseCollectionCard v-for="collection in collections" :key="collection.id" :collection="collection" image="/img5.jpeg" />
         </div>
       </div>
     </div>
   </section>
 </template>
 
-<script lang="ts" setup>
-import { useStorageAsync } from '@vueuse/core';
-import { AxiosError } from 'axios';
-import type { CollectionName } from '~/types';
+<script setup lang="ts">
+// import { z } from 'zod'
+import { useStorageAsync } from '@vueuse/core'
+import type { CollectionName } from '~/types'
 
-const idbConnection = createConnection('e-commerce')
-const storage = useIDBStorage(idbConnection)
-const { $client } = useNuxtApp()
+// const idbConnection = createConnection('e-commerce')
+// const storage = useIDBStorage(idbConnection)
+
+// const CollectionSchema = z.object({
+//   id: z.number()
+// })
+
+// type _Collection = z.infer<typeof CollectionSchema>
+
 
 useHead({
   title: 'Achat en ligne de vêtements',
   meta: [
     {
       key: 'description',
-      content: ''
+      content: 'Découvrez notre collection de vêtements en ligne'
     }
   ]
 })
 
-const isLoading = ref(true)
-const collections = ref<CollectionName[]>([])
+// Composable for Collection Fetching
+function useCollectionDetails () {
+  const collections = ref<CollectionName[]>([])
+  const isLoading = ref(true)
+  
+  const { $client } = useNuxtApp()
+  const { handleError } = useErrorHandler()
+  
+  /**
+   * Gets all the names of the collections that are
+   * available to be displayed on this page
+   */
+  async function requestCollectionNames () {
+    try {
+      const cachedCollections = useStorageAsync<CollectionName[]>('collections', [])
 
-/**
- * Gets all the names of the collections that are
- * available to be displayed on this page
- */
-async function requestCollectionNames () {
-  try {
-    const result = useStorageAsync('collection', collections, storage, {
-      onError: (e) => {
-        console.log('useStorageAsync', e)
+      if (cachedCollections.value.length > 0) {
+        collections.value = cachedCollections.value
+        isLoading.value = false
+        return
       }
-    })
 
-    if (result.value.length === 0) {
-      const response = await $client.get<CollectionName[]>('collection')
+      const response = await $client.get<CollectionName[]>('collection') 
+
+      // Validate data with Zod
+      // const validatedCollections = response.data.map(collection => 
+      //   CollectionSchema.parse(collection)
+      // )
+
+      // collections.value = validatedCollections
+      // cachedCollections.value = validatedCollections
+
       collections.value = response.data
-      result.value = response.data
+      cachedCollections.value = response.data
+
       isLoading.value = false
+    } catch (e) {
+      handleError(e)
     }
-  } catch (e) {
-    if (e instanceof AxiosError && e.response) {
-      // Handle error
-    }
+  }
+  
+  return {
+    collections,
+    isLoading,
+    requestCollectionNames
   }
 }
 
-onBeforeMount(async () => {
-  await requestCollectionNames()
-})
+const { collections, isLoading, requestCollectionNames } = useCollectionDetails()
+
+onBeforeMount(requestCollectionNames)
 </script>
-
-<style lang="scss" scoped>
-article {
-  h1 {
-    position: absolute;
-    bottom: 3%;
-    left: 0;
-    width: 100%;
-  }
-}
-</style>
