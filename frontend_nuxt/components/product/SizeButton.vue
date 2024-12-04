@@ -26,6 +26,10 @@ const props = defineProps({
   selectable: {
     type: Boolean,
     default: true
+  },
+  customClass: {
+    type: String,
+    default: ''
   }
 })
 
@@ -37,6 +41,7 @@ const buttonClass = computed(() => {
   return [
     'btn',
     'btn-rounded',
+    props.customClass,
     { 
       'btn-outline-dark': !isSelected.value,
       'btn-secondary': isSelected.value && props.selectable

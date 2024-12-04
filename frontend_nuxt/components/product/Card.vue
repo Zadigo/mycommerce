@@ -9,12 +9,12 @@
       <div class="row text-center">
         <div class="col-12">
           <div v-if="requiresSizeItems" class="size-items">
-            <p class="fw-light">
+            <p id="size-text">
               {{ $t("Sélectionne la taille") }}
             </p>
             
             <div class="d-flex justify-content-center flex-wrap gap-1">
-              <ProductSizeButton v-for="size in product.sizes" :key="size.id" :size="size" @update:selected-size="handleAddToCart" />
+              <ProductSizeButton v-for="size in product.sizes" :key="size.id" :size="size" custom-class="border-none" @update:selected-size="handleAddToCart" />
             </div>
           </div>
 
@@ -119,13 +119,17 @@ async function handleLike (product: Product) {
   right: 5%;
 }
 
+#size-text {
+  font-size: 0.8rem;
+}
+
 .card-cover {
   position: absolute;
-  bottom: 16%;
-  left: 2%;
-  right: 2%;
+  bottom: 13%;
+  // left: 1%;
+  // right: 1%;
   height: auto;
-  width: 96%;
+  width: 100%;
   background-color: white;
 }
 
