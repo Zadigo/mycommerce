@@ -2,7 +2,9 @@
   <article class="col-sm-12 col-md-4 my-1">
     <NuxtLink :to="`/shop/collection/${viewName}`">
       <div :aria-label="name" class="card shadow-none">
-        <NuxtImg :alt="name" :src="image" class="card-img" />
+        <div class="wrapper rounded-2">
+          <NuxtImg :alt="name" :src="image" class="card-img" />
+        </div>
         
         <h1 class="text-white text-left h3 fw-bold text-uppercase px-2 py-4">
           {{ name }}
@@ -31,6 +33,18 @@ defineProps({
 
 <style lang="scss" scoped>
 article {
+  
+  .wrapper {
+    overflow: hidden;
+    
+    &:hover {
+      img {
+        transition: all 0.3s ease-in;
+        transform: scale(1.1, 1.1);
+      }
+    }
+  }
+
   h1 {
     position: absolute;
     bottom: 3%;
