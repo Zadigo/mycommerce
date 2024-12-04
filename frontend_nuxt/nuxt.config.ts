@@ -111,6 +111,8 @@ export default defineNuxtConfig({
         'truck',
         'pen',
         'trash',
+        'right-to-bracket',
+        'right-from-bracket',
         'circle-check',
         'shopping-bag',
         'table-cells',

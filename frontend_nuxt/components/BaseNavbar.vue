@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg bg-white fixed-top shadow-none" style="z-index: 1000;">
-    <div class="container">
+    <div class="container-fluid align-items-center">
       <NuxtLink to="/" class="navbar-brand fw-bold text-uppercase">
         <span class="fs-5">
           E-commerce
@@ -10,29 +10,29 @@
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
           <a href="#" class="nav-link" @click.prevent="showCartDrawer=true">
-            Cart
+            <font-awesome icon="shopping-bag" class="me-1" />
+            {{ $t("Panier") }}
           </a>
         </li>
 
         <li v-if="!authStore.isAuthenticated" class="nav-item">
           <a href="#" class="nav-link" @click.prevent="authStore.showLoginDrawer=true">
-            {{ $t('Login') }}
+            <font-awesome icon="right-to-bracket" class="me-1" />
+            {{ $t('Se connecter') }}
           </a>
         </li>
         
-        <li v-if="authStore.isAuthenticated" class="nav-item">
+        <li v-else class="nav-item">
           <a href="#" class="nav-link" @click.prevent="proxyLogout">
-            {{ $t('Logout') }}
+            <font-awesome icon="right-from-bracket" class="me-1" />
+            {{ $t('Se déconnecter') }}
           </a>
         </li>
         
-        <li class="nav-item">
-          <NuxtLink v-if="authStore.isAuthenticated" to="/account/" class="nav-link">
-            {{ $t('Account') }}
+        <li v-show="authStore.isAuthenticated" class="nav-item">
+          <NuxtLink to="/account/" class="nav-link">
+            {{ $t('Compte') }}
           </NuxtLink>
-          <a v-else href="#" class="nav-link" @click.prevent="authStore.showLoginDrawer=true">
-            {{ $t('Account') }}
-          </a>
         </li>
       </ul>
     </div>

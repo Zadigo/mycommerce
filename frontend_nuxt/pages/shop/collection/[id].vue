@@ -1,5 +1,5 @@
 <template>
-  <section class="section-margin-1 mb-5">
+  <section class="mb-5" style="margin-top: 59px;">
     <div class="row">
       <!-- Page Title -->
       <div class="col-12">
@@ -41,11 +41,17 @@
 
 <script lang="ts" setup>
 import { useChangeCase } from '@vueuse/integrations/useChangeCase'
-import type { Product } from '~/types';
+import { useScroll } from '@vueuse/core'
+import type { Product } from '~/types'
+
+const AsyncFeed = defineAsyncComponent({
+  loader: async () => import('@/components/products/AsyncFeed.vue')
+})
 
 const route = useRoute()
 const productsLoading = ref(true)
 const products = ref<Product[]>([])
+const { x } = useScroll(window, { behavior:'smooth' })
 
 useHead({
   title: useChangeCase(route.params.id as string, 'capitalCase'),
@@ -57,11 +63,8 @@ useHead({
   ]
 })
 
-const AsyncFeed = defineAsyncComponent({
-  loader: async () => import('@/components/products/AsyncFeed.vue')
-})
-
 provide('productsLoading', productsLoading)
+console.info(x.value)
 
 function handleLoadedProducts(data: Product[]) {
   productsLoading.value = false
