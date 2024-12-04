@@ -1,5 +1,5 @@
 <template>
-  <section id="product" class="container-fluid px-0 section-margin-1 mb-5">
+  <section id="product" class="container-fluid px-0 mb-5" style="margin-top: 59px;">
     <!-- Product -->
     <div class="row gy-1">
       <div id="product-information" class="col-12">

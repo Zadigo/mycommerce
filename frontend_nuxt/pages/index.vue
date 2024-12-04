@@ -1,5 +1,5 @@
 <template>
-  <section id="collections" class="section-margin-2">
+  <section id="collections" class="container-fluid section-margin-1 mb-5">
     <div class="row">
       <div class="col-sm-12 col-md-10 offset-md-1">
         <div v-if="isLoading" class="row g-1">

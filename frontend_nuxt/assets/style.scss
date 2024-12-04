@@ -26,8 +26,7 @@ $factors: (
 
 @each $key, $factor in $factors {
   .section-margin-#{$key} {
-    margin-top: calc($base_section_margin / $factor + 155px);
-    // margin-bottom: calc($base_section_margin / $factor);
+    margin-top: calc($base_section_margin / $factor + 80px);
   }
 }
 
