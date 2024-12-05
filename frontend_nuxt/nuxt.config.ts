@@ -12,11 +12,7 @@ export default defineNuxtConfig({
       charset: 'utf-8'
     }
   },
-  vite: {
-    server: {
-      
-    }
-  },
+  vite: { server: {} },
   runtimeConfig: {
     public: {
       DJANGO_PROD_URL: process.env.NUXT_DJANGO_PROD_URL,
@@ -58,22 +54,27 @@ export default defineNuxtConfig({
     'nuxt-openapi-docs-module',
     'vuetify-nuxt-module',
     'vue-sonner/nuxt',
-    'dayjs-nuxt',
     '@artmizu/nuxt-prometheus'
   ],
   alias: {
     '@': path.resolve(__dirname, './'),
     '@types': './types'
   },
-  eslint: {
-    
-  },
+  eslint: {},
   googleFonts: {
     families: {
-      Ubuntu: true,
-      Roboto: true,
-      Lato: true,
-      "Noto Sans": true
+      Ubuntu: {
+        wght: '100..700'
+      },
+      Roboto: {
+        wght: '100..700'
+      },
+      Lato: {
+        wght: '100..700'
+      },
+      "Noto Sans": {
+        wght: '100..700'
+      }
     }
   },
   gtag: {
@@ -87,12 +88,8 @@ export default defineNuxtConfig({
     '@/assets/style.scss'
   ],
   vuetify: {
-    moduleOptions: {
-
-    },
-    vuetifyOptions: {
-
-    }
+    moduleOptions: {},
+    vuetifyOptions: {}
   },
   fontawesome: {
     icons: {
