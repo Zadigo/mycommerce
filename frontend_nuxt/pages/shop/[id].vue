@@ -11,7 +11,7 @@
         </div>
       </div>
 
-      <ProductDetailsAside :product="product" :is-loading="isLoading" class="col-4 mt-5" sticky />
+      <ProductDetailsAside :product="product" :is-loading="isLoading" @show-size-guide="showSizeGuideDrawer=true" class="col-4 mt-5" sticky />
     </div>
 
     <!-- Multi-Block Image -->
@@ -32,6 +32,7 @@
 
     <!-- Modals -->
     <ModalsImageZoom :show="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" @close="handleCloseSelection" />
+    <ModalsSizeGuide :product="product" :show-modal="showSizeGuideDrawer" @close="showSizeGuideDrawer=false" />
 
     <!-- More Products -->
     <div ref="moreProductsIntersect" class="row g-1 my-5">
@@ -70,7 +71,8 @@ const ProductDetailsFiveImages = resolveComponent('ProductDetailsFiveImages')
 const ProductDetailsSixImages = resolveComponent('ProductDetailsSixImages')
 
 const AsyncBaseRecommendationBlock = defineAsyncComponent({
-  loader: async () => import('@/components/BaseRecommendations.vue')
+  loader: async () => import('~/components/BaseRecommendations.vue'),
+  timeout: 5000
 })
 
 // Composable for product fetching
@@ -149,6 +151,7 @@ const { product, isLoading } = useProductDetails()
 const { trackProduct } = useVisitedProducts(product)
 const { requestProductStock } = useProductSotck(product)
 const { showModal, selectedImage, handleSelectedImage, handleCloseSelection } = useImages()
+const showSizeGuideDrawer = ref(false)
 
 /**
  * Returns the proper image component to display

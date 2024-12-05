@@ -50,7 +50,7 @@
     <!-- Size Guide -->
     <p class="text-small mt-3 mb-1 fw-light">Taille et hauteur du mannequin : S · 172 cm</p>
     <div class="d-flex justify-content-start gap-3 mb-2">
-      <a href="#" class="text-small fw-bold shadow-none btn-link" @click.prevent="showSizeGuideDrawer=true">
+      <a href="#" class="text-small fw-bold shadow-none btn-link" @click.prevent="emit('show-size-guide')">
         <font-awesome icon="ruler" class="me-1" /> {{ $t('Guide des tailles') }}
       </a>
     </div>
@@ -80,9 +80,6 @@
       <ProductDetailsDeliveryTypes class="text-small" icon-name="shop" text="Enlèvement en magasin" />
       <ProductDetailsDeliveryTypes class="text-small" icon-name="truck" text="Livraison standard à domicile" />
     </ProductDetailsDeliveryType>
-
-    <!-- Modals -->
-    <ModalsSizeGuide :product="product" :show-modal="showSizeGuideDrawer" @close="showSizeGuideDrawer=false" />
   </div>
 </template>
 
@@ -112,6 +109,12 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits({
+  'show-size-guide' () {
+    return true
+  }
+})
+
 const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
   deep: true,
   serializer: {
@@ -136,7 +139,7 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
   }
 })
 
-const showSizeGuideDrawer = ref(false)
+// const showSizeGuideDrawer = ref(false)
 const productAside = ref<HTMLElement>()
 
 provide('userSelection', userSelection)
