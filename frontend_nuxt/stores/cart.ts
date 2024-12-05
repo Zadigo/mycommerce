@@ -96,30 +96,6 @@ export const useCart = defineStore('cart', () => {
     })
 
     /**
-     * TODO: Remove
-     * Preload the cart from the session if we actually
-     * have the data. This allows us then to dynamically
-     * calculate the items that the user has selected
-     */
-    function loadFromCache() {
-        // TODO:
-        // products.value = this.$session.retrieve("cart") || [];
-        // cache.value = this.$session.retrieve("cart_cache") || {};
-    }
-
-    /**
-     * TODO: Remove
-     * This is the main function that adds a product to
-     * the user's cart in the store. When the product
-     * does not exist, it is created otherwise, its quantity
-     * is upgraded
-     */
-    function updateCart(data: CartUpdateAPIResponse) {
-        cache.value = data;
-        products.value = data.results;
-    }
-
-    /**
      * Removes a product entirely from the cart
      * regardless of quantity
      */
@@ -129,8 +105,6 @@ export const useCart = defineStore('cart', () => {
     }
 
     return {
-        loadFromCache,
-        updateCart,
         removeFromCart,
         cartTotal,
         freeDeliveryTarget,

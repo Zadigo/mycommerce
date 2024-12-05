@@ -22,7 +22,7 @@ import type { NewIntentAPIResponse } from './payment';
 
 definePageMeta({
   layout: 'payment-layout',
-  middleware: ['auth']
+  middleware: ['auth', 'cart']
 })
 
 useHead({

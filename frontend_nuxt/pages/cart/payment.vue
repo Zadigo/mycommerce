@@ -52,7 +52,7 @@ interface TokenData {
 
 definePageMeta({
   layout: 'payment-layout',
-  middleware: ['auth']
+  middleware: ['auth', 'cart']
 })
 
 useHead({

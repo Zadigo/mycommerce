@@ -24,7 +24,7 @@ import type { ProductStock } from '~/types';
 
 definePageMeta({
   layout: 'payment-layout',
-  middleware: ['auth']
+  middleware: ['auth', 'cart']
 })
 
 useHead({
