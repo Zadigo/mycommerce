@@ -57,7 +57,9 @@ export default defineNuxtConfig({
     'nuxt-clarity-analytics',
     'nuxt-openapi-docs-module',
     'vuetify-nuxt-module',
-    'vue-sonner/nuxt'
+    'vue-sonner/nuxt',
+    'dayjs-nuxt',
+    '@artmizu/nuxt-prometheus'
   ],
   alias: {
     '@': path.resolve(__dirname, './'),
