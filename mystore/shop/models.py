@@ -467,11 +467,15 @@ def delete_image_on_update(sender, instance, **kwargs):
 
 # @receiver(pre_delete, sender=Product)
 def delete_images(sender, instance, **kwargs):
+    is_s3_backend = getattr(settings, 'USE_S3', False)
     images = instance.images.all()
     for image in images:
         if image.url:
-            path = pathlib.Path(image.url.path)
-            if path.is_file():
-                path.unlink()
-            # if os.path.isfile(image.original.path):
-            #     os.remove(image.url.path)
+            if not is_s3_backend:
+                path = pathlib.Path(image.url.path)
+                if path.is_file():
+                    path.unlink()
+                # if os.path.isfile(image.original.path):
+                #     os.remove(image.url.path)
+            else:
+                image.original.delete(save=False)

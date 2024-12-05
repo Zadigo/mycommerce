@@ -71,7 +71,7 @@ class GetProduct(RetrieveAPIView):
         serializer = self.get_serializer(product)
 
         variants = Product.objects.filter(name=product.name)
-        variants_serializer = shop_serializers.ColorVariantProductSerializer(
+        variants_serializer = serializers.ColorVariantProductSerializer(
             instance=variants,
             many=True
         )
@@ -101,14 +101,14 @@ class ListRecommendations(ListAPIView):
     permission_classes = [AllowAny]
 
     def recommendation_by_randomness(self, products, quantity):
-        try:
-            return random.choices(products, k=quantity)
-        except:
-            return random.choices(products, k=len(products))
-        # selected_items = set()
-        # for _ in range(int(quantity)):
-        #     selected_items.add(random.choice(products))
-        # return selected_items
+        # try:
+        #     return random.choices(products, k=quantity)
+        # except:
+        #     return random.choices(products, k=len(products))
+        selected_items = set()
+        for _ in range(int(quantity)):
+            selected_items.add(random.choice(products))
+        return selected_items
 
     def recommendation_by_similarity(self, queryset, products, initial_product, quantity):
         product_values = products.values('id', 'name')
@@ -212,8 +212,10 @@ class LikedProductsView(ListAPIView):
         serializer = self.get_serializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
 
-        queryset = queryset.filter(
-            id__in=serializer.validated_data['product_ids'])
+        ids = serializer.validated_data['product_ids']
+        queryset = queryset.filter(id__in=ids)
+
         if self.request.user.is_authenticated:
             pass
+
         return queryset
