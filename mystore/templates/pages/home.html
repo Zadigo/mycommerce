@@ -61,6 +61,9 @@
                                 {% trans "Classement" %}
                             </th>
                             <th>
+                                Image
+                            </th>
+                            <th>
                                 {% trans "Nom" %}
                             </th>
                             <th>
@@ -74,6 +77,14 @@
                             <tr>
                                 <td>
                                     {{ item.popularity_rank }}
+                                </td>
+
+                                <td class="text-center">
+                                    {% if item.get_main_image %}
+                                        <img src="{% get_media_prefix %}{{ item.get_main_image.thumbnail }}" alt="" height="80px">
+                                    {% else %}
+                                        -                                        
+                                    {% endif %}
                                 </td>
 
                                 <td>
