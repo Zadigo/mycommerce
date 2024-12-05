@@ -1,16 +1,24 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import F, Avg
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Avg, F, Window
+from django.db.models.functions import Rank
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from django.views.generic import ListView
 from orders.models import CustomerOrder
 from shop.models import Product
-from django.db.models.functions import Rank
-from django.db.models import Window
 
 
-class HomeView(LoginRequiredMixin, ListView):
+@method_decorator(never_cache, name='dispatch')
+class HomeView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     queryset = Product.objects.all()
     context_object_name = 'products'
     template_name = 'pages/home.html'
+
+    def test_func(self):
+        return any([
+            getattr(self.request.user, 'is_superuser'),
+            getattr(self.request.user, 'is_staff')
+        ])
 
     def get_orders_queryset(self):
         queryset = CustomerOrder.objects.all()

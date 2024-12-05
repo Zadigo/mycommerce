@@ -10,7 +10,7 @@ urlpatterns = [
         name='logout'
     ),
     re_path(
-        r'^login$',
+        r'^login',
         views.LoginView.as_view(),
         name='login'
     )

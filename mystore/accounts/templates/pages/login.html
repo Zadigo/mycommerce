@@ -12,8 +12,16 @@
             <form method="post" action="{% url 'accounts:login' %}" enctype="multipart/form-data" class="card-body">
                 {% csrf_token %}
 
+                {% for field, errors in form.errors.items %}
+                    <div class="alert alert-danger">
+                    {% for error in errors %}
+                        - {{ error }}
+                    {% endfor %}
+                    </div>
+                {% endfor %}
+
                 <div class="d-flex gap-2 flex-column">
-                    <input type="email" class="form-control p-3" placeholder="Email" title="email" name="email" autocomplete="email">
+                    <input type="text" class="form-control p-3" placeholder="Email" title="email" name="email" autocomplete="username">
                     <input type="password" class="form-control p-3" placeholder="Mot de passe" title="password" name="password" autocomplete="current-password">
                     <button type="submit" class="btn btn-primary mt-4">
                         {% trans "Se connecter" %}

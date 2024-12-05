@@ -24,6 +24,20 @@
 {% endblock %}
 
 {% block container %}
+<div class="row mb-4">
+    <div class="col-auto ms-auto d-flex gap-2">
+        <a href="{% url 'admin:index' %}" target="_blank" rel="noreferrer noopener" class="btn btn-secondary btn-rounded shadow-none">
+            <i class="fas fa-cog me-1"></i>
+            Admin
+        </a>
+
+        <a href="{% url 'accounts:logout' %}" class="btn btn-dark btn-rounded shadow-none">
+            <i class="fas fa-right-to-bracket me-1"></i>
+            {% trans "Se déconnecter" %}
+        </a>
+    </div>
+</div>
+
 <div class="row mb-2">
     {% include "includes/statistic_card.html" with metric=products.count metric_name="Produits" %}
     {% include "includes/statistic_card.html" with metric=statistics.average_price metric_name="Prix moyen" currency=True %}
