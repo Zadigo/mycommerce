@@ -11,6 +11,7 @@
       <ModalsCart @edit-product="handleProductEdition" />
       <ModalsAddedProduct />
       <ModalsEditProduct />
+      <ModalsSearch />
     </div>
 
     <!-- Footer -->

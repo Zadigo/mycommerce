@@ -1,6 +1,7 @@
 import type { Product } from "~/types";
 
 export const useShop =  defineStore('shop', () => {
+    const showSearchModal = ref(false)
     const showLanguageModal = ref(false)
     const visitedProducts = ref<number[]>([])
     const likedProducts = ref<number[]>([])
@@ -40,15 +41,10 @@ export const useShop =  defineStore('shop', () => {
         }
     }
 
-    function loadFromCache() {
-        likedProducts.value = this.$localstorage.retrieve("likedProducts") || [];
-        visitedProducts.value = this.$localstorage.retrieve("visitedProducts") || [];
-    }
-    
     return {
         addToHistory,
         updateWishlist,
-        loadFromCache,
+        showSearchModal,
         numberOfVisitedProducts,
         uniqueVisitedProductIds,
         visitedProducts,

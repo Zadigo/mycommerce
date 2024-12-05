@@ -85,7 +85,7 @@
 
 <script lang="ts" setup>
 import { useLocalStorage, useSessionStorage } from '@vueuse/core';
-import type { PropType } from 'vue';
+import type { PropType } from 'vue'
 import type { CartUpdateAPIResponse, Product } from '~/types';
 
 const { showAddedProductDrawer } = storeToRefs(useCart())

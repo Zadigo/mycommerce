@@ -6,7 +6,10 @@
           E-commerce
         </span>
       </NuxtLink>
-
+      
+      <v-btn variant="tonal" color="dark" @click="shopStore.showSearchModal=true">
+        Rechercher
+      </v-btn>
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
           <a href="#" class="nav-link" @click.prevent="showCartDrawer=true">
@@ -45,6 +48,7 @@
 // TODO: Create one unique dictionnary
 const accessToken = useCookie('access')
 const refereshToken = useCookie('refresh')
+const shopStore = useShop()
 const authStore = useAuthentication()
 const { showCartDrawer } = storeToRefs(useCart())
 

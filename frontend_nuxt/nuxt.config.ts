@@ -105,6 +105,7 @@ export default defineNuxtConfig({
         'phone',
         'envelope',
         'sliders',
+        'search',
         'ruler',
         'shop',
         'truck',
