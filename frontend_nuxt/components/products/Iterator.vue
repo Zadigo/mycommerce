@@ -6,7 +6,7 @@
   </TransitionGroup>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { PropType } from 'vue';
 import type { Product } from '~/types';
 

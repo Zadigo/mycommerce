@@ -123,6 +123,7 @@ export default defineNuxtConfig({
         'heart'
       ],
       brands: [
+        'whatsapp',
         'cc-mastercard',
         'google',
         'instagram',
