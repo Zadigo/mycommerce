@@ -3,7 +3,7 @@
     <div class="card shadow-none">
       <div class="card">
         <h1>404</h1>
-        <p>The page was not found</p>
+        <p>{{ $t("La page n'existe pas") }}</p>
       </div>
     </div>
   </section>

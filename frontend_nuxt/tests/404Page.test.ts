@@ -1,20 +1,30 @@
-import { $fetch, setup } from '@nuxt/test-utils'
-import { render } from '@testing-library/vue'
-import { describe, expect, it } from 'vitest'
-
+import { config, mount } from "@vue/test-utils";
+import { describe, expect, it } from "vitest";
 
 import ErrorPage from '~/pages/404.vue'
 
-describe('404Page', () => {
-    setup({
-        nuxtConfig: {
-            ssr: true,
-        },
-    })
+config.global.mocks = {
+    $t: (message: string) => message
+}
 
-    it('should render', async () => {
-        const { getByText } = render(ErrorPage)
-        expect(getByText('404')).toBeTruthy()
+describe('404 Page', () => {
+    // setup({
+    //     nuxtConfig: {
+    //         ssr: true,
+    //     },
+    // })
+
+    it('can render', async () => {
+        const wrapper = mount(ErrorPage, {
+            global: {
+                stubs: {
+                    NuxtLink: true
+                }
+            }
+        })
+
+        expect(wrapper.exists()).toBe(true)
+        expect(wrapper.find('h1').text()).toEqual('404')
     })
 
     it.todo('should return a 404 response code', async () => {
