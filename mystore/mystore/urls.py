@@ -24,7 +24,7 @@ urlpatterns = [
         include('debug_toolbar.urls')
     ),
     path(
-        'api/v1/admin/', 
+        'api/v1/admin/',
         include('adminapi.urls')
     ),
     path(
@@ -95,11 +95,6 @@ urlpatterns = [
         'all-accounts/',
         include('allauth.urls')
     ),
-    re_path(
-        r'^test',
-        views.TestPage.as_view()
-    ),
-
     path('accounts/', include('accounts.urls')),
     path('admin/', admin.site.urls),
     path('legal/', include('legal.urls')),
