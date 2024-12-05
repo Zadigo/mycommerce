@@ -1,5 +1,5 @@
 <template>
-  <article :data-id="product.id" :aria-label="product.name" class="card shadow-none rounded-0" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
+  <article v-if="product" :data-id="product.id" :aria-label="product.name" class="card shadow-none rounded-0" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
     <NuxtLink :to="`/shop/${product.id}`">
       <NuxtImg :src="mediaPath(product.get_main_image?.original, '/placeholder.svg')" class="card-img rounded-0" />
     </NuxtLink>
@@ -50,6 +50,7 @@
       </div>
     </NuxtLink>
   </article>
+  <BaseSkeleton v-else :loading="true" />
 </template>
 
 <script lang="ts" setup>
@@ -59,7 +60,7 @@ import type { Product } from '~/types';
 
 const props = defineProps({
   product: {
-    type: Object as PropType<Product>,
+    type: Object as PropType<Product | undefined>,
     required: true
   },
   showLikeButton: {
@@ -96,7 +97,11 @@ const cachedCart = useSessionStorage('cart', null, {
 const isHovered = ref(false)
 
 const requiresSizeItems = computed(() => {
-  return props.product.sizes.length > 0
+  if (props.product) {
+    return props.product.sizes.length > 0
+  } else {
+    return false
+  }
 })
 
 async function handleAddToCart (size?: string | number) {
