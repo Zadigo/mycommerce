@@ -18,15 +18,14 @@ from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from shop.api.serializers import admin as admin_serializers
-from shop.api.serializers import shop as shop_serializers
+from adminapi import serializers
 from shop.models import Image, Product
 
 from mystore.utils import remove_accents
 
 
 class ListProducts(ListAPIView):
-    serializer_class = admin_serializers.AdminProductSerializer
+    serializer_class = serializers.AdminProductSerializer
     queryset = Product.objects.all()
     permission_classes = []
 
@@ -43,7 +42,7 @@ class ListProducts(ListAPIView):
 
 
 class ListImages(ListAPIView):
-    serializer_class = admin_serializers.ImageSerializer
+    serializer_class = serializers.ImageSerializer
     # permission_classes = [IsAuthenticated, IsAdminUser]
     queryset = Image.objects.all()
 
@@ -91,7 +90,7 @@ def upload_images(request, **kwargs):
         )
 
     images = Image.objects.all()
-    serializer = admin_serializers.ImageSerializer(
+    serializer = serializers.ImageSerializer(
         instance=images,
         many=True
     )
@@ -101,7 +100,7 @@ def upload_images(request, **kwargs):
 @api_view(http_method_names=['post'])
 def associate_images(request, **kwargs):
     product = get_object_or_404(Product, pk=request.data['product'])
-    serializer = admin_serializers.ValidateImageAssociation(
+    serializer = serializers.ValidateImageAssociation(
         instance=product,
         data=request.data
     )
@@ -168,14 +167,14 @@ def update_product(request, pk, **kwargs):
     """Updates the different technical aspects
     of a given product in the database"""
     product = get_object_or_404(Product, pk=pk)
-    serializer = admin_serializers.ValidateUpdateProduct(
+    serializer = serializers.ValidateUpdateProduct(
         instance=product,
         data=request.data
     )
     serializer.is_valid(raise_exception=True)
     updated = serializer.save()
 
-    serializer = shop_serializers.ProductSerializer(instance=updated)
+    serializer = serializers.ProductSerializer(instance=updated)
     return Response(serializer.data)
 
 
@@ -183,13 +182,13 @@ def update_product(request, pk, **kwargs):
 def upload_products(request, **kwargs):
     """Upload a file containing a set of products
     to create in the database"""
-    serializer = admin_serializers.ValidateFileUpload(data=request.data)
+    serializer = serializers.ValidateFileUpload(data=request.data)
     serializer.is_valid(raise_exception=True)
     created_products = serializer.save()
     # TODO: Send this back to the user
     print(serializer._db_creation_errors)
 
-    serializer = admin_serializers.AdminProductSerializer(
+    serializer = serializers.AdminProductSerializer(
         instance=created_products,
         many=True
     )
@@ -198,7 +197,7 @@ def upload_products(request, **kwargs):
 
 @api_view(['post'])
 def filter_images(request, **kwargs):
-    serializer = admin_serializers.ValidateImageFiltersSerializer(
+    serializer = serializers.ValidateImageFiltersSerializer(
         data=request.data
     )
     serializer.is_valid(raise_exception=True)
@@ -286,7 +285,7 @@ def toggle_product_state(request, method, **kwargs):
     if method == 'deactivate':
         products.update(active=False)
 
-    serializer = shop_serializers.ProductSerializer(
+    serializer = serializers.ProductSerializer(
         instance=products, many=True)
     return Response(serializer.data)
 

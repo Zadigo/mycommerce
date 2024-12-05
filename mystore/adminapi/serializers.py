@@ -6,7 +6,7 @@ from django.db import IntegrityError
 from rest_framework import fields
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
-from shop.api.serializers.shop import ImageSerializer
+from shop.api.serializers import ImageSerializer
 from shop.api.validators import validate_image_ids
 from shop.models import Image, Product
 from shop.utils import clean_text
@@ -24,24 +24,9 @@ class ValidateImageAssociation(Serializer):
         return instance
 
 
-class ImageSerializer(Serializer):
-    id = fields.IntegerField(read_only=True)
-    name = fields.CharField(read_only=True)
-    original = fields.FileField(read_only=True)
-    thumbnail = fields.FileField(read_only=True)
-    mid_size = fields.FileField(read_only=True)
-    is_main_image = fields.BooleanField(read_only=True)
-
-
 class ProductSerializer(Serializer):
     """Updates the characteristics of a
     given product in the store"""
-
-    # id = fields.IntegerField(read_only=True)
-    # name = fields.CharField()
-    # is_new = fields.BooleanField()
-    # images = ImageSerializer(many=True)
-    # active = fields.BooleanField(default=False)
 
     file_names = fields.CharField(write_only=True)
     files = fields.FileField(write_only=True)

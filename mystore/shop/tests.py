@@ -10,7 +10,7 @@ from django.urls import reverse
 from rest_framework.mixins import status
 from rest_framework.test import APIClient, APIRequestFactory, APITestCase
 from shop import views
-from shop.api.views import shop as shop_api_views
+from mystore.shop.api import views as shop_api_views
 from shop.models import Product
 from shop.utils import calculate_sale, create_slug, product_media_path
 

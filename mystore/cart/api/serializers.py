@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import fields
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
-from shop.api.serializers.shop import ProductSerializer
+from shop.api.serializers import ProductSerializer
 from shop.choices import ClotheSizesChoices
 from shop.models import Product
 

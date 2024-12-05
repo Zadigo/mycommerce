@@ -4,15 +4,12 @@ import pandas
 import spacy
 from django.db.models import Case, Q, When
 from django.shortcuts import get_object_or_404
-from drf_spectacular.utils import extend_schema
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.mixins import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from shop.api import CustomPagination
-from shop.api.serializers import shop as shop_serializers
-from shop.api.serializers.shop import LikeSerializer, ProductSerializer
-from shop.models import Like, Product
+from shop.api import CustomPagination, serializers
+from shop.models import Product
 
 
 class ListProducts(ListAPIView):
@@ -28,7 +25,7 @@ class ListProducts(ListAPIView):
     """
 
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = serializers.ProductSerializer
     pagination_class = CustomPagination
     permission_classes = [AllowAny]
 
@@ -65,10 +62,9 @@ class ListProducts(ListAPIView):
         return queryset
 
 
-@extend_schema('Get Product')
 class GetProduct(RetrieveAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = serializers.ProductSerializer
 
     def retrieve(self, request, *args, **kwargs):
         product = self.get_object()
@@ -96,19 +92,23 @@ class ListRecommendations(ListAPIView):
       in the same product range as the one currently visited
     * `q` - Quantity of products to return
     * `for_mobile` - On mobile phones, the home page recommends
-      products that are not necessarily relate to a visited product
+      products that are not necessarily related to a visited product
       this indicates to return a random set of items
     """
 
     queryset = Product.objects.filter(active=True)
-    serializer_class = ProductSerializer
+    serializer_class = serializers.ProductSerializer
     permission_classes = [AllowAny]
 
     def recommendation_by_randomness(self, products, quantity):
-        selected_items = []
-        for _ in range(int(quantity)):
-            selected_items.append(random.choice(products))
-        return selected_items
+        try:
+            return random.choices(products, k=quantity)
+        except:
+            return random.choices(products, k=len(products))
+        # selected_items = set()
+        # for _ in range(int(quantity)):
+        #     selected_items.add(random.choice(products))
+        # return selected_items
 
     def recommendation_by_similarity(self, queryset, products, initial_product, quantity):
         product_values = products.values('id', 'name')
@@ -186,44 +186,19 @@ class ListRecommendations(ListAPIView):
             products = self.queryset.exclude(id=initial_product.id)
             return self.recommendation_by_randomness(products, quantity)
         else:
-            products = self.queryset.filter(
-                collection__name=product_id_or_collection_name
-            )
-            return products[:quantity]
+            print('product_id_or_collection_name',
+                  product_id_or_collection_name)
+            if not product_id_or_collection_name:
+                return self.recommendation_by_randomness(queryset, quantity)
+            else:
+                products = queryset.filter(
+                    collection__name=product_id_or_collection_name
+                )
+                return products[:quantity]
 
 
-# @extend_schema('Search')
-# class SearchShop(ListAPIView):
-#     """Enpoint that allows the user to search
-#     products in the shop by name"""
-
-#     http_method_names = ['get']
-#     serializer_class = ProductSerializer
-#     queryset = Product.objects.filter(active=True)
-#     permission_classes = [AllowAny]
-
-#     def get(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(
-#             instance=self.get_queryset(), many=True)
-#         return Response(serializer.data)
-
-#     def get_queryset(self):
-#         queryset = super().get_queryset()
-
-#         search = self.request.GET.get('q', None)
-#         if search is None:
-#             return []
-
-#         logic = (
-#             Q(name=search) |
-#             Q(name__icontains=search)
-#         )
-#         return queryset.filter(logic)
-
-
-@extend_schema(operation_id='Liked Products')
 class LikedProductsView(ListAPIView):
-    serializer_class = LikeSerializer
+    serializer_class = serializers.LikeSerializer
     queryset = Product.objects.all()
     permission_classes = [AllowAny]
     http_method_names = ['post']

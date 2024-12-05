@@ -5,13 +5,14 @@ from django.core.cache import cache
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now, timedelta
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from shop.api.serializers.shop import ProductSerializer
+from shop.api.serializers import ProductSerializer
 from shop.models import Product
-from drf_spectacular.utils import extend_schema
+
 from mystore.utils import PaginationHelper
 
 

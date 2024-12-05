@@ -1,7 +1,7 @@
 from orders.api.validators import validate_card_token, validate_intent_token
 from rest_framework import fields
 from rest_framework.serializers import Serializer
-from shop.api.serializers.shop import ImageSerializer
+from shop.api.serializers import ImageSerializer
 
 from mystore.choices import ShipmentChoices
 
