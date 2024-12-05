@@ -50,16 +50,22 @@
             </p>
 
             <p class="mb-1">
-              <font-awesome icon="envelope" class="me-2" />
-              <a :href="`mailto:${companyDetails.email}`" class="text-muted">
-                {{ companyDetails.email }}
+              <font-awesome :icon="['fab', 'whatsapp']" class="me-2" />
+              <a href="#" class="text-muted" @click.prevent="showWhatsAppModal=true">
+                WhatsApp
               </a>
             </p>
             
-            <p class="mb-1">
+            <div class="mb-1">
               <font-awesome icon="phone" class="me-2" />
-              {{ companyDetails.telephone }}
-            </p>
+              <span>{{ companyDetails.telephone }}</span>
+              <p class="text-small text-body-tertiary m-0">
+                De lundi à vendredi de 09:00 à 16:00
+              </p>
+              <p class="text-small text-body-tertiary m-0">
+                Appel non surtaxé, hors coût éventuel selon votre opérateur.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -74,8 +80,8 @@
       </div>
       
       <div class="d-flex justify-content-around gap-4">
-        <a href="#" class="text-muted" @click.prevent="store.showLanguageModal = true">
-          {{ languageOption?.location }} | {{ languageOption?.language }}
+        <a href="#" class="text-muted" @click.prevent="shopStore.showLanguageModal = true">
+          {{ languageOptions?.location }} | {{ languageOptions?.language }}
         </a>
         
         <a href="http://" class="text-muted">
@@ -90,24 +96,36 @@
           {{ $t("Mention légal") }}
         </a>
 
-        <a href="http://" class="text-muted">
+        <a href="/sitemap.xml" class="text-muted">
           {{ $t("Sitemap") }}
         </a>
       </div>
     </div>
+
+    <!-- Modals -->
+    <v-dialog v-model="showWhatsAppModal" width="400" transition="dialog-bottom-transition">
+      <v-card>
+        <v-card-text>
+          <div class="text-center">
+            <h6 claass="fw-bold mb-5">WhatsApp</h6>
+            
+            QR CODE
+
+            <p class="text-small mt-5">Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone</p>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </footer>
 </template>
 
 <script lang="ts" setup>
+import { useStorage } from '@vueuse/core'
 import { socialLinks, footerLinks, useCompany } from '@/utils'
+import type { LanguageOptions } from '~/types';
 
-const store = useShop()
+const shopStore = useShop()
 const { companyDetails } = useCompany()
-// const languageOption = useStorage<LanguageOptions>('language', { location: null, language: 'fr' }, Storage, { deep: true })
-const languageOption = ref({ 
-  location: null, 
-  language: 'fr'
-})
-
-
+const languageOptions = useStorage<LanguageOptions>('language', null)
+const showWhatsAppModal = ref(false)
 </script>
