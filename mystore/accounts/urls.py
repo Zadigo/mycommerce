@@ -5,13 +5,13 @@ app_name = 'accounts'
 
 urlpatterns = [
     re_path(
-        '^signup-success$', 
-        views.SignupSuccessView.as_view(), 
-        name='success'
+        r'^logout$',
+        views.LogoutView.as_view(),
+        name='logout'
     ),
     re_path(
-        '^signup$', 
-        views.SignupView.as_view(), 
-        name='signup'
+        r'^login$',
+        views.LoginView.as_view(),
+        name='login'
     )
 ]

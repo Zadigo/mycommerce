@@ -1,0 +1,27 @@
+{% extends "base_site.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Se connecter" %}
+{% endblock %}
+
+{% block container %}
+<div class="row">
+    <div class="col-sm-12 col-md-4 offset-md-4">
+        <div class="card">
+            <form method="post" action="{% url 'accounts:login' %}" enctype="multipart/form-data" class="card-body">
+                {% csrf_token %}
+
+                <div class="d-flex gap-2 flex-column">
+                    <input type="email" class="form-control p-3" placeholder="Email" title="email" name="email" autocomplete="email">
+                    <input type="password" class="form-control p-3" placeholder="Mot de passe" title="password" name="password" autocomplete="current-password">
+                    <button type="submit" class="btn btn-primary mt-4">
+                        {% trans "Se connecter" %}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
