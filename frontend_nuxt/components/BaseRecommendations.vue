@@ -11,7 +11,6 @@
 </template>
 
 <script lang="ts" setup>
-import { AxiosError } from 'axios';
 import type { Product } from '~/types';
 
 const props = defineProps({
@@ -34,11 +33,11 @@ const props = defineProps({
   }
 })
 
-// const { instance } = useVueSession()
 const route = useRoute()
 const recommendations = ref<Product[]>([])
 const productsRow = ref<HTMLElement>()
 const { $client } = useNuxtApp()
+const { handleError } = useErrorHandler()
 
 async function requestRecommendations () {
   try {
@@ -49,17 +48,12 @@ async function requestRecommendations () {
       }
     })
     recommendations.value = response.data
-    // instance.expire('recommendations', response.data, 100)
   } catch (e) {
-    if (e instanceof AxiosError && e.response) {
-      // Handle error
-    }
+    handleError(e)
   }
 }
 
-onBeforeMount(async () => {
-  await requestRecommendations()
-})
+onBeforeMount(requestRecommendations)
 
 onMounted(() => {
   if (props.scrollable) {
