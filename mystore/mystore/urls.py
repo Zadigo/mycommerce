@@ -101,8 +101,6 @@ urlpatterns = [
     ),
 
     path('accounts/', include('accounts.urls')),
-    path('collection/', include('collection.urls')),
-    path('shop/', include('shop.urls')),
     path('admin/', admin.site.urls),
     path('legal/', include('legal.urls')),
     re_path(r'^$', views.HomeView.as_view(), name='home')
