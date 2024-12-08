@@ -1,8 +1,6 @@
 import { useAuthentication } from "@/stores/authentication";
-import { useMessages } from "@/stores/messages";
+import { AuthenticationAPIResponse } from "@/types";
 import { useCookies } from "@vueuse/integrations/useCookies";
-import { VueSessionInstance } from "./vue-storages";
-
 import axios from "axios";
 
 /**
@@ -40,31 +38,55 @@ const client = axios.create({
   timeout: 10000,
 });
 
-client.interceptors.request.use((config) => {
-  const store = useAuthentication();
+client.interceptors.request.use(
+  (config) => {
+    const store = useAuthentication();
 
-  if (store.isAuthenticated) {
-    config.headers.Authorization = `Token ${store.token}`;
+    if (store.isAuthenticated) {
+      config.headers.Authorization = `Token ${store.access}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error)
   }
+);
 
-  return config;
-});
+client.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  async (error) => {
+    // Sequence that refreshes the access token when
+    // we get a 401 code trying to access a page
 
-client.interceptors.response.use((response) => {
-  if (response.status === 401) {
-    const cookies = useCookies();
+    const originalRequest = error.config
 
-    VueSessionInstance.remove("authentication");
-    VueSessionInstance.remove("profile");
-    cookies.remove("token");
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true
+
+      try {
+        const { get, set } = useCookies(['authentication'])
+        const authStore = useAuthentication()
+        const authClient = axios.create({
+          baseURL: 'http://127.0.0.1:8000/auth/v1/'
+        })
+        const response = await authClient.post<AuthenticationAPIResponse>('/token/refresh/', {
+          refresh: authStore.refresh || get('refresh')
+        })
+
+        originalRequest.headers.Authorization = `Token ${response.data.access}`
+        set('access', response.data.access)
+        return client(originalRequest)
+      } catch (refreshError) {
+        return Promise.reject(refreshError)
+      }
+    }
+
+    return Promise.reject(error)
   }
-
-  if ([404, 500].includes(response.status)) {
-    const messagesStore = useMessages();
-    messagesStore.addNetworkError();
-  }
-  return response;
-});
+);
 
 export { client, quartClient };
 

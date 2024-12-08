@@ -34,7 +34,7 @@ const { handleGoToProduct } = useShopComposable()
 
 const router = useIonRouter()
 
-const handleProductModification = function () {
+async function handleProductModification () {
   router.push('tab3/product/modify')
 }
 </script>

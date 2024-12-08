@@ -31,10 +31,14 @@
 
           <ion-row style="text-align: center;">
             <ion-col size="6">
-              <ion-button color="dark" expand="block">Commander</ion-button>
+              <ion-button color="dark" expand="block">
+                Commander
+              </ion-button>
             </ion-col>
             <ion-col size="6">
-              <ion-button color="dark" expand="block">Google pay</ion-button>
+              <ion-button color="dark" expand="block">
+                Google pay
+              </ion-button>
             </ion-col>
           </ion-row>
         </ion-col>
@@ -60,7 +64,7 @@ const { products } = storeToRefs(storeShop)
 /**
  * 
  */
-const handleGoToCollection = (name: string) => {
+function handleGoToCollection (name: string) {
   name
   router.push('/tabs/tab1/products')
 }

@@ -4,7 +4,7 @@
       <ion-toolbar>
         <ion-buttons>
           <ion-button slot="start" @click="router.back()">
-            <font-awesome-icon :icon="['fas', 'chevron-left']"></font-awesome-icon>
+            <font-awesome-icon icon="chevron-left" />
           </ion-button>
         </ion-buttons>
 
@@ -23,7 +23,7 @@
             <!-- https://swiperjs.com/element -->
             <swiper-container pagination="true" @swiperslidechange="() => {}">
               <swiper-slide v-for="image in currentProduct.images" :key="image.id">
-                <img :src="conditionalImagePath(image?.original)" />
+                <img :src="mediaPath(image?.original)" />
               </swiper-slide>
             </swiper-container>
 
@@ -84,13 +84,16 @@ import {
   useIonRouter
 } from '@ionic/vue';
 
-import { useShopComposable, useShopUtilities } from '@/composables/shop';
+import { useCartComposable } from '@/composables/cart';
+import { useShopComposable } from '@/composables/shop';
+import { useDjangoUtilies } from '@/composables/utils';
+import { client } from '@/plugins/axios';
 import { useShop } from '@/stores/shop';
-import { Product } from '@/types/collections';
+import { Product } from '@/types';
 import { shareSocial } from 'ionicons/icons';
 import { storeToRefs } from 'pinia';
 import { register } from 'swiper/element';
-import { onBeforeMount, onMounted, ref } from 'vue';
+import { nextTick, onBeforeMount, onMounted, ref } from 'vue';
 
 register()
 
@@ -98,33 +101,39 @@ const recommendations = ref<Product[]>([])
 const router = useIonRouter()
 const store = useShop()
 const { likedProducts, visitedProducts, currentProduct } = storeToRefs(store)
-const { conditionalImagePath } = useShopUtilities()
+const { mediaPath } = useDjangoUtilies()
 const { isLiked, handleLike } = useShopComposable()
+const { addToCart } = useCartComposable()
 
-onBeforeMount(() => {
-  requestRecommendations()
-})
-
-onMounted(() => {
-  const currentProductId = currentProduct.value.id
-  if (likedProducts.value.includes(currentProductId)) {
-    isLiked.value = true
-  }
-
-  visitedProducts.value.push(currentProductId)
-})
 
 /**
  * 
  */
-const requestRecommendations = async function () {
-  recommendations.value = Array.from({ length: 40}, (a, b) => {
-    return {
-      id: b,
-      name: `Product ${b}`
-    }
-  })
+async function requestRecommendations () {
+  try {
+    const response = await client.get('shop/products/recommendations', {
+      params: {
+        q: 30,
+        p: currentProduct.value.id
+      }
+    })
+    recommendations.value = response.data
+  } catch (e) {
+    console.log(e)
+  }
 }
+
+onBeforeMount(requestRecommendations)
+
+onMounted(() => {
+  const currentProductId = currentProduct.value.id
+  
+  if (likedProducts.value.includes(currentProductId)) {
+    isLiked.value = true
+  }
+
+  nextTick(() => { visitedProducts.value.push(currentProductId) })
+})
 </script>
 
 <style scoped>

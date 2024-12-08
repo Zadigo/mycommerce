@@ -1,7 +1,6 @@
 <template>
   <ion-card id="product">
-    <!-- <ion-img src="/img5.jpg" @click="handleGoToProduct"></ion-img> -->
-    <ion-img :src="conditionalImagePath(product.get_main_image?.original)" @click="handleGoToProduct(product)"></ion-img>
+    <ion-img :src="mediaPath(product.get_main_image?.original)" @click="handleGoToProduct(product)"></ion-img>
     
     <ion-card-content v-if="showProductInfo">
       <div class="product-info">
@@ -12,8 +11,9 @@
             <font-awesome-icon v-if="isLiked" :icon="['fas', 'heart']"></font-awesome-icon>
             <font-awesome-icon v-else :icon="['far', 'heart']"></font-awesome-icon>
           </ion-button>
+
           <ion-button v-else shape="round" size="small" fill="clear" color="dark" @click="emit('show-product-sizes', product)">
-            <font-awesome-icon :icon="['fas', 'shopping-cart']"></font-awesome-icon>
+            <font-awesome-icon icon="shopping-cart" />
           </ion-button> 
         </div>
 
@@ -25,13 +25,14 @@
 
 
 <script setup lang="ts">
-import { useShopComposable, useShopUtilities } from '@/composables/shop';
+import { useShopComposable } from '@/composables/shop';
+import { useDjangoUtilies } from '@/composables/utils'
 import { Product } from '@/types/shop';
 import { IonButton, IonCard, IonCardContent, IonImg } from '@ionic/vue';
 import { defineEmits, defineProps, PropType } from 'vue';
 
 const emit = defineEmits(['show-product-sizes']);
-const { conditionalImagePath } = useShopUtilities()
+const { mediaPath } = useDjangoUtilies()
 
 defineProps({
   showProductInfo: {

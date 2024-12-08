@@ -4,7 +4,7 @@
       <ion-toolbar>
         <ion-buttons slot="start">
           <ion-button size="large" shape="round" @click="router.back()">
-            <font-awesome-icon :icon="['fas', 'chevron-left']"></font-awesome-icon>
+            <font-awesome-icon icon="chevron-left" />
           </ion-button>
         </ion-buttons>
     
@@ -12,7 +12,7 @@
     
         <ion-buttons slot="end">
           <ion-button size="large" shape="round" @click="showProductsFilterModal=true">
-            <font-awesome-icon :icon="['fas', 'sliders']"></font-awesome-icon>
+            <font-awesome-icon :icon="['fas', 'sliders']" />
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
@@ -156,15 +156,25 @@ import { InfiniteScrollCustomEvent, IonButton, IonButtons, IonCol, IonContent, I
 import { calculatorOutline, close as closeIcon } from 'ionicons/icons';
 import _ from 'lodash';
 import { storeToRefs } from 'pinia';
-import { Type } from 'typescript';
 import { computed, defineAsyncComponent, onBeforeMount, ref } from 'vue';
 
 import LoadingProducts from '@/components/products/LoadingProducts.vue';
+import { useDjangoUtilies } from '@/composables/utils';
+
+const AsyncClassicDisplay = defineAsyncComponent({
+  loader: async () => import('@/components/products/ClassicDisplay.vue'),
+  timeout: 3000
+})
+
+const AsyncGridDisplay = defineAsyncComponent({
+  loader: async () => import('@/components/products/GridDisplay.vue'),
+  timeout: 3000
+})
 
 const currentGridDisplay = ref<1 | 2 | 3>(1)
 const showProductsFilterModal = ref(false)
 const showSizeChoices = ref(false)
-const cachedResponse = ref<APIResponse | Record<string, Type>>({})
+const cachedResponse = ref<APIResponse>()
 const grids = ref([
   {
     display: 1,
@@ -190,27 +200,14 @@ const products = computed(() => {
   return cachedResponse.value?.results
 })
 
-
-const AsyncClassicDisplay = defineAsyncComponent({
-  loader: () => import('@/components/products/ClassicDisplay.vue'),
-  timeout: 3000
-})
-
-const AsyncGridDisplay = defineAsyncComponent({
-  loader: () => import('@/components/products/GridDisplay.vue'),
-  timeout: 3000
-})
-
 const subCategories = computed<string[]>(() => {
-  const result = _.map(cachedResponse.value.results, (product) => {
-    return product.sub_category
-  })
-  return _.uniq(result)
-})
-
-onBeforeMount(() => {  
-  if (data.value?.gridDisplay) {
-    currentGridDisplay.value = data.value.gridDisplay
+  if (cachedResponse.value) {
+    const result = cachedResponse.value.results.map((product) => {
+      return product.sub_category
+    })
+    return _.uniq(result)
+  } else {
+    return []
   }
 })
 
@@ -225,29 +222,51 @@ const handleRemoveFilters = function () {}
  * of the collection by parsing the limit and offset
  * search parameters of the next url from the response
  */
-const requestProductsProxy = async function (e: InfiniteScrollCustomEvent) {
+async function requestProductsProxy (e: InfiniteScrollCustomEvent) {
   try {
-    if (cachedResponse.value?.next !== null) {
-      const url = new URL(cachedResponse.value?.next)
-      const limit = url.searchParams.get('limit')
-      const offset = url.searchParams.get('offset')
+    if (cachedResponse.value) {
+      if (cachedResponse.value.next) {
+        const { builLimitOffset } = useDjangoUtilies()
+        const result = builLimitOffset(cachedResponse.value.next)
+        const collection = currentCollectionName.value || 'all'
+        const collectionUrlPath = `collection/${collection.toLowerCase()}` 
 
-      const collectionUrlPath = `collection/${currentCollectionName.value.toLowerCase()}`
+        const response = await client.get<APIResponse>(collectionUrlPath, {
+          params: {
+            limit: result.limit,
+            offset: result.offset
+          }
+        })
 
-      const response = await client.get<APIResponse>(collectionUrlPath, {
-        params: {
-          limit,
-          offset
-        }
-      })
-      
-      cachedResponse.value.next = response.data.next
-
-      if (Array.isArray(cachedResponse.value?.results)) {
-        cachedResponse.value?.results.push(...response.data.results)
+        cachedResponse.value.next = response.data.next
+        cachedResponse.value.results.push(...response.data.results)
       }
+      setTimeout(() => e.target.complete(), 500);
+    } else {
+      console.log('no cached response')
     }
-    setTimeout(() => e.target.complete(), 500);
+
+    // if (cachedResponse.value?.next !== null) {
+    //   const url = new URL(cachedResponse.value?.next)
+    //   const limit = url.searchParams.get('limit')
+    //   const offset = url.searchParams.get('offset')
+
+    //   const collectionUrlPath = `collection/${currentCollectionName.value.toLowerCase()}`
+
+    //   const response = await client.get<APIResponse>(collectionUrlPath, {
+    //     params: {
+    //       limit,
+    //       offset
+    //     }
+    //   })
+      
+    //   cachedResponse.value.next = response.data.next
+
+    //   if (Array.isArray(cachedResponse.value?.results)) {
+    //     cachedResponse.value?.results.push(...response.data.results)
+    //   }
+    // }
+    // setTimeout(() => e.target.complete(), 500);
   } catch (e) {
     console.log(e)
   }
@@ -272,6 +291,12 @@ const handleGridDisplay = (grid: number) => {
   currentGridDisplay.value = grid
   instance?.create('gridDisplay', grid)
 }
+
+onBeforeMount(() => {  
+  if (data.value?.gridDisplay) {
+    currentGridDisplay.value = data.value.gridDisplay
+  }
+})
 </script>
 
 <style scoped>

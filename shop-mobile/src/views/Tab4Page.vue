@@ -44,7 +44,7 @@
           <ion-toolbar>
             <ion-buttons slot="end">
               <ion-button @click="showLoginModal=false">
-                <ion-icon :icon="close"></ion-icon>
+                <ion-icon :icon="close" />
               </ion-button>
             </ion-buttons>
           </ion-toolbar>
@@ -58,7 +58,7 @@
               
               <p>Tu as oublié ton mot de passe ?</p>
               
-              <ion-button color="dark" expand="block" @click="requestLogin">
+              <ion-button color="dark" expand="block" @click="handleLogin">
                 Se connecter
               </ion-button>
               
@@ -72,39 +72,56 @@
 </template>
 
 <script setup lang="ts">
-import { client } from '@/plugins/axios';
-import { useVueSession } from '@/plugins/vue-storages';
+import { useAxiosClient } from '@/composables/utils';
 import { useAuthentication } from '@/stores/authentication';
 import { AuthenticationAPIResponse } from '@/types/authentication';
 import { IonButton, IonButtons, IonCol, IonContent, IonHeader, IonIcon, IonInput, IonModal, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/vue';
+import { useCookies } from '@vueuse/integrations/useCookies';
 import { close, logoFacebook, logoGoogle, logoInstagram, logoTiktok, mail } from 'ionicons/icons';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const showLoginModal = ref<boolean>(false)
-const requestData = ref<{ email: string, password: string}>({
-  email: '',
-  password: ''
-})
-const { instance } = useVueSession()
+
 const authenticationStore = useAuthentication()
-const { token, profile } = storeToRefs(authenticationStore)
+const { createClient } = useAxiosClient()
+const { access } = storeToRefs(authenticationStore)
 
-const requestLogin = async () => {
-  try {
-    const response = await client.post<AuthenticationAPIResponse>('accounts/login', requestData.value)
-    token.value = response.data.token
-    profile.value = response.data.user.userprofile
-    showLoginModal.value = false
+function useLogin () {
+  const router = useRouter()
+  const requestData = ref({
+    email: '',
+    password: ''
+  })
 
-    requestData.value.email = ''
-    requestData.value.password = ''
-    
-    instance.create('authentication', response.data)
-  } catch (e) {
-    console.log(e)
+  async function handleLogin () {
+    try {
+      const response = await createClient('/auth/v1/').post<AuthenticationAPIResponse>('/token/', {
+        username: requestData.value.email,
+        password: requestData.value.password
+      })
+  
+      const authStore = useAuthentication()
+      const { set } = useCookies(['authentication'])
+      set('access', response.data.access)
+      set('refresh', response.data.refresh)
+      access.value = response.data.access
+      authStore.access = response.data.access
+      showLoginModal.value = false
+      router.push('/tabs/tab1')
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  return {
+    requestData,
+    handleLogin
   }
 }
+
+const { requestData, handleLogin } = useLogin()
 </script>
 
 <style scoped>

@@ -9,12 +9,14 @@ import { IonApp, IonRouterOutlet } from '@ionic/vue';
 import { onBeforeMount } from 'vue';
 import { useShop } from './stores/shop';
 import { useAuthentication } from './stores/authentication';
+import { useCookies } from '@vueuse/integrations/useCookies';
 
 const shopStore = useShop()
 const authenticationStore = useAuthentication()
+const { get } = useCookies()
 
 onBeforeMount(() => {
   shopStore.loadFromCache()
-  authenticationStore.loadFromCache()
+  authenticationStore.access = get<string | undefined>('access')
 })
 </script>

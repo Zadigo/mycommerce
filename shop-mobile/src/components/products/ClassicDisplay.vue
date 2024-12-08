@@ -10,14 +10,21 @@
 import { useShopComposable } from '@/composables/shop';
 import { APIResponse, Product } from '@/types/shop';
 import { IonCol, IonRow } from '@ionic/vue';
-import { Type } from 'typescript';
 import { defineEmits, ref } from 'vue';
 
 import ProductCard from './ProductCard.vue';
 
-const emit = defineEmits(['show-product-sizes', 'update-next-url'])
+const emit = defineEmits({
+  'show-product-sizes' (_data: Product) {
+    return true
+  },
+  'update-next-url' (_data: APIResponse) {
+    return true
+  }
+})
+
 const products = ref<Product[]>([])
-const cachedResponse = ref<APIResponse | Record<string, Type>>({})
+const cachedResponse = ref<APIResponse>()
 const { requestProductsFromCollection } = useShopComposable()
 
 requestProductsFromCollection((data) => {

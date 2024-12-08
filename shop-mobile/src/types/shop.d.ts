@@ -13,12 +13,12 @@ declare type ProductSet = {
 export type ProductImage = {
   id: number;
   name: string;
-  product_set: ProdcuctSet[];
+  product_set: ProductSet[];
   original: string;
   thumbnail: string;
   mid_size: string;
+  is_main_image: boolean;
 };
-
 export type ProductCollection = {
   id: number;
   name: string;
@@ -26,7 +26,7 @@ export type ProductCollection = {
   sub_category: string;
   number_of_items: number;
   illustration: string;
-  tags: string[];
+  tags: string[] | null;
   get_view_name: string;
 };
 
@@ -38,6 +38,7 @@ export type Product = {
   sub_category: string;
   sizes: ProductSizes[];
   has_sizes: boolean;
+  unit_price: number
   get_price: number;
   sale_value: number;
   sale_price: number;
@@ -45,14 +46,17 @@ export type Product = {
   collection_set: ProductCollection[];
   get_main_image: ProductImage;
   images: ProductImage[];
+  model_height: string
+  model_size: string
   color_variant_name: string;
   is_new: boolean;
   active: boolean;
   display_new: boolean;
   slug: string;
+  variants: ProductVariant[]
   modified_on: string;
   created_on: string;
-};
+}
 
 export type APIResponse = {
   count: number;

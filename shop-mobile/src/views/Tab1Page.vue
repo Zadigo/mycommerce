@@ -27,7 +27,7 @@ import { defineAsyncComponent } from 'vue';
 import { IonContent, IonHeader, IonPage, IonTitle, IonSkeletonText, IonToolbar } from '@ionic/vue';
 
 const AsyncHomeExplorer = defineAsyncComponent({
-  loader: () => import('@/components/home/HomeExplorer.vue'),
+  loader: async () => import('@/components/home/HomeExplorer.vue'),
   timeout: 5000
 })
 </script>

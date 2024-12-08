@@ -29,6 +29,8 @@ export declare type User = {
 };
 
 export interface AuthenticationAPIResponse {
-  token: string;
-  user: User;
+  // token: string;
+  // user: User;
+  access: string
+  refresh: string
 }
