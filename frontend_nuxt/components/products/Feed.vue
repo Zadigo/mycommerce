@@ -26,17 +26,15 @@
       </div>
       
       <!-- Modals -->
-      <ModalsProductFilters :show-modal="showProductFilters" :count="products.length" @update-products="requestFilteredProducts" @close="showProductFilters=false" />
+      <ModalsProductFilters :show-modal="showProductFilters" :count="productCount" @update-products="requestFilteredProducts" @close="showProductFilters=false" />
     </template>
   </ProductsFeedLayout>
 </template>
 
 <script lang="ts" setup>
-import { useIntersectionObserver, useLocalStorage, watchArray  } from '@vueuse/core'
-import { AxiosError } from 'axios';
+import { useIntersectionObserver, useLocalStorage  } from '@vueuse/core'
+// import type { ValidateProduct, ProductSchema } from '~/utils/schemas';
 import type { Product, ProductsAPIResponse } from '~/types';
-
-// type Actions = 'sorted by' | 'typology' | 'colors' | 'sizes' | 'price'
 
 const emit = defineEmits({
   'products-loaded' (_data: Product[]) {
@@ -44,33 +42,39 @@ const emit = defineEmits({
   }
 })
 
-// const idbConnection = createConnection('e-commerce')
-// const storage = useIDBStorage(idbConnection)
 const route = useRoute()
 const currentGridSize = useLocalStorage('grid', 3, { initOnMounted: true })
+
 const { $client } = useNuxtApp()
 const { scrollToTop } = useUtilities()
 const { builLimitOffset } = useDjangoUtilies()
+const { handleError } = useErrorHandler()
 
 const isLoadingMoreProducts = ref(false)
 const offsetsList = ref<(string | number)[]>([])
 const intersectionTarget = ref<HTMLElement | null>(null)
 const showProductFilters = ref(false)
+
 const cachedResponse = ref<ProductsAPIResponse>()
 const products = ref<Product[]>([])
 
-/**
- * TODO: 
- */
-watchArray(products, () => {
-
-})
-
-const { data, status } = await useFetch<ProductsAPIResponse>(`/api/collections/${route.params.id}`, {
+const { status } = await useFetch<ProductsAPIResponse>(`/api/collections/${route.params.id}`, {
   method: 'GET',
   transform: (data) => {
     cachedResponse.value = data
     products.value = data.results
+
+    // TODO: Validate products with Zod
+    // const validProducts = data.results.reduce<ValidateProduct[]>((acc, item) => {
+    //   try {
+    //     const validProduct = ProductSchema.parse(item)
+    //     acc.push(validProduct)
+    //   } catch (e) {
+    //     console.log('Failed to validate product:', e)
+    //   }
+    // }, [])
+    // console.log('validProducts', validProducts)
+
     return data
   }
 })
@@ -78,10 +82,6 @@ const { data, status } = await useFetch<ProductsAPIResponse>(`/api/collections/$
 if (status.value === 'success') {
   emit('products-loaded', products.value)
 }
-
-// const products = computed(() => {
-//   return cachedResponse.value?.results ?? []
-// })
 
 const nextPageUrl = computed(() => {
   if (cachedResponse.value) {
@@ -96,6 +96,14 @@ const isEndOfPage = computed(() => {
     nextPageUrl.value === null ||
     nextPageUrl.value === ''
   )
+})
+
+const productCount = computed(() => {
+  if (products.value) {
+    return products.value.length
+  } else {
+    return 0
+  }
 })
 
 // Provide the total product count for all children
@@ -141,12 +149,8 @@ async function requestOffsetProducts(offset: string | number, query?: string | n
     } else {
       products.value.push(...response.data.results)
     }
-    // instance.create(collectionUrlPath, response.data)
-    // instance.create('products', products.value)
   } catch (e) {
-    if (e instanceof AxiosError && e.response) {
-      // messagesStore.addNetworkError()
-    }
+    handleError(e)
   }
 }
 

@@ -14,8 +14,8 @@
             Ne pas répéter plus de 3 fois le même caractère
           </p>
 
-          <v-checkbox v-model="requestData.newsletter" label="Je veux recevoir les nouveautés et des communications commerciales personnalisées de BERSHKA par e-mail ou d’autres moyens." />
-          <v-checkbox v-model="acceptPrivacry" label="J’ai lu et j'accepte les Conditions générales  et je comprends les informations sur le traitement de mes données personnelles expliquées dans la Politique de confidentialité" />
+          <v-checkbox v-model="requestData.newsletter" label="Je veux recevoir les nouveautés et des communications commerciales personnalisées de BERSHKA par e-mail ou d'autres moyens." />
+          <v-checkbox v-model="acceptPrivacy" label="J'ai lu et j'accepte les Conditions générales  et je comprends les informations sur le traitement de mes données personnelles expliquées dans la Politique de confidentialité" />
 
           <v-btn id="signup-email" class="text-light" color="dark" size="x-large" block flat rounded @click="handleSignup">
             {{ $t('Créer un compte') }}
@@ -39,7 +39,7 @@ const emit = defineEmits({
   }
 })
 
-const acceptPrivacry = ref(false)
+const acceptPrivacy = ref(false)
 const requestData = ref<RequestData>({
   email: '',
   password: '',
@@ -47,22 +47,26 @@ const requestData = ref<RequestData>({
 })
 
 const canSignup = computed(() => {
-  return [acceptPrivacry.value].every(x => x !== true)
+  return [acceptPrivacy.value].every(x => x !== true)
 })
 
 /**
  * TODO: Returns the Django signup url that will be
  * used to create a new user
  */
-const signupUrl = computed((): string => {
-  const url = import.meta.env.VITE_DEVELOPMENT_SIGNUP_URL
-  const query = new URLSearchParams()
+// const signupUrl = computed((): string => {
+//   const url = import.meta.env.VITE_DEVELOPMENT_SIGNUP_URL
+//   const query = new URLSearchParams()
 
-  query.append('c', route.path)
-  return url + `?${query}`
-})
+//   query.append('c', route.path)
+//   return url + `?${query}`
+// })
 
 async function handleSignup () {
-  emit('authenticate')
+  if (canSignup.value) {
+    emit('authenticate')
+  } else {
+    // TODO: Show error message
+  }
 }
 </script>

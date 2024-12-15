@@ -2,7 +2,7 @@
 <template>
   <v-navigation-drawer v-model="shouldShowLoginDrawer" width="400" location="right" sticky temporary @close="shouldShowLoginDrawer=false">
     <div class="container">
-      <v-btn variant="tonal" class="mt-2">
+      <v-btn variant="tonal" class="mt-2" @click="shouldShowLoginDrawer=false">
         <font-awesome icon="chevron-left" />
       </v-btn>
     </div>
@@ -10,7 +10,7 @@
     <v-divider />
     
     <BlockSignup v-if="showSignup" @authenticate="handleAuthenticateCart" />
-    <BlockLogin v-else @authenticate="handleAuthenticateCart" />
+    <BlockLogin v-else @show-signup="showSignup=true" @authenticate="handleAuthenticateCart" />
   </v-navigation-drawer>
 </template>
 

@@ -44,10 +44,6 @@ import { useChangeCase } from '@vueuse/integrations/useChangeCase'
 import { useScroll } from '@vueuse/core'
 import type { Product } from '~/types'
 
-const AsyncFeed = defineAsyncComponent({
-  loader: async () => import('@/components/products/AsyncFeed.vue')
-})
-
 const route = useRoute()
 const productsLoading = ref(true)
 const products = ref<Product[]>([])
@@ -61,6 +57,11 @@ useHead({
       content: ''
     }
   ]
+})
+
+const AsyncFeed = defineAsyncComponent({
+  loader: async () => import('~/components/products/Feed.vue'),
+  timeout: 10000
 })
 
 provide('productsLoading', productsLoading)

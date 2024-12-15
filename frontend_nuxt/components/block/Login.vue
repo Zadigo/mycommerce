@@ -27,7 +27,7 @@
 
           <p class="flex-grow text-center fw-light mt-3">
             {{ $t('No account signup text') }} 
-            <a :href="signupUrl" target="_blank" rel="noopener noreferrer">
+            <a href="#" @click.prevent="emit('show-signup')">
               {{ $t("Inscris-toi") }}
             </a>
           </p>
@@ -40,7 +40,6 @@
 <script setup lang="ts">
 import { useSessionStorage } from '@vueuse/core'
 
-const route = useRoute()
 const authenticationStore = useAuthentication()
 const authenticatedCart = useSessionStorage('authenticated_cart', false)
 
@@ -48,21 +47,12 @@ const { signInWithGoogle } = useGoogleAuth()
 const { login, email, password } = useAuthencationComposable()
 
 const emit = defineEmits({
+  'show-signup' () {
+    return true
+  },
   authenticate () {
     return true
   }
-})
-
-/**
- * TODO: Returns the Django signup url that will be
- * used to create a new user
- */
-const signupUrl = computed((): string => {
-  const url = import.meta.env.VITE_DEVELOPMENT_SIGNUP_URL
-  const query = new URLSearchParams()
-
-  query.append('c', route.path)
-  return url + `?${query}`
 })
 
 /**
