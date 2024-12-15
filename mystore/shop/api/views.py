@@ -4,7 +4,7 @@ import pandas
 import spacy
 from django.db.models import Case, Q, When
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework import generics
 from rest_framework.mixins import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -12,7 +12,7 @@ from shop.api import CustomPagination, serializers
 from shop.models import Product
 
 
-class ListProducts(ListAPIView):
+class ListProducts(generics.ListAPIView):
     """List the products in the database and accepts
     a set of query parameters that can be used to
     filter the elements by type:
@@ -62,7 +62,7 @@ class ListProducts(ListAPIView):
         return queryset
 
 
-class GetProduct(RetrieveAPIView):
+class GetProduct(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = serializers.ProductSerializer
 
@@ -80,7 +80,7 @@ class GetProduct(RetrieveAPIView):
         return Response(data)
 
 
-class ListRecommendations(ListAPIView):
+class ListRecommendations(generics.ListAPIView):
     """This endpoint allows the pages that require displaying
     a set of recommended products to be called by passing a
     quantity of items to be displayed. Recommendations are
@@ -197,7 +197,7 @@ class ListRecommendations(ListAPIView):
                 return products[:quantity]
 
 
-class LikedProductsView(ListAPIView):
+class LikedProductsView(generics.ListAPIView):
     serializer_class = serializers.LikeSerializer
     queryset = Product.objects.all()
     permission_classes = [AllowAny]
