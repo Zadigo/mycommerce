@@ -1,14 +1,9 @@
 <template>
   <div id="product-aside" ref="productAside" class="position-relative">
     <!-- Information -->
-    <h1 class="h3" aria-label="Product name">
+    <h1 :aria-label="product?.name" class="h3">
       {{ product?.name }}
     </h1>
-
-    <!-- Reference -->
-    <p class="fw-light text-body-secondary mb-2" aria-label="Product color and reference">
-      {{ product?.color }} · Ref. 0623/152/505
-    </p>
 
     <!-- Price -->
     <BaseSkeleton :loading="isLoading" class="mb-3" width="50px">
@@ -22,9 +17,9 @@
         </span>
 
         <span>
-          <strike>
+          <s>
             {{ translatePrice(product?.unit_price) }}
-          </strike>
+          </s>
         </span>
       </p>
 
@@ -42,6 +37,11 @@
       </div>
     </div>
 
+    <!-- Reference -->
+    <p class="fw-light text-body-secondary mb-2" aria-label="Product color and reference">
+      {{ product?.color }} · Ref. 0623/152/505
+    </p>
+
     <hr class="my-4 text-body-tertiary">
 
     <!-- Sizes -->
@@ -55,18 +55,18 @@
       </a>
     </div>
 
-    <transition id="choose-size" tag="div" name="opacity">
+    <Transition id="choose-size" tag="div" name="opacity">
       <p v-if="showSizeSelectionWarning" class="text-danger fs-6 fw-light mb-1">
         {{ $t("Tu dois sélectionner une taille") }}
       </p>
-    </transition>
+    </Transition>
 
     <div class="actions d-flex justify-content-start gap-1 my-4">
       <button id="btn-add-to-cart" type="button" class="btn btn-primary btn-lg shadow-none btn-rounded" aria-label="Add to cart" @click="handleAddToCart">
         {{ $t('Ajouter au panier') }}
       </button>
 
-      <button type="button" class="btn btn-lg shadow-none btn-rounded btn-light" aria-label="Like product" @click="handleLike(product)">
+      <button type="button" class="btn btn-lg shadow-none btn-rounded btn-light" aria-label="Like product" @click="proxyHandleLike(product)">
         <font-awesome v-if="isLiked" :icon="['fas', 'heart']" />
         <font-awesome v-else :icon="['far', 'heart']" />
       </button>
@@ -87,12 +87,6 @@
 import { useLocalStorage, useSessionStorage } from '@vueuse/core';
 import type { PropType } from 'vue'
 import type { CartUpdateAPIResponse, Product } from '~/types';
-
-const { showAddedProductDrawer } = storeToRefs(useCart())
-
-const { translatePrice, isLiked, handleLike } = useShopComposable()
-const { mediaPath } = useDjangoUtilies()
-const { showSizeSelectionWarning, addToCart, userSelection } = useCartComposable()
 
 const props = defineProps({
   isLoading: {
@@ -115,6 +109,12 @@ const emit = defineEmits({
   }
 })
 
+const { showAddedProductDrawer } = storeToRefs(useCart())
+
+const { translatePrice, isLiked, handleLike } = useShopComposable()
+const { mediaPath } = useDjangoUtilies()
+const { showSizeSelectionWarning, addToCart, userSelection } = useCartComposable()
+
 const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
   deep: true,
   serializer: {
@@ -128,7 +128,6 @@ const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
 })
 
 const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
-  deep: true,
   serializer: {
     read (raw) {
       return JSON.parse(raw)
@@ -139,7 +138,6 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
   }
 })
 
-// const showSizeGuideDrawer = ref(false)
 const productAside = ref<HTMLElement>()
 
 provide('userSelection', userSelection)
@@ -169,6 +167,17 @@ function handleSizeSelection (size: string | number | null | undefined) {
   userSelection.value.size = size
 }
 
+// FIXME: The handle like sequence does not work properly. Maybe
+// we need to create a $subscribe on the store in order to sync the
+// elements from the store to the local storage
+async function proxyHandleLike (product: Product | null) {
+  if (product) {
+    const result = await handleLike(product)
+    console.info(result)
+    likedProducts.value = result
+  }
+}
+
 /**
  * Handles the action of adding a product
  * to the current user's cart. Products that
@@ -180,17 +189,8 @@ async function handleAddToCart () {
     addToCart(props.product, null, (data) => {
       showAddedProductDrawer.value = true
       cart.value = data
-    }, (data) => {
-      const accessToken = useCookie('access')
-      const refreshToken = useCookie('refresh')
-
-      accessToken.value = data.access
-      refreshToken.value = data.refresh
-
-      addToCart(props.product, null, (cartData) => {
-        showAddedProductDrawer.value = true
-        cart.value = cartData
-      })
+    }, (error) => {
+      console.log('handleAddToCart', error)
     })
   }
 }

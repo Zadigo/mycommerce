@@ -1,5 +1,4 @@
 import { AxiosError } from "axios";
-import { useAxiosClient } from '@/composables/utils'
 import type { CartUpdateAPIResponse, LoginAPIResponse, Product, UserSelection } from "~/types";
 
 type FunctionCallback = (data: CartUpdateAPIResponse) => void
@@ -14,6 +13,7 @@ type FunctionCallback = (data: CartUpdateAPIResponse) => void
  */
 export function useCartComposable () {
     const { $client, vueApp } = useNuxtApp()
+    const { handleError } = useErrorHandler()
     const userSelection = ref<UserSelection>({
         id: null,
         size: null,
@@ -33,7 +33,7 @@ export function useCartComposable () {
             return null
         }
     })
-
+    
     /**
      * Adds a product to the customer's cart when the
      * the product size or other caracteristics are
@@ -62,8 +62,6 @@ export function useCartComposable () {
             const response = await $client.post('/cart/add', userSelection.value)
 
             if (response.status === 201) {
-                cartStore.updateCart(response.data)
-                
                 if (callback && typeof callback === 'function') {
                     callback.call(vueApp, response.data)
                 }
@@ -71,21 +69,11 @@ export function useCartComposable () {
                 console.log(response.data)
             }
         } catch (e) {
-            if (e instanceof AxiosError && e.response) {
-                if (e.status === 401) {
-                    // If the user tries to add a product in his basket
-                    // but in between the access token has expired,
-                    // just refresh it as opposed to forcing a login
-                    const { createClient } = useAxiosClient()
-                    const authClient = createClient('/auth/v1/')
-                    const refreshToken = useCookie('refresh')
-                    const response = await authClient.post('token/refresh/', {
-                        refresh: refreshToken.value
-                    })
+            handleError(e)
 
-                    if (authCallback && typeof authCallback === 'function') {
-                        authCallback.call(vueApp, response.data)
-                    }
+            if (e instanceof AxiosError && e.response) {
+                if (authCallback) {
+                    authCallback(e.response.data)
                 }
             }
         }
@@ -105,10 +93,11 @@ export function useCartComposable () {
                 }
             }
         } catch (e) {
+            handleError(e)
+
             if (e instanceof AxiosError && e.response) {
-                if (e.status === 401) {
-                    const { refresh } = useAuthencationComposable()
-                    await refresh(authCallback)
+                if (authCallback) {
+                    authCallback(e.response.data)
                 }
             }
         }

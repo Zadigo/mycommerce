@@ -1,6 +1,5 @@
 <template>
   <section id="product" class="container-fluid px-0 mb-5" style="margin-top: 59px;">
-    <!-- Product -->
     <!-- Two blocks images -->
     <div class="row gy-1 gx-3">
       <div class="col-8">
@@ -30,10 +29,6 @@
       <component :is="imageComponent" :images="product?.images" />
     </div>
 
-    <!-- Modals -->
-    <ModalsImageZoom :show="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" @close="handleCloseSelection" />
-    <ModalsSizeGuide :product="product" :show-modal="showSizeGuideDrawer" @close="showSizeGuideDrawer=false" />
-
     <!-- More Products -->
     <div ref="moreProductsIntersect" class="row g-1 my-5">
       <div id="more-products" class="col-12">
@@ -48,6 +43,10 @@
         </Suspense>
       </div>
     </div>
+
+    <!-- Modals -->
+    <ModalsImageZoom :show="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" @close="handleCloseSelection" />
+    <ModalsSizeGuide :product="product" :show-modal="showSizeGuideDrawer" @close="showSizeGuideDrawer=false" />
   </section>
 </template>
 

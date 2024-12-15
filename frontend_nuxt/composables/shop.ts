@@ -34,10 +34,13 @@ export function useShopComposable () {
      * and therefore adding it to the user's
      * wishlist
      */
-    async function handleLike(product: Product | null | undefined) {
+    async function handleLike(product: Product | null | undefined): Promise<number[]> {
         if (product) {
             isLiked.value = !isLiked.value
             shopStore.updateWishlist(product)
+            return shopStore.likedProducts
+        } else {
+            return []
         }
     }
 

@@ -36,8 +36,9 @@ export const useShop =  defineStore('shop', () => {
 
     function updateWishlist (product: Product | undefined) {
         if (product) {
-            const { save } = useListManager()
+            const { managedList, save } = useListManager()
             save(likedProducts, product.id)
+            likedProducts.value = managedList.value
         }
     }
 
