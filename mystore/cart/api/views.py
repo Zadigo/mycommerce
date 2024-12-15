@@ -4,12 +4,8 @@ from cart.managers import SessionManager
 from cart.models import Cart
 from django.db.models import F, Q
 from django.shortcuts import get_list_or_404
-from drf_spectacular.utils import extend_schema
-from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework import generics, status
 from rest_framework.exceptions import NotFound
-from rest_framework.generics import (CreateAPIView, DestroyAPIView,
-                                     ListAPIView, UpdateAPIView)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -31,7 +27,7 @@ class CartMixin:
         return items
 
 
-class ListCartsView(ListAPIView):
+class ListCartsView(generics.ListAPIView):
     """Returns all the carts in the current shop
     that were created by the users (authenticated
     and none authenticated ones)"""
@@ -41,7 +37,7 @@ class ListCartsView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
 
-class ListCartView(ListAPIView):
+class ListCartView(generics.ListAPIView):
     """Return all items that were saved
     in the specific user's cart"""
 
@@ -69,7 +65,7 @@ class ListCartView(ListAPIView):
 
 
 # TODO: Test this class
-class DeleteFromCart(DestroyAPIView):
+class DeleteFromCart(generics.DestroyAPIView):
     """Delete a set of objects from the cart"""
 
     permission_classes = [AllowAny]
@@ -103,7 +99,7 @@ class DeleteFromCart(DestroyAPIView):
         return queryset.filter(logic)
 
 
-class AddToCartView(CreateAPIView):
+class AddToCartView(generics.CreateAPIView):
     """Add a product to the cart. This allows the customer
     to add products being anonymous or logged in. In the
     first case, it returns a `session_id` used to identify
@@ -127,23 +123,27 @@ class AddToCartView(CreateAPIView):
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-@api_view(['post'])
-@permission_classes([AllowAny])
-def authenticate_user_cart(request, **kwargs):
+class AuthenticateUserCart(generics.GenericAPIView):
     """Allows us to authenticate the items in the
     user's cart once they are logged in. This gets
     triggered only in the case where the user
     has started adding items when he was not
     authenticated and then authenticates for
     the payment process"""
-    session_id = request.data.get('session_id', None)
-    if session_id is not None and request.user.is_authenticated:
-        queryset = Cart.objects.filter(session_id=session_id)
-        queryset.update(user=request.user, is_anonymous=~F('is_anonymous'))
-    return Response({'status': True})
+
+    queryset = Cart.objects.all()
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        session_id = request.data.get('session_id', None)
+        if session_id is not None and request.user.is_authenticated:
+            # queryset = Cart.objects.filter(session_id=session_id)
+            queryset = super().get_queryset().filter(session_id=session_id)
+            queryset.update(user=request.user, is_anonymous=~F('is_anonymous'))
+        return Response(status=status.HTTP_200_OK)
 
 
-class UpdateInCartView(CartMixin, UpdateAPIView):
+class UpdateInCartView(CartMixin, generics.UpdateAPIView):
     """Update item in cart (quantity, size...)"""
 
     serializer_class = ValidateCart
@@ -180,7 +180,7 @@ class UpdateInCartView(CartMixin, UpdateAPIView):
         return Response(data=data)
 
 
-class DeleteFromCart(DestroyAPIView):
+class DeleteFromCart(generics.DestroyAPIView):
     """Delete one or multiple products
     from the user cart"""
 
@@ -236,7 +236,7 @@ class DeleteFromCart(DestroyAPIView):
         return Response(data=data, status=status.HTTP_204_NO_CONTENT)
 
 
-class CreateSessionID(CreateAPIView):
+class CreateSessionID(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):

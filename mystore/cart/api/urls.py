@@ -27,7 +27,7 @@ urlpatterns = [
     ),
     re_path(
         r'^authenticate$',
-        views.authenticate_user_cart,
+        views.AuthenticateUserCart.as_view(),
         name='authenticate_cart'
     ),
     re_path(
