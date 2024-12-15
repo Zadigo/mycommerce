@@ -65,11 +65,7 @@ const emit = defineEmits({
   }
 })
 
-const gridSize = useCookie('gridSize', {
-  default () {
-    return 3
-  }
-})
+const gridSize = ref(3)
 const productsLoading = inject<boolean>('productsLoading')
 
 const productCategories = computed(() => {

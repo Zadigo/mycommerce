@@ -1,9 +1,9 @@
 <template>
-  <TransitionGroup name="opacity">
-    <div v-for="product in products" :key="product.id" :class="gridClass">
-      <ProductCard :product="product" :show-like-button="showLikeButton" />
-    </div>
-  </TransitionGroup>
+  <div v-for="product in products" :key="product.id" :class="gridClass">
+    <ProductCard :product="product" :show-like-button="showLikeButton" />
+  </div>
+  <!-- <TransitionGroup name="opacity">
+  </TransitionGroup> -->
 </template>
 
 <script setup lang="ts">
