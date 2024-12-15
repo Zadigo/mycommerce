@@ -52,19 +52,8 @@
 
 <script lang="ts" setup>
 import { useLocalStorage } from '@vueuse/core'
-// import { z } from 'zod'
 import type { ConcreteComponent } from 'vue'
 import type { Product, ProductStock } from '~/types'
-
-// const ProductSchema = z.object({
-//   id: z.number(),
-//   name: z.string()
-// })
-
-// type _Product = z.infer<typeof ProductSchema>
-
-// const testA = ref<_Product>()
-// testA.value?.name
 
 const ProductDetailsFiveImages = resolveComponent('ProductDetailsFiveImages')
 const ProductDetailsSixImages = resolveComponent('ProductDetailsSixImages')
@@ -84,7 +73,6 @@ function useProductDetails () {
   const { data, status } = useFetch<Product>(`/api/products/${route.params.id}`, {
     method: 'GET'
   })
-  // const product = ref<Product | null>(data.value)
   const product = computed(() => data.value)
   const isLoading = computed(() => status.value !== 'success' && product.value === null)
 
@@ -150,6 +138,9 @@ const { product, isLoading } = useProductDetails()
 const { trackProduct } = useVisitedProducts(product)
 const { requestProductStock } = useProductSotck(product)
 const { showModal, selectedImage, handleSelectedImage, handleCloseSelection } = useImages()
+const { gtag } = useGtag()
+
+const shopStore = useShop()
 const showSizeGuideDrawer = ref(false)
 
 /**
@@ -179,5 +170,20 @@ onBeforeMount(() => {
 
 onMounted(async () => {
   await requestProductStock()
+
+  if (product.value) {
+    gtag('event', 'view_item', {
+      items: [
+        {
+          item_id: product.value.id,
+          item_name: product.value.name,
+          price: product.value.get_price,
+          item_brand: null,
+          item_category: product.value.category,
+          index: shopStore.currentProductIndex
+        }
+      ]
+    })
+  }
 })
 </script>

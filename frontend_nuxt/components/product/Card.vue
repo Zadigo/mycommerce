@@ -1,6 +1,6 @@
 <template>
-  <article v-if="product" :data-id="product.id" :aria-label="product.name" class="card shadow-none rounded-0" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
-    <NuxtLink :to="`/shop/${product.id}`">
+  <article v-if="product" :data-id="product.id" :aria-label="product.name" class="card shadow-none rounded-0" @mouseenter="isHovered=true" @mouseleave="isHovered=false">
+    <NuxtLink :to="`/shop/${product.id}`" @click="emit('navigate', [index, product])">
       <NuxtImg :src="mediaPath(product.get_main_image?.original, '/placeholder.svg')" class="card-img rounded-0" />
     </NuxtLink>
 
@@ -32,7 +32,7 @@
     </button>
 
     <!-- Infos -->
-    <NuxtLink v-show="showPrices" :to="`/shop/${product.id}`" class="link-dark">
+    <NuxtLink v-show="showPrices" :to="`/shop/${product.id}`" class="link-dark" @click="emit('navigate', [index, product])">
       <div class="card-body pt-0 px-2 pb-0">
         <p id="product-name" class="mb-0 mt-1 fw-light" :aria-label="product.name">
           {{ product.name }}
@@ -59,6 +59,11 @@ import type { PropType } from 'vue';
 import type { Product } from '~/types';
 
 const props = defineProps({
+  index: {
+    type: Number,
+    required: false,
+    default: null
+  },
   product: {
     type: Object as PropType<Product | undefined>,
     required: true
@@ -77,7 +82,14 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits({
+  navigate(_data: (number | Product)[]) {
+    return true
+  }
+})
+
 const cartStore = useCart()
+
 const { showAddedProductDrawer } = storeToRefs(cartStore)
 const { isLiked } = useShopComposable()
 const { addToCart } = useCartComposable()

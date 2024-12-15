@@ -5,6 +5,11 @@ export const useShop =  defineStore('shop', () => {
     const showLanguageModal = ref(false)
     const visitedProducts = ref<number[]>([])
     const likedProducts = ref<number[]>([])
+    
+    // This references the index of the product that
+    // was clicked within a given list of items. This
+    // is for Google Analytics
+    const currentProductIndex = ref<number>(0)
 
     /**
      * Returns the number of products that
@@ -43,6 +48,7 @@ export const useShop =  defineStore('shop', () => {
     }
 
     return {
+        currentProductIndex,
         addToHistory,
         updateWishlist,
         showSearchModal,

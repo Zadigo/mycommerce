@@ -1,6 +1,6 @@
 <template>
-  <div v-for="product in products" :key="product.id" :class="gridClass">
-    <ProductCard :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" />
+  <div v-for="(product, i) in products" :key="product.id" :class="gridClass">
+    <ProductCard :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @navigate="handleNavigation" />
   </div>
   <!-- <TransitionGroup name="opacity">
   </TransitionGroup> -->
@@ -33,9 +33,19 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits({
+  navigate(_data: (number | Product)[] | null | undefined) {
+    return true
+  }
+})
+
 const gridClass = computed(() => {
   return {
     [`col-md-${props.columns} col-sm-6`]: true
   }
 })
+
+function handleNavigation(data: (number | Product)[] | null | undefined) {
+  emit('navigate', data)
+}
 </script>

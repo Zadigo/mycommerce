@@ -6,7 +6,7 @@
 
     <template #default>
       <!-- Products -->
-      <ProductsIterator :products="products" :columns="currentGridSize" />
+      <ProductsIterator :products="products" :columns="currentGridSize" @navigate="handleNavigation" />
 
       <!-- Intersect -->
       <div ref="intersectionTarget" class="fw-bold text-uppercase d-flex justify-content-center mt-5">
@@ -49,6 +49,7 @@ const { $client } = useNuxtApp()
 const { scrollToTop } = useUtilities()
 const { builLimitOffset } = useDjangoUtilies()
 const { handleError } = useErrorHandler()
+const { gtag } = useGtag()
 
 const isLoadingMoreProducts = ref(false)
 const offsetsList = ref<(string | number)[]>([])
@@ -115,6 +116,30 @@ const totalProductCount = computed(() => {
     return 0
   }
 })
+
+function handleNavigation (data: (number | Product)[] | null | undefined) {
+  if (data) {
+    const product = data[1]
+
+    if (product && typeof product === 'object' && 'id' in product) {
+      gtag('event',  'select_item',  {
+        items: [
+          {
+            item_id: product.id,
+            item_name: product.name,
+            price: product.get_price,
+            item_brand: null,
+            item_category: product.category,
+            index: data[0]
+          }
+        ],
+        item_list_name: route.params.id,
+        item_list_id: route.params.id,
+        currency: 'EUR'
+      })
+    }
+  }
+}
 
 function handleGridSize(grid: number) {
   currentGridSize.value = grid

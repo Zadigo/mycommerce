@@ -114,6 +114,7 @@ const { showAddedProductDrawer } = storeToRefs(useCart())
 const { translatePrice, isLiked, handleLike } = useShopComposable()
 const { mediaPath } = useDjangoUtilies()
 const { showSizeSelectionWarning, addToCart, userSelection } = useCartComposable()
+const { gtag } = useGtag()
 
 const cartStorage = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
   deep: true,
@@ -191,6 +192,24 @@ async function handleAddToCart () {
       cartStorage.value = data
       cartStore.cache = data
       showAddedProductDrawer.value = true
+
+      gtag('event', 'add_to_cart',  {
+        currency: 'EUR',
+        value: props.product?.get_price,
+        items: [
+          {
+            item_id: props.product?.id,
+            item_name: props.product?.name,
+            price: props.product?.get_price,
+            quantity: 1,
+            item_brand: null,
+            item_category: props.product?.category,
+            item_variant: props.product?.color,
+            index: 0,
+            size: userSelection.value.size
+          }
+        ]
+      })
     }, (error) => {
       // FIXME: Error is not LoginAPIResponse so change
       // the ts to fit the correct error response

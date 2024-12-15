@@ -5,7 +5,7 @@
     </h2>
 
     <div ref="productsRow" class="row g-1">
-      <ProductsIterator :products="recommendations" :columns="columns" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" />
+      <ProductsIterator :products="recommendations" :columns="columns" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @navigate="handleNavigation" />
     </div>
   </div>
 </template>
@@ -46,10 +46,36 @@ const props = defineProps({
 })
 
 const route = useRoute()
-const recommendations = ref<Product[]>([])
-const productsRow = ref<HTMLElement>()
 const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
+const { gtag } = useGtag()
+
+const recommendations = ref<Product[]>([])
+const productsRow = ref<HTMLElement>()
+
+function handleNavigation (data: (number | Product)[] | null | undefined) {
+  if (data) {
+    const product = data[1]
+
+    if (product && typeof product === 'object' && 'id' in product) {
+      gtag('event',  'select_item',  {
+        items: [
+          {
+            item_id: product.id,
+            item_name: product.name,
+            price: product.get_price,
+            item_brand: null,
+            item_category: product.category,
+            index: data[0]
+          }
+        ],
+        item_list_name: 'recommendations',
+        item_list_id: 'recommendations',
+        currency: 'EUR'
+      })
+    }
+  }
+}
 
 async function requestRecommendations () {
   try {
