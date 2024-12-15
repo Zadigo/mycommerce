@@ -77,9 +77,9 @@ async function handleLogin () {
     accessToken.value = data.access
     refreshToken.value = data.refresh
 
-    authenticationStore.showLoginDrawer = false
     authenticationStore.accessToken = accessToken.value
     authenticationStore.refreshToken = accessToken.value
+    authenticationStore.showLoginDrawer = false
     
     if (!authenticatedCart.value) {
       // When the user logs, we know from the start that the
