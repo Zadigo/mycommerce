@@ -41,11 +41,6 @@
 <script setup lang="ts">
 import type { Product } from '~/types'
 
-const sortingOptions = [
-  'Prix croissant',
-  'Prix décroissant'
-]
-
 const props = defineProps({
   products: {
     type: Array as PropType<Product[]>,
@@ -70,7 +65,11 @@ const emit = defineEmits({
   }
 })
 
-const gridSize = ref(4)
+const gridSize = useCookie('gridSize', {
+  default () {
+    return 3
+  }
+})
 const productsLoading = inject<boolean>('productsLoading')
 
 const productCategories = computed(() => {

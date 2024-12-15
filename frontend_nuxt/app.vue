@@ -65,10 +65,7 @@ provide('documentVisible', documentVisible)
 //   immediate: true
 // })
 
-// TODO: When the user lands on the page, request a unique
-// cart-session token directly instead of waiting for when
-// they add an item to their cart in order to do so --; do
-// this is there is no cart-session token in the SessionStorage
+// TODO: Use cookie or session?
 async function requestSessionId () {
   try {
     if (!cookieSessionId.value) {
