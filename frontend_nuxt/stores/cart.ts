@@ -1,8 +1,22 @@
 import { defineStore } from 'pinia'
 import type { CartItem, CartUpdateAPIResponse, Product } from '~/types'
 
+interface RequestData {
+    session_id: string | null
+    card_token: string | null
+    firstname: string | null
+    lastname: string | null
+    email: string | null
+    telephone: string | null
+    address_line: string | null
+    zip_code: string | null
+    country: string | null
+    city: string | null
+    delivery: 'Chronopost'
+}
+
 export const useCart = defineStore('cart', () => {
-    const requestData  = ref({
+    const requestData = ref<RequestData>({
         session_id: null,
         card_token: null,
         firstname: null,
@@ -21,8 +35,12 @@ export const useCart = defineStore('cart', () => {
     const showEditProductDrawer = ref(false)
     const showCartDrawer = ref(false)
 
+    const cookieSessionId = useCookie('sessionId')
+
     const sessionId = computed(() => {
-        return cache.value?.session_id
+        // TODO: Remove the getting the session_id from the
+        // cache since we have it directly from the cookie?
+        return cache.value?.session_id || cookieSessionId.value
     })
 
     const products = computed(() => {

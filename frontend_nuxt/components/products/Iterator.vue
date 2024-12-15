@@ -1,6 +1,6 @@
 <template>
   <div v-for="product in products" :key="product.id" :class="gridClass">
-    <ProductCard :product="product" :show-like-button="showLikeButton" />
+    <ProductCard :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" />
   </div>
   <!-- <TransitionGroup name="opacity">
   </TransitionGroup> -->
@@ -20,6 +20,14 @@ const props = defineProps({
     default: 3
   },
   showLikeButton: {
+    type: Boolean,
+    default: true
+  },
+  showCart: {
+    type: Boolean,
+    default: true
+  },
+  showPrices: {
     type: Boolean,
     default: true
   }

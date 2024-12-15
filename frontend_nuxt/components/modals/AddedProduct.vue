@@ -42,19 +42,7 @@
           </div>
           
           <!-- Recommendations -->
-          <BaseRecommendations :quantity="20" :columns="2" />
-          <!-- TODO: Iterate products -->
-          <!-- <h4 class="text-center h5">
-            {{ $t('Autres produits') }}
-          </h4>
-
-          <div class="row gx-1 gy-1 products-wrapper">
-            <div v-for="i in 10" :key="i" class="col-4">
-              <NuxtLink :to="`shop/${i}`" class="link-dark">
-                <v-img src="/img7.jpeg" alt="" class="img-fluid" />
-              </NuxtLink>
-            </div>
-          </div> -->
+          <BaseRecommendations :quantity="20" :columns="3" :show-like-button="false" :show-cart="false" :show-prices="false" />
         </div>
 
         <div v-else class="col-12">
@@ -72,16 +60,13 @@
   </v-navigation-drawer>
 </template>
 
-<script lang="ts" setup>
-import { useSessionStorage } from '@vueuse/core';
-
+<script setup lang="ts">
 const cartStore = useCart()
-const { lastAddedProduct, showAddedProductDrawer, showCartDrawer, hasProducts } = storeToRefs(cartStore)
-
-const { mediaPath } = useDjangoUtilies()
-
 const authenticationStore = useAuthentication()
 const router = useRouter()
+
+const { lastAddedProduct, showAddedProductDrawer, showCartDrawer, hasProducts } = storeToRefs(cartStore)
+const { mediaPath } = useDjangoUtilies()
 
 /**
  * Handles the situation where the user tries

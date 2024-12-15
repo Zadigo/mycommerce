@@ -5,7 +5,7 @@
     </h2>
 
     <div ref="productsRow" class="row g-1">
-      <ProductsIterator :products="recommendations" :columns="columns" />
+      <ProductsIterator :products="recommendations" :columns="columns" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" />
     </div>
   </div>
 </template>
@@ -30,6 +30,18 @@ const props = defineProps({
   columns: {
     type: Number,
     default: 3
+  },
+  showLikeButton: {
+    type: Boolean,
+    default: false
+  },
+  showCart: {
+    type: Boolean,
+    default: true
+  },
+  showPrices: {
+    type: Boolean,
+    default: true
   }
 })
 

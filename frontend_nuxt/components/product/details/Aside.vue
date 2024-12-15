@@ -115,7 +115,7 @@ const { translatePrice, isLiked, handleLike } = useShopComposable()
 const { mediaPath } = useDjangoUtilies()
 const { showSizeSelectionWarning, addToCart, userSelection } = useCartComposable()
 
-const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
+const cartStorage = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
   deep: true,
   serializer: {
     read (raw) {
@@ -138,6 +138,7 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
   }
 })
 
+const cartStore = useCart()
 const productAside = ref<HTMLElement>()
 
 provide('userSelection', userSelection)
@@ -187,10 +188,13 @@ async function proxyHandleLike (product: Product | null) {
 async function handleAddToCart () {
   if (props.product) {
     addToCart(props.product, null, (data) => {
+      cartStorage.value = data
+      cartStore.cache = data
       showAddedProductDrawer.value = true
-      cart.value = data
     }, (error) => {
-      console.log('handleAddToCart', error)
+      // FIXME: Error is not LoginAPIResponse so change
+      // the ts to fit the correct error response
+      console.error('handleAddToCart', error)
     })
   }
 }
