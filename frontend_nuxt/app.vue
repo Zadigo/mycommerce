@@ -37,6 +37,8 @@ const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
   }
 })
 
+const currentLanguage = useSessionStorage<'en' | 'fr' | 'es'>('language', null)
+
 const shopStore = useShop()
 const authenticationStore = useAuthentication()
 const cartStore = useCart()
@@ -44,12 +46,9 @@ const cartStore = useCart()
 const accessToken = useCookie('access')
 const refreshToken = useCookie('refresh')
 
-const currentLanguage = useSessionStorage<'en' | 'fr' | 'es'>('language', null)
-
 const { value } = useMediaQuery('(min-width: 320px)')
 const { isSupported } = useScreenOrientation()
 const documentVisible = useDocumentVisibility()
-
 
 provide('isMobile', value)
 provide('screenOrientation', isSupported)

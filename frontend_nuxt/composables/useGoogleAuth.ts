@@ -30,9 +30,9 @@ export function useGoogleAuth () {
 
             // Optional: Set cookies or local storage
             setCookie('auth_token', response.data.token)
-        } catch (err) {
-            console.error('Backend authentication failed', err)
-            throw err
+        } catch (e) {
+            console.error('Backend authentication failed', e)
+            throw e
         }
     }
 
@@ -43,7 +43,7 @@ export function useGoogleAuth () {
 
         try {
             const { signInWithPopup } = await import('firebase/auth')
-            const result = await signInWithPopup($auth, googleProvider.value!)
+            const result = await signInWithPopup($auth as Auth, googleProvider.value!)
 
             // Get the ID token
             const idToken = await result.user.getIdToken()
@@ -53,9 +53,9 @@ export function useGoogleAuth () {
 
             user.value = result.user
             return result.user
-        } catch (err) {
-            error.value = err
-            throw err
+        } catch (e) {
+            error.value = e
+            throw e
         }
     }
 
@@ -73,8 +73,8 @@ export function useGoogleAuth () {
             authStore.clearUser()
 
             user.value = null
-        } catch (err) {
-            console.error('Logout failed', err)
+        } catch (e) {
+            console.error('Logout failed', e)
         }
     }
 

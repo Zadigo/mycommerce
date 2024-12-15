@@ -1,31 +1,6 @@
-/**
- * Nuxt Axios Plugin
- * 
- * This plugin integrates Axios into Nuxt templates, providing an HTTP client 
- * accessible globally within the Nuxt application via `$client`
- * 
- * Features:
- * - Configures a default Axios client with base headers, including `Authorization`.
- * - Adds request and response interceptors:
- *   - **Request Interceptor**: Attaches a `Token` header if an access token is found 
- *     in the cookies.
- *   - **Response Interceptor**: Passes successful responses or propagates errors.
- * 
- * Usage:
- * Inside Nuxt templates or composables, use the following pattern:
- * 
- * ```typescript
- * const { $client } = useNuxtApp();
- * $client.get('/api/resource').then(response => {
- *     console.log(response.data);
- * });
- * ```
- * 
- * Notes:
- * - Ensure `useCookie` is configured correctly to retrieve the `access` cookie.
- * - The `createClient` function should be defined and configured for Axios
- *   in the `useAxiosClient` composable or utility.
- */
+import type { AxiosInstance } from 'axios'
+import type { LoginAPIResponse } from "~/types"
+
 export default defineNuxtPlugin((nuxtApp) => {
     const { createClient } = useAxiosClient()
     const client = createClient()
@@ -48,7 +23,33 @@ export default defineNuxtPlugin((nuxtApp) => {
         (response) => {
             return response;
         },
-        (error) => {
+        async (error) => {
+            // Sequence that refreshes the access token when
+            // we get a 401 code trying to access a page
+
+            const originalRequest = error.config
+            const baseClient = nuxtApp.$client as AxiosInstance
+            
+            if (error.response.status === 401 && !originalRequest._retry) {
+                originalRequest._retry = true
+                
+                try {
+                    const authStore = useAuthentication()
+                    const authClient = createClient('/auth/v1/')
+                    const response = await authClient.post<LoginAPIResponse>('/token/refresh/', {
+                        refresh: authStore.refreshToken
+                    })
+                    originalRequest.headers.Authorization = `Token ${response.data.access}`
+                    return baseClient(originalRequest)
+                } catch (refreshError) {
+                    // FIXME: If the refresh fails, remove the access
+                    // and refresh from the cookie since these
+                    // would attempt to send authenticated requests
+                    // that would return a 401
+                    return Promise.reject(refreshError)
+                }
+            }
+
             return Promise.reject(error);
         }
     )
