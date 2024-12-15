@@ -1,12 +1,10 @@
-from accounts.api.views import EmailTokenObtainPairView
 from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
-from drf_spectacular.views import (SpectacularAPIView, SpectacularRedocView,
-                                   SpectacularSwaggerView)
+from drf_spectacular import views as drf_views
 from rest_framework_simplejwt import views as jwt_views
 
 from mystore import views
@@ -53,17 +51,17 @@ urlpatterns = [
     ),
     path(
         'api/schema/',
-        SpectacularAPIView.as_view(),
+        drf_views.SpectacularAPIView.as_view(),
         name='schema'
     ),
     path(
         'api/schema/swagger-ui/',
-        SpectacularSwaggerView.as_view(url_name='schema'),
+        drf_views.SpectacularSwaggerView.as_view(url_name='schema'),
         name='swagger-ui'
     ),
     path(
         'api/schema/redoc/',
-        SpectacularRedocView.as_view(url_name='schema'),
+        drf_views.SpectacularRedocView.as_view(url_name='schema'),
         name='redoc'
     ),
     path(
