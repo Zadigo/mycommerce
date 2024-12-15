@@ -45,7 +45,10 @@ const cartStore = useCart()
 
 const accessToken = useCookie('access')
 const refreshToken = useCookie('refresh')
+const cookieSessionId = useCookie('sessionId')
 
+const { $client } = useNuxtApp()
+const { handleError } = useErrorHandler()
 const { value } = useMediaQuery('(min-width: 320px)')
 const { isSupported } = useScreenOrientation()
 const documentVisible = useDocumentVisibility()
@@ -66,12 +69,23 @@ provide('documentVisible', documentVisible)
 // cart-session token directly instead of waiting for when
 // they add an item to their cart in order to do so --; do
 // this is there is no cart-session token in the SessionStorage
+async function requestSessionId () {
+  try {
+    if (!cookieSessionId.value) {
+      const response = await $client.post<{ token: string }>('/cart/session-id')
+      cookieSessionId.value = response.data.token
+    }
+  } catch (e) {
+    handleError(e)
+  }
+}
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   authenticationStore.accessToken = accessToken.value
   authenticationStore.refreshToken = refreshToken.value
   authenticationStore.profile = profile.value
   cartStore.cache = cart.value
+  await requestSessionId()
 })
 
 // TODO: Open the language modal when the user first
