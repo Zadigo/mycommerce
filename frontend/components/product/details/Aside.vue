@@ -114,7 +114,7 @@ const { showAddedProductDrawer } = storeToRefs(useCart())
 const { translatePrice, isLiked, handleLike } = useShopComposable()
 const { mediaPath } = useDjangoUtilies()
 const { showSizeSelectionWarning, addToCart, userSelection } = useCartComposable()
-const { $client, $fbq } = useNuxtApp()
+const { $client } = useNuxtApp()
 const { gtag } = useGtag()
 
 const cartStorage = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
@@ -192,14 +192,14 @@ async function proxyHandleLike () {
       item_reference: null
     })
 
-    $fbq('track', 'AddToCart', {
-      content_name: props.product.name,
-      content_category: props.product.category,
-      content_ids: [props.product.id],
-      content_type: 'product',
-      value: props.product.get_price,
-      currency: 'EUR'
-    })
+    // $fbq('track', 'AddToCart', {
+    //   content_name: props.product.name,
+    //   content_category: props.product.category,
+    //   content_ids: [props.product.id],
+    //   content_type: 'product',
+    //   value: props.product.get_price,
+    //   currency: 'EUR'
+    // })
   }
 }
 

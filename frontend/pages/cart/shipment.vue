@@ -64,7 +64,7 @@ const rules = {
 
 const { gtag } = useGtag()
 const { handleError } = useErrorHandler()
-const { $client, $fbq } = useNuxtApp()
+const { $client } = useNuxtApp()
 
 const paymentIntent = useLocalStorage<NewIntentAPIResponse>('payment_intent', null, {
   deep: true,

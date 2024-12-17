@@ -56,7 +56,7 @@ const shopStore = useShop()
 
 function useSearchProducts () {
   const { gtag } = useGtag()
-  const { $client, $fbq } = useNuxtApp()
+  const { $client } = useNuxtApp()
   const { handleError } = useErrorHandler()
     
   const search = ref<string | null>(null)
@@ -81,9 +81,9 @@ function useSearchProducts () {
           search_term: search.value
         })
 
-        $fbq('track', 'Search', {
-          search_string: search.value
-        })
+        // $fbq('track', 'Search', {
+        //   search_string: search.value
+        // })
 
         searchedProducts.value = response.data.results
       }

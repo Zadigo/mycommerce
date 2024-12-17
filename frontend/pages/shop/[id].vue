@@ -186,12 +186,12 @@ onMounted(async () => {
       ]
     })
 
-    $fbq('dataProcessingOptions', 'ViewContent', {
-      content_ids: product.value.id,
-      content_name: product.value.name,
-      content_type: 'product',
-      value: product.value.get_price
-    })
+    // $fbq('dataProcessingOptions', 'ViewContent', {
+    //   content_ids: product.value.id,
+    //   content_name: product.value.name,
+    //   content_type: 'product',
+    //   value: product.value.get_price
+    // })
   }
 })
 </script>

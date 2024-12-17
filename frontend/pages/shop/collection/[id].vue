@@ -67,7 +67,6 @@ const AsyncFeed = defineAsyncComponent({
 })
 
 provide('productsLoading', productsLoading)
-console.info(x.value)
 
 function handleLoadedProducts(data: Product[]) {
   productsLoading.value = false

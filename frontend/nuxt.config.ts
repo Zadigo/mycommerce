@@ -16,11 +16,11 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       // https://nuxt.com/modules/nuxt-meta-pixel
-      metapixel: {
-        default: {
-          id: '123'
-        }
-      },
+      // metapixel: {
+      //   default: {
+      //     id: '123'
+      //   }
+      // },
       // https://nuxt.com/modules/gtag
       gtag: {
         id: 'G-CVKFG2XPVG',
@@ -67,7 +67,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxtjs/i18n',
     'nuxt-gtag',
-    'nuxt-meta-pixel',
+    // 'nuxt-meta-pixel', // BUG: This raises an error with minimatch
     'nuxt-clarity-analytics',
     'nuxt-openapi-docs-module',
     'vuetify-nuxt-module',
@@ -99,10 +99,10 @@ export default defineNuxtConfig({
   //   id: 'G-XX'
   // },
   css: [
+    '@/assets/style.scss',
     '~/node_modules/bootstrap/dist/css/bootstrap.min.css',
     '~/node_modules/mdb-ui-kit/css/mdb.min.css',
     '~/node_modules/animate.css/animate.min.css',
-    '@/assets/style.scss'
   ],
   vuetify: {
     moduleOptions: {},
