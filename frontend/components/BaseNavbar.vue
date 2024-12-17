@@ -7,10 +7,11 @@
         </span>
       </NuxtLink>
       
-      <v-btn variant="tonal" color="dark" @click="shopStore.showSearchModal=true">
+      <v-btn class="ms-auto" variant="tonal" color="dark" rounded @click="shopStore.showSearchModal=true">
         Rechercher
       </v-btn>
-      <ul class="navbar-nav ms-auto">
+
+      <ul class="navbar-nav">
         <li class="nav-item">
           <a href="#" class="nav-link" @click.prevent="showCartDrawer=true">
             <font-awesome icon="shopping-bag" class="me-1" />
@@ -34,6 +35,7 @@
         
         <li v-show="authStore.isAuthenticated" class="nav-item">
           <NuxtLink to="/account/" class="nav-link">
+            <font-awesome icon="user" class="me-1" />
             {{ $t('Compte') }}
           </NuxtLink>
         </li>
