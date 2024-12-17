@@ -63,6 +63,8 @@ const AsyncBaseRecommendationBlock = defineAsyncComponent({
   timeout: 5000
 })
 
+const { $client, $fbq } = useNuxtApp()
+
 // Composable for product fetching
 function useProductDetails () {
   const route = useRoute()
@@ -85,7 +87,6 @@ function useProductDetails () {
 // Composable for stock management
 function useProductSotck (product: Ref<Product | null>) {
   const stockState = ref<ProductStock>()
-  const { $client } = useNuxtApp()
   const { handleError } = useErrorHandler()
 
   async function requestProductStock () {
@@ -183,6 +184,13 @@ onMounted(async () => {
           index: shopStore.currentProductIndex
         }
       ]
+    })
+
+    $fbq('dataProcessingOptions', 'ViewContent', {
+      content_ids: product.value.id,
+      content_name: product.value.name,
+      content_type: 'product',
+      value: product.value.get_price
     })
   }
 })

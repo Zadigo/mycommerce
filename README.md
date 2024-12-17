@@ -18,6 +18,7 @@ The Django backend implements all the backend API's for base functionnalities of
 2. Create a Stripe account for working/testing the cart [https://stripe.com/en-fr](Stripe)
 3. You also need an active Google Account in order to create the relevant keys for Google Authentication [https://developers.google.com/?hl=fr](Google for developers)
 4. Create a `.env` file in the `frontend` folder with all the relevant keys
+5. You also need to create a Google Analytics, Facebook Pixels and Microsoft Clarity accounts in order to use all the tracking possibilities proposed within the template
 
 ### Environment variables
 

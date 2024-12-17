@@ -36,7 +36,7 @@ useHead({
 })
 
 const cartStore = useCart()
-const { $client } = useNuxtApp()
+const { $client, $fbq } = useNuxtApp()
 const { gtag } = useGtag()
 
 const deliveryOptions = useLocalStorage<DeliveryOption[]>('delivery_options', null, {

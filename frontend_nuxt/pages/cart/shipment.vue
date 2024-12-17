@@ -64,7 +64,7 @@ const rules = {
 
 const { gtag } = useGtag()
 const { handleError } = useErrorHandler()
-const { $client } = useNuxtApp()
+const { $client, $fbq } = useNuxtApp()
 
 const paymentIntent = useLocalStorage<NewIntentAPIResponse>('payment_intent', null, {
   deep: true,
@@ -98,6 +98,8 @@ gtag('event', 'add_shipping_info', {
     }
   })
 })
+
+// $fbq('trackSingle', 'AddPaymentInfo', {})
 
 /**
  * Update an existing payment intent
