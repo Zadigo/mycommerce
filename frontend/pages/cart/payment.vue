@@ -112,7 +112,6 @@ const paymentIntent = useLocalStorage<NewIntentAPIResponse>('payment_intent', nu
 })
 
 const { gtag } = useGtag()
-const cart = useSessionStorage('cart', null)
 const router = useRouter()
 const stripeKey = ref(config.public.STRIPE_PUBLISHABLE_KEY)
 
@@ -141,12 +140,12 @@ async function handlePayment () {
     const response = await $client.post('orders/create', tokenData.value)
 
     paymentResponse.value = response.data
-    cartStore.cache = null
+    // cartStore.cache = null
+    // cart.value = null
     isLoading.value = false
     paymentIntent.value = null
-    cart.value = null
 
-    gtag('event', 'purchase', {
+    gtag('event', 'add_payment_info', {
       transaction_id: cartStore.sessionId,
       currency: 'EUR',
       tax: 20,
@@ -168,7 +167,7 @@ async function handlePayment () {
       })
     })
 
-    useTrackEvent('purchase', {
+    useTrackEvent('add_payment_info', {
       checkout_step: 3,
       currency: 'EUR',
       shipping: 1,

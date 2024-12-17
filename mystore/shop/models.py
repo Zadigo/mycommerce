@@ -218,7 +218,7 @@ class AbstractProduct(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['name', '-created_on']
+        ordering = ['-created_on']
         indexes = [
             models.Index(
                 condition=Q(on_sale=True),
