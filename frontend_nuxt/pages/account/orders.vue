@@ -54,4 +54,8 @@ definePageMeta({
     'auth'
   ]
 })
+
+const showFindOrder = ref(false)
+
+const hasOrders = computed(() => false)
 </script>

@@ -4,7 +4,7 @@
       Testing...
     </h1>
 
-    <button type="button" @click="w">
+    <button type="button">
       Press
     </button>
   </div>
