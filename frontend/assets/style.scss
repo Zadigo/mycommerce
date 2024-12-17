@@ -47,3 +47,9 @@ $factors: (
     cursor: zoom-in;
   }
 }
+
+.list-group-item {
+  &.router-link-active.router-link-exact-active {
+    background-color: rgba(0, 0, 0, 0.015);
+  }
+}

@@ -259,11 +259,11 @@ export function useAxiosClient () {
     /**
      * Helper function for creating variations of the baseURL
      */
-    function getBaseUrl(path = '/api/v1/', secure = false, port = '8000') {
-        let domain = `127.0.0.1:${port}`
+    function getBaseUrl(path = '/api/v1/', alternativeDomain?: string | null, port = '8000', secure = false) {
+        let domain = alternativeDomain || `127.0.0.1:${port}`
 
         if (process.env.DEV === 'production') {
-            domain = process.env.NUXT_DJANGO_PROD_URL || ''
+            domain = alternativeDomain || process.env.NUXT_DJANGO_PROD_URL || ''
         }
 
         const loc = secure || process.env.DEV === 'production' ? 'https://' : 'http://'
@@ -273,9 +273,9 @@ export function useAxiosClient () {
         return new URL(path, url).toString()
     }
 
-    function createClient(path = '/api/v1/'): AxiosInstance {
+    function createClient(path = '/api/v1/', alternativeDomain?: string | null, port = '8000'): AxiosInstance {
         const client: AxiosInstance = axios.create({
-            baseURL: getBaseUrl(path),
+            baseURL: getBaseUrl(path, alternativeDomain, port),
             headers: { 'Content-Type': 'application/json' },
             withCredentials: true,
             timeout: 10000

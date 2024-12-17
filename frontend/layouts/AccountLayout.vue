@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section style="margin-top: 59px;">
     <!-- Navbar -->
     <BaseNavbar />
 
@@ -28,3 +28,57 @@
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import { useSessionStorage } from '@vueuse/core';
+import type { Profile } from '~/types';
+
+const authenticationStore = useAuthentication()
+const sessionProfile = useSessionStorage<Profile>('profile', null, {
+  deep: true,
+  serializer: {
+    write (value) {
+      return JSON.stringify(value)
+    },
+    read (raw) {
+      return JSON.parse(raw)
+    }
+  }
+})
+
+const { handleError } = useErrorHandler()
+const { $client } = useNuxtApp() 
+
+const { createClient } = useAxiosClient()
+const citiesClient = createClient('/api/v1/', '127.0.0.1:5000')
+
+/**
+ * Returns details on the profile for
+ * the currently authenticated user 
+ */
+async function requestUserDetails () {
+  try {
+    if (!sessionProfile.value) {
+      const response = await $client.get<Profile>('accounts/profile')
+
+      sessionProfile.value = response.data
+      authenticationStore.profile = response.data
+    } else {
+      authenticationStore.profile = sessionProfile.value
+    }
+  } catch (e) {
+    handleError(e)
+  }
+}
+
+onBeforeMount(async () => {
+  await requestUserDetails()
+
+  // TODO: Get the cities from the Quart backend
+  // const result = await citiesClient.get('cities', {
+  //   params: {
+  //     city: 'brissy'
+  //   }
+  // })
+})
+</script>

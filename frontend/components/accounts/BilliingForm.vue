@@ -1,21 +1,24 @@
 <template>
   <div v-if="showBillingForm" class="card-body">
     <v-form id="user-information" @submit.prevent>
-      <v-btn icon="mdi-close" @click="showBillingForm = false" />
+      <div class="d-flex justify-content-end">
+        <v-btn class="mb-2" variant="text" icon="mdi-close" @click="showBillingForm=false" />
+      </div>
       
       <div class="d-flex justify-content-between gap-1">
         <v-text-field v-model="proxyRequestData.firstname" variant="outlined" placeholder="Firstname" autocomplete="given-name " />
         <v-text-field v-model="proxyRequestData.lastname" variant="outlined" placeholder="Lastname" autocomplete="family-name " />
       </div>
 
-      <v-text-field v-model="proxyRequestData.address" variant="outlined" placeholder="Address line" autocomplete="street-address" />
+      <v-text-field v-model="proxyRequestData.address_line" variant="outlined" placeholder="Address line" autocomplete="street-address" />
 
       <div class="d-flex justify-content-between gap-1">
         <v-text-field v-model="proxyRequestData.zip_code" variant="outlined" placeholder="Zip code" autocomplete="postal-code" />
         <v-text-field v-model="proxyRequestData.country" variant="outlined" placeholder="Country" autocomplete="country" />
       </div>
 
-      <v-autocomplete v-model="proxyRequestData.city" :items="cities" variant="outlined">
+      <!-- TODO: Get data from quart -->
+      <v-autocomplete v-model="proxyRequestData.city" :items="['Lille', 'Paris']" variant="outlined">
         <v-text-field />
       </v-autocomplete>
       
@@ -27,10 +30,11 @@
             {{ $t("Sexe") }}
           </p>
 
-          <v-radio-group v-model="requestData.sexe" hide-details>
+          <!-- TODO: Add gender -->
+          <!-- <v-radio-group v-model="requestData.sexe" hide-details>
             <v-radio label="Femme" value="Femme" />
             <v-radio label="Homme" value="Homme" />
-          </v-radio-group>
+          </v-radio-group> -->
         </div>
       </div>
 
@@ -38,7 +42,8 @@
         {{ $t("Date d'anniversaire") }}
       </p>
 
-      <v-btn variant="tonal" flat>
+      <!-- TODO: Date of birth -->
+      <!-- <v-btn variant="tonal" flat>
         {{ $t("Choisir la date d'anniversaire") }}
 
         <v-menu activator="parent" :close-on-content-click="false">
@@ -46,7 +51,7 @@
             <v-date-picker v-model="proxyRequestData.date_of_birth" :max="maxBirthdayDate" />
           </v-list>
         </v-menu>
-      </v-btn>
+      </v-btn> -->
 
       <v-btn class="mt-4" color="secondary" block rounded @click="handleUpdateUserDetails">
         Mettre à jour
@@ -54,46 +59,32 @@
     </v-form>
   </div>
 
-  <div v-else class="card-body" @click="showBillingForm = true">
-    <p class="fw-bold mb-2">
-      {{ fullName }}
-    </p>
 
-    <p class="m-0">
-      {{ profile.email }}
-    </p>
+  <div v-else class="card-body data-fields" @click="handleShowBillingForm">
+    <p class="fw-bold mb-2">{{ fullName }}</p>
+    <p class="m-0"><!-- {{ profile.email }} --> Email</p>
+  
+    <p class="m-0">{{ address.address_line }}</p>
+    <p class="m-0">{{ address.zip_code }} {{ address.city }}</p>
     
-    <p class="m-0">
-      {{ address.address_line }}
-    </p>
+    <p class="m-0">{{ address.country }}</p>
     
-    <p class="m-0">
-      {{ address.zip_code }} {{ address.city }}
-    </p>
-    
-    <p class="m-0">
-      {{ address.country }}
-    </p>
-    
-    <p class="m-0">
-      Téléphone portable: {{ address.telephone }}
-    </p>
+    <p class="m-0">Téléphone portable: {{ address.telephone }}</p>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { syncRef, reactify, extendRef } from '@vueuse/core'
+import { syncRef } from '@vueuse/core'
 import type { PropType } from 'vue';
-import type { AddressSet, User } from '~/types';
+import type { AddressSet } from '~/types';
 
-defineProps({
+const props = defineProps({
   address: {
     type: Object as PropType<AddressSet>,
     default: () => {}
   }
 })
 
-const profile = inject<User>('profile')
 const showBillingForm = ref(false)
 
 const proxyRequestData = ref({
@@ -117,10 +108,19 @@ const requestData = ref({
   gender: 'Femme',
   telephone: ''
 })
-syncRef(proxyRequestData, requestData, 'right')
+
+const { $dayjs } = useNuxtApp()
 
 const fullName = computed(() => {
   return `${proxyRequestData.value.firstname} ${proxyRequestData.value.lastname}`
+})
+
+syncRef(proxyRequestData, requestData, 'right')
+
+
+const maxBirthdayDate = computed(() => {
+  const currentDate = $dayjs()
+  return currentDate
 })
 
 // const { history, undo, redo } = useRefHistory(requestData)
@@ -139,4 +139,15 @@ const fullName = computed(() => {
 async function handleUpdateUserDetails () {
   showBillingForm.value = false
 }
+
+function handleShowBillingForm () {
+  proxyRequestData.value = props.address
+  showBillingForm.value = true
+}
 </script>
+
+<style lang="scss">
+.card-body.data-fields {
+  cursor: pointer;
+}
+</style>

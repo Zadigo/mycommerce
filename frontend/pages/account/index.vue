@@ -1,7 +1,7 @@
 <template>
   <section id="user-page">
     <!-- Email / Password -->
-    <div id="email-password" class="card shadow-sm">
+    <div v-if="profile" id="email-password" class="card shadow-sm">
       <div class="card-header">
         <h1 class="h6 text-uppercase fw-bold my-3">
           {{ $t("Accédez à votre compte") }}
@@ -24,7 +24,7 @@
             </v-btn>
           </v-form>
 
-          <v-btn v-else class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block @click="showEditPassword = true">
+          <v-btn v-else class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block @click="showEditPassword=true">
             <span class="me-2">*************</span>
             <font-awesome icon="pen" />
           </v-btn>
@@ -74,11 +74,8 @@
 </template>
 
 <script lang="ts" setup>
-import { useSessionStorage } from '@vueuse/core';
-import { AxiosError } from 'axios';
-import type { Profile } from '~/types';
-
 type CredentialsMethod = 'email' | 'password'
+
 interface EmailPasswordData {
   email: string,
   password1: string,
@@ -92,21 +89,11 @@ definePageMeta({
   ]
 })
 
-const userProfile = useSessionStorage<Profile>('profile', null, {
-  deep: true,
-  serializer: {
-    write (value) {
-      return JSON.stringify(value)
-    },
-    read (raw) {
-      return JSON.parse(raw)
-    }
-  }
-})
+const { $client } = useNuxtApp() 
+const { handleError } = useErrorHandler()
 
 const authenticationStore = useAuthentication()
 const { profile } = storeToRefs(authenticationStore)
-const { $client } = useNuxtApp() 
 
 const emailPasswordData = ref<EmailPasswordData>({
   email: '',
@@ -144,34 +131,10 @@ async function requestChangeEmailPassword (method: CredentialsMethod) {
       showEditEmail.value= false
     }
   } catch (e) {
-    if (e instanceof AxiosError && e.response) {
-      showEditEmail.value = false
-      showEditPassword.value = false
-      resetEmailPasswordData()
-      // messagesStore.addErrorMessage('Not saved', 'Items not saved')
-    }
+    handleError(e)
+    showEditEmail.value = false
+    showEditPassword.value = false
+    resetEmailPasswordData()
   }
 }
-
-/**
- * Returns details on the profile for
- * the currently authenticated user 
- */
-async function requestUserDetails () {
-  try {
-    if (!profile.value) {
-      const response = await $client.get<Profile>('accounts/profile')
-      userProfile.value = response.data
-      profile.value = response.data
-    }
-  } catch (e) {
-    if (e instanceof AxiosError && e.response) {
-      // Do something
-    }
-  }
-}
-
-onMounted(async () => {
-  await requestUserDetails()
-})
 </script>
