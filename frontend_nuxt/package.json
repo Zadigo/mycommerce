@@ -36,6 +36,7 @@
     "nuxt": "^3.14.1592",
     "nuxt-clarity-analytics": "^0.0.9",
     "nuxt-gtag": "^3.0.2",
+    "nuxt-meta-pixel": "^2.0.2",
     "nuxt-openapi-docs-module": "^5.3.1",
     "pinia": "^2.2.6",
     "prom-client": "^15.1.3",

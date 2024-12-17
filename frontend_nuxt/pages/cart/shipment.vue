@@ -39,7 +39,6 @@
 
 <script lang="ts" setup>
 import { useLocalStorage } from '@vueuse/core'
-import { AxiosError } from 'axios'
 import type { NewIntentAPIResponse } from './payment'
 
 definePageMeta({
@@ -53,7 +52,6 @@ useHead({
 
 const cartStore = useCart()
 const { requestData } = storeToRefs(cartStore)
-const saveShipmentDetails = ref(false)
 const rules = {
   /**
    * Verifies that the postal code is correct
@@ -63,6 +61,9 @@ const rules = {
     return regex.test(zipCode) || 'Zip code is not valid'
   }
 }
+
+const { gtag } = useGtag()
+const { handleError } = useErrorHandler()
 const { $client } = useNuxtApp()
 
 const paymentIntent = useLocalStorage<NewIntentAPIResponse>('payment_intent', null, {
@@ -77,20 +78,47 @@ const paymentIntent = useLocalStorage<NewIntentAPIResponse>('payment_intent', nu
   }
 })
 
+const saveShipmentDetails = ref(false)
+
+gtag('event', 'add_shipping_info', {
+  value: cartStore.cartTotal,
+  currency: 'EUR',
+  items: cartStore.products.map((item, i) => {
+    return {
+      item_id: item.product.id,
+      item_name: item.product.name,
+      price: item.product.get_price,
+      quantity: 1,
+      item_brand: null,
+      item_category: item.product.category,
+      item_category2: item.product.sub_category,
+      item_variant: item.product.color,
+      index: i,
+      size: item.size
+    }
+  })
+})
+
 /**
  * Update an existing payment intent
  */
 async function handleUpdatePaymentIntent () {
   try {
     requestData.value.session_id = cartStore.sessionId
+
     await $client.post('orders/intent/update', {
       intent: paymentIntent.value.intent,
       ...requestData.value
     })
+
+    useTrackEvent('add_shipping_info', {
+      transaction_id: cartStore.sessionId,
+      checkout_step: 2,
+      currency: 'EUR',
+      shipping: 1
+    })
   } catch (e) {
-    if (e instanceof AxiosError && e.response) {
-      // Handle error
-    }
+    handleError(e)
   }
 }
 </script>

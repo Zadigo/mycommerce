@@ -7,7 +7,7 @@
             {{ $t('Connecte-toi ou crée un compte') }}
           </h3>
 
-          <v-btn id="signin-google" variant="outlined" color="dark" size="x-large" class="mt-3 mb-5" rounded @click="signInWithGoogle">
+          <v-btn id="signin-google" variant="outlined" color="dark" size="x-large" class="mt-3 mb-5" rounded @click="signInWithGoogle(handleGoogleAuthCallback)">
             <font-awesome :icon="[ 'fab', 'google' ]" />
           </v-btn>
 
@@ -77,7 +77,17 @@ async function handleLogin () {
       authenticatedCart.value = true
     }
 
+    useTrackEvent('login', {
+      method: 'Email'
+    })
+
     emit('authenticate')
+  })
+}
+
+function handleGoogleAuthCallback () {
+  useTrackEvent('login', {
+    method: 'Google'
   })
 }
 </script>

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { CartItem, CartUpdateAPIResponse, Product } from '~/types'
 
 interface RequestData {
-    session_id: string | null
+    session_id: string | null | undefined
     card_token: string | null
     firstname: string | null
     lastname: string | null

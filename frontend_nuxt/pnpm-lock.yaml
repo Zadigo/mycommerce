@@ -77,6 +77,9 @@ importers:
       nuxt-gtag:
         specifier: ^3.0.2
         version: 3.0.2(magicast@0.3.5)(rollup@4.27.3)
+      nuxt-meta-pixel:
+        specifier: ^2.0.2
+        version: 2.0.2(magicast@0.3.5)(rollup@4.27.3)
       nuxt-openapi-docs-module:
         specifier: ^5.3.1
         version: 5.3.1(ioredis@5.4.1)(magicast@0.3.5)(nuxt@3.14.1592(@parcel/watcher@2.5.0)(@types/node@22.9.1)(eslint@9.15.0(jiti@2.4.0))(ioredis@5.4.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.27.3)(sass-embedded@1.81.0)(terser@5.36.0)(typescript@5.6.3)(vite@5.4.11(@types/node@22.9.1)(sass-embedded@1.81.0)(terser@5.36.0))(vue-tsc@2.1.10(typescript@5.6.3)))(rollup@4.27.3)(vue@3.5.13(typescript@5.6.3))
@@ -4036,6 +4039,9 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
+  meta-pixel@1.1.0:
+    resolution: {integrity: sha512-HvJpqad0uExXFZLKR5TYZ7aHjP/aZ10h/EXvTovUd3cBevSsotTsUZiMj8AhXcu5EeMV28thvBFvYu//78mrcw==}
+
   micromatch@4.0.8:
     resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
     engines: {node: '>=8.6'}
@@ -4258,6 +4264,9 @@ packages:
 
   nuxt-gtag@3.0.2:
     resolution: {integrity: sha512-0Spu/rffPxW7REebkjE22qQOuVZIQuyIuvd61InDdJU+d+gRIqWhrUuKBWdk43N/J1elj+cTK2kEdk5FQX7vdQ==}
+
+  nuxt-meta-pixel@2.0.2:
+    resolution: {integrity: sha512-3tCB0uEfhVwfyiwaBp09mgKbT2U+oVGTRtKxaOPL3QQqEhO2l2RTT8uzVObSt9rg4/B+3v/vg2S2I9Ru1RL44Q==}
 
   nuxt-openapi-docs-module@5.3.1:
     resolution: {integrity: sha512-iwjqSCVXIqhuJwnK/UKqA3OanhstB52S8GCOIUkVPcwNYDrNoh/gMnWOTdns7bxm4wHSY3haCnVjRH8U70YTfg==}
@@ -10620,6 +10629,8 @@ snapshots:
 
   merge2@1.4.1: {}
 
+  meta-pixel@1.1.0: {}
+
   micromatch@4.0.8:
     dependencies:
       braces: 3.0.3
@@ -10889,6 +10900,17 @@ snapshots:
       defu: 6.1.4
       pathe: 1.1.2
       ufo: 1.5.4
+    transitivePeerDependencies:
+      - magicast
+      - rollup
+      - supports-color
+
+  nuxt-meta-pixel@2.0.2(magicast@0.3.5)(rollup@4.27.3):
+    dependencies:
+      '@nuxt/kit': 3.14.1592(magicast@0.3.5)(rollup@4.27.3)
+      defu: 6.1.4
+      meta-pixel: 1.1.0
+      minimatch: 9.0.5
     transitivePeerDependencies:
       - magicast
       - rollup

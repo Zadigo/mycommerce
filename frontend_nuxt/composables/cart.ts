@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import type { CartUpdateAPIResponse, LoginAPIResponse, Product, UserSelection } from "~/types";
+import type { CartUpdateAPIResponse, LoginAPIResponse, Product, ProductToEdit, UserSelection } from "~/types";
 
 type FunctionCallback = (data: CartUpdateAPIResponse) => void
 
@@ -82,14 +82,16 @@ export function useCartComposable () {
     /**
      * Removes a product to the customer's cart 
      */
-    async function deleteFromCart(callback?: FunctionCallback, authCallback?: (data: LoginAPIResponse) => void) {
+    async function deleteFromCart(cartItem: ProductToEdit, callback?: (deletedItem: ProductToEdit, updatedCart: CartUpdateAPIResponse) => void, authCallback?: (data: LoginAPIResponse) => void) {
+        console.log('deleteFromCart', cartItem)
         try {
             if (parsedSession.value) {
+                // FIXME: How does this function know which product to delete ?
                 const response = await $client.delete<CartUpdateAPIResponse>(`cart/${parsedSession.value.c}/delete`)
                 
                 // cartStore.removeFromCart(product)
                 if (callback && typeof callback === 'function') {
-                    callback.call(vueApp, response.data)
+                    callback.call(vueApp, cartItem, response.data)
                 }
             }
         } catch (e) {

@@ -66,7 +66,7 @@
         {{ $t('Ajouter au panier') }}
       </button>
 
-      <button type="button" class="btn btn-lg shadow-none btn-rounded btn-light" aria-label="Like product" @click="proxyHandleLike(product)">
+      <button type="button" class="btn btn-lg shadow-none btn-rounded btn-light" aria-label="Like product" @click="proxyHandleLike">
         <font-awesome v-if="isLiked" :icon="['fas', 'heart']" />
         <font-awesome v-else :icon="['far', 'heart']" />
       </button>
@@ -172,11 +172,24 @@ function handleSizeSelection (size: string | number | null | undefined) {
 // FIXME: The handle like sequence does not work properly. Maybe
 // we need to create a $subscribe on the store in order to sync the
 // elements from the store to the local storage
-async function proxyHandleLike (product: Product | null) {
-  if (product) {
-    const result = await handleLike(product)
-    console.info(result)
+async function proxyHandleLike () {
+  if (props.product) {
+    // FIXME: Doe not return anything ??
+    const result = await handleLike(props.product)
     likedProducts.value = result
+
+    gtag('event', 'add_to_wishlist', {
+      item_id: props.product?.id,
+      item_name: props.product?.name,
+      price: props.product?.get_price,
+      quantity: 1,
+      item_brand: null,
+      item_category: props.product?.category,
+      item_category2: props.product.sub_category,
+      item_variant: props.product?.color,
+      index: 0,
+      item_reference: null
+    })
   }
 }
 
@@ -204,8 +217,10 @@ async function handleAddToCart () {
             quantity: 1,
             item_brand: null,
             item_category: props.product?.category,
+            item_category2: props.product?.sub_category,
             item_variant: props.product?.color,
             index: 0,
+            item_reference: null,
             size: userSelection.value.size
           }
         ]

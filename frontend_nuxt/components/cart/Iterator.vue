@@ -33,7 +33,7 @@
                 <font-awesome icon="pen" />
               </v-btn>
 
-              <v-btn variant="tonal" size="x-small" rounded @click="deleteFromCart(callbackRemoveFromCart, callbackAuth)">
+              <v-btn variant="tonal" size="x-small" rounded @click="deleteFromCart(item, callbackRemoveFromCart, callbackAuth)">
                 <font-awesome icon="trash" />
               </v-btn>
             </div>
@@ -45,9 +45,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { LoginAPIResponse, ProductToEdit } from '~/types';
+import type { CartUpdateAPIResponse, LoginAPIResponse, ProductToEdit } from '~/types';
 
-const props = defineProps({
+defineProps({
   isEditable: {
     type: Boolean,
     default: true
@@ -64,14 +64,13 @@ const emit = defineEmits({
 })
 
 const cartStore = useCart()
+const { gtag } = useGtag()
 const { mediaPath } = useDjangoUtilies()
 const { cache } = storeToRefs(cartStore)
 const { deleteFromCart } = useCartComposable()
-const accessToken = useCookie('access_token')
-const refreshToken = useCookie('referesh_token')
 
  /**
-   * Computed function that get the items from the session
+   * Computed property that get the items from the session
    * and iterates on each statistic object to be displayed 
    * 
    * TODO: Refactor this function
@@ -99,15 +98,35 @@ function handleProductEdition (item: ProductToEdit) {
 /**
  * TODO: 
  */
-function callbackRemoveFromCart () {
-  
+function callbackRemoveFromCart (deletedItem: ProductToEdit, updatedCart: CartUpdateAPIResponse) {
+  const items = [
+    {
+      item_id: deletedItem.product__id,
+      item_name: deletedItem.product__name,
+      item_category: null,
+      item_category2: null,
+      price: deletedItem.total,
+      quantity: deletedItem.quantity
+    }
+  ]
+
+  gtag('event', 'remove_from_cart', {
+    currency: 'EUR',
+    value: updatedCart.total,
+    items
+  })
+
+  useTrackEvent('remove_from_cart', {
+    currency: 'EUR',
+    checkout_step: 1,
+    items
+  })
 }
 
 /**
  * 
  */
 function callbackAuth (data: LoginAPIResponse) {
-  accessToken.value = data.access
-  refreshToken.value = data.refresh
+  console.log('cart > iterator > callbackAuth', data)
 }
 </script>

@@ -54,7 +54,8 @@ export default defineNuxtConfig({
     'nuxt-openapi-docs-module',
     'vuetify-nuxt-module',
     'vue-sonner/nuxt',
-    '@artmizu/nuxt-prometheus'
+    '@artmizu/nuxt-prometheus',
+    'nuxt-meta-pixel'
   ],
   alias: {
     '@': path.resolve(__dirname, './'),

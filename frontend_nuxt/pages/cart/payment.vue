@@ -87,21 +87,6 @@ const hasSelectedPaymentMethod = computed(() => {
 
 const config = useRuntimeConfig()
 
-const stripeKey = ref(config.public.STRIPE_PUBLISHABLE_KEY)
-
-// https://stripe.com/docs/js/initializing#init_stripe_js-options
-const instanceOptions = ref({})
-
-// https://stripe.com/docs/js/elements_object/create#stripe_elements-options
-const elementsOptions = ref({})
-
-// https://stripe.com/docs/stripe.js#element-options
-const cardOptions = ref({
-  // value: {
-  //   postalCode: '12345',
-  // }
-})
-
 const { $client } = useNuxtApp()
 const paymentResponse = useSessionStorage('payment_response', null, {
   serializer: {
@@ -126,15 +111,27 @@ const paymentIntent = useLocalStorage<NewIntentAPIResponse>('payment_intent', nu
   }
 })
 
+const { gtag } = useGtag()
 const cart = useSessionStorage('cart', null)
-
 const router = useRouter()
+const stripeKey = ref(config.public.STRIPE_PUBLISHABLE_KEY)
+
+// https://stripe.com/docs/js/initializing#init_stripe_js-options
+const instanceOptions = ref({})
+
+// https://stripe.com/docs/js/elements_object/create#stripe_elements-options
+const elementsOptions = ref({})
+
+// https://stripe.com/docs/stripe.js#element-options
+const cardOptions = ref({
+  // value: {
+  //   postalCode: '12345',
+  // }
+})
 
 const isLoading = ref(false)
 const cardEl = ref()
 const stripeElementsEl = ref()
-
-console.log(config.public)
 
 /**
  * 
@@ -148,6 +145,35 @@ async function handlePayment () {
     isLoading.value = false
     paymentIntent.value = null
     cart.value = null
+
+    gtag('event', 'purchase', {
+      transaction_id: cartStore.sessionId,
+      currency: 'EUR',
+      tax: 20,
+      shipping: 1,
+      value: cartStore.cartTotal,
+      items: cartStore.products.map((item, i) => {
+        return {
+          item_id: item.product.id,
+          item_name: item.product.name,
+          price: item.product.get_price,
+          quantity: 1,
+          item_brand: null,
+          item_category: item.product.category,
+          item_category2: item.product.sub_category,
+          item_variant: item.product.color,
+          index: i,
+          size: item.size
+        }
+      })
+    })
+
+    useTrackEvent('purchase', {
+      checkout_step: 3,
+      currency: 'EUR',
+      shipping: 1,
+      value: cartStore.cartTotal
+    })
 
     router.push('/cart/success')
   } catch (e) {

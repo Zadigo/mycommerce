@@ -36,7 +36,7 @@ export function useGoogleAuth () {
         }
     }
 
-    async function signInWithGoogle () {
+    async function signInWithGoogle (callback?: () => void) {
         if (!googleProvider.value) {
             await initGoogleAuth()
         }
@@ -52,6 +52,11 @@ export function useGoogleAuth () {
             await authenticateWithBackend(idToken)
 
             user.value = result.user
+            
+            if (callback && typeof callback === 'function') {
+                callback()
+            }
+
             return result.user
         } catch (e) {
             error.value = e
