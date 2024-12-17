@@ -54,7 +54,7 @@
 
         <!-- Images -->
         <div class="col-12">
-          <ColumnDisplay v-if="columnDisplay" :images="images" />
+          <ColumnDisplay v-if="columnDisplay" :images="images" @select-image="(data) => selectedImages = data" />
           <ListDisplay v-else :images="images" />
 
           <!-- <q-infinite-scroll :offset="1" class="row" @load="() => {}">
@@ -158,7 +158,7 @@ import { useQuasar } from 'quasar'
 import { useDjangoUtilies } from 'src/composables/utils'
 import { useShop } from 'src/stores/shop'
 import { Product, ProductImage } from 'src/types'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 
 import ColumnDisplay from 'src/components/images/ColumnDisplay.vue'
 import ListDisplay from 'src/components/images/ListDisplay.vue'
@@ -213,23 +213,11 @@ export default defineComponent({
     const selectedFiles = ref<File[]>([])
     const selectedFilesBaseName = ref(null)
 
-    whenever(selectedFiles, (items) => {
-      console.log('whenever', items)
-    })
-
     const selectedImages = ref<ProductImage[]>([])
     const enableProductAssociationButton = ref(false)
     const showProductAssociationDialog = ref(false)
     const searchedProducts = ref<Product[]>([])
     const productToAssociate = ref<Product | null>(null)
-
-    whenever(selectedImages, (items) => {
-      if (items.length > 0) {
-        enableProductAssociationButton.value = true
-      } else {
-        enableProductAssociationButton.value = false
-      }
-    })
 
     const isUploading = ref(false)
     const cachedImages = useSessionStorage('images', null, {
@@ -243,6 +231,18 @@ export default defineComponent({
       }
     })
     const columnDisplay = ref(true)
+
+    const hasSelectedImages = computed(() => {
+      return selectedImages.value.length > 0
+    })
+
+    whenever(hasSelectedImages, (newValue) => {
+      if (newValue) {
+        enableProductAssociationButton.value = true
+      } else {
+        enableProductAssociationButton.value = false
+      }
+    })
 
     return {
       columnDisplay,

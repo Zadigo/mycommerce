@@ -75,8 +75,8 @@ import { defineComponent, ref } from 'vue'
 import { StatisticsResponseAPI } from './home'
 
 import BaseStatisticCard from 'src/components/BaseStatisticCard.vue'
-import CartsChart from '../components/charts/CartsChart.vue'
-import SalesChart from '../components/charts/SalesChart.vue'
+import CartsChart from 'src/components/charts/CartsChart.vue'
+import SalesChart from 'src/components/charts/SalesChart.vue'
 
 export default defineComponent({
   name: 'HomePage',

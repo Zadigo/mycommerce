@@ -154,15 +154,15 @@ export default defineComponent({
       showProductModal
     }
   },
-  created () {
-    this.setMainImage()
-  },
   watch: {
     '$route.params.id' (newValue, oldValue) {
       if (newValue !== oldValue) {
         this.setMainImage()
       }
     }
+  },
+  created () {
+    this.setMainImage()
   },
   methods: {
     /**

@@ -1,6 +1,6 @@
-import { Product } from 'src/types'
-import { AxiosError } from 'axios'
+import axios, { AxiosError, AxiosInstance } from 'axios'
 import { api } from 'src/boot/axios'
+import { Product } from 'src/types'
 import { getCurrentInstance, ref } from 'vue'
 
 export function useDjangoUtilies () {
@@ -87,7 +87,7 @@ export function useImagesUpload () {
 
   /**
    * Upload images without associating them to
-   * any product in the database 
+   * any product in the database
    */
   async function handleUploadImages (callback: (data: Product) => void) {
     try {
@@ -128,7 +128,7 @@ export function useImagesUpload () {
             'Content-Type': 'multipart/form-data'
           }
         })
-  
+
         selectedFiles.value = []
         selectedFilesBaseName.value = ''
         isRunning.value = false
@@ -154,11 +154,11 @@ export function useImagesUpload () {
   }
 }
 
-export function useAxiosClient() {
+export function useAxiosClient () {
   /**
    * Helper function for creating variations of the baseURL
    */
-  function getBaseUrl(path = '/api/v1/', secure = false, port = '8000') {
+  function getBaseUrl (path = '/api/v1/', secure = false, port = '8000') {
     let domain = `127.0.0.1:${port}`
 
     if (process.env.DEV === 'production') {
@@ -172,7 +172,7 @@ export function useAxiosClient() {
     return new URL(path, url).toString()
   }
 
-  function createClient(path = '/api/v1/'): AxiosInstance {
+  function createClient (path = '/api/v1/'): AxiosInstance {
     const client: AxiosInstance = axios.create({
       baseURL: getBaseUrl(path),
       headers: { 'Content-Type': 'application/json' },

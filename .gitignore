@@ -83,7 +83,6 @@ logs
 .env.*
 .env.local*
 !.env.example
-frontend/.env
 
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
