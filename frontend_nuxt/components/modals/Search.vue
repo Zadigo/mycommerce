@@ -55,7 +55,8 @@ const AsyncRecommendations = defineAsyncComponent({
 const shopStore = useShop()
 
 function useSearchProducts () {
-  const { $client } = useNuxtApp()
+  const { gtag } = useGtag()
+  const { $client, $fbq } = useNuxtApp()
   const { handleError } = useErrorHandler()
     
   const search = ref<string | null>(null)
@@ -75,6 +76,15 @@ function useSearchProducts () {
             q: search.value
           }
         })
+        
+        gtag('event', 'search', {
+          search_term: search.value
+        })
+
+        $fbq('track', 'Search', {
+          search_string: search.value
+        })
+
         searchedProducts.value = response.data.results
       }
     } catch (e) {

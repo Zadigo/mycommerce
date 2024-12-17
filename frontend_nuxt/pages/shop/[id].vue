@@ -10,7 +10,7 @@
         </div>
       </div>
 
-      <ProductDetailsAside :product="product" :is-loading="isLoading" @show-size-guide="showSizeGuideDrawer=true" class="col-4 mt-5" sticky />
+      <ProductDetailsAside :product="product" :is-loading="isLoading" class="col-4 mt-5" sticky @show-size-guide="showSizeGuideDrawer=true" />
     </div>
 
     <!-- Multi-Block Image -->

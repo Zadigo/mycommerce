@@ -46,11 +46,6 @@ import type { Product } from '~/types'
 
 const route = useRoute()
 
-const { x } = useScroll(window, { behavior:'smooth' })
-
-const productsLoading = ref(true)
-const products = ref<Product[]>([])
-
 useHead({
   title: useChangeCase(route.params.id as string, 'capitalCase'),
   meta: [
@@ -60,6 +55,11 @@ useHead({
     }
   ]
 })
+
+const { x } = useScroll(window, { behavior:'smooth' })
+
+const productsLoading = ref(true)
+const products = ref<Product[]>([])
 
 const AsyncFeed = defineAsyncComponent({
   loader: async () => import('~/components/products/Feed.vue'),

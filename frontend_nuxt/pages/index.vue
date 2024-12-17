@@ -18,19 +18,10 @@
 </template>
 
 <script setup lang="ts">
-// import { z } from 'zod'
 import { useStorageAsync } from '@vueuse/core'
 import type { CollectionName } from '~/types'
 
-// const idbConnection = createConnection('e-commerce')
-// const storage = useIDBStorage(idbConnection)
-
-// const CollectionSchema = z.object({
-//   id: z.number()
-// })
-
-// type _Collection = z.infer<typeof CollectionSchema>
-
+const { gtag } = useGtag()
 
 useHead({
   title: 'Achat en ligne de vêtements',
@@ -93,4 +84,9 @@ function useCollectionDetails () {
 const { collections, isLoading, requestCollectionNames } = useCollectionDetails()
 
 onBeforeMount(requestCollectionNames)
+onMounted(() => {
+  gtag('event', 'page_view', {
+    screen_name: 'Achat en ligne de vêtements'
+  })
+})
 </script>

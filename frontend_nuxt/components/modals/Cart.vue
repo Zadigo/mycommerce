@@ -88,7 +88,7 @@ import type { ProductToEdit } from '~/types';
 const router = useRouter()
 
 const { isAuthenticated, showLoginDrawer } = storeToRefs(useAuthentication())
-const { showCartDrawer, numberOfProducts, hasProducts, freeDeliveryTarget, cartTotal, showEditProductDrawer } = storeToRefs(useCart())
+const { showCartDrawer, numberOfProducts, hasProducts, freeDeliveryTarget, cartTotal } = storeToRefs(useCart())
 
 const emit = defineEmits({
   'edit-product' (_product: ProductToEdit) {

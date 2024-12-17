@@ -15,6 +15,23 @@ export default defineNuxtConfig({
   vite: { server: {} },
   runtimeConfig: {
     public: {
+      // https://nuxt.com/modules/nuxt-meta-pixel
+      metapixel: {
+        default: {
+          id: '123'
+        }
+      },
+      // https://nuxt.com/modules/gtag
+      gtag: {
+        id: 'G-CVKFG2XPVG',
+        enabled: true,
+        // enabled: process.env.NODE_ENV === 'production',
+        config: {
+          currency: 'EUR',
+          shipping: 1,
+          tax: 20
+        }
+      },
       DJANGO_PROD_URL: process.env.NUXT_DJANGO_PROD_URL,
       STRIPE_SECRET_KEY: process.env.NUXT_STRIPE_TEST_SECRET_KEY,
       STRIPE_PUBLISHABLE_KEY: process.env.NUXT_STRIPE_TEST_PUBLISHABLE_KEY,
@@ -34,28 +51,27 @@ export default defineNuxtConfig({
     '/': { ssr: true, robots: true },
     '/wishlist': { ssr: false, robots: true },
     '/shop/**': { ssr: true, robots: true },
-    '/cart/**': { ssr: false, robots: true },
+    '/cart/**': { ssr: false, robots: false },
     '/account/**': { ssr: false, robots: false },
     '/404': { ssr: false, robots: true }
   },
   modules: [
     '@nuxt/eslint',
     '@pinia/nuxt',
+    '@artmizu/nuxt-prometheus',
     '@vesp/nuxt-fontawesome',
     '@nuxtjs/google-fonts',
     '@nuxt/test-utils/module',
-    '@nuxtjs/google-fonts',
     '@unlok-co/nuxt-stripe',
     '@nuxtjs/sitemap',
     '@nuxt/image',
     '@nuxtjs/i18n',
     'nuxt-gtag',
+    'nuxt-meta-pixel',
     'nuxt-clarity-analytics',
     'nuxt-openapi-docs-module',
     'vuetify-nuxt-module',
-    'vue-sonner/nuxt',
-    '@artmizu/nuxt-prometheus',
-    'nuxt-meta-pixel'
+    'vue-sonner/nuxt'
   ],
   alias: {
     '@': path.resolve(__dirname, './'),
@@ -78,10 +94,10 @@ export default defineNuxtConfig({
       }
     }
   },
-  gtag: {
-    enabled: process.env.NODE_ENV === 'production',
-    id: 'G-XX'
-  },
+  // gtag: {
+  //   enabled: process.env.NODE_ENV === 'production',
+  //   id: 'G-XX'
+  // },
   css: [
     '~/node_modules/bootstrap/dist/css/bootstrap.min.css',
     '~/node_modules/mdb-ui-kit/css/mdb.min.css',

@@ -17,7 +17,7 @@
             {{ $t("Sélectionne une taille") }}
           </p>
           
-          <ProductSizeBlock :sizes="product.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="showSizeGuideDrawer=true" />
+          <ProductSizeBlock :sizes="product.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="proxyShow=true" />
 
           <p class="fs-6 fw-bold mt-4 mb-1">
             {{ $t("Mensurations") }}
@@ -93,7 +93,7 @@ const props = defineProps({
     type: Boolean
   },
   product: {
-    type: Object as PropType<Product>,
+    type: Object as PropType<Product | null>,
     required: true
   }
 })
@@ -104,7 +104,7 @@ const emit = defineEmits({
   }
 })
 
-const { mediaPath } = useDjangoUtilies()
+// const { mediaPath } = useDjangoUtilies()
 const { addToCart, handleSizeSelection } = useCartComposable()
 const proxyShow = computed({
   get: () => props.showModal,
