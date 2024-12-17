@@ -58,10 +58,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 
-# local .env files
-.env
-.env.local*
-
 # Nuxt dev/build outputs
 .output
 .data
@@ -85,7 +81,9 @@ logs
 # Local env files
 .env
 .env.*
+.env.local*
 !.env.example
+frontend/.env
 
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
