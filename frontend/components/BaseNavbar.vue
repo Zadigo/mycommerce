@@ -13,7 +13,7 @@
 
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a href="#" class="nav-link" @click.prevent="showCartDrawer=true">
+          <a href="#" class="nav-link" @click.prevent="handleShowCartDrawer">
             <font-awesome icon="shopping-bag" class="me-1" />
             {{ $t("Panier") }}
           </a>
@@ -47,17 +47,47 @@
 </template>
 
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia';
+
+const shopStore = useShop()
+const authStore = useAuthentication()
+const cartStore = useCart()
 // TODO: Create one unique dictionnary
 const accessToken = useCookie('access')
 const refereshToken = useCookie('refresh')
-const shopStore = useShop()
-const authStore = useAuthentication()
 const { showCartDrawer } = storeToRefs(useCart())
+const { gtag } = useGtag()
 
 function proxyLogout () {
   authStore.logout()
   authStore.showLoginDrawer = false
   accessToken.value = null
   refereshToken.value = null
+}
+
+function handleShowCartDrawer () {
+  showCartDrawer.value = true
+
+  if (cartStore.cache && cartStore.hasProducts) {
+    gtag('event', 'view_cart', {
+      currency: 'EUR',
+      value: cartStore.cartTotal,
+      items: cartStore.cache.statistics.map((item, i) => {
+        const result = cartStore.cache?.results.find(x => x.id === item.product__id)
+        return {
+          item_id: item.product__id,
+          item_name: item.product__name,
+          price: result?.product.get_price,
+          quantity: item.quantity,
+          item_brand: null,
+          item_category: result?.product.category,
+          item_category2: result?.product.sub_category,
+          item_variant: result?.product.color,
+          index: i,
+          size: result?.size
+        }
+      })
+    })
+  }
 }
 </script> 
