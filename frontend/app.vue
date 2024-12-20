@@ -100,6 +100,10 @@ shopStore.$subscribe(({ storeId }) => {
     shopStore.likedProducts = likedProducts.value
   }
 
+  if (storeId === 'cart') {
+    cartStore.sessionCache = sessionCache.value
+  }
+
   // if (storeId === 'authentication') {
   //   authenticationStore.accessToken = accessToken.value
   //   authenticationStore.refreshToken = refreshToken.value
@@ -129,6 +133,10 @@ async function requestSessionId () {
 onBeforeMount(async () => {
   if (!shopStore.sessionCache) {
     shopStore.sessionCache = sessionCache.value
+  }
+
+  if (!cartStore.sessionCache) {
+    cartStore.sessionCache = sessionCache.value
   }
 
   authenticationStore.accessToken = accessToken.value

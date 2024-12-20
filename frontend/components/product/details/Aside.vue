@@ -86,7 +86,7 @@
 <script lang="ts" setup>
 import { useLocalStorage, useSessionStorage } from '@vueuse/core';
 import type { PropType } from 'vue'
-import type { CartUpdateAPIResponse, Product } from '~/types';
+import type { CartUpdateAPIResponse, Product, SessionCacheData } from '~/types';
 
 const props = defineProps({
   isLoading: {
@@ -116,8 +116,8 @@ const { mediaPath } = useDjangoUtilies()
 const { showSizeSelectionWarning, addToCart, userSelection } = useCartComposable()
 const { gtag } = useGtag()
 
+// DELETE:
 const cartStorage = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
-  deep: true,
   serializer: {
     read (raw) {
       return JSON.parse(raw)
@@ -207,8 +207,14 @@ function proxyHandleLike () {
 async function handleAddToCart () {
   if (props.product) {
     addToCart(props.product, null, (data) => {
+      // DELETE:
       cartStorage.value = data
       cartStore.cache = data
+
+      if (cartStore.sessionCache) {
+        cartStore.sessionCache.cart = data
+      }
+      
       showAddedProductDrawer.value = true
 
       gtag('event', 'add_to_cart',  {
