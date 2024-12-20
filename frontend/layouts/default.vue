@@ -5,30 +5,31 @@
 
     <div class="container-fluid">
       <slot />
-
     </div>
 
     <!-- Modals -->
-    <!-- <ModalsLogin />
-    <ModalsCart @edit-product="handleProductEdition" />
-    <ModalsAddedProduct />
-    <ModalsEditProduct />
-    <ModalsSearch /> -->
+    <ClientOnly>
+      <ModalsLogin />
+      <ModalsAddedProduct />
+      <ModalsEditProduct />
+      <ModalsCart @edit-product="handleProductEdition" />
+      <ModalsSearch />
 
-    <!-- Modals -->
-    <v-dialog v-model="showWhatsAppModal" width="400" transition="dialog-bottom-transition">
-      <v-card>
-        <v-card-text>
-          <div class="text-center">
-            <h6 claass="fw-bold mb-5">WhatsApp</h6>
-            
-            QR CODE
+      <!-- Modals -->
+      <v-dialog v-model="showWhatsAppModal" width="400" transition="dialog-bottom-transition">
+        <v-card>
+          <v-card-text>
+            <div class="text-center">
+              <h6 claass="fw-bold mb-5">WhatsApp</h6>
+              
+              QR CODE
 
-            <p class="text-small mt-5">Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone</p>
-          </div>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+              <p class="text-small mt-5">Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone</p>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </ClientOnly>
 
     <!-- Footer -->
     <BaseFooter @show-modal="showWhatsAppModal=true" />

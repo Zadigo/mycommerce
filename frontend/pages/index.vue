@@ -4,7 +4,8 @@
       <div class="col-sm-12 col-md-10 offset-md-1">
         <div v-if="isLoading" class="row g-1">
           <div v-for="i in 3" :key="i" class="col-sm-12 col-md-4 my-1">
-            <BaseSkeleton :loading="true" height="400px" />
+            <!-- <BaseSkeleton :loading="true" height="400px" /> -->
+            Loading...
           </div>
         </div>
         
@@ -35,6 +36,8 @@ useHead({
 
 // Composable for Collection Fetching
 function useCollectionDetails () {
+  const cachedCollections = useStorageAsync<CollectionName[]>('collections', [])
+  
   const collections = ref<CollectionName[]>([])
   const isLoading = ref(true)
   
@@ -47,8 +50,10 @@ function useCollectionDetails () {
    */
   async function requestCollectionNames () {
     try {
-      const cachedCollections = useStorageAsync<CollectionName[]>('collections', [])
-
+      // FIXME: This does not catch the cached collections
+      // on the client side -; using local storage raises
+      // hydration error since the server side does not
+      // know about the local storage
       if (cachedCollections.value.length > 0) {
         collections.value = cachedCollections.value
         isLoading.value = false

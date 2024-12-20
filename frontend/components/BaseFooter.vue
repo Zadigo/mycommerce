@@ -80,9 +80,12 @@
       </div>
       
       <div class="d-flex justify-content-around gap-4">
-        <a href="#" class="text-muted" @click.prevent="shopStore.showLanguageModal=true">
-          {{ shopStore.sessionCache?.language?.location }} | {{ shopStore.sessionCache?.language.choice }}
-        </a>
+        <ClientOnly>
+          <!-- FIXME: Raises an hydration error: server render "|" while expecting "France | fr" -->
+          <a href="#" class="text-muted" @click.prevent="shopStore.showLanguageModal=true">
+            {{ shopStore.sessionCache?.language?.location }} | {{ shopStore.sessionCache?.language?.choice }}
+          </a>
+        </ClientOnly>
         
         <a href="http://" class="text-muted">
           {{ $t("Condition général d'achat") }}
@@ -115,4 +118,9 @@ const emit = defineEmits({
     return true
   }
 })
+
+// Hydration errors: 
+// https://www.lichter.io/articles/vue-hydration-error/
+// https://stackoverflow.com/questions/47862591/vuejs-error-the-client-side-rendered-virtual-dom-tree-is-not-matching-server-re/67978474#67978474
+// https://stackoverflow.com/questions/78552115/hydration-completed-but-contains-mismatches-using-veevalidate-and-pinia-in-nuxt
 </script>
