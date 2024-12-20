@@ -51,7 +51,7 @@
 
             <p class="mb-1">
               <font-awesome :icon="['fab', 'whatsapp']" class="me-2" />
-              <a href="#" class="text-muted" @click.prevent="showWhatsAppModal=true">
+              <a href="#" class="text-muted" @click.prevent="emit('show-modal')">
                 WhatsApp
               </a>
             </p>
@@ -80,7 +80,7 @@
       </div>
       
       <div class="d-flex justify-content-around gap-4">
-        <a href="#" class="text-muted" @click.prevent="shopStore.showLanguageModal = true">
+        <a href="#" class="text-muted" @click.prevent="shopStore.showLanguageModal=true">
           {{ shopStore.sessionCache?.language?.location }} | {{ shopStore.sessionCache?.language.choice }}
         </a>
         
@@ -101,21 +101,6 @@
         </a>
       </div>
     </div>
-
-    <!-- Modals -->
-    <v-dialog v-model="showWhatsAppModal" width="400" transition="dialog-bottom-transition">
-      <v-card>
-        <v-card-text>
-          <div class="text-center">
-            <h6 claass="fw-bold mb-5">WhatsApp</h6>
-            
-            QR CODE
-
-            <p class="text-small mt-5">Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone</p>
-          </div>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </footer>
 </template>
 
@@ -124,5 +109,10 @@ import { socialLinks, footerLinks, useCompany } from '@/utils'
 
 const shopStore = useShop()
 const { companyDetails } = useCompany()
-const showWhatsAppModal = ref(false)
+
+const emit = defineEmits({
+  'show-modal'() {
+    return true
+  }
+})
 </script>

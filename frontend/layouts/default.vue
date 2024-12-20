@@ -6,16 +6,32 @@
     <div class="container-fluid">
       <slot />
 
-      <!-- Modals -->
-      <ModalsLogin />
-      <ModalsCart @edit-product="handleProductEdition" />
-      <ModalsAddedProduct />
-      <ModalsEditProduct />
-      <ModalsSearch />
     </div>
 
+    <!-- Modals -->
+    <!-- <ModalsLogin />
+    <ModalsCart @edit-product="handleProductEdition" />
+    <ModalsAddedProduct />
+    <ModalsEditProduct />
+    <ModalsSearch /> -->
+
+    <!-- Modals -->
+    <v-dialog v-model="showWhatsAppModal" width="400" transition="dialog-bottom-transition">
+      <v-card>
+        <v-card-text>
+          <div class="text-center">
+            <h6 claass="fw-bold mb-5">WhatsApp</h6>
+            
+            QR CODE
+
+            <p class="text-small mt-5">Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone</p>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <!-- Footer -->
-    <BaseFooter />
+    <BaseFooter @show-modal="showWhatsAppModal=true" />
   </section>
 </template>
 
@@ -25,6 +41,7 @@ import type { ProductToEdit } from '~/types';
 const cartStore = useCart()
 const { showCartDrawer, showEditProductDrawer } = storeToRefs(cartStore)
 const currentEditedProduct = ref<ProductToEdit>()
+const showWhatsAppModal = ref(false)
 
 provide('currentEditedProduct', currentEditedProduct)
 
