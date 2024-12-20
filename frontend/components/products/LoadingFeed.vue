@@ -23,9 +23,3 @@
     </template>
   </ProductsFeedLayout>
 </template>
-
-<script lang="ts">
-export default defineNuxtComponent({
-  name: 'LoadingFeed'
-})
-</script>

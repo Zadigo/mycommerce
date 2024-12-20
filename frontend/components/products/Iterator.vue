@@ -1,9 +1,7 @@
 <template>
-  <div v-for="(product, i) in products" :key="product.id" :class="gridClass">
+  <div v-for="(product, i) in products" id="product" :key="product.id" :class="gridClass">
     <ProductCard :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @navigate="handleNavigation" />
   </div>
-  <!-- <TransitionGroup name="opacity">
-  </TransitionGroup> -->
 </template>
 
 <script setup lang="ts">

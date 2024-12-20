@@ -14,7 +14,6 @@
 
       <!-- Feed -->
       <div class="col-12">
-        <!-- Products -->
         <Suspense>
           <template #default>
             <AsyncFeed @products-loaded="handleLoadedProducts" />
@@ -25,23 +24,13 @@
           </template>
         </Suspense>
       </div>
-
-      <div v-if="products.length === 0" class="col-6 offset-md-3 text-center p-5">
-        <p class="h4 fw-light">
-          {{ $t('Page not available text') }}
-        </p>
-
-        <NuxtLink to="/shop/collections/all" class="mt-3" color="secondary" variant="tonal" rounded>
-          {{ $t('Voir toute la collection') }}
-        </NuxtLink>
-      </div>
     </div>
   </section>
 </template>
 
 <script lang="ts" setup>
 import { useChangeCase } from '@vueuse/integrations/useChangeCase'
-import { useScroll } from '@vueuse/core'
+// import { useScroll } from '@vueuse/core'
 import type { Product } from '~/types'
 
 const route = useRoute()
@@ -56,7 +45,7 @@ useHead({
   ]
 })
 
-const { x } = useScroll(window, { behavior:'smooth' })
+// const { x } = useScroll(window, { behavior:'smooth' })
 
 const productsLoading = ref(true)
 const products = ref<Product[]>([])

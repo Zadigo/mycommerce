@@ -4,17 +4,18 @@
       <ProductsFeedHeader :products="products" :count="totalProductCount" @update:grid-size="handleGridSize" @show-product-filters="showProductFilters=true" />
     </template>
 
-    <template #default>
+    <template v-if="products && products.length > 0" #default>
       <!-- Products -->
+      <!-- FIXME: Raises hydration error -->
       <ProductsIterator :products="products" :columns="currentGridSize" @navigate="handleNavigation" />
 
       <!-- Intersect -->
-      <div ref="intersectionTarget" class="fw-bold text-uppercase d-flex justify-content-center mt-5">
+      <div id="product-pagination" ref="intersectionTarget" class="fw-bold text-uppercase d-flex justify-content-center mt-5">
         <v-btn v-if="isEndOfPage" size="x-large" variant="tonal" rounded flat @click="scrollToTop">
           <font-awesome icon="arrow-up" class="me-2" />
           {{ $t('Tu es arrivé à la fin') }}
         </v-btn>
-        
+
         <div v-else class="flex-grow">
           <v-progress-circular v-if="isLoadingMoreProducts" :size="50" color="dark" indeterminate />
 
@@ -24,9 +25,23 @@
           </v-btn>
         </div>
       </div>
-      
+
       <!-- Modals -->
-      <ModalsProductFilters :show-modal="showProductFilters" :count="productCount" @update-products="requestFilteredProducts" @close="showProductFilters=false" />
+      <ClientOnly>
+        <ModalsProductFilters :show-modal="showProductFilters" :count="productCount" @update-products="requestFilteredProducts" @close="showProductFilters=false" />
+      </ClientOnly>
+    </template>
+
+    <template v-else #default>
+      <div class="col-6 offset-md-3 text-center p-5 my-5">
+        <p class="h4 fw-light">
+          {{ $t('Page not available text') }}
+        </p>
+
+        <NuxtLink to="/shop/collections/all" class="mt-3" color="secondary" variant="tonal" rounded>
+          {{ $t('Voir toute la collection') }}
+        </NuxtLink>
+      </div>
     </template>
   </ProductsFeedLayout>
 </template>

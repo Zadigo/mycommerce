@@ -6,7 +6,7 @@
     </div>
 
     <!-- Feed -->
-    <div class="row gx-1 gy-1">
+    <div id="feed" class="row gx-1 gy-1">
       <slot />
     </div>
 
