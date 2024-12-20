@@ -1,6 +1,9 @@
-import type { Product } from "~/types";
+import { defineStore } from 'pinia'
+import type { Product, SessionCacheData } from "~/types";
 
 export const useShop =  defineStore('shop', () => {
+    const sessionCache = ref<SessionCacheData>()
+
     const showSearchModal = ref(false)
     const showLanguageModal = ref(false)
     const visitedProducts = ref<number[]>([])
@@ -39,18 +42,10 @@ export const useShop =  defineStore('shop', () => {
         }
     }
 
-    function updateWishlist (product: Product | undefined) {
-        if (product) {
-            const { managedList, save } = useListManager()
-            save(likedProducts, product.id)
-            likedProducts.value = managedList.value
-        }
-    }
-
     return {
+        sessionCache,
         currentProductIndex,
         addToHistory,
-        updateWishlist,
         showSearchModal,
         numberOfVisitedProducts,
         uniqueVisitedProductIds,

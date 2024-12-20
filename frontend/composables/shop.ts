@@ -3,8 +3,8 @@ import type { Product } from "~/types"
 export function useShopComposable () {
     const { $i18n } = useNuxtApp()
     const shopStore = useShop()
-    const isLiked = ref<boolean>(false)
-
+    const isLiked = ref(false)
+    
     /**
      * A composable that implements default
      * resusable functions for the shop, such
@@ -34,11 +34,11 @@ export function useShopComposable () {
      * and therefore adding it to the user's
      * wishlist
      */
-    async function handleLike(product: Product | null | undefined): Promise<number[]> {
+    function handleLike(items: number[], product: Product | null | undefined): (boolean | number[])[] {
         if (product) {
-            isLiked.value = !isLiked.value
-            shopStore.updateWishlist(product)
-            return shopStore.likedProducts
+            const { save, managedList } = useListManager()
+            const state = save(items, product.id)
+            return [state, managedList.value]
         } else {
             return []
         }

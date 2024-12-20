@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { CartItem, CartUpdateAPIResponse, Product } from '~/types'
+import type { CartItem, CartUpdateAPIResponse, Product, SessionCacheData } from '~/types'
 
 interface RequestData {
     session_id: string | null | undefined
@@ -16,6 +16,7 @@ interface RequestData {
 }
 
 export const useCart = defineStore('cart', () => {
+    const sessionCache = ref<SessionCacheData>()
     const requestData = ref<RequestData>({
         session_id: null,
         card_token: null,
@@ -123,6 +124,7 @@ export const useCart = defineStore('cart', () => {
     }
 
     return {
+        sessionCache,
         removeFromCart,
         cartTotal,
         freeDeliveryTarget,

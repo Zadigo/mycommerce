@@ -114,7 +114,6 @@ const { showAddedProductDrawer } = storeToRefs(useCart())
 const { translatePrice, isLiked, handleLike } = useShopComposable()
 const { mediaPath } = useDjangoUtilies()
 const { showSizeSelectionWarning, addToCart, userSelection } = useCartComposable()
-const { $client } = useNuxtApp()
 const { gtag } = useGtag()
 
 const cartStorage = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
@@ -156,11 +155,15 @@ const hasColorVariants = computed(() => {
   }
 })
 
-// onMounted(() => {
-//   if (props.sticky) {
+onMounted(() => {
+  if (props.product) {
+    isLiked.value = likedProducts.value.includes(props.product.id)
+  }
+
+  //   if (props.sticky) {
 //     productAside.value?.classList.add('fixed-aside')
 //   }
-// })
+})
 
 /**
  * Actions where the user selects a given size
@@ -170,36 +173,28 @@ function handleSizeSelection (size: string | number | null | undefined) {
   userSelection.value.size = size
 }
 
-// FIXME: The handle like sequence does not work properly. Maybe
-// we need to create a $subscribe on the store in order to sync the
-// elements from the store to the local storage
-async function proxyHandleLike () {
-  if (props.product) {
-    // FIXME: Doe not return anything ??
-    const result = await handleLike(props.product)
-    likedProducts.value = result
+function proxyHandleLike () {
+  const result = handleLike(likedProducts.value, props.product)
+  const state = result[0]
 
+  likedProducts.value = result[1]
+  isLiked.value = !isLiked.value
+
+  if (state) {
     gtag('event', 'add_to_wishlist', {
-      item_id: props.product?.id,
-      item_name: props.product?.name,
-      price: props.product?.get_price,
-      quantity: 1,
-      item_brand: null,
-      item_category: props.product?.category,
-      item_category2: props.product.sub_category,
-      item_variant: props.product?.color,
-      index: 0,
-      item_reference: null
+      items: {
+        item_id: props.product?.id,
+        item_name: props.product?.name,
+        price: props.product?.get_price,
+        quantity: 1,
+        item_brand: null,
+        item_category: props.product?.category,
+        item_category2: props.product?.sub_category,
+        item_variant: props.product?.color,
+        index: 0,
+        item_reference: null
+      }
     })
-
-    // $fbq('track', 'AddToCart', {
-    //   content_name: props.product.name,
-    //   content_category: props.product.category,
-    //   content_ids: [props.product.id],
-    //   content_type: 'product',
-    //   value: props.product.get_price,
-    //   currency: 'EUR'
-    // })
   }
 }
 

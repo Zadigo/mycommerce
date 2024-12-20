@@ -12,9 +12,47 @@
 </template>
 
 <script lang="ts" setup>
-import { useMediaQuery, useScreenOrientation, useDocumentVisibility, useSessionStorage } from '@vueuse/core'
-import type { CartUpdateAPIResponse, Profile } from '~/types';
+import { useMediaQuery, useScreenOrientation, useDocumentVisibility, useSessionStorage, useLocalStorage } from '@vueuse/core'
+import type { SessionCacheData, CartUpdateAPIResponse, Profile } from '~/types';
 
+const baseSessionCacheData: SessionCacheData = {
+  language: {
+    choice: 'fr',
+    location: 'France'
+  },
+  paymentIntent: null,
+  cart: null,
+  recommendations: [],
+  searchHistory: [],
+  authenticatedCart: false,
+  cartViewCount: 0,
+  profile: null,
+  popularImages: []
+}
+
+const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData, {
+  serializer: {
+    read (raw) {
+      return JSON.parse(raw)
+    },
+    write (value) {
+      return JSON.stringify(value)
+    }
+  }
+})
+
+const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
+  serializer: {
+    read (raw) {
+      return JSON.parse(raw)
+    },
+    write (value) {
+      return JSON.stringify(value)
+    }
+  }
+})
+
+// DELETE:
 const profile = useSessionStorage<Profile>('profile', null, {
   serializer: {
     read (raw) {
@@ -26,6 +64,7 @@ const profile = useSessionStorage<Profile>('profile', null, {
   }
 })
 
+// DELETE:
 const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
   serializer: {
     read (raw) {
@@ -36,8 +75,6 @@ const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
     }
   }
 })
-
-const currentLanguage = useSessionStorage<'en' | 'fr' | 'es'>('language', null)
 
 const shopStore = useShop()
 const authenticationStore = useAuthentication()
@@ -56,6 +93,18 @@ const documentVisible = useDocumentVisibility()
 provide('isMobile', value)
 provide('screenOrientation', isSupported)
 provide('documentVisible', documentVisible)
+
+shopStore.$subscribe(({ storeId }) => {
+  if (storeId === 'shop') {
+    shopStore.sessionCache = sessionCache.value
+    shopStore.likedProducts = likedProducts.value
+  }
+
+  // if (storeId === 'authentication') {
+  //   authenticationStore.accessToken = accessToken.value
+  //   authenticationStore.refreshToken = refreshToken.value
+  // }
+})
 
 // watch(currentLanguage, (newValue) => {
 //   if (newValue) {
@@ -78,10 +127,18 @@ async function requestSessionId () {
 }
 
 onBeforeMount(async () => {
+  if (!shopStore.sessionCache) {
+    shopStore.sessionCache = sessionCache.value
+  }
+
   authenticationStore.accessToken = accessToken.value
   authenticationStore.refreshToken = refreshToken.value
   authenticationStore.profile = profile.value
+  // DELETE:
   cartStore.cache = cart.value
+
+  cartStore.cache = sessionCache.value.cart
+  cartStore.sessionCache = sessionCache.value
   await requestSessionId()
 })
 

@@ -26,7 +26,7 @@
     </div>
 
     <!-- Heart -->
-    <button v-if="showLikeButton" id="btn-like-product" type="button" class="btn btn-light btn-floating" aria-label="Like product" @click="handleLike(product)">
+    <button v-if="showLikeButton" id="btn-like-product" type="button" class="btn btn-light btn-floating" aria-label="Like product" @click="proxyHandleLike">
       <font-awesome v-if="isLiked" icon="heart" />
       <font-awesome v-else :icon="['far', 'heart']" />
     </button>
@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useSessionStorage } from '@vueuse/core';
+import { useSessionStorage, useLocalStorage } from '@vueuse/core';
 import type { PropType } from 'vue';
 import type { Product } from '~/types';
 
@@ -90,12 +90,25 @@ const emit = defineEmits({
 
 const cartStore = useCart()
 
+const { gtag } = useGtag()
 const { showAddedProductDrawer } = storeToRefs(cartStore)
-const { isLiked } = useShopComposable()
+const { handleLike, isLiked } = useShopComposable()
 const { addToCart } = useCartComposable()
 const { mediaPath } = useDjangoUtilies()
 
+// DELETE:
 const cachedCart = useSessionStorage('cart', null, {
+  serializer: {
+    read (raw) {
+      return JSON.parse(raw)
+    },
+    write (value) {
+      return JSON.stringify(value)
+    }
+  }
+})
+
+const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
   serializer: {
     read (raw) {
       return JSON.parse(raw)
@@ -116,16 +129,48 @@ const requiresSizeItems = computed(() => {
   }
 })
 
+onMounted(() => {
+  if (props.product) {
+    isLiked.value = likedProducts.value.includes(props.product.id)
+  }
+})
+
 async function handleAddToCart (size?: string | number) {
   await addToCart(props.product,  size, (data) => {
     showAddedProductDrawer.value = true
+    // DELETE:
     cachedCart.value = data
     cartStore.cache = cachedCart.value
+    
+    if (cartStore.sessionCache) {
+      cartStore.sessionCache.cart = data
+    }
   })
 }
 
-async function handleLike (product: Product) {
-  console.log(product)
+function proxyHandleLike () {
+  const result = handleLike(likedProducts.value, props.product)
+  const state = result[0]
+
+  likedProducts.value = result[1]
+  isLiked.value = !isLiked.value
+
+  if (state) {
+    gtag('event', 'add_to_wishlist', {
+      items: {
+        item_id: props.product?.id,
+        item_name: props.product?.name,
+        price: props.product?.get_price,
+        quantity: 1,
+        item_brand: null,
+        item_category: props.product?.category,
+        item_category2: props.product?.sub_category,
+        item_variant: props.product?.color,
+        index: 0,
+        item_reference: null
+      }
+    })
+  }
 }
 </script>
 

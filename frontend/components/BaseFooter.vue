@@ -81,7 +81,7 @@
       
       <div class="d-flex justify-content-around gap-4">
         <a href="#" class="text-muted" @click.prevent="shopStore.showLanguageModal = true">
-          {{ languageOptions?.location }} | {{ languageOptions?.language }}
+          {{ shopStore.sessionCache?.language?.location }} | {{ shopStore.sessionCache?.language.choice }}
         </a>
         
         <a href="http://" class="text-muted">
@@ -120,12 +120,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useStorage } from '@vueuse/core'
 import { socialLinks, footerLinks, useCompany } from '@/utils'
-import type { LanguageOptions } from '~/types';
 
 const shopStore = useShop()
 const { companyDetails } = useCompany()
-const languageOptions = useStorage<LanguageOptions>('language', null)
 const showWhatsAppModal = ref(false)
 </script>

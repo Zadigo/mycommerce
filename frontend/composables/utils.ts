@@ -1,4 +1,5 @@
 import { isRef, ref } from 'vue'
+import { RemovableRef } from '@vueuse/core'
 
 import type { AxiosInstance } from "axios"
 import axios from 'axios'
@@ -148,9 +149,11 @@ export function useListManager () {
             const index = managedList.value.indexOf(item)
             const result = managedList.value.splice(index, 1)
             deletions.value = [...result]
+            return false
         } else {
             managedList.value.push(item)
             history.value.push(item)
+            return true
         }
     }
 

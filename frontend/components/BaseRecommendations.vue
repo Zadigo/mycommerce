@@ -50,6 +50,7 @@ const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
 const { gtag } = useGtag()
 
+const shopStore = useShop()
 const recommendations = ref<Product[]>([])
 const productsRow = ref<HTMLElement>()
 
@@ -79,13 +80,17 @@ function handleNavigation (data: (number | Product)[] | null | undefined) {
 
 async function requestRecommendations () {
   try {
-    const response = await $client.get('shop/products/recommendations', {
+    const response = await $client.get<Product[]>('shop/products/recommendations', {
       params: {
         p: route.params.id,
         q: props.quantity
       }
     })
+    
     recommendations.value = response.data
+    if (shopStore.sessionCache) {
+      shopStore.sessionCache.recommendations = response.data
+    }
   } catch (e) {
     handleError(e)
   }

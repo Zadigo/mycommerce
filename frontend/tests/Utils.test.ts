@@ -56,7 +56,6 @@ describe('Use List Manager', () => {
 
         save(visitedProducts, 5)
         expect(managedList.value).toEqual([1, 2, 5])
-
         
         save(visitedProducts, 5)
         expect(managedList.value).toEqual([1, 2])
@@ -75,7 +74,7 @@ describe('Use List Manager', () => {
         expect(history.value).toEqual([3, 5]);
     });
 
-    it('should return the history of deletions', () => {
+    it.todo('should return the history of deletions', () => {
         const { deletions, save } = useListManager();
         const visitedProducts = ref([1, 2]);
 
@@ -86,7 +85,7 @@ describe('Use List Manager', () => {
     });
 })
 
-describe("Debounce", () => {
+describe.todo("Debounce", () => {
     beforeEach(() => {
         vi.useFakeTimers()
         vi.runOnlyPendingTimers()

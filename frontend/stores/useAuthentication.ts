@@ -14,16 +14,6 @@ export const useAuthentication = defineStore('authentication', () => {
         return !isNull(accessToken.value)
     })
 
-    function loadFromCache () {
-        const cookie = useCookie('access')
-
-        if (isNull(cookie.value)) {
-            return 
-        } else {
-            accessToken.value = cookie.value
-        }
-    }
-
     function logout() {
         accessToken.value = null
         refreshToken.value = null
@@ -36,7 +26,6 @@ export const useAuthentication = defineStore('authentication', () => {
 
     return {
         logout,
-        loadFromCache,
         setTokens,
         isAuthenticated,
         showLoginDrawer,
