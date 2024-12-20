@@ -81,7 +81,6 @@
       
       <div class="d-flex justify-content-around gap-4">
         <ClientOnly>
-          <!-- FIXME: Raises an hydration error: server render "|" while expecting "France | fr" -->
           <a href="#" class="text-muted" @click.prevent="shopStore.showLanguageModal=true">
             {{ shopStore.sessionCache?.language?.location }} | {{ shopStore.sessionCache?.language?.choice }}
           </a>
