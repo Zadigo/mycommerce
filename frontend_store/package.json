@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@unhead/addons": "^1.9.7",
-    "@unhead/schema-org": "^1.9.5",
+    "@unhead/schema-org": "^1.11.14",
     "@vitejs/plugin-vue": "^5.1.4",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
