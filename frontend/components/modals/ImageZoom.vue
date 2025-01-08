@@ -20,12 +20,12 @@ const props = defineProps({
     default: false
   },
   product: {
-    type: Object as PropType<Product | null>,
-    required: true
+    type: Object as PropType<Product | null | undefined>,
+    default: () => ({})
   },
   image: {
     type: Object as PropType<ProductImage | null | undefined>,
-    required: true
+    default: () => ({})
   }
 })
 

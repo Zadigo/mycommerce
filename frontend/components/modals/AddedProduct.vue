@@ -42,7 +42,7 @@
           </div>
           
           <!-- Recommendations -->
-          <BaseRecommendations :quantity="20" :columns="3" :show-like-button="false" :show-cart="false" :show-prices="false" />
+          <BaseRecommendations :quantity="20" :columns="3" :load-cache="true" :show-like-button="false" :show-cart="false" :show-prices="false" />
         </div>
 
         <div v-else class="col-12">

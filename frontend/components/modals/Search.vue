@@ -32,7 +32,7 @@
               </template>
               
               <template #fallback>
-                <BaseLoadingRecommendations />
+                <BaseLoadingRecommendations :load-cache="true" />
               </template>
             </Suspense>
           </div>

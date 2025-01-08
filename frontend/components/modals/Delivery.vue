@@ -1,5 +1,6 @@
 <template>
-  <v-navigation-drawer v-model="proxyShow" width="400" location="right" temporary @close="emit('close')">
+  <Teleport la></Teleport>
+  <v-navigation-drawer id="delivery" v-model="proxyShow" width="400" location="right" temporary @close="emit('close')">
     <div class="container my-4 fw-light">
       <div class="row">
         <p class="fw-bold mb-1 mt-3">
