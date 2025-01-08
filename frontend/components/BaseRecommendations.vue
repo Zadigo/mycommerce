@@ -42,6 +42,10 @@ const props = defineProps({
   showPrices: {
     type: Boolean,
     default: true
+  },
+  loadCache: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -57,6 +61,8 @@ const productsRow = ref<HTMLElement>()
 function handleNavigation (data: (number | Product)[] | null | undefined) {
   if (data) {
     const product = data[1]
+
+    shopStore.closeAllModals()
 
     if (product && typeof product === 'object' && 'id' in product) {
       gtag('event',  'select_item',  {
@@ -80,23 +86,31 @@ function handleNavigation (data: (number | Product)[] | null | undefined) {
 
 async function requestRecommendations () {
   try {
-    const response = await $client.get<Product[]>('shop/products/recommendations', {
-      params: {
-        p: route.params.id,
-        q: props.quantity
+    if (!props.loadCache) {
+      const response = await $client.get<Product[]>('shop/products/recommendations', {
+        params: {
+          p: route.params.id,
+          q: props.quantity
+        }
+      })
+
+      recommendations.value = response.data
+
+      if (shopStore.sessionCache) {
+        shopStore.sessionCache.recommendations = response.data
       }
-    })
-    
-    recommendations.value = response.data
-    if (shopStore.sessionCache) {
-      shopStore.sessionCache.recommendations = response.data
+    } else {
+      if (shopStore.sessionCache) {
+        recommendations.value = shopStore.sessionCache.recommendations
+      }
     }
   } catch (e) {
     handleError(e)
   }
 }
 
-onBeforeMount(requestRecommendations)
+// onBeforeMount(requestRecommendations)
+requestRecommendations()
 
 onMounted(() => {
   if (props.scrollable) {

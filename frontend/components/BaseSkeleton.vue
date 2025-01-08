@@ -1,6 +1,8 @@
 <template>
-  <div v-if="loading" ref="skeletonEl" class="card-skeleton" />
-  <slot v-else />
+  <div id="loader">
+    <div v-if="loading" ref="skeletonEl" class="card-skeleton" />
+    <slot v-else />
+  </div>
 </template>
 
 <script lang="ts" setup>

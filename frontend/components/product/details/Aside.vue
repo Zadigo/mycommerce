@@ -63,7 +63,8 @@
 
     <div class="actions d-flex justify-content-start gap-1 my-4">
       <button id="btn-add-to-cart" type="button" class="btn btn-primary btn-lg shadow-none btn-rounded" aria-label="Add to cart" @click="handleAddToCart">
-        {{ $t('Ajouter au panier') }}
+        <v-progress-circular v-if="addingToCartState" color="light" indeterminate />
+        <span v-else>{{ $t('Ajouter au panier') }}</span>
       </button>
 
       <button type="button" class="btn btn-lg shadow-none btn-rounded btn-light" aria-label="Like product" @click="proxyHandleLike">
@@ -86,7 +87,7 @@
 <script lang="ts" setup>
 import { useLocalStorage, useSessionStorage } from '@vueuse/core';
 import type { PropType } from 'vue'
-import type { CartUpdateAPIResponse, Product, SessionCacheData } from '~/types';
+import type { CartUpdateAPIResponse, Product } from '~/types';
 
 const props = defineProps({
   isLoading: {
@@ -113,7 +114,7 @@ const { showAddedProductDrawer } = storeToRefs(useCart())
 
 const { translatePrice, isLiked, handleLike } = useShopComposable()
 const { mediaPath } = useDjangoUtilies()
-const { showSizeSelectionWarning, addToCart, userSelection } = useCartComposable()
+const { showSizeSelectionWarning, addToCart, userSelection, addingToCartState } = useCartComposable()
 const { gtag } = useGtag()
 
 // DELETE:

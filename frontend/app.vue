@@ -12,25 +12,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useMediaQuery, useScreenOrientation, useDocumentVisibility, useSessionStorage, useLocalStorage } from '@vueuse/core'
-import type { SessionCacheData, CartUpdateAPIResponse, Profile } from '~/types';
+import { useDocumentVisibility, useLocalStorage, useMediaQuery, useScreenOrientation, useSessionStorage } from '@vueuse/core';
+import type { CartUpdateAPIResponse, Profile, SessionCacheData } from '~/types';
 
-const baseSessionCacheData: SessionCacheData = {
-  language: {
-    choice: 'fr',
-    location: 'France'
-  },
-  paymentIntent: null,
-  cart: null,
-  recommendations: [],
-  searchHistory: [],
-  authenticatedCart: false,
-  cartViewCount: 0,
-  profile: null,
-  popularImages: []
-}
-
-const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData, {
+const sessionCache = useSessionStorage<SessionCacheData>('cache', null, {
   serializer: {
     read (raw) {
       return JSON.parse(raw)

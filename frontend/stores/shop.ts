@@ -6,6 +6,7 @@ export const useShop =  defineStore('shop', () => {
 
     const showSearchModal = ref(false)
     const showLanguageModal = ref(false)
+
     const visitedProducts = ref<number[]>([])
     const likedProducts = ref<number[]>([])
     
@@ -31,6 +32,11 @@ export const useShop =  defineStore('shop', () => {
         return Array.from(new Set(visitedProducts.value))
     })
 
+    function closeAllModals() {
+        showSearchModal.value = false
+        showLanguageModal.value = false
+    }
+
     /**
      * Adds the product to the list of
      * products that were historically
@@ -44,6 +50,7 @@ export const useShop =  defineStore('shop', () => {
 
     return {
         sessionCache,
+        closeAllModals,
         currentProductIndex,
         addToHistory,
         showSearchModal,

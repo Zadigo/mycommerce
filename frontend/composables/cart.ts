@@ -24,6 +24,8 @@ export function useCartComposable () {
     const showSizeSelectionWarning = ref<boolean>(false)
     const stockDetailsResponse = ref({})
     const cartStore = useCart()
+    
+    const addingToCartState = ref(false)
 
     const parsedSession = computed((): { a: string, b: string, c: string } | null => {
         if (cartStore.sessionId) {
@@ -41,6 +43,8 @@ export function useCartComposable () {
      */
     async function addToCart(product: Product, size?: string | number | null, callback?: FunctionCallback, authCallback?: (data: LoginAPIResponse) => void) {
         try {
+            addingToCartState.value = true
+
             const cart = useCart()
 
             // By changing this, it updates in the underlying
@@ -54,12 +58,15 @@ export function useCartComposable () {
 
             if (product.has_sizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null)) {
                 showSizeSelectionWarning.value = true
+                addingToCartState.value = false
                 return
             } else {
                 userSelection.value.size = 'Unique'
             }
 
             const response = await $client.post('/cart/add', userSelection.value)
+
+            addingToCartState.value = false
 
             if (response.status === 201) {
                 if (callback && typeof callback === 'function') {
@@ -110,6 +117,7 @@ export function useCartComposable () {
     }
 
     return {
+        addingToCartState,
         parsedSession,
         userSelection,
         showSizeSelectionWarning,

@@ -1,9 +1,19 @@
-import type { Product } from "~/types"
+import type { Product, ProductImage } from "~/types"
 
 export function useShopComposable () {
     const { $i18n } = useNuxtApp()
-    const shopStore = useShop()
     const isLiked = ref(false)
+
+    function ValidateProp<T extends Product | ProductImage>(item: T | object | null | undefined): item is T {
+        if (!item || typeof item !== 'object') {
+            return false
+        } else {
+            return (
+                'id' in item &&
+                typeof (item as T).id === 'number'
+            )
+        }
+    }
     
     /**
      * A composable that implements default
@@ -46,6 +56,7 @@ export function useShopComposable () {
 
     return {
         isLiked,
+        ValidateProp,
         translatePrice,
         handleLike
     }

@@ -1,12 +1,12 @@
 <template>
   <div :class="`col-${columns}`">
-    <BaseSkeleton :loading="isLoading">
+    <BaseSkeleton :loading="isLoading" height="550px">
       <v-img :src="firstImage.original" class="product-image img-fluid" @click="selectImage(firstImage, () => emit('select-image', firstImage))" />
     </BaseSkeleton>
   </div>
   
   <div :class="`col-${columns}`">
-    <BaseSkeleton :loading="isLoading">
+    <BaseSkeleton :loading="isLoading" height="550px">
       <v-img :src="secondImage.original" class="product-image img-fluid" @click="selectImage(secondImage, () => emit('select-image', secondImage))" />
     </BaseSkeleton>
   </div>
@@ -19,7 +19,7 @@ import type { Product, ProductImage } from '~/types';
 const props = defineProps({
   product: {
     type: Object as PropType<Product | null>,
-    required: true
+    default: () => ({})
   },
   indexes: {
     type: Array as PropType<number[]>,
@@ -38,6 +38,7 @@ const emit = defineEmits({
 })
 
 const { selectImage } = useImages()
+const { ValidateProp } = useShopComposable()
 
 const images = computed(() => {
   if (props.product) {
@@ -56,6 +57,6 @@ const secondImage = computed(() => {
 })
 
 const isLoading = computed(() => {
-  return !props.product
+  return !ValidateProp<Product>(props.product)
 })
 </script>
