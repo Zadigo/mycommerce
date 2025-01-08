@@ -1,7 +1,7 @@
 import random
 
 import pandas
-import spacy
+# import spacy
 from django.db.models import Case, Q, When
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
