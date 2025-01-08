@@ -10,11 +10,13 @@
       <font-awesome icon="caret-right" />
     </a>
 
-    <!-- Composition -->
-    <ModalsComposition :show-modal="showCompositionDrawer" @close="showCompositionDrawer=false" />
+    <ClientOnly>
+      <!-- Composition -->
+      <ModalsComposition :show-modal="showCompositionDrawer" @close="showCompositionDrawer=false" />
 
-    <!-- Delivery And Returns -->
-    <ModalsDelivery :show-modal="showDeliveryDrawer" @close="showDeliveryDrawer=false" />
+      <!-- Delivery And Returns -->
+      <ModalsDelivery :show-modal="showDeliveryDrawer" @close="showDeliveryDrawer=false" />
+    </ClientOnly>
   </div>
 </template>
 

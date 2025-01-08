@@ -44,9 +44,11 @@
       </div>
     </div>
 
-    <!-- Modals -->
-    <ModalsImageZoom :show="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" @close="handleCloseSelection" />
-    <ModalsSizeGuide :product="product" :show-modal="showSizeGuideDrawer" @close="showSizeGuideDrawer=false" />
+    <ClientOnly>
+      <!-- Modals -->
+      <ModalsImageZoom :show="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" @close="handleCloseSelection" />
+      <ModalsSizeGuide :product="product" :show-modal="showSizeGuideDrawer" @close="showSizeGuideDrawer=false" />
+    </ClientOnly>
   </section>
 </template>
 
@@ -63,11 +65,12 @@ const AsyncBaseRecommendationBlock = defineAsyncComponent({
   timeout: 5000
 })
 
-const { $client, $fbq } = useNuxtApp()
+const { $client } = useNuxtApp()
 
 // Composable for product fetching
 function useProductDetails () {
   const route = useRoute()
+  const { ValidateProp } = useShopComposable()
 
   /**
    * WRITE DOCUMENTATION
@@ -76,11 +79,13 @@ function useProductDetails () {
     method: 'GET'
   })
   const product = computed(() => data.value)
-  const isLoading = computed(() => status.value !== 'success' && product.value === null)
+  const isLoading = computed(() => status.value !== 'success' && ValidateProp(product.value))
+
+  provide('isLoading', isLoading)
 
   return {
-    product,
-    isLoading
+    isLoading,
+    product
   }
 }
 
@@ -133,6 +138,7 @@ function useVisitedProducts (product: Ref<Product | null>) {
   }
 }
 
+// TODO: Refactor into a composable
 const moreProductsIntersect = ref<HTMLElement>()
 
 const { product, isLoading } = useProductDetails()
