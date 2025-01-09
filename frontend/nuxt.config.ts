@@ -37,7 +37,8 @@ export default defineNuxtConfig({
       STRIPE_PUBLISHABLE_KEY: process.env.NUXT_STRIPE_TEST_PUBLISHABLE_KEY,
       STRIPE_ACCOUNT: process.env.NUXT_STRIPE_TEST_PUBLISHABLE_KEY,
       STRIPE_API_VERSION: '2024-06-20',
-      STRIPE_LOCALE: 'fr'
+      STRIPE_LOCALE: 'fr',
+      WHATS_APP_URL: process.env.NUXT_WHATS_APP_URL
     }
   },
   devtools: {
