@@ -86,6 +86,8 @@
 </template>
 
 <script lang="ts" setup>
+import { defaultPriceFilters, defaultSizes, defaultSortingFilters } from '~/data'
+
 type Actions = 'sorted by' | 'typology' | 'colors' | 'sizes' | 'price'
 
 interface SelectedFilters {
