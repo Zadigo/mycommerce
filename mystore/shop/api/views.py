@@ -101,10 +101,9 @@ class ListRecommendations(generics.ListAPIView):
     permission_classes = [AllowAny]
 
     def recommendation_by_randomness(self, products, quantity):
-        # try:
-        #     return random.choices(products, k=quantity)
-        # except:
-        #     return random.choices(products, k=len(products))
+        if len(products) == 0:
+            return []
+        
         selected_items = set()
         for _ in range(int(quantity)):
             selected_items.add(random.choice(products))
