@@ -4,9 +4,9 @@
       <ProductsFeedHeader :products="products" :count="totalProductCount" @update:grid-size="handleGridSize" @show-product-filters="showProductFilters=true" />
     </template>
 
-<!-- Products -->
+    <!-- Products -->
     <template v-if="products && products.length > 0" #default>
-            <!-- FIXME: Raises hydration error -->
+      <!-- FIXME: Raises hydration error -->
       <ProductsIterator :products="products" :columns="currentGridSize" @navigate="handleNavigation" />
 
       <!-- Intersect -->
@@ -48,7 +48,6 @@
 
 <script lang="ts" setup>
 import { useIntersectionObserver, useLocalStorage  } from '@vueuse/core'
-// import type { ValidateProduct, ProductSchema } from '~/utils/schemas';
 import type { Product, ProductsAPIResponse } from '~/types';
 
 const emit = defineEmits({
@@ -58,7 +57,7 @@ const emit = defineEmits({
 })
 
 const route = useRoute()
-const currentGridSize = useLocalStorage('grid', 3, { initOnMounted: true })
+const currentGridSize = useLocalStorage('grid', 3)
 
 const { $client } = useNuxtApp()
 const { scrollToTop } = useUtilities()
@@ -67,13 +66,20 @@ const { handleError } = useErrorHandler()
 const { gtag } = useGtag()
 
 const isLoadingMoreProducts = ref(false)
+const products = ref<Product[]>([])
+const cachedResponse = ref<ProductsAPIResponse>()
+
 const offsetsList = ref<(string | number)[]>([])
 const intersectionTarget = ref<HTMLElement | null>(null)
+
 const showProductFilters = ref(false)
 
-const cachedResponse = ref<ProductsAPIResponse>()
-const products = ref<Product[]>([])
+// TODO: Add a provide so that all the components have access
+// to the products from the this parent component
 
+// NOTE: Uses the Nuxt server backend. Maybe shift to frontend
+// based request using Axios - or; since the page is pre-built
+// on the server side for SEO, keep this function
 const { status } = await useFetch<ProductsAPIResponse>(`/api/collections/${route.params.id}`, {
   method: 'GET',
   transform: (data) => {
