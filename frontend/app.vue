@@ -1,19 +1,26 @@
 <template>
-  <v-app>
+  <VApp>
+    <!-- Loader -->
     <NuxtLoadingIndicator />
+    <Toaster />
     
+    <!-- Main -->
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
 
     <!-- Modals -->
     <ModalsLanguage />
-  </v-app>
+  </VApp>
 </template>
 
 <script lang="ts" setup>
+import 'animate.css';
+
 import { useDocumentVisibility, useLocalStorage, useMediaQuery, useScreenOrientation, useSessionStorage } from '@vueuse/core';
-import type { CartUpdateAPIResponse, Profile, SessionCacheData } from '~/types';
+import { baseSessionCacheData } from '~/data';
+import { Toaster } from 'vue-sonner'
+import type { SessionCacheData } from '~/types';
 
 const sessionCache = useSessionStorage<SessionCacheData>('cache', null, {
   serializer: {
@@ -27,30 +34,6 @@ const sessionCache = useSessionStorage<SessionCacheData>('cache', null, {
 })
 
 const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    }
-  }
-})
-
-// DELETE:
-const profile = useSessionStorage<Profile>('profile', null, {
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    }
-  }
-})
-
-// DELETE:
-const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
   serializer: {
     read (raw) {
       return JSON.parse(raw)
@@ -84,15 +67,12 @@ shopStore.$subscribe(({ storeId }) => {
     shopStore.sessionCache = sessionCache.value
     shopStore.likedProducts = likedProducts.value
   }
+})
 
+cartStore.$subscribe(({ storeId }) => {
   if (storeId === 'cart') {
     cartStore.sessionCache = sessionCache.value
   }
-
-  // if (storeId === 'authentication') {
-  //   authenticationStore.accessToken = accessToken.value
-  //   authenticationStore.refreshToken = refreshToken.value
-  // }
 })
 
 // watch(currentLanguage, (newValue) => {
@@ -103,7 +83,10 @@ shopStore.$subscribe(({ storeId }) => {
 //   immediate: true
 // })
 
-// TODO: Use cookie or session?
+// TODO: Use cookie or session? The session
+// deletes the key which allows us to catch
+// repeated connexions where as the cookie
+// remembers single connexions
 async function requestSessionId () {
   try {
     if (!cookieSessionId.value) {
@@ -116,31 +99,42 @@ async function requestSessionId () {
 }
 
 onBeforeMount(async () => {
+  // Populate the cache with the required data
+  // before loading each page
+  if (!sessionCache.value) {
+    sessionCache.value = baseSessionCacheData
+  }
+
+  // Hook the data from the session to
+  // the cache of the store
   if (!shopStore.sessionCache) {
     shopStore.sessionCache = sessionCache.value
   }
-
+  
   if (!cartStore.sessionCache) {
     cartStore.sessionCache = sessionCache.value
   }
 
+  // Load the default values that will be used for
+  // authentication and for the user's profile inforamtion
   authenticationStore.accessToken = accessToken.value
   authenticationStore.refreshToken = refreshToken.value
-  authenticationStore.profile = profile.value
-  // DELETE:
-  cartStore.cache = cart.value
+  authenticationStore.profile = sessionCache.value.profile
 
-  cartStore.cache = sessionCache.value.cart
-  cartStore.sessionCache = sessionCache.value
+  // Get the session ID token that we
+  // will be using for the user adds
+  // an item to his cart -; this is
+  // is mainly for adding items to
+  // the cart anonymously
   await requestSessionId()
 })
 
-// TODO: Open the language modal when the user first
-// lands on the page. Problem is we have to sync it
-// with the session/cookie 
-// onMounted(() => {
-//   if (!currentLanguage.value) {
-//     shopStore.showLanguageModal = true
-//   }
-// })
+// When the user first comes on the
+// platform, invite him to select
+// his preferred language
+onMounted(() => {
+  if (!sessionCache.value.language.selected) {
+    shopStore.showLanguageModal = true
+  }
+})
 </script>
