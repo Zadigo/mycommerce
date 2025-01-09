@@ -1,12 +1,18 @@
 <template>
   <div id="product-aside" ref="productAside" class="position-relative">
     <!-- Information -->
-    <h1 :aria-label="product?.name" class="h3">
-      {{ product?.name }}
-    </h1>
+    <template v-if="product">
+      <h1 :aria-label="product?.name" class="h3">
+        {{ product.name }}
+      </h1>
+    </template>
+
+    <template v-else>
+      <BaseSkeleton :loading="isLoading" height="10px" width="200px" class="mb-2" />
+    </template>
 
     <!-- Price -->
-    <BaseSkeleton :loading="isLoading" class="mb-3" width="50px">
+    <template v-if="product">
       <p v-if="product?.on_sale" class="h5 fw-bold mb-3 d-flex gap-2">
         <span class="text-danger">
           {{ translatePrice(product?.sale_price) }}
@@ -26,7 +32,11 @@
       <p v-else class="h5 fw-bold mb-3" aria-label="Product price">
         {{ translatePrice(product?.get_price) }}
       </p>
-    </BaseSkeleton>
+    </template>
+
+    <template v-else>
+      <BaseSkeleton :loading="isLoading" height="10px" width="100px" class="mb-3" />
+    </template>
 
     <!-- Variants -->
     <div v-if="hasColorVariants" id="variants" class="d-flex justify-content-start align-items-center gap-1 my-4">
@@ -45,7 +55,7 @@
     <hr class="my-4 text-body-tertiary">
 
     <!-- Sizes -->
-    <ProductSizeBlock v-if="product" :sizes="product.sizes" @update-size="handleSizeSelection" />
+    <ProductSizeBlock v-if="product" ref="sizeEl" :sizes="product.sizes" @update-size="handleSizeSelection" />
 
     <!-- Size Guide -->
     <p class="text-small mt-3 mb-1 fw-light">Taille et hauteur du mannequin : S · 172 cm</p>
@@ -85,9 +95,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useLocalStorage, useSessionStorage } from '@vueuse/core';
-import type { PropType } from 'vue'
-import type { CartUpdateAPIResponse, Product } from '~/types';
+import { useLocalStorage } from '@vueuse/core';
+import type { PropType } from 'vue';
+import type { Product } from '~/types';
 
 const props = defineProps({
   isLoading: {
@@ -96,11 +106,8 @@ const props = defineProps({
   },
   product: {
     type: Object as PropType<Product | null>,
-    required: true
-  },
-  sticky: {
-    type: Boolean,
-    default: false
+    required: true,
+    default: null
   }
 })
 
@@ -117,18 +124,6 @@ const { mediaPath } = useDjangoUtilies()
 const { showSizeSelectionWarning, addToCart, userSelection, addingToCartState } = useCartComposable()
 const { gtag } = useGtag()
 
-// DELETE:
-const cartStorage = useSessionStorage<CartUpdateAPIResponse>('cart', null, {
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    },
-  }
-})
-
 const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
   serializer: {
     read (raw) {
@@ -141,6 +136,8 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
 })
 
 const cartStore = useCart()
+
+const sizeEl = ref<HTMLElement>()
 const productAside = ref<HTMLElement>()
 
 provide('userSelection', userSelection)
@@ -160,16 +157,10 @@ onMounted(() => {
   if (props.product) {
     isLiked.value = likedProducts.value.includes(props.product.id)
   }
-
-  //   if (props.sticky) {
-//     productAside.value?.classList.add('fixed-aside')
-//   }
 })
 
-/**
- * Actions where the user selects a given size
- * for a given product 
- */
+// Actions where the user selects a given size
+// for a given product 
 function handleSizeSelection (size: string | number | null | undefined) {
   userSelection.value.size = size
 }
@@ -199,19 +190,13 @@ function proxyHandleLike () {
   }
 }
 
-/**
- * Handles the action of adding a product
- * to the current user's cart. Products that
- * require a size will force the user to
- * select a size before handling the action
- */
+// Handles the action of adding a product
+// to the current user's cart. Products that
+// require a size will force the user to
+// select a size before handling the action
 async function handleAddToCart () {
   if (props.product) {
     addToCart(props.product, null, (data) => {
-      // DELETE:
-      cartStorage.value = data
-      cartStore.cache = data
-
       if (cartStore.sessionCache) {
         cartStore.sessionCache.cart = data
       }
@@ -237,6 +222,10 @@ async function handleAddToCart () {
           }
         ]
       })
+
+      if (sizeEl.value) {
+        sizeEl.value.resetSize()
+      }
     }, (error) => {
       // FIXME: Error is not LoginAPIResponse so change
       // the ts to fit the correct error response
