@@ -64,28 +64,27 @@ const emit = defineEmits({
 })
 
 const cartStore = useCart()
+
 const { gtag } = useGtag()
 const { mediaPath } = useDjangoUtilies()
-const { cache } = storeToRefs(cartStore)
 const { deleteFromCart } = useCartComposable()
 
- /**
-   * Computed property that get the items from the session
-   * and iterates on each statistic object to be displayed 
-   * 
-   * TODO: Refactor this function
-   */
-const cartItems = computed((): ProductToEdit[] => {
-  const cachedCart = cache.value || {}
-  const statistics = cachedCart.statistics || []
-  
-  return statistics.map((item) => {
-    const productInfo = cachedCart.results.find((cartItem) => {
+ const { sessionCache } = storeToRefs(cartStore)
+
+// Computed property that get the items from the session
+   // and iterates on each statistic object to be displayed 
+   const cartItems = computed((): ProductToEdit[] => {
+  if (sessionCache.value) {
+    if (sessionCache.value.cart) {
+      return sessionCache.value.cart.statistics.map((item) => {
+    const productInfo = sessionCache.value.cart.results.find((cartItem) => {
       return cartItem.product.id === item.product__id
     })
-
     return { ...item, product_info: productInfo }
   })
+}
+  }
+  return []
 })
 
 /**
