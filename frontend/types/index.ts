@@ -11,6 +11,7 @@ export type StringNull = string | null | undefined
 export type LanguageOptions = {
     location: string | null
     choice: 'fr' | 'en' | 'es' | string
+    selected: boolean
 };
 
 // TODO: Create a large session and localstorage
