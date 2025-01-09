@@ -1,12 +1,13 @@
 <template>
-  <v-navigation-drawer v-model="proxyShow" width="400" location="right" sticky temporary @close="$emit('close')">
+  <!-- FIXME: Component does not mount -->
+  <v-navigation-drawer v-model="show" width="400" location="right" sticky temporary @close="emit('update:modelValue', false)">
     <div class="d-flex flex-column justify-content-around">
       <v-container class="border-bottom d-flex justify-content-between align-items-center">
         <h4 class="m-0">
           {{ $t("Filtrer") }}
         </h4>
 
-        <v-btn variant="tonal" @click="emit('close')">
+        <v-btn variant="tonal" @click="emit('update:modelValue', false)">
           <font-awesome icon="close" round />
         </v-btn>
       </v-container>
@@ -19,7 +20,7 @@
             <v-expansion-panel-text>
               <div class="price-filters p-2">
                 <div class="d-flex justify-content-start flex-wrap gap-2">
-                  <v-btn v-for="sortingFilter in sortingFilters" :key="sortingFilter[0]" :active="selectedFilters.sorted_by===sortingFilter[0]" variant="outlined" size="small" rounded @click="handleFilterSelection('sorted by', sortingFilter[0])">
+                  <v-btn v-for="sortingFilter in defaultSortingFilters" :key="sortingFilter[0]" :active="selectedFilters.sorted_by===sortingFilter[0]" variant="outlined" size="small" rounded @click="handleFilterSelection('sorted by', sortingFilter[0])">
                     {{ $t(sortingFilter[1]) }}
                   </v-btn>
                 </div>
@@ -51,7 +52,7 @@
             </v-expansion-panel-title>
 
             <v-expansion-panel-text>
-              <v-btn v-for="size in sizes.clothes" :key="size" :active="selectedFilters.sizes.includes(size)" size="small" variant="outlined" class="ms-2" rounded @click="handleFilterSelection('sizes', size)">
+              <v-btn v-for="size in defaultSizes.clothes" :key="size" :active="selectedFilters.sizes.includes(size)" size="small" variant="outlined" class="ms-2" rounded @click="handleFilterSelection('sizes', size)">
                 {{ size }}
               </v-btn>
             </v-expansion-panel-text>
@@ -64,7 +65,7 @@
             </v-expansion-panel-title>
             
             <v-expansion-panel-text>
-              <v-btn v-for="priceFilter in priceFilters" :key="priceFilter.value" :active="priceFilter.value===selectedFilters.price" class="me-2 mb-2" variant="outlined" size="small" color="dark" rounded @click="handleFilterSelection('price', priceFilter.value)">
+              <v-btn v-for="priceFilter in defaultPriceFilters" :key="priceFilter.value" :active="priceFilter.value===selectedFilters.price" class="me-2 mb-2" variant="outlined" size="small" color="dark" rounded @click="handleFilterSelection('price', priceFilter.value)">
                 {{ priceFilter.text }}
               </v-btn>
             </v-expansion-panel-text>
@@ -77,7 +78,7 @@
           {{ $t("Supprimer") }}
         </v-btn>
         
-        <v-btn color="secondary" variant="tonal" rounded @click="proxyShow=false">
+        <v-btn color="secondary" variant="tonal" rounded @click="show=false">
           Voir résulats ({{ count }})
         </v-btn>
       </v-container>
@@ -99,7 +100,7 @@ interface SelectedFilters {
 }
 
 const props = defineProps({
-  showModal: {
+  modelValue: {
     type: Boolean
   },
   count: {
@@ -112,7 +113,7 @@ const emit = defineEmits({
   'update-products' (_data: string) {
     return true
   },
-  close() {
+  'update:modelValue'(_value: boolean) {
     return true
   }
 })
@@ -195,14 +196,4 @@ function handleFiltersReset () {
     price: null
   }
 }
-
-/**
- * 
- */
-const proxyShow = computed({
-  get: () => props.showModal,
-  set: () => {
-    emit('close')
-  }
-})
 </script>
