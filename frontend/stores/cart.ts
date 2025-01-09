@@ -32,24 +32,26 @@ export const useCart = defineStore('cart', () => {
     })
 
     const cache = ref<CartUpdateAPIResponse | null>()
+
     const showAddedProductDrawer = ref(false)
     const showEditProductDrawer = ref(false)
     const showCartDrawer = ref(false)
 
-    const cookieSessionId = useCookie('sessionId')
-
     const sessionId = computed(() => {
-        // TODO: Remove the getting the session_id from the
-        // cache since we have it directly from the cookie?
-        return cache.value?.session_id || cookieSessionId.value
+        if (sessionCache.value) {
+            return sessionCache.value.cart?.session_id
+        } else {
+            return null
+        }
     })
 
     const products = computed(() => {
-        if (cache.value) {
-            return cache.value.results
-        } else {
-            return []
+        if (sessionCache.value) {
+            if (sessionCache.value.cart) {
+                return sessionCache.value.cart.results
+            }
         }
+        return []
     })
 
     /**
@@ -66,8 +68,8 @@ export const useCart = defineStore('cart', () => {
      */
     const numberOfProducts = computed((): number => {
         if (hasProducts.value) {
-            if (cache.value) {
-                return cache.value.statistics.map(x => x.quantity).reduce((a, b) => a + b, 0)
+            if (sessionCache.value && sessionCache.value.cart) {
+                return sessionCache.value.cart.statistics.map(x => x.quantity).reduce((a, b) => a + b, 0)
             }
         }
         return 0
@@ -81,7 +83,8 @@ export const useCart = defineStore('cart', () => {
      */
     const lastAddedProduct = computed((): CartItem | null => {
         if (products.value.length > 0) {
-            return products.value[products.value.length - 1]
+            // return products.value[products.value.length - 1]
+            return products.value[0]
         } else {
             return null
         }
@@ -94,14 +97,11 @@ export const useCart = defineStore('cart', () => {
      */
     const cartTotal = computed((): number => {
         if (hasProducts.value) {
-            if (cache.value) {
-                return cache.value.statistics.map(x => x.total).reduce((a, b) => a + b, 0)
-            } else {
-                return 0
+            if (sessionCache.value && sessionCache.value.cart) {
+                return sessionCache.value.cart.statistics.map(x => x.total).reduce((a, b) => a + b, 0)
             }
-        } else {
-            return 0;
         }
+        return 0
     })
 
     /**
