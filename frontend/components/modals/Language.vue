@@ -19,14 +19,14 @@
             </p>
 
             <div class="d-flex gap-1">
-              <v-btn v-for="value in languages" :key="value" :active="shopStore.sessionCache.language.choice === value" variant="outlined" rounded @click="shopStore.sessionCache.language.choice = value">
+              <v-btn v-for="value in languages" :key="value" :active="shopStore.sessionCache.language.choice === value" variant="outlined" rounded @click="(value: string) => { shopStore.sessionCache.language.choice = value }">
                 {{ value.toUpperCase() }}
               </v-btn>
             </div>
           </div>
 
           <div class="col-12 d-flex justify-content-end">
-            <v-btn id="btn-select-language" variant="tonal" color="primary" rounded @click="shopStore.showLanguageModal=false">
+            <v-btn id="btn-select-language" variant="tonal" color="primary" rounded @click="handleSelection">
               {{ $t('Enregistrer mon choix') }}
             </v-btn>
           </div>
@@ -44,4 +44,11 @@ const i18n = useI18n()
 const shopStore = useShop()
 
 const languages = ref<string[]>(i18n.availableLocales)
+
+function handleSelection() {
+  if (shopStore.sessionCache) {
+    shopStore.sessionCache.language.selected = true
+  }
+  shopStore.showLanguageModal=false
+}
 </script>
