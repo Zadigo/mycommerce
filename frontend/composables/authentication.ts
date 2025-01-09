@@ -55,10 +55,6 @@ export function useAuthencationComposable() {
         }
     }
 
-    async function authenticateFromCache() {
-
-    }
-
     async function testLogin (callback: () => void) {
         const accessToken = useCookie('access')
         const refreshToken = useCookie('refresh')
@@ -77,7 +73,6 @@ export function useAuthencationComposable() {
         authenticate,
         login,
         logout,
-        refresh,
-        authenticateFromCache
+        refresh
     }
 }
