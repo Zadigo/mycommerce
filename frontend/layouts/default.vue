@@ -22,7 +22,7 @@
             <div class="text-center">
               <h6 claass="fw-bold mb-5">WhatsApp</h6>
               
-              QR CODE
+              <img :src="qrCode">
 
               <p class="text-small mt-5">Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone</p>
             </div>
@@ -37,10 +37,13 @@
 </template>
 
 <script lang="ts" setup>
+import { useQRCode } from '@vueuse/integrations/useQRCode'
 import type { ProductToEdit } from '~/types';
 
 const cartStore = useCart()
 const { showCartDrawer, showEditProductDrawer } = storeToRefs(cartStore)
+const qrCode = useQRCode(import.meta.env.NUXT_WHATS_APP_URL)
+
 const currentEditedProduct = ref<ProductToEdit>()
 const showWhatsAppModal = ref(false)
 
