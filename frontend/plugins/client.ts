@@ -34,12 +34,14 @@ export default defineNuxtPlugin((nuxtApp) => {
                 originalRequest._retry = true
                 
                 try {
+                    const access = useCookie('access')
                     const authStore = useAuthentication()
                     const authClient = createClient('/auth/v1/')
                     const response = await authClient.post<LoginAPIResponse>('/token/refresh/', {
                         refresh: authStore.refreshToken
                     })
                     originalRequest.headers.Authorization = `Token ${response.data.access}`
+                    access.value = response.data.access
                     return baseClient(originalRequest)
                 } catch (refreshError) {
                     // FIXME: If the refresh fails, remove the access
