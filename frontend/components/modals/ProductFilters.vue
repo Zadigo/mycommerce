@@ -117,49 +117,6 @@ const emit = defineEmits({
 
 const { updateList } = useListManager()
 
-const sizes = {
-  "clothes": [
-    "XS",
-    "S",
-    "M",
-    "L",
-    "XL"
-  ]
-}
-
-const priceFilters = [
-  {
-    text: "Jusqu'à 15€",
-    value: 'Up to 15'
-  },
-  {
-    text: "Jusqu'à 20€",
-    value: 'Up to 20'
-  },
-  {
-    text: "Jusqu'à 25€",
-    value: 'Up to 25'
-  },
-  {
-    text: "Jusqu'à 30€",
-    value: 'Up to 30'
-  },
-  {
-    text: "Jusqu'à 35€",
-    value: 'Up to 40',
-  },
-  {
-    text: "Jusqu'à 50€",
-    value: 'Up to 50'
-  }
-]
-
-const sortingFilters = [
-  ['New', 'Nouveautés'],
-  ['Price up', 'Prix croissant'],
-  ['Price down', 'Prix décroissant']
-]
-
 const selectedFilters = ref<SelectedFilters>({
   sorted_by: 'New',
   typology: [],
