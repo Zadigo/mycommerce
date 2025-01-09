@@ -1,14 +1,12 @@
 <template>
   <div :class="`col-${columns}`">
-    <BaseSkeleton :loading="isLoading" height="550px">
-      <v-img :src="firstImage.original" class="product-image img-fluid" @click="selectImage(firstImage, () => emit('select-image', firstImage))" />
-    </BaseSkeleton>
+    <v-img v-if="firstImage" :src="firstImage.original" class="product-image img-fluid" @click="selectImage(firstImage, () => emit('select-image', firstImage))" />
+    <BaseSkeleton v-else :loading="true" height="550px" />
   </div>
   
   <div :class="`col-${columns}`">
-    <BaseSkeleton :loading="isLoading" height="550px">
-      <v-img :src="secondImage.original" class="product-image img-fluid" @click="selectImage(secondImage, () => emit('select-image', secondImage))" />
-    </BaseSkeleton>
+    <v-img v-if="secondImage" :src="secondImage.original" class="product-image img-fluid" @click="selectImage(secondImage, () => emit('select-image', secondImage))" />
+    <BaseSkeleton v-else :loading="true" height="550px" />
   </div>
 </template>
 
