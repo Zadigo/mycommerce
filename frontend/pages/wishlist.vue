@@ -51,6 +51,8 @@ const { likedProducts } = storeToRefs(shopStore)
 const authenticationStore = useAuthentication()
 const { showLoginDrawer } = storeToRefs(authenticationStore)
 
+const { handleError } = useErrorHandler()
+
 function useWhishlistProducts () {
   const { $client } = useNuxtApp()
   const products = ref<Product[]>([])
@@ -72,7 +74,7 @@ function useWhishlistProducts () {
       })
       products.value = response.data
     } catch (e) {
-      console.log(e)
+      handleError(e)
     }
   }
 
