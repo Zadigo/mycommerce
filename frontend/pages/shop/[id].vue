@@ -1,6 +1,6 @@
 <template>
   <section id="product" class="container-fluid px-0 mb-5" style="margin-top: 59px;">
-    <!-- Two blocks images -->
+    <!-- TODO: Move to component - Two blocks images -->
     <div class="row gy-1 gx-3">
       <div class="col-8">
         <div class="row gy-2 gx-2">
@@ -11,22 +11,6 @@
       </div>
 
       <ProductDetailsAside :product="product" :is-loading="isLoading" class="col-4 mt-5" sticky @show-size-guide="showSizeGuideDrawer=true" />
-    </div>
-
-    <!-- Multi-Block Image -->
-    <div class="row gy-1 d-none">
-      <div id="product-multi-grid" class="col-12">
-        <div class="row">
-          <!-- Main Image -->
-          <ProductDetailsSingleMainImage :product="product" />
-
-          <!-- Aside -->
-          <ProductDetailsAside :product="product" :is-loading="isLoading" class="col-4 mt-4" />
-        </div>
-      </div>
-
-      <!-- More Product Images -->
-      <component :is="imageComponent" :images="product?.images" />
     </div>
 
     <!-- More Products -->
@@ -54,18 +38,12 @@
 
 <script lang="ts" setup>
 import { useLocalStorage } from '@vueuse/core'
-import type { ConcreteComponent } from 'vue'
 import type { Product, ProductStock } from '~/types'
-
-const ProductDetailsFiveImages = resolveComponent('ProductDetailsFiveImages')
-const ProductDetailsSixImages = resolveComponent('ProductDetailsSixImages')
 
 const AsyncBaseRecommendationBlock = defineAsyncComponent({
   loader: async () => import('~/components/BaseRecommendations.vue'),
   timeout: 5000
 })
-
-const { $client } = useNuxtApp()
 
 // Composable for product fetching
 function useProductDetails () {
@@ -79,7 +57,7 @@ function useProductDetails () {
     method: 'GET'
   })
   const product = computed(() => data.value)
-  const isLoading = computed(() => status.value !== 'success' && ValidateProp(product.value))
+  const isLoading = computed(() => status.value === 'pending' || !ValidateProp(product.value))
 
   provide('isLoading', isLoading)
 
@@ -141,6 +119,7 @@ function useVisitedProducts (product: Ref<Product | null>) {
 // TODO: Refactor into a composable
 const moreProductsIntersect = ref<HTMLElement>()
 
+const { $client } = useNuxtApp()
 const { product, isLoading } = useProductDetails()
 const { trackProduct } = useVisitedProducts(product)
 const { requestProductStock } = useProductSotck(product)
@@ -149,17 +128,6 @@ const { gtag } = useGtag()
 
 const shopStore = useShop()
 const showSizeGuideDrawer = ref(false)
-
-/**
- * Returns the proper image component to display
- * the remaining images for the given product
- */
-const imageComponent = computed((): ConcreteComponent | string => {
-  const imageCount = product.value?.images?.length ?? 0
-  return imageCount === 6 
-  ? ProductDetailsSixImages
-  : ProductDetailsFiveImages
-})
 
 useHead({
   title: () => product.value?.name ?? 'Product Details',
@@ -191,13 +159,6 @@ onMounted(async () => {
         }
       ]
     })
-
-    // $fbq('dataProcessingOptions', 'ViewContent', {
-    //   content_ids: product.value.id,
-    //   content_name: product.value.name,
-    //   content_type: 'product',
-    //   value: product.value.get_price
-    // })
   }
 })
 </script>
