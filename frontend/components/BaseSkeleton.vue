@@ -26,33 +26,22 @@ const props = defineProps({
 
 const skeletonEl = ref<HTMLElement>()
 
-onMounted(() => {
+function implementStyle() {
   if (skeletonEl.value) {
     skeletonEl.value.style.height = props.height
-
+  
     if (props.width) {
       skeletonEl.value.style.width = props.width
     }
-
+  
     if (props.borderRadius) {
       skeletonEl.value.style.borderRadius = '0.5rem'
     }
   }
-})
+}
 
-onUpdated(() => {
-  if (skeletonEl.value) {
-    skeletonEl.value.style.height = props.height
-
-    if (props.width) {
-      skeletonEl.value.style.width = props.width
-    }
-
-    if (props.borderRadius) {
-      skeletonEl.value.style.borderRadius = '0.5rem'
-    }
-  }
-})
+onMounted(implementStyle)
+onUpdated(implementStyle)
 </script>
 
 <style lang="scss" scoped>
