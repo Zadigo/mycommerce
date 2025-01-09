@@ -2,12 +2,7 @@
   <v-dialog id="dialog-search" v-model="shopStore.showSearchModal" transition="dialog-bottom-transition" fullscreen>
     <v-card>
       <v-toolbar>
-        <v-toolbar-title class="fw-bold text-uppercase">
-          My company
-        </v-toolbar-title>
-
         <v-spacer />
-        
         <v-btn icon="mdi-close" @click="shopStore.showSearchModal = false" />
       </v-toolbar>
 
@@ -25,7 +20,8 @@
             <div v-if="canShowSearch" class="row gx-1 gy-1">
               <ProductsIterator :products="searchedProducts" />
             </div>
-
+            
+            <!-- Recommendations -->
             <Suspense v-else>
               <template #default>
                 <AsyncRecommendations />
@@ -43,8 +39,6 @@
 </template>
 
 <script setup lang="ts">
-import _ from 'lodash'
-
 import { useRefHistory } from '@vueuse/core'
 import type { Product, ProductsAPIResponse } from '~/types'
 
@@ -58,11 +52,11 @@ function useSearchProducts () {
   const { gtag } = useGtag()
   const { $client } = useNuxtApp()
   const { handleError } = useErrorHandler()
-    
-  const search = ref<string | null>(null)
-  const { history } = useRefHistory(search)
   
   const searchedProducts = ref<Product[]>([])
+  const search = ref<string | null>(null)
+  
+  const { last } = useRefHistory(search)
 
   const canShowSearch = computed(() => {
     return searchedProducts.value.length > 0
@@ -81,10 +75,6 @@ function useSearchProducts () {
           search_term: search.value
         })
 
-        // $fbq('track', 'Search', {
-        //   search_string: search.value
-        // })
-
         searchedProducts.value = response.data.results
       }
     } catch (e) {
@@ -92,16 +82,21 @@ function useSearchProducts () {
     }
   }
 
-  const proxySearchProducts = _.debounce(requestProducts, 1000)
+  if (shopStore.sessionCache) {
+    shopStore.sessionCache.searchHistory = last
+  }
 
   return {
     search,
+    requestProducts,
     searchedProducts,
-    proxySearchProducts,
     canShowSearch,
     searchHistory: history
   }
 }
 
-const { search, canShowSearch, searchedProducts, proxySearchProducts } = useSearchProducts()
+const { search, canShowSearch, searchedProducts, requestProducts } = useSearchProducts()
+const { debounce } = useDebounce()
+
+const proxySearchProducts = debounce(requestProducts, 1000)
 </script>

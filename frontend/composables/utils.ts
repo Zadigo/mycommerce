@@ -1,13 +1,10 @@
 import { isRef, ref } from 'vue'
-import { RemovableRef } from '@vueuse/core'
 
 import type { AxiosInstance } from "axios"
 import axios from 'axios'
 
-
 type ArrayAnyValues = (string | number)[]
 type RefArrayAnyValues = ArrayAnyValues | Ref<(string | number)[]>
-type RefObjectAnyValues = Ref<Record<string, (string | number)[] | string | number>>
 
 export function useUtilities () {
     function scrollToTop () {
@@ -232,32 +229,6 @@ export function useDjangoUtilies () {
     }
 }
 
-/**
- * 
- * This composable provides an abstraction for configuring and using Axios 
- * to interact with a Django backend. It simplifies the creation of an Axios 
- * client and dynamically sets the base URL for API requests based on the 
- * application's environment (development or production)
- *
- * Usage:
- * ```typescript
- * const { createClient, getBaseUrl } = useAxiosClient();
- * 
- * const client = createClient();
- * client.get('/endpoint').then(response => {
- *     console.log(response.data);
- * });
- * 
- * console.log(getBaseUrl('/custom-path/', true, '8080'));
- * ```
- * 
- * Notes:
- * - Ensure environment variables like `NUXT_DJANGO_PROD_URL` are correctly 
- *   set in production environments.
- * - The `secure` flag will force HTTPS if enabled, even in development.
- * - This composable is designed to work seamlessly with Nuxt and Django 
- *   backends that support API endpoints under `/api/v1/`.
- */
 export function useAxiosClient () {
     /**
      * Helper function for creating variations of the baseURL
@@ -290,5 +261,41 @@ export function useAxiosClient () {
     return {
         getBaseUrl,
         createClient
+    }
+}
+
+export function useDebounce() {
+    function debounce<T extends (...args: any[]) => void>(func: T, wait: number, immediate: boolean = false) {
+        let timeout: ReturnType<typeof setTimeout> | null = null
+
+        // return function (this: any, ...callbackArgs: Parameters<T>) {
+        return function (...callbackArgs: Parameters<T>) {
+            // const context = this
+
+            function later() {
+                timeout = null
+
+                if (!immediate) {
+                    // func.apply(context, callbackArgs)
+                    func.apply(callbackArgs)
+                }
+            }
+
+            const callNow = immediate && !timeout
+
+            if (timeout) {
+                clearTimeout(timeout)
+            }
+            timeout = setTimeout(later, wait)
+
+            if (callNow) {
+                // func.apply(context, callbackArgs)
+                func.apply(callbackArgs)
+            }
+        }
+    }
+
+    return {
+        debounce
     }
 }
