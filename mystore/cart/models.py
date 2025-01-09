@@ -1,10 +1,9 @@
+from cart.managers import CartManager
+from discounts.utils import calculate_discount
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
-
-from cart.managers import CartManager
-from discounts.utils import calculate_discount
 from shop.choices import ClotheSizesChoices
 from shop.models import Product
 
