@@ -49,12 +49,13 @@ const props = defineProps({
   }
 })
 
-const route = useRoute()
 const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
 const { gtag } = useGtag()
 
+const route = useRoute()
 const shopStore = useShop()
+
 const recommendations = ref<Product[]>([])
 const productsRow = ref<HTMLElement>()
 
@@ -99,17 +100,15 @@ async function requestRecommendations () {
       if (shopStore.sessionCache) {
         shopStore.sessionCache.recommendations = response.data
       }
-    } else {
-      if (shopStore.sessionCache) {
-        recommendations.value = shopStore.sessionCache.recommendations
-      }
     }
   } catch (e) {
     handleError(e)
   }
 }
 
-// onBeforeMount(requestRecommendations)
+// TODO: Load the recommendations that we have
+// already fetched when the block is loaded
+
 requestRecommendations()
 
 onMounted(() => {
