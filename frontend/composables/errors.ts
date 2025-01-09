@@ -1,5 +1,4 @@
 import { ref } from 'vue'
-// import { toast } from 'vue-sonner'
 import type { AxiosError } from 'axios'
 
 import axios from 'axios'
@@ -26,7 +25,8 @@ export function useErrorHandler () {
         const errorMessage = error.response?.data?.message || 'Invalid request'
 
         $toast.error('Bad Request', {
-            description: errorMessage
+            description: errorMessage,
+            position: 'top-center'
         })
 
         globalError.value = {
@@ -49,13 +49,15 @@ export function useErrorHandler () {
 
     function handleForbidden (_error: AxiosError) {
         $toast.error('Access Denied', {
-            description: 'You do not have permission to perform this action'
+            description: 'You do not have permission to perform this action',
+            position: 'top-center'
         })
     }
 
     function handleNotFound (_error: AxiosError) {
         $toast.error('Not Found', {
-            description: 'The requested resource could not be found'
+            description: 'The requested resource could not be found',
+            position: 'top-center'
         })
     }
 
@@ -64,7 +66,8 @@ export function useErrorHandler () {
         logErrorToService(error)
 
         $toast.error('Server Error', {
-            description: 'An unexpected error occurred. Our team has been notified.'
+            description: 'An unexpected error occurred. Our team has been notified.',
+            position: 'top-center'
         })
     }
 
