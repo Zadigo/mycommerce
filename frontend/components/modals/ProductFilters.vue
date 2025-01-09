@@ -145,6 +145,13 @@ const queryString = computed(() => {
   return params.filter(x => !x.endsWith('=')).join('&')
 })
 
+const show = computed({
+  get: () => props.modelValue,
+  set: (value) => {
+    emit('update:modelValue', value)
+  }
+})
+
 /**
  * Receives a filter and then sorts
  */
