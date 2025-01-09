@@ -4,13 +4,13 @@
       <ProductsFeedHeader :products="products" :count="totalProductCount" @update:grid-size="handleGridSize" @show-product-filters="showProductFilters=true" />
     </template>
 
+<!-- Products -->
     <template v-if="products && products.length > 0" #default>
-      <!-- Products -->
-      <!-- FIXME: Raises hydration error -->
+            <!-- FIXME: Raises hydration error -->
       <ProductsIterator :products="products" :columns="currentGridSize" @navigate="handleNavigation" />
 
       <!-- Intersect -->
-      <div id="product-pagination" ref="intersectionTarget" class="fw-bold text-uppercase d-flex justify-content-center mt-5">
+      <div v-if="products.length > 0" id="product-pagination" ref="intersectionTarget" class="fw-bold text-uppercase d-flex justify-content-center mt-5">
         <v-btn v-if="isEndOfPage" size="x-large" variant="tonal" rounded flat @click="scrollToTop">
           <font-awesome icon="arrow-up" class="me-2" />
           {{ $t('Tu es arrivé à la fin') }}
@@ -28,7 +28,7 @@
 
       <!-- Modals -->
       <ClientOnly>
-        <ModalsProductFilters :show-modal="showProductFilters" :count="productCount" @update-products="requestFilteredProducts" @close="showProductFilters=false" />
+        <ModalsProductFilters v-model="showProductFilters" :count="productCount" @update-products="requestFilteredProducts" />
       </ClientOnly>
     </template>
 
