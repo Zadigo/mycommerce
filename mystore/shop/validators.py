@@ -15,7 +15,10 @@ def validate_video_file_extension(name):
 def price_validator(value):
     if value <= 0:
         raise ValidationError(
-            _("The product's price should be at least above 0"))
+            _("The product's price should "
+                "be at least above 0"
+            )
+        )
     return value
 
 
@@ -24,6 +27,6 @@ def validate_model_height(value):
     if not result:
         raise ValidationError(_("Model height is not valid"))
 
-    height = result.group(0)
+    height = int(result.group(0))
     if height < 160 or height > 220:
         raise ValidationError(_("Model height is not valid"))
