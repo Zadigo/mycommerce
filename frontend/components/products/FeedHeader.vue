@@ -12,7 +12,7 @@
               {{ category }}
             </v-btn>
 
-            <v-btn variant="tonal" class="ms-3" @click="$emit('show-product-filters')">
+            <v-btn variant="tonal" class="ms-3" @click="emit('show-product-filters')">
               <font-awesome icon="sliders" class="me-2" /> Filtres
             </v-btn>
           </div>
