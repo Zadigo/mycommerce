@@ -100,6 +100,13 @@ class CustomerOrder(models.Model):
         blank=True,
         null=True
     )
+    stock_updated = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Flag that prevents multiple updates of a stock instance "
+            "with the same customer order reference"
+        )
+    )
     created_on = models.DateTimeField(
         auto_now=True
     )

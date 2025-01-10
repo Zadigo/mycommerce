@@ -102,8 +102,8 @@ class Stock(models.Model):
         """Indicates that a product is
         actively in stock"""
         return any([
-            self.quantity == 0,
-            self.quantity <= 2
+            self.quantity != 0,
+            self.quantity >= 2
         ])
 
     @property
@@ -117,5 +117,6 @@ class Stock(models.Model):
 def update_stock(instance, created, **kwargs):
     if created:
         calculation = F('quantity') * instance.product.unit_price
+        # FIXME: Raises error on decimal field
         instance.total = calculation
-        instance.save()
+        # instance.save()

@@ -1,6 +1,7 @@
 import time
 
 from cart.api import views
+from cart.api.serializers import cart_statistics
 from cart.managers import SessionManager
 from cart.models import Cart
 from django.contrib.auth import get_user_model
@@ -14,6 +15,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from shop.models import Product
+
+DEFAULT_SESSION_ID = 'other-session-value'
 
 
 class TestCart(APITestCase):
@@ -182,3 +185,26 @@ class TestLiveCart(LiveServerTestCase):
         first_collection.click()
 
         time.sleep(10)
+
+
+class TestCartStatistics(TestCase):
+    fixtures = ['carts']
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.first()
+        cls.user.set_password('touparet')
+        cls.user.save()
+
+    def setUp(self):
+        # self.queryset = Cart.objects.filter(session_id=DEFAULT_SESSION_ID)
+        self.queryset = Cart.objects.all()
+
+    def test_structure(self):
+        result = cart_statistics(self.queryset)
+        data = list(result)
+
+        self.assertIsInstance(data, list)
+
+        item = data[0]
+        self.assertIn('prouct__id', item)
