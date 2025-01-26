@@ -1,145 +1,143 @@
-import { Product } from '@/types/collections'
-import _ from 'lodash'
 import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
+import type { CartItem, CartUpdateAPIResponse, Product, SessionCacheData } from '@/types'
 
-type Cache = {
-  statistics: object
+interface RequestData {
+  session_id: string | null | undefined
+  card_token: string | null
+  firstname: string | null
+  lastname: string | null
+  email: string | null
+  telephone: string | null
+  address_line: string | null
+  zip_code: string | null
+  country: string | null
+  city: string | null
+  delivery: 'Chronopost'
 }
 
-type State = {
-  requestData: {
-    session_id: string;
-    firstname: string;
-    lastname: string;
-    email: string;
-    telephone: string;
-    address_line: string;
-    zip_code: string;
-    country: string;
-    city: string;
-    delivery: string;
-    card_token: string;
-  };
+export const useCart = defineStore('cart', () => {
+  const sessionCache = ref<SessionCacheData>()
+  const requestData = ref<RequestData>({
+    session_id: null,
+    card_token: null,
+    firstname: null,
+    lastname: null,
+    email: null,
+    telephone: null,
+    address_line: null,
+    zip_code: null,
+    country: null,
+    city: null,
+    delivery: "Chronopost"
+  })
 
-  cache: Cache;
-  products: Product[];
+  const cache = ref<CartUpdateAPIResponse | null>()
 
-  showAddedProductDrawer: boolean;
-  showEditProductDrawer: boolean;
-  showCartDrawer: boolean;
-};
+  const showAddedProductDrawer = ref(false)
+  const showEditProductDrawer = ref(false)
+  const showCartDrawer = ref(false)
 
+  const sessionId = computed(() => {
+    if (sessionCache.value) {
+      return sessionCache.value.cart?.session_id
+    } else {
+      return null
+    }
+  })
 
-const useCart = defineStore("cart", {
-  state: (): State => ({
-    requestData: {
-      session_id: null,
-      firstname: null,
-      lastname: null,
-      email: null,
-      telephone: null,
-      address_line: null,
-      zip_code: null,
-      country: null,
-      city: null,
-      delivery: "Chronopost",
-      card_token: null,
-    },
-
-    cache: {},
-    products: [],
-
-    showAddedProductDrawer: false,
-    showEditProductDrawer: false,
-    showCartDrawer: false,
-  }),
-  getters: {
-    /**
-     * Indicates if the cart has products
-     */
-    hasProducts(): boolean {
-      return this.products.length > 0;
-    },
-    /**
-     * Counts the number of products in the cart
-     * which can be the quantity of items stored
-     * under each product
-     */
-    numberOfProducts(): number {
-      if (this.hasProducts) {
-        return _.sum(_.map(this.cache.statistics, (item) => item.quantity));
-      } else {
-        return 0;
+  const products = computed(() => {
+    if (sessionCache.value) {
+      if (sessionCache.value.cart) {
+        return sessionCache.value.cart.results
       }
-    },
-    /**
-     * The last product that was added to
-     * the user's cart. This is mainly for
-     * the dialog that shows the last product
-     * that was added to the cart
-     *
-     * @returns {Object} The last product object
-     */
-    lastAddedProduct(): Product {
-      return _.last(this.products) || {};
-    },
-    /**
-     * Calculate the cart total dynamically which is
-     * the amount of similar products that were added
-     * to the cart multiplied by their respective prices
-     */
-    cartTotal(): number {
-      if (this.hasProducts) {
-        return _.sum(_.map(this.cache.statistics, (item) => item.total));
-      } else {
-        return 0;
-      }
-    },
-    /**
-     * Target that the customer must
-     * attain in order to get free
-     * delivery on his cart total
-     */
-    freeDeliveryTarget(): number {
-      const difference = 50 - this.cartTotal;
-      return difference < 0 ? 0 : difference;
-    },
-  },
-  actions: {
-    /**
-     * Preload the cart from the session if we actually
-     * have the data. This allows us then to dynamically
-     * calculate the items that the user has selected
-     */
-    loadFromCache(): void {
-      this.products = this.$session.retrieve("cart") || [];
-      this.cache = this.$session.retrieve("cart_cache") || {};
-    },
-    /**
-     * This is the main function that adds a product to
-     * the user's cart in the store. When the product
-     * does not exist, it is created otherwise, its quantity
-     * is upgraded
-     *
-     * @param {Object} data The server response object
-     * @param {Object[]} data.results An array of cart objects
-     * @param {Object[]} data.statistics An array of object information
-     */
-    updateCart(data): void {
-      this.cache = data;
-      this.products = data.results;
-    },
-    /**
-     * Removes a product entirely from the cart
-     * regardless of quantity
-     */
-    removeFromCart(product: Product) {
-      const index = _.findIndex(this.products, { id: product.id });
-      this.products.splice(index, 1);
-    },
-  },
-});
+    }
+    return []
+  })
 
-export {
-  useCart
-}
+  /**
+   * Indicates if the cart has products
+   */
+  const hasProducts = computed((): boolean => {
+    return products.value.length > 0;
+  })
+
+  /**
+   * Counts the number of products in the cart
+   * which can be the quantity of items stored
+   * under each product
+   */
+  const numberOfProducts = computed((): number => {
+    if (hasProducts.value) {
+      if (sessionCache.value && sessionCache.value.cart) {
+        return sessionCache.value.cart.statistics.map(x => x.quantity).reduce((a, b) => a + b, 0)
+      }
+    }
+    return 0
+  })
+
+  /**
+   * The last product that was added to
+   * the user's cart. This is mainly for
+   * the dialog that shows the last product
+   * that was added to the cart
+   */
+  const lastAddedProduct = computed((): CartItem | null => {
+    if (products.value.length > 0) {
+      // return products.value[products.value.length - 1]
+      return products.value[0]
+    } else {
+      return null
+    }
+  })
+
+  /**
+   * Calculate the cart total dynamically which is
+   * the amount of similar products that were added
+   * to the cart multiplied by their respective prices
+   */
+  const cartTotal = computed((): number => {
+    if (hasProducts.value) {
+      if (sessionCache.value && sessionCache.value.cart) {
+        return sessionCache.value.cart.statistics.map(x => x.total).reduce((a, b) => a + b, 0)
+      }
+    }
+    return 0
+  })
+
+  /**
+   * Target that the customer must
+   * attain in order to get free
+   * delivery on his cart total
+   */
+  const freeDeliveryTarget = computed((): number => {
+    const difference = 50 - cartTotal.value
+    return difference < 0 ? 0 : difference;
+  })
+
+  /**
+   * Removes a product entirely from the cart
+   * regardless of quantity
+   */
+  function removeFromCart(product: Product) {
+    const index = products.value.findIndex(x => x.id === product.id)
+    products.value.splice(index, 1);
+  }
+
+  return {
+    sessionCache,
+    removeFromCart,
+    cartTotal,
+    freeDeliveryTarget,
+    hasProducts,
+    numberOfProducts,
+    lastAddedProduct,
+    sessionId,
+    cache,
+    products,
+    showAddedProductDrawer,
+    showEditProductDrawer,
+    showCartDrawer,
+    requestData
+  }
+})

@@ -1,62 +1,40 @@
-import { UserProfile } from '@/types/authentication';
-import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
-
+import { useUtilities } from '@/composables/utils'
+import type { LoginAPIResponse, Profile, StringNull } from '@/types'
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 
 export const useAuthentication = defineStore('authentication', () => {
+  const { isNull } = useUtilities()
+
+  // Modals
   const showLoginDrawer = ref(false)
-  const access = ref<string>()
-  const refresh = ref<string>()
-  const profile = ref<UserProfile>()
+
+  const profile = ref<Profile | null | undefined>()
+  const accessToken = ref<StringNull>('')
+  const refreshToken = ref<StringNull>('')
 
   const isAuthenticated = computed(() => {
-    return access.value !== null
+    return !isNull(accessToken.value)
   })
 
+  function logout() {
+    accessToken.value = null
+    refreshToken.value = null
+    profile.value = null
+  }
+
+  function setTokens(data: LoginAPIResponse) {
+    accessToken.value = data.access
+    refreshToken.value = data.refresh
+  }
+
   return {
-    profile,
+    logout,
+    setTokens,
     isAuthenticated,
     showLoginDrawer,
-    access,
-    refresh
+    profile,
+    accessToken,
+    refreshToken
   }
 })
-
-// type State = {
-//   showLoginDrawer: boolean;
-//   token: string;
-//   profile: UserProfile | Record<string, Type>;
-// };
-
-// const useAuthentication = defineStore("authentication", {
-//   state: (): State => ({
-//     showLoginDrawer: false,
-//     token: '',
-//     profile: {},
-//   }),
-//   getters: {
-//     /**
-//      * Indicates whether the user is authenticated
-//      */
-//     isAuthenticated(): boolean {
-//       return this.token !== null && this.token !== '' && typeof this.token !== "undefined";
-//     },
-//   },
-//   actions: {
-//     /**
-//      * Allows us to load the token and profile information
-//      * from the cache in order to determine if the user
-//      * is still authenticated
-//      */
-//     loadFromCache() {
-//       const data = this.$session.retrieve("authentication") || {};
-//       this.token = data.token;
-//       this.profile = data.user;
-//     },
-//   },
-// });
-
-// export {
-//   useAuthentication
-// };
-

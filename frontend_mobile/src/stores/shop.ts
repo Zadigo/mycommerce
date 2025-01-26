@@ -1,89 +1,72 @@
-import _ from "lodash";
-import { defineStore } from "pinia";
-import { Product, ProductCollection } from "@/types/shop";
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue';
+import type { Product, ProductCollection, SessionCacheData } from "@/types";
 
-type State = {
-  visitedProducts: number[];
-  likedProducts: number[];
-  showLanguageModal: boolean;
-  currentCollectionName: string,
-  currentCollection: ProductCollection;
-  currentProduct: Product;
-};
+export const useShop = defineStore('shop', () => {
+  const sessionCache = ref<SessionCacheData>()
 
-type NumberOrString = number | string;
+  const currentProduct = ref<Product>()
+  const currentCollection = ref<ProductCollection>()
+  const currentCollectionName = ref<string>('')
 
-const useShop = defineStore("shop", {
-  state: (): State => ({
-    visitedProducts: [],
-    likedProducts: [],
+  // Modals
+  const showSearchModal = ref(false)
+  const showLanguageModal = ref(false)
 
-    showLanguageModal: false,
-    currentCollectionName: null,
-    currentCollection: {},
-    currentProduct: {},
-  }),
-  actions: {
-    /**
-     * Adds the product to the list of
-     * products that were historically
-     * visited by the user in the store
-     *
-     * @param {Object} product The product ID to add to list of viewed items
-     * @param {Number} product.id The product's ID
-     */
-    addToHistory(product: Product) {
-      if (product) {
-        this.visitedProducts.push(product.id);
-      }
-    },
-    /**
-     * Adds the product to the user's
-     * wishlist on the frontend. The store has a main
-     * subscription which allows the data to sync to
-     * the local storage
-     *
-     */
-    addToWishlist(productId: number) {
-      if (!this.likedProducts.includes(productId)) {
-        this.likedProducts.push(productId);
-      }
-    },
-    /**
-     * Removes the product to the user's
-     * wishlist on the frontend
-     *
-     */
-    removeFromWishlist(productId: NumberOrString) {
-      const index = _.indexOf(this.likedProducts, productId);
+  const visitedProducts = ref<number[]>([])
+  const likedProducts = ref<number[]>([])
 
-      if (index >= 0) {
-        this.likedProducts.splice(index, 1);
-      }
-    },
-    loadFromCache() {
-      this.likedProducts = this.$localstorage.retrieve("likedProducts");
-      this.visitedProducts = this.$localstorage.retrieve("visitedProducts");
-    },
-  },
-  getters: {
-    /**
-     * Returns the number of products that
-     * were visited by the user for the
-     * actual given session
-     *
-     */
-    numberOfVisitedProducts(): number {
-      return this.visitedProducts.length;
-    },
-    /**
-     * Returns the unique IDs of each products that
-     * were visited by the user during his session
-     */
-    uniqueVisitedProductIds(): number[] {
-      return _.uniq(this.visitedProducts);
-    },
-  },
-});
+  // This references the index of the product that
+  // was clicked within a given list of items. This
+  // is for Google Analytics
+  const currentProductIndex = ref<number>(0)
 
-export { useShop };
+  /**
+   * Returns the number of products that
+   * were visited by the user for the
+   * actual given session
+   */
+  const numberOfVisitedProducts = computed((): number => {
+    return visitedProducts.value.length;
+  })
+
+  /**
+   * Returns the unique IDs of each products that
+   * were visited by the user during his session
+   */
+  const uniqueVisitedProductIds = computed((): number[] => {
+    return Array.from(new Set(visitedProducts.value))
+  })
+
+  function closeAllModals() {
+    showSearchModal.value = false
+    showLanguageModal.value = false
+  }
+
+  /**
+   * Adds the product to the list of
+   * products that were historically
+   * visited by the user in the store
+   */
+  function addToHistory(product: Product) {
+    if (product) {
+      visitedProducts.value.push(product.id);
+    }
+  }
+
+  return {
+    closeAllModals,
+    addToHistory,
+    currentProduct,
+    currentCollection,
+    currentCollectionName,
+    sessionCache,
+    currentProductIndex,
+    showSearchModal,
+    numberOfVisitedProducts,
+    uniqueVisitedProductIds,
+    visitedProducts,
+    likedProducts,
+    showLanguageModal
+  }
+})

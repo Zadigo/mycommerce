@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { useShopComposable } from '@/composables/shop';
-import { APIResponse, Product } from '@/types/shop';
+import { Product, ProductsAPIResponse } from '@/types/shop';
 import { IonCol, IonRow } from '@ionic/vue';
 import { defineEmits, ref } from 'vue';
 
@@ -18,19 +18,19 @@ const emit = defineEmits({
   'show-product-sizes' (_data: Product) {
     return true
   },
-  'update-next-url' (_data: APIResponse) {
+  'update-cache' (_data: ProductsAPIResponse) {
     return true
   }
 })
 
 const products = ref<Product[]>([])
-const cachedResponse = ref<APIResponse>()
+const cachedResponse = ref<ProductsAPIResponse>()
 const { requestProductsFromCollection } = useShopComposable()
 
 requestProductsFromCollection((data) => {
   cachedResponse.value = data
   products.value = data.results
-  emit('update-next-url', cachedResponse.value)
+  emit('update-cache', cachedResponse.value)
 })
 </script>
 

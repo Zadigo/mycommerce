@@ -1,8 +1,8 @@
 <template>
-  <ion-grid style="padding-left: 0;padding-right: 0;padding-top: 0;">
+  <ion-grid class="ion-no-padding">
     <!-- Collections -->
     <ion-row>
-      <ion-col size="12" style="padding-left: 0;padding-right: 0;padding-top: 0;">
+      <ion-col size="12">
         <div id="video-container">
           <swiper-container pagination="true" @swiperslidechange="() => {}">
             <swiper-slide>
@@ -15,16 +15,17 @@
               <img src="/img1.jpg" loading="lazy" />
             </swiper-slide>
 
-            <swiper-slide lazy="true" @click="handleGoToCollection('all')">
+            <swiper-slide lazy="true" @click="handleGoToCollectionByName('all')">
               <img src="/img4.jpg" loading="lazy" />
             </swiper-slide>
           </swiper-container>
         </div>
       </ion-col>
 
-      <ion-col v-for="collection in collections" :key="collection.id" size="3">
+      <ion-col v-for="collection in cachedCollections" :key="collection.id" size="3">
         <ion-img :src="`/img4.jpg`" @click="handleGoToCollection(collection)" />
-        <p style="font-size: .6rem;text-align: center;">
+        <!-- style="font-size: .6rem;text-align: center;" -->
+        <p>
           {{ collection.name }}
         </p>
       </ion-col>
@@ -32,27 +33,25 @@
 
     <!-- Product Highlight -->
     <ion-row v-if="highlightProduct">
-      <ion-col size="12" style="padding-left: 0;padding-right: 0;padding-top: 0;">
+      <!-- style="padding-left: 0;padding-right: 0;padding-top: 0;" -->
+      <ion-col size="12">
         <ion-img src="/img1.jpg" :alt="highlightProduct.name" @click="handleGoToProduct(highlightProduct)" />
       </ion-col>
     </ion-row>
 
     <!-- Recommendations -->
     <Suspense>
-      <template #default>
-        <AysncHomeRecommendations @hightlight-product="handleHighlightProduct" />
-      </template>
+      <AysncHomeRecommendations @hightlight-product="handleHighlightProduct" />
     </Suspense>
   </ion-grid>
 </template>
 
 <script setup lang="ts">
-import { IonCol, IonGrid, IonImg, IonRow } from '@ionic/vue';
 import { useShopComposable } from '@/composables/shop';
-import { client } from '@/plugins/axios';
-// import { useErrorHandler } from '@/composables/errors'
-import { ProductCollection, Product } from '@/types/shop';
-import { useSessionStorage } from '@vueuse/core'
+import { useAxiosClient } from '@/plugins/client';
+import { Product, ProductCollection } from '@/types/shop';
+import { IonCol, IonGrid, IonImg, IonRow } from '@ionic/vue';
+import { useLocalStorage } from '@vueuse/core';
 import { register } from 'swiper/element';
 import { defineAsyncComponent, onBeforeMount, ref } from 'vue';
 
@@ -63,7 +62,7 @@ const AysncHomeRecommendations = defineAsyncComponent({
   timeout: 5000
 })
 
-const collections = useSessionStorage('collections', null, {
+const cachedCollections = useLocalStorage<ProductCollection[]>('collections', null, {
   serializer: {
     read (raw) {
       return JSON.parse(raw)
@@ -74,17 +73,16 @@ const collections = useSessionStorage('collections', null, {
   }
 })
 
-const { handleGoToProduct, handleGoToCollection, handleGoToCollectionByName } = useShopComposable()
-
+// Composable for Collection Fetching
 function useLoadCollections () {
-  // const { handleError } = useErrorHandler()
   const highlightProduct = ref<Product>()
+  const { client } = useAxiosClient()
 
   async function requestCollectionNames () {
     try {
-      if (!collections.value) {
+      if (!cachedCollections.value) {
         const response = await client.get<ProductCollection[]>('collection')
-        collections.value = response.data 
+        cachedCollections.value = response.data 
       }
     } catch (e) {
       console.log(e)
@@ -102,6 +100,7 @@ function useLoadCollections () {
   }
 }
 
+const { handleGoToProduct, handleGoToCollection, handleGoToCollectionByName } = useShopComposable()
 const { requestCollectionNames, highlightProduct, handleHighlightProduct } = useLoadCollections()
 
 onBeforeMount(requestCollectionNames)

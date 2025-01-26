@@ -1,6 +1,7 @@
 <template>
   <ion-card id="product">
-    <ion-img :src="mediaPath(product.get_main_image?.original)" @click="handleGoToProduct(product)"></ion-img>
+    <!-- TODO: Create a guard for there is not main image -->
+    <ion-img v-if="product" :src="mediaPath(product.get_main_image?.original)" @click="handleGoToProduct(product)"></ion-img>
     
     <ion-card-content v-if="showProductInfo">
       <div class="product-info">
@@ -8,8 +9,8 @@
           <h5>{{ product.name }}</h5>
 
           <ion-button v-if="showAddToFavorite" shape="round" fill="clear" color="dark" size="small" @click="handleLike(product)">
-            <font-awesome-icon v-if="isLiked" :icon="['fas', 'heart']"></font-awesome-icon>
-            <font-awesome-icon v-else :icon="['far', 'heart']"></font-awesome-icon>
+            <font-awesome-icon v-if="isLiked" :icon="['fas', 'heart']" />
+            <font-awesome-icon v-else :icon="['far', 'heart']" />
           </ion-button>
 
           <ion-button v-else shape="round" size="small" fill="clear" color="dark" @click="emit('show-product-sizes', product)">

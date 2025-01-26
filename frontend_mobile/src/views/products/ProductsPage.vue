@@ -12,7 +12,7 @@
     
         <ion-buttons slot="end">
           <ion-button size="large" shape="round" @click="showProductsFilterModal=true">
-            <font-awesome-icon :icon="['fas', 'sliders']" />
+            <font-awesome-icon icon="sliders" />
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
@@ -35,8 +35,8 @@
         <ion-row id="top-bar" class="ion-justify-content-between" style="border-top: 1px solid black;">
           <!-- Grids -->
           <ion-col size="6">
-            <ion-button v-for="grid in grids" :key="grid.display" :fill="currentGridDisplay === grid.display ? 'solid':'outline'" color="dark" size="small" class="btn-plain" @click="handleGridDisplay(grid.display)">
-              <font-awesome-icon :icon="grid.icon"></font-awesome-icon>
+            <ion-button v-for="grid in grids" :key="grid.display" :fill="currentGridSize === grid.display ? 'solid':'outline'" color="dark" size="small" class="btn-plain" @click="handleGridDisplay(grid.display)">
+              <font-awesome-icon :icon="grid.icon" />
             </ion-button>
           </ion-col>
           
@@ -45,7 +45,7 @@
             <p>{{ products?.length }} résultats</p>
             <span>|</span>
             <ion-button color="dark" fill="outline" size="small" @click="showProductsFilterModal=true">
-              <font-awesome-icon :icon="['fas', 'sliders']"></font-awesome-icon>
+              <font-awesome-icon icon="sliders" />
             </ion-button>
           </ion-col>
         </ion-row>
@@ -53,17 +53,17 @@
         <!-- Products -->
         <Suspense>
           <template #default>
-            <AsyncClassicDisplay v-if="currentGridDisplay===1" @update-next-url="(data) => cachedResponse = data" @show-product-sizes="handleAddToCart" />
-            <AsyncGridDisplay v-else-if="currentGridDisplay===2" @update-next-url="(data) => cachedResponse = data" :columns="2"  @show-product-sizes="handleAddToCart" />
-            <AsyncGridDisplay v-else-if="currentGridDisplay===3" @update-next-url="(data) => cachedResponse = data" :columns="3"  @show-product-sizes="handleAddToCart" />
+            <AsyncClassicDisplay v-if="currentGridSize===1" @update-cache="handleUpdateCache" @show-product-sizes="handleAddToCart" />
+            <AsyncGridDisplay v-else-if="currentGridSize===2" @update-cache="handleUpdateCache" :columns="2"  @show-product-sizes="handleAddToCart" />
+            <AsyncGridDisplay v-else-if="currentGridSize===3" @update-cache="handleUpdateCache" :columns="3"  @show-product-sizes="handleAddToCart" />
           </template>
 
           <template #fallback>
-            <LoadingProducts :columns="currentGridDisplay" /> 
+            <LoadingProducts :columns="currentGridSize" /> 
           </template>
         </Suspense>
         
-        <ion-infinite-scroll @ionInfinite="requestProductsProxy">
+        <ion-infinite-scroll @ionInfinite="requestMoreProducts">
           <ion-infinite-scroll-content></ion-infinite-scroll-content>
         </ion-infinite-scroll>
       </ion-grid>
@@ -132,14 +132,15 @@
           <div class="infos">
             <p>Ajouter au panier</p>
 
-            <ion-button fill="clear" size="small" color="dark">
-              <ion-icon :icon="calculatorOutline"></ion-icon>
-              Guide des tailles
+            <ion-button fill="clear" color="dark">
+              <ion-icon :icon="calculatorOutline" />
+              <span>Guide des tailles</span>
             </ion-button>
           </div>
+
           <ion-list>
-            <ion-item>XS</ion-item>
-            <ion-item>S</ion-item>
+            <ion-item button>XS</ion-item>
+            <ion-item button>S</ion-item>
           </ion-list>
         </ion-content>
       </ion-modal>
@@ -148,18 +149,17 @@
 </template>
 
 <script setup lang="ts">
+import { useDjangoUtilies } from '@/composables/utils';
 import { client } from '@/plugins/axios';
-import { useVueLocalStorage } from '@/plugins/vue-storages/local-storage';
 import { useShop } from '@/stores/shop';
-import { APIResponse } from '@/types/shop';
-import { InfiniteScrollCustomEvent, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonList, IonModal, IonPage, IonRow, IonSkeletonText, IonTitle, IonToolbar, useIonRouter } from '@ionic/vue';
+import { ProductsAPIResponse } from '@/types/shop';
+import { InfiniteScrollCustomEvent, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonList, IonModal, IonPage, IonRow, IonTitle, IonToolbar, useIonRouter } from '@ionic/vue';
+import { useLocalStorage } from '@vueuse/core';
 import { calculatorOutline, close as closeIcon } from 'ionicons/icons';
-import _ from 'lodash';
 import { storeToRefs } from 'pinia';
-import { computed, defineAsyncComponent, onBeforeMount, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 
 import LoadingProducts from '@/components/products/LoadingProducts.vue';
-import { useDjangoUtilies } from '@/composables/utils';
 
 const AsyncClassicDisplay = defineAsyncComponent({
   loader: async () => import('@/components/products/ClassicDisplay.vue'),
@@ -171,10 +171,9 @@ const AsyncGridDisplay = defineAsyncComponent({
   timeout: 3000
 })
 
-const currentGridDisplay = ref<1 | 2 | 3>(1)
 const showProductsFilterModal = ref(false)
 const showSizeChoices = ref(false)
-const cachedResponse = ref<APIResponse>()
+const cachedResponse = ref<ProductsAPIResponse>()
 const grids = ref([
   {
     display: 1,
@@ -191,10 +190,9 @@ const grids = ref([
 ])
 
 const router = useIonRouter()
-const { data, instance } = useVueLocalStorage()
-
 const storeShop = useShop()
 const { currentCollectionName } = storeToRefs(storeShop)
+const currentGridSize = useLocalStorage<1 | 2 | 3>('grid', 3)
 
 const products = computed(() => {
   return cachedResponse.value?.results
@@ -205,24 +203,28 @@ const subCategories = computed<string[]>(() => {
     const result = cachedResponse.value.results.map((product) => {
       return product.sub_category
     })
-    return _.uniq(result)
+    return Array.from(new Set(result))
   } else {
     return []
   }
 })
 
+function handleUpdateCache(data: ProductsAPIResponse) {
+  console.log('handleUpdateCache', data)
+  cachedResponse.value = data
+}
+
 /**
  * 
  */
-const handleRemoveFilters = function () {}
-
+function handleRemoveFilters() {}
 
 /**
  * This function allows us to paginate through the rest
  * of the collection by parsing the limit and offset
  * search parameters of the next url from the response
  */
-async function requestProductsProxy (e: InfiniteScrollCustomEvent) {
+async function requestMoreProducts (e: InfiniteScrollCustomEvent) {
   try {
     if (cachedResponse.value) {
       if (cachedResponse.value.next) {
@@ -231,7 +233,7 @@ async function requestProductsProxy (e: InfiniteScrollCustomEvent) {
         const collection = currentCollectionName.value || 'all'
         const collectionUrlPath = `collection/${collection.toLowerCase()}` 
 
-        const response = await client.get<APIResponse>(collectionUrlPath, {
+        const response = await client.get<ProductsAPIResponse>(collectionUrlPath, {
           params: {
             limit: result.limit,
             offset: result.offset
@@ -245,58 +247,24 @@ async function requestProductsProxy (e: InfiniteScrollCustomEvent) {
     } else {
       console.log('no cached response')
     }
-
-    // if (cachedResponse.value?.next !== null) {
-    //   const url = new URL(cachedResponse.value?.next)
-    //   const limit = url.searchParams.get('limit')
-    //   const offset = url.searchParams.get('offset')
-
-    //   const collectionUrlPath = `collection/${currentCollectionName.value.toLowerCase()}`
-
-    //   const response = await client.get<APIResponse>(collectionUrlPath, {
-    //     params: {
-    //       limit,
-    //       offset
-    //     }
-    //   })
-      
-    //   cachedResponse.value.next = response.data.next
-
-    //   if (Array.isArray(cachedResponse.value?.results)) {
-    //     cachedResponse.value?.results.push(...response.data.results)
-    //   }
-    // }
-    // setTimeout(() => e.target.complete(), 500);
   } catch (e) {
     console.log(e)
   }
 }
 
-/**
- * 
- */
-const handleShowProductFilters = () => {}
+// 
+function handleShowProductFilters() {}
 
-/**
- * 
- */
-const handleAddToCart = () => {
+// 
+function handleAddToCart() {
   showSizeChoices.value = !showSizeChoices.value
 }
 
-/**
- * 
- */
-const handleGridDisplay = (grid: number) => {
-  currentGridDisplay.value = grid
-  instance?.create('gridDisplay', grid)
+// 
+function handleGridDisplay(grid: 1 | 2 | 3) {
+  console.log(grid)
+  currentGridSize.value = grid
 }
-
-onBeforeMount(() => {  
-  if (data.value?.gridDisplay) {
-    currentGridDisplay.value = data.value.gridDisplay
-  }
-})
 </script>
 
 <style scoped>

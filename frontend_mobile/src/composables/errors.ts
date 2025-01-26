@@ -1,5 +1,4 @@
-import { getCurrentInstance, ref } from 'vue'
-// import { toast } from 'vue-sonner'
+import { ref } from 'vue'
 import type { AxiosError } from 'axios'
 
 import axios from 'axios'
@@ -10,10 +9,9 @@ interface ErrorContext {
     type: 'warning' | 'error' | 'info'
 }
 
-export function useErrorHandler () {
+export function useErrorHandler (toast) {
     // Global error state (optional, can be used for error logging or global error display)
     const globalError = ref<ErrorContext | null>(null)
-    const { $toast } = getCurrentInstance()
 
     // Utility for logging errors to a service
     function logErrorToService(_error: AxiosError) {
@@ -25,7 +23,7 @@ export function useErrorHandler () {
     function handleBadRequest (error: AxiosError) {
         const errorMessage = error.response?.data?.message || 'Invalid request'
 
-        $toast.error('Bad Request', {
+        toast.error('Bad Request', {
             description: errorMessage
         })
 
@@ -37,24 +35,24 @@ export function useErrorHandler () {
 
     function handleUnauthorized (_error: AxiosError) {
         // Potential redirect to login or token refresh
-        $toast.error('Unauthorized', {
+        toast.error('Unauthorized', {
             description: 'Please log in again'
         })
 
         // Example of potential logout and redirect
-        const authStore = useAuthentication()
-        authStore.logout()
-        navigateTo('/login')
+        // const authStore = useAuthentication()
+        // authStore.logout()
+        // navigateTo('/login')
     }
 
     function handleForbidden (_error: AxiosError) {
-        $toast.error('Access Denied', {
+        toast.error('Access Denied', {
             description: 'You do not have permission to perform this action'
         })
     }
 
     function handleNotFound (_error: AxiosError) {
-        $toast.error('Not Found', {
+        toast.error('Not Found', {
             description: 'The requested resource could not be found'
         })
     }
@@ -63,19 +61,19 @@ export function useErrorHandler () {
         // Log to error tracking service
         logErrorToService(error)
 
-        $toast.error('Server Error', {
+        toast.error('Server Error', {
             description: 'An unexpected error occurred. Our team has been notified.'
         })
     }
 
     function handleGenericError (error: Error) {
-        $toast.error('Error', {
+        toast.error('Error', {
             description: error.message
         })
     }
 
     function handleUnknownError (error: unknown) {
-        $toast.error('Unexpected Error', {
+        toast.error('Unexpected Error', {
             description: 'An unknown error occurred'
         })
 

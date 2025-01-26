@@ -1,10 +1,10 @@
-import { client } from "@/plugins/axios";
-import { useVueLocalStorage } from "@/plugins/vue-storages";
+import { useAxiosClient } from "@/plugins/client";
 import { useShop } from "@/stores/shop";
-import { APIResponse, Product, ProductCollection } from "@/types/shop";
+import { Product, ProductCollection, ProductsAPIResponse } from "@/types";
 import { useIonRouter } from "@ionic/vue";
 import { storeToRefs } from "pinia";
 import { getCurrentInstance, ref } from "vue";
+import { useListManager } from "./utils";
 
 
 /**
@@ -14,21 +14,17 @@ import { getCurrentInstance, ref } from "vue";
  * the user cart
  */
 export function useShopComposable() {
-  const isLiked = ref(false);
+  const { client } = useAxiosClient()
   
+  const app = getCurrentInstance()
   const router = useIonRouter();
   
   const shopStore = useShop();
-  const { 
-    currentProduct, 
-    currentCollection, 
-    currentCollectionName 
-  } = storeToRefs(shopStore);
-
+  const { currentProduct, currentCollection, currentCollectionName } = storeToRefs(shopStore);
+  
+  const isLiked = ref(false);
   const recommendedProducts = ref<Product[]>([])
 
-  const { instance } = useVueLocalStorage()
-  const app = getCurrentInstance()
 
   /**
    * Function that manages products that were
@@ -61,13 +57,13 @@ export function useShopComposable() {
    * and therefore adding it to the user's
    * wishlist
    */
-  async function handleLike(product: Product) {
-    isLiked.value = !isLiked.value;
-
-    if (isLiked.value) {
-      shopStore.addToWishlist(product.id);
+  function handleLike(items: number[], product: Product | null | undefined): (boolean | number[])[] {
+    if (product) {
+      const { save, managedList } = useListManager()
+      const state = save(items, product.id)
+      return [state, managedList.value]
     } else {
-      shopStore.removeFromWishlist(product.id);
+      return []
     }
   }
 
@@ -77,7 +73,7 @@ export function useShopComposable() {
    */
   function handleGoToProduct(product: Product) {
     currentProduct.value = product;
-    router.push("/tabs/tab1/product");
+    router.push('/tabs/tab1/product');
   }
 
   /**
@@ -87,7 +83,8 @@ export function useShopComposable() {
   function handleGoToCollection(collection: ProductCollection) {
     currentCollection.value = collection;
     currentCollectionName.value = collection.name;
-    router.push("/tabs/tab1/products");
+    // TODO: Does not work everytime
+    router.push('/tabs/tab1/products');
   }
 
   /**
@@ -95,12 +92,12 @@ export function useShopComposable() {
    * in the collection's page
    */
   function handleGoToCollectionByName(name: string) {
-    try {
-      currentCollectionName.value = name;
-      router.push("/tabs/tab1/products");
-    } catch (e) {
-      console.log(e);
-    }
+    currentCollectionName.value = name;
+    router.push('/tabs/tab1/products');
+    // try {
+    // } catch (e) {
+    //   console.log(e);
+    // }
   }
 
   async function handleGetRecommendations(quantity: number = 3) {
@@ -110,27 +107,32 @@ export function useShopComposable() {
     recommendedProducts.value = response.data;
   }
 
-  async function requestProductsFromCollection(callback: (data: APIResponse) => void): Promise<APIResponse> {
+  async function requestProductsFromCollection(callback: (data: ProductsAPIResponse) => void) {
     try {
-      const collectionUrlPath = `collection/${currentCollectionName.value.toLowerCase()}`;
+      let collectionUrlPath
 
-      if (instance.keyExists(collectionUrlPath)) {
-        callback.call(app, instance.retrieve(collectionUrlPath));
+      if (currentCollectionName.value) {
+        collectionUrlPath = `collection/${currentCollectionName.value.toLowerCase()}`;
       } else {
-        const response = await client.get<APIResponse>(collectionUrlPath);
-        instance.create(collectionUrlPath, response.data);
-        instance.create("products", response.data.results);
-        callback.call(app, response.data)
+        collectionUrlPath = 'collection/all'
       }
+
+      const response = await client.get<ProductsAPIResponse>(collectionUrlPath);
+      console.log('requestProductsFromCollection', response.data)
+      callback.call(app, response.data)
+      
+      // const collectionUrlPath = `collection/${currentCollectionName.value.toLowerCase()}`;
+
+      // if (instance.keyExists(collectionUrlPath)) {
+      //   callback.call(app, instance.retrieve(collectionUrlPath));
+      // } else {
+      //   const response = await client.get<ProductsAPIResponse>(collectionUrlPath);
+      //   instance.create(collectionUrlPath, response.data);
+      //   instance.create("products", response.data.results);
+      //   callback.call(app, response.data)
+      // }
     } catch (e) {
       console.log(e);
-      // If we fail to get the collectionName
-      // redirect to the 404 page
-      // messagesStore.addNetworkError()
-
-      // if (e.response.status === 404) {
-      //   router.push({ name: 'not_found' })
-      // }
     }
   }
 

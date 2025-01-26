@@ -6,7 +6,6 @@ import axios from 'axios'
 
 type ArrayAnyValues = (string | number)[]
 type RefArrayAnyValues = ArrayAnyValues | Ref<(string | number)[]>
-type RefObjectAnyValues = Ref<Record<string, (string | number)[] | string | number>>
 
 export function useUtilities() {
     function scrollToTop() {
@@ -148,9 +147,11 @@ export function useListManager() {
             const index = managedList.value.indexOf(item)
             const result = managedList.value.splice(index, 1)
             deletions.value = [...result]
+            return false
         } else {
             managedList.value.push(item)
             history.value.push(item)
+            return true
         }
     }
 
