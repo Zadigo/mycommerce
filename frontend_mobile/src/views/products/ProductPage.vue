@@ -45,48 +45,7 @@
       <!-- Modals -->
       <composition-info :show="showCompositionInfoModal" @close="showCompositionInfoModal=false" />
       <delivery-info :show="showDeliveryInfoModal" @close="showDeliveryInfoModal=false" />
-
-      <ion-modal :is-open="showDetailsModal" :initial-breakpoint="0.35" :breakpoints="[0.35, 1]" :backdrop-dismiss="false" :backdrop-breakpoint="0.5" handle-behavior="cycle">
-        <ion-content class="ion-padding">
-          <ion-col size="12">
-            <div class="product-price">
-              <p v-if="currentProduct" class="fw-light">
-                {{ currentProduct.name }}
-              </p>
-
-              <p v-if="currentProduct" class="fw-bold">
-                {{ currentProduct.get_price }}€  
-              </p>
-            </div>
-
-            <ion-button color="dark" expand="block">
-              Sélectionner une taille
-            </ion-button>
-
-            <p v-if="currentProduct" class="fw-light">{{ currentProduct.color }} - Réf: {{ currentProduct.slug }}</p>
-          </ion-col>
-
-          <ion-col size="12">
-            <h3>A propos du produit</h3>
-
-            <ion-list>
-              <ion-item button lines="full" @click="showCompositionInfoModal=true">
-                Composition, soin et traçabilité
-              </ion-item>
-
-              <ion-item button lines="full" @click="showDeliveryInfoModal=true">
-                Livraison et retours
-              </ion-item>
-            </ion-list>
-          </ion-col>
-
-          <ion-col size="12">
-            <h3>Cela peut t'intéresser</h3>
-
-            <grid-display :products="recommendations" :columns="2" />
-          </ion-col>
-        </ion-content>
-      </ion-modal>
+      <product-info :show="showDetailsModal" @composition-modal="showCompositionInfoModal=true" @delivery-modal="showDeliveryInfoModal=true" />
     </ion-content>
   </ion-page>
 </template>
@@ -98,20 +57,14 @@ import {
   IonContent,
   IonGrid,
   IonIcon,
-  IonItem,
-  IonList,
-  IonModal,
   IonPage,
   IonRow,
   useIonRouter
 } from '@ionic/vue';
 
-import { useCartComposable } from '@/composables/cart';
 import { useShopComposable } from '@/composables/shop';
 import { useDjangoUtilies } from '@/composables/utils';
-import { client } from '@/plugins/axios';
 import { useShop } from '@/stores/shop';
-import { Product } from '@/types';
 import { useLocalStorage } from '@vueuse/core';
 import { shareSocial } from 'ionicons/icons';
 import { storeToRefs } from 'pinia';
@@ -119,9 +72,9 @@ import { register } from 'swiper/element';
 import { nextTick, onBeforeMount, onMounted, ref } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 
-import GridDisplay from '@/components/products/GridDisplay.vue';
-import DeliveryInfo from '@/components/modals/product/DeliveryInfo.vue';
 import CompositionInfo from '@/components/modals/product/CompositionInfo.vue';
+import DeliveryInfo from '@/components/modals/product/DeliveryInfo.vue';
+import ProductInfo from '@/components/modals/product/ProductInfo.vue';
 
 // https://swiperjs.com/element
 register()
@@ -142,35 +95,13 @@ const shopStore = useShop()
 const { visitedProducts, currentProduct } = storeToRefs(shopStore)
 const { isLiked, handleLike } = useShopComposable()
 const { mediaPath } = useDjangoUtilies()
-const { addToCart } = useCartComposable()
 
 const showDetailsModal = ref(false)
 const showCompositionInfoModal = ref(false)
 const showDeliveryInfoModal = ref(false)
-const recommendations = ref<Product[]>([])
-
-/**
- * 
- */
-async function requestRecommendations () {
-  try {
-    if (currentProduct.value) {
-      const response = await client.get('shop/products/recommendations', {
-        params: {
-          q: 30,
-          p: currentProduct.value.id
-        }
-      })
-      recommendations.value = response.data
-    }
-  } catch (e) {
-    console.log(e)
-  }
-}
 
 onBeforeMount(async () => {
   showDetailsModal.value = true
-  await requestRecommendations()
 })
 
 onMounted(() => {
@@ -193,16 +124,6 @@ onBeforeRouteLeave(() => {
 </script>
 
 <style lang="scss" scoped>
-.product {
-  &-price {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-}
-
-
-
 ion-grid {
   padding-top: 0;
 }

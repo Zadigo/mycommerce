@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonButtons, IonContent, IonHeader, IonModal, IonToolbar } from '@ionic/vue';
+import { IonButtons, IonContent, IonHeader, IonModal, IonToolbar, IonIcon, IonButton } from '@ionic/vue';
 import { close } from 'ionicons/icons';
 
 defineProps({
