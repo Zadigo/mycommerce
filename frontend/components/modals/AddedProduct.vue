@@ -10,8 +10,9 @@
 
           <div class="row">
             <div class="col-4">
-              <NuxtImg v-if="lastAddedProduct" :src="mediaPath(lastAddedProduct.product.get_main_image.original)" :alt="lastAddedProduct.product.name" class="img-fluid" />
-              <NuxtImg v-else src="/placeholder.svg" class="img-fluid" />
+              <!-- FIXME: Raises an error when there is no image -->
+              <!-- <NuxtImg v-if="lastAddedProduct" :src="mediaPath(lastAddedProduct.product?.get_main_image?.original)" :alt="lastAddedProduct.product.name" class="img-fluid" />
+              <NuxtImg v-else src="/placeholder.svg" class="img-fluid" /> -->
             </div>
 
             <div class="col-8">
@@ -68,12 +69,10 @@ const router = useRouter()
 const { lastAddedProduct, showAddedProductDrawer, showCartDrawer, hasProducts } = storeToRefs(cartStore)
 const { mediaPath } = useDjangoUtilies()
 
-/**
- * Handles the situation where the user tries
- * to go to the cart but is not logged in. If
- * he tries to access the cart while anonymous,
- * he is invited to login before pursuing
- */
+// Handles the situation where the user tries
+// to go to the cart but is not logged in. If
+// he tries to access the cart while anonymous,
+// he is invited to login before pursuing
 function handleNotAuthenticatedOrdering () {
   if (authenticationStore.isAuthenticated) {
     showAddedProductDrawer.value = false
