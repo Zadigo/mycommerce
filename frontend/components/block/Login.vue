@@ -61,14 +61,14 @@ const emit = defineEmits({
  */
 async function handleLogin () {
   login((data) => {
-    const accessToken = useCookie('access')
-    const refreshToken = useCookie('refresh')
+    // const accessToken = useCookie('access')
+    // const refreshToken = useCookie('refresh')
     
-    accessToken.value = data.access
-    refreshToken.value = data.refresh
+    // accessToken.value = data.access
+    // refreshToken.value = data.refresh
 
-    authenticationStore.accessToken = accessToken.value
-    authenticationStore.refreshToken = accessToken.value
+    authenticationStore.accessToken = data.access
+    authenticationStore.refreshToken = data.refresh
     authenticationStore.showLoginDrawer = false
     
     if (!authenticatedCart.value) {

@@ -8,7 +8,7 @@
       </NuxtLink>
       
       <v-btn class="ms-auto" variant="tonal" color="dark" rounded @click="shopStore.showSearchModal=true">
-        Rechercher
+        {{ $t('Rechercher') }}
       </v-btn>
 
       <ul class="navbar-nav">
@@ -52,17 +52,18 @@ import { storeToRefs } from 'pinia';
 const shopStore = useShop()
 const authStore = useAuthentication()
 const cartStore = useCart()
-// TODO: Create one unique dictionnary
-const accessToken = useCookie('access')
-const refereshToken = useCookie('refresh')
+// const accessToken = useCookie('access')
+// const refereshToken = useCookie('refresh')
 const { showCartDrawer } = storeToRefs(useCart())
 const { gtag } = useGtag()
 
 function proxyLogout () {
   authStore.logout()
   authStore.showLoginDrawer = false
-  accessToken.value = null
-  refereshToken.value = null
+  // accessToken.value = null
+  // refereshToken.value = null
+  authStore.accessToken = null
+  authStore.refreshToken = null
 }
 
 function handleShowCartDrawer () {

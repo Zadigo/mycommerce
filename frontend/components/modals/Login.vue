@@ -1,33 +1,40 @@
 
 <template>
-  <v-navigation-drawer v-model="shouldShowLoginDrawer" width="400" location="right" sticky temporary @close="shouldShowLoginDrawer=false">
+  <v-navigation-drawer v-model="shouldShowLoginDrawer" width="400" location="right" sticky temporary @close="handleReset">
     <div class="container">
-      <v-btn variant="tonal" class="mt-2" @click="shouldShowLoginDrawer=false">
+      <v-btn variant="plain" class="mt-2" @click="handleReset">
         <font-awesome icon="chevron-left" />
       </v-btn>
     </div>
 
     <v-divider />
     
-    <BlockSignup v-if="showSignup" @authenticate="handleAuthenticateCart" />
-    <BlockLogin v-else @show-signup="showSignup=true" @authenticate="handleAuthenticateCart" />
+    <Transition name="opacity">
+      <BlockSignup v-if="showSignup" @authenticate="handleAuthenticateCart" />
+      <BlockLogin v-else @show-signup="showSignup=true" @authenticate="handleAuthenticateCart" />
+    </Transition>
   </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
-import { AxiosError } from 'axios';
 import { useSessionStorage } from '@vueuse/core'
 
 const route = useRoute()
-const authenticationStore = useAuthentication()
+const authStore = useAuthentication()
 const authenticatedCart = useSessionStorage('authenticated_cart', false)
 const sessionId = useCookie('session_id')
 
 const { $client } = useNuxtApp()
-const { showLoginDrawer } = storeToRefs(authenticationStore)
+const { handleError } = useErrorHandler()
+const { showLoginDrawer } = storeToRefs(authStore)
 
 const showSignup = ref(false)
 
+/**
+ * Indicates whether the login modal should open
+ * based on a parameter present in the url -; or, uses
+ * `showLoginDrawer` to manipulate the modal
+ */
 const shouldShowLoginDrawer = computed<boolean>({
   get: () => {
     return route.query.login === '0' || showLoginDrawer.value
@@ -48,19 +55,17 @@ async function handleAuthenticateCart () {
     if (authenticatedCart.value) {
       await $client.post('cart/authenticate', {
         session_id: sessionId.value
-        // session_id: this.$session.retrieve<string>('session_id')
       })
     }
-    // if (!this.$session.retrieve<boolean>('authenticated_cart')) {
-    //   await this.$http.post('cart/authenticate', {
-    //     session_id: this.$session.retrieve<string>('session_id')
-    //   })
-    //   this.$session.toggle('authenticated_cart')
-    // }
   } catch (e) {
-    if (e instanceof AxiosError && e.response) {
-      // Handle error
-    }
+    handleError(e)
   }
+}
+
+function handleReset() {
+  showLoginDrawer.value = false
+  setTimeout(() => {
+    showSignup.value = false
+  }, 1000);
 }
 </script>
