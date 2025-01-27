@@ -78,7 +78,8 @@ const tokenData = ref<TokenData>({
   client_ip: null
 })
 
-const stripeKey = ref(import.meta.env.STRIPE_PUBLISHABLE_KEY)
+const stripeKey = ref(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
+console.log('stripeKey', stripeKey.value)
 
 // https://stripe.com/docs/js/initializing#init_stripe_js-options
 const instanceOptions = ref({})

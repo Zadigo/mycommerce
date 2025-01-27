@@ -64,13 +64,13 @@
 import { useAuthentication } from '@/stores/authentication';
 import { useCart } from '@/stores/cart';
 import { IonButton, IonCol, IonContent, IonHeader, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/vue';
+import { useHead } from '@unhead/vue';
 import { ref } from 'vue';
 
 import CartItems from '@/components/cart/CartItems.vue';
 import PaymentModal from '@/components/modals/cart/BaseModal.vue';
 import LoginModal from '@/components/modals/LoginModal.vue';
 import GridDisplay from '@/components/products/GridDisplay.vue';
-import { useHead } from '@unhead/vue'
 
 // import EmptyCart from '@/components/cart/EmptyCart.vue';
 
