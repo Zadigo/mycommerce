@@ -38,13 +38,15 @@ import './theme/variables.scss';
 import { createApp, toRaw } from 'vue'
 import { createPinia } from 'pinia';
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-
+import { createHead } from '@unhead/vue'
 
 const pinia = createPinia()
 
 pinia.use(({ store }) => {
   store.$router = toRaw(router);
 })
+
+createHead()
 
 const app = createApp(App)
   .use(IonicVue)

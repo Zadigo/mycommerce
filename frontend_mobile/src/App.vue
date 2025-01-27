@@ -42,11 +42,10 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
 
 const shopStore = useShop()
 const cartStore = useCart()
+const authStore = useAuthentication()
 const { handleError } = useErrorHandler()
 const authenticationStore = useAuthentication()
-const { get, set } = useCookies(null, {
-  autoUpdateDependencies: true
-})
+const { get, set } = useCookies()
 const { client } = useAxiosClient()
 
 const cookieSessionId = get('sessionId')
@@ -61,6 +60,14 @@ shopStore.$subscribe(({ storeId }) => {
 cartStore.$subscribe(({ storeId }) => {
   if (storeId === 'cart') {
     cartStore.sessionCache = sessionCache.value
+  }
+})
+
+
+authStore.$subscribe(({ storeId }, state) => {
+  if (storeId === 'authentication') {
+    set('access', state.accessToken)
+    set('refresh', state.refreshToken)
   }
 })
 
