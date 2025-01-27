@@ -2,13 +2,13 @@
   <ion-row>
     <ion-col v-for="i in 20" :key="i" :size="gridColumns" style="padding: .15rem .15rem .15rem .15rem;">
       <!-- <ion-skeleton-text></ion-skeleton-text> -->
-      <div class="card-skeleton"></div>
+      <div class="card-skeleton" />
     </ion-col>
   </ion-row>
 </template>
 
 <script setup lang="ts">
-import { IonRow, IonCol, IonSkeletonText } from '@ionic/vue';
+import { IonCol, IonRow } from '@ionic/vue';
 import { computed } from 'vue';
 
 const props = defineProps({

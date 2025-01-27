@@ -4,8 +4,8 @@ import { Product, ProductCollection, ProductsAPIResponse } from "@/types";
 import { useIonRouter } from "@ionic/vue";
 import { storeToRefs } from "pinia";
 import { getCurrentInstance, ref } from "vue";
-import { useListManager } from "./utils";
 import { useErrorHandler } from "./errors";
+import { useListManager } from "./utils";
 
 
 /**
@@ -61,6 +61,7 @@ export function useShopComposable() {
     if (product) {
       const { save, managedList } = useListManager()
       const state = save(items, product.id)
+      console.info('handleLike', state, managedList.value)
       return [state, managedList.value]
     } else {
       return []

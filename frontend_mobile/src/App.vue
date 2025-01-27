@@ -42,7 +42,7 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
 
 const shopStore = useShop()
 const cartStore = useCart()
-const { handleError } = useErrorHandler(Toast)
+const { handleError } = useErrorHandler()
 const authenticationStore = useAuthentication()
 const { get, set } = useCookies(null, {
   autoUpdateDependencies: true

@@ -61,9 +61,9 @@
         <!-- Products -->
         <Suspense>
           <template #default>
-            <AsyncClassicDisplay v-if="currentGridSize===1" @update-cache="handleUpdateCache" @show-product-sizes="handleAddToCart" />
-            <AsyncGridDisplay v-else-if="currentGridSize===2" @update-cache="handleUpdateCache" :columns="2"  @show-product-sizes="handleAddToCart" />
-            <AsyncGridDisplay v-else-if="currentGridSize===3" @update-cache="handleUpdateCache" :columns="3"  @show-product-sizes="handleAddToCart" />
+            <AsyncClassicDisplay v-if="currentGridSize===1" @update-cache="handleUpdateCache" @show-product-sizes="handleShowProductSizes" />
+            <AsyncGridDisplay v-else-if="currentGridSize===2" @update-cache="handleUpdateCache" :columns="2"  @show-product-sizes="handleShowProductSizes" />
+            <AsyncGridDisplay v-else-if="currentGridSize===3" @update-cache="handleUpdateCache" :columns="3" />
           </template>
 
           <template #fallback>
@@ -77,100 +77,29 @@
       </ion-grid>
       
       <!-- Modals -->
-      <ion-modal :is-open="showProductsFilterModal" @willDismiss="handleShowProductFilters">
-        <ion-header>
-          <ion-toolbar>
-            <ion-buttons slot="start">
-              <ion-button @click="showProductsFilterModal=false">
-                <ion-icon :icon="closeIcon"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-
-            <ion-title style="text-align: center;">Filtrer</ion-title>
-            
-            <ion-buttons slot="end">
-              <ion-button :strong="true" @click="handleRemoveFilters">
-                Supprimer
-              </ion-button>
-            </ion-buttons>
-          </ion-toolbar>
-        </ion-header>
-
-        <ion-content class="ion-padding">
-          <div class="block-1">
-            <p>Trier par</p>
-            <ion-button>Nouveautés</ion-button>
-          </div>
-
-          <hr>
-
-          <div class="block-1">
-            <p>Typologie</p>
-            <ion-button>Nouveautés</ion-button>
-          </div>
-
-          <hr>
-
-          <div class="block-1">
-            <p>Color</p>
-            <ion-button>Blue</ion-button>
-          </div>
-
-          <hr>
-
-          <div class="block-1">
-            <p>Taille</p>
-            <ion-button>XS</ion-button>
-          </div>
-          
-          <hr>
-
-          <div class="block-1">
-            <p>Prix</p>
-            <ion-button>Jusqu'à 15€</ion-button>
-          </div>
-
-          <ion-button expand="block">Voir les résulats</ion-button>
-        </ion-content>
-      </ion-modal>
-
-      <!-- Action Sheet -->
-      <ion-modal :is-open="showSizeChoices" :initial-breakpoint="0.5" :backdrop-breakpoint="0" handle-behavior="cycle" @onDidDismiss="showSizeChoices=false">
-        <ion-content class="ion-padding">
-          <div class="infos">
-            <p>Ajouter au panier</p>
-
-            <ion-button fill="clear" color="dark">
-              <ion-icon :icon="calculatorOutline" />
-              <span>Guide des tailles</span>
-            </ion-button>
-          </div>
-
-          <ion-list>
-            <ion-item button>XS</ion-item>
-            <ion-item button>S</ion-item>
-          </ion-list>
-        </ion-content>
-      </ion-modal>
+      <custom-filters :show="showProductsFilterModal" @close="showProductsFilterModal=false" />
+      <size-choices :show="showSizeChoices" :product="selectedProduct" @size-selected="handleSizeSelected" @close="showSizeChoices=false" />
+      <last-added-product :show="showLastAddedProduct" @close="showLastAddedProduct=false" />
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
+import { useShopComposable } from '@/composables/shop';
 import { useDjangoUtilies } from '@/composables/utils';
+import { baseGrids } from '@/data';
 import { client } from '@/plugins/axios';
 import { useShop } from '@/stores/shop';
-import { ProductsAPIResponse } from '@/types/shop';
-import { InfiniteScrollCustomEvent, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonList, IonModal, IonPage, IonRow, IonTitle, IonToolbar, useIonRouter } from '@ionic/vue';
-import { useLocalStorage } from '@vueuse/core';
-import { calculatorOutline, close as closeIcon } from 'ionicons/icons';
+import { Product, ProductsAPIResponse } from '@/types/shop';
+import { InfiniteScrollCustomEvent, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonInfiniteScroll, IonInfiniteScrollContent, IonPage, IonRow, IonTitle, IonToolbar, useIonRouter } from '@ionic/vue';
+import { useLocalStorage, useTitle } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { computed, defineAsyncComponent, ref } from 'vue';
-import { useTitle } from '@vueuse/core'
 
+import CustomFilters from '@/components/modals/products/CustomFilters.vue';
+import SizeChoices from '@/components/modals/SizeChoices.vue';
 import LoadingProducts from '@/components/products/LoadingProducts.vue';
-import { useShopComposable } from '@/composables/shop';
-import { baseGrids } from '@/data';
+import LastAddedProduct from '@/components/modals/LastAddedProduct.vue';
 
 const AsyncClassicDisplay = defineAsyncComponent({
   loader: async () => import('@/components/products/ClassicDisplay.vue'),
@@ -182,22 +111,25 @@ const AsyncGridDisplay = defineAsyncComponent({
   timeout: 3000
 })
 
-const showProductsFilterModal = ref(false)
-const showSizeChoices = ref(false)
-const cachedResponse = ref<ProductsAPIResponse>()
-
-const { handleGoToCollectionByName, requestProductsFromCollection } = useShopComposable()
-
 const router = useIonRouter()
 const storeShop = useShop()
 const { currentCollectionName } = storeToRefs(storeShop)
 const currentGridSize = useLocalStorage<1 | 2 | 3>('grid', 3)
+const { requestProductsFromCollection } = useShopComposable()
+
+const showProductsFilterModal = ref(false)
+const cachedResponse = ref<ProductsAPIResponse>()
+const selectedProduct = ref<Product>()
 const selectedSubcategory = ref('all')
+const showSizeChoices = ref(false)
+const showLastAddedProduct = ref(false)
 
 const products = computed(() => {
   return cachedResponse.value?.results
 })
 
+// Sub-categories used to filter the products
+// in to be seen
 const subCategories = computed<string[]>(() => {
   if (cachedResponse.value) {
     const result = cachedResponse.value.results.map((product) => {
@@ -213,11 +145,6 @@ function handleUpdateCache(data: ProductsAPIResponse) {
   console.log('handleUpdateCache', data)
   cachedResponse.value = data
 }
-
-/**
- * 
- */
-function handleRemoveFilters() {}
 
 /**
  * This function allows us to paginate through the rest
@@ -253,10 +180,8 @@ async function requestMoreProducts (e: InfiniteScrollCustomEvent) {
 }
 
 // 
-function handleShowProductFilters() {}
-
-// 
-function handleAddToCart() {
+function handleShowProductSizes(product: Product) {
+  selectedProduct.value = product
   showSizeChoices.value = !showSizeChoices.value
 }
 
@@ -273,6 +198,11 @@ function handleRefreshCollection(name: 'all' | string) {
   requestProductsFromCollection((data) => {
     cachedResponse.value = data
   }, selectedSubcategory.value)
+}
+
+function handleSizeSelected() {
+  showSizeChoices.value = false
+  showLastAddedProduct.value = true
 }
 </script>
 

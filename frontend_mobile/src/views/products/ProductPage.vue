@@ -19,22 +19,23 @@
       <!-- Content -->
       <ion-grid class="ion-no-padding">
         <ion-row>
-          <ion-col id="img-block" size="12" class="ion-no-padding ion-padding-bottom" @click="showImageZoomed=true">
-            <swiper-container v-if="currentProduct" pagination="true" @swiperslidechange="() => {}">
+          <ion-col id="img-block" size="12" class="ion-no-padding ion-padding-bottom">
+            <swiper-container v-if="currentProduct" pagination="true" @swiperslidechange="() => ({})" @click="showImageZoomed=true">
               <swiper-slide v-for="image in currentProduct.images" :key="image.id">
-                <!-- <img :src="mediaPath(image?.original)" /> -->
                 <div class="image-container">
                   <div class="image" :style="`background-image: url('${mediaPath(image.original)}');`" />
                 </div>
               </swiper-slide>
             </swiper-container>
-            <div v-else>Images to swipe</div>
+            <div v-else>
+              <img src="/placeholder.svg" />
+            </div>
 
             <ion-button id="btn-share" color="light" shape="round" fill="clear" style="z-index: 2000;">
               <ion-icon :icon="shareSocial" />
             </ion-button>
 
-            <ion-button id="btn-heart" color="light" shape="round" style="z-index: 2000;" @click="handleLike(likedProducts, currentProduct)">
+            <ion-button id="btn-heart" color="light" shape="round" style="z-index: 2000;" @click="proxyLikeProduct">
               <font-awesome-icon v-if="isLiked" :icon="['fas', 'heart']" />
               <font-awesome-icon v-else :icon="['far', 'heart']" />
             </ion-button>
@@ -66,7 +67,6 @@ import {
 import { useShopComposable } from '@/composables/shop';
 import { useDjangoUtilies } from '@/composables/utils';
 import { useShop } from '@/stores/shop';
-import { useLocalStorage } from '@vueuse/core';
 import { shareSocial } from 'ionicons/icons';
 import { storeToRefs } from 'pinia';
 import { register } from 'swiper/element';
@@ -81,20 +81,9 @@ import ProductInfo from '@/components/modals/product/ProductInfo.vue';
 // https://swiperjs.com/element
 register()
 
-const likedProducts = useLocalStorage('likedProducts', null, {
-  serializer: {
-    read(raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    },
-  }
-})
-
 const router = useIonRouter()
 const shopStore = useShop()
-const { visitedProducts, currentProduct } = storeToRefs(shopStore)
+const { visitedProducts, likedProducts, currentProduct } = storeToRefs(shopStore)
 const { isLiked, handleLike } = useShopComposable()
 const { mediaPath } = useDjangoUtilies()
 
@@ -102,6 +91,12 @@ const showDetailsModal = ref(false)
 const showCompositionInfoModal = ref(false)
 const showDeliveryInfoModal = ref(false)
 const showImageZoomed = ref(false)
+
+// TODO: Does not work
+function proxyLikeProduct() {
+  const result = handleLike(likedProducts.value, currentProduct.value)
+  likedProducts.value = result[1]
+}
 
 onBeforeMount(async () => {
   showDetailsModal.value = true
@@ -127,44 +122,7 @@ onBeforeRouteLeave(() => {
 </script>
 
 <style lang="scss" scoped>
-ion-grid {
-  padding-top: 0;
-}
-
-#img-block {
-  position: relative;
-}
-
-#btn-share {
-  position: absolute;
-  right: 3%;
-  bottom: 3%;
-}
-
-#btn-heart {
-  position: absolute;
-  right: 3%;
-  bottom: 13%;
-}
-
-.top-nav {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1001;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-}
-
-ion-content {
-  position: relative;
-}
-
-#img-block {
-  position: relative;
-}
+$button_position_bottom: 10%;
 
 .image-container {
   height: 630px;
@@ -181,5 +139,35 @@ ion-content {
     background-size: cover;
     z-index: 1001;
   }
+}
+
+%buttons {
+  position: absolute;
+  right: 3%;
+}
+
+@function calculate_top_button_position($position, $add: 10%) {
+  @return calc($position + $add);
+}
+
+#btn-share {
+  @extend %buttons;
+  bottom: $button_position_bottom;
+}
+
+#btn-heart {
+  @extend %buttons;
+  bottom: calculate_top_button_position($button_position_bottom);
+}
+
+.top-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1001;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
 }
 </style>

@@ -1,7 +1,9 @@
+import { useAxiosClient } from "@/plugins/client";
 import { useCart } from "@/stores/cart";
-import { useCookies } from "@vueuse/integrations/useCookies";
+import type { CartUpdateAPIResponse, LoginAPIResponse, Product, ProductToEdit, UserSelection } from "@/types";
+import { AxiosError } from "axios";
 import { computed, getCurrentInstance, ref } from "vue";
-import type { CartUpdateAPIResponse, LoginAPIResponse, Product, UserSelection } from "@/types";
+import { useErrorHandler } from "./errors";
 
 type FunctionCallback = (data: CartUpdateAPIResponse) => void
 
@@ -14,7 +16,9 @@ type FunctionCallback = (data: CartUpdateAPIResponse) => void
  * using proxy functions
  */
 export function useCartComposable() {
-    const app = getCurrentInstance()
+    const vueApp = getCurrentInstance()
+    const { client } = useAxiosClient()
+    const { handleError } = useErrorHandler()
     const userSelection = ref<UserSelection>({
         id: null,
         size: null,
@@ -25,7 +29,8 @@ export function useCartComposable() {
     const showSizeSelectionWarning = ref<boolean>(false)
     const stockDetailsResponse = ref({})
     const cartStore = useCart()
-    const cookie = useCookies(['authentication'])
+
+    const addingToCartState = ref(false)
 
     const parsedSession = computed((): { a: string, b: string, c: string } | null => {
         if (cartStore.sessionId) {
@@ -43,6 +48,8 @@ export function useCartComposable() {
      */
     async function addToCart(product: Product, size?: string | number | null, callback?: FunctionCallback, authCallback?: (data: LoginAPIResponse) => void) {
         try {
+            addingToCartState.value = true
+
             const cart = useCart()
 
             // By changing this, it updates in the underlying
@@ -56,42 +63,55 @@ export function useCartComposable() {
 
             if (product.has_sizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null)) {
                 showSizeSelectionWarning.value = true
+                addingToCartState.value = false
                 return
-            } else {
-                userSelection.value.size = 'Unique'
             }
 
-            const response = await $client.post('/cart/add', userSelection.value)
+            const response = await client.post('/cart/add', userSelection.value)
+
+            addingToCartState.value = false
 
             if (response.status === 201) {
-                cartStore.updateCart(response.data)
-
                 if (callback && typeof callback === 'function') {
-                    callback.call(app, response.data)
+                    callback.call(vueApp, response.data)
                 }
             } else {
                 console.log(response.data)
             }
         } catch (e) {
-            console.log(e)
+            handleError(e)
+
+            if (e instanceof AxiosError && e.response) {
+                if (authCallback) {
+                    authCallback(e.response.data)
+                }
+            }
         }
     }
 
     /**
      * Removes a product to the customer's cart 
      */
-    async function deleteFromCart(callback?: FunctionCallback, authCallback?: (data: LoginAPIResponse) => void) {
+    async function deleteFromCart(cartItem: ProductToEdit, callback?: (deletedItem: ProductToEdit, updatedCart: CartUpdateAPIResponse) => void, authCallback?: (data: LoginAPIResponse) => void) {
+        console.log('deleteFromCart', cartItem)
         try {
             if (parsedSession.value) {
-                const response = await $client.delete<CartUpdateAPIResponse>(`cart/${parsedSession.value.c}/delete`)
+                // FIXME: How does this function know which product to delete ?
+                const response = await client.delete<CartUpdateAPIResponse>(`cart/${parsedSession.value.c}/delete`)
 
                 // cartStore.removeFromCart(product)
                 if (callback && typeof callback === 'function') {
-                    callback.call(app, response.data)
+                    callback.call(vueApp, cartItem, response.data)
                 }
             }
         } catch (e) {
-            console.log(e)
+            handleError(e)
+
+            if (e instanceof AxiosError && e.response) {
+                if (authCallback) {
+                    authCallback(e.response.data)
+                }
+            }
         }
     }
 
@@ -100,7 +120,8 @@ export function useCartComposable() {
     }
 
     return {
-        // parsedSession,
+        addingToCartState,
+        parsedSession,
         userSelection,
         showSizeSelectionWarning,
         stockDetailsResponse,
