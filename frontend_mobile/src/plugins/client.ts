@@ -1,6 +1,6 @@
 import { LoginAPIResponse } from '@/types'
 import { useCookies } from '@vueuse/integrations/useCookies'
-// import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { type App } from 'vue'
 
 function isSecure() {

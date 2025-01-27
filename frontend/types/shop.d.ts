@@ -87,11 +87,9 @@ export declare interface CollectionName {
 }
 
 export interface ProductStock {
-    id: number
-    product: {
-        id: number
-        name: string
-    }
-    in_stock: boolean
-    
+    product: Pick<Product, 'id', 'name'>
+    quantity: number
+    in_stock: bboolean 
+    almost_sold_out: boolean
+    is_active: boolean
 }

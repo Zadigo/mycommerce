@@ -36,7 +36,6 @@ const emit = defineEmits({
 })
 
 const { selectImage } = useImages()
-const { ValidateProp } = useShopComposable()
 
 const images = computed(() => {
   if (props.product) {
@@ -52,9 +51,5 @@ const firstImage = computed(() => {
 
 const secondImage = computed(() => {
   return images.value[props.indexes[1]]
-})
-
-const isLoading = computed(() => {
-  return !ValidateProp<Product>(props.product)
 })
 </script>

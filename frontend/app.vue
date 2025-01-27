@@ -75,6 +75,15 @@ cartStore.$subscribe(({ storeId }) => {
   }
 })
 
+authenticationStore.$subscribe(({ storeId }, state) => {
+  if (storeId === 'authentication') {
+    // When we update the tokens in the store,
+    // automatically update them in the cookies
+    accessToken.value = state.accessToken
+    refreshToken.value = state.refreshToken
+  }
+})
+
 // watch(currentLanguage, (newValue) => {
 //   if (newValue) {
 //     i18n.locale.value = newValue

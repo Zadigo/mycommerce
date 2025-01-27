@@ -39,6 +39,8 @@ export interface CartUpdateAPIResponse {
     total: number;
 }
 
+// A modified object of the cart results which allows
+// edition and quick selection of information
 export interface ProductToEdit extends CartStatistic {
     product_info: CartItem | undefined
 }

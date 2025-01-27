@@ -75,19 +75,9 @@ export function useUtilities () {
         return []
     }
 
-    // function debounce<F extends (...args[]: any[]) => void>(fn: F, delay: number): (...args: Parameters<F>) => void {
-    //     let timer: ReturnType<typeof setTimeout>
-
-    //     return function (...args: Parameters<F>) {
-    //         clearTimeout(timer)
-    //         timer = setTimeout(() => fn(...args), delay)
-    //     };
-    // }
-
     return {
         isNull,
         scrollToTop,
-        // debounce,
         hasNull,
         readFile,
         readFiles

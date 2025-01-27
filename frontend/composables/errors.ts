@@ -38,13 +38,14 @@ export function useErrorHandler () {
     function handleUnauthorized (_error: AxiosError) {
         // Potential redirect to login or token refresh
         $toast.error('Unauthorized', {
-            description: 'Please log in again'
+            description: 'Please log in again',
+            position: 'top-center'
         })
 
         // Example of potential logout and redirect
         const authStore = useAuthentication()
         authStore.logout()
-        navigateTo('/login')
+        // navigateTo('/login')
     }
 
     function handleForbidden (_error: AxiosError) {

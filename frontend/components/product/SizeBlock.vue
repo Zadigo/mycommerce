@@ -34,7 +34,7 @@ const emit = defineEmits({
   }
 })
 
-const selectedSize = ref<string | number | undefined>()
+const selectedSize = ref<string | number | undefined | null>()
 useRefHistory(selectedSize)
 
 /**
@@ -44,4 +44,12 @@ function handleSizeSelection (size: string | number | undefined) {
   selectedSize.value = size
   emit('update-size', selectedSize.value)
 }
+
+function resetSize () {
+  selectedSize.value = null
+}
+
+defineExpose({
+  resetSize
+})
 </script>

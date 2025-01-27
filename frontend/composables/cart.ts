@@ -60,8 +60,6 @@ export function useCartComposable () {
                 showSizeSelectionWarning.value = true
                 addingToCartState.value = false
                 return
-            } else {
-                userSelection.value.size = 'Unique'
             }
 
             const response = await $client.post('/cart/add', userSelection.value)
