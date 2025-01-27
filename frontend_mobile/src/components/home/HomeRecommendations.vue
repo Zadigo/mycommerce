@@ -16,7 +16,7 @@
 import { useErrorHandler } from '@/composables/errors';
 import { useShopComposable } from '@/composables/shop';
 import { useDjangoUtilies } from '@/composables/utils';
-import { client } from '@/plugins/axios';
+import {  useAxiosClient } from '@/plugins/client'
 import { useShop } from '@/stores/shop';
 import { Product } from '@/types';
 import { IonButton, IonCol, IonImg, IonRow } from '@ionic/vue';
@@ -26,6 +26,7 @@ const shopStore = useShop()
 const { handleGoToCollectionByName, handleGoToProduct } = useShopComposable()
 const { mediaPath } = useDjangoUtilies()
 const { handleError } = useErrorHandler()
+const { client } = useAxiosClient()
 
 const sampleProducts = ref<Product[]>([])
 
