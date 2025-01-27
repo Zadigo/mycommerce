@@ -1,7 +1,7 @@
 import json
 
 import pandas
-import pymemcache
+# import pymemcache
 from quart import Quart, jsonify, request
 from quart_cors import cors
 
@@ -17,7 +17,7 @@ cors_app = cors(
     ]
 )
 
-cache = pymemcache.Client(('127.0.0.1', 11211))
+# cache = pymemcache.Client(('127.0.0.1', 11211))
 
 
 @cors_app.route('/api/v1/cities', methods=['get'])
