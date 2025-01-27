@@ -1,7 +1,8 @@
-import { ref } from 'vue'
-import type { AxiosError } from 'axios'
+import { Toast } from '@capacitor/toast';
+import type { AxiosError } from 'axios';
+import { ref } from 'vue';
 
-import axios from 'axios'
+import axios from 'axios';
 
 interface ErrorContext {
     message: string
@@ -9,7 +10,8 @@ interface ErrorContext {
     type: 'warning' | 'error' | 'info'
 }
 
-export function useErrorHandler (toast) {
+export function useErrorHandler () {
+
     // Global error state (optional, can be used for error logging or global error display)
     const globalError = ref<ErrorContext | null>(null)
 
@@ -23,8 +25,8 @@ export function useErrorHandler (toast) {
     function handleBadRequest (error: AxiosError) {
         const errorMessage = error.response?.data?.message || 'Invalid request'
 
-        toast.error('Bad Request', {
-            description: errorMessage
+        Toast.show({
+            text: errorMessage
         })
 
         globalError.value = {
@@ -35,8 +37,8 @@ export function useErrorHandler (toast) {
 
     function handleUnauthorized (_error: AxiosError) {
         // Potential redirect to login or token refresh
-        toast.error('Unauthorized', {
-            description: 'Please log in again'
+        Toast.show({
+            text: 'Unauthorized'
         })
 
         // Example of potential logout and redirect
@@ -46,14 +48,14 @@ export function useErrorHandler (toast) {
     }
 
     function handleForbidden (_error: AxiosError) {
-        toast.error('Access Denied', {
-            description: 'You do not have permission to perform this action'
+        Toast.show({
+            text: 'You do not have permission to perform this action'
         })
     }
 
     function handleNotFound (_error: AxiosError) {
-        toast.error('Not Found', {
-            description: 'The requested resource could not be found'
+        Toast.show({
+            text: 'The requested resource could not be found'
         })
     }
 
@@ -61,20 +63,20 @@ export function useErrorHandler (toast) {
         // Log to error tracking service
         logErrorToService(error)
 
-        toast.error('Server Error', {
-            description: 'An unexpected error occurred. Our team has been notified.'
+        Toast.show({
+            text: 'An unexpected error occurred. Our team has been notified'
         })
     }
 
     function handleGenericError (error: Error) {
-        toast.error('Error', {
-            description: error.message
+        Toast.show({
+            text: error.message
         })
     }
 
     function handleUnknownError (error: unknown) {
-        toast.error('Unexpected Error', {
-            description: 'An unknown error occurred'
+        Toast.show({
+            text: 'An unknown error occurred'
         })
 
         // Potentially log the entire error object for debugging

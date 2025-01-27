@@ -24,18 +24,14 @@
 
       <ion-col v-for="collection in cachedCollections" :key="collection.id" size="3">
         <ion-img :src="`/img4.jpg`" @click="handleGoToCollection(collection)" />
-        <!-- style="font-size: .6rem;text-align: center;" -->
-        <p>
-          {{ collection.name }}
-        </p>
+        <p class="ion-no-margin ion-margin-bottom fw-light">{{ collection.name }}</p>
       </ion-col>
     </ion-row>
 
-    <!-- Product Highlight -->
-    <ion-row v-if="highlightProduct">
-      <!-- style="padding-left: 0;padding-right: 0;padding-top: 0;" -->
+    <!-- Highlighted Product -->
+    <ion-row v-if="highlightedProduct">
       <ion-col size="12">
-        <ion-img src="/img1.jpg" :alt="highlightProduct.name" @click="handleGoToProduct(highlightProduct)" />
+        <ion-img :src="mediaPath(highlightedProduct.get_main_image.original)" :alt="highlightedProduct.name" @click="handleGoToProduct(highlightedProduct)" />
       </ion-col>
     </ion-row>
 
@@ -54,6 +50,8 @@ import { IonCol, IonGrid, IonImg, IonRow } from '@ionic/vue';
 import { useLocalStorage } from '@vueuse/core';
 import { register } from 'swiper/element';
 import { defineAsyncComponent, onBeforeMount, ref } from 'vue';
+import { useErrorHandler } from '@/composables/errors'
+import { useDjangoUtilies } from '@/composables/utils';
 
 register()
 
@@ -73,35 +71,41 @@ const cachedCollections = useLocalStorage<ProductCollection[]>('collections', nu
   }
 })
 
+const { mediaPath } = useDjangoUtilies()
+const { handleError } = useErrorHandler()
+
 // Composable for Collection Fetching
 function useLoadCollections () {
-  const highlightProduct = ref<Product>()
+  const highlightedProduct = ref<Product>()
   const { client } = useAxiosClient()
 
   async function requestCollectionNames () {
     try {
-      if (!cachedCollections.value) {
-        const response = await client.get<ProductCollection[]>('collection')
-        cachedCollections.value = response.data 
-      }
+      const response = await client.get<ProductCollection[]>('collection')
+      cachedCollections.value = response.data 
+      // if (!cachedCollections.value) {
+      // }
     } catch (e) {
-      console.log(e)
+      handleError(e)
     }
   }
   
-  async function handleHighlightProduct (product: Product) {
-    highlightProduct.value = product
+  function handleHighlightProduct (product: Product | undefined) {
+    if (product) {
+      console.log('handleHighlightProduct', product)
+      highlightedProduct.value = product
+    }
   }
   
   return {
-    highlightProduct,
+    highlightedProduct,
     handleHighlightProduct,
     requestCollectionNames
   }
 }
 
 const { handleGoToProduct, handleGoToCollection, handleGoToCollectionByName } = useShopComposable()
-const { requestCollectionNames, highlightProduct, handleHighlightProduct } = useLoadCollections()
+const { requestCollectionNames, highlightedProduct, handleHighlightProduct } = useLoadCollections()
 
 onBeforeMount(requestCollectionNames)
 </script>

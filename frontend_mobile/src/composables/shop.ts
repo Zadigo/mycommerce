@@ -5,6 +5,7 @@ import { useIonRouter } from "@ionic/vue";
 import { storeToRefs } from "pinia";
 import { getCurrentInstance, ref } from "vue";
 import { useListManager } from "./utils";
+import { useErrorHandler } from "./errors";
 
 
 /**
@@ -15,6 +16,7 @@ import { useListManager } from "./utils";
  */
 export function useShopComposable() {
   const { client } = useAxiosClient()
+  const { handleError } = useErrorHandler()
   
   const app = getCurrentInstance()
   const router = useIonRouter();
@@ -43,8 +45,6 @@ export function useShopComposable() {
    * liked by sending the requests to the backend
    * as required
    *
-   * @param {Object} product The product to like
-   * @param {number} product.id The product ID
    */
   async function handleAuthenticatedLike(product: Product) {
     product;
@@ -101,13 +101,17 @@ export function useShopComposable() {
   }
 
   async function handleGetRecommendations(quantity: number = 3) {
-    const response = await client.get("/shop/products/recommendations", {
-      params: { m: 1, q: quantity, i: 1 },
-    });
-    recommendedProducts.value = response.data;
+    try {
+      const response = await client.get("/shop/products/recommendations", {
+        params: { m: 1, q: quantity, i: 1 },
+      });
+      recommendedProducts.value = response.data;
+    } catch (e) {
+      handleError(e)
+    }
   }
 
-  async function requestProductsFromCollection(callback: (data: ProductsAPIResponse) => void) {
+  async function requestProductsFromCollection(callback: (data: ProductsAPIResponse) => void, subCategory?: string | null) {
     try {
       let collectionUrlPath
 
@@ -117,7 +121,20 @@ export function useShopComposable() {
         collectionUrlPath = 'collection/all'
       }
 
-      const response = await client.get<ProductsAPIResponse>(collectionUrlPath);
+      let response
+
+      if (subCategory && subCategory !== 'all') {
+        response = await client.get<ProductsAPIResponse>(collectionUrlPath, {
+          params: {
+            s: subCategory
+          }
+        });
+      } else {
+        response = await client.get<ProductsAPIResponse>(collectionUrlPath);
+      }
+      
+      console.log('subCategory', collectionUrlPath)
+      console.log('collectionUrlPath', collectionUrlPath)
       console.log('requestProductsFromCollection', response.data)
       callback.call(app, response.data)
       

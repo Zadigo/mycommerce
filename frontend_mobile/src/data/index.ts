@@ -1,4 +1,19 @@
-import type { SessionCacheData } from "~/types"
+import type { SessionCacheData } from "@/types"
+
+export const baseGrids = [
+    {
+        display: 1,
+        icon: ['far', 'square'],
+    },
+    {
+        display: 2,
+        icon: ['fas', 'table-cells-large'],
+    },
+    {
+        display: 3,
+        icon: ['fas', 'table-cells'],
+    }
+]
 
 export const countries: string[] = [
     "France",

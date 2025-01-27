@@ -34,6 +34,7 @@
     "ionicons": "^7.0.0",
     "mdb-ui-kit": "^7.2.0",
     "pinia": "^2.1.7",
+    "sass": "^1.79.3",
     "swiper": "^11.1.12",
     "universal-cookie": "^7.1.4",
     "vue": "^3.3.0",

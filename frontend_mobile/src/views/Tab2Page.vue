@@ -39,9 +39,10 @@ import ProductIterator from '@/components/ProductIterator.vue';
 import FocusedSearch from '@/components/search/FocusedSearch.vue';
 import SimpleSearch from '@/components/search/SimpleSearch.vue';
 
+const { recommendedProducts, handleGetRecommendations } = useShopComposable()
+
 const showHeader = ref<boolean>(true)
 const searchedProducts = ref<Product[]>([])
-const { recommendedProducts, handleGetRecommendations } = useShopComposable()
 
 onBeforeMount(() => {
   handleGetRecommendations(20)
@@ -51,7 +52,7 @@ const hasSearch = computed<boolean>(() => {
   return searchedProducts.value.length > 0
 })
 
-const handleSearchedProducts = (products: Product[]) => {
+function handleSearchedProducts(products: Product[]) {
   searchedProducts.value = products
 }
 </script>

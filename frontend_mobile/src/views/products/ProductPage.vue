@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
+    <!-- <ion-header>
       <ion-toolbar>
         <ion-buttons>
           <ion-button slot="start" @click="router.back()">
@@ -14,27 +14,44 @@
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
-    </ion-header>
+    </ion-header> -->
     
     <ion-content>
-      <ion-grid style="padding-left: 0; padding-right: 0;">
+      <div class="top-nav">
+        <ion-buttons>
+          <ion-button slot="start" @click="router.back()">
+            <font-awesome-icon icon="chevron-left" />
+          </ion-button>
+        </ion-buttons>
+
+        <ion-buttons slot="end">
+          <ion-button>
+            <font-awesome-icon :icon="['fas', 'heart']" />
+          </ion-button>
+        </ion-buttons>
+      </div>
+
+      <ion-grid class="ion-no-padding">
         <ion-row>
-          <ion-col id="img-block" size="12" style="padding-left: 0; padding-right: 0; padding-top: 0;">
+          <ion-col id="img-block" size="12" class="ion-no-padding ion-padding-bottom">
             <!-- https://swiperjs.com/element -->
             <swiper-container v-if="currentProduct" pagination="true" @swiperslidechange="() => {}">
               <swiper-slide v-for="image in currentProduct.images" :key="image.id">
-                <img :src="mediaPath(image?.original)" />
+                <!-- <img :src="mediaPath(image?.original)" /> -->
+                <div class="image-container">
+                  <div class="image" :style="`background-image: url('${mediaPath(image.original)}');`" />
+                </div>
               </swiper-slide>
             </swiper-container>
             <div v-else>Images to swipe</div>
 
             <ion-button id="btn-share" color="light" shape="round" fill="clear" style="z-index: 2000;">
-              <ion-icon :icon="shareSocial"></ion-icon>
+              <ion-icon :icon="shareSocial" />
             </ion-button>
 
             <ion-button id="btn-heart" color="light" shape="round" style="z-index: 2000;" @click="handleLike(likedProducts, currentProduct)">
-              <font-awesome-icon v-if="isLiked" :icon="['fas', 'heart']"></font-awesome-icon>
-              <font-awesome-icon v-else :icon="['far', 'heart']"></font-awesome-icon>
+              <font-awesome-icon v-if="isLiked" :icon="['fas', 'heart']" />
+              <font-awesome-icon v-else :icon="['far', 'heart']" />
             </ion-button>
           </ion-col>
         </ion-row>
@@ -58,15 +75,18 @@
             </ion-button>
 
             <p>Multicouleur: Réf: 12345</p>
+          </ion-col>
 
+          <ion-col size="12">
             <h3>A propos du produit</h3>
             <ion-list>
               <ion-item button lines="full">Composition, soin et traçabilité</ion-item>
               <ion-item button lines="full">Livraison et retours</ion-item>
             </ion-list>
+          </ion-col>
 
+          <ion-col size="12">
             <h3>Cela peut t'intéresser</h3>
-            
             <grid-display :products="recommendations" :columns="2"></grid-display>
           </ion-col>
         </ion-content>
@@ -78,18 +98,15 @@
 <script setup lang="ts">
 import {
   IonButton,
-  IonButtons,
   IonCol,
   IonContent,
   IonGrid,
-  IonHeader,
   IonIcon,
   IonItem,
   IonList,
+  IonModal,
   IonPage,
   IonRow,
-  IonToolbar,
-  IonModal,
   useIonRouter
 } from '@ionic/vue';
 
@@ -103,10 +120,10 @@ import { useLocalStorage } from '@vueuse/core';
 import { shareSocial } from 'ionicons/icons';
 import { storeToRefs } from 'pinia';
 import { register } from 'swiper/element';
-import { nextTick, onBeforeMount, onMounted, onUnmounted, ref } from 'vue';
+import { nextTick, onBeforeMount, onMounted, ref } from 'vue';
+import { onBeforeRouteLeave } from 'vue-router';
 
 import GridDisplay from '@/components/products/GridDisplay.vue';
-import { onBeforeRouteLeave } from 'vue-router';
 
 register()
 
@@ -124,8 +141,8 @@ const likedProducts = useLocalStorage('likedProducts', null, {
 const router = useIonRouter()
 const shopStore = useShop()
 const { visitedProducts, currentProduct } = storeToRefs(shopStore)
-const { mediaPath } = useDjangoUtilies()
 const { isLiked, handleLike } = useShopComposable()
+const { mediaPath } = useDjangoUtilies()
 const { addToCart } = useCartComposable()
 
 const showDetailsModal = ref(false)
@@ -174,7 +191,7 @@ onBeforeRouteLeave(() => {
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 ion-grid {
   padding-top: 0;
 }
@@ -193,5 +210,41 @@ ion-grid {
   position: absolute;
   right: 3%;
   bottom: 13%;
+}
+
+.top-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1001;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+ion-content {
+  position: relative;
+}
+
+#img-block {
+  position: relative;
+}
+
+.image-container {
+  height: 630px;
+  width: 100%;
+
+  .image {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-repeat: no-repeat;
+    background-position: top;
+    background-size: cover;
+    z-index: 1001;
+  }
 }
 </style>
