@@ -82,7 +82,6 @@
 </template>
 
 <script lang="ts" setup>
-import { whenever } from '@vueuse/core';
 import type { ProductToEdit } from '~/types';
 
 const router = useRouter()
@@ -96,31 +95,24 @@ const emit = defineEmits({
   }
 })
 
-whenever(showCartDrawer, (value) => {
-  if (value) {
-    document.body.classList.add('no-scroll')
-  } else {
-    document.body.classList.remove('no-scroll')
-  }
-})
-
-/**
- * Handles the redirection to the correct page
- * if the user clicks on the discover button
- * in the cart modal
- */
+// Handles the redirection to the correct page
+// if the user clicks on the discover button
+// in the cart modal
 function handleCartButtonRedirection () {
   showCartDrawer.value = false
   router.push('/shop/collection/novelties')
 }
 
 /**
- * Handle the opening or the closing of 
- * the product edition dialog by ensuring
- * that cartDrawer is closed
+ * 
+ * 
+ * 
  * 
  * TODO: Refactor this function
  */
+// Handle the opening or the closing of 
+// the product edition dialog by ensuring
+// that cartDrawer is closed
 function handleOpenProductEdition (editedProduct: ProductToEdit) {
   emit('edit-product', editedProduct)
 }
