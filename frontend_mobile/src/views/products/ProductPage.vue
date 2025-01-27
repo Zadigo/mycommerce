@@ -1,22 +1,7 @@
 <template>
-  <ion-page>
-    <!-- <ion-header>
-      <ion-toolbar>
-        <ion-buttons>
-          <ion-button slot="start" @click="router.back()">
-            <font-awesome-icon icon="chevron-left" />
-          </ion-button>
-        </ion-buttons>
-
-        <ion-buttons slot="end">
-          <ion-button>
-            <font-awesome-icon :icon="['fas', 'heart']"></font-awesome-icon>
-          </ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header> -->
-    
+  <ion-page>    
     <ion-content>
+      <!-- Nav -->
       <div class="top-nav">
         <ion-buttons>
           <ion-button slot="start" @click="router.back()">
@@ -31,10 +16,10 @@
         </ion-buttons>
       </div>
 
+      <!-- Content -->
       <ion-grid class="ion-no-padding">
         <ion-row>
           <ion-col id="img-block" size="12" class="ion-no-padding ion-padding-bottom">
-            <!-- https://swiperjs.com/element -->
             <swiper-container v-if="currentProduct" pagination="true" @swiperslidechange="() => {}">
               <swiper-slide v-for="image in currentProduct.images" :key="image.id">
                 <!-- <img :src="mediaPath(image?.original)" /> -->
@@ -57,15 +42,19 @@
         </ion-row>
       </ion-grid>
 
+      <!-- Modals -->
+      <composition-info :show="showCompositionInfoModal" @close="showCompositionInfoModal=false" />
+      <delivery-info :show="showDeliveryInfoModal" @close="showDeliveryInfoModal=false" />
+
       <ion-modal :is-open="showDetailsModal" :initial-breakpoint="0.35" :breakpoints="[0.35, 1]" :backdrop-dismiss="false" :backdrop-breakpoint="0.5" handle-behavior="cycle">
         <ion-content class="ion-padding">
           <ion-col size="12">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-              <h1 v-if="currentProduct" style="font-size: 1.2rem; margin: 1rem 0rem auto;">
+            <div class="product-price">
+              <p v-if="currentProduct" class="fw-light">
                 {{ currentProduct.name }}
-              </h1>
+              </p>
 
-              <p v-if="currentProduct" style="margin: 1rem 0rem auto;">
+              <p v-if="currentProduct" class="fw-bold">
                 {{ currentProduct.get_price }}€  
               </p>
             </div>
@@ -74,20 +63,27 @@
               Sélectionner une taille
             </ion-button>
 
-            <p>Multicouleur: Réf: 12345</p>
+            <p v-if="currentProduct" class="fw-light">{{ currentProduct.color }} - Réf: {{ currentProduct.slug }}</p>
           </ion-col>
 
           <ion-col size="12">
             <h3>A propos du produit</h3>
+
             <ion-list>
-              <ion-item button lines="full">Composition, soin et traçabilité</ion-item>
-              <ion-item button lines="full">Livraison et retours</ion-item>
+              <ion-item button lines="full" @click="showCompositionInfoModal=true">
+                Composition, soin et traçabilité
+              </ion-item>
+
+              <ion-item button lines="full" @click="showDeliveryInfoModal=true">
+                Livraison et retours
+              </ion-item>
             </ion-list>
           </ion-col>
 
           <ion-col size="12">
             <h3>Cela peut t'intéresser</h3>
-            <grid-display :products="recommendations" :columns="2"></grid-display>
+
+            <grid-display :products="recommendations" :columns="2" />
           </ion-col>
         </ion-content>
       </ion-modal>
@@ -124,7 +120,10 @@ import { nextTick, onBeforeMount, onMounted, ref } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 
 import GridDisplay from '@/components/products/GridDisplay.vue';
+import DeliveryInfo from '@/components/modals/product/DeliveryInfo.vue';
+import CompositionInfo from '@/components/modals/product/CompositionInfo.vue';
 
+// https://swiperjs.com/element
 register()
 
 const likedProducts = useLocalStorage('likedProducts', null, {
@@ -146,6 +145,8 @@ const { mediaPath } = useDjangoUtilies()
 const { addToCart } = useCartComposable()
 
 const showDetailsModal = ref(false)
+const showCompositionInfoModal = ref(false)
+const showDeliveryInfoModal = ref(false)
 const recommendations = ref<Product[]>([])
 
 /**
@@ -192,6 +193,16 @@ onBeforeRouteLeave(() => {
 </script>
 
 <style lang="scss" scoped>
+.product {
+  &-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+
+
 ion-grid {
   padding-top: 0;
 }

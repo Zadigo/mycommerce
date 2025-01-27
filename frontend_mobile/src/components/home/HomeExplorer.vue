@@ -38,6 +38,10 @@
     <!-- Recommendations -->
     <Suspense>
       <AysncHomeRecommendations @hightlight-product="handleHighlightProduct" />
+
+      <template #fallback>
+        Aucune recommendations...
+      </template>
     </Suspense>
   </ion-grid>
 </template>

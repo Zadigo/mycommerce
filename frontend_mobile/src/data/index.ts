@@ -81,3 +81,33 @@ export const defaultSortingFilters = [
     ['Price up', 'Prix croissant'],
     ['Price down', 'Prix décroissant']
 ]
+
+// TODO: Move to Quart API backend?
+// Icons are available at: https://iconduck.com/sets/laundry-and-wash-icons
+
+export const laundryIcons = [
+    {
+        name: 'No bleaching',
+        icon: 'laundry/bleaching-not-allowed.svg',
+        label: 'Eau de javel interdite'
+    },
+    {
+        name: 'Washing 30',
+        icon: 'laundry/washing-30deg.svg',
+        label: 'Lavable en machine max. 30° - Fragile'
+    },
+    {
+        name: 'Washing 40',
+        icon: 'laundry/washing-40deg.svg',
+        label: 'Lavable en machine max. 40° - Fragile'
+    }
+]
+
+export function findLaundryIcon(name: string, key: 'name' | 'icon' | 'label' = 'icon') {
+    const result = laundryIcons.find(x => x.name === name)
+    if (result) {
+        return result[key]
+    } else {
+        return ''
+    }
+}

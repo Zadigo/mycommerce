@@ -4,10 +4,13 @@
       <ion-toolbar>
         <ion-buttons slot="start">
           <ion-button>
-            <ion-icon :icon="caretBack" @click="router.back()"></ion-icon>
+            <ion-icon :icon="caretBack" @click="router.back()" />
           </ion-button>
         </ion-buttons>
-        <ion-title>Modifier</ion-title>
+
+        <ion-title>
+          Modifier
+        </ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -24,7 +27,9 @@
           <hr>
           
           <p>Taille</p>
-          <ion-button v-for="i in 3" :key="i" shape="round" fill="outline" color="dark">XS {{ i }}</ion-button>
+          <ion-button v-for="i in 3" :key="i" shape="round" fill="outline" color="dark">
+            XS {{ i }}
+          </ion-button>
 
           <p>Quantité</p>
           <ion-input type="number"></ion-input>
@@ -49,7 +54,7 @@ const router = useIonRouter()
 /**
  * 
  */
-const handleGoToCart = async () => {
+async function handleGoToCart() {
   router.push('/tabs/tab3')
 }
 </script>

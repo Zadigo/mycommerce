@@ -1,16 +1,8 @@
 <template>
   <ion-row>
-    <template v-if="sampleProducts.length > 0">
-      <ion-col v-for="sampleProduct in sampleProducts" :key="sampleProduct.id" size="6">
-        <ion-img :src="mediaPath(sampleProduct.get_main_image?.original)" :alt="sampleProduct.name" @click="handleGoToProduct(sampleProduct)" />
-      </ion-col>
-    </template>
-
-    <template v-else>
-      <ion-col size="12" class="ion-text-center">
-        No recommendations...
-      </ion-col>
-    </template>
+    <ion-col v-for="sampleProduct in sampleProducts" :key="sampleProduct.id" size="6">
+      <ion-img :src="mediaPath(sampleProduct.get_main_image?.original)" :alt="sampleProduct.name" @click="handleGoToProduct(sampleProduct)" />
+    </ion-col>
 
     <ion-col size="12" class="ion-text-center">
       <ion-button fill="outline" color="dark" @click="handleGoToCollectionByName('all')">
@@ -54,6 +46,7 @@ async function requestSampleProducts () {
         params: { m: 1, q: 5, i: 1 }
       })
       const result = response.data
+      sampleProducts.value = response.data
       return [result[2], result]
     } catch (e) {
       handleError(e)
@@ -74,13 +67,6 @@ async function requestSampleProducts () {
         emit('hightlight-product', shopStore.sessionCache.recommendations[1])
       }
     }
-    // if (!recommendations.value) {
-    //   const data = await getProducts()
-    //   recommendations.value = data[1]
-    //   emit('hightlight-product', data[0])
-    // } else {
-    //   emit('hightlight-product', recommendations.value[1])
-    // }
   } catch (e) {
     console.log(e)
   }
