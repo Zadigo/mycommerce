@@ -30,9 +30,9 @@
 </template>
 
 <script setup lang="ts">
+import { findLaundryIcon } from '@/data';
 import { IonCol, IonGrid, IonImg, IonItem, IonLabel, IonList, IonRow } from '@ionic/vue';
 
-import { findLaundryIcon } from '@/data';
 import BaseModal from '../BaseModal.vue';
 
 defineProps({

@@ -19,7 +19,7 @@
       <!-- Content -->
       <ion-grid class="ion-no-padding">
         <ion-row>
-          <ion-col id="img-block" size="12" class="ion-no-padding ion-padding-bottom">
+          <ion-col id="img-block" size="12" class="ion-no-padding ion-padding-bottom" @click="showImageZoomed=true">
             <swiper-container v-if="currentProduct" pagination="true" @swiperslidechange="() => {}">
               <swiper-slide v-for="image in currentProduct.images" :key="image.id">
                 <!-- <img :src="mediaPath(image?.original)" /> -->
@@ -46,6 +46,7 @@
       <composition-info :show="showCompositionInfoModal" @close="showCompositionInfoModal=false" />
       <delivery-info :show="showDeliveryInfoModal" @close="showDeliveryInfoModal=false" />
       <product-info :show="showDetailsModal" @composition-modal="showCompositionInfoModal=true" @delivery-modal="showDeliveryInfoModal=true" />
+      <image-zoom v-if="currentProduct" :images="currentProduct.images" :show="showImageZoomed" @close="showImageZoomed=false" />
     </ion-content>
   </ion-page>
 </template>
@@ -74,6 +75,7 @@ import { onBeforeRouteLeave } from 'vue-router';
 
 import CompositionInfo from '@/components/modals/product/CompositionInfo.vue';
 import DeliveryInfo from '@/components/modals/product/DeliveryInfo.vue';
+import ImageZoom from '@/components/modals/product/ImageZoom.vue';
 import ProductInfo from '@/components/modals/product/ProductInfo.vue';
 
 // https://swiperjs.com/element
@@ -99,6 +101,7 @@ const { mediaPath } = useDjangoUtilies()
 const showDetailsModal = ref(false)
 const showCompositionInfoModal = ref(false)
 const showDeliveryInfoModal = ref(false)
+const showImageZoomed = ref(false)
 
 onBeforeMount(async () => {
   showDetailsModal.value = true
