@@ -45,6 +45,8 @@ const AsyncBaseRecommendationBlock = defineAsyncComponent({
   timeout: 5000
 })
 
+const { $client } = useNuxtApp()
+
 // Composable for product fetching
 function useProductDetails () {
   const route = useRoute()
@@ -67,7 +69,11 @@ function useProductDetails () {
   }
 }
 
-// Composable for stock management
+/**
+ * This composable checks the stock for the given product
+ * and then allows use to indicate whether the product is
+ * available or not 
+ */
 function useProductSotck (product: Ref<Product | null>) {
   const stockState = ref<ProductStock>()
   const { handleError } = useErrorHandler()
@@ -94,7 +100,6 @@ function useProductSotck (product: Ref<Product | null>) {
 // Composable for tracking visited products
 function useVisitedProducts (product: Ref<Product | null>) {
   const visitedProducts = useLocalStorage<number[]>('visited', null, {
-    deep: true,
     serializer: {
       read: (raw) => JSON.parse(raw),
       write: (value) => JSON.stringify(value)
@@ -119,7 +124,6 @@ function useVisitedProducts (product: Ref<Product | null>) {
 // TODO: Refactor into a composable
 const moreProductsIntersect = ref<HTMLElement>()
 
-const { $client } = useNuxtApp()
 const { product, isLoading } = useProductDetails()
 const { trackProduct } = useVisitedProducts(product)
 const { requestProductStock } = useProductSotck(product)

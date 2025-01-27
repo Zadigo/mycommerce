@@ -14,3 +14,9 @@
     <slot name="intersect" />
   </section>
 </template>
+
+<style lang="scss" scoped>
+#product-feed {
+  position: relative;
+}
+</style>

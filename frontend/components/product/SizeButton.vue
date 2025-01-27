@@ -53,3 +53,9 @@ function handleSizeSelection (size: ProductSizes) {
   emit('select-size', size.name)
 }
 </script>
+
+<style lang="scss" scoped>
+button {
+  border: 1px solid rgba($color: #000000, $alpha: 0.15);
+}
+</style>

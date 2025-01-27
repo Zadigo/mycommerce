@@ -74,6 +74,7 @@ const intersectionTarget = ref<HTMLElement | null>(null)
 
 const showProductFilters = ref(false)
 
+
 // TODO: Add a provide so that all the components have access
 // to the products from this parent component
 
@@ -208,6 +209,10 @@ async function requestFilteredProducts(query: string) {
   await requestOffsetProducts(34, query, true)
 }
 
+/**
+ * Main logic that loads more products into the feed once
+ * the user has reached the limit of the intersection 
+ */
 useIntersectionObserver(intersectionTarget, ([{ isIntersecting }]) => {
   if (isIntersecting && nextPageUrl.value !== null) {
     const result = builLimitOffset(nextPageUrl.value)

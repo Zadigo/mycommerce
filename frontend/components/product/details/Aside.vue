@@ -1,5 +1,5 @@
 <template>
-  <div id="product-aside" ref="productAside" class="position-relative">
+  <div id="product-aside" ref="productAside" class="position-relative ps-5">
     <!-- Information -->
     <template v-if="product">
       <h1 :aria-label="product?.name" class="h3">
@@ -48,7 +48,7 @@
     </div>
 
     <!-- Reference -->
-    <p class="fw-light text-body-secondary mb-2" aria-label="Product color and reference">
+    <p id="product-reference" class="text-small mb-2" aria-label="Product color and reference">
       {{ product?.color }} · Ref. 0623/152/505
     </p>
 
@@ -58,10 +58,13 @@
     <ProductSizeBlock v-if="product" ref="sizeEl" :sizes="product.sizes" @update-size="handleSizeSelection" />
 
     <!-- Size Guide -->
-    <p class="text-small mt-3 mb-1 fw-light">Taille et hauteur du mannequin : S · 172 cm</p>
+    <p class="text-small mt-3 mb-1">
+      Taille et hauteur du mannequin : S · 172 cm
+    </p>
+
     <div class="d-flex justify-content-start gap-3 mb-2">
-      <a href="#" class="text-small fw-bold shadow-none btn-link" @click.prevent="emit('show-size-guide')">
-        <font-awesome icon="ruler" class="me-1" /> {{ $t('Guide des tailles') }}
+      <a href="#" class="text-small fw-bold shadow-none btn-link link-dark text-decoration-underline" @click.prevent="emit('show-size-guide')">
+        {{ $t('Guide des tailles') }}
       </a>
     </div>
 
@@ -72,7 +75,8 @@
     </Transition>
 
     <div class="actions d-flex justify-content-start gap-1 my-4">
-      <button id="btn-add-to-cart" type="button" class="btn btn-primary btn-lg shadow-none btn-rounded" aria-label="Add to cart" @click="handleAddToCart">
+      <button id="btn-add-to-cart" type="button" class="btn btn-success btn-lg shadow-none btn-rounded" aria-label="Add to cart" @click="handleAddToCart">
+        <font-awesome v-if="stockState && stockState.almost_sold_out" icon="clock-rotate-left" class="text-warning me-2" />
         <v-progress-circular v-if="addingToCartState" color="light" indeterminate />
         <span v-else>{{ $t('Ajouter au panier') }}</span>
       </button>
@@ -89,7 +93,7 @@
     <!-- Delivery Types -->
     <ProductDetailsDeliveryType class="mt-3">
       <ProductDetailsDeliveryTypes class="text-small" icon-name="shop" text="Enlèvement en magasin" />
-      <ProductDetailsDeliveryTypes class="text-small" icon-name="truck" text="Livraison standard à domicile" />
+      <ProductDetailsDeliveryTypes class="text-small" icon-name="truck" text="Livraison standard à domicile" sub-text="Pour toute commande supérieure à 45,00 €" />
     </ProductDetailsDeliveryType>
   </div>
 </template>
@@ -97,7 +101,7 @@
 <script lang="ts" setup>
 import { useLocalStorage } from '@vueuse/core';
 import type { PropType } from 'vue';
-import type { Product } from '~/types';
+import type { Product, ProductStock } from '~/types';
 
 const props = defineProps({
   isLoading: {
@@ -142,6 +146,8 @@ const productAside = ref<HTMLElement>()
 
 provide('userSelection', userSelection)
 
+const stockState = inject<ProductStock>('stockState')
+
 /**
  * Indicates if the product has other color variants     * 
  */
@@ -150,12 +156,6 @@ const hasColorVariants = computed(() => {
     return props.product.variants.length > 0
   } else {
     return false
-  }
-})
-
-onMounted(() => {
-  if (props.product) {
-    isLiked.value = likedProducts.value.includes(props.product.id)
   }
 })
 
@@ -233,11 +233,20 @@ async function handleAddToCart () {
     })
   }
 }
+
+onMounted(() => {
+  if (props.product) {
+    isLiked.value = likedProducts.value.includes(props.product.id)
+  }
+})
 </script>
 
 <style lang="scss" scoped>
+$font_size: 0.8rem;
+
 h1.h3 {
   font-size: 1.3rem;
+  font-weight: 400;
 }
 
 #product-variant.router-link-exact-active {

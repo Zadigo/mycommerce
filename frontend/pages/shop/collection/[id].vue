@@ -1,5 +1,5 @@
 <template>
-  <section class="mb-5" style="margin-top: 59px;">
+  <section id="products" class="mb-5" style="margin-top: 59px;">
     <div class="row">
       <!-- Page Title -->
       <div class="col-12">
@@ -54,6 +54,10 @@ const AsyncFeed = defineAsyncComponent({
   timeout: 10000
 })
 
+/**
+ * Callback function used to set the products loaded
+ * in the async component feed back to here 
+ */
 function handleLoadedProducts(data: Product[]) {
   productsLoading.value = false
   products.value = data
