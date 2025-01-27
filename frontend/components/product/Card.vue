@@ -1,11 +1,11 @@
 <template>
   <article v-if="product" :data-id="product.id" :aria-label="product.name" class="card shadow-none rounded-0" @mouseenter="isHovered=true" @mouseleave="isHovered=false">
-    <NuxtLink :to="`/shop/${product.id}`" @click="emit('navigate', [index, product])">
+    <NuxtLink :to="`/shop/${product.id}`" @click="emit('has-navigated', [index, product])">
       <NuxtImg :src="mediaPath(product.get_main_image?.original, '/placeholder.svg')" class="card-img rounded-0" />
     </NuxtLink>
 
     <!-- Cart -->
-    <div v-if="isHovered && showCart" class="card-cover p-4">
+    <div v-if="isHovered && showCart" ref="cardCoverEl" class="card-cover p-4">
       <div class="row text-center">
         <div class="col-12">
           <div v-if="requiresSizeItems" class="size-items">
@@ -18,7 +18,7 @@
             </div>
           </div>
 
-          <v-btn v-else variant="outlined" color="dark" block rounded @click="handleAddToCart">
+          <v-btn v-else variant="plain" color="dark" block rounded @click="handleAddToCart('Unique')">
             {{ $t('Ajouter au panier') }}
           </v-btn>
         </div>
@@ -32,7 +32,7 @@
     </button>
 
     <!-- Infos -->
-    <NuxtLink v-show="showPrices" :to="`/shop/${product.id}`" class="link-dark" @click="emit('navigate', [index, product])">
+    <NuxtLink v-show="showPrices" :to="`/shop/${product.id}`" class="link-dark" @click="emit('has-navigated', [index, product])">
       <div class="card-body pt-0 px-2 pb-0">
         <p id="product-name" class="mb-0 mt-1 fw-light" :aria-label="product.name">
           {{ product.name }}
@@ -53,8 +53,8 @@
   <BaseSkeleton v-else :loading="true" />
 </template>
 
-<script lang="ts" setup>
-import { useSessionStorage, useLocalStorage } from '@vueuse/core';
+<script setup lang="ts">
+import { useLocalStorage } from '@vueuse/core';
 import type { PropType } from 'vue';
 import type { Product } from '~/types';
 
@@ -83,30 +83,22 @@ const props = defineProps({
 })
 
 const emit = defineEmits({
-  navigate(_data: (number | Product)[]) {
+  /** 
+   * This emit is used to indicate to parent components
+   * hosting this component that a navigation occured. This
+   * is useful for Google Analytics for example
+   */
+  'has-navigated'(_data: (number | Product)[]) {
     return true
   }
 })
 
 const cartStore = useCart()
-
 const { gtag } = useGtag()
 const { showAddedProductDrawer } = storeToRefs(cartStore)
 const { handleLike, isLiked } = useShopComposable()
 const { addToCart } = useCartComposable()
 const { mediaPath } = useDjangoUtilies()
-
-// DELETE:
-const cachedCart = useSessionStorage('cart', null, {
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    }
-  }
-})
 
 const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
   serializer: {
@@ -120,6 +112,7 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
 })
 
 const isHovered = ref(false)
+const cardCoverEl = ref<HTMLElement>()
 
 const requiresSizeItems = computed(() => {
   if (props.product) {
@@ -129,23 +122,18 @@ const requiresSizeItems = computed(() => {
   }
 })
 
-onMounted(() => {
-  if (props.product) {
-    isLiked.value = likedProducts.value.includes(props.product.id)
-  }
-})
-
 async function handleAddToCart (size?: string | number) {
-  await addToCart(props.product,  size, (data) => {
-    showAddedProductDrawer.value = true
-    // DELETE:
-    cachedCart.value = data
-    cartStore.cache = cachedCart.value
-    
-    if (cartStore.sessionCache) {
-      cartStore.sessionCache.cart = data
-    }
-  })
+  if (props.product) {
+    await addToCart(props.product,  size, (data) => {
+      showAddedProductDrawer.value = true
+
+      if (cartStore.sessionCache) {
+        cartStore.sessionCache.cart = data
+      }
+    })
+  } else {
+    console.error('Card', 'Props does not have a product')
+  }
 }
 
 function proxyHandleLike () {
@@ -172,9 +160,17 @@ function proxyHandleLike () {
     })
   }
 }
+
+onMounted(() => {
+  if (props.product) {
+    isLiked.value = likedProducts.value.includes(props.product.id)
+  }
+})
 </script>
 
 <style lang="scss" scoped>
+$base_cover_bottom_position: 13%;
+
 #btn-like-product {
   position: absolute;
   top: 5%;
@@ -187,28 +183,42 @@ function proxyHandleLike () {
 
 .card-cover {
   position: absolute;
-  bottom: 13%;
-  // left: 1%;
-  // right: 1%;
+  bottom: $base_cover_bottom_position;
   height: auto;
-  width: 100%;
+  width: 99%;
   background-color: white;
-}
+  left: 50%;
+  transform: translateX(-50%);
 
-.card-cover {
   &-enter-active,
   &-leave-active {
     transition: all .3s ease-in;
   }
-
+  
   &-enter-to,
   &-enter-from {
     opacity: 0;
   }
-
+  
   &-enter-from,
   &-enter-to {
     opacity: 1;
+  }
+}
+
+@function adjust_bottom($value, $add) {
+  @return calc($value - $add);
+}
+
+@media screen and (min-width: 1440px) and (max-width: 1920px) {
+  .card-cover {
+    bottom: adjust_bottom($base_cover_bottom_position, 3%);
+  }
+}
+
+@media screen and (min-width: 1921px) {
+  .card-cover {
+    bottom: adjust_bottom($base_cover_bottom_position, 3%);
   }
 }
 

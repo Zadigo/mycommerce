@@ -7,7 +7,7 @@
     <!-- Products -->
     <template v-if="products && products.length > 0" #default>
       <!-- FIXME: Raises hydration error -->
-      <ProductsIterator :products="products" :columns="currentGridSize" @navigate="handleNavigation" />
+      <ProductsIterator :products="products" :columns="currentGridSize" @has-navigated="handleNavigation" />
 
       <!-- Intersect -->
       <div v-if="products.length > 0" id="product-pagination" ref="intersectionTarget" class="fw-bold text-uppercase d-flex justify-content-center mt-5">
@@ -75,7 +75,7 @@ const intersectionTarget = ref<HTMLElement | null>(null)
 const showProductFilters = ref(false)
 
 // TODO: Add a provide so that all the components have access
-// to the products from the this parent component
+// to the products from this parent component
 
 // NOTE: Uses the Nuxt server backend. Maybe shift to frontend
 // based request using Axios - or; since the page is pre-built

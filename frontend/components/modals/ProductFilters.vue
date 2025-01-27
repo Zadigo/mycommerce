@@ -86,7 +86,7 @@
   </v-navigation-drawer>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { defaultPriceFilters, defaultSizes, defaultSortingFilters } from '~/data'
 
 type Actions = 'sorted by' | 'typology' | 'colors' | 'sizes' | 'price'
@@ -154,7 +154,7 @@ const show = computed({
 })
 
 /**
- * Receives a filter and then sorts
+ * Receives a filter and then sorts the products
  */
 function handleFilterSelection (action: Actions, value: string) {
   switch (action) {

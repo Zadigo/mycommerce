@@ -1,6 +1,6 @@
 <template>
   <div v-for="(product, i) in products" id="product" :key="product.id" :class="gridClass">
-    <ProductCard :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @navigate="handleNavigation" />
+    <ProductCard :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
   </div>
 </template>
 
@@ -32,7 +32,12 @@ const props = defineProps({
 })
 
 const emit = defineEmits({
-  navigate(_data: (number | Product)[] | null | undefined) {
+  /** 
+   * This emit is used to indicate to parent components
+   * hosting this component that a navigation occured. This
+   * is useful for Google Analytics for example
+   */
+  'has-navigated'(_data: (number | Product)[] | null | undefined) {
     return true
   }
 })
@@ -44,6 +49,6 @@ const gridClass = computed(() => {
 })
 
 function handleNavigation(data: (number | Product)[] | null | undefined) {
-  emit('navigate', data)
+  emit('has-navigated', data)
 }
 </script>
