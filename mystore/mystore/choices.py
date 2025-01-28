@@ -75,7 +75,7 @@ class SubCategoryChoices:
         result = list(filter(lambda x: name in x, cls.choices()))
         if result:
             return result[-1]
-        return ('Not attributed', 'Not attributed')
+        return 'Not attributed'
 
     @classmethod
     def flat(cls):

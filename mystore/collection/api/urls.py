@@ -11,11 +11,6 @@ urlpatterns = [
         name='collection_products'
     ),
     re_path(
-        r'^(?P<pk>\d+)/search$',
-        views.SearchCollectionProducts.as_view(),
-        name='search_products'
-    ),
-    re_path(
         r'^$',
         views.ListCollections.as_view(),
         name='collections'
