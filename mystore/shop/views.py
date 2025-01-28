@@ -1,11 +1,13 @@
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, FormView
-
+from django.views.generic import FormView
 from shop.forms import UploadImagesForm
-from shop.models import Image, Product
+from shop.models import Image
 
 
 class AdminUploadImageView(FormView):
+    """Simple class to allow the upload of multiple images 
+    on the Django admin for testing purposes"""
+    
     template_name = 'upload_images.html'
     form_class = UploadImagesForm
     success_url = reverse_lazy('admin:admin_upload_images')

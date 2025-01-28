@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import CheckConstraint, Choices, Q, UniqueConstraint
-from django.db.models.signals import post_delete, pre_save
+from django.db.models.signals import post_delete, pre_save, pre_delete
 from django.dispatch import receiver
 from django.forms import ValidationError
 from django.urls import reverse
@@ -451,31 +451,31 @@ def delete_image_on_update(sender, instance, **kwargs):
             try:
                 old_image = Image.objects.get(pk=instance.pk)
             except:
-                return False
+                return
             else:
                 new_image = instance.original
-                # FIXME: This does not work. When trying to save the
-                # model, the image gets deleted e.g. when trying to
-                # set the new is_main_image
-                # if old_image and old_image != new_image:
-                #     path = pathlib.Path(old_image.original.path)
-                #     if path.is_file():
-                #         path.unlink()
+                if old_image and old_image != new_image:
+                    path = pathlib.Path(old_image.original.path)
+                    if path.is_file():
+                        path.unlink()
     else:
         instance.original.delete(save=False)
 
 
-# @receiver(pre_delete, sender=Product)
+# OPTIONAL: Signal that can be used to clean up the
+# picture assets when a product is deleted
+
+@receiver(pre_delete, sender=Product)
 def delete_images(sender, instance, **kwargs):
+    """Signal that delets all the images related to the
+    given product when it is deleted from the database"""
     is_s3_backend = getattr(settings, 'USE_S3', False)
     images = instance.images.all()
     for image in images:
-        if image.url:
+        if image.original:
             if not is_s3_backend:
-                path = pathlib.Path(image.url.path)
+                path = pathlib.Path(image.original.path)
                 if path.is_file():
                     path.unlink()
-                # if os.path.isfile(image.original.path):
-                #     os.remove(image.url.path)
             else:
                 image.original.delete(save=False)
