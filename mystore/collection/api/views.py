@@ -1,4 +1,3 @@
-# from django.db.models
 from collection.api import serializers
 from collection.models import Collection
 from django.core.cache import cache
@@ -6,6 +5,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now, timedelta
 from drf_spectacular.utils import extend_schema
+from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny
@@ -51,7 +51,7 @@ class ListCollectionProducts(ListAPIView):
         }
 
         # Cache the whole collection but also
-        # sub-categories located under the 
+        # sub-categories located under the
         # given collection
         other_cache_keys = []
 
@@ -62,7 +62,7 @@ class ListCollectionProducts(ListAPIView):
 
         def create_cache_key(*values):
             return '-'.join(values)
-        
+
         if collection_name == 'all':
             cache_params['key'] = create_cache_key('all', *other_cache_keys)
             cache.set(**cache_params)
@@ -102,10 +102,17 @@ class ListCollectionProducts(ListAPIView):
                     return []
 
             products = queryset.order_by('-created_on')
-            cache_params['key'] = create_cache_key(collection_name, *other_cache_keys)
+            cache_params['key'] = create_cache_key(
+                collection_name, *other_cache_keys)
             cache_params['value'] = products
             cache.set(**cache_params)
             return products
+
+
+class ListCollections(generics.ListAPIView):
+    queryset = Collection.objects.all()
+    serializer_class = serializers.CollectionSerializer
+    permission_classes = []
 
 
 class ListCollectionNames(ListAPIView):
@@ -156,104 +163,3 @@ class SearchCollectionProducts(RetrieveAPIView):
         else:
             products = Product.objects.all()
             return products
-
-
-@api_view(['get'])
-@permission_classes([AllowAny])
-def list_collection_products(request, name, **kwargs):
-    """Returns a specific collection"""
-    queryset = Product.objects.filter(active=True)
-
-    pagination_helper = PaginationHelper()
-    if name == 'all':
-        return pagination_helper(request, queryset, ProductSerializer)
-    elif name == 'novelties':
-        queryset = queryset.filter(display_new=True)
-        return pagination_helper(request, queryset, ProductSerializer)
-    else:
-        queryset = Collection.objects.filter(
-            Q(name__icontains=name) |
-            Q(slug__iexact=name)
-        )
-
-        # We have two ways to create a collection of
-        # items. Either via the Collection model (manual)
-        # or either dynamically using Product.category
-        if not queryset.exists():
-            return Product.objects.filter(
-                active=True,
-                category__iexact=name
-            )
-
-        collection = get_object_or_404(Collection, slug__iexact=name)
-        serializer = serializers.CollectionSerializer(instance=collection)
-        # Since it's kinda complicated to paginate the
-        # nested products, we integrate them afterwards after
-        # having serialized the collection
-        collection_data = serializer.data
-
-        products = queryset.filter(
-            collection__slug__iexact=name,
-            active=True
-        )
-        products = products.order_by('-created_on')
-
-        instance = pagination_helper(
-            request,
-            products,
-            ProductSerializer,
-            response_only=False
-        )
-        data_to_return = instance.get_template(collection=collection_data)
-        data_to_return['infos'] = {'total_count': products.count()}
-        return Response(data=data_to_return)
-
-
-@api_view(['get'])
-@permission_classes([AllowAny])
-def list_collections(request, **kwargs):
-    """Returns the names of all the collections
-    that exist in the shop"""
-    queryset = Collection.objects.all()
-    serializer = serializers.CollectionSerializer(
-        instance=queryset,
-        many=True
-    )
-    return Response(data=serializer.data)
-
-
-@api_view(['post'])
-@permission_classes([AllowAny])
-def search_collection_products(request, pk, **kwargs):
-    """Search the products within a collection using
-    certain specific set of criteria"""
-    collection = get_object_or_404(Collection, id=pk)
-    serializer = serializers.CollectionSerializer(instance=collection)
-    collection_data = serializer.data
-
-    search_serializer = serializers.SearchParametersSerializer(
-        data=request.data
-    )
-    search_serializer.is_valid(raise_exception=True)
-    search_params = search_serializer.data
-
-    if not search_params:
-        return Response(data=[])
-
-    products = collection.products.filter(active=True)
-    matching_names = search_serializer.search_name(products)
-    are_on_sale = search_serializer.search_is_onsale(matching_names)
-    products = search_serializer.search_color(are_on_sale)
-
-    products_serializer = ProductSerializer(instance=products, many=True)
-    paginator, serializer, _ = serializers.pagination_helper(
-        request,
-        products,
-        ProductSerializer,
-        has_many=True
-    )
-    paginated_products = paginator.get_response_dict(
-        products_serializer.data
-    )
-    data_to_return = paginated_products | collection_data
-    return Response(data=data_to_return)
