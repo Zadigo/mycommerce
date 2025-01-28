@@ -1,7 +1,5 @@
 import random
 
-import pandas
-# import spacy
 from django.db.models import Case, Q, When
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
@@ -111,36 +109,9 @@ class ListRecommendations(generics.ListAPIView):
             selected_items.add(random.choice(products))
         return selected_items
 
-    def recommendation_by_similarity(self, queryset, products, initial_product, quantity):
-        product_values = products.values('id', 'name')
-
-        df = pandas.DataFrame(product_values)
-
-        try:
-            calculator = spacy.load('fr_core_news_md')
-        except Exception as e:
-            # Instead of failing hard, just return
-            # the first set of available products
-            # to the frontend
-            return products[:quantity]
-
-        for item in df.itertuples(name='Product'):
-            product_instance = calculator(initial_product.name)
-            result = calculator(item.name).similarity(product_instance)
-            df.loc[item.Index, 'similarity'] = result
-
-        df = df.sort_values('similarity')
-        high_similarity = df.loc[lambda x: x.similarity > 0.8]
-
-        selected_items = random.choices(
-            high_similarity.id.to_list(),
-            k=quantity
-        )
-        return queryset.filter(id__in=selected_items)
-
     def get_queryset(self):
         """Allows us to get similar products from the database
-        using the spacy if a `product_id` is provided by the
+        using spacy if a `product_id` is provided by the
         frontend. In the case where we have a collection name,
         we can return random items from said collection who
         have a high popularity in the shop"""

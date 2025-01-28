@@ -1,16 +1,11 @@
 from decimal import Decimal
 
-from cart.models import Cart
-from django import setup
 from django.contrib.auth import get_user_model
-from django.db.models import Value
-from django.test import Client, RequestFactory, TestCase
-from django.test.client import Client, RequestFactory
+from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 from rest_framework.mixins import status
-from rest_framework.test import APIClient, APIRequestFactory, APITestCase
-from shop import views
-from mystore.shop.api import views as shop_api_views
+from rest_framework.test import APITestCase
+from shop.processors import FuzzyMatcherMixin
 from shop.models import Product
 from shop.utils import calculate_sale, create_slug, product_media_path
 
@@ -30,7 +25,7 @@ from shop.utils import calculate_sale, create_slug, product_media_path
 #         self.assertEqual(len(response.data), 2)
 
 
-class TestShop(APITestCase):
+class TestShopApi(APITestCase):
     fixtures = ['products']
 
     @classmethod
@@ -40,23 +35,113 @@ class TestShop(APITestCase):
         cls.user.set_password('touparet')
         cls.user.save()
 
-    def test_products_view(self):
-        response = self.client.get(reverse('shop_api:list_products'))
+    def test_list_products(self):
+        path = reverse('shop_api:products')
+        response = self.client.get(path)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_products_view_as_search(self):
-        response = self.client.get(
-            reverse('shop_api:list_products'),
-            data={
-                'q': 'Blazer Strapped'
-            }
-        )
-        self.assertEqual(response.json().get('count'), 1)
+        data = response.json()
+        self.assertIn('count', data)
+        self.assertIn('results', data)
+        self.assertTrue(data['results'] >= 1)
+
+        for item in data['results']:
+            with self.subTest(item=item):
+                self.assertIn('id', item)
+
+    def test_lists_products_as_search(self):
+        path = reverse('shop_api:products')
+        data = {'q': 'Blazer Strapped'}
+        response = self.client.get(path, data=data)
+
+        response_data = response.json()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_data.get('count'), 1)
 
     def test_product_view(self):
-        response = self.client.get(reverse('shop_api:product', args=[1]))
+        path = reverse('shop_api:product', args=[1])
+        response = self.client.get(path)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('id', response.json())
+
+    def test_recommendations(self):
+        path = reverse('shop_api:recommendations')
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class TestFuzzyMatcher(TransactionTestCase):
+    fixtures = ['products.json']
+
+    def setUp(self):
+        self.instance = FuzzyMatcherMixin()
+
+    def test_simple_ratio_match(self):
+        items = [
+            # (Product, Test)
+            ('Ribbed Taille Haute Shorts', 'Taille Shorts'),
+            ('Ribbed Taille Haute Shorts', 'Shorty En Dentelle'),
+            ('Ribbed Taille Haute Shorts', 'Short Biker')
+        ]
+
+        for item in items:
+            with self.subTest(item=item):
+                a, b = item
+                result = self.instance.simple_ratio_match(a, b)
+                self.assertIsInstance(result, float)
+
+    def test_partial_ratio_match(self):
+        items = [
+            # (Product, Test)
+            ('Ribbed Taille Haute Shorts', 'Taille Shorts'),
+            ('Ribbed Taille Haute Shorts', 'Shorty En Dentelle'),
+            ('Ribbed Taille Haute Shorts', 'Short Biker')
+        ]
+
+        for item in items:
+            with self.subTest(item=item):
+                a, b = item
+                result = self.instance.partial_ratio_match(a, b)
+                self.assertIsInstance(result, float)
+
+    def test_token_sort_ratio_match(self):
+        items = [
+            # (Product, Test)
+            ('Ribbed Taille Haute Shorts', 'Haute Taille'),
+            ('Ribbed Taille Haute Shorts', 'Shorts Hautes Taille')
+        ]
+
+        for item in items:
+            with self.subTest(item=item):
+                a, b = item
+                result = self.instance.token_sort_ratio_match(a, b)
+                self.assertIsInstance(result, float)
+    
+    def test_token_set_ratio_match(self):
+        items = [
+            ('Ribbed Taille Haute Shorts', 'Taille Shorts'),
+            ('Ribbed Taille Haute Shorts', 'Shorty En Dentelle'),
+            ('Ribbed Taille Haute Shorts', 'Short Biker')
+        ]
+
+        for item in items:
+            with self.subTest(item=item):
+                a, b = item
+                result = self.instance.token_set_ratio_match(a, b)
+                self.assertIsInstance(result, float)
+
+    def test_weighted_ratio_match(self):
+        items = [
+            ('Ribbed Taille Haute Shorts', 'Taille Shorts'),
+            ('Ribbed Taille Haute Shorts', 'Shorty En Dentelle'),
+            ('Ribbed Taille Haute Shorts', 'Short Biker')
+        ]
+
+        for item in items:
+            with self.subTest(item=item):
+                a, b = item
+                result = self.instance.weighted_ratio_match(a, b)
+                self.assertIsInstance(result, float)
 
 
 class TestUtilities(TestCase):

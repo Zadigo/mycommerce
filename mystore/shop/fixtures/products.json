@@ -115,7 +115,7 @@
         "model": "shop.Product",
         "pk": 7,
         "fields": {
-            "name": "Bandeau R\u00e9versible En Dentelle Et Microfibre Extensible",
+            "name": "Bandeau Réversible En Dentelle Et Microfibre Extensible",
             "color": "Blue",
             "unit_price": 799,
             "active": false,

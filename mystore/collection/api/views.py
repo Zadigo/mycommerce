@@ -19,6 +19,9 @@ def build_colors(colors):
 
 
 class ListCollectionProducts(generics.ListAPIView):
+    """Enpoint used to list the products from a
+    given fashion collection"""
+
     queryset = Product.objects.filter(active=True)
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
@@ -26,8 +29,10 @@ class ListCollectionProducts(generics.ListAPIView):
 
     def list(self, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
+
         pagination_helper = PaginationHelper()
         pagination_helper(self.request, queryset, self.serializer_class)
+
         template = pagination_helper.get_custom_response_template()
         template['infos'] = {'total_count': queryset.count()}
         return Response(template)
@@ -99,26 +104,19 @@ class ListCollectionProducts(generics.ListAPIView):
 
             products = queryset.order_by('-created_on')
             cache_params['key'] = create_cache_key(
-                collection_name, *other_cache_keys)
+                collection_name,
+                *other_cache_keys
+            )
+
             cache_params['value'] = products
             cache.set(**cache_params)
             return products
 
 
 class ListCollections(generics.ListAPIView):
-    queryset = Collection.objects.all()
-    serializer_class = serializers.CollectionSerializer
-    permission_classes = []
+    """List all the collections that were created
+    in the database"""
 
-
-class ListCollectionNames(generics.ListAPIView):
     queryset = Collection.objects.all()
     serializer_class = serializers.CollectionSerializer
     permission_classes = [AllowAny]
-
-    def get_queryset(self):
-        if not self.queryset.exists():
-            products = Product.objects.order_by()
-            queryset = products.values('id', 'category', 'sub_category')
-            return queryset.distinct('category')
-        return self.queryset

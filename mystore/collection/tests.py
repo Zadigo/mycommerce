@@ -25,7 +25,6 @@ class TestCollectionApi(TestCase):
 
         data = response.json()
 
-        print(data)
         self.assertIn('count', data)
         self.assertIn('results', data)
         self.assertTrue(data['results'] >= 1)
