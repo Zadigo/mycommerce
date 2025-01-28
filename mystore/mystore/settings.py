@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'import_export',
     'django_ckeditor_5',
+    'storages',
 
     'allauth',
     'allauth.usersessions',
@@ -167,15 +168,66 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = 'static'
 
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-]
+
+USE_S3 = False
+
+
+def aws_endpoint(path=None):
+    base_url = 'https://{bucket}.s3.{region}.amazonaws.com'
+
+    bucket = os.getenv('AWS_S3_REGION_NAME')
+    region = os.getenv('AWS_S3_REGION_NAME')
+    url = base_url.format(bucket=bucket, region=region)
+
+    if path is not None:
+        return url + f'/{path}'
+
+    return url
+
+
+if USE_S3:
+    # S3 Backend Storage
+    # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
+    # https://forum.djangoproject.com/t/storage-4-2-how-to-subclass-default/29190/2
+    # FIXME: https://github.com/jschneier/django-storages/issues/1361 there seems to
+    # be a bug when trying to access the admin with DEBUG
+
+    DEFAULT_S3_SETTINGS = {
+        'access_key': os.getenv('AWS_S3_ACCESS_KEY_ID'),
+        'secret_key': os.getenv('AWS_S3_SECRET_ACCESS_KEY'),
+        'bucket_name': os.getenv('AWS_STORAGE_BUCKET_NAME'),
+        'region_name': os.getenv('AWS_S3_REGION_NAME'),
+        'object_parameters': {'CacheControl': 'max-age=86400'},
+        'endpoint_url': aws_endpoint(),
+        'querystring_auth': False,
+        'default_acl': 'public-read'
+    }
+
+    STORAGES = {
+        'default': {
+            'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+            'OPTIONS': {
+                **DEFAULT_S3_SETTINGS,
+                'location': 'media',
+            }
+        },
+        'staticfiles': {
+            'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+            'OPTIONS': {
+                **DEFAULT_S3_SETTINGS,
+                'file_overwrite': True,
+                'location': 'static',
+            }
+        }
+    }
+
+    MEDIA_ROOT = aws_endpoint('media')
+else:
+    MEDIA_ROOT = BASE_DIR / 'media'
 
 MEDIA_URL = 'media/'
-
-MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type

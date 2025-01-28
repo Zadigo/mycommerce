@@ -2,9 +2,9 @@ import random
 import re
 import unicodedata
 from decimal import ROUND_DOWN, Decimal
+from urllib.parse import unquote
 
 import unidecode
-from urllib.parse import unquote
 from django.utils.crypto import get_random_string
 from django.utils.text import get_valid_filename
 

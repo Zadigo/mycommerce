@@ -24,6 +24,69 @@ The Django backend implements all the API's for the core functionnalities of the
 
 This file contains a list of 85 products that can be used to run the website quickly.
 
+Here are the base environment variables used to configure the Django project:
+
+```env
+DEBUG=1
+
+SECRET_KEY=123
+
+STRIPE_PUBLIC_KEY=123
+
+STRIPE_TEST_SECRET_KEY=sk_test_1
+
+STRIPE_TEST_PUBLIC_KEY=pk_test_1
+
+STRIPE_TEST_CUSTOMER_ID=cus_1
+
+STRIPE_TEST_CARD=card_1
+
+EMAIL_HOST=smtp.gmail.com
+
+EMAIL_HOST_USER=example@gmail.com
+
+EMAIL_HOST_PASSWORD=123
+
+DB_NAME=mycommerce
+
+DB_USER=test_user
+
+DB_PASSWORD=test_user
+
+DB_HOST=localhost
+
+AWS_S3_ACCESS_KEY_ID=ABC 
+
+AWS_S3_SECRET_ACCESS_KEY=ABC
+
+AWS_STORAGE_BUCKET_NAME=ecommerce
+
+AWS_S3_REGION_NAME=us-east-1
+
+```
+
+### Using S3 storage
+
+```
+[
+    {
+        "AllowedHeaders": [
+            "*"
+        ],
+        "AllowedMethods": [
+            "GET",
+            "HEAD"
+        ],
+        "AllowedOrigins": [
+            "http://127.0.0.1:8000",
+            "http://localhost:8000"
+        ],
+        "ExposeHeaders": [],
+        "MaxAgeSeconds": 3000
+    }
+]
+```
+
 ### Using Celery 🎶
 
 If you plan on using Celery, start the celery backend withing the Django project by doing `celery -A mystore.celery_app -E`. Ensure both Redis and RabbitMQ are running on your system otherwise you will not be able to execute the provided tasks correctly.
