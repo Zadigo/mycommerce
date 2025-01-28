@@ -1,5 +1,6 @@
 import { boot } from 'quasar/wrappers'
 import axios, { AxiosInstance } from 'axios'
+import { useAxiosClient } from 'src/composables/utils';
 
 declare module 'vue' {
   interface ComponentCustomProperties {
@@ -14,11 +15,13 @@ declare module 'vue' {
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api/v1/',
-  headers: { 'Content-Type': 'application/json' },
-  withCredentials: true
-})
+// const api = axios.create({
+//   baseURL: 'http://127.0.0.1:8000/api/v1/',
+//   headers: { 'Content-Type': 'application/json' },
+//   withCredentials: true
+// })
+const { createClient } = useAxiosClient()
+const api = createClient('/admin/v1/')
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api

@@ -3,11 +3,11 @@
     <q-card-section>
       <div class="flex justify-between items-center">
         <h2 class="text-h6 q-ma-none">
-          Product images
+          Images
         </h2>
 
         <q-btn v-if="currentProduct" color="secondary" size="md" rounded @click="showModal=true">
-          <q-icon name="upload" class="q-mr-sm" /> Add images
+          <q-icon name="upload" class="q-mr-sm" /> Upload
         </q-btn>
       </div>
     </q-card-section>

@@ -1,3 +1,5 @@
+import { SizeSubCategory } from './data'
+
 export type ProductSizes = {
     id: number;
     name: string;
@@ -70,7 +72,7 @@ export interface NewProduct extends Pick<Product, 'name' | 'color' | 'category' 
     sizes: [
         {
             name: string
-            sub_category: 'Bra size' | 'Clothe size' | 'Not attributed' | 'Shoe size'
+            sub_category: SizeSubCategory
             availability: boolean
             active: boolean
         }

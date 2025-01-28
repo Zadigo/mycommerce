@@ -59,14 +59,14 @@ const newProduct = ref<NewProduct>({
 async function handleCreateProduct () {
   try {
     const client = createClient()
-    const response = await client.post<Product>('/admin/products/create', newProduct.value)
+    const response = await client.post<Product>('/products/create', newProduct.value)
 
     if (response.status === 201) {
       // Once we know that the product is created,
       // call this endpint in order to associate
       // the product to the new images
       if (imagesToAssociate.value.length > 0) {
-        const response2 = await client.post('/admin/images/associate', {
+        const response2 = await client.post('/images/associate', {
           product: response.data.id,
           images: imagesToAssociate.value.map(x => x.id)
         })

@@ -159,11 +159,11 @@ export function useAxiosClient () {
   /**
    * Helper function for creating variations of the baseURL
    */
-  function getBaseUrl (path = '/api/v1/', secure = false, port = '8000') {
-    let domain = `127.0.0.1:${port}`
+  function getBaseUrl(path = '/api/v1/', alternativeDomain?: string | null, port = '8000', secure = false) {
+    let domain = alternativeDomain || `127.0.0.1:${port}`
 
     if (process.env.DEV === 'production') {
-      domain = process.env.QUASAR_DJANGO_PROD_URL || ''
+      domain = alternativeDomain || process.env.NUXT_DJANGO_PROD_URL || ''
     }
 
     const loc = secure || process.env.DEV === 'production' ? 'https://' : 'http://'
@@ -173,9 +173,9 @@ export function useAxiosClient () {
     return new URL(path, url).toString()
   }
 
-  function createClient (path = '/api/v1/'): AxiosInstance {
+  function createClient(path = '/api/v1/', alternativeDomain?: string | null, port = '8000'): AxiosInstance {
     const client: AxiosInstance = axios.create({
-      baseURL: getBaseUrl(path),
+      baseURL: getBaseUrl(path, alternativeDomain, port),
       headers: { 'Content-Type': 'application/json' },
       withCredentials: true,
       timeout: 10000
@@ -187,5 +187,41 @@ export function useAxiosClient () {
   return {
     getBaseUrl,
     createClient
+  }
+}
+
+export function useDebounce () {
+  function debounce<T extends (...args: any[]) => void>(func: T, wait: number, immediate: boolean = false) {
+    let timeout: ReturnType<typeof setTimeout> | null = null
+
+    // return function (this: any, ...callbackArgs: Parameters<T>) {
+    return function (...callbackArgs: Parameters<T>) {
+      // const context = this
+
+      function later () {
+        timeout = null
+
+        if (!immediate) {
+          // func.apply(context, callbackArgs)
+          func.apply(callbackArgs)
+        }
+      }
+
+      const callNow = immediate && !timeout
+
+      if (timeout) {
+        clearTimeout(timeout)
+      }
+      timeout = setTimeout(later, wait)
+
+      if (callNow) {
+        // func.apply(context, callbackArgs)
+        func.apply(callbackArgs)
+      }
+    }
+  }
+
+  return {
+    debounce
   }
 }

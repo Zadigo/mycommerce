@@ -175,7 +175,7 @@ export default defineComponent({
   methods: {
     async requestStatistics () {
       try {
-        const response = await this.$api.get<StatisticsResponseAPI>('admin/statistics')
+        const response = await this.$api.get<StatisticsResponseAPI>('/statistics')
         this.statistics = response.data
       } catch (e) {
         if (e instanceof AxiosError && e.response) {

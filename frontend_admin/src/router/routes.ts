@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'products/:id(\\d+)',
-        component: async () => import('pages/ProductPage.vue'),
+        component: async () => import('pages/product/DetailPage.vue'),
         name: 'product_view'
       },
       {

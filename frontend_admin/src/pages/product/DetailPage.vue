@@ -7,31 +7,35 @@
         <div class="row">
           <div class="col-8 q-pr-sm">
             <!-- Information -->
-            <q-card class="q-mb-sm">
+            <ProductInfo v-model="requestData.name" class="q-mb-sm" />
+
+            <CategoryInfo v-model="requestData" class="q-mb-sm" />
+
+            <!-- <q-card class="q-mb-sm">
               <q-card-section>
                 <div v-if="requestData" class="block">
                   <q-input v-model="requestData.name" label="Product name" outlined />
                 </div>
                 <q-spinner-cube v-else size="lg" class="q-mr-sm" />
               </q-card-section>
-            </q-card>
+            </q-card> -->
 
-            <q-card class="q-mb-sm">
+            <!-- <q-card class="q-mb-sm">
               <q-card-section>
                 <div class="flex justify-left q-mb-sm">
-                  <!-- <q-input class="q-pr-sm" style="width: 50%;" outlined />
-                  <q-input style="width: 50%;" outlined /> -->
+                  <q-input class="q-pr-sm" style="width: 50%;" outlined />
+                  <q-input style="width: 50%;" outlined />
                 </div>
 
-                <!-- <q-input outlined /> -->
+                <q-input outlined />
               </q-card-section>
-            </q-card>
+            </q-card> -->
 
             <!-- Images -->
             <ImagesBlock :current-product="currentProduct" @update-product="handleUpdateProduct" @update-images="handleUpdateImages" />
 
             <!-- Sizes -->
-            <SizeBlock />
+            <SizeBlock v-model="requestData" />
           </div>
 
           <div class="col-4">
@@ -59,18 +63,22 @@ import { mapState, storeToRefs } from 'pinia'
 import { useQuasar } from 'quasar'
 import { useDjangoUtilies } from 'src/composables/utils'
 import { useShop } from 'src/stores/shop'
-import { Product, ProductImage } from 'src/types'
+import { NewProduct, Product, ProductImage } from 'src/types'
 import { defineComponent, provide, ref } from 'vue'
 
 import ImagesBlock from 'src/components/product/ImagesBlock.vue'
-import SizeBlock from 'src/components/product/SizeBlock.vue'
 import PageHeader from 'src/components/product/PageHeader.vue'
+import ProductInfo from 'src/components/product/ProductInfo.vue'
+import SizeBlock from 'src/components/product/SizeBlock.vue'
+import CategoryInfo from 'src/components/product/CategoryInfo.vue'
 
 export default defineComponent({
   name: 'ProductPage',
   components: {
     PageHeader,
     ImagesBlock,
+    CategoryInfo,
+    ProductInfo,
     SizeBlock
   },
   setup () {
@@ -79,7 +87,20 @@ export default defineComponent({
     const { currentProduct } = storeToRefs(store)
 
     const isSaving = ref(false)
-    const requestData = ref<Product | undefined>()
+    const requestData = ref<NewProduct>({
+      id: 0,
+      name: '',
+      color: '',
+      category: 'Not attributed',
+      sub_category: 'Not attributed',
+      sizes: [],
+      sale_value: 0,
+      sale_price: 0,
+      on_sale: false,
+      is_new: false,
+      display_new: false,
+      active: false
+    })
 
     watchDeep(requestData, (product) => {
       if (product && requestData.value) {
@@ -121,7 +142,7 @@ export default defineComponent({
     /***/
     async requestProduct () {
       try {
-        const response = await this.$api.get(`admin/products/${this.$route.params.id}`)
+        const response = await this.$api.get(`/products/${this.$route.params.id}`)
         this.currentProduct = response.data
         this.requestData = response.data
       } catch (e) {

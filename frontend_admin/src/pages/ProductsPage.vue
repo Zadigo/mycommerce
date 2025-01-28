@@ -83,9 +83,9 @@
           <q-dialog v-model="confirmationDialog" position="right">
             <q-card style="width: 350px">
               <q-card-section class="row items-center no-wrap">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-                Asperiores repudiandae minima voluptatibus debitis pariatur iste qui 
-                officia delectus assumenda itaque corrupti, sint optio earum aliquam 
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Asperiores repudiandae minima voluptatibus debitis pariatur iste qui
+                officia delectus assumenda itaque corrupti, sint optio earum aliquam
                 sit quod error, harum nemo!
               </q-card-section>
 
@@ -212,7 +212,7 @@ export default defineComponent({
      */
     async requestProducts () {
       try {
-        const response = await this.$api.get<Product[]>('/admin/products')
+        const response = await this.$api.get<Product[]>('/products')
         this.products = response.data
         this.isLoading = false
       } catch (e) {
@@ -234,7 +234,7 @@ export default defineComponent({
           const formData = new FormData()
           formData.append('file', this.productsFile, this.productsFile.name)
 
-          const response = await this.$api.post('shop/products/upload', formData, {
+          const response = await this.$api.post('admin/products/upload', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }

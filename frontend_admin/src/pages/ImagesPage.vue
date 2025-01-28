@@ -7,7 +7,7 @@
           <q-card class="q-mb-md" flat>
             <q-card-section>
               <div class="flex justify-between align-center">
-                <q-input v-model="searchedData.name" placeholder="Search images..." style="width: 50%;" outlined @keypress="handleSearchImages">
+                <q-input v-model="searchedData.name" debounce="500" placeholder="Search images..." style="width: 50%;" outlined @keypress="handleSearchImages">
                   <template v-slot:prepend>
                     <q-icon name="fas fa-search" />
                   </template>
@@ -255,7 +255,7 @@ export default defineComponent({
           formData.append('file_names', `${this.selectedFilesBaseName} ${i}`)
         })
 
-        const response = await this.$api.post('/admin/images/upload', formData, {
+        const response = await this.$api.post('/images/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -275,7 +275,7 @@ export default defineComponent({
     /***/
     async requestImages () {
       try {
-        const response = await this.$api.get<ProductImage[]>('/admin/images', {
+        const response = await this.$api.get<ProductImage[]>('/images', {
           params: this.searchedData
         })
         this.images = response.data
@@ -289,7 +289,7 @@ export default defineComponent({
     /***/
     async handleSearchProducts (search: string) {
       try {
-        const response = await this.$api.get<Product[]>('/admin/products', {
+        const response = await this.$api.get<Product[]>('/products', {
           params: {
             q: search
           }
@@ -305,7 +305,7 @@ export default defineComponent({
     async handleProductAssociation () {
       try {
         if (this.productToAssociate) {
-          await this.$api.post('/admin/images/associate', {
+          await this.$api.post('/images/associate', {
             product: this.productToAssociate.id,
             images: this.selectedImages
           })

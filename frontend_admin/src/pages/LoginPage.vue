@@ -29,6 +29,7 @@ import axios, { AxiosError } from 'axios'
 import { onMounted, ref } from 'vue'
 import { LoginAPIResponse } from './login'
 import { getCssVar } from 'quasar'
+import { useAxiosClient } from 'src/composables/utils'
 
 const requestData = ref({
   username: '',
@@ -37,10 +38,8 @@ const requestData = ref({
 
 const alertEl = ref<HTMLElement>()
 
-const client = axios.create({
-  baseURL: 'http://127.0.0.1:8000/auth/v1/',
-  headers: { 'Content-Type': 'application/json' }
-})
+const { createClient } = useAxiosClient()
+const client = createClient('/auth/v1/')
 
 onMounted(() => {
   const val = getCssVar('primary', alertEl.value)

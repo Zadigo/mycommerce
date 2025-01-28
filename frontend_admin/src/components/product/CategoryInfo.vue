@@ -2,19 +2,14 @@
   <q-card>
     <q-card-section>
       <h2 class="text-h6 q-ma-none">
-        Product category
+        Categories
       </h2>
     </q-card-section>
 
     <q-card-section>
-      <q-form class="row justify-start q-gutter-x-sm" @submit.prevent>
-        <div class="col-5">
-          <q-input v-model="product.category" label="Category" outlined />
-        </div>
-
-        <div class="col-5">
-          <q-input v-model="product.sub_category" label="Sub category" outlined />
-        </div>
+      <q-form class="row flex justify-left" @submit.prevent>
+        <q-input v-model="product.category" class="q-pr-sm" style="width: 50%;" label="Category" outlined />
+        <q-input v-model="product.sub_category" style="width: 50%;" label="Sub category" outlined />
       </q-form>
     </q-card-section>
   </q-card>

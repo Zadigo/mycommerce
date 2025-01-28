@@ -22,7 +22,7 @@ urlpatterns = [
         include('debug_toolbar.urls')
     ),
     path(
-        'api/v1/admin/',
+        'admin/v1/',
         include('adminapi.urls')
     ),
     path(
