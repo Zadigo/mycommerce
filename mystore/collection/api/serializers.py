@@ -17,6 +17,7 @@ class CollectionSerializer(Serializer):
 class SearchParametersSerializer(Serializer):
     """Serializer for normalizing the search
     queries for a collection"""
+    
     name = fields.CharField()
     color = fields.CharField(required=False)
     size = fields.CharField(required=False)
@@ -43,8 +44,10 @@ class SearchParametersSerializer(Serializer):
 
     def search_size(self, queryset):
         size = self.validated_data.get('size', None)
+
         if size is None:
             return queryset
+        
         return queryset.filter(
             sizes__name=size,
             availability=True
