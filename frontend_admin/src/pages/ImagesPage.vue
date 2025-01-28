@@ -56,23 +56,6 @@
         <div class="col-12">
           <ColumnDisplay v-if="columnDisplay" :images="images" @select-image="(data) => selectedImages = data" />
           <ListDisplay v-else :images="images" />
-
-          <!-- <q-infinite-scroll :offset="1" class="row" @load="() => {}">
-            <article v-for="(image, i) in images" :key="i" class="col-3 q-pa-sm">
-              <q-card :aria-label="image">
-                <router-link :to="{ name: 'image_view', params: { id: image.id } }">
-                  <q-img src="https://placehold.co/400x600"></q-img>
-                  <q-img :src="`http://127.0.0.1:8000${image.mid_size}`"></q-img>
-                </router-link>
-              </q-card>
-            </article>
-
-            <template v-slot:loading>
-              <div class="row justify-center q-my-md">
-                <q-spinner-dots color="primary" size="40px" />
-              </div>
-            </template>
-          </q-infinite-scroll> -->
         </div>
 
         <!-- Modals -->
@@ -85,14 +68,6 @@
             <q-separator />
 
             <q-card-section>
-              <!-- <q-form @submit.prevent>
-                <div v-for="(file, i) in requestData.files" :key="i" class="flex justify-start align-center q-gutter-sm q-mb-sm">
-                  <q-file v-model="file.content" label="Select file" outlined />
-                  <q-input v-model="file.name" placeholder="File name" outlined></q-input>
-                  <q-btn color="secondary" variant="text" @click="handleAddImage"><q-icon name="add" /></q-btn>
-                </div>
-              </q-form> -->
-
               <q-form @submit.prevent>
                 <q-input v-model="selectedFilesBaseName" class="q-mb-sm" placeholder="File names" outlined />
                 <q-file v-model="selectedFiles" :multiple="true" label="Select files" clearable outlined />

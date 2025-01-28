@@ -29,6 +29,7 @@
 
         <div class="row">
           <div class="col-8 q-pr-sm">
+            <!-- Information -->
             <q-card class="q-mb-sm">
               <q-card-section>
                 <div v-if="requestData" class="block">

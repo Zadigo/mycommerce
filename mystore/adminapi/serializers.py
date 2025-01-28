@@ -10,6 +10,7 @@ from shop.api.serializers import ImageSerializer
 from shop.api.validators import validate_image_ids
 from shop.models import Image, Product
 from shop.utils import clean_text
+from mystore.choices import CategoryChoices, SubCategoryChoices
 
 
 class ValidateImageAssociation(Serializer):
@@ -53,12 +54,9 @@ class ProductSerializer(Serializer):
     modified_on = fields.DateField(read_only=True)
     created_on = fields.DateField(read_only=True)
 
-    def validate(self, attrs):
-        return super().validate(attrs)
-
     def update(self, instance, validated_data):
         skip_fields = [
-            'images', 'is_new', 'get_price', 
+            'images', 'is_new', 'get_price',
             'color_variant_name', 'get_main_image'
         ]
         for key, value in validated_data.items():
@@ -66,6 +64,32 @@ class ProductSerializer(Serializer):
                 continue
             setattr(instance, key, value)
         instance.save()
+        return instance
+
+
+class NewProductSerializer(Serializer):
+    name = fields.CharField()
+    category = fields.ChoiceField(
+        CategoryChoices.choices, 
+        default='Not attributed'
+    )
+    sub_category = fields.ChoiceField(
+        SubCategoryChoices.choices(), 
+        default='Not attributed'
+    )
+
+    def create(self, validated_data):
+        skip_fields = []
+        items_to_create = {}
+        for key, value in validated_data.items():
+            if key in skip_fields:
+                continue
+            items_to_create[key] = value
+
+        instance = Product.objects.create(**items_to_create)
+
+        # Create the related variants for
+        # the given product
         return instance
 
 

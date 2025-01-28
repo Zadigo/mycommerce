@@ -20,8 +20,10 @@
           </q-img>
         </div>
       </div>
+    </q-card-section>
 
-      <div v-else class="row q-gutter-sm flex justify-center">
+    <q-card-section v-else>
+      <div class="row q-gutter-sm flex justify-center">
         <q-btn class="q-my-md" color="primary" size="xl" rounded @click="showUploadImagesDialog = true">
           <q-icon name="upload" class="q-mr-sm" /> Add images
         </q-btn>
@@ -41,8 +43,10 @@
       <q-separator />
 
       <q-card-section>
-        <q-input v-model="selectedFilesBaseName" :rules="[isNotNull]" placeholder="Files base name" class="q-mb-sm" outlined />
-        <q-file v-model="selectedFiles" :multiple="true" outlined label="Outlined" />
+        <q-form @submit.prevent>
+          <q-input v-model="selectedFilesBaseName" :rules="[isNotNull]" placeholder="Files base name" class="q-mb-sm" outlined />
+          <q-file v-model="selectedFiles" :multiple="true" outlined label="Choose images to upload" />
+        </q-form>
       </q-card-section>
 
       <q-card-actions align="right">
@@ -62,12 +66,12 @@
 </template>
 
 <script lang="ts" setup>
-import { Product, ProductImage } from 'app/types'
-import { useQuasar } from 'quasar'
-import { useDjangoUtilies, useImagesUpload } from 'src/composables/utils'
-import { inject, onBeforeMount, ref } from 'vue'
-import { api } from 'src/boot/axios'
 import { AxiosError } from 'axios'
+import { useQuasar } from 'quasar'
+import { api } from 'src/boot/axios'
+import { useDjangoUtilies, useImagesUpload } from 'src/composables/utils'
+import { Product, ProductImage } from 'src/types'
+import { inject, onBeforeMount, ref } from 'vue'
 
 const { notify } = useQuasar()
 const { mediaPath } = useDjangoUtilies()
@@ -81,6 +85,9 @@ const emit = defineEmits({
     return true
   },
   'update-images' (_data: { product: Product, images: ProductImage[] }) {
+    return true
+  },
+  'update:modelValue' (_data) {
     return true
   }
 })

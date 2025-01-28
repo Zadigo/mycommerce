@@ -24,6 +24,11 @@ const routes: RouteRecordRaw[] = [
         component: async () => import('pages/ProductPage.vue'),
         name: 'product_view'
       },
+      {
+        path: 'products/create',
+        component: async () => import('pages/product/CreatePage.vue'),
+        name: 'create_product'
+      },
       // {
       //   path: 'carts',
       //   component: async () => import('pages/CartsPage.vue'),

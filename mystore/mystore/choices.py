@@ -58,10 +58,10 @@ class SubCategoryChoices:
     """Returns a list of product 
     sub-categories"""
 
-    sub_categories = []
+    sub_categories: list[tuple[str, str]] = []
 
     @classmethod
-    def choices(cls):
+    def choices(cls) -> list[tuple[str, str]]:
         items = [category['items'] for category in SUB_CATEGORIES]
         result = list(itertools.chain(*items))
         result.append('Not attributed')
@@ -69,13 +69,17 @@ class SubCategoryChoices:
         item_tuples = [(category, category) for category in result]
         cls.sub_categories.extend(item_tuples)
         return cls.sub_categories
-
+    
     @classmethod
     def default(cls, name):
         result = list(filter(lambda x: name in x, cls.choices()))
         if result:
             return result[-1]
         return ('Not attributed', 'Not attributed')
+
+    @classmethod
+    def flat(cls):
+        return list(item[0] for item in cls.choices())
 
 
 def create_sku(name):

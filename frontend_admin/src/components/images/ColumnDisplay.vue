@@ -4,8 +4,8 @@
       <q-card flat>
         <q-img :src="mediaPath(image.mid_size)">
           <div class="absolute-top text-h6">
-            <q-checkbox v-model="selectedImages" :val="image.id" label="Teal" color="teal" @update:model-value="emit('select-image', selectedImages)" />
-            {{ image.name }}
+            <q-checkbox v-model="selectedImages" :val="image.id" color="teal" @update:model-value="emit('select-image', selectedImages)" />
+            <span style="font-size: 0.95rem">{{ image.name }}</span>
           </div>
 
           <div class="absolute-bottom bg-transparent justify-right">
@@ -24,8 +24,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ProductImage } from 'app/types'
 import { useDjangoUtilies } from 'src/composables/utils'
+import { ProductImage } from 'src/types'
 import { PropType, ref } from 'vue'
 
 defineProps({

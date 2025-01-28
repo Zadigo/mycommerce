@@ -162,7 +162,7 @@ export function useAxiosClient () {
     let domain = `127.0.0.1:${port}`
 
     if (process.env.DEV === 'production') {
-      domain = process.env.NUXT_DJANGO_PROD_URL || ''
+      domain = process.env.QUASAR_DJANGO_PROD_URL || ''
     }
 
     const loc = secure || process.env.DEV === 'production' ? 'https://' : 'http://'

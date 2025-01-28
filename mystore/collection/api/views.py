@@ -22,7 +22,6 @@ def build_colors(colors):
     return map(build_color, colors)
 
 
-@extend_schema('Products By Collection')
 class ListCollectionProducts(ListAPIView):
     queryset = Product.objects.filter(active=True)
     serializer_class = ProductSerializer
@@ -51,8 +50,21 @@ class ListCollectionProducts(ListAPIView):
             'timeout': self.default_cache_timeout
         }
 
+        # Cache the whole collection but also
+        # sub-categories located under the 
+        # given collection
+        other_cache_keys = []
+
+        sub_category = self.request.GET.get('s', None)
+        if sub_category is not None:
+            other_cache_keys.append(sub_category)
+            queryset = queryset.filter(sub_category=sub_category)
+
+        def create_cache_key(*values):
+            return '-'.join(values)
+        
         if collection_name == 'all':
-            cache_params['key'] = 'all'
+            cache_params['key'] = create_cache_key('all', *other_cache_keys)
             cache.set(**cache_params)
             return queryset
         elif collection_name == 'novelties':
@@ -62,7 +74,7 @@ class ListCollectionProducts(ListAPIView):
                 Q(created_on__gte=difference.date())
             )
             cache.set(
-                collection_name,
+                create_cache_key(collection_name, *other_cache_keys),
                 queryset,
                 timeout=self.default_cache_timeout
             )
@@ -90,13 +102,12 @@ class ListCollectionProducts(ListAPIView):
                     return []
 
             products = queryset.order_by('-created_on')
-            cache_params['key'] = collection_name
+            cache_params['key'] = create_cache_key(collection_name, *other_cache_keys)
             cache_params['value'] = products
             cache.set(**cache_params)
             return products
 
 
-@extend_schema('Collection Names')
 class ListCollectionNames(ListAPIView):
     queryset = Collection.objects.all()
     serializer_class = serializers.CollectionSerializer
@@ -110,7 +121,6 @@ class ListCollectionNames(ListAPIView):
         return self.queryset
 
 
-@extend_schema('Search Collection Products')
 class SearchCollectionProducts(RetrieveAPIView):
     queryset = Collection.objects.all()
     serializer_class = ProductSerializer

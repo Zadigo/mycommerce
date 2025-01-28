@@ -29,6 +29,11 @@ urlpatterns = [
         name='upload_to_product'
     ),
     re_path(
+        r'^products/create$',
+        views.CreateProduct.as_view(),
+        name='create_product'
+    ),
+    re_path(
         r'^statistics$',
         views.calculate_shop_statistics,
         name='statistics'

@@ -3,28 +3,29 @@ from mimetypes import guess_extension
 
 from adminapi import serializers
 from cart.models import Cart
+from django.core.cache import cache
 from django.core.files.images import ImageFile
 from django.core.validators import FileExtensionValidator
 from django.db.models import CharField, F, Q, Value
-from django.db.models.aggregates import Avg, Count, Max, Min, StdDev, Variance
+from django.db.models.aggregates import (Avg, Count, Max, Min, StdDev, Sum,
+                                         Variance)
 from django.db.models.expressions import Window
-from django.db.models.functions import ExtractYear
+from django.db.models.functions import ExtractMonth, ExtractYear
 from django.db.models.functions.window import Rank
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import make_aware, now
 from orders.models import CustomerOrder
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.decorators import api_view
-from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from adminapi import serializers
 from shop.models import Image, Product
 
+from mystore.choices import CategoryChoices, SubCategoryChoices
 from mystore.utils import remove_accents
 
 
-class ListProducts(ListAPIView):
+class ListProducts(generics.ListAPIView):
     serializer_class = serializers.AdminProductSerializer
     queryset = Product.objects.all()
     permission_classes = []
@@ -41,7 +42,13 @@ class ListProducts(ListAPIView):
         return queryset
 
 
-class ListImages(ListAPIView):
+class CreateProduct(generics.CreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = serializers.NewProductSerializer
+    permission_classes = []
+
+
+class ListImages(generics.ListAPIView):
     serializer_class = serializers.ImageSerializer
     # permission_classes = [IsAuthenticated, IsAdminUser]
     queryset = Image.objects.all()
@@ -57,6 +64,29 @@ class ListImages(ListAPIView):
             return queryset.filter(name__icontains=search)
 
         return queryset
+
+
+class ListCategories(generics.GenericAPIView):
+    permission_classes = []
+
+    def get(self, request, *args, **kwargs):
+        values = []
+
+        search = request.GET.get('q')
+
+        if search == 'categories':
+            values = cache.get('categories')
+            if values is None:
+                values = [x[0] for x in CategoryChoices.choices]
+                cache.set('categories', values, timeout=6000)
+
+        if search == 'subcategories':
+            values = cache.get('subcategories')
+            if values is None:
+                values = SubCategoryChoices.flat()
+                cache.set('subcategories', values, timeout=6000)
+
+        return Response(values)
 
 
 @api_view(http_method_names=['post'])
@@ -156,7 +186,7 @@ def upload_images_to_product(request, pk, **kwargs):
     return Response({}, status=status.HTTP_204_NO_CONTENT)
 
 
-class GetProduct(RetrieveUpdateAPIView):
+class GetProduct(generics.RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = serializers.ProductSerializer
     permission_classes = []

@@ -15,9 +15,11 @@
 
                   <q-space />
 
-                  <q-btn color="primary" rounded unelevated @click="showUploadProductsFile = true">Upload file</q-btn>
+                  <q-btn color="primary" rounded unelevated @click="showUploadProductsFile = true">
+                    Upload file
+                  </q-btn>
                   <q-btn :to="{ name: 'images_view' }" color="primary" icon="fas fa-image" label="Images" unelevated rounded />
-                  <q-btn :to="{ name: 'product_view', params: { id: 1 } }" color="primary" icon="fas fa-plus" label="Create" unelevated rounded />
+                  <q-btn :to="{ name: 'create_product', params: { id: 1 } }" color="primary" icon="fas fa-plus" label="Create" unelevated rounded />
 
                   <q-btn round flat>
                     <q-icon name="fas fa-ellipsis-vertical"></q-icon>

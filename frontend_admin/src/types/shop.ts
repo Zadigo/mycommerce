@@ -38,7 +38,7 @@ export type ProductCollection = {
     get_view_name: string;
 };
 
-export type Product = {
+export interface Product {
     id: number;
     name: string;
     color: string;
@@ -62,6 +62,20 @@ export type Product = {
     modified_on: string;
     created_on: string;
 };
+
+export interface NewProduct extends Pick<Product, 'name' | 'color' | 'category' | 'sub_category' | 'sale_value' | 'sale_price' | 'on_sale' | 'is_new' | 'active'> {
+    unit_price: number
+    model_height: number | null
+    model_size: string | number | null
+    sizes: [
+        {
+            name: string
+            sub_category: 'Bra size' | 'Clothe size' | 'Not attributed' | 'Shoe size'
+            availability: boolean
+            active: boolean
+        }
+    ]
+}
 
 export type ProductsAPIResponse = {
     count: number

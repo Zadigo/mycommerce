@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 def get_debug():
-    debug = os.getenv('DEBUG')
+    debug = os.getenv('DEBUG', '1')
     return True if debug == '1' else False
 
 
@@ -197,29 +197,30 @@ CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
-    r'https://*.ngrok-free.app'
+    r'(http|capacitor)://localhost:8\d00'
+    r'^https:\/\/[a-z0-9\-]+\.ngrok-free.app'
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',
-    'http://localhost:5200',
     'http://localhost:5173',
-    'http://localhost:8100',
-    'http://localhost:3000',
     'http://localhost:9000',
+
+    'http://localhost:8100',
+    'http://localhost:8080',
+    'http://localhost:3000',
     'https://*.ngrok-free.app',
     'capacitor://localhost:8100'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8080',
-    'http://localhost:5200',
     'http://localhost:5173',
-    'http://localhost:8100',
-    'http://localhost:3000',
     'http://localhost:9000',
-    'capacitor://localhost:8100',
-    'https://*.ngrok-free.app'
+
+    'http://localhost:8100',
+    'http://localhost:8080',
+    'http://localhost:3000',
+    'https://*.ngrok-free.app',
+    'capacitor://localhost:8100'
 ]
 
 
