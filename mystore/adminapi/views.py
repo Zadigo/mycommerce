@@ -1,4 +1,6 @@
+from functools import lru_cache
 import datetime
+from collections import defaultdict
 from mimetypes import guess_extension
 
 from adminapi import serializers
@@ -6,7 +8,7 @@ from cart.models import Cart
 from django.core.cache import cache
 from django.core.files.images import ImageFile
 from django.core.validators import FileExtensionValidator
-from django.db.models import CharField, F, Q, Value
+from django.db.models import Case, CharField, F, Q, Value, When
 from django.db.models.aggregates import (Avg, Count, Max, Min, StdDev, Sum,
                                          Variance)
 from django.db.models.expressions import Window
@@ -281,73 +283,98 @@ def filter_images(request, **kwargs):
     return Response(data)
 
 
-@api_view(['get'])
-def calculate_shop_statistics(request, **kwargs):
-    customer_orders = CustomerOrder.objects.annotate(
-        current_year=ExtractYear('created_on')
-    )
-    carts = Cart.objects.all()
+class CalculateShopStatistics(generics.GenericAPIView):
+    permission_classes = []
 
-    statistics = {
-        'total': {},
-        'month': {},
-        'current_month': {}
-    }
+    def customer_orders(self):
+        customer_orders = CustomerOrder.objects.annotate(
+            current_year=ExtractYear('created_on')
+        )
+        carts = Cart.objects.all()
 
-    current_date = now()
-    first = datetime.datetime(
-        year=current_date.year,
-        month=current_date.month,
-        day=1
-    )
+        statistics = {
+            'total': {},
+            'month': {},
+            'current_month': {}
+        }
 
-    total_customer_orders = customer_orders.aggregate(
-        Count('id'),
-        Avg('total'),
-        Max('total'),
-        Min('total'),
-        StdDev('total'),
-        Variance('total')
-    )
-    statistics['total'].update(**total_customer_orders)
+        current_date = now()
+        first = datetime.datetime(
+            year=current_date.year,
+            month=current_date.month,
+            day=1
+        )
 
-    customer_orders_for_month = customer_orders.filter(
-        Q(created_on__gte=make_aware(first)) &
-        Q(created_on__lte=now())
-    )
+        total_customer_orders = customer_orders.aggregate(
+            Count('id'),
+            Avg('total'),
+            Max('total'),
+            Min('total'),
+            StdDev('total'),
+            Variance('total')
+        )
+        statistics['total'].update(**total_customer_orders)
 
-    total_customer_orders_for_month = customer_orders_for_month.aggregate(
-        Count('id'),
-        Avg('total'),
-        Max('total'),
-        Min('total'),
-        StdDev('total'),
-        Variance('total')
-    )
-    statistics['month'].update(**total_customer_orders_for_month)
+        customer_orders_for_month = customer_orders.filter(
+            Q(created_on__gte=make_aware(first)) &
+            Q(created_on__lte=now())
+        )
 
-    statistics_unpaid_cart = carts.aggregate(
-        Count('id'),
-        Avg('price'),
-        Max('price'),
-        Min('price'),
-        StdDev('price'),
-        Variance('price')
-    )
-    statistics.update(**statistics_unpaid_cart)
+        total_customer_orders_for_month = customer_orders_for_month.aggregate(
+            Count('id'),
+            Avg('total'),
+            Max('total'),
+            Min('total'),
+            StdDev('total'),
+            Variance('total')
+        )
+        statistics['month'].update(**total_customer_orders_for_month)
 
-    top_selling_products = carts.annotate(selling_rank=Window(
-        Rank(),
-        partition_by=F('product__id'),
-        order_by='id'
-    )
-    )
-    statistics['top_selling_products'] = top_selling_products.values(
-        'id',
-        'product__name',
-        'selling_rank'
-    )
-    return Response(statistics)
+        statistics_unpaid_cart = carts.aggregate(
+            Count('id'),
+            Avg('price'),
+            Max('price'),
+            Min('price'),
+            StdDev('price'),
+            Variance('price')
+        )
+        statistics.update(**statistics_unpaid_cart)
+
+        top_selling_products = carts.annotate(selling_rank=Window(
+            Rank(),
+            partition_by=F('product__id'),
+            order_by='id'
+        )
+        )
+        statistics['top_selling_products'] = top_selling_products.values(
+            'id',
+            'product__name',
+            'selling_rank'
+        )
+        return statistics
+
+    def products(self):
+        qs = Product.objects.all()
+
+        statistics = {}
+
+        total_products = qs.aggregate(
+            Count('id'),
+            Avg('unit_price'),
+            Min('unit_price'),
+            Max('unit_price')
+        )
+        statistics['global'] = total_products
+
+        products_on_sale = qs.filter(on_sale=True)
+        statistics['products_on_sale'] = products_on_sale.count()
+        return statistics
+
+    def get(self, request, **kwargs):
+        template = defaultdict(dict)
+        template['orders'] = self.customer_orders()
+        template['products'] = self.products()
+        return Response(template)
 
 
 @api_view(['post'])

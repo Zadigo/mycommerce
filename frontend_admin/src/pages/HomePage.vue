@@ -6,19 +6,19 @@
           <div class="col-12">
             <div class="row">
               <div class="col-3">
-                <BaseStatisticCard title="Nombres de produits" statistic="145" />
+                <BaseStatisticCard :statistic="statistics?.products.global.id__count" title="Produits" />
               </div>
 
               <div class="col-3 q-px-sm">
-                <BaseStatisticCard title="Commandes" :statistic="statistics?.id__count" />
+                <BaseStatisticCard :statistic="statistics?.orders.id__count" title="Commandes" />
               </div>
 
               <div class="col-3 q-pr-sm">
-                <BaseStatisticCard title="Nombres de produits" statistic="145" />
+                <BaseStatisticCard title="Prix moyen" statistic="145" />
               </div>
 
               <div class="col-3">
-                <BaseStatisticCard title="Nombres de produits" statistic="145" />
+                <BaseStatisticCard title="Panier moyen" statistic="145" />
               </div>
             </div>
           </div>
@@ -72,7 +72,7 @@
 import { AxiosError } from 'axios'
 import { date, useQuasar } from 'quasar'
 import { defineComponent, ref } from 'vue'
-import { StatisticsResponseAPI } from './home'
+import { ShopStatistics } from 'src/types'
 
 import BaseStatisticCard from 'src/components/BaseStatisticCard.vue'
 import CartsChart from 'src/components/charts/CartsChart.vue'
@@ -120,7 +120,7 @@ export default defineComponent({
     ]
 
     const { notify } = useQuasar()
-    const statistics = ref<StatisticsResponseAPI>()
+    const statistics = ref<ShopStatistics>()
 
     return {
       statistics,
@@ -175,7 +175,7 @@ export default defineComponent({
   methods: {
     async requestStatistics () {
       try {
-        const response = await this.$api.get<StatisticsResponseAPI>('/statistics')
+        const response = await this.$api.get<ShopStatistics>('/statistics')
         this.statistics = response.data
       } catch (e) {
         if (e instanceof AxiosError && e.response) {

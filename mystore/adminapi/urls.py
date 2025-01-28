@@ -36,7 +36,7 @@ urlpatterns = [
     ),
     re_path(
         r'^statistics$',
-        views.calculate_shop_statistics,
+        views.CalculateShopStatistics.as_view(),
         name='statistics'
     ),
     re_path(
