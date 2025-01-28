@@ -220,9 +220,6 @@ export function useDjangoUtilies () {
 }
 
 export function useAxiosClient () {
-    /**
-     * Helper function for creating variations of the baseURL
-     */
     function getBaseUrl(path = '/api/v1/', alternativeDomain?: string | null, port = '8000', secure = false) {
         let domain = alternativeDomain || `127.0.0.1:${port}`
 

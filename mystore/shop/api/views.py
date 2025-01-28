@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from shop.api import CustomPagination, serializers
 from shop.models import Product
-
+from shop.processors import FuzzyMatcherMixin
 
 class ListProducts(generics.ListAPIView):
     """List the products in the database and accepts

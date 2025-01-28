@@ -4,7 +4,7 @@ export function useShopComposable () {
     const { $i18n } = useNuxtApp()
     const isLiked = ref(false)
 
-    function ValidateProp<T extends Product | ProductImage>(item: T | object | null | undefined): item is T {
+    function validateProp<T extends Product | ProductImage>(item: T | object | null | undefined): item is T {
         if (!item || typeof item !== 'object') {
             return false
         } else {
@@ -56,7 +56,7 @@ export function useShopComposable () {
 
     return {
         isLiked,
-        ValidateProp,
+        validateProp,
         translatePrice,
         handleLike
     }

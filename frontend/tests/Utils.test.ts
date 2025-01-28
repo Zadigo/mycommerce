@@ -1,7 +1,7 @@
-import { ref } from 'vue'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, it, vi } from 'vitest';
-import { useDjangoUtilies, useUtilities,  useListManager } from "../composables/utils";
+import { ref } from 'vue';
 import { debounce } from '~/utils';
+import { useDjangoUtilies, useListManager, useUtilities } from "../composables/utils";
 
 
 describe('Use Django Utilities', () => {
@@ -37,15 +37,25 @@ describe('Use Django Utilities', () => {
 
     it('should return the base url for Django', () => {
         const { getBaseUrl } = useDjangoUtilies()
+
         expect(getBaseUrl()).toEqual('http://127.0.0.1:8000/')
     })
 })
 
 describe('Use Utilities', () => {
     it('should detect null values', async () => {
-        const { hasNull } = useUtilities()
-        const result = hasNull([1, null])
+        const { isNull } = useUtilities()
+        const result = isNull([''])
+        console.info(result)
         expect(result).toBeTruthy()
+    })
+
+    it('should detect if an array contains a null value', () => {
+        const { hasNull } = useUtilities()
+        const arrayToTest = ['', 'Kendall']
+        const result = hasNull(arrayToTest)
+
+        expect(result).toBeTruthy()      
     })
 })
 

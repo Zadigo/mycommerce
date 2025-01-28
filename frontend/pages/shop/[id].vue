@@ -50,7 +50,7 @@ const { $client } = useNuxtApp()
 // Composable for product fetching
 function useProductDetails () {
   const route = useRoute()
-  const { ValidateProp } = useShopComposable()
+  const { validateProp } = useShopComposable()
 
   /**
    * WRITE DOCUMENTATION
@@ -59,7 +59,7 @@ function useProductDetails () {
     method: 'GET'
   })
   const product = computed(() => data.value)
-  const isLoading = computed(() => status.value === 'pending' || !ValidateProp(product.value))
+  const isLoading = computed(() => status.value === 'pending' || !validateProp(product.value))
 
   provide('isLoading', isLoading)
 
