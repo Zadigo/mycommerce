@@ -1,6 +1,6 @@
 from cart.api import serializers
 from cart.api.serializers import ValidateCart, build_cart_response
-from cart.managers import SessionManager
+from cart.sessions import RestSessionManager
 from cart.models import Cart
 from django.db.models import F, Q
 from django.shortcuts import get_list_or_404
@@ -237,8 +237,12 @@ class DeleteFromCart(generics.DestroyAPIView):
 
 
 class CreateSessionID(generics.CreateAPIView):
+    """Endpoint for creating a new session ID that
+    allows us to identify anonymous users in the 
+    database when they are shopping on the website"""
+    
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        manager = SessionManager(self.request)
-        return Response({'token': manager.create_session_key()})
+        token = RestSessionManager.create_session_key()
+        return Response({'token': token})

@@ -1,22 +1,70 @@
 import time
 
-from cart.api import views
 from cart.api.serializers import cart_statistics
-from cart.managers import SessionManager
 from cart.models import Cart
+from cart.sessions import RestSessionManager
 from django.contrib.auth import get_user_model
-from django.test import Client, LiveServerTestCase, RequestFactory, TestCase
+from django.test import (LiveServerTestCase, RequestFactory, TestCase,
+                         TransactionTestCase)
 from django.urls import reverse
+from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import status
-from rest_framework.test import APIClient, APIRequestFactory, APITestCase
+from rest_framework.test import APITestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from shop.models import Product
 
 DEFAULT_SESSION_ID = 'other-session-value'
+
+
+class TestCartManager(TransactionTestCase):
+    fixtures = ['carts']
+
+    @classmethod
+    def setUpClass(cls):
+        token = RestSessionManager.create_session_key()
+
+        factory = RequestFactory()
+        request = factory.get(reverse('cart_api:carts'))
+
+        user_model = get_user_model()
+        cls.user = user_model.objects.create_user(
+            username='test_user',
+            email='test@gmail.com',
+            password='touparet'
+        )
+        request.user = cls.user
+        request.session = {}
+
+        cls.params = {
+            'request': request,
+            'token': token,
+            'product': None,
+            'size':  'Unique'
+        }
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.user.delete()
+
+    def test_with_correct_size(self):
+        self.params['product'] = Product.objects.first()
+        result = Cart.objects.rest_api_add_to_cart(**self.params)
+        self.assertIsInstance(result, tuple)
+
+        token, items = result
+        self.assertIsInstance(token, str)
+        self.assertTrue(items.count() == 1)
+
+    def test_with_incorrect_size(self):
+        # If a product has sizes, we should not be able to
+        # add a product in the cart with 'unique'
+        self.params['product'] = Product.objects.get(id=2)
+
+        with self.assertRaises(ValidationError):
+            Cart.objects.rest_api_add_to_cart(**self.params)
 
 
 class TestCart(APITestCase):
@@ -86,60 +134,40 @@ class TestCart(APITestCase):
         self.assertIsNotNone(data['session_id'])
         self.assertEqual(data['statistics']['total'], 15.2)
 
-    # def test_list_all_carts_view_not_authenticated(self):
-    #     factory = APIRequestFactory()
-    #     request = factory.get(reverse('carts_api:list_carts'))
-    #     view = views.ListAllCarts.as_view()
-    #     response = view(request)
-
-    #     self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    # def test_list_all_carts_view_authenticated(self):
-    #     client = APIClient()
-
-    #     user = create_user()
-    #     client.login(username=user.username, password='touparette')
-
-    #     response = client.get('api/v1/cart/')
-
-    #     count = Cart.objects.count()
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(count, len(response.data))
-
-    # def test_cart_view(self):
-    #     user = create_user()
-    #     factory = RequestFactory()
-    #     request = factory.post('api/v1/cart', data={'session_id': 'test_session'})
-    #     response = views.cart_view(request)
-    #     self.assertEqual(response.data['session_id'], 'test_session')
-    #     self.assertEqual(len(response.data['results']), 1)
-
-    # def test_add_to_cart_view(self):
-    #     factory = RequestFactory()
-    #     request = factory.post('api/v1/cart/add', data={'product': 1, 'default_size': 'Unique', 'session_id': 'test_session'})
-    #     response = views.cart_view(request)
-
-    # def test_add_to_cart(self):
-    #     client = Client()
-    #     response = client.post('api/v1/cart/add', data={'product': 2, 'default_size': 'Unique', 'session_id': 'test_session'})
-    #     self.assertEqual(response.status_code, 200)
-
 
 class TestSessionManager(TestCase):
     def setUp(self):
+        # Create a mockup request so that the
+        # class can actually be used
         factory = RequestFactory()
-        request = factory.get(reverse('cart_api:api_list_carts'))
-        self.session = SessionManager(request)
+        request = factory.get(reverse('cart_api:carts'))
 
-    def test_session_structure(self):
-        key = self.session.create_session_key()
-        self.assertIsInstance(key, str)
-        parts = key.split('-')
-        self.assertEqual(len(parts), 3)
+        self.instance = RestSessionManager(request)
 
-    def test_result(self):
-        key = self.session.create_session_key()
-        self.assertTrue(self.session.test_key(key))
+    def test_gloal_structure(self):
+        result = self.instance.create_session_key()
+        self.assertIsNotNone(result)
+        self.assertRegex(result, r'^ca_')
+
+    def test_key_scructure(self):
+        result = self.instance.create_session_key()
+        state = self.instance.test_key(result)
+        self.assertTrue(state)
+
+    # def setUp(self):
+    #     factory = RequestFactory()
+    #     request = factory.get(reverse('cart_api:api_list_carts'))
+    #     self.session = SessionManager(request)
+
+    # def test_session_structure(self):
+    #     key = self.session.create_session_key()
+    #     self.assertIsInstance(key, str)
+    #     parts = key.split('-')
+    #     self.assertEqual(len(parts), 3)
+
+    # def test_result(self):
+    #     key = self.session.create_session_key()
+    #     self.assertTrue(self.session.test_key(key))
 
 
 class TestLiveCart(LiveServerTestCase):

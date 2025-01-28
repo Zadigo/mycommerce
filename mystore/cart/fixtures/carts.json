@@ -46,6 +46,17 @@
         }
     },
     {
+        "model": "variants.Size",
+        "pk": 1,
+        "fields": {
+            "name": "XS",
+            "sub_category": "Clothe size",
+            "product": 2,
+            "availability": true,
+            "active": true
+        }
+    },
+    {
         "model": "cart.Cart",
         "pk": 1,
         "fields": {

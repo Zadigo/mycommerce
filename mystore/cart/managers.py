@@ -1,15 +1,10 @@
-import datetime
 
-import pytz
 from cart.exceptions import ProductActiveError
+from cart.sessions import BaseSessionManager, RestSessionManager
 from django.db.models import QuerySet
 from django.db.models.aggregates import Sum
 from django.db.models.expressions import Q
-from django.utils.crypto import get_random_string, salted_hmac
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework.exceptions import ValidationError
-
-CART_SESSION_NAME = 'cart_session_id'
 
 
 class QuerySetDoesNotExist(Exception):
@@ -17,113 +12,6 @@ class QuerySetDoesNotExist(Exception):
         super().__init__(
             "Selected products do not exist"
         )
-
-
-class SessionManager:
-    """A simple manager for dealing with creating or
-    deleting cart ids in the user session"""
-
-    default_prefix = 'ca'
-    default_signature = 'django'
-
-    def __init__(self, request):
-        self.request = request
-        self.cart_session_id = None
-
-        try:
-            self.cart_session_id = request.session.get(CART_SESSION_NAME, None)
-        except:
-            pass
-
-    def __repr__(self):
-        return f'{self.__class__.__name__}({self.cart_session_id})'
-
-    def __str__(self):
-        return str(self.cart_session_id)
-
-    def __eq__(self, value):
-        return self.cart_session_id == value
-
-    @property
-    def has_session_id(self):
-        return self.cart_session_id is not None
-
-    @classmethod
-    def test_key(cls, key, known_signature=None):
-        """Tests the signature part of the session key
-        and the prefix."""
-        signature, d, identifier = key.split('-')
-        prefix, salted_signature = signature.split('_')
-
-        # Ensure that the year part of the session
-        # key matches the current year
-        decoded_date = datetime.datetime.fromisoformat(
-            urlsafe_base64_decode(d).decode()
-        )
-        current_date = datetime.datetime.now(tz=pytz.UTC)
-
-        # Ensure that the signature matches the default
-        # one: ca_django --; pending that another signature
-        # was not provided by the programmer
-        known_signature = known_signature or cls.default_signature
-        initial_signature = salted_hmac(
-            cls.default_prefix,
-            known_signature
-        ).hexdigest()
-
-        result = all([
-            prefix == cls.default_prefix,
-            salted_signature == initial_signature,
-            decoded_date.year == current_date.year
-        ])
-        if result:
-            return True
-        return False
-
-    @classmethod
-    def create_session_key(cls, signature=None):
-        """The cart session is composed on three main parts:
-
-            * A signature
-            * A base64 encoded UTC date
-            * A random unique string identifier
-
-        The signaure part is composed on two main parts:
-
-            * A prefix: `ca_`
-            * A salted hmac signature composed of the prefix and a signature
-        """
-        current_date = datetime.datetime.now(tz=pytz.UTC)
-        unique_identifier = get_random_string(12)
-
-        signature = signature or cls.default_signature
-        final_signature = salted_hmac(
-            cls.default_prefix,
-            signature
-        ).hexdigest()
-
-        encoded_date = urlsafe_base64_encode(
-            bytes(
-                str(current_date).encode('utf-8')
-            )
-        )
-        return f'{cls.default_prefix}_{final_signature}-{encoded_date}-{unique_identifier}'
-
-    def get_or_create(self):
-        """Check if there is a session id and
-        if not create a new one, store and
-        return it"""
-        if self.cart_session_id is None:
-            new_session_id = get_random_string(12)
-            self.request.session[CART_SESSION_NAME] = new_session_id
-            self.cart_session_id = new_session_id
-        return self.cart_session_id
-
-    def delete(self):
-        self.request.session.pop(CART_SESSION_NAME)
-
-    def get_response(self, using, params={}):
-        return using(**params)
 
 
 class CartManager(QuerySet):
@@ -168,7 +56,8 @@ class CartManager(QuerySet):
         are properly managed and associated with the correct 
         session or user"""
         if not product.active:
-            raise ProductActiveError(detail={'product': 'Product is not active'})
+            raise ProductActiveError(
+                detail={'product': 'Product is not active'})
 
         # The user might have other items in his cart
         # with different session_id keys, mark them
@@ -178,20 +67,33 @@ class CartManager(QuerySet):
         # the same user that are more difficult to track
         if request.user.is_authenticated:
             authenticated_items = self.filter(
-                user=request.user, 
+                user=request.user,
                 is_paid_for=False
             )
             authenticated_items.update(is_stale=True)
 
         size = kwargs.get('size')
+
         if size != 'Unique':
             message = f'Product with size {size} is no available'
             sizes = product.size_set.filter(name=size)
+
             if sizes.exists():
                 size = sizes.get(name=size)
                 if not size.active or not size.availability:
                     raise ValidationError(detail={'size': message})
             else:
+                raise ValidationError(detail={'size': message})
+
+        # If the frontend is trying to create
+        # an object with a product that requires
+        # a specific size, raise a ValidationError
+        if size == 'Unique':
+            if product.has_sizes:
+                message = (
+                    "Trying to use a 'unique' size "
+                    "on a produt that contains sizes"
+                )
                 raise ValidationError(detail={'size': message})
 
         params = {
@@ -239,7 +141,7 @@ class CartManager(QuerySet):
         is preserved across sessions
         """
         if session_id is None:
-            session_id = SessionManager.create_session_key()
+            session_id = RestSessionManager.create_session_key()
         queryset = self._add_to_cart(request, session_id, product, **kwargs)
         return session_id, queryset
 
@@ -247,6 +149,6 @@ class CartManager(QuerySet):
         """Works in combination with session backends. When
         using rest `rest_api_add_to_cart`, the session does not actively 
         persist which can inadvertly create a new cart every time"""
-        session_manager = SessionManager(request)
+        session_manager = BaseSessionManager(request)
         session_id = session_manager.get_or_create()
         return self._add_to_cart(request, session_id, product, **kwargs)
