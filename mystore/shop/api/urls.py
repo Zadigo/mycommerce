@@ -12,16 +12,11 @@ urlpatterns = [
     re_path(
         r'^products/recommendations$',
         views.ListRecommendations.as_view(),
-        name='list_recommendations'
-    ),
-    re_path(
-        r'^liked$',
-        views.LikedProductsView.as_view(),
-        name='list_liked_products'
+        name='recommendations'
     ),
     re_path(
         r'^products$',
         views.ListProducts.as_view(),
-        name='list_products'
+        name='products'
     )
 ]

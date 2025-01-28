@@ -63,6 +63,8 @@ class ListProducts(generics.ListAPIView):
 
 
 class GetProduct(generics.RetrieveAPIView):
+    """Returns a specific product from the database"""
+
     queryset = Product.objects.all()
     serializer_class = serializers.ProductSerializer
 
@@ -103,7 +105,7 @@ class ListRecommendations(generics.ListAPIView):
     def recommendation_by_randomness(self, products, quantity):
         if len(products) == 0:
             return []
-        
+
         selected_items = set()
         for _ in range(int(quantity)):
             selected_items.add(random.choice(products))
@@ -194,27 +196,3 @@ class ListRecommendations(generics.ListAPIView):
                     collection__name=product_id_or_collection_name
                 )
                 return products[:quantity]
-
-
-class LikedProductsView(generics.ListAPIView):
-    serializer_class = serializers.LikeSerializer
-    queryset = Product.objects.all()
-    permission_classes = [AllowAny]
-    http_method_names = ['post']
-
-    def post(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-
-        serializer = self.get_serializer(data=self.request.data)
-        serializer.is_valid(raise_exception=True)
-
-        ids = serializer.validated_data['product_ids']
-        queryset = queryset.filter(id__in=ids)
-
-        if self.request.user.is_authenticated:
-            pass
-
-        return queryset
