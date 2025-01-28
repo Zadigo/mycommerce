@@ -68,6 +68,7 @@ class ProductSerializer(Serializer):
 
 
 class NewProductSerializer(Serializer):
+    id = fields.IntegerField(read_only=True)
     name = fields.CharField()
     category = fields.ChoiceField(
         CategoryChoices.choices, 

@@ -2,30 +2,7 @@
   <q-page padding>
     <div class="row">
       <div class="col-10 offset-1">
-        <header class="row">
-          <div class="col-12">
-            <q-card class="q-mb-sm">
-              <q-card-section>
-                <div class="flex justify-between align-center">
-                  <div class="flex justify-left">
-                    <q-btn v-if="previousProductId" :to="{ name: 'product_view', params: { id: previousProductId.id }, query: { id: previousProductId.id } }" class="q-mr-sm text-black" color="grey-1" round unelevated>
-                      <q-icon size="1em" name="fas fa-arrow-left" />
-                    </q-btn>
-
-                    <q-btn v-if="nextProductId" :to="{ name: 'product_view', params: { id: nextProductId.id }, query: { id: nextProductId.id } }" class=" text-black" color="grey-1" round unelevated>
-                      <q-icon size="1em" name="fas fa-arrow-right" />
-                    </q-btn>
-                  </div>
-
-                  <q-btn color="primary" unelevated rounded @click="handleSaveProduct">
-                    <q-spinner-cube v-if="isSaving" size="xs" color="white" class="q-mr-sm" />
-                    Save
-                  </q-btn>
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-        </header>
+        <PageHeader :current-product="currentProduct" :previous-product="previousProduct" :next-product="nextProduct" @save="handleSaveProduct" />
 
         <div class="row">
           <div class="col-8 q-pr-sm">
@@ -51,7 +28,7 @@
             </q-card>
 
             <!-- Images -->
-            <ImagesBlock @update-product="handleUpdateProduct" @update-images="handleUpdateImages" />
+            <ImagesBlock :current-product="currentProduct" @update-product="handleUpdateProduct" @update-images="handleUpdateImages" />
 
             <!-- Sizes -->
             <SizeBlock />
@@ -68,6 +45,8 @@
             </q-card>
           </div>
         </div>
+
+        {{ currentProduct }}
       </div>
     </div>
   </q-page>
@@ -85,10 +64,12 @@ import { defineComponent, provide, ref } from 'vue'
 
 import ImagesBlock from 'src/components/product/ImagesBlock.vue'
 import SizeBlock from 'src/components/product/SizeBlock.vue'
+import PageHeader from 'src/components/product/PageHeader.vue'
 
 export default defineComponent({
   name: 'ProductPage',
   components: {
+    PageHeader,
     ImagesBlock,
     SizeBlock
   },
@@ -124,7 +105,7 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(useShop, ['previousProductId', 'nextProductId'])
+    ...mapState(useShop, ['previousProduct', 'nextProduct'])
   },
   watch: {
     '$route.params.id' (newValue, oldValue) {

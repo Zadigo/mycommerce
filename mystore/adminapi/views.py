@@ -89,6 +89,50 @@ class ListCategories(generics.GenericAPIView):
         return Response(values)
 
 
+class UploadImages(generics.GenericAPIView):
+    """Uploads images to the database without associating
+    them to a given product"""
+
+    serializer_class = serializers.ImageSerializer
+    permission_classes = []
+
+    def post(self, request, **kwargs):
+        names = request.data.getlist('file_names', [])
+        files = request.data.getlist('files', [])
+
+        if not names:
+            return Response([], status=status.HTTP_304_NOT_MODIFIED)
+
+        association = []
+        for i, name in enumerate(names):
+            association.append((name, files[i]))
+
+        validator = FileExtensionValidator(
+            allowed_extensions=['jpg', 'jpeg', 'webp']
+        )
+
+        created_images = []
+        for item in association:
+            file = item[1]
+
+            extension = guess_extension(file.content_type)
+            clean_name = remove_accents(item[0])
+            file_name = f'{clean_name}{extension}'
+
+            image = ImageFile(file, name=file_name)
+            validator(image)
+
+            instance = Image.objects.create(
+                name=item[0],
+                original=image
+            )
+            created_images.append(instance)
+
+        images = Image.objects.all()
+        serializer = self.get_serializer(instance=created_images, many=True)
+        return Response(serializer.data)
+
+
 @api_view(http_method_names=['post'])
 def upload_images(request, **kwargs):
     names = request.data.getlist('file_names', [])
@@ -139,51 +183,53 @@ def associate_images(request, **kwargs):
     return Response({'state': True})
 
 
-@api_view(http_method_names=['post'])
-def upload_images_to_product(request, pk, **kwargs):
-    product = get_object_or_404(Product, pk=pk)
+class UploadImagesToProduct(generics.GenericAPIView):
+    queryset = Image.objects.all()
+    serializer_class = serializers.ImageSerializer
+    permission_classes = []
 
-    names = request.data.getlist('file_names', [])
-    files = request.data.getlist('files', [])
+    def post(self, request, pk, **kwargs):
+        product = get_object_or_404(Product, pk=pk)
 
-    association = []
-    for i, name in enumerate(names):
-        association.append((name, files[i]))
+        names = request.data.getlist('file_names', [])
+        files = request.data.getlist('files', [])
 
-    validator = FileExtensionValidator(
-        allowed_extensions=['jpg', 'jpeg', 'webp']
-    )
+        association = []
+        for i, name in enumerate(names):
+            association.append((name, files[i]))
 
-    if association:
-        created_images = []
-        for item in association:
-            file = item[1]
-
-            extension = guess_extension(file.content_type)
-            file_name = f'{item[0]}{extension}'
-
-            image = ImageFile(file, name=file_name)
-            validator(image)
-
-            new_image = Image.objects.create(
-                name=Value(item[0], output_field=CharField()),
-                original=image
-            )
-            created_images.append(new_image)
-
-        product.images.add(*created_images)
-        product.save()
-
-        first_image = product.images.first()
-        first_image.is_main_image = ~F('is_main_image')
-        first_image.save()
-
-        serializer = shop_serializers.ImageSerializer(
-            instance=product.images.all(),
-            many=True
+        validator = FileExtensionValidator(
+            allowed_extensions=['jpg', 'jpeg', 'webp']
         )
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+        if association:
+            created_images = []
+            for item in association:
+                file = item[1]
+
+                extension = guess_extension(file.content_type)
+                file_name = f'{item[0]}{extension}'
+
+                image = ImageFile(file, name=file_name)
+                validator(image)
+
+                new_image = Image.objects.create(
+                    name=Value(item[0], output_field=CharField()),
+                    original=image
+                )
+                created_images.append(new_image)
+
+            product.images.add(*created_images)
+            product.save()
+
+            first_image = product.images.first()
+            first_image.is_main_image = ~F('is_main_image')
+            first_image.save()
+
+            serializer = self.get_serializer(
+                instance=product.images.all(), many=True)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
 
 
 class GetProduct(generics.RetrieveUpdateAPIView):

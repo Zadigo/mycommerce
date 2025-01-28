@@ -6,12 +6,9 @@
     </template>
 
     <template #default>
-      <!-- Product Information -->
       <ProductInfo v-model="newProduct.name" :for-creation="true" />
-      <!-- Category Info -->
       <CategoryInfo v-model="newProduct" class="q-my-sm" />
-      <!-- Images -->
-      <ImagesBlock />
+      <ImagesBlock @associate-images="handleNewImages" />
     </template>
 
     <template #pageAside>
@@ -27,7 +24,7 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar'
 import { useAxiosClient } from 'src/composables/utils'
-import type { NewProduct } from 'src/types'
+import type { NewProduct, Product, ProductImage } from 'src/types'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -42,6 +39,7 @@ const { createClient } = useAxiosClient()
 const { notify } = useQuasar()
 const router = useRouter()
 
+const imagesToAssociate = ref<ProductImage[]>([])
 const newProduct = ref<NewProduct>({
   name: '',
   color: '',
@@ -58,11 +56,27 @@ const newProduct = ref<NewProduct>({
   active: false
 })
 
-async function handleCreateProduct() {
+async function handleCreateProduct () {
   try {
     const client = createClient()
-    const response = await client.post('/admin/products/create', newProduct.value)
+    const response = await client.post<Product>('/admin/products/create', newProduct.value)
+
     if (response.status === 201) {
+      // Once we know that the product is created,
+      // call this endpint in order to associate
+      // the product to the new images
+      if (imagesToAssociate.value.length > 0) {
+        const response2 = await client.post('/admin/images/associate', {
+          product: response.data.id,
+          images: imagesToAssociate.value.map(x => x.id)
+        })
+
+        if (response2.status === 201) {
+          router.push({ name: 'products_view' })
+          return
+        }
+      }
+
       router.push({ name: 'products_view' })
     }
   } catch (e) {
@@ -75,5 +89,9 @@ async function handleCreateProduct() {
     //   message: 'Failed to cretae product'
     // })
   }
+}
+
+function handleNewImages (images: ProductImage[]) {
+  imagesToAssociate.value = images
 }
 </script>

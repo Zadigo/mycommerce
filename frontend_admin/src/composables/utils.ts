@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance } from 'axios'
 import { api } from 'src/boot/axios'
-import { Product } from 'src/types'
+import { Product, ProductImage } from 'src/types'
 import { getCurrentInstance, ref } from 'vue'
 
 export function useDjangoUtilies () {
@@ -70,7 +70,7 @@ export function useDjangoUtilies () {
 export function useImagesUpload () {
   const app = getCurrentInstance()
 
-  const images = ref({})
+  const images = ref<ProductImage[]>([])
   const selectedFiles = ref<File[]>([])
   const selectedFilesBaseName = ref<string>('')
   const isRunning = ref(false)
@@ -89,12 +89,12 @@ export function useImagesUpload () {
    * Upload images without associating them to
    * any product in the database
    */
-  async function handleUploadImages (callback: (data: Product) => void) {
+  async function handleUploadImages (callback: (data: ProductImage[]) => void) {
     try {
       isRunning.value = true
 
       const formData = createFormData()
-      const response = await api.post('shop/images/upload', formData, {
+      const response = await api.post<ProductImage[]>('admin/images/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -118,12 +118,13 @@ export function useImagesUpload () {
   /**
    * Upload images to a specific given product
    */
-  async function uploadImagesToProduct (product: Product | null | undefined, callback: (data: Product) => void) {
+  async function uploadImagesToProduct (product: Product | null | undefined, callback: (data: ProductImage[]) => void) {
     try {
       if (product) {
-        const formData = createFormData()
         isRunning.value = true
-        const response = await api.post(`admin/products/${product.id}/upload-images`, formData, {
+
+        const formData = createFormData()
+        const response = await api.post<ProductImage[]>(`admin/products/${product.id}/upload-images`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }

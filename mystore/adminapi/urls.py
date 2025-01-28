@@ -6,7 +6,8 @@ app_name = 'admin_api'
 urlpatterns = [
     re_path(
         r'^products/(?P<pk>\d+)/upload-images$',
-        views.upload_images_to_product
+        views.UploadImagesToProduct.as_view(),
+        name='upload_images_to_product'
     ),
     re_path(
         r'^products/(?P<pk>\d+)$',
@@ -40,7 +41,7 @@ urlpatterns = [
     ),
     re_path(
         r'^images/upload$',
-        views.upload_images,
+        views.UploadImages.as_view(),
         name='upload'
     ),
     re_path(
