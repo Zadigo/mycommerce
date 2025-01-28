@@ -2,18 +2,22 @@ from django.urls import re_path
 
 from collection.api import views
 
+app_name = 'collection_api'
+
 urlpatterns = [
     re_path(
         r'^(?P<name>[a-z\-]+)',
-        views.ListCollectionProducts.as_view()
-        # views.list_collection_products
+        views.ListCollectionProducts.as_view(),
+        name='collection_products'
     ),
     re_path(
         r'^(?P<pk>\d+)/search$',
-        views.search_collection_products
+        views.SearchCollectionProducts.as_view(),
+        name='search_products'
     ),
     re_path(
         r'^$',
-        views.list_collections
+        views.ListCollections.as_view(),
+        name='collections'
     )
 ]
