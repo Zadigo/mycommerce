@@ -201,6 +201,8 @@ if USE_S3:
         'region_name': os.getenv('AWS_S3_REGION_NAME'),
         'object_parameters': {'CacheControl': 'max-age=86400'},
         'endpoint_url': aws_endpoint(),
+        # 'cloudfront_key': '',  # AWS_CLOUDFRONT_KEY
+        # 'cloudfront_key_id': '',  # AWS_CLOUDFRONT_KEY_ID
         'querystring_auth': False,
         'default_acl': 'public-read'
     }
