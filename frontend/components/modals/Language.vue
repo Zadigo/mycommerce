@@ -42,15 +42,21 @@
 import countries from '~/data/countries.json'
 
 const i18n = useI18n()
+const localePath = useLocalePath()
 const shopStore = useShop()
 
 const availableLanguages = ref<string[]>(i18n.availableLocales)
 
-function handleSelection() {
+async function handleSelection() {
   if (shopStore.sessionCache) {
     shopStore.sessionCache.language.selected = true
+    // Set the language once the user has accepted in order
+    // to prevent "live" text switch
+    i18n.locale.value = shopStore.sessionCache.language.choice
   }
+
   shopStore.showLanguageModal = false
+  await navigateTo(localePath('/'))
 }
 
 function handleLanguageSelection(value: 'fr' | 'en') {

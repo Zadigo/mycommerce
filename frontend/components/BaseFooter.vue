@@ -33,7 +33,7 @@
             </h6>
 
             <p v-for="link in section.links" :key="link.to" class="mb-1">
-              <NuxtLink :to="`/shop/collection/${link.params}`" class="text-reset">
+              <NuxtLink :to="$localePath(`/shop/collection/${link.params}`)" class="text-reset">
                 {{ link.name }}
               </NuxtLink>
             </p>
@@ -81,7 +81,7 @@
       
       <div class="d-flex justify-content-around gap-4">
         <ClientOnly>
-          <a href="#" class="text-muted" @click.prevent="shopStore.showLanguageModal=true">
+          <a id="language-selection" href="#" class="text-muted" @click.prevent="shopStore.showLanguageModal=true">
             {{ languageLocation }} | {{ languageChoice }}
           </a>
         </ClientOnly>

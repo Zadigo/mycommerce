@@ -202,9 +202,26 @@ export default defineNuxtConfig({
     langDir: './locales',
     defaultLocale: 'fr',
     vueI18n: './i18n.config.ts',
+    // detectBrowserLanguage: {
+    //   useCookie: true,
+    //   cookieKey: 'i18n_redirected',
+    //   redirectOn: 'root'
+    // },
     locales: [
-      { code: 'en', language: 'en-US', file: 'en-US.json', dir: 'ltr' },
-      { code: 'fr', language: 'fr-FR', file: 'fr-FR.json', dir: 'ltr' }
+      { 
+        code: 'en',
+        language: 'en-US',
+        file: 'en-US.json',
+        dir: 'ltr', 
+        name: 'English'
+      },
+      { 
+        code: 'fr',
+        language: 'fr-FR',
+        file: 'fr-FR.json',
+        dir: 'ltr', 
+        name: 'Français'
+      }
     ]
   },
   nitro: {
