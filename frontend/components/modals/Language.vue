@@ -19,7 +19,7 @@
             </p>
 
             <div class="d-flex gap-1">
-              <v-btn v-for="value in languages" :key="value" :active="shopStore.sessionCache.language.choice === value" variant="outlined" rounded @click="(value: string) => { shopStore.sessionCache.language.choice = value }">
+              <v-btn v-for="value in availableLanguages" :key="value" :active="shopStore.sessionCache.language.choice === value" variant="outlined" rounded @click="handleLanguageSelection(value)">
                 {{ value.toUpperCase() }}
               </v-btn>
             </div>
@@ -40,15 +40,22 @@
 
 <script lang="ts" setup>
 import countries from '~/data/countries.json'
+
 const i18n = useI18n()
 const shopStore = useShop()
 
-const languages = ref<string[]>(i18n.availableLocales)
+const availableLanguages = ref<string[]>(i18n.availableLocales)
 
 function handleSelection() {
   if (shopStore.sessionCache) {
     shopStore.sessionCache.language.selected = true
   }
-  shopStore.showLanguageModal=false
+  shopStore.showLanguageModal = false
+}
+
+function handleLanguageSelection(value: 'fr' | 'en') {
+  if (shopStore.sessionCache) {
+    shopStore.sessionCache.language.choice = value
+  }
 }
 </script>

@@ -82,7 +82,7 @@
       <div class="d-flex justify-content-around gap-4">
         <ClientOnly>
           <a href="#" class="text-muted" @click.prevent="shopStore.showLanguageModal=true">
-            {{ shopStore.sessionCache?.language?.location }} | {{ shopStore.sessionCache?.language?.choice }}
+            {{ languageLocation }} | {{ languageChoice }}
           </a>
         </ClientOnly>
         
@@ -110,11 +110,28 @@
 import { socialLinks, footerLinks, useCompany } from '@/utils'
 
 const shopStore = useShop()
+const { sessionCache } = storeToRefs(shopStore)
 const { companyDetails } = useCompany()
 
 const emit = defineEmits({
   'show-modal'() {
     return true
+  }
+})
+
+const languageLocation = computed(() => {
+  if (sessionCache.value) {
+    return sessionCache.value.language.location
+  } else {
+    return 'France'
+  }
+})
+
+const languageChoice = computed(() => {
+  if (sessionCache.value) {
+    return sessionCache.value.language.choice
+  } else {
+    return 'fr'
   }
 })
 
