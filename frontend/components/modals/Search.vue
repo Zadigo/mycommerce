@@ -3,7 +3,7 @@
     <v-card>
       <v-toolbar>
         <v-spacer />
-        <v-btn icon="mdi-close" @click="shopStore.showSearchModal = false" />
+        <v-btn icon="mdi-close" @click="shopStore.showSearchModal=false" />
       </v-toolbar>
 
       <v-card-text>
@@ -18,6 +18,7 @@
             </div>
             
             <div v-if="canShowSearch" class="row gx-1 gy-1">
+              <!-- TODO: Gtag analytics to track product click from search @has-navigated -->
               <ProductsIterator :products="searchedProducts" />
             </div>
             
@@ -39,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { useRefHistory } from '@vueuse/core'
+// import { useRefHistory } from '@vueuse/core'
 import type { Product, ProductsAPIResponse } from '~/types'
 
 const AsyncRecommendations = defineAsyncComponent({
@@ -54,10 +55,10 @@ function useSearchProducts () {
   const { handleError } = useErrorHandler()
   
   const searchedProducts = ref<Product[]>([])
-  const search = ref<string | null>(null)
-  
-  const { last } = useRefHistory(search)
 
+  const search = ref<string | null>(null)
+  // const { last } = useRefHistory(search)
+  
   const canShowSearch = computed(() => {
     return searchedProducts.value.length > 0
   })
@@ -82,9 +83,11 @@ function useSearchProducts () {
     }
   }
 
-  if (shopStore.sessionCache) {
-    shopStore.sessionCache.searchHistory = last
-  }
+  // TODO: Remove saving of search history because it saves
+  // all what the user has typed aka: i, i am, i am searching for etc.
+  // if (shopStore.sessionCache) {
+  //   shopStore.sessionCache.searchHistory = last
+  // }
 
   return {
     search,

@@ -4,8 +4,7 @@
       <div class="col-sm-12 col-md-10 offset-md-1">
         <div v-if="isLoading" class="row g-1">
           <div v-for="i in 3" :key="i" class="col-sm-12 col-md-4 my-1">
-            <!-- <BaseSkeleton :loading="true" height="400px" /> -->
-            Loading...
+            <BaseSkeleton :loading="true" height="400px" />
           </div>
         </div>
         

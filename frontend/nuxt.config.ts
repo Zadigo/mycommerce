@@ -15,16 +15,20 @@ export default defineNuxtConfig({
   vite: { server: {} },
   runtimeConfig: {
     public: {
-      // https://nuxt.com/modules/nuxt-meta-pixel
-      // metapixel: {
-      //   default: {
-      //     id: '123'
-      //   }
-      // },
+      // Firebase
+      firebaseApiKey: process.env.NUXT_FIREBASE_API_KEY,
+      firebaseAuthDomain: process.env.NUXT_FIREBASE_AUTH_DOMAIN,
+      firebaseDbUrl: process.env.NUXT_FIREBASE_DB_URL,
+      firebaseStorageBucket: process.env.NUXT_FIREBASE_STORAGE_BUCKET,
+      firebaseAppId: process.env.NUXT_FIREBASE_APP_ID,
+      firebaseMeasurementId: process.env.NUXT_FIREBASE_MEASUREMENT_ID,
+      firebaseMessageSenderId: process.env.NUXT_FIREBASE_MESSAGE_SENDER_ID,
+      firebaseProjectId: process.env.NUXT_FIREBASE_PROJECT_ID,
+
       // https://nuxt.com/modules/gtag
       gtag: {
         id: 'G-CVKFG2XPVG',
-        enabled: true,
+        enabled: true, // TODO: Remove. Testing
         // enabled: process.env.NODE_ENV === 'production',
         config: {
           currency: 'EUR',
@@ -39,8 +43,20 @@ export default defineNuxtConfig({
       STRIPE_API_VERSION: '2024-06-20',
       STRIPE_LOCALE: 'fr',
       WHATS_APP_URL: process.env.NUXT_WHATS_APP_URL
-    }
+    },
   },
+  // hooks: {
+  //   'app:resolve': () => {
+  //     const config = useRuntimeConfig()
+  //     const required = ['STRIPE_SECRET_KEY', 'DJANGO_PROD_URL']
+
+  //     required.forEach(key => {
+  //       if (!config[key]) {
+  //         throw new Error(`Missing required environment key: ${key}`)
+  //       }
+  //     })
+  //   }
+  // },
   devtools: {
     enabled: true,
     timeline: {

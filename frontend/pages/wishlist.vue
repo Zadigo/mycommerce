@@ -25,6 +25,7 @@
       </div>
 
       <div v-if="likedProducts.length > 0">
+        <!-- TODO: Analytics to track product click from wishlist @has-navigated -->
         <ProductsIterator :products="products" />
       </div>
     </div>

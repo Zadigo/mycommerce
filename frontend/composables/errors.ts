@@ -74,13 +74,15 @@ export function useErrorHandler () {
 
     function handleGenericError (error: Error) {
         $toast.error('Error', {
-            description: error.message
+            description: error.message,
+            position: 'top-center'
         })
     }
 
     function handleUnknownError (error: unknown) {
         $toast.error('Unexpected Error', {
-            description: 'An unknown error occurred'
+            description: 'An unknown error occurred',
+            position: 'top-center'
         })
 
         // Potentially log the entire error object for debugging

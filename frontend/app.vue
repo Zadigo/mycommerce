@@ -22,6 +22,9 @@ import { baseSessionCacheData } from '~/data';
 import { Toaster } from 'vue-sonner'
 import type { SessionCacheData } from '~/types';
 
+// INFO: Instead of using the session storage to store the
+// user data, we can use firebase and then sync pinia w/ firebase
+
 const sessionCache = useSessionStorage<SessionCacheData>('cache', null, {
   serializer: {
     read (raw) {

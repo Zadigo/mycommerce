@@ -1,6 +1,12 @@
 <template>
-  <div v-for="(product, i) in products" id="product" :key="product.id" :class="gridClass">
-    <ProductCard :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
+  <template v-if="products.length > 0">
+    <div v-for="(product, i) in products" id="product" :key="product.id" :class="gridClass">
+      <ProductCard :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
+    </div>
+  </template>
+
+  <div v-for="i in 8" :key="i" class="col-3">
+    <BaseSkeleton :loading="true" height="300px" />
   </div>
 </template>
 

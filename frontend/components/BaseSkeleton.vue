@@ -1,6 +1,6 @@
 <template>
   <div id="loader">
-    <div v-if="loading" ref="skeletonEl" class="card-skeleton" />
+    <div v-if="loading" ref="skeletonEl" :style="{ '--min-height': height }" class="card-skeleton" />
     <slot v-else />
   </div>
 </template>
@@ -52,7 +52,7 @@ $background_color: rgba(248, 249, 250, 1);
   color: $background_color;
   position: relative;
   overflow: hidden;
-  min-height: 20px;
+  min-height: var(--min-height, 20px);
   width: 100%;
 
   &::after {

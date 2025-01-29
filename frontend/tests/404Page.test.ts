@@ -1,7 +1,7 @@
 import { config, mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 
-import ErrorPage from '~/pages/404.vue'
+import ErrorPage from '~/error.vue'
 
 config.global.mocks = {
     $t: (message: string) => message

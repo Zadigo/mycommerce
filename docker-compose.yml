@@ -9,6 +9,8 @@ services:
   shop:
     build: ./mystore
     container_name: app_shop
+    labels:
+      - com.host.description=label
     networks:
       - ecommerce
 
@@ -31,6 +33,8 @@ services:
   shop_flower:
     build: ./mystore
     container_name: app_shop_flower
+    labels:
+      - com.host.description=label
     networks:
       - ecommerce
     depends_on:
@@ -45,6 +49,8 @@ services:
   pgadmin:
     build: pgadmin:latest
     container_name: app_pgadmin
+    labels:
+      - com.host.description=label
     networks:
       - ecommerce  
   
@@ -57,12 +63,16 @@ services:
   admin:
     build : ./shop_admin
     container_name: app_frontend_admin
+    labels:
+      - com.host.description=label
     networks:
       - ecommerce
 
   frontend_shop:
     build: ./shop_store_ts
     container_name: app_frontend_shop
+    labels:
+      - com.host.description=label
     networks:
       - ecommerce
 
@@ -87,12 +97,23 @@ services:
   uptime:
     image: loislam/uptimekuma:latest
     container_name: app_uptime_kuma
+    labels:
+      - com.host.description=label
     networks:
       - ecommerce
 
   automation:
     image: n8n:latest
     container_name: app_automation
+    labels:
+      - com.host.description=label
     networks:
       - ecommerce
   
+  traefik:
+    image: traefik
+    container_name: app_traefik
+    labels:
+      - com.host.description=label
+    networks:
+      - ecommerce

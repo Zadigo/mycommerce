@@ -40,9 +40,10 @@
 import { useQRCode } from '@vueuse/integrations/useQRCode'
 import type { ProductToEdit } from '~/types';
 
+const config = useRuntimeConfig()
 const cartStore = useCart()
 const { showCartDrawer, showEditProductDrawer } = storeToRefs(cartStore)
-const qrCode = useQRCode(import.meta.env.NUXT_WHATS_APP_URL)
+const qrCode = useQRCode(config.public.WHATS_APP_URL)
 
 const currentEditedProduct = ref<ProductToEdit>()
 const showWhatsAppModal = ref(false)

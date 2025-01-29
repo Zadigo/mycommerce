@@ -4,7 +4,9 @@
       <div class="card shadow-none mb-3">
         <div class="card-body pt-1 pb-1 px-0 d-flex justify-content-between">
           <div class="d-flex justify-content-start gap-1">
-            <BaseSkeleton :loading="true" width="270px" height="37px" border-radius />
+            <BaseSkeleton :loading="true" width="200px" height="37px" border-radius />
+            <BaseSkeleton :loading="true" width="100px" height="37px" border-radius />
+            <BaseSkeleton :loading="true" width="100px" height="37px" border-radius />
           </div>
 
           <div class="d-flex justify-content-start gap-1">

@@ -107,6 +107,9 @@ importers:
       vue-stripe-js:
         specifier: ^1.0.3
         version: 1.0.3
+      vuefire:
+        specifier: ^3.2.1
+        version: 3.2.1(consola@3.2.3)(firebase@11.0.2)(vue@3.5.13(typescript@5.6.3))
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -5883,6 +5886,22 @@ packages:
       typescript: '*'
     peerDependenciesMeta:
       typescript:
+        optional: true
+
+  vuefire@3.2.1:
+    resolution: {integrity: sha512-APj/iFdEec9kO71Lsiv/7opo9xL0D43l7cjwh84rJ5WMzrmpi9z774zzN+PPhBpD6bXyueLcfg0VlOUhI9/jUA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@vue/composition-api': '*'
+      consola: ^3.2.3
+      firebase: ^9.0.0 || ^10.0.0 || ^11.0.0
+      vue: ^2.7.0 || ^3.2.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      consola:
+        optional: true
+      firebase:
         optional: true
 
   vuetify-nuxt-module@0.18.3:
@@ -12811,6 +12830,14 @@ snapshots:
       '@vue/shared': 3.5.13
     optionalDependencies:
       typescript: 5.6.3
+
+  vuefire@3.2.1(consola@3.2.3)(firebase@11.0.2)(vue@3.5.13(typescript@5.6.3)):
+    dependencies:
+      vue: 3.5.13(typescript@5.6.3)
+      vue-demi: 0.14.10(vue@3.5.13(typescript@5.6.3))
+    optionalDependencies:
+      consola: 3.2.3
+      firebase: 11.0.2
 
   vuetify-nuxt-module@0.18.3(magicast@0.3.5)(rollup@4.27.3)(typescript@5.6.3)(vite@5.4.11(@types/node@22.9.1)(sass-embedded@1.81.0)(terser@5.36.0))(vue@3.5.13(typescript@5.6.3)):
     dependencies:
