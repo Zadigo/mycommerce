@@ -12,6 +12,10 @@ export default defineNuxtConfig({
       charset: 'utf-8'
     }
   },
+  site: {
+    url: 'https://example.com',
+    name: 'Ecommerce website'
+  },
   vite: { server: {} },
   runtimeConfig: {
     public: {
@@ -65,12 +69,30 @@ export default defineNuxtConfig({
   },
   ssr: true,
   routeRules: {
-    '/': { ssr: true, robots: true },
-    '/wishlist': { ssr: false, robots: true },
-    '/shop/**': { ssr: true, robots: true },
-    '/cart/**': { ssr: false, robots: false },
-    '/account/**': { ssr: false, robots: false },
-    '/404': { ssr: false, robots: true }
+    '/': {
+      ssr: true, 
+      robots: true
+    },
+    '/wishlist': {
+      ssr: false, 
+      robots: true
+    },
+    '/shop/**': {
+      ssr: true,
+      robots: true
+    },
+    '/cart/**': {
+      ssr: false,
+      robots: false
+    },
+    '/account/**': {
+      ssr: false,
+      robots: false
+    },
+    '/404': {
+      ssr: false,
+      robots: true
+    }
   },
   modules: [
     '@nuxt/eslint',
