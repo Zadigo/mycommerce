@@ -4,10 +4,6 @@
       <ProductCard :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
     </div>
   </template>
-
-  <div v-for="i in 8" :key="i" class="col-3">
-    <BaseSkeleton :loading="true" height="300px" />
-  </div>
 </template>
 
 <script setup lang="ts">

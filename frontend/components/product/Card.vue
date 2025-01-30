@@ -50,7 +50,12 @@
       </div>
     </NuxtLink>
   </article>
-  <BaseSkeleton v-else :loading="true" />
+
+  <article v-else>
+    <BaseSkeleton :loading="true" height="427px" />
+    <BaseSkeleton :loading="true" height="10px" />
+    <BaseSkeleton :loading="true" height="10px" width="50px" />
+  </article>
 </template>
 
 <script setup lang="ts">

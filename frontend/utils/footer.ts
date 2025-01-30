@@ -3,31 +3,36 @@ export const footerLinks = [
         "section": "Aide",
         "links": [
             {
-                "to": "shop_collections",
+                "to": "/",
                 "params": null,
                 "name": "Acheter en ligne"
             },
             {
-                "to": "shop_collections",
+                "to": "/",
                 "name": "Paiement"
             },
             {
-                "to": "shop_collections",
+                "to": "/",
                 "params": null,
                 "name": "Livraison"
             },
             {
-                "to": "shop_collections",
+                "to": "/guide#retour-magasin",
                 "params": null,
                 "name": "Retour"
             },
             {
-                "to": "shop_collections",
+                "to": "/guide",
+                "params": null,
+                "name": "Guide"
+            },
+            {
+                "to": "/",
                 "params": null,
                 "name": "Achat en tant qu'invité"
             },
             {
-                "to": "shop_collections",
+                "to": "/",
                 "params": null,
                 "name": "Me désabonner"
             }

@@ -8,7 +8,7 @@
     </template>
 
     <template v-else>
-      <BaseSkeleton :loading="isLoading" height="10px" width="200px" class="mb-2" />
+      <BaseSkeleton :loading="isLoading" height="20px" width="200px" class="mb-2" />
     </template>
 
     <!-- Price -->
@@ -35,7 +35,7 @@
     </template>
 
     <template v-else>
-      <BaseSkeleton :loading="isLoading" height="10px" width="100px" class="mb-3" />
+      <BaseSkeleton :loading="isLoading" height="20px" width="100px" class="mb-3" />
     </template>
 
     <!-- Variants -->

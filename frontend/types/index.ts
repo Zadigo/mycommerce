@@ -46,3 +46,16 @@ export interface SessionCacheData {
     // user has zoomed the most
     popularImages: PopularImages[]
 }
+
+interface Text {
+    id: string
+    title: string
+    type: 'text' | 'points'
+    content: string | (string | string[])[]
+}
+
+export interface GuideText {
+    id: string
+    title: string
+    text: Text[]
+}

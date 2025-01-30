@@ -33,7 +33,7 @@
             </h6>
 
             <p v-for="link in section.links" :key="link.to" class="mb-1">
-              <NuxtLink :to="$localePath(`/shop/collection/${link.params}`)" class="text-reset">
+              <NuxtLink :to="$localePath(`${link.to}`)" class="text-reset">
                 {{ link.name }}
               </NuxtLink>
             </p>

@@ -1,5 +1,6 @@
 <template>
   <ProductsFeedLayout>
+    <!-- Filters -->
     <template #filtering>
       <ProductsFeedHeader :products="products" :count="totalProductCount" @update:grid-size="handleGridSize" @show-product-filters="showProductFilters=true" />
     </template>

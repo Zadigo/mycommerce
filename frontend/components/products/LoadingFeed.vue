@@ -18,7 +18,7 @@
 
     <template #default>
       <div v-for="i in 40" :key="i" class="col-3">
-        <BaseSkeleton :loading="true" height="334px" />
+        <BaseSkeleton :loading="true" height="427px" />
         <BaseSkeleton :loading="true" class="mt-2" width="50%" height="10px" />
         <BaseSkeleton :loading="true" class="mt-2" width="20%" height="10px" />
       </div>

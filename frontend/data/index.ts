@@ -1,5 +1,7 @@
 import type { SessionCacheData } from "~/types"
 
+export * from './guide'
+
 export const countries: string[] = [
     "France",
     "Guadeloupe",
