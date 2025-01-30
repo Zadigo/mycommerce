@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getDatabase, ref as dbRef } from 'firebase/database'
+import { getDatabase } from 'firebase/database'
 
 export default defineNuxtPlugin((nuxtApp) => {
     const config = useRuntimeConfig()
@@ -16,5 +16,5 @@ export default defineNuxtPlugin((nuxtApp) => {
     const db = getDatabase(app)
 
     nuxtApp.provide('fireApp', app)
-    nuxtApp.provide('fireDb', dbRef(db, 'todos'))
+    nuxtApp.provide('fireDb', db)
 })

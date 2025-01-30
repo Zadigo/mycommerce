@@ -18,8 +18,9 @@
 import 'animate.css';
 
 import { useDocumentVisibility, useLocalStorage, useMediaQuery, useScreenOrientation, useSessionStorage } from '@vueuse/core';
+// import { doc, getFirestore, setDoc } from 'firebase/firestore';
+import { Toaster } from 'vue-sonner';
 import { baseSessionCacheData } from '~/data';
-import { Toaster } from 'vue-sonner'
 import type { SessionCacheData } from '~/types';
 
 // INFO: Instead of using the session storage to store the
@@ -61,6 +62,9 @@ const { value } = useMediaQuery('(min-width: 320px)')
 const { isSupported } = useScreenOrientation()
 const documentVisible = useDocumentVisibility()
 
+// OPTIONAL: Activate Firebase as localstorage for user data
+// const db = getFirestore()
+
 provide('isMobile', value)
 provide('screenOrientation', isSupported)
 provide('documentVisible', documentVisible)
@@ -69,6 +73,14 @@ shopStore.$subscribe(({ storeId }) => {
   if (storeId === 'shop') {
     shopStore.sessionCache = sessionCache.value
     shopStore.likedProducts = likedProducts.value
+
+    // OPTIONAL: Activate Firebase as localstorage for user data
+    // When the data changes in the store,
+    // sync it with the Firestore directly
+    // if (cookieSessionId) {
+    //   const dbDocument = doc(db, 'user', cookieSessionId)
+    //   setDoc(dbDocument, state.sessionCache)
+    // }
   }
 })
 
@@ -104,6 +116,11 @@ async function requestSessionId () {
     if (!cookieSessionId.value) {
       const response = await $client.post<{ token: string }>('/cart/session-id')
       cookieSessionId.value = response.data.token
+
+      // OPTIONAL: Activate Firebase as localstorage for user data
+      // Create an entry in the Firestore
+      // const dbDocument = doc(db, 'user', response.data.token)  
+      // await setDoc(dbDocument, baseSessionCacheData)
     }
   } catch (e) {
     handleError(e)

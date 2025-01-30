@@ -7,8 +7,8 @@
             {{ $t('Connecte-toi ou crée un compte') }}
           </h3>
 
-          <v-btn id="signin-google" variant="outlined" color="dark" size="x-large" class="mt-3 mb-5" rounded @click="signInWithGoogle(handleGoogleAuthCallback)">
-            <font-awesome :icon="[ 'fab', 'google' ]" />
+          <v-btn id="signin-google" variant="outlined" color="dark" size="x-large" class="mt-3 mb-5" rounded @click="handleGoogle">
+            <font-awesome :icon="[ 'fab', 'google' ]" /> Google
           </v-btn>
 
           <p class="fw-light">
@@ -38,13 +38,8 @@
 </template>
 
 <script setup lang="ts">
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth"
 import { useSessionStorage } from '@vueuse/core'
-
-const authenticationStore = useAuthentication()
-const authenticatedCart = useSessionStorage('authenticated_cart', false)
-
-const { signInWithGoogle } = useGoogleAuth()
-const { login, email, password } = useAuthencationComposable()
 
 const emit = defineEmits({
   'show-signup' () {
@@ -54,6 +49,36 @@ const emit = defineEmits({
     return true
   }
 })
+
+const { $fireApp } = useNuxtApp()
+const authenticationStore = useAuthentication()
+const authenticatedCart = useSessionStorage('authenticated_cart', false)
+
+// const { signInWithGoogle } = useGoogleAuth()
+const { login, email, password } = useAuthencationComposable()
+
+const auth = getAuth($fireApp)
+const provider = new GoogleAuthProvider()
+provider.addScope('email')
+
+async function handleGoogle () {
+  try {
+    const result = await signInWithPopup(auth, provider)
+    const user = result.user
+    console.log(user)
+    const credential = GoogleAuthProvider.credentialFromResult(result)
+    if (credential) {
+      const token = credential.accessToken
+      console.log(token)
+
+      useTrackEvent('login', {
+        method: 'Google'
+      })
+    }
+  } catch (e) {
+    console.log(e)
+  }
+}
 
 /**
  * Proxy that handles the main login process
@@ -85,9 +110,9 @@ async function handleLogin () {
   })
 }
 
-function handleGoogleAuthCallback () {
-  useTrackEvent('login', {
-    method: 'Google'
-  })
-}
+// function handleGoogleAuthCallback () {
+//   useTrackEvent('login', {
+//     method: 'Google'
+//   })
+// }
 </script>
