@@ -6,5 +6,8 @@
 [] Implement authenticatin with Firebase on Nuxt
 [] Check caching with Redis + Review the settings options for the whole Django application
 [] Change all the links to point to the localized version of the page
+[x] Implement Firebase to Pinia
 
 # Ionic
+
+[x] Implement Firebase to Pinia
