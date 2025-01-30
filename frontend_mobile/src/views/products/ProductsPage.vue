@@ -50,8 +50,14 @@
           
           <!-- Filters -->
           <ion-col size="6">
-            <p class="fw-light">{{ products?.length }} résultats</p>
+            <BaseSkeleton :loading="isNull(products)" width="50" height="50">
+              <p class="fw-light">
+                {{ products?.length }} résultats
+              </p>
+            </BaseSkeleton>
+
             <span>|</span>
+            
             <ion-button color="dark" fill="outline" size="small" @click="showProductsFilterModal=true">
               <font-awesome-icon icon="sliders" />
             </ion-button>
@@ -86,7 +92,7 @@
 
 <script setup lang="ts">
 import { useShopComposable } from '@/composables/shop';
-import { useDjangoUtilies } from '@/composables/utils';
+import { useDjangoUtilies, useUtilities } from '@/composables/utils';
 import { baseGrids } from '@/data';
 import { client } from '@/plugins/axios';
 import { useShop } from '@/stores/shop';
@@ -96,10 +102,11 @@ import { useLocalStorage, useTitle } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { computed, defineAsyncComponent, ref } from 'vue';
 
+import BaseSkeleton from '@/components/BaseSkeleton.vue';
+import LastAddedProduct from '@/components/modals/LastAddedProduct.vue';
 import CustomFilters from '@/components/modals/products/CustomFilters.vue';
 import SizeChoices from '@/components/modals/SizeChoices.vue';
 import LoadingProducts from '@/components/products/LoadingProducts.vue';
-import LastAddedProduct from '@/components/modals/LastAddedProduct.vue';
 
 const AsyncClassicDisplay = defineAsyncComponent({
   loader: async () => import('@/components/products/ClassicDisplay.vue'),
@@ -116,6 +123,7 @@ const storeShop = useShop()
 const { currentCollectionName } = storeToRefs(storeShop)
 const currentGridSize = useLocalStorage<1 | 2 | 3>('grid', 3)
 const { requestProductsFromCollection } = useShopComposable()
+const { isNull } = useUtilities()
 
 const showProductsFilterModal = ref(false)
 const cachedResponse = ref<ProductsAPIResponse>()

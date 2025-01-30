@@ -1,7 +1,7 @@
 <template>
   <ion-card id="product">
     <!-- TODO: Create a guard for there is not main image -->
-    <ion-img v-if="product" :src="mediaPath(product.get_main_image?.original)" @click="handleGoToProduct(product)"></ion-img>
+    <ion-img :src="mediaPath(product.get_main_image?.original)" @click="handleGoToProduct(product)"></ion-img>
     
     <ion-card-content v-if="showProductInfo">
       <div class="product-info">
@@ -30,7 +30,8 @@ import { useShopComposable } from '@/composables/shop';
 import { useDjangoUtilies } from '@/composables/utils'
 import { Product } from '@/types/shop';
 import { IonButton, IonCard, IonCardContent, IonImg } from '@ionic/vue';
-import { defineEmits, defineProps, PropType } from 'vue';
+import { defineProps, PropType } from 'vue';
+import BaseSkeleton from '../BaseSkeleton.vue';
 
 const emit = defineEmits(['show-product-sizes']);
 const { mediaPath } = useDjangoUtilies()

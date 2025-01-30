@@ -1,2 +1,2 @@
+import './firedb'
 import './fontawesome'
-import './fonts'

@@ -1,6 +1,5 @@
 import App from './App.vue'
 import router from './router';
-import '@/plugins/index'
 
 import { IonicVue } from '@ionic/vue';
 
@@ -39,6 +38,7 @@ import { createApp, toRaw } from 'vue'
 import { createPinia } from 'pinia';
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { createHead } from '@unhead/vue'
+import '@/plugins'
 
 const pinia = createPinia()
 

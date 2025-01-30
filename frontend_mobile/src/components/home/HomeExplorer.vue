@@ -35,6 +35,8 @@
       </ion-col>
     </ion-row>
 
+    <BaseSkeleton v-else :loading="true" height="400px" />
+
     <!-- Recommendations -->
     <Suspense>
       <AysncHomeRecommendations @hightlight-product="handleHighlightProduct" />
@@ -56,6 +58,8 @@ import { register } from 'swiper/element';
 import { defineAsyncComponent, onBeforeMount, ref } from 'vue';
 import { useErrorHandler } from '@/composables/errors'
 import { useDjangoUtilies } from '@/composables/utils';
+
+import BaseSkeleton from '@/components/BaseSkeleton.vue';
 
 register()
 

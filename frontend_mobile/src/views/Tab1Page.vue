@@ -13,7 +13,7 @@
         <AsyncHomeExplorer />
 
         <template #fallback>
-          <ion-skeleton-text :animated="true" />
+          <BaseSkeleton :loading="true" height="600px" />
         </template>
       </Suspense>
     </ion-content>
@@ -22,7 +22,9 @@
 
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue';
-import { IonContent, IonHeader, IonPage, IonSkeletonText, IonTitle, IonToolbar } from '@ionic/vue';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
+
+import BaseSkeleton from '@/components/BaseSkeleton.vue';
 
 const AsyncHomeExplorer = defineAsyncComponent({
   loader: async () => import('@/components/home/HomeExplorer.vue'),
