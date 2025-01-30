@@ -6,17 +6,17 @@
 
 <script setup lang="ts">
 import { useErrorHandler } from '@/composables/errors';
-import { Toast } from '@capacitor/toast';
 import { IonApp, IonRouterOutlet } from '@ionic/vue';
 import { useLocalStorage, useSessionStorage } from '@vueuse/core';
 import { useCookies } from '@vueuse/integrations/useCookies';
+// import { doc, getFirestore, setDoc } from 'firebase/firestore';
 import { onBeforeMount } from 'vue';
 import { baseSessionCacheData } from './data';
+import { useAxiosClient } from './plugins/client';
 import { useAuthentication } from './stores/authentication';
 import { useCart } from './stores/cart';
 import { useShop } from './stores/shop';
 import { SessionCacheData } from './types';
-import { useAxiosClient } from './plugins/client';
 
 const sessionCache = useSessionStorage<SessionCacheData>('cache', null, {
   serializer: {
@@ -50,10 +50,21 @@ const { client } = useAxiosClient()
 
 const cookieSessionId = get('sessionId')
 
+// OPTIONAL: Activate Firebase as localstorage for user data
+// const db = getFirestore()
+
 shopStore.$subscribe(({ storeId }) => {
   if (storeId === 'shop') {
     shopStore.sessionCache = sessionCache.value
     shopStore.likedProducts = likedProducts.value
+
+    // OPTIONAL: Activate Firebase as localstorage for user data
+    // When the data changes in the store,
+    // sync it with the Firestore directly
+    // if (cookieSessionId) {
+    //   const dbDocument = doc(db, 'user', cookieSessionId)
+    //   setDoc(dbDocument, state.sessionCache)
+    // }
   }
 })
 
@@ -63,19 +74,54 @@ cartStore.$subscribe(({ storeId }) => {
   }
 })
 
-
 authStore.$subscribe(({ storeId }, state) => {
   if (storeId === 'authentication') {
-    set('access', state.accessToken)
-    set('refresh', state.refreshToken)
+    // Only sync the data from the store if
+    // there are actual values or this might
+    // raise 401 errors since the store items
+    // in the cookie would be undefined
+    if (state.accessToken) {
+      set('access', state.accessToken)
+    }
+
+    if (state.refreshToken) {
+      set('refresh', state.refreshToken)
+    }
   }
 })
+
+// Firestore
+// const db = getFirestore()
+// const document = doc(db, 'user', 'users')
+// async function getUser() {
+//   const snapshot = await getDoc(document)
+//   if (snapshot.exists()) {
+//     console.info('firebase', snapshot.data())
+//   }
+// }
+
+// Firebase
+// const db = getDatabase()
+// const node = dbRef(db, 'user/123')
+// console.info('firebase', db, node)
+// async function getUser() {
+//   const snapshot = await getFromDb(node)
+//   if (snapshot.exists()) {
+//     console.info('value from the database', snapshot.val())
+//   }
+// }
+// getUser()
 
 async function requestSessionId () {
   try {
     if (!cookieSessionId) {
       const response = await client.post<{ token: string }>('/cart/session-id')
       set('sessionId', response.data.token)
+
+      // OPTIONAL: Activate Firebase as localstorage for user data
+      // Create an entry in the Firestore
+      // const dbDocument = doc(db, 'user', response.data.token)  
+      // await setDoc(dbDocument, baseSessionCacheData)
     }
   } catch (e) {
     handleError(e)

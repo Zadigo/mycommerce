@@ -73,7 +73,7 @@ export default function createClient(path?: string, altDomain?: string, port?: 8
                         baseURL: getBaseUrl('/auth/v1/')
                     })
 
-                    const response = await authClient.post<LoginAPIResponse>('/token/refresh', {
+                    const response = await authClient.post<LoginAPIResponse>('/token/refresh/', {
                         refresh: refresh
                     })
 
