@@ -19,8 +19,14 @@
           <ion-button color="dark" expand="block" @click="handleLogin">
             Se connecter
           </ion-button>
-          
+
           <p>Tu n'as pas de compte ? Inscris-toi</p>
+        </ion-col>
+
+        <ion-col size="12">
+          <ion-button color="dark" expand="block" @click="handleGoogle">
+            Google
+          </ion-button>
         </ion-col>
       </ion-row>
     </ion-content>
@@ -43,9 +49,12 @@ import {
 import { useAuthencationComposable } from '@/composables/authentication';
 import { useAuthentication } from '@/stores/authentication';
 import { useShop } from '@/stores/shop';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 // import { useCookies } from '@vueuse/integrations/useCookies';
 import { close } from 'ionicons/icons';
+import { useFirebase } from '@/plugins/firedb'
 
+const { app } = useFirebase()
 const { login, email, password } = useAuthencationComposable()
 const shopStore = useShop()
 const authStore = useAuthentication()
@@ -58,6 +67,10 @@ const emit = defineEmits({
     return true
   }
 })
+
+const auth = getAuth(app)
+const provider = new GoogleAuthProvider()
+provider.addScope('email')
 
 /**
  * Proxy that handles the main login process
@@ -84,5 +97,21 @@ async function handleLogin () {
 
     emit('authenticate')
   })
+}
+
+async function handleGoogle () {
+  try {
+    const result = await signInWithPopup(auth, provider)
+    const user = result.user
+    console.log(user)
+    const credential = GoogleAuthProvider.credentialFromResult(result)
+    if (credential) {
+      const token = credential.accessToken
+      console.log(token)
+      authStore.showLoginDrawer = false
+    }
+  } catch (e) {
+    console.log(e)
+  }
 }
 </script>

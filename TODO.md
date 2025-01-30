@@ -26,7 +26,7 @@
 - [ ] Implement and test the ability to add/update a product
 - [ ] Implement and test the ability to upload multiple images to a product (in creation mode or on the images page)
 - [ ] Implement the ability to delete and image or images
-- [ ] Implement the ability to linke multiple images to a specific given product
+- [ ] Implement the ability to link multiple images to a specific given product
 
 # Overall
 

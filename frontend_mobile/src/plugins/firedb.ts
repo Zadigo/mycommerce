@@ -15,7 +15,7 @@ const app = initializeApp({
     messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGE_SENDER_ID
 })
 
-export default function useFirebase () {
+export function useFirebase () {
     const db = getDatabase(app)
 
     return {
