@@ -11,12 +11,12 @@
 - [ ] Check caching with Redis
 - [ ] Change all the links to point to the localized version of the page when the user changes language
 - [x] Implement and test Firebase to Pinia
-- [ ] Implement and test FireAuth for Google authentication
+- [x] Implement and test FireAuth for Google authentication
 
 # Ionic
 
 - [x] Implement and test Firebase to Pinia
-- [ ] Implement and test FireAuth for Google authentication
+- [x] Implement and test FireAuth for Google authentication
 - [ ] Finalize the main design parts of the application (we don't really intend to make a full usable app but more of a base template)
 
 
