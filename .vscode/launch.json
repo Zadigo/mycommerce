@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Django: Fashion E-commerce",
+            "name": "Django",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}\\mystore\\manage.py",
@@ -13,6 +13,22 @@
                 "runserver"
             ],
             "django": true
+        },
+        {
+            "name": "Celery",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "celery",
+            "console": "integratedTerminal",
+            "args": [
+                "-A",
+                "mystore.celery_app",
+                "worker",
+                "--loglevel",
+                "DEBUG",
+                "--pool",
+                "solo"
+            ]
         },
         {
             "type": "msedge",
@@ -47,7 +63,7 @@
                 "<node_internals>/**",
                 "**/node_modules/**"
             ],
-            "program": "${workspaceFolder}/frontend_nuxt/node_modules/vitest/vitest.mjs",
+            "program": "${workspaceFolder}/frontend/node_modules/vitest/vitest.mjs",
             "args": [
                 "run",
                 "${relativeFile}"
@@ -57,6 +73,15 @@
             "env": {
                 "DJANGO_DEV_URL": "127.0.0.1:8000"
             }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Django and Celery",
+            "configurations": [
+                "Celery",
+                "Django"
+            ]
         }
     ]
 }

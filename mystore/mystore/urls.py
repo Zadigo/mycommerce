@@ -93,10 +93,19 @@ urlpatterns = [
         'all-accounts/',
         include('allauth.urls')
     ),
-    path('accounts/', include('accounts.urls')),
-    path('admin/', admin.site.urls),
-    path('legal/', include('legal.urls')),
-    re_path(r'^$', views.HomeView.as_view(), name='home')
+    path(
+        'admin/', 
+        admin.site.urls
+    ),
+    path(
+        'legal/', 
+        include('legal.urls')
+    ),
+    re_path(
+        r'^$', 
+        views.HomeView.as_view(), 
+        name='home'
+    )
 ]
 
 

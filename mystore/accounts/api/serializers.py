@@ -1,85 +1,20 @@
+from accounts import tasks
 from accounts.models import Address
 from accounts.validators import check_password_validator
-from django.contrib.auth import get_user_model, login
-from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
+from django.utils.crypto import get_random_string
 from drf_spectacular.utils import inline_serializer
 from rest_framework import fields
-from rest_framework.authtoken.models import Token
-from rest_framework.exceptions import AuthenticationFailed, ValidationError
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
+from django.contrib.auth import password_validation
 
 USER_MODEL = get_user_model()
 
 
-class LoginUserSerializer(Serializer):
-    email = fields.EmailField()
-    password = fields.CharField()
-
-    def __init__(self, **kwargs):
-        self._token_cache = None
-        super().__init__(**kwargs)
-
-    @property
-    def get_serializer_data(self):
-        request = self._context['request']
-        user_serializer = UserSerializer(instance=request.user)
-        return {'token': self._token_cache.key, 'user': user_serializer.data}
-
-    def create(self, validated_data):
-        request = self._context['request']
-        email = validated_data['email']
-        password = validated_data['password']
-
-        user = get_object_or_404(USER_MODEL, email=email)
-        result = user.check_password(password)
-        if not result:
-            raise AuthenticationFailed(**{
-                'detail': 'Could not authenticate user'
-            })
-
-        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-
-        instance, state = Token.objects.get_or_create(
-            defaults={'user': user},
-            user__email=validated_data['email']
-        )
-        self._token_cache = instance
-        return instance.user
-
-
-class SignupUserSerializer(Serializer):
-    username = fields.CharField()
-    email = fields.EmailField()
-    password1 = fields.CharField(validators=[check_password_validator])
-    password2 = fields.CharField(validators=[check_password_validator])
-
-    def validate(self, attrs):
-        if attrs['password1'] != attrs['password2']:
-            raise ValidationError(detail={
-                'password1': 'Password do not match',
-                'password2': 'Password do not match',
-            })
-
-        fake_emails = []
-        if attrs['email'] in fake_emails:
-            raise ValidationError(detail={
-                'email': 'Email does not have a valid domain'
-            })
-
-        return attrs
-
-    def create(self, validated_data):
-        user = USER_MODEL.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=validated_data['password1']
-        )
-        return user
-
-
 class AddressSerializer(Serializer):
-    id = fields.IntegerField()
+    id = fields.IntegerField(read_only=True)
     firstname = fields.CharField()
     lastname = fields.CharField()
     address_line = fields.CharField()
@@ -89,7 +24,20 @@ class AddressSerializer(Serializer):
     telephone = fields.CharField()
     gender = fields.CharField()
     is_active = fields.BooleanField(default=False)
-    created_on = fields.DateTimeField()
+    created_on = fields.DateTimeField(read_only=True)
+
+    def update(self, instance, validated_data):
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        instance.save()
+        return instance
+
+    def create(self, validated_data):
+        request = self._context['request']
+        return Address.objects.create(
+            user_profile=request.user.userprofile,
+            **validated_data
+        )
 
 
 class UserProfileSerializer(Serializer):
@@ -100,12 +48,47 @@ class UserProfileSerializer(Serializer):
 
 class UserSerializer(Serializer):
     id = fields.CharField(read_only=True)
-    userprofile = UserProfileSerializer()
-    first_name = fields.CharField()
-    last_name = fields.CharField()
-    get_full_name = fields.CharField()
-    username = fields.CharField()
-    email = fields.CharField()
+    userprofile = UserProfileSerializer(read_only=True)
+    firstname = fields.CharField(write_only=True)
+    lastname = fields.CharField(write_only=True)
+    email = fields.EmailField(write_only=True)
+    password1 = fields.CharField(write_only=True)
+    password2 = fields.CharField(write_only=True)
+    username = fields.CharField(write_only=True, allow_null=True)
+
+    def validate(self, attrs):
+        username = attrs.get('username')
+        if username is None:
+            attrs['username'] = f'user_{get_random_string(length=12)}'
+
+        password1 = attrs.get('password1')
+        password2 = attrs.get('password2')
+
+        if password1 != password2:
+            raise ValidationError(detail={'password': 'Passwords do not match'})
+        
+        if password1 is None:
+            raise ValidationError(detail={'password': 'Password is not valid'})
+
+        password_validation.validate_password(password1)
+
+        return attrs
+
+    def create(self, validated_data):
+        instance = get_user_model().objects.create_user(**{
+            'username': validated_data['username'],
+            'password': validated_data['password1'],
+            'email': validated_data['email'],
+            'first_name': validated_data['firstname'],
+            'last_name': validated_data['lastname']
+        })
+
+        tasks.signup_workflow.apply_async(
+            args=[instance.email],
+            countdown=30
+        )
+        # tasks.signup_workflow.s(instance.email)
+        return instance
 
 
 class ValidateUpdateAccount(Serializer):
@@ -126,33 +109,6 @@ class ValidateUpdateAccount(Serializer):
                 'password2': 'Password do not match',
             })
         return attrs
-
-
-class ValidateAddressSerializer(Serializer):
-    firstname = fields.CharField()
-    lastname = fields.CharField()
-    address_line = fields.CharField()
-    zip_code = fields.IntegerField()
-    country = fields.CharField()
-    city = fields.CharField()
-    telephone = fields.CharField(allow_null=True)
-    gender = fields.IntegerField()
-    is_active = fields.BooleanField(default=False)
-
-    def update(self, instance, validated_data):
-        for key, value in validated_data.items():
-            setattr(instance, key, value)
-        instance.save()
-        return instance
-
-    def create(self, validated_data):
-        request = self._context['request']
-
-        instance = Address.objects.create(
-            user_profile=request.user.user_profile,
-            **validated_data
-        )
-        return instance
 
 
 LOGIN_RESPONSE_SERIALIZER = inline_serializer(

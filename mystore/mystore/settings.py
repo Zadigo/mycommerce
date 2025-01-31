@@ -1,4 +1,5 @@
 import os
+import stripe
 from datetime import timedelta
 from pathlib import Path
 
@@ -474,3 +475,11 @@ if os.getenv('USES_HTTP_SCHEME', 'http') == 'https':
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
     SECURE_PROXY_SSL_HEADERSSL_REDIRECT = True
+
+
+# Stripe
+
+if DEBUG:
+    stripe.api_key = os.getenv('STRIPE_TEST_SECRET_KEY')
+else:
+    stripe.api_key = os.getenv('STRIPE_PRODUCTION_API_KEY')

@@ -33,7 +33,7 @@ class PaymentDetails:
     payment_intent_id: str = None
     client_secret: str = None
 
-
+# TODO: Remove
 class StripeInterfaceMixin:
     def __init__(self):
         self.completed = False

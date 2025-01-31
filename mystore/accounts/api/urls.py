@@ -1,32 +1,22 @@
-from django.urls import re_path
 from accounts.api import views
+from django.urls import re_path
 
 app_name = 'accounts_api'
 
 urlpatterns = [
     re_path(
-        r'^addresses/(?P<pk>\d+)/update$',
-        views.UpdateAddressesView.as_view(),
-        name='update_address'
+        r'(?P<pk>\d+)/address-lines$',
+        views.AddressLines.as_view(),
+        name='addresses'
     ),
     re_path(
-        r'^profile$',
-        views.ProfileView.as_view(),
-        name='profile'
+        r'^(?P<pk>\d+)$',
+        views.UserInfo.as_view(),
+        name='user'
     ),
     re_path(
-        r'^update$',
-        views.AccountUpdate.as_view(),
-        name='update_account'
-    ),
-    re_path(
-        r'^logout$',
-        views.logout,
-        name='logout'
-    ),
-    re_path(
-        r'^login$',
-        views.Login.as_view(),
-        name='login'
+        r'^signup$',
+        views.Signup.as_view(),
+        name='signup'
     )
 ]
