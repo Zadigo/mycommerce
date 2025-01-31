@@ -65,8 +65,9 @@ class UserSerializer(Serializer):
         password2 = attrs.get('password2')
 
         if password1 != password2:
-            raise ValidationError(detail={'password': 'Passwords do not match'})
-        
+            raise ValidationError(
+                detail={'password': 'Passwords do not match'})
+
         if password1 is None:
             raise ValidationError(detail={'password': 'Password is not valid'})
 
@@ -88,6 +89,43 @@ class UserSerializer(Serializer):
             countdown=30
         )
         # tasks.signup_workflow.s(instance.email)
+        return instance
+
+
+class UpdateUserSerializer(Serializer):
+    id = fields.IntegerField(read_only=True)
+    firstname = fields.CharField(write_only=True)
+    lastname = fields.CharField(write_only=True)
+    telephone = fields.CharField(write_only=True, allow_null=True)
+
+    def update(self, instance, validated_data):
+        skip = ['telephone']
+
+        for key, value in validated_data.items():
+            if key in skip:
+                continue
+
+            if key == 'firstname':
+                setattr(instance, 'first_name', value)
+                continue
+            
+            if key == 'lastname':
+                setattr(instance, 'last_name', value)
+                continue
+
+            setattr(instance, key, value)
+        instance.save()
+
+        for key in skip:
+            setattr(instance.userprofile, key, validated_data[key])
+        
+        instance.userprofile.save()
+
+        tasks.update_profie.apply_async(
+            args=[instance.email],
+            countdown=30
+        )
+
         return instance
 
 

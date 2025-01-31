@@ -6,9 +6,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 
-class UserInfo(generics.GenericAPIView):
+class UserInfo(generics.RetrieveUpdateAPIView):
     queryset = get_user_model().objects.all()
-    serializer_class = serializers.UserSerializer
+    serializer_class = serializers.UpdateUserSerializer
     permission_classes = [IsAuthenticated]
 
     def get(self, request, **kwargs):

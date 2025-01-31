@@ -12,30 +12,32 @@ def login_workflow():
     # 1. Email user for login made or failed
     return {}
 
-# @shared_task
-# def update_profie(email):
-#     try:
-#         user = get_user_model().objects.get(email=email)
-#     except ObjectDoesNotExist:
-#         logger.error('Signup workflow: User matching query does not exist')
-#         return {}
-#     else:
-#         params = {
-#             'name': f'{user.first_name} {user.last_name}',
-#             'phone': f'{user.userprofile.telephone}'
-#         }
+@shared_task
+def update_profie(email):
+    try:
+        user = get_user_model().objects.get(email=email)
+    except ObjectDoesNotExist:
+        logger.error('Signup workflow: User matching query does not exist')
+        return {}
+    else:
+        params = {
+            'id': user.userprofile.stripe_id,
+            'email': user.email,
+            'name': f'{user.first_name} {user.last_name}',
+            'phone': f'{user.userprofile.telephone}'
+        }
 
-#         instance = user.addess_set.filter(is_active=True)
-#         if instance.exits():
-#             address = instance.get()
-#             params['address'] = {
-#                 'line1': address.address_line,
-#                 'zip_code': address.post_code,
-#                 'city': address.city
-#             }
-
-#         result = stripe.Customer.update(**params)
-#         return {}
+        # instance = user.addess_set.filter(is_active=True)
+        # if instance.exits():
+        #     address = instance.get()
+        #     params['address'] = {
+        #         'line1': address.address_line,
+        #         'zip_code': address.post_code,
+        #         'city': address.city
+        #     }
+        result = stripe.Customer.modify(**params)
+        print(vars(result))
+        return {'state': True}
 
 
 @shared_task
