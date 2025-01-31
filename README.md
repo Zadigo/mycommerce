@@ -89,7 +89,7 @@ AWS_S3_REGION_NAME=us-east-1
 
 ### Using Celery 🎶
 
-If you plan on using Celery, start the celery backend withing the Django project by doing `celery -A mystore.celery_app -E`. Ensure both Redis and RabbitMQ are running on your system otherwise you will not be able to execute the provided tasks correctly.
+If you plan on using Celery, start the celery backend withing the Django project by doing `celery -A mystore.celery_app worder -E` (on Windows `celery -A mystore.celery_app worker -E --pool=solo`). Ensure both Redis and RabbitMQ are running on your system otherwise you will not be able to execute the provided tasks correctly.
 
 
 ### Configuring Nuxt 🎶

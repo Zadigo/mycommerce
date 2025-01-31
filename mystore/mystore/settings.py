@@ -398,12 +398,16 @@ CKEDITOR_5_CONFIGS = {
 }
 
 
-# Celery
+# Celery + Redis
 # https://docs.celeryq.dev/en/stable/
+
+# Redis default user requires a default
+# password to establish the connection:
+# https://github.com/redis/redis/issues/13437
 
 REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
 
-if not DEBUG:
+if not  DEBUG:
     # Use Redis as backend for caching instead of
     # the file system caching that we use for debugging
 
@@ -422,9 +426,13 @@ if not DEBUG:
 
     CELERY_RESULT_BACKEND = f'redis://:{REDIS_PASSWORD}@redis:6379'
 else:
+    # When using celery on Windows, see:
+    # https://stackoverflow.com/questions/45744992/celery-raises-valueerror-not-enough-values-to-unpack
+
     CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672'
 
-    CELERY_RESULT_BACKEND = 'rpc://'
+    # CELERY_RESULT_BACKEND = 'rpc://'
+    CELERY_RESULT_BACKEND = f'redis://:{REDIS_PASSWORD}@localhost:6379'
 
 
 CELERY_ACCEPT_CONTENT = ['json']
@@ -451,10 +459,10 @@ else:
     CACHES = {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': f'redis://:{REDIS_PASSWORD}@redis:6379',
+        'KEY_PREFIX': 'ecommerce',
         'OPTIONS': {
             'CLIENT_CLASS': "django_redis.client.DefaultClient"
-        },
-        'KEY_PREFIX': 'ecommerce'
+        }
     }
 
 
