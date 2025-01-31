@@ -8,9 +8,22 @@ CART_SESSION_NAME = 'cart_session_id'
 
 
 class BaseSessionManager:
-    """A manager that allows the creation of session
-    ids in order to identify anonymous users on that
-    are shopping on the website"""
+    """A session ID is a unique identifier created by us in order
+    to track an anonymous user througout his navigation on the website.
+    The session ID is saved on the localStorage of the browser and/or in
+    a FireStore (Firebase) if activated. Once created, we can ultimately
+    track carts that were created by an anonymous user.
+    
+    This ID is also created even though the user is logged in. This can allow
+    us to track him even though he logs out and keeps adding components to
+    his cart.
+
+    The ID is composed of three elements:
+
+    * Signature
+    * Timestamp
+    * Identifier
+    """
 
     default_prefix = 'ca'
     default_signature = 'django'

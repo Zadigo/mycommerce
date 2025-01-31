@@ -14,11 +14,11 @@ USER_MODEL = get_user_model()
 
 class ProductHistory(models.Model):
     """A model that stores a product at the state
-    at which it was bought by a customer.
+    at which it was bought by a given customer.
 
     This is useful for when the product's price 
-    changes. The price in the order would stay 
-    the same as when the customer bought it"""
+    changes. The price in the final order would 
+    then stay the same as the initial price"""
 
     product = models.ForeignKey(
         Product,

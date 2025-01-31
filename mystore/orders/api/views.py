@@ -45,6 +45,10 @@ class ListDeliveryOptions(ListAPIView):
 
 
 class CartMixin:
+    """This mixin provides the subclasses with functions that
+    can provide basic information on the items in a customer's
+    cart .e.g. the items in the cart, the cart's total etc."""
+    
     def get_cart_queryset(self, request, serializer):
         session_id = serializer.validated_data['session_id']
         return Cart.objects.cart_items(session_id)
@@ -58,7 +62,7 @@ class CartMixin:
 
 
 class CreatePaymentIntent(CartMixin, CreateAPIView):
-    """This view is used to indicate that user
+    """This view is used to indicate that the user
     intends to pay for the products that were
     added to his cart. This endpoint is triggered
     on cart/shipment or cart/home"""
@@ -85,6 +89,10 @@ class CreatePaymentIntent(CartMixin, CreateAPIView):
 
 
 class UpdatePaymentIntent(CartMixin, CreateAPIView):
+    """This endpoint is used to update the pieces of
+    information on a given payment intent. This endpoint
+    is triggered on the page cart/shipment in Nuxt"""
+
     serializer_class = serializers.ValidateShipment
     permission_classes = [IsAuthenticated]
 
@@ -115,6 +123,11 @@ class UpdatePaymentIntent(CartMixin, CreateAPIView):
 
 
 class CapturePaymentIntent(CartMixin, CreateAPIView):
+    """This final endpoint from the cart payment process
+    is the one that indicates to Stripe that the payment
+    should be captured with the provided information. This
+    endpoint is triggered on the cart/payment page"""
+
     serializer_class = serializers.ValidateOrder
     permission_classes = [IsAuthenticated]
 
@@ -169,7 +182,9 @@ class CapturePaymentIntent(CartMixin, CreateAPIView):
             customer_order.save()
 
             # 5. Save the products at the price state at
-            # which the customer bought them
+            # which the customer bought them. This allows
+            # us and the customer to keep track of the previous
+            # prices of the given product
             items_to_create = []
             for item in queryset:
                 product_history = ProductHistory(

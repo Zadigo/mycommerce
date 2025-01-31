@@ -483,3 +483,9 @@ if DEBUG:
     stripe.api_key = os.getenv('STRIPE_TEST_SECRET_KEY')
 else:
     stripe.api_key = os.getenv('STRIPE_PRODUCTION_API_KEY')
+
+
+# VAT - In order to use VAT when returning
+# product price, set this value to the applicable
+# VAT for your given country
+VAT_PERCENTAGE = None

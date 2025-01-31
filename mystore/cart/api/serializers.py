@@ -3,7 +3,6 @@ from cart.validators import validate_quantity
 from django.db.models import Count, Sum
 from django.shortcuts import get_object_or_404
 from rest_framework import fields
-from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 from shop.api.serializers import ProductSerializer
 from shop.choices import ClotheSizesChoices
@@ -12,8 +11,9 @@ from shop.models import Product
 
 def cart_statistics(queryset):
     """Helper function that groups each products
-    from the cart and returns the total quantity
-    and the total sum to pay for that product group"""
+    from the cart and aggregates them in ordr to return
+    the total quantity of each products, their total sum or
+    any other useful pieces of information for Nuxt"""
     values = queryset.values('product__id', 'product__name')
     grouped = values.annotate(
         quantity=Count('product__name'),
@@ -29,7 +29,7 @@ def build_cart_response(queryset, session_id):
     dictionnary response for adding an object in
     the user's cart
 
-        {
+    >>> {
             'session_id': '...', 
             'results': [
                 { 
@@ -51,6 +51,10 @@ def build_cart_response(queryset, session_id):
             ],
             'total': '...'
         }
+
+    * "results" are the products that are currently in the user's cart
+    * "statistics" are the aggregation of the quantity and price
+    * "total" is the total of the price of the products in the cart
     """
     serializer = CartSerializer(instance=queryset, many=True)
     response_data = {

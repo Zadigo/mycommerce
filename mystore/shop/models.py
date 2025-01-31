@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import CheckConstraint, Choices, Q, UniqueConstraint
-from django.db.models.signals import post_delete, pre_save, pre_delete
+from django.db.models.signals import post_delete, pre_delete, pre_save
 from django.dispatch import receiver
 from django.forms import ValidationError
 from django.urls import reverse
@@ -182,7 +182,7 @@ class AbstractProduct(models.Model):
         max_digits=5,
         decimal_places=2,
         default=1,
-        help_text=_('Cost value of the product'),
+        help_text=_('Cost value of the current product'),
         validators=[validators.price_validator]
     )
     sale_value = models.PositiveIntegerField(
@@ -279,12 +279,21 @@ class AbstractProduct(models.Model):
         """The `get_price` property is a read-only attribute 
         that determines and returns the appropriate price for 
         a product. It simplifies the logic for price display on 
-        the frontend by checking if the product is on sale and 
-        returning the sale price if applicable, otherwise returning 
-        the regular unit price"""
+        Nuxt by checking if the product is on sale and 
+        returning the sale price if applicable, otherwise the regular 
+        unit price"""
         if self.on_sale and self.sale_price > 0:
             return self.sale_price
         return self.unit_price
+
+    @property
+    def vat_price(self):
+        """Property that returns the product price (using get_price)
+         + VAT from settings.VAT_PERCENTAGE"""
+        if settings.VAT_PERCENTAGE is not None:
+            percentage = 1 + (settings.VAT_PERCENTAGE / 100)
+            return self.get_price * percentage
+        return None
 
     @property
     def usd_unit_price(self):

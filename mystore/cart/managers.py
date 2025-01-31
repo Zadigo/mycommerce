@@ -99,7 +99,7 @@ class CartManager(QuerySet):
         params = {
             'session_id': session_id,
             'product': product,
-            'price': product.get_price,
+            'price': product.get_price, # TODO: Implement the ability to use VAT price if applicable
             'size': size,
             'is_anonymous': not request.user.is_authenticated
         }
@@ -133,10 +133,10 @@ class CartManager(QuerySet):
         """Adds products to the cart, supporting both anonymous and authenticated users.
         The function handles adding products to a user's cart in two scenarios:
 
-        * **Anonymous User**: If the user is not logged in, a `session_id` is created
+        * Anonymous User: If the user is not logged in, a `session_id` is created
         to uniquely identify the user's session and track the cart items
 
-        * **Authenticated User**: Even though the `session_id` is still used, the function
+        * Authenticated User: Even though the `session_id` is still used, the function
         also associates the cart items with the authenticated user, ensuring their cart
         is preserved across sessions
         """

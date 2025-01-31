@@ -31,6 +31,10 @@ class GetProductStockStatus(generics.RetrieveAPIView):
 
 
 class UpdateStockStatus(generics.GenericAPIView):
+    """An endpoint that is used to update the amount of
+    products. This endpoint is triggered by the sucess
+    page in Nuxt or by the payment page"""
+
     queryset = Stock.objects.all()
     serializer_class = serializers.StockSerializer
     permission_classes = [IsAuthenticated]
@@ -48,7 +52,7 @@ class UpdateStockStatus(generics.GenericAPIView):
         statistics = cart_statistics(carts)
 
         # TODO: Prevent overoloading aka when an order has updated the
-        # stock prevent malicious users from a sending multiple requests
+        # stock prevent malicious users from sending multiple requests
         # that could alter the quantity with the same customer order
 
         updated_items = []

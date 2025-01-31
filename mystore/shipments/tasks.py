@@ -2,5 +2,7 @@ from celery import shared_task
 
 
 @shared_task
-def request_shipment(order_id):
-    return NotImplemented
+def shipment_workflow(order_id):
+    """Task that sends different API requests
+    to the external modules used for shipping
+    a particular given product"""
