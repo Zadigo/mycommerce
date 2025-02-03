@@ -1,0 +1,64 @@
+# https://www.spad.uk/posts/practical-configuration-of-traefik-as-a-reverse-proxy-for-docker/
+
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: true
+
+api:
+  dashboard: true
+  insecure: true # Set to false in production
+
+log:
+  level: ERROR
+  filePath: /var/log/traefik.log
+  
+accessLog:
+  filePath: /var/log/traefik_access.log
+
+entryPoints:
+  web:
+    address: :80      
+    # Permanent redirect to port
+    # HTTPS and prevent any HTTP
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true    
+  websecure:
+    address: :443
+  traefik:
+    address: :8080
+
+providers:
+  docker:
+    watch: true
+    exposedByDefault: false
+    network: ecommerce
+
+metrics:
+  prometheus: {}
+
+tracing: {}
+
+##
+# HTTPS
+##
+
+certificatesResolvers:
+  staging:
+    acme:
+      email: your-email@gmail.com
+      storage: /letsencrypt/acme.json
+      caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
+      httpChallenge:
+        entryPoint: web
+
+  production:
+    acme:
+      email: your-email@gmail.com
+      storage: /letsencrypt/acme.json
+      caServer: "https://acme-v02.api.letsencrypt.org/directory"
+      httpChallenge:
+        entryPoint: web

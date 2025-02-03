@@ -1,70 +1,177 @@
 volumes:
-  ShopData: {}
+  ShopData:
+  PostgresData:
+  NginxLogs:
+  RedisData:
+  GrafanaStorage:
 
 networks:
-  bridge:
-    ecommerce
+  ecommerce:
+    driver: bridge
 
 services:
   shop:
     build: ./mystore
     container_name: app_shop
     labels:
-      - com.host.description=label
+      - traefik.enable=true
+      - traefik.http.routers.shop.entrypoints=websecure
+      - traefik.http.routers.shop.rule=Host(`example.com`)
+      - traefik.http.routers.shop.tls=true
+      - traefik.http.routers.shop.tls.certresolver=production
+      - traefik.http.services.shop-service.loadbalancer.server.port=8000
+      - traefik.http.routers.shop.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    env_file:
+      - ./docker/environment/django.env
+      - ./docker/environment/global.env
+      - ./docker/environment/redis.env
+    volumes:
+      - ./mystore:/code
+      - ./mystore/media:/code/media:rw
     networks:
       - ecommerce
 
   shop_celery:
     build: ./mystore
     container_name: app_shop_celery
-    networks:
-      - ecommerce
+    command: celery -A mystore.celery_app worker --loglevel=info --logfile=celery.log
+    env_file:
+      - ./docker/environment/django.env
+      - ./docker/environment/global.env
+      - ./docker/environment/rabbit.env
+      - ./docker/environment/redis.env
+    volumes:
+      - ./mystore:/code
     depends_on:
       - rabbitmq
+      - redis
+    networks:
+      - ecommerce
 
   shop_celery_beat:
     build: ./mystore
     container_name: app_shop_celery_beat
+    command: |
+      celery -A mystore.celery_app beat --loglevel=info --logfile=celery_beat.log &&
+      celery -A mystore.celery_app worker --loglevel=info
+    env_file:
+      - ./docker/environment/django.env
+      - ./docker/environment/global.env
+      - ./docker/environment/rabbit.env
+      - ./docker/environment/redis.env
+    volumes:
+      - ./mystore:/code
     networks:
       - ecommerce
-    depends_on:
-      - shop_celery
 
   shop_flower:
     build: ./mystore
-    container_name: app_shop_flower
+    container_name: flower_myemailing
+    command: celery -A mystore.celery_app flower --loglevel=info --logfile=flower.log
+    restart: always
     labels:
-      - com.host.description=label
+      - traefik.enable=true
+      - traefik.http.routers.flower.entrypoints=websecure
+      - traefik.http.routers.flower.rule=PathPrefix(`/flower`)
+      - traefik.http.routers.flower.tls=true
+      - traefik.http.routers.flower.tls.certresolver=production
+      - traefik.http.services.flower-service.loadbalancer.server.port=80
+      - traefik.http.routers.flower.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    env_file:
+      - ./docker/environment/django.env
+      - ./docker/environment/rabbit.env
+      - ./docker/environment/flower.env
+      - ./docker/environment/redis.env
+    ports:
+      - 5555:80
+    volumes:
+      - ./mystore:/code
     networks:
       - ecommerce
-    depends_on:
-      - shop_celery
 
   db:
-    build: postgres:latest
+    build: ./docker/database
     container_name: app_database
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - PostgresData:/var/lib/postgresql/data/
     networks:
       - ecommerce
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U $$DB_USER -d $$DB_NAME"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
   
   pgadmin:
-    build: pgadmin:latest
+    image: dpage/pgadmin4
     container_name: app_pgadmin
     labels:
-      - com.host.description=label
+      - traefik.enable=true
+      - traefik.http.routers.pgadmin.entrypoints=websecure
+      - traefik.http.routers.pgadmin.rule=Host(`pgadmin.example.fr`)
+      - traefik.http.routers.pgadmin.tls=true
+      - traefik.http.routers.pgadmin.tls.certresolver=production
+      - traefik.http.services.pgadmin-service.loadbalancer.server.port=80
+      - traefik.http.routers.pgadmin.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    ports:
+      - 5050:80
+    env_file: 
+      - ./docker/environment/pgadmin.env
     networks:
       - ecommerce  
   
   api:
     build: ./api_server
-    container_name: app_api
+    container_name: app_api_quart
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.api_quart.entrypoints=websecure
+      - traefik.http.routers.api_quart.rule=Host(`api.example.fr`)
+      - traefik.http.routers.api_quart.tls=true
+      - traefik.http.routers.api_quart.tls.certresolver=production
+      - traefik.http.services.api_quart-service.loadbalancer.server.port=5000
+      - traefik.http.routers.api_quart.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    env_file:
+      - ./docker/environment/backend_api.env
+      - ./docker/environment/rabbit.env
+      - ./docker/environment/redis.env
+    volumes:
+      - ~/var/quart.log:/backend_api/quart.log
     networks:
       - ecommerce
 
   admin:
-    build : ./shop_admin
-    container_name: app_frontend_admin
+    build : ./frontend_admin
+    container_name: app_dashboard
     labels:
-      - com.host.description=label
+      - traefik.enable=true
+      - traefik.http.routers.quasar_dashboard.entrypoints=websecure
+      - traefik.http.routers.quasar_dashboard.rule=Host(`dashboard.example.fr`)
+      - traefik.http.routers.quasar_dashboard.tls=true
+      - traefik.http.routers.quasar_dashboard.tls.certresolver=production
+      - traefik.http.services.quasar_dashboard-service.loadbalancer.server.port=80
+      - traefik.http.routers.quasar_dashboard.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    restart: always
+    env_file:
+      - ./docker/environment/vite.env
+    volumes:
+      - NginxLogs:/var/log:ro
+      - ~/var/admin_nginx_error.log:/var/log/nginx/error.log:rw
+      - ~/var/admin_nginx_access.log:/var/log/nginx/access.log:rw
+      - ./frontend_admin/dist:/var/www/frontend_admin/dist:ro
     networks:
       - ecommerce
 
@@ -78,35 +185,115 @@ services:
 
   redis:
     image: redis:latest
+    build: ./docker/redis
     container_name: app_redis
+    restart: always
+    ports:
+      - 6379:6000
+    volumes:
+      - RedisData:/data
+      - ~/var/redis.log:/data/redis.log:rw
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
     networks:
       - ecommerce
 
   rabbitmq:
-    image: rabbitmq:latest
+    image: rabbitmq:management
     container_name: app_rabbitmq
+    restart: always
+    env_file:
+      - ./docker/environment/rabbit.env
+    ports:
+      - 5672:5672
+      - 15672:15672
     networks:
       - ecommerce
 
   memcache:
-    image: memcache:latest
+    image: memcached
     container_name: app_memcache
+    ports:
+      - 11211:11211
+    restart: always
     networks:
       - ecommerce
 
   uptime:
-    image: loislam/uptimekuma:latest
+    image: louislam/uptime-kuma
     container_name: app_uptime_kuma
     labels:
-      - com.host.description=label
+      - traefik.enable=true
+      - traefik.http.routers.uptimekuma.entrypoints=websecure
+      - traefik.http.routers.uptimekuma.rule=PrefixPath(`/uptime`)
+      - traefik.http.routers.uptimekuma.tls=true
+      - traefik.http.routers.uptimekuma.tls.certresolver=production
+      - traefik.http.services.uptimekuma-service.loadbalancer.server.port=80
+      - traefik.http.routers.uptimekuma.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    restart: always
+    ports:
+      - 3001:3001
+    volumes:
+      - ~/var/uptime-kuma:/app/data
+      - ~/var/letsencrypt:/etc/letsencrypt/:ro
+      - ~/../../var/run/docker.sock:/var/run/docker.sock
     networks:
       - ecommerce
 
   automation:
-    image: n8n:latest
-    container_name: app_automation
+    image: n8nio/n8n
+    container_name: app_n8n
     labels:
-      - com.host.description=label
+      - traefik.enable=true
+      - traefik.http.routers.n8n.entrypoints=websecure
+      - traefik.http.routers.n8n.rule=Host(`n8n.example.fr`)
+      - traefik.http.routers.n8n.tls=true
+      - traefik.http.routers.n8n.tls.certresolver=production
+      - traefik.http.services.n8n-service.loadbalancer.server.port=5678
+      - traefik.http.routers.n8n.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    env_file:
+      - ./docker/environment/automation.env
+      # - ./docker/environment/secure_automation.env
+    networks:
+      - ecommerce
+
+  prometheus:
+    image: prom/prometheus
+    container_name: app_prometheus
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.prometheus.rule=Host(`prometheus.example.fr`)
+      - traefik.http.routers.prometheus.tls=true
+      - traefik.http.routers.prometheus.tls.certresolver=production
+      - traefik.http.services.prometheus-service.loadbalancer.server.port=9090
+      - traefik.http.routers.prometheus.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - ecommerce
+
+  autometrics:
+    image: autometrics/am-proxy:latest
+    container_name: app_autometrics
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.autometrics.entrypoints=websecure
+      - traefik.http.routers.autometrics.rule=Host(`autometrics.example.fr`)
+      - traefik.http.routers.autometrics.tls=true
+      - traefik.http.routers.autometrics.tls.certresolver=production
+      - traefik.http.services.autometrics-service.loadbalancer.server.port=6789
+      - traefik.http.routers.autometrics.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    environment:
+      - PROMETHEUS_URL=https://prometheus.example.fr
     networks:
       - ecommerce
   
@@ -114,6 +301,30 @@ services:
     image: traefik
     container_name: app_traefik
     labels:
-      - com.host.description=label
+      - "--certificatesresolvers.staging.acme.httpchallenge=true"
+      - "--certificatesresolvers.staging.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.staging.acme.storage=/letsencrypt/acme.json"
+      # - "--certificatesresolvers.staging.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.staging.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ~/var/letsencrypt:/letsencrypt
+      - ./docker/traefik:/etc/traefik
+      - ~/var/access.log:/var/log/access.log
+      - ~/var/traefik.log:/var/log/traefik.log
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    networks:
+      - ecommerce
+
+  whoami:
+    image: stefanscherer/whoami
+    # image: traefik/whoami
+    labels:
+      - traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)
+      - traefik.http.services.whoami-service.loadbalancer.server.port=8080
+      - "--certificatesresolvers.staging.acme.storage=/letsencrypt/acme.json"
     networks:
       - ecommerce

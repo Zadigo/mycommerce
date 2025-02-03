@@ -1,0 +1,36 @@
+global:
+  scrape_interval: "1m"
+
+# Exporters:
+# Memcache: docker run -p 9150:9150 quay.io/prometheus/memcached-exporter:latest
+# Django: https://github.com/korfuri/django-prometheus?tab=readme-ov-file
+# NodeJS: https://github.com/slanatech/swagger-stats
+
+scrape_configs:
+  - job_name: myprosite
+    scrape_interval: 240s
+    static_configs:
+      - targets: ["example.fr"]
+    tls_config:
+      insecure_skip_verify: false
+    basic_auth:
+      username: "your-email@gmail.com"
+      password: "your-password"
+
+  - job_name: quart_backend
+    scrape_interval: 240s
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["api.example.fr"]
+    scheme: https
+  
+  - job_name: rabbit_exporter
+    scrape_interval: 30s
+    static_configs:
+      - targets: ["rabbitmq:15692"]
+  
+  # Container: docker pull oliver006/redis_exporter
+  - job_name: redis_exporter
+    scrape_interval: 30s
+    static_configs:
+      - targets: ["redis:6000"]
