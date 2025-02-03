@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: django-config
+data:
+  DEBUG: "0"
+  development_api_url: "http://127.0.0.1:8000/api/v1/"
+  production_api_url: "http://example.com/api/v1/"

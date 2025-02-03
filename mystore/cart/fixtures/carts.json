@@ -1,0 +1,89 @@
+[
+    {
+        "model": "auth.User",
+        "pk": 1,
+        "fields": {
+            "email": "juliette@test-mail.com",
+            "last_name": "Juliette",
+            "first_name": "Lopez",
+            "username": "juliette"
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 1,
+        "fields": {
+            "name": "Blazer Strapped",
+            "color": "Red",
+            "unit_price": 15.2,
+            "active": true,
+            "display_new": false,
+            "slug": "blazer-strapped",
+            "category": "Panties",
+            "sub_category": "Tanga",
+            "sale_value": 36,
+            "on_sale": true,
+            "created_on": "2022-03-18",
+            "modified_on": "2022-03-18"
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 2,
+        "fields": {
+            "name": "Haut balcony",
+            "color": "Red",
+            "unit_price": 25,
+            "active": true,
+            "display_new": false,
+            "slug": "blazer-strapped",
+            "category": "Panties",
+            "sub_category": "Tanga",
+            "sale_value": 0,
+            "on_sale": true,
+            "created_on": "2022-03-18",
+            "modified_on": "2022-03-18"
+        }
+    },
+    {
+        "model": "variants.Size",
+        "pk": 1,
+        "fields": {
+            "name": "XS",
+            "sub_category": "Clothe size",
+            "product": 2,
+            "availability": true,
+            "active": true
+        }
+    },
+    {
+        "model": "cart.Cart",
+        "pk": 1,
+        "fields": {
+            "created_on": "2022-03-18 02:12:05.396826-05:00",
+            "is_anonymous": true,
+            "is_paid_for": false,
+            "is_stale": true,
+            "product": 1,
+            "price": 10,
+            "size": null,
+            "session_id": "other-session-value",
+            "user": null
+        }
+    },
+    {
+        "model": "cart.Cart",
+        "pk": 1,
+        "fields": {
+            "created_on": "2022-03-18 02:12:05.396826-05:00",
+            "is_anonymous": false,
+            "is_paid_for": false,
+            "is_stale": false,
+            "product": 2,
+            "price": 25,
+            "size": null,
+            "session_id": "juliette-session-value",
+            "user": 1
+        }
+    }
+]

@@ -1,0 +1,41 @@
+[
+    {
+        "model": "auth.User",
+        "pk": 1,
+        "fields": {
+            "email": "juliette@test-mail.com",
+            "last_name": "Juliette",
+            "first_name": "Lopez",
+            "username": "juliette"
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 1,
+        "fields": {
+            "name": "Blazer Strapped",
+            "color": "Red",
+            "unit_price": 15.2,
+            "active": true,
+            "display_new": false,
+            "slug": "blazer-strapped",
+            "category": "Panties",
+            "sub_category": "Tanga",
+            "sale_value": 36,
+            "on_sale": true,
+            "created_on": "2024-07-25",
+            "modified_on": "2024-07-25"
+        }
+    },
+    {
+        "model": "cart.Cart",
+        "pk": 1,
+        "fields": {
+            "session_id": "some_session",
+            "user": 1,
+            "product": 1,
+            "price": 15,
+            "created_on": "2024-07-25 14:49:13.356974+00:00"
+        }
+    }
+]

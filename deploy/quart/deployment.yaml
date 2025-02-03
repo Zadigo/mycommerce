@@ -1,0 +1,59 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name:  quart-depl
+  labels:
+    name: quart-app
+spec:
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: quart-pod
+    spec:
+      containers:
+      - image:  python:latest
+        name:  quart-app
+        resources:
+          requests:
+            cpu: "20m"
+            memory: "55M"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 90
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+        env:
+          - name:  SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name:  quart-secret
+                key:  secret_key
+        envFrom:
+          - configMapRef:
+            name: quart-ref
+        ports:
+        - containerPort:  5000
+          name:  quart-port
+        volumeMounts:
+        - mountPath: /mnt/data
+          name: quart-data
+      volumes:
+        - name: quart-data
+          emptyDir: {}
+        - name: quart-pdata
+          persistentVolumeClaim:
+            claimName: quart-pvc
+      restartPolicy: Always
+      imagePullPolicy: Always

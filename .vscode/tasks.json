@@ -5,7 +5,7 @@
             "type": "npm",
             "script": "dev",
             "path": "frontend_store",
-            "detail": "Starts the application with NPM",
+            "detail": "Starts the e-commerce app with NPM",
             "label": "e-commerce: start",
             "isBackground": true,
             "problemMatcher": ["$eslint-stylish", "$vite"]

@@ -1,0 +1,106 @@
+{% extends "base_site.html" %}
+{% load i18n static %}
+
+{% block title %}
+    {% trans "My commerce" %}
+{% endblock %}
+
+{% block style %}
+{{ block.super }}
+<style>
+    .fs-smaller {
+        font-size: 0.8rem;
+    }
+</style>
+{% endblock %}
+
+{% block head_scripts %}
+<script>
+    function addBackground () {
+        document.body.classList.add('bg-light')
+    }
+    window.onpageshow = addBackground
+</script>
+{% endblock %}
+
+{% block container %}
+<div class="row mb-4">
+    <div class="col-auto ms-auto d-flex gap-2">
+        <a href="{% url 'admin:index' %}" target="_blank" rel="noreferrer noopener" class="btn btn-secondary btn-rounded shadow-none">
+            <i class="fas fa-cog me-1"></i>
+            Admin
+        </a>
+
+        <a href="{% url 'accounts:logout' %}" class="btn btn-dark btn-rounded shadow-none">
+            <i class="fas fa-right-to-bracket me-1"></i>
+            {% trans "Se déconnecter" %}
+        </a>
+    </div>
+</div>
+
+<div class="row mb-2">
+    {% include "includes/statistic_card.html" with metric=products.count metric_name="Produits" %}
+    {% include "includes/statistic_card.html" with metric=statistics.average_price metric_name="Prix moyen" currency=True %}
+    {% include "includes/statistic_card.html" with metric=26 metric_name="Commandes" %}
+    {% include "includes/statistic_card.html" with metric=orders.count metric_name="Nb. commandes" %}
+    {% include "includes/statistic_card.html" with metric=orders.average_order metric_name="Panier moyen" currency=True %}
+</div>
+
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3>
+                    {% trans "Produits populaire" %}
+                </h3>
+
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                {% trans "Classement" %}
+                            </th>
+                            <th>
+                                Image
+                            </th>
+                            <th>
+                                {% trans "Nom" %}
+                            </th>
+                            <th>
+                                {% trans "Prix" %}
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in ranked_products %}
+                            <tr>
+                                <td>
+                                    {{ item.popularity_rank }}
+                                </td>
+
+                                <td class="text-center">
+                                    {% if item.get_main_image %}
+                                        <img src="{% get_media_prefix %}{{ item.get_main_image.thumbnail }}" alt="" height="80px">
+                                    {% else %}
+                                        -                                        
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {{ item.name }}
+                                </td>
+                                
+                                <td>
+                                    {{ item.unit_price }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}

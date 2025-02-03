@@ -1,114 +1,145 @@
-# Full Stack Fashion Ecommerce Website
+# Installation 🛒
 
-A fullstack SPA fashion ecommerce website created with Vue and Django.
+The project comes with three four main parts that need to be configured in order to use the template with the best conditions:
 
-## Overview
-This project is an advanced e-commerce platform specializing in fashion clothing. Designed with a robust backend using Django and a dynamic frontend with Vue.js, it aims to provide a seamless shopping experience. The application supports various functionalities such as managing products, user interactions, and order processing.
+* A Django backend
+* A frontend SSR ready template (Nuxt)
+* A mobile template (Ionic)
+* A Quart API backend (async based Flask)
+* And finally, a basic Quasar admin template
 
-## Key Features
+# Configuring your project
 
-### Product Management
-* Product Model: Central to the platform, the Product model encapsulates essential details about each fashion item.
-* Image and Video Models: These models link to the Product model, enabling the inclusion of multimedia content for detailed product presentations.
+Before starting the project, ensure you have a valid [Stripe](https://stripe.com/en-fr), [Klarna](https://www.klarna.com/) and [Firebase](https://firebase.google.com/) accounts. You also might need to have valid secret and client keys on [Google Cloud Console](https://console.cloud.google.com/).
 
-### User Interactions
-* Wishlist and Like Models: These models, derived from the AbstractWishlist class, allow users to save and like their preferred products, enhancing user engagement and personalization.
+The secret keys need to be available either as `.env` files at the root of each project or using global system environment variables.
 
-### Order and Shipment
-* CustomerOrder and ProductHistory Models: The CustomerOrder model tracks customer purchases, while the ProductHistory model preserves the product's state at the time of order, ensuring accurate historical pricing data.
-* Shipment Model: This model manages the shipment details of orders, ensuring timely and accurate delivery tracking.
+Finally, if you plan on using [Celery](https://docs.celeryq.dev/en/stable/) ensure you have both [Redis](https://redis.io/) and [RabbitMQ](https://www.rabbitmq.com/) on your system.
 
-### Discounts and Promotions
-* Discount Model: This model facilitates the creation of various discounts and coupons, providing customers with price reductions on selected products.
+## Configuring Django 🎶
 
-### User Management
-* UserProfile Model: Stores user-specific information such as telephone number and Stripe ID, essential for user authentication and payment processing.
-* Address Model: Allows users to save multiple billing addresses, simplifying the checkout process.
+Once you have downloaded the project, create super user with `python manage.py createsuperuser`, `migrate` to push all database migrations, then start the website with `runserver`.
 
-### Cart and Stock Management
-* Cart Model: Tracks items added to the cart, supporting the checkout process.
-* Stock Model: Monitors the inventory status of products, ensuring stock availability is accurately reflected.
+The Django backend implements all the API's for the core functionnalities of the ecommerce website while Nuxt deals with the frontend heavylifiting. To test the project out of the box, use the [products.csv](initialize/products.csv) file located at the root by using the import on the `Product` page of the Django admin.
 
-### Purpose and Benefits
-This documentation aims to provide a comprehensive guide for developers to understand and extend the application's functionality efficiently. By detailing the various models and their interactions, it ensures that future development and maintenance efforts are streamlined, supporting the application's scalability and robustness.
+This file contains a list of 85 products that can be used to run the website quickly.
 
-## How to test
+Here are the base environment variables used to configure the Django project:
 
-First download the image folder on [Dropbox](https://www.dropbox.com/sh/hqll9tutdy7wji0/AACsJSeDAqyr-Oeic44OXSL9a?dl=0). Create a `project.ini` file with a `images_folder` variable under the default section and copy the path to its location. Open the `init.ipynb` and run all the cells. The final result should be a set of products created in your local database. You can then move to the __Getting tarted__ section.
+```env
+DEBUG=1
 
-## Getting started
+SECRET_KEY=123
 
-Run `python manage.py migrate` then move to `./frontend` and run `npm install`. To sync Vue's staticfiles with the main Django application run `npm build` then `python manage.py collectstatic.`
+STRIPE_PUBLIC_KEY=123
 
-You can finally do `npm run serve` and `python manage.py runserver`. Your website should be running under `http://17.0.0.1:8000`.
+STRIPE_TEST_SECRET_KEY=sk_test_1
 
-### Features
+STRIPE_TEST_PUBLIC_KEY=pk_test_1
 
-This project comes with a full translation for spanish, english and french, with scripts for quick implementation with Google, Facebook and Microsoft Analytics and finally full API endpoints.
+STRIPE_TEST_CUSTOMER_ID=cus_1
 
-## Dependencies
+STRIPE_TEST_CARD=card_1
 
-### Django
+EMAIL_HOST=smtp.gmail.com
 
-* Pandas
-* Matplotlib
-* Django Rest Framework
-* Python 3
-* Django Extensions
-* Django Cors Headers
-* Gunicorn
-* Stripe
-* Django ImageKit
-* Pillow
-* Django Axes
-* Boto3/Django storages
-* Django Debug Toolbar
-* Django Redis
-* Python Dotenv
-* Tablib
-* Django Import Export
-* Psycopg
-* Unidecode
-* Spacy
-* Numpy
-* JWT
-* Django Allauth
-* Django CKEditor 5
-* DRF Spectacular
-* Mardown
+EMAIL_HOST_USER=example@gmail.com
 
-### Vue Project
+EMAIL_HOST_PASSWORD=123
 
-* Vue 3 (Vite)
-* @date-IO/dayjs
-* @mdi-font
-* @vueuse/core
-* @vueuse/integrations
-* Font awesome Icon
-* Autoprefixer
-* Font Web Loader
-* Day JS
-* Axios
-* Bootstrap
-* Lodash
-* Pinia
-* Unhead/Unhead addons/Unhead schema-org
-* Universal Cookie
-* MDB UI Kit
-* Eslint/Eslint config prettier
-* Postcss
-* Vite/Vitest
-* Vue Session Storage
-* Vue Local Storage
-* Vue Image Zoomer
-* Vue Analytics
-* Material Design Icons (@mdi/fonts)
-* Vue Country Flag
-* Vue I18n
-* Vue Router 4
-* Vuetify
-* ESLint Plugin Vue
+DB_NAME=mycommerce
 
-## Testing
+DB_USER=test_user
 
-To test the project, run `python manage.py` and create a Django user account `python manage.py createsuperuser`. Then enter the admin and use import to load the `products.csv` file. This should load test products in your database. Once done, run `npm run dev` in `/frontend_store/` folder to start the frontend.
+DB_PASSWORD=test_user
+
+DB_HOST=localhost
+
+AWS_S3_ACCESS_KEY_ID=ABC 
+
+AWS_S3_SECRET_ACCESS_KEY=ABC
+
+AWS_STORAGE_BUCKET_NAME=ecommerce
+
+AWS_S3_REGION_NAME=us-east-1
+
+```
+
+### Using S3 storage
+
+```
+[
+    {
+        "AllowedHeaders": [
+            "*"
+        ],
+        "AllowedMethods": [
+            "GET",
+            "HEAD"
+        ],
+        "AllowedOrigins": [
+            "http://127.0.0.1:8000",
+            "http://localhost:8000"
+        ],
+        "ExposeHeaders": [],
+        "MaxAgeSeconds": 3000
+    }
+]
+```
+
+### Using Celery 🎶
+
+If you plan on using Celery, start the celery backend withing the Django project by doing `celery -A mystore.celery_app worder -E` (on Windows `celery -A mystore.celery_app worker -E --pool=solo`). Ensure both Redis and RabbitMQ are running on your system otherwise you will not be able to execute the provided tasks correctly.
+
+
+### Configuring Nuxt 🎶
+
+1. Enter the `frontend` directory and run `pnpm run dev`
+2. Ensure you have a Stripe account for working/testing the cart payment process in development mode
+3. You also need an active Google Account in order to create the relevant keys for Google Authentication
+4. Create a `.env` file in the `frontend` folder with all the relevant keys
+5. You also need to create a Google Analytics, Facebook Pixels and Microsoft Clarity account in order to use all the tracking possibilities offered within the template
+
+#### Environment variables 🎶
+
+These are the environment variables that are used to configure your Nuxt application
+
+```env
+NUXT_DJANGO_PROD_URL=example.com
+
+# Stripe
+
+NUXT_STRIPE_PUBLISHABLE_KEY=
+
+NUXT_STRIPE_SECRET_KEY=
+
+NUXT_STRIPE_TEST_PUBLISHABLE_KEY=pk_test_1
+
+NUXT_STRIPE_TEST_SECRET_KEY=sk_test_1
+
+NUXT_STRIPE_ACCOUNT=sk_test_2
+
+NUXT_STRIPE_API_VERSION="2024-06-20"
+
+NUXT_STRIPE_LOCALE="fr"
+
+# Google
+
+GOOGLE_CLIENT_ID=123.apps.googleusercontent.com
+
+GOOGLE_CLIENT_SECRET=GOCSPX-123
+
+FIREBASE_API_KEY=ABCD
+
+# Facebook Pixels
+
+NUXT_PUBLIC_METAPIXEL_DEFAULT_ID=123
+
+NUXT_PUBLIC_METAPIXEL_ADS01_ID=123
+
+NUXT_PUBLIC_METAPIXEL_ADS02_ID=123
+```
+
+### Configuring Ionnic
+
+The same process can be applied like with Nuxt. Use `ionic serve` to start the project locally.

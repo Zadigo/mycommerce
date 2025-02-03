@@ -1,0 +1,91 @@
+/* For information on how to create your own theme, please see:
+http://ionicframework.com/docs/theming/ */
+
+:root {
+    --base-font: "Nunito Sans"
+}
+
+* {
+    font-family: var(--base-font), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* :root {
+    --base-font: "Roboto";
+    --base-shadow: box-shadow: 0 2px 6px -1px rgba(var(--mdb-box-shadow-color-rgb), 0.07), 0 6px 18px -1px rgba(var(--mdb-box-shadow-color-rgb), 0.04) !important;
+    --mdb-body-color: #4f4f4f;
+}
+
+* {
+    font-family: var(--base-font), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: var(--mdb-body-color)
+}
+
+.shadow-3 {
+    box-shadow: var(--base-shadow)
+}
+
+.shadow-4 {
+    box-shadow: 0 2px 15px -3px rgba(var(--mdb-box-shadow-color-rgb), 0.07), 0 10px 20px -2px rgba(var(--mdb-box-shadow-color-rgb), 0.04) !important;
+}
+
+.shadow-5 {
+    box-shadow: 0 2px 25px -5px rgba(var(--mdb-box-shadow-color-rgb), 0.07), 0 25px 21px -5px rgba(var(--mdb-box-shadow-color-rgb), 0.04) !important;
+} */
+
+.fw-light {
+    font-weight: 300;
+}
+
+.fw-bold {
+    font-weight: 700;
+}
+
+.fw-bolder {
+    font-weight: 900;
+}
+
+
+/* Skeletons */
+
+.card-skeleton {
+    --bs-light-rgb: 248, 249, 250;
+
+    background: rgb(var(--bs-light-rgb));
+    color: rgb(var(--bs-light-rgb));
+    position: relative;
+    overflow: hidden;
+    height: 208px;
+    width: 100%;
+}
+
+.card-skeleton::after {
+    content: "";
+    position: absolute;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    width: 50%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    -webkit-animation: loading 1s infinite;
+    animation: loading 1s infinite;
+}
+
+@-webkit-keyframes loading {
+    0% {
+        transform: skewX(-10deg) translateX(-100%);
+    }
+
+    100% {
+        transform: skewX(-10deg) translateX(200%);
+    }
+}
+
+@keyframes loading {
+    0% {
+        transform: skewX(-10deg) translateX(-100%);
+    }
+
+    100% {
+        transform: skewX(-10deg) translateX(200%);
+    }
+}

@@ -1,0 +1,2 @@
+- Error when visiting: http://localhost:3000/shop/30 / product is null / cannot click on add to cart
+- Also: http://localhost:3000/shop/21
