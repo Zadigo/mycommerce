@@ -5,6 +5,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "start": "nuxt start",
     "test": "nuxt test",
     "test:vi": "vitest",
     "eslint": "nuxt eslint",

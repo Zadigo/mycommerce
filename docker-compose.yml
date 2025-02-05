@@ -40,7 +40,7 @@ services:
     env_file:
       - ./docker/environment/django.env
       - ./docker/environment/global.env
-      - ./docker/environment/rabbit.env
+      - ./docker/environment/rabbitmq.env
       - ./docker/environment/redis.env
     volumes:
       - ./mystore:/code
@@ -59,7 +59,7 @@ services:
     env_file:
       - ./docker/environment/django.env
       - ./docker/environment/global.env
-      - ./docker/environment/rabbit.env
+      - ./docker/environment/rabbitmq.env
       - ./docker/environment/redis.env
     volumes:
       - ./mystore:/code
@@ -83,7 +83,7 @@ services:
       - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
     env_file:
       - ./docker/environment/django.env
-      - ./docker/environment/rabbit.env
+      - ./docker/environment/rabbitmq.env
       - ./docker/environment/flower.env
       - ./docker/environment/redis.env
     ports:
@@ -144,7 +144,7 @@ services:
       - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
     env_file:
       - ./docker/environment/backend_api.env
-      - ./docker/environment/rabbit.env
+      - ./docker/environment/rabbitmq.env
       - ./docker/environment/redis.env
     volumes:
       - ~/var/quart.log:/backend_api/quart.log
@@ -176,10 +176,23 @@ services:
       - ecommerce
 
   frontend_shop:
-    build: ./shop_store_ts
+    build: ./frontend
     container_name: app_frontend_shop
+    restart: always
     labels:
-      - com.host.description=label
+      - traefik.enable=true
+      - traefik.http.routers.frontend_shop.entrypoints=websecure
+      - traefik.http.routers.frontend_shop.rule=Host(`ecommerce.fr`)
+      - traefik.http.routers.frontend_shop.tls=false
+      - traefik.http.routers.frontend_shop.tls.certresolver=staging
+      - traefik.http.services.frontend_shop-service.loadbalancer.server.port=80
+      # - traefik.http.routers.frontend_shop.middlewares=https-redirect
+      # - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      # - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    env_file:
+      - ./docker/environment/nuxt.env
+    ports:
+      - 3000:3000
     networks:
       - ecommerce
 
@@ -202,7 +215,7 @@ services:
     container_name: app_rabbitmq
     restart: always
     env_file:
-      - ./docker/environment/rabbit.env
+      - ./docker/environment/rabbitmq.env
     ports:
       - 5672:5672
       - 15672:15672
