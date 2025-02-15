@@ -1,0 +1,43 @@
+{% load i18n static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Modern Email Template</title>
+    </head>
+
+    <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+        <!-- Email Container -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+            <!-- Header Section -->
+            <tr>
+                <td style="padding: 20px; text-align: center; background-color: #007bff; color: #ffffff;">
+                    <h1 style="margin: 0; font-size: 24px;">Welcome to Our Service</h1>
+                </td>
+            </tr>
+
+            <!-- Content Section -->
+            {% block content %}{% endblock %}
+
+            <!-- Call-to-Action Button -->
+            <tr>
+                <td style="padding: 20px; text-align: center;">
+                    <a href="https://example.com/get-started" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: #ffffff; text-decoration: none; border-radius: 4px; font-size: 16px;">Get Started</a>
+                </td>
+            </tr>
+
+            <!-- Footer Section -->
+            <tr>
+                <td style="padding: 20px; text-align: center; background-color: #f9f9f9; font-size: 12px; color: #777777;">
+                    <p style="margin: 0;">&copy; 2023 Your Company. All rights reserved.</p>
+                    <p style="margin: 0;">
+                        <a href="#" style="color: #007bff; text-decoration: none;">Unsubscribe</a> |
+                        <a href="#" style="color: #007bff; text-decoration: none;">Privacy Policy</a>
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

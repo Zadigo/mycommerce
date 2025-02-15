@@ -1,0 +1,12 @@
+[
+    {
+        "model": "auth.User",
+        "pk": 1,
+        "fields": {
+            "last_name": "Juliette",
+            "first_name": "Lopez",
+            "username": "juliette",
+            "email": "alt.d1-9onknxx5@yopmail.com"
+        }
+    }
+]
