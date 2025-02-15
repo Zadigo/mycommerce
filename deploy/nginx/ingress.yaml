@@ -1,0 +1,60 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: main-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/use-regex: "true"  # Enable regex for path matching
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"  # Use cert-manager for TLS
+spec:
+  tls:
+  - hosts:
+    - example.com
+    - admin.example.com
+    - api.example.com
+    secretName: example-tls-secret  # Secret to store the TLS certificate
+  rules:
+  # Main shop (Nuxt app) - example.com/
+  - host: example.com
+    http:
+      paths:
+      # Nuxt
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: shop-service  # Replace with your shop service name
+            port:
+              number: 80
+      # Django
+      - path: /api/v1
+        pathType: Prefix
+        backend:
+          service:
+            name: django-service  # Replace with your Django service name
+            port:
+              number: 80
+
+  # Admin (Quasar app) - admin.example.com
+  - host: admin.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: quart-admin-service  # Replace with your Quart admin service name
+            port:
+              number: 80
+
+  # API (Quart backend) - api.example.com
+  - host: api.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: quart-api-service  # Replace with your Quart API service name
+            port:
+              number: 80
