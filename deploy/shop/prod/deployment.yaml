@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-prod
+spec:
+  selector:
+    matchLabels:
+      app: nuxt
+      environment: prod
+  template:
+    metadata:
+      labels:
+        app: nuxt
+        environment: prod
+    spec:
+      containers:
+      - name: nuxt
+        image: node:latest
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - configMapRef:
+          name: nuxt-config
+        env:
+          # - name: NUXT_STRIPE_PUBLISHABLE_KEY
+          #   valueFrom:
+          #     secretKeyRef:
+          #       key: nuxt-secret
+          #       name: stripe_publishable_key
+          # - name: NUXT_STRIPE_SECRET_KEY
+          #   valueFrom:
+          #     secretKeyRef:
+          #       key: nuxt-secret
+          #       name: stripe_secret_key
+          - name: NUXT_STRIPE_API_VERSION
+            value: "2024-06-20"
+          - name: NUXT_STRIPE_LOCALE
+            value: fr
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5173
+          name: vite-port
