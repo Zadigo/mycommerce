@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-dev-svc
+  annotations:
+    decription: 'Service for Django development application'
+spec:
+  selector:
+    app: django
+    environment: dev
+  ports:
+  - port: 8000
+    targetPort: 8000

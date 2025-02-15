@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-prod-svc
+  annotations:
+    decription: 'Service for Django production application'
+spec:
+  selector:
+    app: django
+    environment: prod
+  ports:
+  - port: 8000
+    targetPort: 8000

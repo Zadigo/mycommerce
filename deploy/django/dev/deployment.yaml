@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-dev
+spec:
+  selector:
+    matchLabels:
+      app: django
+      environment: dev
+  template:
+    metadata:
+      labels:
+        app: django
+        environment: dev
+    spec:
+      containers:
+      - name: django
+        image: python:latest
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+          name: django-config
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8000
+          name: django-port

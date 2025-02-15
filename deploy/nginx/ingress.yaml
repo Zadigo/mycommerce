@@ -12,10 +12,32 @@ spec:
     - example.com
     - admin.example.com
     - api.example.com
+    - test.example.com
     secretName: example-tls-secret  # Secret to store the TLS certificate
   rules:
   # Main shop (Nuxt app) - example.com/
   - host: example.com
+    http:
+      paths:
+      # Nuxt
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: shop-service  # Replace with your shop service name
+            port:
+              number: 80
+      # Django
+      - path: /api/v1
+        pathType: Prefix
+        backend:
+          service:
+            name: django-service  # Replace with your Django service name
+            port:
+              number: 80
+
+  # Dev/Test
+  - host: test.example.com
     http:
       paths:
       # Nuxt
