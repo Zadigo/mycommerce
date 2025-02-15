@@ -200,7 +200,7 @@ class CapturePaymentIntent(CartMixin, CreateAPIView):
 
             # 6. Create a new shipment object that will be
             # completed once we get a tracking number for
-            # the user by the shipping provivider
+            # the user by the shipping provider
             shipment = customer_order.shipment_set.create(
                 customer_order=customer_order,
                 transporter=serializer.validated_data['delivery_option']
