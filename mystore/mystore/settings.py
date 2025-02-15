@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'shipments',
     'reviews',
     'stocks',
+    'django_ecommerce_mails',
 
     'adminapi'
 ]
@@ -324,6 +325,8 @@ EMAIL_USE_TLS = True
 
 EMAIL_PORT = 587
 
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+
 
 # Sites
 
@@ -409,7 +412,7 @@ CKEDITOR_5_CONFIGS = {
 
 REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
 
-if not  DEBUG:
+if not DEBUG:
     # Use Redis as backend for caching instead of
     # the file system caching that we use for debugging
 
