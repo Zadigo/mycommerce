@@ -24,7 +24,7 @@ from rest_framework.views import APIView
 from shop.models import Image, Product
 
 from mystore.choices import CategoryChoices, SubCategoryChoices
-from mystore.utils import remove_accents
+from mystore.django_utils import remove_accents
 
 
 class ListProducts(generics.ListAPIView):
