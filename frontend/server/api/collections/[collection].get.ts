@@ -1,18 +1,15 @@
-// import { useNuxtApp } from "nuxt/app"
 import { useAxiosClient } from '../../../composables/utils'
 import type { ProductsAPIResponse } from '../../../types'
 
-// defineCachedEventHandler
 export default defineEventHandler(async (event) => {
-    const { createClient } = useAxiosClient()
-    const client = createClient()
-    const { collection } = event.context.params
-
-    const testCollection = collection || 'all'
-
     try {
-        if (testCollection) {
-            const response = await client.get<ProductsAPIResponse>(`/collection/${testCollection}`)
+        const { collection } = event.context.params
+        const name = collection || 'all'
+        const { createClient } = useAxiosClient()
+        const client = createClient()
+
+        if (name) {
+            const response = await client.get<ProductsAPIResponse>(`/collection/${name}`)
             return response.data
         } else {
             throw createError({
@@ -26,8 +23,3 @@ export default defineEventHandler(async (event) => {
         }
     }
 })
-
-// {
-//     maxAge: 2 * 60,
-//     swr: true
-// }

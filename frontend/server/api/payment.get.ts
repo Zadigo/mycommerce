@@ -2,10 +2,11 @@ import { defineEventHandler } from 'h3'
 import { useServerStripe } from '#stripe/server'
 
 export default defineEventHandler(async (e) => {
-    let paymentIntent
-    const stripe = await useServerStripe(e)
-
+    
     try {
+        let paymentIntent
+        const stripe = await useServerStripe(e)
+        
         paymentIntent = await stripe.paymentIntents.create({
             currency: 'eur',
             amount: 10,
