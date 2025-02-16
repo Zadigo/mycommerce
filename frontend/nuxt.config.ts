@@ -3,6 +3,7 @@ import path from 'path'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
+  devtools: { enabled: true },
   app: {
     pageTransition: { 
       name: 'page', 
@@ -16,7 +17,6 @@ export default defineNuxtConfig({
     url: 'https://example.com',
     name: 'Ecommerce website'
   },
-  vite: { server: {} },
   runtimeConfig: {
     public: {
       // Firebase
@@ -49,24 +49,6 @@ export default defineNuxtConfig({
       WHATS_APP_URL: process.env.NUXT_WHATS_APP_URL
     },
   },
-  // hooks: {
-  //   'app:resolve': () => {
-  //     const config = useRuntimeConfig()
-  //     const required = ['STRIPE_SECRET_KEY', 'DJANGO_PROD_URL']
-
-  //     required.forEach(key => {
-  //       if (!config[key]) {
-  //         throw new Error(`Missing required environment key: ${key}`)
-  //       }
-  //     })
-  //   }
-  // },
-  devtools: {
-    enabled: true,
-    timeline: {
-      enabled: true
-    }
-  },
   ssr: true,
   routeRules: {
     '/': {
@@ -97,7 +79,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@pinia/nuxt',
-    '@artmizu/nuxt-prometheus',
+    // '@artmizu/nuxt-prometheus',
     '@vesp/nuxt-fontawesome',
     '@nuxtjs/google-fonts',
     '@nuxt/test-utils/module',
@@ -116,7 +98,6 @@ export default defineNuxtConfig({
     '@': path.resolve(__dirname, './'),
     '@types': './types'
   },
-  eslint: {},
   googleFonts: {
     families: {
       Ubuntu: {
@@ -133,10 +114,6 @@ export default defineNuxtConfig({
       }
     }
   },
-  // gtag: {
-  //   enabled: process.env.NODE_ENV === 'production',
-  //   id: 'G-XX'
-  // },
   css: [
     '@/assets/style.scss',
     '~/node_modules/bootstrap/dist/css/bootstrap.min.css',
@@ -239,11 +216,6 @@ export default defineNuxtConfig({
     langDir: './locales',
     defaultLocale: 'fr',
     vueI18n: './i18n.config.ts',
-    // detectBrowserLanguage: {
-    //   useCookie: true,
-    //   cookieKey: 'i18n_redirected',
-    //   redirectOn: 'root'
-    // },
     locales: [
       { 
         code: 'en',
