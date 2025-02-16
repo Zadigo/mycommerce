@@ -178,6 +178,7 @@ services:
   frontend_shop:
     build: ./frontend
     container_name: app_frontend_shop
+    command: pnpm run start --host 0.0.0.0
     restart: always
     labels:
       - traefik.enable=true
@@ -191,6 +192,10 @@ services:
       # - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
     env_file:
       - ./docker/environment/nuxt.env
+    environment:
+      - NODE_ENV=production
+      - NITRO_HOST=0.0.0.0
+      - NITRO_PORT=3000
     ports:
       - 3000:3000
     networks:

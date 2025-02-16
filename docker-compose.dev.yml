@@ -1,0 +1,61 @@
+volumes:
+  ShopData:
+  PostgresData:
+  NginxLogs:
+  RedisData:
+  GrafanaStorage:
+
+networks:
+  ecommerce:
+    driver: bridge
+
+services:
+  shop_dev:
+    build: ./mystore
+    container_name: app_shop_dev
+    command: python manage.py runserver 0.0.0.0:8002
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.shop.entrypoints=websecure
+      - traefik.http.routers.shop.rule=Host(`test.ecommerce.fr`)
+      - traefik.http.routers.shop.tls=true
+      - traefik.http.routers.shop.tls.certresolver=production
+      - traefik.http.services.shop-service.loadbalancer.server.port=8002
+      - traefik.http.routers.shop.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    env_file:
+      - ./docker/environment/django.env
+      - ./docker/environment/global.env
+      - ./docker/environment/redis.env
+    volumes:
+      - ./mystore:/code
+      - ./mystore/media:/code/media:rw
+    networks:
+      - ecommerce
+
+  frontend_shop_dev:
+    build: ./frontend
+    container_name: app_frontend_shop_dev
+    command: pnpm run preview --host 0.0.0.0
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.frontend_shop.entrypoints=websecure
+      - traefik.http.routers.frontend_shop.rule=Host(`test.ecommerce.fr`)
+      - traefik.http.routers.frontend_shop.tls=false
+      - traefik.http.routers.frontend_shop.tls.certresolver=staging
+      - traefik.http.services.frontend_shop-service.loadbalancer.server.port=80
+      # - traefik.http.routers.frontend_shop.middlewares=https-redirect
+      # - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      # - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    env_file:
+      - ./docker/environment/nuxt.env
+    environment:
+      - NODE_ENV=production
+      - NITRO_HOST=0.0.0.0
+      - NITRO_PORT=3000
+    ports:
+      - 3000:3000
+    networks:
+      - ecommerce
