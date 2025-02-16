@@ -1,5 +1,7 @@
 <template>
-  <ProductsFeedLayout>
+  <ProductsLoadingFeed v-if="status === 'pending'" />
+
+  <ProductsFeedLayout v-else>
     <!-- Filters -->
     <template #filtering>
       <ProductsFeedHeader :products="products" :count="totalProductCount" @update:grid-size="handleGridSize" @show-product-filters="showProductFilters=true" />
@@ -75,15 +77,20 @@ const intersectionTarget = ref<HTMLElement | null>(null)
 
 const showProductFilters = ref(false)
 
-
 // TODO: Add a provide so that all the components have access
 // to the products from this parent component
 
-// NOTE: Uses the Nuxt server backend. Maybe shift to frontend
-// based request using Axios - or; since the page is pre-built
-// on the server side for SEO, keep this function
-const { status } = await useFetch<ProductsAPIResponse>(`/api/collections/${route.params.id}`, {
+const { status, error } = await useLazyFetch<ProductsAPIResponse>(`/api/collections/${route.params.id}`, {
   method: 'GET',
+  onResponse() {
+    emit('products-loaded', products.value)
+  },
+  onResponseError({ error }) {
+    gtag('event', 'exception', {
+      fatal: true, 
+      description: error?.message
+    })
+  },
   transform: (data) => {
     cachedResponse.value = data
     products.value = data.results
@@ -103,8 +110,11 @@ const { status } = await useFetch<ProductsAPIResponse>(`/api/collections/${route
   }
 })
 
-if (status.value === 'success') {
-  emit('products-loaded', products.value)
+if (error.value) {
+  throw createError({
+    statusCode: 500,
+    statusText: error.value.message
+  })
 }
 
 const nextPageUrl = computed(() => {

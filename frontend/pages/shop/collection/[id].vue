@@ -14,15 +14,7 @@
 
       <!-- Feed -->
       <div class="col-12">
-        <Suspense>
-          <template #default>
-            <AsyncFeed @products-loaded="handleLoadedProducts" />
-          </template>
-
-          <template #fallback>
-            <ProductsLoadingFeed />
-          </template>
-        </Suspense>
+        <ProductsFeed @products-loaded="handleLoadedProducts" />
       </div>
     </div>
   </section>
@@ -47,11 +39,6 @@ useHead({
       content: ''
     }
   ]
-})
-
-const AsyncFeed = defineAsyncComponent({
-  loader: async () => import('~/components/products/Feed.vue'),
-  timeout: 10000
 })
 
 /**
