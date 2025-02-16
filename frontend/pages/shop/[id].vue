@@ -97,7 +97,9 @@ function useProductSotck (product: Ref<Product | null>) {
   }
 }
 
-// Composable for tracking visited products
+/**
+ * Composable for tracking visited products
+ */
 function useVisitedProducts (product: Ref<Product | null>) {
   const visitedProducts = useLocalStorage<number[]>('visited', null, {
     serializer: {
