@@ -1,8 +1,7 @@
 import stripe
-from accounts.models import Address, UserProfile
 from django.contrib import admin, messages
 
-from mystore.utils import initialize_stripe
+from accounts.models import Address, UserProfile
 
 
 @admin.register(UserProfile)
@@ -17,7 +16,6 @@ class UserProfileAdmin(admin.ModelAdmin):
             messages.error(request, 'Select max 1 product')
             return False
 
-        initialize_stripe()
         userprofile = queryset.get()
 
         try:
@@ -32,7 +30,6 @@ class UserProfileAdmin(admin.ModelAdmin):
             messages.error(request, 'Select max 1 product')
             return False
 
-        initialize_stripe()
         userprofile = queryset.get()
 
         try:
