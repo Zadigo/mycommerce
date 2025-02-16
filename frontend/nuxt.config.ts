@@ -120,25 +120,25 @@ export default defineNuxtConfig({
     '~/node_modules/mdb-ui-kit/css/mdb.min.css',
     '~/node_modules/animate.css/animate.min.css',
   ],
-  vuetify: {
-    moduleOptions: {
-      styles: true
-    },
-    vuetifyOptions: {
-      ssr: {
-        clientWidth: 1280,
-        clientHeight: 70
-      },
-      defaults: {
-        global: {
-          ripple: true,
-        },
-      },
-      theme: {
-        defaultTheme: 'light'
-      }
-    }
-  },
+  // vuetify: {
+  //   moduleOptions: {
+  //     styles: true
+  //   },
+  //   vuetifyOptions: {
+  //     ssr: {
+  //       clientWidth: 1280,
+  //       clientHeight: 70
+  //     },
+  //     defaults: {
+  //       global: {
+  //         ripple: true,
+  //       },
+  //     },
+  //     theme: {
+  //       defaultTheme: 'light'
+  //     }
+  //   }
+  // },
   fontawesome: {
     icons: {
       solid: [
