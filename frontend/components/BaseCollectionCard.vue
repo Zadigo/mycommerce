@@ -3,7 +3,7 @@
     <NuxtLink :to="`/shop/collection/${collection.get_view_name}`">
       <div :aria-label="collection.name" class="card shadow-none">
         <div class="wrapper rounded-2">
-          <NuxtImg :alt="collection.name" :src="image" class="card-img" />
+          <NuxtImg :alt="collection.name" :src="image" format="webp" class="card-img" />
         </div>
         
         <h1 class="text-white text-left h3 fw-bold text-uppercase px-2 py-4">
