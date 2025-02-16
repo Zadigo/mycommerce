@@ -1,7 +1,7 @@
 <template>
   <article v-if="product" :data-id="product.id" :aria-label="product.name" class="card shadow-none rounded-0" @mouseenter="isHovered=true" @mouseleave="isHovered=false">
     <NuxtLink :to="`/shop/${product.id}`" @click="emit('has-navigated', [index, product])">
-      <NuxtImg :src="mediaPath(product.get_main_image?.original, '/placeholder.svg')" class="card-img rounded-0" />
+      <NuxtImg :src="mediaPath(product.get_main_image?.original, '/placeholder.svg')" format="webp" class="card-img rounded-0" />
     </NuxtLink>
 
     <!-- Cart -->
