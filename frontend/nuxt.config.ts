@@ -79,6 +79,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@pinia/nuxt',
+    '@nuxt/devtools',
     // '@artmizu/nuxt-prometheus',
     '@vesp/nuxt-fontawesome',
     '@nuxtjs/google-fonts',
@@ -235,13 +236,13 @@ export default defineNuxtConfig({
   },
   nitro: {
     storage: {
-      // redis: {
-      //   driver: 'redis',
-      //   port: 6379,
-      //   host: 'driver',
-      //   username: '',
-      //   password: ''
-      // }
+      redis: {
+        driver: 'redis',
+        host: '127.0.0.1',
+        port: 6379,
+        username: null,
+        password: 'django-local-testing'
+      }
     }
   }
 })
