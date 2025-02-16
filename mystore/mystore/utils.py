@@ -1,7 +1,6 @@
 import os
 
 import stripe
-import unidecode
 from django.conf import settings
 from rest_framework.pagination import LimitOffsetPagination
 
@@ -58,11 +57,6 @@ class PaginationHelper:
             'results': self.paginated_data
         }
         return data | kwargs
-
-
-def remove_accents(text):
-    text = str(text)
-    return unidecode.unidecode(text)
 
 
 # TODO: Remove
