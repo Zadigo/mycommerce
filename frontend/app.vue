@@ -1,17 +1,17 @@
 <template>
   <!-- Main -->
-  <NuxtLayout>
-    <!-- Loader -->
-    <NuxtLoadingIndicator />
-    <Toaster />
+  <VApp>
+    <NuxtLayout>
+      <!-- Loader -->
+      <NuxtLoadingIndicator />
+      <Toaster />
     
-    <VApp>
       <NuxtPage />
  
       <!-- Modals -->
       <ModalsLanguage />
-    </VApp>
-  </NuxtLayout>
+    </NuxtLayout>
+  </VApp>
 </template>
 
 <script lang="ts" setup>
