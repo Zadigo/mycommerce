@@ -1,61 +1,46 @@
-# # Use the official Node.js image as the base image
-# FROM node:18-alpine
+# https://mokkapps.de/blog/dockerizing-a-nuxt-app
 
-# RUN npm install -g pnpm
+ARG NODE_VERSION=22.14.0
 
-# # Set the working directory inside the container
-# WORKDIR /app
+# Create build stage
+FROM node:${NODE_VERSION}-slim AS build
 
-# # Copy package.json and package-lock.json to the working directory
-# COPY package*.json ./
-
-# # Install dependencies
-# RUN pnpm install
-
-# # Copy the rest of the application code
-# COPY . .
-
-# # Build the Nuxt.js application
-# RUN pnpm run build
-
-# # Expose the port Nuxt.js runs on (default is 3000)
-# EXPOSE 3000
-
-# # Start the Nuxt.js application
-# CMD [ "pnpm", "start" ]
-
-# Stage 1: Build the application
-FROM node:18-alpine AS builder
-
-# Install pnpm globally
-RUN npm install -g pnpm
+# Enable pnpm
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json and pnpm-lock.yaml to the working directory
-COPY package.json pnpm-lock.yaml* ./
+# Copy package.json and pnpm-lock.yaml files to the working directory
+COPY ./package.json /app/
+COPY ./pnpm-lock.yaml /app/
 
-# Install dependencies using pnpm
-RUN pnpm install
+## Install dependencies
+RUN pnpm install --shamefully-hoist
 
-# Copy the rest of the application code
-COPY . .
+# Copy the rest of the application files to the working directory
+COPY . ./
 
-# Build the Nuxt.js application for production
+# Build the application
 RUN pnpm run build
 
-# Stage 2: Serve the application
-FROM node:18-alpine
+# Create a new stage for the production image
+FROM node:${NODE_VERSION}-slim
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the production build from the builder stage
-COPY --from=builder /app/.output ./.output
+# Copy the output from the build stage to the working directory
+COPY --from=build /app/.output ./
 
-# Expose the port Nuxt.js runs on (default is 3000)
+# Define environment variables
+ENV HOST=0.0.0.0 NODE_ENV=production
+ENV NODE_ENV=production
+
+# Expose the port the application will run on
 EXPOSE 3000
 
-# Start the Nuxt.js application using node
-CMD [ "node", ".output/server/index.mjs" ]
+# Start the application
+CMD [ "node", "/app/server/index.mjs" ]

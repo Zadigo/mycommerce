@@ -144,8 +144,23 @@ export default defineNuxtConfig({
     '~/node_modules/animate.css/animate.min.css',
   ],
   vuetify: {
-    moduleOptions: {},
-    vuetifyOptions: {}
+    moduleOptions: {
+      styles: true
+    },
+    vuetifyOptions: {
+      ssr: {
+        clientWidth: 1280,
+        clientHeight: 70
+      },
+      defaults: {
+        global: {
+          ripple: true,
+        },
+      },
+      theme: {
+        defaultTheme: 'light'
+      }
+    }
   },
   fontawesome: {
     icons: {
