@@ -12,6 +12,9 @@
 - [ ] Change all the links to point to the localized version of the page when the user changes language
 - [x] Implement and test Firebase to Pinia
 - [x] Implement and test FireAuth for Google authentication
+- [ ] Use Iconify the global icon library for the app / uninstall fontaweme [see](https://iconify.design/getting-started/)
+- [ ] Add Redis connection in order to cache certain server requests
+- [ ] Add caching features to certain requests in the server API
 
 # Ionic
 
