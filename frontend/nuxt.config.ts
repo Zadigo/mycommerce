@@ -45,7 +45,7 @@ export default defineNuxtConfig({
     ]
   },
   css: [
-    // '~/assets/style.scss',
+    '~/assets/style.scss',
     '~/node_modules/bootstrap/dist/css/bootstrap.min.css',
     '~/node_modules/mdb-ui-kit/css/mdb.min.css',
   ]

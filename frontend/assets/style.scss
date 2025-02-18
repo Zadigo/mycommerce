@@ -1,0 +1,55 @@
+$base_section_margin: 8%;
+$factors: (
+  1: 5,
+  2: 4,
+  3: 3,
+  4: 2,
+  5: 1
+);
+
+* {
+  font-family: "Noto Sans", "Ubuntu", "Roboto", "Lato", sans-serif;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.095s;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
+}
+
+/* Section */
+
+@each $key, $factor in $factors {
+  .section-margin-#{$key} {
+    margin-top: calc($base_section_margin / $factor + 80px);
+  }
+}
+
+
+.no-scroll {
+  height: 100%;
+  overflow: hidden;
+}
+
+.text {
+  &-small {
+    font-size: 0.8rem;
+  }
+}
+
+.product-image {
+  &:hover {
+    cursor: zoom-in;
+  }
+}
+
+.list-group-item {
+  &.router-link-active.router-link-exact-active {
+    background-color: rgba(0, 0, 0, 0.015);
+  }
+}
