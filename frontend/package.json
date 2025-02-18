@@ -25,12 +25,16 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-regular-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@nuxt/image": "^1.9.0",
     "@nuxt/test-utils": "^3.15.4",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@nuxtjs/i18n": "^9.2.0",
     "@nuxtjs/sitemap": "^7.2.5",
     "@pinia/nuxt": "^0.10.1",
+    "@vesp/nuxt-fontawesome": "^1.2.1",
     "@vueuse/nuxt": "^12.7.0",
     "vuetify-nuxt-module": "^0.18.3"
   }

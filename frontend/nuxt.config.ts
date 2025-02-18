@@ -12,8 +12,9 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxt/test-utils',
     '@nuxtjs/seo',
+    '@vesp/nuxt-fontawesome',
     'vuetify-nuxt-module',
-    'vue-sonner/nuxt'  
+    'vue-sonner/nuxt'
   ],
   i18n: {
     baseUrl: './',
@@ -48,5 +49,71 @@ export default defineNuxtConfig({
     '~/assets/style.scss',
     '~/node_modules/bootstrap/dist/css/bootstrap.min.css',
     '~/node_modules/mdb-ui-kit/css/mdb.min.css',
-  ]
+  ],
+  fontawesome: {
+    icons: {
+      solid: [
+        'angle-left',
+        'arrow-up',
+        'arrow-down',
+        'chevron-left',
+        'caret-right',
+        'circle-check',
+        'close',
+        'clock-rotate-left',
+        'envelope',
+        'home',
+        'heart',
+        'phone',
+        'pen',
+        'ruler',
+        'search',
+        'sliders',
+        'shop',
+        'truck',
+        'trash',
+        'right-to-bracket',
+        'right-from-bracket',
+        'shopping-bag',
+        'table-cells',
+        'table-cells-large',
+        'user',
+      ],
+      regular: [
+        'heart'
+      ],
+      brands: [
+        'whatsapp',
+        'cc-mastercard',
+        'google',
+        'instagram',
+        'facebook-f',
+        'twitter'
+      ]
+    }
+  },
+  googleFonts: {
+    families: {
+      Ubuntu: {
+        wght: '100..700'
+      },
+      Roboto: {
+        wght: '100..700'
+      },
+      Lato: {
+        wght: '100..700'
+      },
+      'Noto Sans': {
+        wght: '100..700'
+      }
+    }
+  },
+  stripe: {
+    server: {
+      key: process.env.NUXT_STRIPE_PUBLISHABLE_KEY
+    },
+    client: {
+      key: process.env.NUXT_STRIPE_PUBLISHABLE_KEY
+    }
+  }
 })
