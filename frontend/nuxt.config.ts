@@ -2,6 +2,31 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
+  runtimeConfig: {
+    public: {
+      // Django
+      djangoProdUrl: process.env.NUXT_DJANGO_PROD_URL,
+      
+      // Firebase
+      firebaseApiKey: process.env.NUXT_FIREBASE_API_KEY,
+      firebaseAuthDomain: process.env.NUXT_FIREBASE_AUTH_DOMAIN,
+      firebaseDbUrl: process.env.NUXT_FIREBASE_DB_URL,
+      firebaseStorageBucket: process.env.NUXT_FIREBASE_STORAGE_BUCKET,
+      firebaseAppId: process.env.NUXT_FIREBASE_APP_ID,
+      firebaseMeasurementId: process.env.NUXT_FIREBASE_MEASUREMENT_ID,
+      firebaseMessageSenderId: process.env.NUXT_FIREBASE_MESSAGE_SENDER_ID,
+      firebaseProjectId: process.env.NUXT_FIREBASE_PROJECT_ID,
+
+      // Stripe
+      stripeTestSecretKey: process.env.NUXT_STRIPE_TEST_SECRET_KEY,
+      stripeTestPublishableKey: process.env.NUXT_STRIPE_TEST_PUBLISHABLE_KEY,
+      stripeApiVersion: '2024-06-20',
+      stripeLocale: 'fr',
+
+      // What's App
+      whatsAppUrl: process.env.NUXT_WHATS_APP_URL
+    }
+  },
   modules: [
     '@pinia/nuxt',
     '@vueuse/nuxt',
