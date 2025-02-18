@@ -10,7 +10,9 @@ export default defineNuxtConfig({
     '@unlok-co/nuxt-stripe',
     '@nuxt/image',
     '@nuxtjs/i18n',
+    '@nuxt/test-utils',
+    '@nuxtjs/seo',
     'vuetify-nuxt-module',
-    '@nuxt/test-utils'
+    'vue-sonner/nuxt'  
   ]
 })
