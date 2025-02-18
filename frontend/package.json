@@ -12,6 +12,8 @@
   "dependencies": {
     "@nuxtjs/seo": "^2.1.1",
     "@unlok-co/nuxt-stripe": "^4.0.2",
+    "axios": "^1.7.9",
+    "bootstrap": "^5.3.3",
     "nuxt": "^3.15.4",
     "vue": "latest",
     "vue-router": "latest",
