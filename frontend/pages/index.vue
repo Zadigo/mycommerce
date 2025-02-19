@@ -32,6 +32,13 @@ useHead({
       key: 'description',
       content: 'Découvrez notre collection de vêtements en ligne'
     }
+  ],
+  link: [
+    {
+      rel: 'icon',
+      type: 'image/png',
+      href: '/favicon.ico'
+    }
   ]
 })
 
@@ -45,16 +52,6 @@ useSeoMeta({
   twitterCard: 'summary'
 })
 
-useHead({
-  link: [
-    {
-      rel: 'icon',
-      type: 'image/png',
-      href: '/favicon.ico'
-    }
-  ]
-})
-
 useSchemaOrg([
 
 ])
@@ -62,6 +59,19 @@ useSchemaOrg([
 const { data, status } = await useFetch('/api/collections', {
   onResponseError({ error }) {
     handleError(error?.message)
+  },
+  transform (data) {
+    const validCollections = data.reduce<CollectionName[]>((acc, item) => {
+      try {
+        const validItem = CollectionSchema.parse(item)
+        acc.push(validItem)
+        return acc
+      } catch (e) {
+        console.log('collections.validate', e)
+        return acc
+      }
+    }, [])
+    return validCollections
   }
 })
 
