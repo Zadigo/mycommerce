@@ -18,6 +18,11 @@
 - [x] Create a large session and localstorage file that encompasses all the elements we need into one unique json space. This avoids us from having to spread the data everywhere
 - [ ] When the user scrolls on the `/shop/collection/collectionName` page, place the page header to fixed 
 
+// Hydration errors: 
+// https://www.lichter.io/articles/vue-hydration-error/
+// https://stackoverflow.com/questions/47862591/vuejs-error-the-client-side-rendered-virtual-dom-tree-is-not-matching-server-re/67978474#67978474
+// https://stackoverflow.com/questions/78552115/hydration-completed-but-contains-mismatches-using-veevalidate-and-pinia-in-nuxt
+
 # Ionic
 
 - [x] Implement and test Firebase to Pinia

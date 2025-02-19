@@ -11,6 +11,13 @@ export default defineNuxtConfig({
     },
     'shop/collection**': {
       ssr: true
+    },
+    'confidentialite': {
+      ssr: true,
+      cache: {
+        base: 'redis',
+        maxAge: 3600
+      }
     }
   },
   runtimeConfig: {
