@@ -16,6 +16,7 @@
 - [ ] Add Redis connection in order to cache certain server requests
 - [ ] Add caching features to certain requests in the server API
 - [x] Create a large session and localstorage file that encompasses all the elements we need into one unique json space. This avoids us from having to spread the data everywhere
+- [ ] When the user scrolls on the `/shop/collection/collectionName` page, place the page header to fixed 
 
 # Ionic
 
