@@ -94,7 +94,7 @@ export const guideText: GuideText[] = [
     },
     {
         id: "",
-        title: "Comme puis-je m’assurer que mes achats ont été réalisés avec succès ?",
+        title: "Comment puis-je m'assurer que mes achats ont été réalisés avec succès ?",
         text: [
             {
                 id: "",
@@ -103,5 +103,104 @@ export const guideText: GuideText[] = [
                 content: "Une fois le processus d’achat achevé, vous recevrez un e - mail de confirmation ; si vous ne le recevez pas, contactez notre service clientèle"
             }
         ]
-    }
+    },
+    {
+        id: "",
+        title: "Puis-je retourner n'importe quel article ?",
+        text: [
+            {
+                id: "",
+                title: "",
+                type: "points",
+                content: [
+                    "Les produits à retourner doivent être en parfait état, conserver leurs étiquettes d'origine et ne pas avoir été utilisés. Le retour doit être effectué dans un délai maximum de 30 jours à compter de la confirmation d'expédition.",
+                    "Ne peuvent être ni échangés ni retournés :",
+                    [
+                        "Les articles personnalisés",
+                        "Les sous-vêtements",
+                        "Les boucles d'oreilles",
+                        "Les accessoires pour les cheveux",
+                        "Les casquettes et les chapeaux.",
+                        "Articles imprimés sur demande",
+                        "Produits The Bershka Print Shop"
+                    ],
+                    "Attention, certains articles sont soumis à des conditions spécifiques :",
+                    [
+                        "Maillots de bain : doivent être retournés avec la protection hygiénique intérieure",
+                        "Accessoires : doivent être retournés dans leur emballage d'origine complet et intact.",
+                        "Parfums et collection beauté : doivent être retournés dans leur emballage d'origine fermé.",
+                        "Lots : ils sont indivisibles et tous les articles doivent être retournés dans leur emballage d'origine.",
+                        "Les échanges doivent toujours être réalisés en magasin physique et sont soumis aux mêmes conditions que les produits à retourner."
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        id: "",
+        title: "Puis-je éliminer un article de ma commande ?",
+        text: [
+            {
+                id: "",
+                title: "",
+                type: "text",
+                content: "Vous pourrez éliminer les articles que vous ne souhaitez plus du panier à condition que vous n’ayez pas achevé tout le processus d’achat. Le cas échéant vous devrez annuler la commande."
+            }
+        ]
+    },
+    {
+        id: "",
+        title: "Puis-je annuler ma commande ?",
+        text: [
+            {
+                id: "",
+                title: "",
+                type: "text",
+                content: [
+                    "Oui, dans la section des « Commandes réalisées » de « Mon compte ».",
+                    "Bershka.com se réserve le droit de refuser les retours communiqués ou envoyés en dehors du délai établi, ou de vêtements qui ne sont pas dans l’état dans lequel ils ont été envoyés.",
+                    "Si vous ne souhaitez pas retourner les produits en utilisant l’une des deux options gratuites disponibles, vous supporterez le coût direct du renvoi des produits."
+                ]
+            }
+        ]
+    },
+    {
+        id: "",
+        title: "Ticket électronique",
+        text: [
+            {
+                id: "",
+                title: "Qu'est-ce que le ticket électronique ?",
+                type: "text",
+                content: [
+                    "C'est un système de facturation électronique qui élimine le ticket de caisse. À partir de maintenant, toutes les commandes passées à travers le site internet et l'APPLI vont intégrer ce nouveau système, sauf les commandes qui possèdent l'option Ticket cadeau et le contre-remboursement, qui continueront de recevoir le ticket imprimé."
+                ]
+            },
+            {
+                id: "",
+                title: "Où puis-je voir mon ticket de caisse ?",
+                type: "text",
+                content: [
+                    "Tu recevras chaque ticket en pièce jointe dans les e-mails que nous t'enverrons depuis bershka.com en référence à ta commande. De plus, ils seront enregistrés automatiquement dans la section « Mes commandes » de ton compte personnel.",                                        
+                ]
+            },
+            {
+                id: "",
+                title: "Comment puis-je retourner un article si je ne possède pas le ticket ?",
+                type: "text",
+                content: [
+                    "Pour les retours en magasin tu devras juste montrer sur l'écran de ton portable le ticket électronique que tu as reçu en pièce jointe de la Confirmation d'envoi avec l'article que tu souhaites retourner. Tu peux également accéder au ticket depuis la page web ou APPLI, il te suffit d'entrer dans « Mon compte » et ensuite entrer dans la section « Commandes ».",                    
+                    "Si tu souhaites retourner tes articles par DropOff, tu devras faire une demande de retour sur ton compte et emballer les articles que tu souhaites retourner. Rends-toi au point relais le plus proche et dépose le colis. Aucun ticket n'est à imprimer !"
+                ]
+            },
+            {
+                id: "",
+                title: "Comment puis-je échanger les articles sans le ticket ?",
+                type: "text",
+                content: [
+                    "De même que pour les retours, tu devras juste montrer sur l'écran de ton portable le ticket électronique que tu as reçu en pièce jointe de la Confirmation d'envoi et l'article que tu souhaites échanger, c'est très simple !"
+                ]
+            }
+        ]
+    },
 ]
