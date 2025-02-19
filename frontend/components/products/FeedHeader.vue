@@ -40,7 +40,6 @@
 </template>
 
 <script setup lang="ts">
-// import { useScroll } from '@vueuse/core'
 import type { Product } from '~/types'
 
 const props = defineProps({
@@ -59,7 +58,6 @@ const emit = defineEmits({
     return [3, 4].includes(size)
   },
   'update:sorting' (_value: string) {
-    // return sortingOptions.includes(value)
     return true
   },
   'show-product-filters' () {
@@ -70,21 +68,14 @@ const emit = defineEmits({
 const gridSize = ref(3)
 const productsLoading = inject<boolean>('productsLoading')
 
-// const headerEl = useTemplateRef<HTMLElement>('headerEl')
-
 /**
- * When the user scrolls to a certain level,
- * this positions the header to a fixed position 
+ * Returns a set of categories that the user can use
+ * to filter the products on the page 
  */
-// const { y } = useScroll(window, {
-//   throttle: 100
-// })
-
-
 const productCategories = computed(() => {
   const items = props.products.map(product => {
     return product.category
-  })
+  }).filter(x => x !== 'Not attributed')
   return Array.from(new Set(items))
 })
 
@@ -97,18 +88,6 @@ function handleGridSize (size: number) {
   gridSize.value = size
   emit('update:grid-size', size)
 }
-
-// watch(y, (newValue) => {
-//   if (headerEl.value) {
-//     console.info('Feed', 'Place to fixed')
-
-//     if (newValue > 100) {
-//       headerEl.value.classList.add('to-fixed')
-//     } else {
-//       headerEl.value.classList.remove('to-fixed')
-//     }
-//   }
-// })
 </script>
 
 <style lang="scss" scoped>
