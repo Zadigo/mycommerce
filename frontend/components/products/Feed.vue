@@ -88,19 +88,23 @@ const { data, status, error, refresh } = await useFetch<ProductsAPIResponse>(`/a
   },
   transform: (data) => {
     cachedResponse.value = data
+    
+    // TODO: Validate products with Zod
+    const validItems = data.results.reduce<ValidateProduct[]>((acc, item) => {
+      try {
+        const product = ProductSchema.parse(item)
+        acc.push(product)
+        return acc
+      } catch (e) {
+        console.log('Failed to validate product:', e)
+        return acc
+      }
+    }, [])
+    
+    console.info('validItems', validItems)
+    
     products.value = data.results
     emit('products-loaded', products.value)
-
-    // TODO: Validate products with Zod
-    // const validProducts = data.results.reduce<ValidateProduct[]>((acc, item) => {
-    //   try {
-    //     const validProduct = ProductSchema.parse(item)
-    //     acc.push(validProduct)
-    //   } catch (e) {
-    //     console.log('Failed to validate product:', e)
-    //   }
-    // }, [])
-    // console.log('validProducts', validProducts)
 
     return data
   }
