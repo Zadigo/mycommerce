@@ -6,6 +6,9 @@ export default defineNuxtConfig({
   routeRules: {
     '/': {
       swr: 1
+    },
+    'shop/collection**': {
+      ssr: true
     }
   },
   runtimeConfig: {
@@ -146,6 +149,12 @@ export default defineNuxtConfig({
     client: {
       key: process.env.NUXT_STRIPE_PUBLISHABLE_KEY
     }
+  },
+  image: {
+    // TODO: Activate when the project images backend
+    // is set correctly to cloudefare/aws
+    // https://image.nuxt.com/providers/cloudflare
+    provider: 'none'
   },
   nitro: {
     storage: {
