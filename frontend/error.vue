@@ -7,7 +7,7 @@
             <div class="card-body">
               <h1>{{ error?.statusCode }}</h1>
               <p>{{ error }}</p>
-              <NuxtLink href="#" @click="handleError">
+              <NuxtLink href="/" @click="handleError">
                 {{ $t('Accueil') }}
               </NuxtLink>
             </div>
