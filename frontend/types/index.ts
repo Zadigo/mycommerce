@@ -44,7 +44,7 @@ export interface SessionCacheData {
 
 interface Text {
     id: string
-    title: string
+    title?: string
     type: 'text' | 'points'
     content: string | (string | string[])[]
 }

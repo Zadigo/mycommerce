@@ -73,7 +73,7 @@ export const ProductSchema = z.object({
             thumbnail: z.string(),
             mid_size: z.string(),
             is_main_image: z.boolean().default(false)
-        }),
+        }).nullable(),
         active: z.boolean()
     }).array().nullish(),
     modified_on: z.string().date(),
