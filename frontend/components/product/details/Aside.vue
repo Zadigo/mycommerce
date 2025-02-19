@@ -126,7 +126,7 @@ const { showAddedProductDrawer } = storeToRefs(useCart())
 const { translatePrice, isLiked, handleLike } = useShopComposable()
 const { mediaPath } = useDjangoUtilies()
 const { showSizeSelectionWarning, addToCart, userSelection, addingToCartState } = useCartComposable()
-const { gtag } = useGtag()
+// const { gtag } = useGtag()
 
 const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
   serializer: {
@@ -173,20 +173,20 @@ function proxyHandleLike () {
   isLiked.value = !isLiked.value
 
   if (state) {
-    gtag('event', 'add_to_wishlist', {
-      items: {
-        item_id: props.product?.id,
-        item_name: props.product?.name,
-        price: props.product?.get_price,
-        quantity: 1,
-        item_brand: null,
-        item_category: props.product?.category,
-        item_category2: props.product?.sub_category,
-        item_variant: props.product?.color,
-        index: 0,
-        item_reference: null
-      }
-    })
+    // gtag('event', 'add_to_wishlist', {
+    //   items: {
+    //     item_id: props.product?.id,
+    //     item_name: props.product?.name,
+    //     price: props.product?.get_price,
+    //     quantity: 1,
+    //     item_brand: null,
+    //     item_category: props.product?.category,
+    //     item_category2: props.product?.sub_category,
+    //     item_variant: props.product?.color,
+    //     index: 0,
+    //     item_reference: null
+    //   }
+    // })
   }
 }
 
@@ -203,25 +203,25 @@ async function handleAddToCart () {
       
       showAddedProductDrawer.value = true
 
-      gtag('event', 'add_to_cart',  {
-        currency: 'EUR',
-        value: props.product?.get_price,
-        items: [
-          {
-            item_id: props.product?.id,
-            item_name: props.product?.name,
-            price: props.product?.get_price,
-            quantity: 1,
-            item_brand: null,
-            item_category: props.product?.category,
-            item_category2: props.product?.sub_category,
-            item_variant: props.product?.color,
-            index: 0,
-            item_reference: null,
-            size: userSelection.value.size
-          }
-        ]
-      })
+      // gtag('event', 'add_to_cart',  {
+      //   currency: 'EUR',
+      //   value: props.product?.get_price,
+      //   items: [
+      //     {
+      //       item_id: props.product?.id,
+      //       item_name: props.product?.name,
+      //       price: props.product?.get_price,
+      //       quantity: 1,
+      //       item_brand: null,
+      //       item_category: props.product?.category,
+      //       item_category2: props.product?.sub_category,
+      //       item_variant: props.product?.color,
+      //       index: 0,
+      //       item_reference: null,
+      //       size: userSelection.value.size
+      //     }
+      //   ]
+      // })
 
       if (sizeEl.value) {
         sizeEl.value.resetSize()
