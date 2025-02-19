@@ -2,6 +2,12 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
+  ssr: true,
+  routeRules: {
+    '/': {
+      swr: 1
+    }
+  },
   runtimeConfig: {
     public: {
       // Django
@@ -139,6 +145,17 @@ export default defineNuxtConfig({
     },
     client: {
       key: process.env.NUXT_STRIPE_PUBLISHABLE_KEY
+    }
+  },
+  nitro: {
+    storage: {
+      redis: {
+        driver: 'redis',
+        host: '127.0.0.1',
+        port: 6379,
+        username: '',
+        password: 'django-local-testing'
+      }
     }
   }
 })
