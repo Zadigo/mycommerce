@@ -68,3 +68,11 @@ export const defaultSortingFilters = [
     ['Price up', 'Prix croissant'],
     ['Price down', 'Prix décroissant']
 ]
+
+export const socialLinks = [
+    {
+        name: 'Facebook',
+        href: 'http://example.com',
+        icon: 'facebook-f'
+    }
+]
