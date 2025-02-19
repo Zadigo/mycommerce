@@ -59,7 +59,7 @@ useSchemaOrg([
 
 ])
 
-const { data, status } = await useFetch('/api/collections/all', {
+const { data, status } = await useFetch('/api/collections', {
   onResponseError({ error }) {
     handleError(error?.message)
   }
