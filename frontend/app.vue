@@ -22,6 +22,19 @@ import { Toaster } from 'vue-sonner';
 import { baseSessionCacheData } from '~/data';
 import type { SessionCacheData } from '~/types';
 
+useSchemaOrg([
+  defineWebSite({
+    potentialAction: [
+      defineSearchAction({
+        target: '/search?q={search}'
+      })
+    ]
+  }),
+  defineWebPage({
+    '@type': ['CollectionPage', 'AboutPage', 'FAQPage']
+  })
+])
+
 const sessionCache = useSessionStorage<SessionCacheData>('cache', null, {
   serializer: {
     read (raw) {
