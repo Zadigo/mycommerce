@@ -10,7 +10,7 @@
         
         <div v-else class="row g-1">
           <BaseStaticCollectionCard name="All" view-name="all" image="/img4.jpeg" />
-          <BaseCollectionCard v-for="collection in cachedCollections" :key="collection.id" :collection="collection" image="/img5.jpeg" />
+          <BaseCollectionCard v-for="collection in collections" :key="collection.id" :collection="collection" image="/img5.jpeg" />
         </div>
       </div>
     </div>
@@ -20,16 +20,7 @@
 <script setup lang="ts">
 import type { CollectionName } from '~/types'
 
-const cachedCollections = useLocalStorage<CollectionName[]>('collections', null, {
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    }
-  }
-})
+const collections = ref<CollectionName[]>([])
 
 const { handleError } = useErrorHandler()
 // const { gtag } = useGtag()
@@ -44,9 +35,29 @@ useHead({
   ]
 })
 
-useSchemaOrg({
-
+useSeoMeta({
+  description: 'Découvrez notre collection de vêtements en ligne',
+  ogDescription: 'Découvrez notre collection de vêtements en ligne',
+  ogImage: '/img4.jpeg',
+  twitterTitle: '[twitter:title]',
+  twitterDescription: 'Découvrez notre collection de vêtements en ligne',
+  twitterImage: '/img4.jpeg',
+  twitterCard: 'summary'
 })
+
+useHead({
+  link: [
+    {
+      rel: 'icon',
+      type: 'image/png',
+      href: '/favicon.ico'
+    }
+  ]
+})
+
+useSchemaOrg([
+
+])
 
 const { data, status } = await useFetch('/api/collections/all', {
   onResponseError({ error }) {
@@ -54,7 +65,9 @@ const { data, status } = await useFetch('/api/collections/all', {
   }
 })
 
-cachedCollections.value = data.value
+if (data.value) {
+  collections.value = data.value
+}
 
 onMounted(() => {
   // gtag('event', 'page_view', {
