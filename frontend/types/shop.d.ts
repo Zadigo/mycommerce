@@ -1,7 +1,6 @@
 export type ProductSizes = {
     id: number;
     name: string;
-    sub_category: string;
     availability: boolean;
 };
 

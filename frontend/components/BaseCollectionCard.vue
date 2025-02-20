@@ -1,13 +1,13 @@
 <template>
   <article class="col-sm-12 col-md-4 my-1">
-    <NuxtLink :to="`/shop/collection/${collection.get_view_name}`">
+    <NuxtLink :to="`/shop/collection/${collection.category.toLowerCase()}`">
       <div :aria-label="collection.name" class="card shadow-none">
         <div class="wrapper rounded-2">
           <NuxtImg :alt="collection.name" :src="image" class="card-img" format="webp" quality="80" placeholder />
         </div>
         
         <h1 class="text-white text-left h3 fw-bold text-uppercase px-2 py-4">
-          {{ collection.name }}
+          {{ collection.category }}
         </h1>
       </div>
     </NuxtLink>
