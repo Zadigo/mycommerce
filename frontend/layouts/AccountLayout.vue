@@ -58,7 +58,7 @@ const citiesClient = createAxiosSimpleClient('/api/v1/', useRuntimeConfig().publ
 async function requestUserDetails () {
   try {
     if (!sessionProfile.value) {
-      const response = await client.get<Profile>('accounts/profile')
+      const response = await client.get<Profile>(`accounts/${authenticationStore.userId || 1}`)
 
       sessionProfile.value = response.data
       authenticationStore.profile = response.data
