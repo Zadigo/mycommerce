@@ -100,5 +100,9 @@
     "Tu n'as encore aucun achat en ligne": "Tu n'as encore aucun achat en ligne",
     "Trouver ma commande": "Trouver ma commande",
     "Mes achats": "Mes achats",
-    "Mon compte": "Mon compte"
+    "Mon compte": "Mon compte",
+    "Tu as réalisé des commandes sans être inscrit ?": "Tu as réalisé des commandes sans être inscrit ?",
+    "Saisis ton e-mail et ton téléphone pour recevoir un SMS avec le code d'accès à tes commandes *": "Saisis ton e-mail et ton téléphone pour recevoir un SMS avec le code d'accès à tes commandes *",
+    "Envoyer": "Envoyer",
+    "Mes commandes": "Mes commandes"
 }
