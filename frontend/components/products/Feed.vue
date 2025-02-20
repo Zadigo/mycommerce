@@ -39,7 +39,7 @@
           {{ $t('Page not available text') }}
         </p>
 
-        <NuxtLink to="/shop/collections/all" class="mt-3" color="secondary" variant="tonal" rounded>
+        <NuxtLink to="/shop/collection/all" class="mt-3" color="secondary" variant="tonal" rounded>
           {{ $t('Voir toute la collection') }}
         </NuxtLink>
       </div>

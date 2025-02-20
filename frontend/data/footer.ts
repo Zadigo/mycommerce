@@ -42,22 +42,22 @@ export const footerLinks = [
         "section": "Collections",
         "links": [
             {
-                "to": "/shop/collections/skirts",
+                "to": "/shop/collection/skirts",
                 "params": "skirts",
                 "name": "Robes"
             },
             {
-                "to": "/shop/collections/tops",
+                "to": "/shop/collection/tops",
                 "params": "tops",
                 "name": "Tops"
             },
             {
-                "to": "/shop/collections/tops",
+                "to": "/shop/collection/tops",
                 "params": "tops",
                 "name": "Chemises"
             },
             {
-                "to": "/shop/collections/pants",
+                "to": "/shop/collection/pants",
                 "params": "pants",
                 "name": "Pantalons"
             }
