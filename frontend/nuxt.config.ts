@@ -7,12 +7,18 @@ export default defineNuxtConfig({
   ssr: true,
   routeRules: {
     '/': {
-      swr: 1
+      swr: true
     },
-    'shop/collection**': {
+    '/shop/collection/**': {
       ssr: true
     },
-    'confidentialite': {
+    '/wishlist': {
+      ssr: false
+    },
+    '/account/**': {
+      ssr: false
+    },
+    '/confidentialite': {
       ssr: true,
       cache: {
         base: 'redis',
@@ -22,8 +28,9 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      // Django
+      // Django/Quart/Flask
       djangoProdUrl: process.env.NUXT_DJANGO_PROD_URL,
+      quartProdUrl: process.env.NUXT_QUART_PROD_URL,
       
       // Firebase
       firebaseApiKey: process.env.NUXT_FIREBASE_API_KEY,
