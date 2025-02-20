@@ -51,7 +51,7 @@
 
             <p class="mb-1">
               <font-awesome :icon="['fab', 'whatsapp']" class="me-2" />
-              <a href="#" class="text-muted" @click.prevent="emit('show-modal')">
+              <a href="#" class="text-muted" @click.prevent="emit('show-whatsapp')">
                 WhatsApp
               </a>
             </p>
@@ -115,7 +115,7 @@ const { sessionCache } = storeToRefs(shopStore)
 const { companyDetails } = useCompany()
 
 const emit = defineEmits({
-  'show-modal'() {
+  'show-whatsapp'() {
     return true
   }
 })
