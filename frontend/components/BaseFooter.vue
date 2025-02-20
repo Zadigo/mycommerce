@@ -90,9 +90,9 @@
           {{ $t("Condition général d'achat") }}
         </a>
 
-        <a href="/" class="text-muted">
+        <NuxtLink href="/confidentialite" class="text-muted">
           {{ $t("Politique de confidentialité") }}
-        </a>
+        </NuxtLink>
         
         <a href="/" class="text-muted">
           {{ $t("Mention légal") }}
