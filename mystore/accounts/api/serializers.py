@@ -84,10 +84,11 @@ class UserSerializer(Serializer):
             'last_name': validated_data['lastname']
         })
 
-        tasks.signup_workflow.apply_async(
+        t1 = tasks.signup_workflow.apply_async(
             args=[instance.email],
             countdown=30
         )
+        t1.get()
         # tasks.signup_workflow.s(instance.email)
         return instance
 
@@ -121,10 +122,11 @@ class UpdateUserSerializer(Serializer):
         
         instance.userprofile.save()
 
-        tasks.update_profie.apply_async(
+        t1 = tasks.update_profile.apply_async(
             args=[instance.email],
             countdown=30
         )
+        t1.get()
 
         return instance
 

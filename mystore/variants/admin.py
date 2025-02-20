@@ -1,15 +1,24 @@
 from django.contrib import admin
-
 from variants.models import Size
 
 
 @admin.register(Size)
 class SizeAdmin(admin.ModelAdmin):
-    list_display = ['name', 'product', 'sub_category', 'availability']
+    list_display = ['name', 'product', 'metric', 'availability']
     list_filter = ['availability', 'active']
     fieldsets = [
-        ['', {'fields': ['name', 'sub_category', 'product']}],
-        ['state', {'fields': ['availability', 'active']}]
+        [
+            None,
+            {
+                'fields': ['name', 'metric', 'product']
+            }
+        ],
+        [
+            'state',
+            {
+                'fields': ['availability', 'active']
+            }
+        ]
     ]
     search_fields = ['product__name', 'name']
     actions = ['make_available', 'make_unavailable']

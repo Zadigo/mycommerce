@@ -43,6 +43,10 @@ class Stock(models.Model):
         Product,
         on_delete=models.CASCADE
     )
+    
+    # TODO: Allow the user to link stocks to a
+    # specific product variant
+
     # isle = models.OneToOneField(
     #     Isle,
     #     help_text=_('The isle on which the product is stored'),

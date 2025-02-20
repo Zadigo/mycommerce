@@ -1,14 +1,18 @@
 import random
-
+import json
+import pandas
 from django.db.models import Case, Q, When
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
+from rest_framework.decorators import api_view
 from rest_framework.mixins import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from shop.api import CustomPagination, serializers
+from django.db.models.functions.text import Concat
 from shop.models import Product
 from shop.processors import FuzzyMatcherMixin
+
 
 class ListProducts(generics.ListAPIView):
     """List the products in the database and accepts
@@ -158,8 +162,8 @@ class ListRecommendations(generics.ListAPIView):
             products = self.queryset.exclude(id=initial_product.id)
             return self.recommendation_by_randomness(products, quantity)
         else:
-            print('product_id_or_collection_name',
-                  product_id_or_collection_name)
+            # print('product_id_or_collection_name',
+            #       product_id_or_collection_name)
             if not product_id_or_collection_name:
                 return self.recommendation_by_randomness(queryset, quantity)
             else:
@@ -167,3 +171,24 @@ class ListRecommendations(generics.ListAPIView):
                     collection__name=product_id_or_collection_name
                 )
                 return products[:quantity]
+
+
+@api_view(http_method_names=['get'])
+def test_fuzzy(request, **kwargs):
+    results = []
+    search = request.GET.get('s')
+    qs = Product.objects.all()
+    instance = FuzzyMatcherMixin()
+    for item in qs:
+        result = instance.get_match_details(search, item.color_variant_name)
+        result['product'] = item.id
+        results.append(result)
+    df = pandas.DataFrame(results)
+    df = df[df['weighted_ratio'] >= 0.7]
+
+    ids = df['product'].to_list()
+    selected_products = qs.filter(id__in=ids)
+    # data = json.loads(df.to_json(orient='records'))
+    # return Response(data)
+    serializer = serializers.ProductSerializer(instance=selected_products, many=True)
+    return Response(serializer.data)

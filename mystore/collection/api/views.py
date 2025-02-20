@@ -2,6 +2,7 @@ from collection.api import serializers
 from collection.models import Collection
 from django.core.cache import cache
 from django.db.models import Q
+from django.db.models.functions import Lower
 from django.utils.timezone import now, timedelta
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
@@ -20,7 +21,17 @@ def build_colors(colors):
 
 class ListCollectionProducts(generics.ListAPIView):
     """Enpoint used to list the products from a
-    given fashion collection"""
+    given fashion collection. This endpoint works in
+    two manners:
+
+    First, the endpoint tries to match a collection with
+    the parameter in the url. If the queryset exists then
+    the data for this request is returned.
+
+    Otherwise, if the category or sub_category is set directly 
+    on the product, thus not included in a collection, then 
+    a list of products which match the parameter of the request
+    """
 
     queryset = Product.objects.filter(active=True)
     serializer_class = ProductSerializer
@@ -62,7 +73,7 @@ class ListCollectionProducts(generics.ListAPIView):
             queryset = queryset.filter(sub_category=sub_category)
 
         def create_cache_key(*values):
-            return '-'.join(values)
+            return '-'.join(values).lower()
 
         if collection_name == 'all':
             cache_params['key'] = create_cache_key('all', *other_cache_keys)
@@ -85,21 +96,19 @@ class ListCollectionProducts(generics.ListAPIView):
             return queryset
         else:
             queryset = self.queryset.filter(
-                Q(collection__name__icontains=collection_name) |
-                Q(collection__slug__iexact=collection_name)
-            )
+                collection__category__iexact=collection_name)
 
             # We have two ways to create a collection of
             # items. Either via the Collection model (manual)
             # or either dynamically using Product.category.
             # and this is the dynamic way
             if not queryset.exists():
-                newer_queryset = super().get_queryset()
-                queryset = newer_queryset.filter(
+                new_queryset = super().get_queryset()
+                queryset = new_queryset.filter(
                     category__iexact=collection_name
                 )
 
-                if not newer_queryset.exists():
+                if not new_queryset.exists():
                     return []
 
             products = queryset.order_by('-created_on')

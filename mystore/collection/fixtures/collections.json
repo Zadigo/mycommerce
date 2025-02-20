@@ -3,29 +3,35 @@
         "model": "collection.Collection",
         "pk": 1,
         "fields": {
-            "category": "Shorts",
-            "created_on": "2022-03-18",
             "name": "Shorts",
+            "category": "Dresses",
+            "sub_category": "Bouffont",
+            "description": "A simple product description",
             "products": [
                 1
             ],
+            "tags": "shorts,mini-shorts",
             "slug": "shorts",
-            "tags": "shorts,mini-shorts"
+            "illustration": null,
+            "created_on": "2022-03-18"
         }
     },
     {
         "model": "collection.Collection",
         "pk": 2,
         "fields": {
-            "category": "Pants",
-            "created_on": "2022-03-18",
             "name": "Pants",
+            "category": "Dresses",
+            "sub_category": "Empire",
+            "description": "A simple product description",
             "products": [
                 2,
                 3
             ],
+            "tags": "pants",
             "slug": "pants",
-            "tags": "pants"
+            "illustration": null,
+            "created_on": "2022-03-18"
         }
     }
 ]
