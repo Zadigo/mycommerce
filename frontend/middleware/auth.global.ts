@@ -5,10 +5,8 @@ export default defineNuxtRouteMiddleware((to, _from): ReturnType<NavigationGuard
     const store = useAuthentication()
     // TODO: Implement authentication checks
     if (to.path.includes('/account/') || to.path.includes('/cart/')) {
-        if (store.isAuthenticated) {
-            return true
-        } else {
-            return true
+        if (!store.isAuthenticated) {
+            return '/?login=1'
         }
     }
 

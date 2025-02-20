@@ -210,6 +210,7 @@ export default defineNuxtConfig({
     icons: {
       solid: [
         'angle-left',
+        'arrow-right',
         'arrow-up',
         'arrow-down',
         'chevron-left',

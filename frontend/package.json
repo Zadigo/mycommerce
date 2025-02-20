@@ -19,6 +19,7 @@
     "bootstrap": "^5.3.3",
     "dayjs": "^1.11.13",
     "firebase": "^11.3.1",
+    "jwt-decode": "^4.0.0",
     "mdb-ui-kit": "^8.2.0",
     "nuxt": "^3.15.4",
     "pinia": "^3.0.1",
