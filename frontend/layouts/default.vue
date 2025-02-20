@@ -8,41 +8,25 @@
     </div>
 
     <!-- Modals -->
-    <!-- <ClientOnly>
+    <ClientOnly>
       <ModalsLogin />
+      <ModalsCart @edit-product="handleProductEdition" />
       <ModalsAddedProduct />
       <ModalsEditProduct />
-      <ModalsCart @edit-product="handleProductEdition" />
       <ModalsSearch />
-
-      <v-dialog v-model="showWhatsAppModal" width="400" transition="dialog-bottom-transition">
-        <v-card>
-          <v-card-text>
-            <div class="text-center">
-              <h6 claass="fw-bold mb-5">WhatsApp</h6>
-              
-              <img :src="qrCode">
-
-              <p class="text-small mt-5">Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone</p>
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
-    </ClientOnly> -->
+      <ModalsWhatsApp v-model="showWhatsAppModal" />
+    </ClientOnly>
 
     <!-- Footer -->
-    <BaseFooter @show-modal="showWhatsAppModal=true" />
+    <BaseFooter @show-whatsapp="showWhatsAppModal=true" />
   </section>
 </template>
 
 <script setup lang="ts">
-import { useQRCode } from '@vueuse/integrations/useQRCode'
 import type { ProductToEdit } from '~/types';
 
-const config = useRuntimeConfig()
 const cartStore = useCart()
 const { showCartDrawer, showEditProductDrawer } = storeToRefs(cartStore)
-const qrCode = useQRCode(config.public.whatsAppUrl)
 
 const currentEditedProduct = ref<ProductToEdit>()
 const showWhatsAppModal = ref(false)
