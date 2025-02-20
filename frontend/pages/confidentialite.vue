@@ -8,4 +8,14 @@
 
 <script setup lang="ts">
 import { privacyText } from '~/data/privacy';
+
+useHead({
+  title: 'Confidentialité',
+  meta: [
+    {
+      key: 'description',
+      content: ''
+    }
+  ]
+})
 </script>
