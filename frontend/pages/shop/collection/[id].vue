@@ -26,7 +26,7 @@
   </section>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useChangeCase } from '@vueuse/integrations/useChangeCase'
 import type { Product } from '~/types'
 
