@@ -28,10 +28,10 @@
       </div>
     </div>
 
-    <!-- <ClientOnly>
-      <ModalsImageZoom :show="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" @close="handleCloseSelection" />
-      <ModalsSizeGuide :product="product" :show-modal="showSizeGuideDrawer" @close="showSizeGuideDrawer=false" />
-    </ClientOnly> -->
+    <ClientOnly>
+      <ModalsImageZoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
+      <ModalsSizeGuide v-model="showSizeGuideDrawer" :product="product" />
+    </ClientOnly>
   </section>
 </template>
 
@@ -49,9 +49,7 @@ const { $client } = useNuxtApp()
 // Composable for product fetching
 function useProductDetails () {
   const { id } = useRoute().params
-  const { validateProp } = useShopComposable()
 
-  console.log('id', id)
   /**
    * WRITE DOCUMENTATION
    */
@@ -67,17 +65,20 @@ function useProductDetails () {
       return data
     },
     onResponseError({ error }) {
-      createError(error?.message)
+      createError({
+        statusMessage: error?.message,
+        statusCode: 404
+      })
     }
   })
-  const product = computed(() => data.value)
-  const isLoading = computed(() => status.value === 'pending' || !validateProp(product.value))
+  // const product = computed(() => data.value)
+  const isLoading = computed(() => status.value === 'pending')
 
   provide('isLoading', isLoading)
 
   return {
-    isLoading,
-    product
+    product: data,
+    isLoading
   }
 }
 
@@ -156,6 +157,20 @@ useHead({
     }
   ]
 })
+
+useSchemaOrg([
+  defineProduct({
+    '@id': product.value?.name,
+    name: product.value?.name,
+    description: '',
+    image: product.value?.get_main_image.original,
+    offers: [
+      {
+        price: product.value?.sale_price
+      }
+    ]
+  })
+])
 
 onBeforeMount(() => {
   nextTick(trackProduct)
