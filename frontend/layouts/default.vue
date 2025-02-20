@@ -31,7 +31,7 @@
     </ClientOnly> -->
 
     <!-- Footer -->
-    <!-- <BaseFooter @show-modal="showWhatsAppModal=true" /> -->
+    <BaseFooter @show-modal="showWhatsAppModal=true" />
   </section>
 </template>
 
