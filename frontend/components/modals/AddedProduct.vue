@@ -47,17 +47,7 @@
           <BaseRecommendations :quantity="20" :columns="3" :load-cache="true" :show-like-button="false" :show-cart="false" :show-prices="false" />
         </div>
 
-        <div v-else class="col-12">
-          <BaseSkeleton :loading="true" class="mb-1" height="30px" />
-
-          <div class="d-flex justify-content-end gap-2 mb-4">
-            <BaseSkeleton :loading="true" width="40px" height="30px" />
-            <BaseSkeleton :loading="true" width="40px" height="30px" />
-          </div>
-
-          <BaseSkeleton :loading="true" height="200px" />
-          <BaseSkeleton :loading="true" height="200px" class="mt-2" />
-        </div>
+        <ModalsSkeletonLoader v-else />
       </div>
     </div>
   </v-navigation-drawer>
