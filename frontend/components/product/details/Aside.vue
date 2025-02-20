@@ -82,7 +82,7 @@
       </button>
 
       <button type="button" class="btn btn-lg shadow-none btn-rounded btn-light" aria-label="Like product" @click="proxyHandleLike">
-        <font-awesome v-if="isLiked" :icon="['fas', 'heart']" />
+        <font-awesome v-if="isLiked" icon="heart" />
         <font-awesome v-else :icon="['far', 'heart']" />
       </button>
     </div>
@@ -98,7 +98,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useLocalStorage } from '@vueuse/core';
 import type { PropType } from 'vue';
 import type { Product, ProductStock } from '~/types';
@@ -109,9 +109,8 @@ const props = defineProps({
     default: true
   },
   product: {
-    type: Object as PropType<Product | null>,
-    required: true,
-    default: null
+    type: Object as PropType<Product>,
+    required: true
   }
 })
 
