@@ -86,17 +86,17 @@
           </a>
         </ClientOnly>
         
-        <a href="/" class="text-muted">
+        <NuxtLink to="/conditions-generales" class="text-muted">
           {{ $t("Condition général d'achat") }}
-        </a>
+        </NuxtLink>
 
         <NuxtLink href="/confidentialite" class="text-muted">
           {{ $t("Politique de confidentialité") }}
         </NuxtLink>
         
-        <a href="/" class="text-muted">
+        <NuxtLink to="/mentions-legales" class="text-muted">
           {{ $t("Mention légal") }}
-        </a>
+        </NuxtLink>
 
         <a href="/sitemap.xml" class="text-muted">
           {{ $t("Sitemap") }}
