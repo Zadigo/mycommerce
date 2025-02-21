@@ -5,7 +5,7 @@ import pandas
 from quart import Quart, jsonify, request
 from quart_cors import cors
 
-from mycommerce.api_server import MEDIA_PATH, PROJECT_PATH, get_debug
+from api_server import MEDIA_PATH, PROJECT_PATH, get_debug
 
 app = Quart(__name__, root_path=PROJECT_PATH)
 cors_app = cors(
