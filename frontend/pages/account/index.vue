@@ -14,16 +14,23 @@
           {{ $t('Mot de passe') }}
         </p>
 
-        <transition name="opacity" mode="out-in">
+        <transition mode="out-in">
           <v-form v-if="showEditPassword" class="password-block" @submit.prevent>
-            <v-text-field id="password1" v-model="emailPasswordData.password1" variant="solo-filled" placeholder="Password 1" type="password" aria-label="Password 1" flat />
-            <v-text-field id="password2" v-model="emailPasswordData.password2" variant="solo-filled" placeholder="Password 2" type="password" aria-label="Password 2" flat />
+            <v-text-field id="current-password" v-model="emailPasswordRequestData.current_password" variant="solo-filled" placeholder="Mot de passe actuel" type="password" autocomplete="false" aria-label="Mot de passe actuel" flat />
+            <v-text-field id="password1" v-model="emailPasswordRequestData.password1" variant="solo-filled" placeholder="Nouveau mot de passe" type="password" autocomplete="new-password" aria-label="Nouveau mot de passe" flat />
+            <v-text-field id="password2" v-model="emailPasswordRequestData.password2" variant="solo-filled" placeholder="Taper le mot de passe à nouveau" autocomplete="new-password" type="password" aria-label="Taper le mot de passe à nouveau" flat />
             
-            <v-btn color="secondary" rounded @click="requestChangeEmailPassword">
-              {{ $t('Changer le mot de passe') }}
-            </v-btn>
-          </v-form>
+            <div class="d-flex gap-1">
+              <v-btn color="secondary" variant="tonal" rounded @click="requestUpdate">
+                {{ $t('Changer le mot de passe') }}
+              </v-btn>
 
+              <v-btn class="d-flex justify-content-between align-items-center" color="dark" variant="text" rounded flat @click="showEditPassword=true">
+                Annuler
+              </v-btn>
+            </div>
+          </v-form>
+          
           <v-btn v-else class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block @click="showEditPassword=true">
             <span class="me-2">*************</span>
             <font-awesome icon="pen" />
@@ -36,9 +43,9 @@
         </p>
 
         <v-form v-if="showEditEmail" class="password-block" @submit.prevent>
-          <v-text-field v-model="emailPasswordData.email" variant="solo-filled" placeholder="Email" type="email" aria-label="Email" flat />        
+          <v-text-field v-model="emailPasswordRequestData.email" variant="solo-filled" placeholder="Email" type="email" aria-label="Email" flat />        
           
-          <v-btn color="secondary" rounded @click="requestChangeEmailPassword">
+          <v-btn color="secondary" rounded @click="requestUpdate">
             {{ $t("Changer l'email") }}
           </v-btn>
         </v-form>
@@ -74,10 +81,9 @@
 </template>
 
 <script setup lang="ts">
-type CredentialsMethod = 'email' | 'password'
-
 interface EmailPasswordData {
-  email: string,
+  email: string
+  current_password: string
   password1: string,
   password2: string
 }
@@ -93,11 +99,12 @@ definePageMeta({
 const { $client } = useNuxtApp() 
 const { handleError } = useErrorHandler()
 
-const authenticationStore = useAuthentication()
-const { profile } = storeToRefs(authenticationStore)
+const authStore = useAuthentication()
+const { profile } = storeToRefs(authStore)
 
-const emailPasswordData = ref<EmailPasswordData>({
+const emailPasswordRequestData = ref<EmailPasswordData>({
   email: '',
+  current_password: '',
   password1: '',
   password2: ''
 })
@@ -107,8 +114,11 @@ const showEditPassword = ref(false)
 const showEditEmail = ref(false)
 
 function resetEmailPasswordData () {
-  emailPasswordData.value = {
+  showEditEmail.value = false
+  showEditPassword.value = false
+  emailPasswordRequestData.value = {
     email: '',
+    current_password: '',
     password1: '',
     password2: ''
   }
@@ -118,23 +128,13 @@ function resetEmailPasswordData () {
  * Requests an update for the password and/or
  * the email address by the user 
  */
-async function requestChangeEmailPassword (method: CredentialsMethod) {
+async function requestUpdate () {
   try {
-    await $client.post('accounts/update', emailPasswordData)
+    await $client.patch(`accounts/${authStore.userId}`, emailPasswordRequestData)
 
-    emailPasswordData.value.email = ''
-    emailPasswordData.value.password1 = ''
-    emailPasswordData.value.password2 = ''
-    
-    if (method === 'password') {
-      showEditPassword.value = false
-    } else if (method === 'email') {
-      showEditEmail.value= false
-    }
+    resetEmailPasswordData()
   } catch (e) {
     handleError(e)
-    showEditEmail.value = false
-    showEditPassword.value = false
     resetEmailPasswordData()
   }
 }
