@@ -96,6 +96,8 @@ async function handleLogin () {
     // accessToken.value = data.access
     // refreshToken.value = data.refresh
 
+    console.info('handleLogin', data)
+
     authenticationStore.accessToken = data.access
     authenticationStore.refreshToken = data.refresh
     authenticationStore.showLoginDrawer = false

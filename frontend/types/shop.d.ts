@@ -32,7 +32,7 @@ export type ProductCollection = {
     category: string;
     sub_category: string;
     number_of_items: number;
-    illustration: string;
+    illustration: string | null;
     tags: string[] | null;
     get_view_name: string;
 };
@@ -45,14 +45,14 @@ export type Product = {
     sub_category: string;
     sizes: ProductSizes[];
     has_sizes: boolean;
-    unit_price: number
-    get_price: number;
+    unit_price: string
+    get_price: string;
     sale_value: number;
-    sale_price: number;
+    sale_price: string;
     on_sale: boolean;
-    collection_set: ProductCollection[];
+    collection_set: ProductCollection[] | null;
     get_main_image: ProductImage;
-    images: ProductImage[];
+    images: ProductImage[] | null;
     model_height: string
     model_size: string
     color_variant_name: string;

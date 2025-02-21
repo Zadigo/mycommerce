@@ -89,7 +89,7 @@ const { data, status, error, refresh } = await useFetch<ProductsAPIResponse>(`/a
   transform: (data) => {
     cachedResponse.value = data
     
-    // TODO: Validate products with Zod
+    // TODO: Use the schema ValidateProduct from zod to unify the typing for Product
     const validItems = data.results.reduce<ValidateProduct[]>((acc, item) => {
       try {
         const product = ProductSchema.parse(item)
@@ -100,10 +100,9 @@ const { data, status, error, refresh } = await useFetch<ProductsAPIResponse>(`/a
         return acc
       }
     }, [])
-    
-    console.info('validItems', validItems)
-    
+        
     products.value = data.results
+    // products.value = validItems
     emit('products-loaded', products.value)
 
     return data

@@ -31,6 +31,7 @@
 
 <script setup lang="ts">
 import { useSessionStorage } from '@vueuse/core';
+import createDjangoClient from '~/composables/django_client';
 import type { Profile } from '~/types';
 
 const authenticationStore = useAuthentication()
@@ -48,7 +49,7 @@ const sessionProfile = useSessionStorage<Profile>('profile', null, {
 
 const { handleError } = useErrorHandler()
 
-const { client } = useAxiosClient()
+const client = createDjangoClient('/api/v1/')
 const citiesClient = createAxiosSimpleClient('/api/v1/', useRuntimeConfig().public.quartProdUrl, false, 5000)
 
 /**
