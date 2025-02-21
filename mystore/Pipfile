@@ -37,6 +37,7 @@ rapidfuzz = "*"
 python-levenshtein = "*"
 requests = "*"
 djangorestframework-simplejwt = "*"
+thefuzz = "*"
 
 [dev-packages]
 autopep8 = "*"
