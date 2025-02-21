@@ -5,14 +5,19 @@ app_name = 'accounts_api'
 
 urlpatterns = [
     re_path(
-        r'^(?P<pk>\d+)$',
-        views.UserInfo.as_view(),
-        name='user'
+        r'(?P<pk>\d+)/address-lines/(?P<address_id>\d+)$',
+        views.UpdateAddressLine.as_view(),
+        name='update_address_line'
     ),
     re_path(
         r'(?P<pk>\d+)/address-lines$',
         views.AddressLines.as_view(),
         name='addresses'
+    ),
+    re_path(
+        r'^(?P<pk>\d+)$',
+        views.UserInfo.as_view(),
+        name='user'
     ),
     re_path(
         r'^signup$',
