@@ -728,12 +728,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{apiUrl}}accounts/profile",
+							"raw": "{{apiUrl}}accounts/{{userID}}",
 							"host": [
 								"{{apiUrl}}accounts"
 							],
 							"path": [
-								"profile"
+								"{{userID}}"
 							]
 						}
 					},
@@ -746,7 +746,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstname\": \"Italy\",\r\n    \"lastname\": \"Sella\",\r\n    \"telephone\": null\r\n}",
+							"raw": "{\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Pendenque\",\r\n    \"email\": \"pifeg33976@bitflirt.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -754,12 +754,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{apiUrl}}accounts/1",
+							"raw": "{{apiUrl}}accounts/{{userID}}",
 							"host": [
 								"{{apiUrl}}accounts"
 							],
 							"path": [
-								"1"
+								"{{userID}}"
 							]
 						}
 					},
@@ -800,6 +800,12 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"function parseJwt(token) {\r",
+									"  var base64Payload = token.split('.')[1];\r",
+									"  var payload = Buffer.from(base64Payload, 'base64');\r",
+									"  return JSON.parse(payload.toString());\r",
+									"}\r",
+									"\r",
 									"pm.test(\"get access token\", () => {\r",
 									"    const data = pm.response.json()\r",
 									"\r",
@@ -809,6 +815,8 @@
 									"    \r",
 									"    pm.environment.set(\"access\", data.access)\r",
 									"    pm.environment.set(\"refresh\", data.refresh)\r",
+									"\r",
+									"    pm.environment.set(parseJwt(data.access).user_id)\r",
 									"})"
 								],
 								"type": "text/javascript",
@@ -959,7 +967,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"gida@gmail.com\",\r\n    \"password1\": \"touparette-go\",\r\n    \"password2\": \"touparette-go\",\r\n    \"username\": null,\r\n    \"firstname\": \"Julie\",\r\n    \"lastname\": \"Parcello\"\r\n}",
+							"raw": "{\r\n    \"email\": \"gida.1@gmail.com\",\r\n    \"password1\": \"touparette-go\",\r\n    \"password2\": \"touparette-go\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -973,6 +981,160 @@
 							],
 							"path": [
 								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Address Line",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "firstname",
+									"value": "Pauline",
+									"type": "text"
+								},
+								{
+									"key": "lastname",
+									"value": "Garoup",
+									"type": "text"
+								},
+								{
+									"key": "address_line",
+									"value": "16 rue de Paris",
+									"type": "text"
+								},
+								{
+									"key": "zip_code",
+									"value": "76001",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "France",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Lille",
+									"type": "text"
+								},
+								{
+									"key": "telephone",
+									"value": "0661010101",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}accounts/{{userID}}/address-lines",
+							"host": [
+								"{{apiUrl}}accounts"
+							],
+							"path": [
+								"{{userID}}",
+								"address-lines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Address Line",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "firstname",
+									"value": "Pauline",
+									"type": "text"
+								},
+								{
+									"key": "lastname",
+									"value": "Garoup",
+									"type": "text"
+								},
+								{
+									"key": "address_line",
+									"value": "16 rue de Paris",
+									"type": "text"
+								},
+								{
+									"key": "zip_code",
+									"value": "76001",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "France",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Lille",
+									"type": "text"
+								},
+								{
+									"key": "telephone",
+									"value": "0661010101",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}accounts/{{userID}}/address-lines/1",
+							"host": [
+								"{{apiUrl}}accounts"
+							],
+							"path": [
+								"{{userID}}",
+								"address-lines",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Address Lines",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}accounts/{{userID}}/address-lines",
+							"host": [
+								"{{apiUrl}}accounts"
+							],
+							"path": [
+								"{{userID}}",
+								"address-lines"
 							]
 						}
 					},
@@ -1163,6 +1325,32 @@
 						{
 							"key": "city",
 							"value": "villeneuve"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fuzzy Test",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apiUrl}}shop/fuzzy?s=marine",
+					"host": [
+						"{{apiUrl}}shop"
+					],
+					"path": [
+						"fuzzy"
+					],
+					"query": [
+						{
+							"key": "s",
+							"value": "marine"
 						}
 					]
 				}
