@@ -131,7 +131,7 @@ class SpacyMixin:
 
     def recommendation_by_similarity(self, values, products, initial_product, quantity: int) -> list[int]:
         import scpacy
-        
+
         df = pandas.DataFrame(values)
 
         try:

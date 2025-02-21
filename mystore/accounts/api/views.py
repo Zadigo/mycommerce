@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserInfo(generics.RetrieveUpdateAPIView):
@@ -54,3 +55,44 @@ class Signup(generics.CreateAPIView):
     queryset = get_user_model().objects.all()
     serializer_class = serializers.UserRegistrationSerializer
     permission_classes = [AllowAny]
+
+
+
+class FirebaseAuthView(generics.APIView):
+    """Endpoint used to authenticate both on
+    Firebase and Django"""
+    
+    def create_token_for_user(user):
+        """Creates JWT tokens for the given user"""
+        refresh = RefreshToken.for_user(user)
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+    
+    def post(self, request):
+        # Get the ID token from the request
+        id_token = request.data.get('idToken')
+
+        try:
+            # Verify the token
+            decoded_token = auth.verify_id_token(id_token)
+            firebase_uid = decoded_token['uid']
+
+            # Find or create user
+            user, created = get_user_model().objects.get_or_create(
+                firebase_uid=firebase_uid,
+                defaults={
+                    'email': decoded_token.get('email', ''),
+                    'username': decoded_token.get('email', '').split('@')[0],
+                    # Set other fields
+                }
+            )
+
+            # Return user data and Django auth token
+            return Response({
+                'user': serializers.UserSerializer(user).data,
+                'token': self.create_token_for_user(user)
+            })
+        except Exception as e:
+            return Response({'error': str(e)}, status=400)

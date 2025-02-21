@@ -57,12 +57,6 @@ INSTALLED_APPS = [
     'django_ckeditor_5',
     'storages',
 
-    'allauth',
-    'allauth.usersessions',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-
     'rest_framework',
     'rest_framework.authtoken',
 
