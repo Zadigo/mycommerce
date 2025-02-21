@@ -85,8 +85,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'allauth.account.middleware.AccountMiddleware'
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
 ROOT_URLCONF = 'mystore.urls'
@@ -330,50 +329,8 @@ SITE_ID = 1
 # Authentication
 
 AUTHENTICATION_BACKENDS = [
-    'allauth.account.auth_backends.AuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend'
 ]
-
-
-# Django All Auth for more information
-# on the settings for django-allauth
-# https://docs.allauth.org/en/latest/socialaccount/provider_configuration.html
-
-# For two factor authentication, see:
-# https://stackoverflow.com/questions/54908541/django-two-factor-authentication
-# https://github.com/pyauth/pyotp?tab=readme-ov-file
-# https://github.com/soldair/node-qrcode
-
-USERSESSIONS_TRACK_ACTIVITY = False
-
-SOCIALACCOUNT_FORMS = {
-    'signup': 'accounts.forms.SocialSignupForm',
-    'disconnect': 'accounts.forms.SocialLogoutForm',
-}
-
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
-        'APPS': [
-            {
-                'client_id': '123',
-                'secret': '456',
-                'key': ''
-            }
-        ],
-        # These are provider-specific settings that can only be
-        # listed here:
-        'SCOPE': [
-            "profile",
-            "email",
-        ],
-        'AUTH_PARAMS': {
-            "access_type": "online",
-        }
-    }
-}
 
 
 # CKEditor for more information on customizing

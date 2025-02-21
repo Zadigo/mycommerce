@@ -57,11 +57,10 @@ class Signup(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 
-
-class FirebaseAuthView(generics.APIView):
+class FirebaseAuthView(generics.GenericAPIView):
     """Endpoint used to authenticate both on
     Firebase and Django"""
-    
+
     def create_token_for_user(user):
         """Creates JWT tokens for the given user"""
         refresh = RefreshToken.for_user(user)
@@ -69,7 +68,7 @@ class FirebaseAuthView(generics.APIView):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
-    
+
     def post(self, request):
         # Get the ID token from the request
         id_token = request.data.get('idToken')

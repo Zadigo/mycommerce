@@ -38,6 +38,7 @@ python-levenshtein = "*"
 requests = "*"
 djangorestframework-simplejwt = "*"
 thefuzz = "*"
+daphne = "*"
 
 [dev-packages]
 autopep8 = "*"
