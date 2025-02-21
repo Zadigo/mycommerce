@@ -34,18 +34,8 @@ import { useSessionStorage } from '@vueuse/core';
 import createDjangoClient from '~/composables/django_client';
 import type { Profile } from '~/types';
 
-const authenticationStore = useAuthentication()
-const sessionProfile = useSessionStorage<Profile>('profile', null, {
-  deep: true,
-  serializer: {
-    write (value) {
-      return JSON.stringify(value)
-    },
-    read (raw) {
-      return JSON.parse(raw)
-    }
-  }
-})
+const shopStore = useShop()
+const authStore = useAuthentication()
 
 const { handleError } = useErrorHandler()
 
@@ -58,22 +48,19 @@ const citiesClient = createAxiosSimpleClient('/api/v1/', useRuntimeConfig().publ
  */
 async function requestUserDetails () {
   try {
-    if (!sessionProfile.value) {
-      const response = await client.get<Profile>(`accounts/${authenticationStore.userId}`)
+    const response = await client.get<Profile>(`accounts/${authStore.userId}`)
 
-      sessionProfile.value = response.data
-      authenticationStore.profile = response.data
-    } else {
-      authenticationStore.profile = sessionProfile.value
+    if (shopStore.sessionCache) {
+      shopStore.sessionCache.profile = response.data
     }
   } catch (e) {
     handleError(e)
   }
 }
 
-onBeforeMount(async () => {
-  await requestUserDetails()
+requestUserDetails()
 
+onBeforeMount(async () => {
   // TODO: Get the cities from the Quart backend
   // const result = await citiesClient.get('cities', {
   //   params: {
