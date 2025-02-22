@@ -57,3 +57,7 @@ export interface GuideText {
     title: string
     text: Text[]
 }
+
+export interface ExtendedLocationQuery {
+    login?: string | null
+}
