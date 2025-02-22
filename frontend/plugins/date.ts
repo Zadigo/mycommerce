@@ -13,6 +13,10 @@ export default defineNuxtPlugin(nuxtApp => {
     dayjs.extend(timezone)
     dayjs.extend(relativeTime)
 
-    nuxtApp.provide('dayjs', dayjs)
-    nuxtApp.provide('estimatedTimezone', dayjs.tz.guess())
+    return {
+        provide: {
+            dayjs,
+            estimatedTimezone: dayjs.tz.guess()
+        }
+    }
 })

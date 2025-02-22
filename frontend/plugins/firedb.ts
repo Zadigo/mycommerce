@@ -15,6 +15,10 @@ export default defineNuxtPlugin(nuxtApp => {
     })
     const db = getDatabase(app)
 
-    nuxtApp.provide('fireApp', app)
-    nuxtApp.provide('fireDb', db)
+    return {
+        provide: {
+            fireApp: app,
+            fireDb: db
+        }
+    }
 })
