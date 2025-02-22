@@ -25,7 +25,7 @@
                 {{ $t('Changer le mot de passe') }}
               </v-btn>
 
-              <v-btn class="d-flex justify-content-between align-items-center" color="dark" variant="text" rounded flat @click="showEditPassword=true">
+              <v-btn class="d-flex justify-content-between align-items-center" color="dark" variant="text" rounded flat @click="showEditPassword=false">
                 Annuler
               </v-btn>
             </div>
@@ -45,12 +45,18 @@
         <v-form v-if="showEditEmail" class="password-block" @submit.prevent>
           <v-text-field v-model="emailPasswordRequestData.email" variant="solo-filled" placeholder="Email" type="email" aria-label="Email" flat />        
           
-          <v-btn color="secondary" rounded @click="requestUpdate">
-            {{ $t("Changer l'email") }}
-          </v-btn>
+          <div class="d-flex gap-1">
+            <v-btn color="secondary" variant="tonal" rounded @click="requestUpdate">
+              {{ $t("Changer l'email") }}
+            </v-btn>
+            
+            <v-btn class="d-flex justify-content-between align-items-center" color="dark" variant="text" rounded flat @click="showEditEmail=false">
+              Annuler
+            </v-btn>
+          </div>
         </v-form>
 
-        <v-btn v-else class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block @click="showEditEmail = true">
+        <v-btn v-else class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block @click="handleEditEmail">
           <span class="me-2">
             {{ profile?.email }}
           </span>
@@ -75,12 +81,22 @@
         </h1>
       </div>
 
-      <AccountBillingForm v-for="address in profile.userprofile.address_set" :key="address.id" :address="address" />
+      <AccountBillingForm v-for="address in profile.userprofile.address_set" :key="address.id" :address="address" @delete-complete="handleDelete" />
+      <AccountBillingForm v-if="showNewAddressForm" @create-complete="handleCreation"  @close="showNewAddressForm=false" />
+
+      <div class="card-body d-flex justify-content-end">
+        <v-btn variant="tonal" rounded @click="showNewAddressForm=!showNewAddressForm">
+          <font-awesome icon="plus" />
+          Ajouter
+        </v-btn>
+      </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+import type { AddressSet } from '~/types'
+
 interface EmailPasswordData {
   email: string
   current_password: string
@@ -96,10 +112,9 @@ definePageMeta({
   layout: 'account-layout'
 })
 
+const authStore = useAuthentication()
 const { $client } = useNuxtApp() 
 const { handleError } = useErrorHandler()
-
-const authStore = useAuthentication()
 const { profile } = storeToRefs(authStore)
 
 const emailPasswordRequestData = ref<EmailPasswordData>({
@@ -109,7 +124,7 @@ const emailPasswordRequestData = ref<EmailPasswordData>({
   password2: ''
 })
 
-// const showBillingForm = ref(false)
+const showNewAddressForm = ref(false)
 const showEditPassword = ref(false)
 const showEditEmail = ref(false)
 
@@ -122,6 +137,20 @@ function resetEmailPasswordData () {
     password1: '',
     password2: ''
   }
+}
+
+function handleEditEmail() {
+  emailPasswordRequestData.value.email = profile.value.email
+  showEditEmail.value = true
+}
+
+function handleCreation(data: AddressSet) {
+  profile.value.userprofile.address_set.push(data)
+}
+
+function handleDelete(id: number) {
+  const index = profile.value.userprofile.address_set.findIndex(x => x.id === id)
+  profile.value.userprofile.address_set.splice(index, 1)
 }
 
 /**

@@ -35,7 +35,6 @@ export default defineNuxtPlugin(nuxtApp => {
             })
 
             store.$state.profile = profile
-            store.profile = toRef(store.$state, 'profile')
         }
 
         store.$subscribe(() => {

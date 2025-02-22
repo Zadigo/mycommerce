@@ -3,6 +3,9 @@ import createDjangoClient, { type LoginApiResponse } from '~/composables/django_
 
 export function useAuthencationComposable() {
     const nuxtApp = tryUseNuxtApp()
+
+    const router = useRouter()
+    const authStore = useAuthentication()
     
     const email = ref<StringNull>('')
     const password = ref<StringNull>('')
@@ -47,6 +50,9 @@ export function useAuthencationComposable() {
             
             accessToken.value = null
             refreshToken.value = null
+            authStore.profile = null
+
+            router.push('/')
 
             callback.call(nuxtApp)
         } catch {
@@ -59,7 +65,7 @@ export function useAuthencationComposable() {
         const refreshToken = useCookie('refresh')
 
         accessToken.value = 'test token'
-        refreshToken.value = 'refresh token' 
+        refreshToken.value = 'refresh token'
 
         callback()
     }

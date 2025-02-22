@@ -2,8 +2,6 @@ import { defineStore } from 'pinia'
 import type { Product, SessionCacheData } from "~/types";
 
 export const useShop =  defineStore('shop', () => {
-    const sessionCache = ref<SessionCacheData>()
-
     // Modals
     const showSearchModal = ref(false)
     const showLanguageModal = ref(false)
@@ -50,7 +48,6 @@ export const useShop =  defineStore('shop', () => {
     }
 
     return {
-        sessionCache,
         closeAllModals,
         currentProductIndex,
         addToHistory,

@@ -1,5 +1,5 @@
 <template>
-  <section style="margin-top: 59px;">
+  <section style="margin-top: 59px;margin-bottom:100px;">
     <!-- Navbar -->
     <BaseNavbar />
 
@@ -30,7 +30,6 @@
 </template>
 
 <script setup lang="ts">
-import { useSessionStorage } from '@vueuse/core';
 import createDjangoClient from '~/composables/django_client';
 import type { Profile } from '~/types';
 
@@ -49,10 +48,7 @@ const citiesClient = createAxiosSimpleClient('/api/v1/', useRuntimeConfig().publ
 async function requestUserDetails () {
   try {
     const response = await client.get<Profile>(`accounts/${authStore.userId}`)
-
-    if (shopStore.sessionCache) {
-      shopStore.sessionCache.profile = response.data
-    }
+    authStore.profile = response.data
   } catch (e) {
     handleError(e)
   }

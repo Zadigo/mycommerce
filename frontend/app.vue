@@ -19,8 +19,6 @@ import 'animate.css';
 
 // import { doc, getFirestore, setDoc } from 'firebase/firestore';
 import { Toaster } from 'vue-sonner';
-import { baseSessionCacheData } from '~/data';
-import type { SessionCacheData } from '~/types';
 
 useSchemaOrg([
   defineWebSite({
@@ -34,17 +32,6 @@ useSchemaOrg([
     '@type': ['CollectionPage', 'AboutPage', 'FAQPage']
   })
 ])
-
-const sessionCache = useSessionStorage<SessionCacheData>('cache', null, {
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    }
-  }
-})
 
 const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
   serializer: {
@@ -76,33 +63,26 @@ provide('screenOrientation', isSupported)
 provide('documentVisible', documentVisible)
 
 shopStore.$subscribe(({ storeId }) => {
-  if (storeId === 'shop') {
-    shopStore.sessionCache = sessionCache.value
-    shopStore.likedProducts = likedProducts.value
+  shopStore.likedProducts = likedProducts.value
 
-    // OPTIONAL: Activate Firebase as localstorage for user data
-    // When the data changes in the store,
-    // sync it with the Firestore directly
-    // if (cookieSessionId) {
-    //   const dbDocument = doc(db, 'user', cookieSessionId)
-    //   setDoc(dbDocument, state.sessionCache)
-    // }
-  }
+  // OPTIONAL: Activate Firebase as localstorage for user data
+  // When the data changes in the store,
+  // sync it with the Firestore directly
+  // if (cookieSessionId) {
+  //   const dbDocument = doc(db, 'user', cookieSessionId)
+  //   setDoc(dbDocument, state.sessionCache)
+  // }
 })
 
-cartStore.$subscribe(({ storeId }) => {
-  if (storeId === 'cart') {
-    cartStore.sessionCache = sessionCache.value
-  }
-})
+// cartStore.$subscribe(({ storeId }) => {
+//   cartStore.sessionCache = sessionCache.value
+// })
 
 authenticationStore.$subscribe(({ storeId }, state) => {
-  if (storeId === 'authentication') {
-    // When we update the tokens in the store,
-    // automatically update them in the cookies
-    accessToken.value = state.accessToken
-    refreshToken.value = state.refreshToken
-  }
+  // When we update the tokens in the store,
+  // automatically update them in the cookies
+  accessToken.value = state.accessToken
+  refreshToken.value = state.refreshToken
 })
 
 async function requestSessionId () {
@@ -122,35 +102,18 @@ async function requestSessionId () {
   }
 }
 
-onBeforeMount(async () => {
-  // Populate the cache with the required data
-  // before loading each page
-  if (!sessionCache.value) {
-    sessionCache.value = baseSessionCacheData
-  }
-
-  // Hook the data from the session to
-  // the cache of the store
-  if (!shopStore.sessionCache) {
-    shopStore.sessionCache = sessionCache.value
-  }
-
-  if (!cartStore.sessionCache) {
-    cartStore.sessionCache = sessionCache.value
-  }
-  
+onBeforeMount(async () => {  
   // Load the default values that will be used for
   // authentication and for the user's profile inforamtion
   authenticationStore.accessToken = accessToken.value
   authenticationStore.refreshToken = refreshToken.value
-  authenticationStore.profile = sessionCache.value.profile
 
   await requestSessionId()
 })
 
 // When the user first comes on the
-// // platform, invite him to select
-// // his preferred language
+// platform, invite him to select
+// his preferred language
 // onMounted(() => {
 //   if (!sessionCache.value.language.selected) {
 //     shopStore.showLanguageModal = true

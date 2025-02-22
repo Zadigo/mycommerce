@@ -16,7 +16,13 @@ interface RequestData {
 }
 
 export const useCart = defineStore('cart', () => {
+    // NOTE: This is overriden the plugins.pini_plugin.ts
+    // This is explicitly referenced here because there
+    // computed properties that depend on this. Maybe we
+    // should consider building them in the plugin directly
+    // in order to create logical dependency
     const sessionCache = ref<SessionCacheData>()
+
     const requestData = ref<RequestData>({
         session_id: null,
         card_token: null,

@@ -1,13 +1,12 @@
 import { defineStore } from 'pinia'
 import { useJwt } from '@vueuse/integrations/useJwt'
-import type { StringNull, Profile } from '~/types'
+import type { StringNull } from '~/types'
 import type { LoginApiResponse } from '~/composables/django_client'
 
 export const useAuthentication = defineStore('authentication', () => {
     // Modals
     const showLoginDrawer = ref(false)
 
-    const profile = ref<Profile | null | undefined>()
     const accessToken = ref<StringNull>('')
     const refreshToken = ref<StringNull>('')
     
@@ -27,7 +26,6 @@ export const useAuthentication = defineStore('authentication', () => {
     function logout() {
         accessToken.value = null
         refreshToken.value = null
-        profile.value = null
     }
 
     function setTokens (data: LoginApiResponse) {
@@ -41,7 +39,6 @@ export const useAuthentication = defineStore('authentication', () => {
         userId,
         isAuthenticated,
         showLoginDrawer,
-        profile,
         accessToken,
         refreshToken
     }
