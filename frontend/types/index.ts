@@ -8,9 +8,12 @@ export * from './shop';
 
 export type StringNull = string | null | undefined
 
+const availableLocales = ['fr', 'en', 'es'] as const;
+export type Languages = (typeof availableLocales)[number];
+
 export type LanguageOptions = {
     location: string | null
-    choice: 'fr' | 'en' | 'es' | string
+    choice: Languages
     selected: boolean
 };
 

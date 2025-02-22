@@ -9,7 +9,7 @@
       <NuxtPage />
  
       <!-- Modals -->
-      <!-- <ModalsLanguage /> -->
+      <ModalsLanguage />
     </NuxtLayout>
   </VApp>
 </template>
@@ -46,7 +46,6 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
 
 const shopStore = useShop()
 const authenticationStore = useAuthentication()
-const cartStore = useCart()
 
 const accessToken = useCookie('access')
 const refreshToken = useCookie('refresh')
@@ -114,9 +113,9 @@ onBeforeMount(async () => {
 // When the user first comes on the
 // platform, invite him to select
 // his preferred language
-// onMounted(() => {
-//   if (!sessionCache.value.language.selected) {
-//     shopStore.showLanguageModal = true
-//   }
-// })
+onMounted(() => {
+  if (!shopStore.sessionCache.language.selected) {
+    shopStore.showLanguageModal = true
+  }
+})
 </script>

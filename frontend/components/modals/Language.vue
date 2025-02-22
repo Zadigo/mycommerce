@@ -38,14 +38,17 @@
   </v-bottom-sheet>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { countries } from '~/data/countries'
+
 
 const i18n = useI18n()
 const localePath = useLocalePath()
 const shopStore = useShop()
 
-const availableLanguages = ref<string[]>(i18n.availableLocales)
+type AvailableLanguages = typeof i18n.locale.value
+
+const availableLanguages = ref<AvailableLanguages[]>(i18n.availableLocales)
 
 async function handleSelection() {
   if (shopStore.sessionCache) {
@@ -59,7 +62,7 @@ async function handleSelection() {
   await navigateTo(localePath('/'))
 }
 
-function handleLanguageSelection(value: 'fr' | 'en') {
+function handleLanguageSelection(value: AvailableLanguages) {
   if (shopStore.sessionCache) {
     shopStore.sessionCache.language.choice = value
   }
