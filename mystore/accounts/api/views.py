@@ -39,7 +39,7 @@ class AddressLines(generics.ListAPIView, generics.CreateAPIView):
         return self.queryset.filter(user_profile__user=self.request.user)
 
 
-class UpdateAddressLine(generics.UpdateAPIView):
+class UpdateDestroyAddressLine(generics.UpdateAPIView, generics.DestroyAPIView):
     queryset = Address.objects.all()
     serializer_class = serializers.AddressSerializer
     permission_classes = [IsAuthenticated]

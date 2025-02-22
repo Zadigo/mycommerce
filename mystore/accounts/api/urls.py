@@ -6,8 +6,8 @@ app_name = 'accounts_api'
 urlpatterns = [
     re_path(
         r'(?P<pk>\d+)/address-lines/(?P<address_id>\d+)$',
-        views.UpdateAddressLine.as_view(),
-        name='update_address_line'
+        views.UpdateDestroyAddressLine.as_view(),
+        name='update_destroy_address_line'
     ),
     re_path(
         r'(?P<pk>\d+)/address-lines$',
