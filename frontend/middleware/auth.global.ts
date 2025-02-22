@@ -1,12 +1,14 @@
 import type { NavigationGuard } from "vue-router"
 import { useAuthentication } from "~/stores/auth"
 
-export default defineNuxtRouteMiddleware((to, _from): ReturnType<NavigationGuard> => {
-    const store = useAuthentication()
-    // TODO: Implement authentication checks
+export default defineNuxtRouteMiddleware((to): ReturnType<NavigationGuard> => {
+    if (import.meta.server) return
+
+    const { isAuthenticated } = storeToRefs(useAuthentication())
+
     if (to.path.includes('/account/') || to.path.includes('/cart/')) {
-        if (!store.isAuthenticated) {
-            return '/?login=1'
+        if (!isAuthenticated.value) {
+            return navigateTo('/?login=1')
         }
     }
 

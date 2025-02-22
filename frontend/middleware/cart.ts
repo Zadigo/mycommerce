@@ -1,11 +1,13 @@
 import type { NavigationGuard } from "vue-router"
 import { useCart } from "~/stores/cart"
 
-export default defineNuxtRouteMiddleware((_to, _from): ReturnType<NavigationGuard> => {
-    const store = useCart()
+export default defineNuxtRouteMiddleware((to): ReturnType<NavigationGuard> => {
+    if (import.meta.server) return
 
-    if (store.products.length === 0) {
-        return true
+    const { hasProducts } = storeToRefs(useCart())
+
+    if (!hasProducts.value && to.path.includes('/cart/')) {
+        return abortNavigation('Cart does not have any items')
     } else {
         return true
     }
