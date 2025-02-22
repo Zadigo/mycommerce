@@ -8,8 +8,10 @@
     
       <NuxtPage />
  
-      <!-- Modals -->
-      <ModalsLanguage />
+      <ClientOnly>
+        <!-- Modals -->
+        <ModalsLanguage />
+      </ClientOnly>
     </NuxtLayout>
   </VApp>
 </template>
@@ -19,6 +21,7 @@ import 'animate.css';
 
 // import { doc, getFirestore, setDoc } from 'firebase/firestore';
 import { Toaster } from 'vue-sonner';
+import type { ExtendedLocationQuery } from './types';
 
 useSchemaOrg([
   defineWebSite({
@@ -44,6 +47,7 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
   }
 })
 
+const route = useRoute()
 const shopStore = useShop()
 const authenticationStore = useAuthentication()
 
@@ -60,6 +64,12 @@ const documentVisible = useDocumentVisibility()
 provide('isMobile', value)
 provide('screenOrientation', isSupported)
 provide('documentVisible', documentVisible)
+
+watch((): ExtendedLocationQuery => route.query, (newValue) => {
+  if (newValue.login && newValue.login === '1') {
+    authenticationStore.showLoginDrawer = true
+  }
+})
 
 shopStore.$subscribe(({ storeId }) => {
   shopStore.likedProducts = likedProducts.value
