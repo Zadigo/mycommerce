@@ -138,7 +138,7 @@ class ListCollectionProducts(generics.ListAPIView):
             to the user"""
             values = list(filter(lambda x: x != '', values))
             tokens = '-'.join(set(values)).lower()
-            print('create_cache_key', values)
+            # print('create_cache_key', values)
             return md5(tokens.encode()).hexdigest()
 
         if collection_name == 'all':
