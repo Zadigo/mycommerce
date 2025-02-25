@@ -7,6 +7,7 @@
 - [ ] Implement and test Amazon S3 image/static assets upload
 - [ ] Use Firebase as the main authentication system for Nuxt and remove Django allauth which is an overhead
 - [ ] Implement a firebase field (firebase_uid) in django.contrib.User in order to find/authenticate a user
+- [ ] Return the next offset (value) as a number as opposed to returning the full complete url (which is the default Django behaviour)
 
 # Nuxt
 
