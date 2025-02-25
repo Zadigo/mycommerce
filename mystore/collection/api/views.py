@@ -1,7 +1,9 @@
+from hashlib import md5
+
 from collection.api import serializers
 from collection.models import Collection
 from django.core.cache import cache
-from django.db.models import Q
+from django.db.models import Q, When, Case
 from django.db.models.functions import Lower
 from django.utils.timezone import now, timedelta
 from rest_framework import generics
@@ -9,7 +11,6 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from shop.api.serializers import ProductSerializer
 from shop.models import Product
-from hashlib import md5
 
 from mystore.utils import PaginationHelper
 
@@ -39,19 +40,73 @@ class ListCollectionProducts(generics.ListAPIView):
     permission_classes = [AllowAny]
     default_cache_timeout = 1200
 
+    def filter_by_caracteristics(self,  queryset, cache_keys):
+        """Method that allows us to filter a queryset based on size,
+        colors, price [...] and other important carachteristics of
+        the products in the database"""
+        sorted_by = self.request.GET.get('sorted_by', 'New')
+        typology = self.request.GET.getlist('typology')
+        colors = self.request.GET.getlist('colors')
+        sizes = self.request.GET.getlist('sizes')
+        price = self.request.GET.get('price', None)
+
+        if sizes:
+            cache_keys.extend(sizes)
+            string_value = sizes[-1]
+
+            if string_value != '':
+                values = string_value.split(',')
+                queryset = queryset.filter(size__name__in=values)
+
+        if price is not None:
+            cache_keys.append(price)
+            price_limit_map = {
+                'Up to 15': 15,
+                'Up to 20': 20,
+                'Up to 25': 25,
+                'Up to 30': 30,
+                'Up to 35': 35,
+                'Up to 50': 50,
+            }
+            value = price_limit_map.get(price, None)
+
+            if value is not None:
+                # queryset = queryset.filter(unit_price__lte=value)
+
+                condition = Q(on_sale=True) & Q(sale_price__gte=0)
+                logic = When(condition, then='sale_price')
+                case = Case(logic, default='unit_price')
+                queryset = queryset.annotate(price_to_use=case) \
+                    .filter(price_to_use__lte=value)
+
+        cache_keys.append(sorted_by)
+        if sorted_by == 'Price up':
+            return queryset.order_by('-unit_price')
+        elif sorted_by == 'Price down':
+            return queryset.order_by('unit_price')
+
+        return queryset.order_by('-created_on')
+
     def list(self, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
         pagination_helper = PaginationHelper()
         pagination_helper(self.request, queryset, self.serializer_class)
 
-        template = pagination_helper.get_custom_response_template()
-        template['infos'] = {'total_count': queryset.count()}
+        template = pagination_helper.get_custom_response_template(
+            infos={
+                'total_count': queryset.count()
+            }
+        )
         return Response(template)
 
     def get_queryset(self):
         queryset = super().get_queryset()
         collection_name = self.kwargs['name']
+
+        search = self.request.GET.get('q', None)
+        if search is not None:
+            queryset = queryset.filter(name__icontains=search)
 
         # NOTE: Remove the caching for now for testing
         # purposes
@@ -59,56 +114,31 @@ class ListCollectionProducts(generics.ListAPIView):
         # if state:
         #     return cache.get(collection_name)
 
+        # Cache the whole collection but also
+        # sub-categories located under the
+        # given collection
+        other_cache_keys = []
+
+        sub_category = self.request.GET.get('sub', None)
+        if sub_category is not None:
+            other_cache_keys.append(sub_category)
+            queryset = queryset.filter(sub_category=sub_category)
+
+        queryset = self.filter_by_caracteristics(queryset, other_cache_keys)
+
         cache_params = {
             'key': None,
             'value': queryset,
             'timeout': self.default_cache_timeout
         }
 
-        # Cache the whole collection but also
-        # sub-categories located under the
-        # given collection
-        other_cache_keys = []
-
-        sub_category = self.request.GET.get('s', None)
-        if sub_category is not None:
-            other_cache_keys.append(sub_category)
-            queryset = queryset.filter(sub_category=sub_category)
-
-        sorted_by = self.request.GET.get('sorted_by', 'New')
-        typology = self.request.GET.getlist('typology')
-        colors = self.request.GET.getlist('colors')
-        sizes = self.request.GET.getlist('sizes')
-        price = self.request.GET.get('price', None)
-
-        # other_cache_keys.append(sorted_by)
-        # if sorted_by == 'Price up':
-        #     queryset = queryset.order_by('-unit_price')
-        # elif sorted_by == 'Price down':
-        #     queryset = queryset.order_by('unit_price')
-        # else:
-        #     queryset = queryset.order_by('-created_on')
-
-        # other_cache_keys.extend(sizes)
-        # if sizes:
-        #     queryset = queryset.filter(size__name__in=sizes)
-
-        # if price is not None:
-        #     other_cache_keys.append(price)
-        #     price_limit_map = {
-        #         'Up to 10': 10,
-        #         'Up to 20': 20,
-        #         'Up to 30': 30,
-        #         'Up to 40': 40
-        #     }
-        #     value = price_limit_map[price]
-        #     queryset = queryset.filter(unit_price__lte=value)
-
         def create_cache_key(*values):
             """Return a hash which is the unique combination
             of every possible filters on the product provided
             to the user"""
-            tokens = '-'.join(values).lower()
+            values = list(filter(lambda x: x != '', values))
+            tokens = '-'.join(set(values)).lower()
+            print('create_cache_key', values)
             return md5(tokens.encode()).hexdigest()
 
         if collection_name == 'all':
@@ -131,8 +161,9 @@ class ListCollectionProducts(generics.ListAPIView):
             cache.set(**cache_params)
             return queryset
         else:
-            queryset = self.queryset.filter(
-                collection__category__iexact=collection_name)
+            queryset = queryset.filter(
+                collection__category__iexact=collection_name
+            )
 
             # We have two ways to create a collection of
             # items. Either via the Collection model (manual)
@@ -147,15 +178,18 @@ class ListCollectionProducts(generics.ListAPIView):
                 if not new_queryset.exists():
                     return []
 
-            products = queryset.order_by('-created_on')
+            queryset = self.filter_by_caracteristics(
+                queryset, other_cache_keys
+            )
+
             cache_params['key'] = create_cache_key(
                 collection_name,
                 *other_cache_keys
             )
 
-            cache_params['value'] = products
+            cache_params['value'] = queryset
             cache.set(**cache_params)
-            return products
+            return queryset
 
 
 class ListCollections(generics.ListAPIView):
