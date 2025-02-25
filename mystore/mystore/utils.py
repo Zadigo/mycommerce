@@ -1,4 +1,5 @@
 import os
+from urllib.parse import parse_qs, urlparse
 
 import stripe
 from django.conf import settings
@@ -24,7 +25,7 @@ class PaginationHelper:
     paginator = CustomPagination()
 
     def __init__(self):
-        self.queryset = []
+        self.total_count = 0
         self.paginated_data = []
         self.serializer_instance = None
 
@@ -32,6 +33,7 @@ class PaginationHelper:
         """Paginates a list of items using the
         CustomPagination class above and the serializer
         to be used in order to return the data"""
+        self.total_count = queryset.count()
         paginated_data = self.paginator.paginate_queryset(
             queryset,
             request
@@ -50,10 +52,34 @@ class PaginationHelper:
     def get_custom_response_template(self, **kwargs):
         """Creates a customized pagination template
         once the data has been paginated"""
+        next_link = self.paginator.get_next_link()
+        previous_link = self.paginator.get_previous_link()
+
+        next_link_obj = urlparse(next_link)
+        previous_link_obj = urlparse(previous_link)
+
+        # For Nuxt, returning the full url which is the
+        # default Django value is not usefull for us. We
+        # only need the next and previous offset numbers
+        # in order to paginate the products correctly
+        next_offset_value = 0
+        previous_offset_value = 0
+
+        next_offset = parse_qs(next_link_obj.query)
+        next_offset_value = next_offset.get('offset', None)
+        if next_offset_value is not None:
+            next_offset_value = int(next_offset_value[-1])
+
+        previous_offset = parse_qs(previous_link_obj.query)
+        previous_offset_value = previous_offset.get('offset', None)
+        if previous_offset_value is not None:
+            previous_offset_value = int(previous_offset_value[-1])
+
         data = {
-            'count': self.paginator.count,
-            'next': self.paginator.get_next_link(),
-            'previous': self.paginator.get_previous_link(),
+            'count': self.total_count,
+            'limit': self.paginator.limit,
+            'next': next_offset_value,
+            'previous': previous_offset_value,
             'results': self.paginated_data
         }
         return data | kwargs
