@@ -2,7 +2,10 @@
 for testing/development purposes and allows to 
 reset the project to a blank state by removing 
 stored images and products in the database which
-can be numerous and complicated to delete one by one
+can be numerous and complicated to delete one by one.
+
+It can also be used to delete migration files from
+the project
 """
 
 import argparse
