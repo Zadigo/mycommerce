@@ -9,6 +9,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from shop.api.serializers import ProductSerializer
 from shop.models import Product
+from hashlib import md5
 
 from mystore.utils import PaginationHelper
 
@@ -52,9 +53,11 @@ class ListCollectionProducts(generics.ListAPIView):
         queryset = super().get_queryset()
         collection_name = self.kwargs['name']
 
-        state = cache.has_key(collection_name)
-        if state:
-            return cache.get(collection_name)
+        # NOTE: Remove the caching for now for testing
+        # purposes
+        # state = cache.has_key(collection_name)
+        # if state:
+        #     return cache.get(collection_name)
 
         cache_params = {
             'key': None,
@@ -72,8 +75,41 @@ class ListCollectionProducts(generics.ListAPIView):
             other_cache_keys.append(sub_category)
             queryset = queryset.filter(sub_category=sub_category)
 
+        sorted_by = self.request.GET.get('sorted_by', 'New')
+        typology = self.request.GET.getlist('typology')
+        colors = self.request.GET.getlist('colors')
+        sizes = self.request.GET.getlist('sizes')
+        price = self.request.GET.get('price', None)
+
+        # other_cache_keys.append(sorted_by)
+        # if sorted_by == 'Price up':
+        #     queryset = queryset.order_by('-unit_price')
+        # elif sorted_by == 'Price down':
+        #     queryset = queryset.order_by('unit_price')
+        # else:
+        #     queryset = queryset.order_by('-created_on')
+
+        # other_cache_keys.extend(sizes)
+        # if sizes:
+        #     queryset = queryset.filter(size__name__in=sizes)
+
+        # if price is not None:
+        #     other_cache_keys.append(price)
+        #     price_limit_map = {
+        #         'Up to 10': 10,
+        #         'Up to 20': 20,
+        #         'Up to 30': 30,
+        #         'Up to 40': 40
+        #     }
+        #     value = price_limit_map[price]
+        #     queryset = queryset.filter(unit_price__lte=value)
+
         def create_cache_key(*values):
-            return '-'.join(values).lower()
+            """Return a hash which is the unique combination
+            of every possible filters on the product provided
+            to the user"""
+            tokens = '-'.join(values).lower()
+            return md5(tokens.encode()).hexdigest()
 
         if collection_name == 'all':
             cache_params['key'] = create_cache_key('all', *other_cache_keys)
