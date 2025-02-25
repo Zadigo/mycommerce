@@ -27,7 +27,7 @@ def delete_images():
 def delete_migration_files():
     folders = BASE_DIR.glob('**/migrations')
 
-    valid_files = []
+    valid_files: list[list[pathlib.Path]] = []
     for folder in folders:
         files = folder.glob('**/*.py')
         valid_files.append(
@@ -40,6 +40,7 @@ def delete_migration_files():
     for iterator in valid_files:
         for file in iterator:
             if file.exists() and file.is_file():
+                file.unlink()
                 print('Deleted', file)
 
 
