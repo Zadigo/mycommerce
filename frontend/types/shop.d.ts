@@ -67,8 +67,9 @@ export type Product = {
 
 export type ProductsAPIResponse = {
     count: number
-    next: string
-    previous: string
+    limit: number
+    next: number | null
+    previous: number | null
     results: Product[]
 }
 

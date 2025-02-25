@@ -13,6 +13,8 @@
       </v-container>
             
       <v-container>
+        {{ selectedFilters }}
+
         <v-expansion-panels>
           <!-- Filter By -->
           <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
@@ -78,7 +80,7 @@
           {{ $t("Supprimer") }}
         </v-btn>
         
-        <v-btn color="secondary" variant="tonal" rounded @click="show=false">
+        <v-btn color="secondary" variant="tonal" rounded @click="handleShowResults">
           Voir résulats ({{ count }})
         </v-btn>
       </v-container>
@@ -88,16 +90,9 @@
 
 <script setup lang="ts">
 import { defaultPriceFilters, defaultSizes, defaultSortingFilters } from '~/data'
+import type { SelectedFilters } from '~/types'
 
 type Actions = 'sorted by' | 'typology' | 'colors' | 'sizes' | 'price'
-
-interface SelectedFilters {
-  sorted_by: string,
-  typology: string[],
-  colors: string[],
-  sizes: string[],
-  price: string | null
-}
 
 const props = defineProps({
   modelValue: {
@@ -110,15 +105,13 @@ const props = defineProps({
 })
 
 const emit = defineEmits({
-  'update-products' (_data: string) {
+  'update-query' (_data: SelectedFilters) {
     return true
   },
   'update:modelValue'(_value: boolean) {
     return true
   }
 })
-
-const { updateList } = useListManager()
 
 const selectedFilters = ref<SelectedFilters>({
   sorted_by: 'New',
@@ -153,6 +146,22 @@ const show = computed({
   }
 })
 
+function updateList<T extends (string | number)[]>(items: T, value: string | number): T {
+  if (items.includes(value)) {
+    const index = items.findIndex(x => {
+      if (typeof x === 'number' || typeof x === 'string') {
+        return x === value
+      } else {
+        return -1
+      }
+    })
+    items.splice(index, 1)
+  } else {
+    items.push(value)
+  }
+  return items
+}
+
 /**
  * Receives a filter and then sorts the products
  */
@@ -175,19 +184,29 @@ function handleFilterSelection (action: Actions, value: string) {
       break;
 
     case 'price':
-      selectedFilters.value.price = value
+      // If the user double-clicks, then write
+      // the price as null
+      if (selectedFilters.value.price === value) {
+        selectedFilters.value.price = null
+      } else {
+        selectedFilters.value.price = value
+      }
       break;
   
     default:
       break;
   }
-  emit('update-products', queryString.value)
+}
+
+function handleShowResults() {
+  show.value = false
+  emit('update-query', selectedFilters.value)
 }
 
 /**
  *  
  */
-function handleFiltersReset () {
+function handleFiltersReset() {
   selectedFilters.value = {
     sorted_by: 'New',
     typology: [],

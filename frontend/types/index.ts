@@ -5,6 +5,8 @@ import type { Product } from './shop';
 export * from './accounts';
 export * from './cart';
 export * from './shop';
+export * from './feed'
+export * from './text'
 
 export type StringNull = string | null | undefined
 
