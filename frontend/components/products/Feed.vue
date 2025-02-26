@@ -7,7 +7,6 @@
 
     <!-- Products -->
     <template v-if="products.length > 0" #default>
-      {{ cachedResponse }}
       <ProductsIterator :products="products" :columns="currentGridSize" @has-navigated="handleNavigation" />
 
       <!-- Intersect -->

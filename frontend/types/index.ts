@@ -7,6 +7,7 @@ export * from './cart';
 export * from './shop';
 export * from './feed'
 export * from './text'
+export * from './address'
 
 export type StringNull = string | null | undefined
 
