@@ -1,2 +1,7 @@
 - Error when visiting: http://localhost:3000/shop/30 / product is null / cannot click on add to cart
 - Also: http://localhost:3000/shop/21
+
+// Hydration errors: 
+// https://www.lichter.io/articles/vue-hydration-error/
+// https://stackoverflow.com/questions/47862591/vuejs-error-the-client-side-rendered-virtual-dom-tree-is-not-matching-server-re/67978474#67978474
+// https://stackoverflow.com/questions/78552115/hydration-completed-but-contains-mismatches-using-veevalidate-and-pinia-in-nuxt
