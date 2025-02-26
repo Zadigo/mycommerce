@@ -159,3 +159,11 @@ NUXT_FIREBASE_MEASUREMENT_ID=
 ### Configuring Ionnic
 
 The same process can be applied like with Nuxt. Use `ionic serve` to start the project locally.
+
+
+## Useful e-commerce tools
+
+- Track shipping: [https://www.aftership.com/](Aftership)
+- Inventory tracking: [https://www.zoho.com/inventory/](Zoho Inventory)
+- Accounting: [https://quickbooks.intuit.com/quickbooks-commerce/](Quickbooks)
+- Messaging: [https://www.omnisend.com/pricing/](Omnisend)
