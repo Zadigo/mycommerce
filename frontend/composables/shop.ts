@@ -44,14 +44,16 @@ export function useShopComposable () {
      * and therefore adding it to the user's
      * wishlist
      */
-    function handleLike(items: number[], product: Product | null | undefined): (boolean | number[])[] {
+    function handleLike(items: number[], product: Product | null | undefined): number[] {
         if (product) {
-            const { save, managedList } = useListManager()
-            const state = save(items, product.id)
-            return [state, managedList.value]
-        } else {
-            return []
+            if (items.includes(product.id)) {
+                items.push(product.id)
+            } else {
+                const index = items.findIndex(x => product.id)
+                items.splice(index, 1)
+            }
         }
+        return items
     }
 
     return {

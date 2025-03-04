@@ -2,11 +2,11 @@ export function useDjangoUtilies() {
     const paginationUrl = ref<URL>()
 
     function getBaseUrl(port = 8000) {
-        let loc = 'http'
+        let loc = 'http://'
         let domain = `127.0.0.1:${port}`
         
         if (inProduction()) {
-            loc = 'https'
+            loc = 'https://'
             domain = useRuntimeConfig().public.djangoProdUrl || ''
         }
         

@@ -7,7 +7,11 @@ export default defineNuxtConfig({
   ssr: true,
   routeRules: {
     '/': {
-      swr: true
+      swr: true,
+      cache: {
+        base: 'fs',
+        maxAge: 1,
+      }
     },
     '/shop/collection/**': {
       ssr: true
@@ -63,8 +67,10 @@ export default defineNuxtConfig({
     '@nuxt/test-utils',
     '@nuxtjs/seo',
     '@vesp/nuxt-fontawesome',
+    '@nuxt/icon',
+    // 'vue-sonner/nuxt',
     'vuetify-nuxt-module',
-    'vue-sonner/nuxt'
+    '@nuxtjs/tailwindcss'
   ],
   i18n: {
     baseUrl: './',
@@ -202,9 +208,10 @@ export default defineNuxtConfig({
     // })
   },
   css: [
+    '~/assets/css/main.css',
     '~/assets/style.scss',
-    '~/node_modules/bootstrap/dist/css/bootstrap.min.css',
-    '~/node_modules/mdb-ui-kit/css/mdb.min.css',
+    // '~/node_modules/bootstrap/dist/css/bootstrap.min.css',
+    // '~/node_modules/mdb-ui-kit/css/mdb.min.css',
   ],
   fontawesome: {
     icons: {

@@ -1,8 +1,8 @@
 <template>
-  <div id="feed-header" ref="headerEl" class="card shadow-none mb-3">
+  <div id="feed-header" ref="headerEl" class="card shadow-none mb-3 px-1">
     <div class="card-body pt-1 text-center">
-      <div class="d-flex justify-content-between align-items-center">
-        <div class="d-flex justify-content-left gap-1">
+      <div class="flex justify-between align-center">
+        <div class="flex justify-content-left gap-1">
           <div class="d-flex justify-content-between align-items-center me-3 gap-1">
             <v-btn to="/shop/collection/all" variant="tonal">
               {{ $t('Afficher tout') }}
@@ -19,9 +19,9 @@
           </div>
         </div>
         
-        <div class="d-flex justify-content-right gap-1 align-items-center">
+        <div class="flex justify-end gap-1 align-center">
           <v-skeleton-loader :is-loading="productsLoading" type="text">
-            <span id="product-count" class="fw-bold me-2">
+            <span id="product-count" class="font-bold me-2">
               {{ count }} produits trouvés
             </span>
           </v-skeleton-loader>

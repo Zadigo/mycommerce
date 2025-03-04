@@ -1,7 +1,9 @@
 <template>
   <template v-if="products.length > 0">
-    <div v-for="(product, i) in products" id="product" :key="product.id" :class="gridClass">
-      <ProductCard :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
+    <div id="products" class="grid grid-cols-4 gap-2 px-1">
+      <div v-for="(product, i) in products" id="product" :key="product.id">
+        <ProductCard :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
+      </div>
     </div>
   </template>
 </template>
@@ -41,12 +43,6 @@ const emit = defineEmits({
    */
   'has-navigated'(_data: (number | Product)[] | null | undefined) {
     return true
-  }
-})
-
-const gridClass = computed(() => {
-  return {
-    [`col-md-${props.columns} col-sm-6`]: true
   }
 })
 

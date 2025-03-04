@@ -9,6 +9,27 @@
     <template v-if="products.length > 0" #default>
       <ProductsIterator :products="products" :columns="currentGridSize" @has-navigated="handleNavigation" />
 
+      <ClientOnly>
+        <!-- Modals -->
+        <Teleport to="body">
+          <ModalsProductFilters v-model="showProductFilters" :count="productCount" @update-query="requestFilteredProducts" />
+        </Teleport>
+      </ClientOnly>
+    </template>
+    
+    <template v-else #default>
+      <div class="col-6 offset-md-3 text-center p-5 my-5">
+        <p class="h4 fw-light">
+          {{ $t('Page not available text') }}
+        </p>
+
+        <NuxtLink to="/shop/collection/all" class="mt-3" color="secondary" variant="tonal" rounded @click="resetQuery">
+          {{ $t('Voir toute la collection') }}
+        </NuxtLink>
+      </div>
+    </template>
+
+    <template #intersect>
       <!-- Intersect -->
       <ClientOnly>
         <div v-if="products.length > 0" id="product-pagination" ref="intersectionTarget" class="fw-bold text-uppercase d-flex justify-content-center mt-5">
@@ -26,27 +47,9 @@
             </v-btn>
           </div>
         </div>
-      </ClientOnly>
-
-      <ClientOnly>
-        <!-- Modals -->
-        <Teleport to="body">
-          <ModalsProductFilters v-model="showProductFilters" :count="productCount" @update-query="requestFilteredProducts" />
-        </Teleport>
-      </ClientOnly>
+      </ClientOnly>    
     </template>
 
-    <template v-else #default>
-      <div class="col-6 offset-md-3 text-center p-5 my-5">
-        <p class="h4 fw-light">
-          {{ $t('Page not available text') }}
-        </p>
-
-        <NuxtLink to="/shop/collection/all" class="mt-3" color="secondary" variant="tonal" rounded @click="resetQuery">
-          {{ $t('Voir toute la collection') }}
-        </NuxtLink>
-      </div>
-    </template>
   </ProductsFeedLayout>
 </template>
 

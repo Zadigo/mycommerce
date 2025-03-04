@@ -64,3 +64,21 @@ export interface GuideText {
 export interface ExtendedLocationQuery {
     login?: string | null
 }
+
+
+export interface FooterSection {
+    name: string
+        links: {
+            name: string
+            to: string
+        }[]
+}
+
+export interface FooterLinks {
+    socials: {
+        name: string
+        url: string
+        icon: string | null
+    }[],
+    sections: FooterSection[]
+}

@@ -1,54 +1,69 @@
 <template>
-  <article v-if="product" :data-id="product.id" :aria-label="product.name" class="card shadow-none rounded-0" @mouseenter="isHovered=true" @mouseleave="isHovered=false">
-    <NuxtLink :to="`/shop/${product.id}`" @click="emit('has-navigated', [index, product])">
-      <NuxtImg :src="mediaPath(product.get_main_image?.original, '/placeholder.svg')" format="webp" class="card-img rounded-0" />
-    </NuxtLink>
+  <article v-if="product" :data-id="product.id" :aria-label="product.name" class="group relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
+    <!-- Carousel -->
+    <div class="relative">
+      <button v-if="isHovered" type="button" class="absolute top-2/4 left-3 py-5 rounded-full z-10 w-5 place-content-center hover:opacity-60 flex" @click="handlePreviousImage">
+        <Icon name="fa:caret-left" class="" />
+      </button>
+      
+      <NuxtLink :to="`/shop/${product.id}`" @click="emit('has-navigated', [index, product])">
+        <img :src="mediaPath(currentImage?.original, '/placeholder.svg')" :alt="currentImage?.name" :aria-label="currentImage?.name" class="self-center aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-full">
+      </NuxtLink>
 
+      <button v-if="isHovered" type="button" class="absolute top-2/4 right-3 py-5 rounded-full z-10 w-5 place-content-center hover:opacity-60" @click="handleNextImage">
+        <Icon name="fa:caret-right" class="" />
+      </button>
+    </div>
+    
     <!-- Cart -->
-    <div v-if="isHovered && showCart" ref="cardCoverEl" class="card-cover p-4">
-      <div class="row text-center">
-        <div class="col-12">
-          <div v-if="requiresSizeItems" class="size-items">
-            <p id="size-text">
-              {{ $t("Sélectionne la taille") }}
-            </p>
-            
-            <div class="d-flex justify-content-center flex-wrap gap-1">
-              <ProductSizeButton v-for="size in product.sizes" :key="size.id" :size="size" custom-class="border-none" @update:selected-size="handleAddToCart" />
-            </div>
-          </div>
+    <div v-show="showCart && isHovered" class="absolute rounded-md w-full flex justify-center align-middle transition-all ease-in-out z-50 invisible lg:visible lg:bottom-[3.5rem]">
+      <div class="bg-white p-5 w-full m-1">
+        <p class="fw-semibold text-sm text-center mb-3 font-normal" aria-label="">
+          {{ $t("Sélectionne la taille") }}
+        </p>
 
-          <v-btn v-else variant="plain" color="dark" block rounded @click="handleAddToCart('Unique')">
-            {{ $t('Ajouter au panier') }}
-          </v-btn>
+        <div v-if="requiresSizeItems" class="flex justify-center flex-wrap gap-2">
+          <button v-for="size in product.sizes" :key="size.id" :aria-label="size.name" type="button" class="py-1 px-1 text-sm flex gap-1 place-items-center underline-offset-4 transition-all duration-200 hover:underline hover:font-semibold" @click="handleAddToCart(size.name)">
+          <!-- <button v-for="size in product.sizes" :key="size.id" type="button" class="py-1 px-4 rounded-full text-sm flex gap-1 place-items-center hover:bg-gray-50" aria-label=""> -->
+            <Icon v-if="!size.availability" name="fa-regular:clock" size="11" class="text-orange-400" />
+            <span>{{ size.name }}</span>
+          </button>
         </div>
+
+        <v-btn v-else variant="plain" color="dark" block rounded @click="handleAddToCart('Unique')">
+          {{ $t('Ajouter au panier') }}
+        </v-btn>
       </div>
     </div>
 
-    <!-- Heart -->
-    <button v-if="showLikeButton" id="btn-like-product" type="button" class="btn btn-light btn-floating" aria-label="Like product" @click="proxyHandleLike">
-      <font-awesome v-if="isLiked" icon="heart" />
-      <font-awesome v-else :icon="['far', 'heart']" />
-    </button>
-
-    <!-- Infos -->
-    <NuxtLink v-show="showPrices" :to="`/shop/${product.id}`" class="link-dark" @click="emit('has-navigated', [index, product])">
-      <div class="card-body pt-0 px-2 pb-0">
-        <p id="product-name" class="mb-0 mt-1 fw-light" :aria-label="product.name">
-          {{ product.name }}
-        </p>
+    <div class="mt-4 flex justify-between align-top gap-5">
+      <div>
+        <h3 class="text-sm text-gray-700">
+          <NuxtLink :to="`/shop/${product.id}`" @click="emit('has-navigated', [index, product])">
+            <span aria-hidden="true" class="absolute inset-0" />
+            {{ product.name }}
+          </NuxtLink>
+        </h3>
         
-        <p class="pricing fw-bold">
-          <template v-if="typeof product.get_price === 'number'">
-            {{ $n(product.get_price, 'currency') }}
-          </template>
+        <p v-if="typeof product.get_price === 'number'" class="font-semibold text-sm">
+          {{ $n(product.get_price, 'currency') }}
+        </p>
 
-          <template v-else>
-            {{ $n(parseFloat(product.get_price), 'currency') }}
-          </template>
+        <p v-else class="font-semibold text-sm">
+          {{ $n(parseFloat(product.get_price), 'currency') }}
         </p>
       </div>
-    </NuxtLink>
+      
+      <!-- <p class="text-sm font-medium text-gray-900">
+        35€
+      </p> -->
+      <div class="flex align-center">
+        <button type="button" class="bg-white rounded-full p-2" @click="proxyHandleLike">
+          <Icon v-if="isLiked" name="fa:heart" size="13" />
+          <Icon v-else name="fa-regular:heart" size="13" />
+        </button>
+      </div>
+    </div>
   </article>
 
   <article v-else>
@@ -70,7 +85,7 @@ const props = defineProps({
     default: null
   },
   product: {
-    type: Object as PropType<Product | undefined>,
+    type: Object as PropType<Product>,
     required: true
   },
   showLikeButton: {
@@ -116,9 +131,17 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
   }
 })
 
+const currentIndex = ref<number>(0)
 const isHovered = ref(false)
 const cardCoverEl = ref<HTMLElement>()
 
+const numberOfImages = computed(() => props.product.images?.length || 0)
+const currentImage = computed(() => {
+  if (props.product.images) {
+    return props.product.images[currentIndex.value]
+  }
+  return null
+})
 const requiresSizeItems = computed(() => {
   if (props.product) {
     return props.product.sizes.length > 0
@@ -143,26 +166,40 @@ async function handleAddToCart (size?: string | number) {
 
 function proxyHandleLike () {
   const result = handleLike(likedProducts.value, props.product)
-  const state = result[0]
-
-  likedProducts.value = result[1]
+  console.log('handleLike', likedProducts.value, result)
+  likedProducts.value = result
   isLiked.value = !isLiked.value
+  // gtag('event', 'add_to_wishlist', {
+  //   items: {
+  //     item_id: props.product?.id,
+  //     item_name: props.product?.name,
+  //     price: props.product?.get_price,
+  //     quantity: 1,
+  //     item_brand: null,
+  //     item_category: props.product?.category,
+  //     item_category2: props.product?.sub_category,
+  //     item_variant: props.product?.color,
+  //     index: 0,
+  //     item_reference: null
+  //   }
+  // })
+}
 
-  if (state) {
-    // gtag('event', 'add_to_wishlist', {
-    //   items: {
-    //     item_id: props.product?.id,
-    //     item_name: props.product?.name,
-    //     price: props.product?.get_price,
-    //     quantity: 1,
-    //     item_brand: null,
-    //     item_category: props.product?.category,
-    //     item_category2: props.product?.sub_category,
-    //     item_variant: props.product?.color,
-    //     index: 0,
-    //     item_reference: null
-    //   }
-    // })
+function handlePreviousImage() {
+  const nextIndex = currentIndex.value - 1
+  if (nextIndex <= 0) {
+    currentIndex.value = numberOfImages.value - 1
+  } else {
+    currentIndex.value = nextIndex
+  }
+}
+
+function handleNextImage() {
+  const nextIndex = currentIndex.value + 1
+  if (nextIndex >= numberOfImages.value) {
+    currentIndex.value = 0
+  } else {
+    currentIndex.value = nextIndex
   }
 }
 
@@ -172,66 +209,3 @@ onMounted(() => {
   }
 })
 </script>
-
-<style lang="scss" scoped>
-$base_cover_bottom_position: 13%;
-
-#btn-like-product {
-  position: absolute;
-  top: 5%;
-  right: 5%;
-}
-
-#size-text {
-  font-size: 0.8rem;
-}
-
-.card-cover {
-  position: absolute;
-  bottom: $base_cover_bottom_position;
-  height: auto;
-  width: 99%;
-  background-color: white;
-  left: 50%;
-  transform: translateX(-50%);
-
-  &-enter-active,
-  &-leave-active {
-    transition: all .3s ease-in;
-  }
-  
-  &-enter-to,
-  &-enter-from {
-    opacity: 0;
-  }
-  
-  &-enter-from,
-  &-enter-to {
-    opacity: 1;
-  }
-}
-
-@function adjust_bottom($value, $add) {
-  @return calc($value - $add);
-}
-
-@media screen and (min-width: 1440px) and (max-width: 1920px) {
-  .card-cover {
-    bottom: adjust_bottom($base_cover_bottom_position, 3%);
-  }
-}
-
-@media screen and (min-width: 1921px) {
-  .card-cover {
-    bottom: adjust_bottom($base_cover_bottom_position, 3%);
-  }
-}
-
-p#product-name {
-  font-size: .85rem;
-}
-
-.pricing {
-  font-size: 0.90rem;
-}
-</style>

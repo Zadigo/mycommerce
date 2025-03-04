@@ -9,7 +9,6 @@
       <NuxtPage />
  
       <ClientOnly>
-        <!-- Modals -->
         <ModalsLanguage />
       </ClientOnly>
     </NuxtLayout>

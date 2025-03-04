@@ -1,17 +1,15 @@
 <template>
-  <nav class="navbar navbar-expand-lg bg-white fixed-top shadow-none" style="z-index: 1000;">
-    <div class="container-fluid align-items-center">
-      <NuxtLink to="/" class="navbar-brand fw-bold text-uppercase">
-        <span class="fs-5">
-          E-commerce
-        </span>
+  <BaseNavbar>
+    <div class="flex justify-between align-center px-5">
+      <NuxtLink to="/" class="text-md uppercase font-bold">
+        E-commerce
       </NuxtLink>
       
-      <v-btn class="ms-auto" variant="tonal" color="dark" rounded @click="shopStore.showSearchModal=true">
+      <v-btn class="ms-auto me-2" variant="tonal" color="dark" rounded @click="shopStore.showSearchModal=true">
         {{ $t('Rechercher') }}
       </v-btn>
 
-      <ul class="navbar-nav">
+      <ul class="inline-flex gap-3">
         <li class="nav-item">
           <a href="#" class="nav-link" @click.prevent="handleShowCartDrawer">
             <font-awesome icon="shopping-bag" class="me-1" />
@@ -41,9 +39,7 @@
         </li>
       </ul>
     </div>
-  </nav>
-  <!-- <BaseNavHeader>
-  </BaseNavHeader> -->
+  </BaseNavbar>
 </template>
 
 <script setup lang="ts">

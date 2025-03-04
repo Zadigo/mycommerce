@@ -1,28 +1,34 @@
 <template>
-  <section id="shop" class="position-relative">
+  <section id="shop" class="relative">
     <!-- Navbar -->
-    <BaseNavbar />
+    <Navbar />
 
-    <div class="container-fluid">
-      <slot />
-    </div>
+    <slot />
 
     <!-- Modals -->
-    <ClientOnly>
+    <!-- <ClientOnly>
       <ModalsLogin />
       <ModalsCart @edit-product="handleProductEdition" />
       <ModalsAddedProduct />
       <ModalsEditProduct />
       <ModalsSearch />
       <ModalsWhatsApp v-model="showWhatsAppModal" />
-    </ClientOnly>
+    </ClientOnly> -->
 
     <!-- Footer -->
-    <BaseFooter @show-whatsapp="showWhatsAppModal=true" />
+    <!-- <Footer @show-whatsapp="showWhatsAppModal=true" /> -->
+    <BaseFooter :items="footerLinks" @show-whatsapp="showWhatsAppModal=true">
+      <template #section>
+        <BaseFooterSection>
+          
+        </BaseFooterSection>
+      </template>
+    </BaseFooter>
   </section>
 </template>
 
 <script setup lang="ts">
+import { footerLinks } from '~/data/footer'
 import type { ProductToEdit } from '~/types';
 
 const cartStore = useCart()
