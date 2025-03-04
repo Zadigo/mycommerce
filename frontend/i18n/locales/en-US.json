@@ -106,5 +106,40 @@
     "Envoyer": "Envoyer",
     "Mes commandes": "Mes commandes",
     "Date d'anniversaire": "Date d'anniversaire",
-    "Sexe": "Sexe"
+    "Sexe": "Sexe",
+    "measurements": {
+        "cm": {
+            "short": "cm",
+            "long": "centimètre",
+            "longPlural": "centimètres"
+        },
+        "m": {
+            "short": "m",
+            "long": "mètre",
+            "longPlural": "mètres"
+        },
+        "ft": {
+            "short": "pi",
+            "long": "pied",
+            "longPlural": "pieds"
+        }
+    },
+    "Mentions légales": "Mentions légales",
+    "Conditions générales": "Conditions générales",
+    "Aide": "Aide",
+    "Acheter en ligne": "Acheter en ligne",
+    "Guide": "Guide",
+    "Achat en tant qu'invité": "Achat en tant qu'invité",
+    "Me désabonner": "Me désabonner",
+    "Robes": "Robes",
+    "Tops": "Tops",
+    "Chemises": "Chemises",
+    "Pantalons": "Pantalons",
+    "Informations légales": "Informations légales",
+    "Offres promotionnelles": "Offres promotionnelles",
+    "Charte de confidentialité": "Charte de confidentialité",
+    "Collections": "Collections",
+    "Rouge": "Red",
+    "Taille et hauteur du mannequin": "Taille et hauteur du mannequin",
+    "Livraison et retours": "Livraison et retours"
 }
