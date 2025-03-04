@@ -120,6 +120,11 @@
         </BaseCard>
       </BaseModal>
     </ClientOnly> -->
+
+    <!-- <ClientOnly>
+      <ModalsImageZoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
+      <ModalsSizeGuide v-model="showSizeGuideDrawer" :product="product" />
+    </ClientOnly> -->
   </section>
 </template>
 
