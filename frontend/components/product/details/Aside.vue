@@ -1,101 +1,88 @@
 <template>
-  <div id="product-aside" ref="productAside" class="position-relative ps-5">
-    <!-- Information -->
-    <template v-if="product">
-      <h1 :aria-label="product?.name" class="h3">
-        {{ product.name }}
-      </h1>
-    </template>
-
-    <template v-else>
-      <BaseSkeleton :loading="isLoading" height="20px" width="200px" class="mb-2" />
-    </template>
-
-    <!-- Price -->
-    <template v-if="product">
-      <p v-if="product?.on_sale" class="h5 fw-bold mb-3 d-flex gap-2">
-        <span class="text-danger">
-          {{ translatePrice(product?.sale_price) }}
-        </span>
-
-        <span class="text-danger">
-          {{ translatePrice(product?.sale_value) }}
-        </span>
-
-        <span>
-          <s>
-            {{ translatePrice(product?.unit_price) }}
-          </s>
-        </span>
-      </p>
-
-      <p v-else class="h5 fw-bold mb-3" aria-label="Product price">
-        {{ translatePrice(product?.get_price) }}
-      </p>
-    </template>
-
-    <template v-else>
-      <BaseSkeleton :loading="isLoading" height="20px" width="100px" class="mb-3" />
-    </template>
-
-    <!-- Variants -->
-    <div v-if="hasColorVariants" id="variants" class="d-flex justify-content-start align-items-center gap-1 my-4">
-      <div v-for="variant in product?.variants" :key="variant.id" class="variant">
-        <NuxtLink id="product-variant" :to="`/shop/${variant.id}`" :aria-label="`${variant.id} ${variant.color}`">
-          <v-img :src="mediaPath(variant.get_main_image?.original)" :alt="variant.color" width="50" />
-        </NuxtLink>
+  <aside v-if="product" id="product-details" class="col-span-4 px-10">
+    <DevOnly>
+      <div class="fixed top-2 left-0 w-2/4 z-50 bg-yellow-200 rounded-md shadow-md p-10">
+        {{ product }}
       </div>
-    </div>
+    </DevOnly>
 
-    <!-- Reference -->
-    <p id="product-reference" class="text-small mb-2" aria-label="Product color and reference">
-      {{ product?.color }} · Ref. 0623/152/505
-    </p>
+    <h1 id="product-name" :aria-label="product.color_variant_name" class="text-xl mt-5 font-semibold">
+      {{ product.name }}
+    </h1>
+    
+    <template v-if="product">
+      <div v-if="product.on_sale" class="font-bold text-xl inline-flex gap-2">
+        <span class="text-red-400">{{ translatePrice(product.get_price) }}</span>
+        <span class="text-red-400">{{ translatePrice(product.sale_value) }}</span>
+        <span class="text-black"><s>{{ translatePrice(product.unit_price) }}</s></span>
+      </div>
 
-    <hr class="my-4 text-body-tertiary">
-
-    <!-- Sizes -->
-    <ProductSizeBlock v-if="product" ref="sizeEl" :sizes="product.sizes" @update-size="handleSizeSelection" />
-
-    <!-- Size Guide -->
-    <p class="text-small mt-3 mb-1">
-      Taille et hauteur du mannequin : S · 172 cm
-    </p>
-
-    <div class="d-flex justify-content-start gap-3 mb-2">
-      <a href="#" class="text-small fw-bold shadow-none btn-link link-dark text-decoration-underline" @click.prevent="emit('show-size-guide')">
-        {{ $t('Guide des tailles') }}
-      </a>
-    </div>
-
-    <Transition id="choose-size" tag="div" name="opacity">
-      <p v-if="showSizeSelectionWarning" class="text-danger fs-6 fw-light mb-1">
-        {{ $t("Tu dois sélectionner une taille") }}
+      <p v-else class="font-bold text-xl">
+        {{ translatePrice(product?.unit_price) }}
       </p>
+    </template>
+
+    <div v-if="product.variants" id="variants" class="my-5 flex gap-2 h-auto w-full">
+      <NuxtLink id="variant" v-for="variant in product.variants" :key="variant.id" :to="`/shop/${variant.id}`" aria-current="true">
+        <!-- TODO: Missing variant name or color variant name -->
+        <NuxtImg :src="mediaPath(variant.get_main_image?.original, '/placeholder.svg')" alt="variant.name" width="50" class="cursor-pointer hover:opacity-80" />
+      </NuxtLink>
+    </div>
+
+    <p id="product-reference" class="font-light text-sm my-5">
+      {{ $t(product.color) }} · Réf.. 0544/360/400
+    </p>
+    
+    <div class="border-t-2 border-gray-100 my-5 me-10" />
+
+    <div v-if="product" id="sizes" class="inline-flex gap-2 mb-4">
+      <button v-for="size in product.sizes" :key="size.id" type="button" :class="{'bg-gray-200': userSelection.size === size.name, 'bg-gray-50': userSelection.size !== size.name }" class="rounded-full w-10 h-10 text-sm font-normal place-content-center hover:bg-gray-100 hover:border-2 hover:border-gray-100" @click="handleSizeSelection(size.name)">
+        <Icon v-if="!size.availability" name="fa-regular:clock" size="12" class="text-orange-400" />
+        {{ size.name }}
+      </button>
+    </div>
+    <BaseSkeleton v-else :loading="true" />
+
+    <p class="font-light">
+      {{ $t('Taille et hauteur du mannequin') }} : 
+      <span v-if="product.model_height">{{ product.model_size }} · {{ product.model_height }} cm</span> 
+      <span v-else>N.D.</span>
+    </p>
+    <NuxtLink to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('show-size-guide')">
+      {{ $t('Guide des tailles') }}
+    </NuxtLink>
+    
+    <Transition mode="out-in" class="transition-all duration-300">
+      <BaseButton v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" class="mt-10 place-content-center" color="dark" tonal @click="showAvailabilityModal=true">
+        <Icon name="fa:envelope" size="12" class="me-1" />
+        {{ $t('Me tenir informer') }}
+      </BaseButton>
+
+      <BaseButton v-else class="mt-10" color="primary" tonal :disabled="false" @click="handleAddToCart">
+        <font-awesome v-if="stockState && stockState.almost_sold_out" icon="clock" class="me-1" />
+        {{ $t('Ajouter au panier') }}
+      </BaseButton>
     </Transition>
 
-    <div class="actions d-flex justify-content-start gap-1 my-4">
-      <button id="btn-add-to-cart" type="button" class="btn btn-success btn-lg shadow-none btn-rounded" aria-label="Add to cart" @click="handleAddToCart">
-        <font-awesome v-if="stockState && stockState.almost_sold_out" icon="clock-rotate-left" class="text-warning me-2" />
-        <v-progress-circular v-if="addingToCartState" color="light" indeterminate />
-        <span v-else>{{ $t('Ajouter au panier') }}</span>
-      </button>
+    <BaseButton aria-label="Ajouter au favori" @click="proxyHandleLike">
+      <font-awesome v-if="isLiked" icon="heart" />
+      <font-awesome v-else :icon="['far', 'heart']" />
+    </BaseButton>
 
-      <button type="button" class="btn btn-lg shadow-none btn-rounded btn-light" aria-label="Like product" @click="proxyHandleLike">
-        <font-awesome v-if="isLiked" icon="heart" />
-        <font-awesome v-else :icon="['far', 'heart']" />
-      </button>
-    </div>
+    <BaseList class="shadow-none border border-gray-100 mt-5">
+      <BaseListitem class="border-b-2 border-gray-100 flex justify-between items-center text-sm" @click="emit('show-composition-guide')">
+        <div class="flex justify-start gap-2">
+          <span>{{ $t('Composition, soin et traçabilité') }}</span>
+        </div>
+        <Icon name="fa:chevron-right" size="10" />
+      </BaseListitem>
 
-    <!-- Additional Information -->
-    <ProductDetailsAdditionalInfo />
-
-    <!-- Delivery Types -->
-    <ProductDetailsDeliveryType class="mt-3">
-      <ProductDetailsDeliveryTypes class="text-small" icon-name="shop" text="Enlèvement en magasin" />
-      <ProductDetailsDeliveryTypes class="text-small" icon-name="truck" text="Livraison standard à domicile" sub-text="Pour toute commande supérieure à 45,00 €" />
-    </ProductDetailsDeliveryType>
-  </div>
+      <BaseListitem class="flex justify-between text-sm" @click="emit('show-delivery-guide')">
+        {{ $t('Livraison et retours') }}
+        <Icon name="fa:chevron-right" size="10" />
+      </BaseListitem>
+    </BaseList>
+  </aside>
 </template>
 
 <script setup lang="ts">
@@ -116,6 +103,12 @@ const props = defineProps({
 
 const emit = defineEmits({
   'show-size-guide' () {
+    return true
+  },
+  'show-delivery-guide'() {
+    return true
+  },
+  'show-composition-guide'() {
     return true
   }
 })
@@ -140,6 +133,7 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
 
 const cartStore = useCart()
 
+const showAvailabilityModal = ref(false)
 const sizeEl = ref<HTMLElement>()
 const productAside = ref<HTMLElement>()
 
@@ -158,6 +152,14 @@ const hasColorVariants = computed(() => {
   }
 })
 
+const sizeObject = computed(() => {
+  if (props.product) {
+    return props.product.sizes.find(x => x.name === userSelection.value.size) || null
+  } else {
+    return null
+  }
+})
+
 // Actions where the user selects a given size
 // for a given product 
 function handleSizeSelection (size: string | number | null | undefined) {
@@ -166,27 +168,23 @@ function handleSizeSelection (size: string | number | null | undefined) {
 
 function proxyHandleLike () {
   const result = handleLike(likedProducts.value, props.product)
-  const state = result[0]
-
-  likedProducts.value = result[1]
+  likedProducts.value = result
   isLiked.value = !isLiked.value
 
-  if (state) {
-    // gtag('event', 'add_to_wishlist', {
-    //   items: {
-    //     item_id: props.product?.id,
-    //     item_name: props.product?.name,
-    //     price: props.product?.get_price,
-    //     quantity: 1,
-    //     item_brand: null,
-    //     item_category: props.product?.category,
-    //     item_category2: props.product?.sub_category,
-    //     item_variant: props.product?.color,
-    //     index: 0,
-    //     item_reference: null
-    //   }
-    // })
-  }
+  // gtag('event', 'add_to_wishlist', {
+  //   items: {
+  //     item_id: props.product?.id,
+  //     item_name: props.product?.name,
+  //     price: props.product?.get_price,
+  //     quantity: 1,
+  //     item_brand: null,
+  //     item_category: props.product?.category,
+  //     item_category2: props.product?.sub_category,
+  //     item_variant: props.product?.color,
+  //     index: 0,
+  //     item_reference: null
+  //   }
+  // })
 }
 
 // Handles the action of adding a product
