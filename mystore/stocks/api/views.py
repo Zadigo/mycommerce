@@ -40,8 +40,8 @@ class UpdateStockStatus(generics.GenericAPIView):
     products. This endpoint is triggered by the sucess
     page in Nuxt or by the payment page"""
 
-    queryset = Stock.objects.all()
-    serializer_class = serializers.StockSerializer
+    queryset = Stock.objects.filter()
+    serializer_class = serializers.UpdateStockSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
