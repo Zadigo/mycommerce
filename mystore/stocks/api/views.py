@@ -21,13 +21,18 @@ class GetProductStockStatus(generics.RetrieveAPIView):
     def get(self, request, pk, **kwargs):
         try:
             product = Stock.objects.get(
-                product__id=pk, 
-                product__active=True
+                variant__product__id=pk,
+                variant__product__active=True
             )
         except:
-            return Response({}, status=status.HTTP_202_ACCEPTED)
-        serializer = self.get_serializer(instance=product)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            data = {}
+            response_status = status.HTTP_202_ACCEPTED
+        else:
+            response_status = status.HTTP_200_OK
+            serializer = self.get_serializer(instance=product)
+            data = serializer.data
+
+        return Response(data, status=response_status)
 
 
 class UpdateStockStatus(generics.GenericAPIView):
