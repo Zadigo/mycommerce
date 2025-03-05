@@ -72,37 +72,40 @@ class CartManager(QuerySet):
             )
             authenticated_items.update(is_stale=True)
 
-        size = kwargs.get('size')
-
-        if size != 'Unique':
-            message = f'Product with size {size} is no available'
-            sizes = product.size_set.filter(name=size)
-
-            if sizes.exists():
-                size = sizes.get(name=size)
-                if not size.active or not size.availability:
-                    raise ValidationError(detail={'size': message})
-            else:
-                raise ValidationError(detail={'size': message})
-
-        # If the frontend is trying to create
-        # an object with a product that requires
-        # a specific size, raise a ValidationError
-        if size == 'Unique':
-            if product.has_sizes:
-                message = (
-                    "Trying to use a 'unique' size "
-                    "on a produt that contains sizes"
-                )
-                raise ValidationError(detail={'size': message})
-
         params = {
             'session_id': session_id,
             'product': product,
             'price': product.get_price, # TODO: Implement the ability to use VAT price if applicable
-            'size': size,
+            'size': None,
             'is_anonymous': not request.user.is_authenticated
         }
+
+        size_string = kwargs.get('size')
+
+        if size_string != 'Unique':
+            message = f'Product with size {size_string} is no available'
+            sizes = product.size_set.filter(name=size_string)
+
+            try:
+                size = sizes.get(name=size_string)
+            except:
+                raise ValidationError(detail={'size': message})
+            else:
+                if not size.active or not size.availability:
+                    raise ValidationError(detail={'size': message})
+                
+                params['size'] = size.name
+
+        # If the frontend is trying to create
+        # an object with a product that requires
+        # a specific size, raise a ValidationError
+        if size_string == 'Unique':
+            if product.has_sizes:
+                message = (
+                    "Trying to use a 'unique' size "
+                    "on a product that contains sizes"
+                )
+                raise ValidationError(detail={'size': message})
 
         if request.user.is_authenticated:
             params['user'] = request.user
