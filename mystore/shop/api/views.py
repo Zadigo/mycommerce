@@ -162,7 +162,21 @@ class ListRecommendations(generics.ListAPIView):
             return self.recommendation_by_randomness(queryset, quantity)
 
         if product_id_or_collection_name is None:
-            return []
+            novelties = cache.get('novelties', None)
+            if novelties is None:
+                novelties = Novelty.objects.all()
+                if not novelties.exists():
+                    novelties = Product.objects.order_by('-created_on')
+                cache.set('novelties', novelties, timeout=1)
+
+            sliced_novelties = []
+            if novelties.count() >= quantity:
+                sliced_novelties = novelties[:quantity]
+            else:
+                sliced_novelties = novelties
+            return sliced_novelties
+
+        queryset = super().get_queryset()
 
         is_integer = all([
             product_id_or_collection_name.isnumeric(),
