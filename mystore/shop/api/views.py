@@ -198,18 +198,46 @@ class ListRecommendations(generics.ListAPIView):
                 Product,
                 pk=product_id_or_collection_name
             )
-            products = self.queryset.exclude(id=initial_product.id)
-            return self.recommendation_by_randomness(products, quantity)
-        else:
-            # print('product_id_or_collection_name',
-            #       product_id_or_collection_name)
-            if not product_id_or_collection_name:
-                return self.recommendation_by_randomness(queryset, quantity)
-            else:
-                products = queryset.filter(
-                    collection__name=product_id_or_collection_name
-                )
-                return products[:quantity]
+            return self.recommendation_by_fuzinness(initial_product, queryset)
+            # products = self.queryset.exclude(id=initial_product.id)
+            # return self.recommendation_by_randomness(products, quantity)
+        return self.recommendation_by_novelties(quantity)
+
+
+class ListNewProducts(generics.ListAPIView):
+    """Endpoint that returns products that are marked
+    as new, in other words, that were created in a
+    given timeframe or who have `display_new` set to True"""
+
+    queryset = Novelty.objects.all()
+    serializer_class = serializers.ProductSerializer
+    pagination_class = CustomPagination
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        qs = cache.get('novelties', None)
+        if qs is None:
+            qs = super().get_queryset()
+            cache.set('novelties', qs, timeout=1)
+        return qs
+
+
+class ListProductsOnSale(generics.ListAPIView):
+    """Endpoint that returns products that were marked
+    as being on sale. Both `sale_value` and `on_sale` have
+    to be True in order to return the product"""
+
+    queryset = Sale.objects.all()
+    serializer_class = serializers.ProductSerializer
+    pagination_class = CustomPagination
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        qs = cache.get('sales', None)
+        if qs is None:
+            qs = super().get_queryset()
+            cache.set('sales', qs, timeout=1)
+        return qs
 
 
 @api_view(http_method_names=['get'])
