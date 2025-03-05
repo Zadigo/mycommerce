@@ -8,7 +8,7 @@ export default defineCachedEventHandler(async event => {
     return response.data
 }, {
     maxAge: 1,
-    base: 'redis',
+    base: 'fs',
     getKey(event) {
         const id = getRouterParam(event, 'id')
         return `product-${id}`

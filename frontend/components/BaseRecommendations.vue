@@ -1,6 +1,6 @@
 <template>
   <div :data-count="quantity" class="recommendations">
-    <h2 class="h4 text-center mb-5">
+    <h2 class="text-2xl font-bold text-center mb-5">
       {{ $t(blockTitle) }}
     </h2>
 

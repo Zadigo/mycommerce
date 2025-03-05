@@ -7,6 +7,6 @@ export default defineCachedEventHandler(async event => {
     return response.data
 }, {
     name: 'collections',
-    base: 'redis',
+    base: 'fs',
     maxAge: 1
 })

@@ -1,77 +1,64 @@
 <template>
   <section id="product" class="mt-3 relative">
+    <DevOnly>
+      <div class="fixed top-2 left-0 w-2/4 z-50 bg-yellow-200 rounded-md shadow-md p-10">
+        {{ product?.id }}
+      </div>
+    </DevOnly>
+
     <div class="grid grid-cols-12 grid-row-1 w-full gap-5">
       <!-- Images -->
-      <template v-if="product && product.images">
-        <div v-if="product.images.length===6" id="product-images" class="grid grid-cols-2 grid-rows-3 gap-1 col-span-8">
-          <div v-for="image in product.images" :key="image.id" id="image" class="cursor-zoom-in">
-            <img :src="image.original" :alt="image.name" class="cursor-zoom-in" @click="handleSelectImage(image)">
-          </div>
-        </div>
-        
-        <div v-else-if="product.images.length===5" id="product-images" class="grid grid-cols-1 grid-rows-2 col-span-8 auto-cols-min auto-rows-max">
-          <div class="grid grid-cols-2 gap-x-1">
-            <div v-for="image in product.images.slice(0, 2)" :key="image.id" id="image">
-              <img :src="image.original" :alt="image.name" class="cursor-zoom-in" @click="handleSelectImage(image)">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-3 gap-x-1 gap-y-1 mt-1 auto-cols-max">
-            <div v-for="image in product.images.slice(2, 5)" :key="image.id" id="image">
-              <img :src="image.original" :alt="image.name" class="cursor-zoom-in" @click="handleSelectImage(image)">
-            </div>
-          </div>
-        </div>
-
-        <div v-else id="product-images" class="grid grid-cols-2 grid-rows-2 gap-1 col-span-8">
-          <NuxtImg src="/placeholder.svg" :alt="product.name" class="w-full" />
-          <NuxtImg src="/placeholder.svg" :alt="product.name" class="w-full" />
-          <NuxtImg src="/placeholder.svg" :alt="product.name" class="w-full" />
-          <NuxtImg src="/placeholder.svg" :alt="product.name" class="w-full" />
-        </div>
+      <template v-if="product">
+        <component :is="imagesComponent" :images="product.images" :product="product" @zoom-image="handleSelectedImage" />
       </template>
       
       <!-- Details -->
-      <ProductDetailsAside :product="product" />
+      <ProductDetailsAside v-if="product" :product="product" :is-loading="isLoading" @show-size-guide="showSizeGuideDrawer=true" />
     </div>
 
     <!-- Recommendations -->
-    <!-- <div id="recommendations" class="mt-20">
-      <h3 class="text-2xl font-bold text-center mb-5">
-        Cela peut t'intéresser
-      </h3>
+    <div id="recommendations" class="mt-20">
+      <Suspense>
+        <AsyncBaseRecommendationBlock />
 
-      <div class="grid grid-rows-12 lg:grid-rows-1 lg:grid-cols-5 lg:gap-1">
-        <BaseEcommercecard v-for="product in recommendations" :key="product.id" :product="product" />
-      </div>
-    </div> -->
+        <template #fallback>
+          <BaseLoadingRecommendations :quantity="30" />
+        </template>
+      </Suspense>
+    </div>
 
-    <!-- Banner -->
-    <!-- <ClientOnly>
+    <ClientOnly>
       <div v-if="showBanner" :class="{ 'translate-y-0 opacity-10': !showBanner, 'translate-y-0 opacity-100': showBanner }" class="bg-white p-2 rounded-md shadow-md fixed bottom-5 w-7/12 mx-auto left-1/4 h-auto transition-all ease z-50">
         <div v-if="product" class="flex justify-between">
           <div class="flex justify-start gap-3 align-center self-center">
-            <img :src="product.get_main_image.original" :alt="product.name" class="w-10 rounded-md">
+            <img :src="product.get_main_image.original" :alt="product.color_variant_name" class="w-10 rounded-md">
             
             <div class="flex flex-col">
               <p class="font-normal text-sm">
                 {{ product.name }}
               </p>
               <p class="font-bold">
-                {{ product.unit_price }}
+                {{ translatePrice(product.unit_price) }}
               </p>
             </div>
           </div>
 
           <div class="flex gap-2">
-            {{ y }}
-            <BaseSelect v-model="selectedSize" :items="sizeNames" item-key="name" item-value="name" />
-            <BaseButton @click="showCart=true">Ajouter au panier</BaseButton>
+            <DevOnly>
+              {{ y }}
+            </DevOnly>
+
+            <BaseSelect v-model="userSelection.size" :items="sizeNames" item-key="name" item-value="name" />
+            <BaseButton @click="addToCart(product)">
+              {{ $t('Ajouter au panier') }}
+            </BaseButton>
           </div>
         </div>
       </div>
     </ClientOnly>
 
+    <!-- Banner -->
+    <!--
     <ClientOnly>
       <BaseModal v-model="zoomImage" fullscreen>
         <BaseCard>
@@ -121,10 +108,10 @@
       </BaseModal>
     </ClientOnly> -->
 
-    <!-- <ClientOnly>
+    <ClientOnly>
       <ModalsImageZoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
       <ModalsSizeGuide v-model="showSizeGuideDrawer" :product="product" />
-    </ClientOnly> -->
+    </ClientOnly>
   </section>
 </template>
 
@@ -132,12 +119,19 @@
 import { useLocalStorage } from '@vueuse/core'
 import type { Product, ProductStock } from '~/types'
 
+type ImageComponentMap = {
+  [key: number]: Component
+}
+
+const FiveImages = defineAsyncComponent(() => import('~/components/product/details/FiveImages.vue'))
+const SixImages = defineAsyncComponent(() => import('~/components/product/details/SixImages.vue'))
+const NoImages = defineAsyncComponent(() => import('~/components/product/details/NoImages.vue'))
+
 const AsyncBaseRecommendationBlock = defineAsyncComponent({
   loader: async () => import('~/components/BaseRecommendations.vue'),
   timeout: 5000
 })
 
-const { mediaPath } = useDjangoUtilies()
 const { $client } = useNuxtApp()
 
 // Composable for product fetching
@@ -181,7 +175,7 @@ function useProductDetails () {
  * and then allows use to indicate whether the product is
  * available or not 
  */
-function useProductSotck (product: Ref<Product | null>) {
+function useProductStock (product: Ref<Product | null>) {
   const stockState = ref<ProductStock>()
   const { handleError } = useErrorHandler()
 
@@ -232,15 +226,18 @@ function useVisitedProducts (product: Ref<Product | null>) {
 
 // TODO: Refactor into a composable
 const moreProductsIntersect = ref<HTMLElement>()
+const showSizeGuideDrawer = ref(false)
+const isLargeScreen = useMediaQuery('(min-width: 320px)')
+const { y } = useScroll(window)
 
+const { translatePrice } = useShopComposable()
 const { product, isLoading } = useProductDetails()
 const { trackProduct } = useVisitedProducts(product)
-const { requestProductStock } = useProductSotck(product)
+const { requestProductStock } = useProductStock(product)
+const { userSelection, addToCart } = useCartComposable()
 const { showModal, selectedImage, handleSelectedImage, handleCloseSelection } = useImages()
 // const { gtag } = useGtag()
-
 const shopStore = useShop()
-const showSizeGuideDrawer = ref(false)
 
 useHead({
   title: () => product.value?.name ?? 'Product Details',
@@ -265,6 +262,28 @@ useSchemaOrg([
     ]
   })
 ])
+
+const imageComponentMap: ImageComponentMap = {
+  5: FiveImages,
+  6: SixImages
+}
+
+const showBanner = computed(() => y.value >= 1200 && y.value <= 2100)
+const sizeNames = computed(() => {
+  if (product.value) {
+    return product.value.sizes.map(x => x.name)
+  } else {
+    return []
+  }
+})
+const imagesComponent = computed((): Component => {
+  if (!product.value) {
+    return NoImages
+  } else {
+    const numberOfImages = product.value.images.length
+    return imageComponentMap[numberOfImages] || NoImages
+  }
+})
 
 onBeforeMount(() => {
   nextTick(trackProduct)

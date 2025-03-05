@@ -1,11 +1,5 @@
 <template>
   <aside v-if="product" id="product-details" class="col-span-4 px-10">
-    <DevOnly>
-      <div class="fixed top-2 left-0 w-2/4 z-50 bg-yellow-200 rounded-md shadow-md p-10">
-        {{ product }}
-      </div>
-    </DevOnly>
-
     <h1 id="product-name" :aria-label="product.color_variant_name" class="text-xl mt-5 font-semibold">
       {{ product.name }}
     </h1>
@@ -52,17 +46,14 @@
       {{ $t('Guide des tailles') }}
     </NuxtLink>
     
-    <Transition mode="out-in" class="transition-all duration-300">
-      <BaseButton v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" class="mt-10 place-content-center" color="dark" tonal @click="showAvailabilityModal=true">
-        <Icon name="fa:envelope" size="12" class="me-1" />
-        {{ $t('Me tenir informer') }}
-      </BaseButton>
-
-      <BaseButton v-else class="mt-10" color="primary" tonal :disabled="false" @click="handleAddToCart">
-        <font-awesome v-if="stockState && stockState.almost_sold_out" icon="clock" class="me-1" />
-        {{ $t('Ajouter au panier') }}
-      </BaseButton>
-    </Transition>
+    <BaseButton v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" class="mt-10 place-content-center" color="dark" tonal @click="showAvailabilityModal=true">
+      <Icon name="fa:envelope" size="12" class="me-1" />
+      {{ $t('Me tenir informer') }}
+    </BaseButton>
+    <BaseButton v-else class="mt-10" color="primary" tonal :disabled="false" @click="handleAddToCart">
+      <font-awesome v-if="stockState && stockState.almost_sold_out" icon="clock" class="me-1" />
+      {{ $t('Ajouter au panier') }}
+    </BaseButton>
 
     <BaseButton aria-label="Ajouter au favori" @click="proxyHandleLike">
       <font-awesome v-if="isLiked" icon="heart" />

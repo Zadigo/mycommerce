@@ -1,9 +1,7 @@
 <template>
-  <div id="product-images-6" class="col-12">
-    <div class="row g-1">
-      <div v-for="image in allImages" :key="image.id" class="col-4">
-        <v-img :src="mediaPath(image.original)" :lazy-src="mediaPath(image.original)" :alt="image.name" />
-      </div>
+  <div id="product-images" class="grid grid-cols-2 grid-rows-3 gap-1 col-span-8">
+    <div v-for="image in images" :key="image.id" id="image" class="cursor-zoom-in">
+      <NuxtImg :src="mediaPath(image.original, '/placeholder.svg')" :alt="image.name" class="cursor-zoom-in" @click="emit('zoom-image', image)" />
     </div>
   </div>
 </template>
@@ -13,7 +11,7 @@ import type { ProductImage } from '~/types';
 
 const { mediaPath } = useDjangoUtilies()
 
-const props = defineProps({
+defineProps({
   images: {
     type: Array as PropType<ProductImage[]>,
     required: true,
@@ -21,14 +19,9 @@ const props = defineProps({
   }
 })
 
-const allImages = computed(() => {
-  const result = props.images.map(x => x.is_main_image)
-  
-  if (result.length > 0) {
-    return props.images.filter(x => !x.is_main_image)
-  } else {
-    const firstImage = props.images[0]
-    return props.images.filter(x => x.id !== firstImage.id || !x.is_main_image)
+const emit = defineEmits({
+  'zoom-image'(image: ProductImage) {
+    return true
   }
 })
 </script>

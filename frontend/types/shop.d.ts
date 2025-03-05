@@ -52,7 +52,7 @@ export type Product = {
     on_sale: boolean;
     collection_set: ProductCollection[] | null;
     get_main_image: ProductImage;
-    images: ProductImage[] | null;
+    images: ProductImage[];
     model_height: string
     model_size: string
     color_variant_name: string;

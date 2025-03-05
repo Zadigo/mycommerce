@@ -22,6 +22,7 @@ export default defineCachedEventHandler(async event => {
         return []
     }
 }, {
+    base: 'fs',
     staleMaxAge: 1,
     maxAge: 1,
     getKey(event) {
