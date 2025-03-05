@@ -86,7 +86,7 @@ class Size(AbstractVariant):
         ]
 
     def __str__(self):
-        return f'Variant: {self.product.name}'
+        return f'{self.product.name}: {self.name}'
 
 
 @receiver(pre_save, sender=Size)
