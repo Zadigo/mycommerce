@@ -332,6 +332,42 @@ class AbstractProduct(models.Model):
     def color_variant_name(self):
         return f'{self.name} {self.color}'
 
+    @cached_property
+    def validity_score(self):
+        """Indicates whether the product fulfills all
+        the follwing requirements in order to be displayed
+        on Nuxt without any fundamental issues"""
+        score_map = {
+            'number_of_images': 5,
+            'has_sizes': 3,
+            'has_category': 2,
+            'has_subcategory': 1,
+            'model': 1
+        }
+        
+        score = 0
+        total_score = sum(list(score_map.values()))
+
+        if self.has_sizes:
+            score += score_map['has_sizes']
+
+        if self.has_multiple_images:
+            score += score_map['number_of_images']
+
+        if self.category != 'Not attributed':
+            score += score_map['has_category']
+
+        logic = [
+            self.model_height is not None,
+            self.model_size is not None,
+        ]
+
+        if all(logic):
+            score += score_map['model']
+
+        return f"{score}/{total_score}"
+
+
     def clean(self):
         if self.on_sale:
             if self.sale_value == 0:
