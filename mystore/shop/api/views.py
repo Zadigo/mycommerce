@@ -2,6 +2,7 @@ import json
 import random
 
 import pandas
+from django.core.cache import cache
 from django.db.models import Case, Q, When
 from django.db.models.functions.text import Concat
 from django.shortcuts import get_object_or_404
@@ -11,7 +12,7 @@ from rest_framework.mixins import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from shop.api import CustomPagination, serializers
-from shop.models import Product
+from shop.models import Novelty, Product, Sale
 from shop.processors import FuzzyMatcherMixin
 
 
@@ -163,6 +164,9 @@ class ListRecommendations(generics.ListAPIView):
         quantity = self.request.GET.get('q', 30)
         for_mobile = self.request.GET.get('m', 0)
         with_images = self.request.GET.get('i', 0)
+
+        # TODO: Use a cached version of products
+
         # A set of previously liked products can also be
         # passed in, in order to generate recommended products
         # liked_products = self.request.GET.getlist('l')
@@ -176,6 +180,8 @@ class ListRecommendations(generics.ListAPIView):
                     has_images=case).filter(has_images=True)
             return self.recommendation_by_randomness(queryset, quantity)
 
+        # By default, return the last products that
+        # where created in the database
         if product_id_or_collection_name is None:
             return self.recommendation_by_novelties(quantity)
 
@@ -185,8 +191,6 @@ class ListRecommendations(generics.ListAPIView):
             product_id_or_collection_name.isnumeric(),
             product_id_or_collection_name.isdigit(),
         ])
-
-        queryset = super().get_queryset()
 
         if is_integer:
             product_id_or_collection_name = int(product_id_or_collection_name)
@@ -198,7 +202,7 @@ class ListRecommendations(generics.ListAPIView):
 
         if is_integer:
             initial_product = get_object_or_404(
-                Product,
+                queryset,
                 pk=product_id_or_collection_name
             )
             return self.recommendation_by_fuzinness(initial_product, queryset)
