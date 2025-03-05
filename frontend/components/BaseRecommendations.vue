@@ -16,9 +16,7 @@ import type { Product } from '~/types';
 const props = defineProps({
   blockTitle: {
     type: String,
-    default: () => {
-      return "Cela peut t'intéresser"
-    }
+    default: "Cela peut t'intéresser"
   },
   quantity: {
     type: Number,
@@ -49,6 +47,12 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits({
+  'has-navigated'(_product: Product) {
+    return true
+  }
+})
+
 const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
 // const { gtag } = useGtag()
@@ -59,13 +63,14 @@ const shopStore = useShop()
 const recommendations = ref<Product[]>([])
 const productsRow = ref<HTMLElement>()
 
-function handleNavigation (data: (number | Product)[] | null | undefined) {
+function handleNavigation (data: (number | Product)[]) {
   if (data) {
     const product = data[1]
-
+    
     shopStore.closeAllModals()
-
+    
     if (product && typeof product === 'object' && 'id' in product) {
+      emit('has-navigated', product)
       // gtag('event',  'select_item',  {
       //   items: [
       //     {

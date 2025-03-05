@@ -6,21 +6,21 @@
     <slot />
 
     <!-- Modals -->
-    <!-- <ClientOnly>
+    <ClientOnly>
       <ModalsLogin />
       <ModalsCart @edit-product="handleProductEdition" />
       <ModalsAddedProduct />
       <ModalsEditProduct />
       <ModalsSearch />
       <ModalsWhatsApp v-model="showWhatsAppModal" />
-    </ClientOnly> -->
+    </ClientOnly>
 
     <!-- Footer -->
     <!-- <Footer @show-whatsapp="showWhatsAppModal=true" /> -->
     <BaseFooter :items="footerLinks" @show-whatsapp="showWhatsAppModal=true">
       <template #section>
         <BaseFooterSection>
-          
+          Something
         </BaseFooterSection>
       </template>
     </BaseFooter>

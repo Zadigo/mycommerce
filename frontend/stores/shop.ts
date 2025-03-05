@@ -31,6 +31,10 @@ export const useShop =  defineStore('shop', () => {
         return Array.from(new Set(visitedProducts.value))
     })
 
+    /**
+     * Function used to close all the modals
+     * referenced in this store 
+     */
     function closeAllModals() {
         showSearchModal.value = false
         showLanguageModal.value = false

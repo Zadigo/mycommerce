@@ -104,9 +104,10 @@ const props = defineProps({
 
 const emit = defineEmits({
   /** 
-   * This emit is used to indicate to parent components
+   * This emit is used to indicate to parents
    * hosting this component that a navigation occured. This
-   * is useful for Google Analytics for example
+   * is useful for Google Analytics for example or for passing
+   * information on a product on which the link was clicked
    */
   'has-navigated'(_data: (number | Product)[]) {
     return true

@@ -12,7 +12,7 @@
 import type { PropType } from 'vue';
 import type { Product } from '~/types';
 
-const props = defineProps({
+defineProps({
   products: {
     type: Array as PropType<Product[]>,
     required: true
@@ -41,12 +41,12 @@ const emit = defineEmits({
    * hosting this component that a navigation occured. This
    * is useful for Google Analytics for example
    */
-  'has-navigated'(_data: (number | Product)[] | null | undefined) {
+  'has-navigated'(_data: (number | Product)[]) {
     return true
   }
 })
 
-function handleNavigation(data: (number | Product)[] | null | undefined) {
+function handleNavigation(data: (number | Product)[]) {
   emit('has-navigated', data)
 }
 </script>
