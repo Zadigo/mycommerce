@@ -401,6 +401,26 @@ class Product(AbstractProduct):
         verbose_name_plural = _('Products')
 
 
+class Sale(Product):
+    """Returns products that are on sale"""
+
+    objects = managers.SaleManager()
+
+    class Meta:
+        proxy = True
+
+
+class Novelty(Product):
+    """Returns that were created within a specific
+    timeframe e.g. last 5 days"""
+
+    objects = managers.NoveltiesManager()
+
+    class Meta:
+        proxy = True
+        verbose_name_plural = _('novelties')
+
+
 # class Women(Product):
 #     class Meta:
 #         proxy = True
