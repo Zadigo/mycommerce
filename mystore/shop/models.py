@@ -15,7 +15,7 @@ from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from shop import validators
-from shop.choices import ColorChoices
+from shop.choices import ColorChoices, GenderChoices
 from shop.utils import calculate_sale, create_slug, image_path, video_path
 
 from mystore.choices import CategoryChoices, SubCategoryChoices
@@ -145,7 +145,15 @@ class AbstractProduct(models.Model):
         blank=True,
         null=True
     )
-    # section_name = None # Woman, Man...
+    gender_category = models.CharField(
+        max_length=100,
+        choices=GenderChoices.choices,
+        default=GenderChoices.NOT_ATTRIBUTED,
+        help_text=_(
+            "Additional category in order to classify "
+            "products by gender"
+        )
+    )
     # category_en = None
     category = models.CharField(
         max_length=100,
@@ -357,6 +365,11 @@ class Product(AbstractProduct):
         verbose_name_plural = _('Products')
 
 
+# class Women(Product):
+#     class Meta:
+#         proxy = True
+
+
 # class ViewingHistory(models.Model):
 #     """Saves the the viewing history
 #     of the products that are saved in
@@ -393,21 +406,6 @@ class AbstractUserList(models.Model):
 
     def __str__(self):
         return str(self.user)
-
-# TODO: Remove this model which redundant
-# with the wishlist
-
-
-class Like(AbstractUserList):
-    """Stores products that were liked
-    by the user and added to a specific
-    liked products list"""
-
-    class Meta:
-        verbose_name = _('Like')
-        constraints = [
-            UniqueConstraint(fields=['user'], name='one_list_per_user')
-        ]
 
 
 class Wishlist(AbstractUserList):

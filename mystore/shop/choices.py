@@ -58,3 +58,10 @@ class ColorChoices(Choices):
     TAUPE = 'Taupe'
     WHITE = 'White'
     YELLOW = 'Yellow'
+
+
+class GenderChoices(Choices):
+    MAN = 'Man'
+    WOMAN = 'Woman'
+    KID = 'Kid'
+    NOT_ATTRIBUTED = 'Not attributed'

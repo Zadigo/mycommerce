@@ -1,7 +1,9 @@
-import random
 import json
+import random
+
 import pandas
 from django.db.models import Case, Q, When
+from django.db.models.functions.text import Concat
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.decorators import api_view
@@ -9,7 +11,6 @@ from rest_framework.mixins import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from shop.api import CustomPagination, serializers
-from django.db.models.functions.text import Concat
 from shop.models import Product
 from shop.processors import FuzzyMatcherMixin
 
@@ -190,5 +191,6 @@ def test_fuzzy(request, **kwargs):
     selected_products = qs.filter(id__in=ids)
     # data = json.loads(df.to_json(orient='records'))
     # return Response(data)
-    serializer = serializers.ProductSerializer(instance=selected_products, many=True)
+    serializer = serializers.ProductSerializer(
+        instance=selected_products, many=True)
     return Response(serializer.data)

@@ -7,6 +7,8 @@ export type ProductSizes = {
 declare type ProductSet = {
     id: number;
     name: string;
+    color: string
+    color_variant_name: string
 };
 
 export type ProductImage = {

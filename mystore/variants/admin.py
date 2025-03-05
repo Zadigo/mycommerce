@@ -10,11 +10,17 @@ class SizeAdmin(admin.ModelAdmin):
         [
             None,
             {
-                'fields': ['name', 'metric', 'product']
+                'fields': ['product']
             }
         ],
         [
-            'state',
+            'Size',
+            {
+                'fields': ['name', 'metric']
+            }
+        ],
+        [
+            'State',
             {
                 'fields': ['availability', 'active']
             }
