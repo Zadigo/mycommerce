@@ -138,6 +138,21 @@ class ListRecommendations(generics.ListAPIView):
         ids = df['product'].to_list()
         return queryset.filter(id__in=ids).exclude(id=product.id)
 
+    def recommendation_by_novelties(self, quantity):
+        novelties = cache.get('novelties', None)
+        if novelties is None:
+            novelties = Novelty.objects.all()
+            if not novelties.exists():
+                novelties = Product.objects.order_by('-created_on')
+            cache.set('novelties', novelties, timeout=1)
+
+        sliced_novelties = []
+        if novelties.count() >= quantity:
+            sliced_novelties = novelties[:quantity]
+        else:
+            sliced_novelties = novelties
+        return sliced_novelties
+
     def get_queryset(self):
         """Allows us to get similar products from the database
         using spacy if a `product_id` is provided by the
@@ -162,19 +177,7 @@ class ListRecommendations(generics.ListAPIView):
             return self.recommendation_by_randomness(queryset, quantity)
 
         if product_id_or_collection_name is None:
-            novelties = cache.get('novelties', None)
-            if novelties is None:
-                novelties = Novelty.objects.all()
-                if not novelties.exists():
-                    novelties = Product.objects.order_by('-created_on')
-                cache.set('novelties', novelties, timeout=1)
-
-            sliced_novelties = []
-            if novelties.count() >= quantity:
-                sliced_novelties = novelties[:quantity]
-            else:
-                sliced_novelties = novelties
-            return sliced_novelties
+            return self.recommendation_by_novelties(quantity)
 
         queryset = super().get_queryset()
 
