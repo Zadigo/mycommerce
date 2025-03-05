@@ -114,6 +114,30 @@ class ListRecommendations(generics.ListAPIView):
             selected_items.add(random.choice(products))
         return selected_items
 
+    def recommendation_by_fuzinness(self, product, queryset):
+        """Function that returns a set of products that a closely
+        related from a linguistic perpsective to the product provided
+        within the function for example: Jupe Verte will be recommended
+        for a product whose name is Jupe Grande Marron"""
+        results = []
+        matcher = FuzzyMatcherMixin()
+
+        for item in queryset:
+            result = matcher.get_match_details(
+                product.name,
+                item.color_variant_name
+            )
+
+            result['product'] = item.id
+            results.append(result)
+
+        df = pandas.DataFrame(results)
+        df = df.sort_values('weighted_ratio')
+        df = df[df['weighted_ratio'] >= 0.5]
+
+        ids = df['product'].to_list()
+        return queryset.filter(id__in=ids).exclude(id=product.id)
+
     def get_queryset(self):
         """Allows us to get similar products from the database
         using spacy if a `product_id` is provided by the
