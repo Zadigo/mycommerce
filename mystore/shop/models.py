@@ -14,10 +14,10 @@ from django.utils.timezone import now, timedelta
 from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
-from shop import validators
+from shop import managers, validators
 from shop.choices import ColorChoices, GenderChoices
 from shop.utils import calculate_sale, create_slug, image_path, video_path
-
+from django.utils.functional import cached_property
 from mystore.choices import CategoryChoices, SubCategoryChoices
 
 USER_MODEL = get_user_model()
@@ -207,7 +207,11 @@ class AbstractProduct(models.Model):
     )
     display_new = models.BooleanField(
         default=False,
-        help_text=_('Show the product as new')
+        help_text=_(
+            "Manual way of showing a product "
+            "as new in addition to the auto aggregation "
+            "in done in Novelty"
+        )
     )
     slug = models.SlugField(
         max_length=200,
