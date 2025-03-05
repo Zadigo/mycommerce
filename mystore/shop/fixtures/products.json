@@ -15,13 +15,18 @@
         "fields": {
             "name": "Blazer Strapped",
             "color": "Red",
-            "unit_price": 302,
+            "sku": null,
+            "model_height": 184,
+            "model_size": "S",
+            "gender_category": "Not attributed",
             "active": true,
             "display_new": false,
             "slug": "blazer-strapped",
             "category": "Panties",
+            "sub_category": "Not attributed",
             "created_on": "2022-03-18",
             "modified_on": "2022-03-18",
+            "unit_price": 302,
             "sale_value": 36,
             "on_sale": true
         }
@@ -32,13 +37,18 @@
         "fields": {
             "name": "Floral Mesh Balcony Soutien Gorge Et String Ensemble",
             "color": "Blue",
-            "unit_price": 257,
-            "active": false,
+            "sku": null,
+            "model_height": 184,
+            "model_size": "S",
+            "gender_category": "Not attributed",
+            "active": true,
             "display_new": false,
             "slug": "floral-mesh-balcony-soutien-gorge-string-ensemble",
             "category": "Panties",
+            "sub_category": "Not attributed",
             "created_on": "2022-03-18",
             "modified_on": "2022-03-18",
+            "unit_price": 257,
             "sale_value": 0,
             "on_sale": false
         }
@@ -49,13 +59,18 @@
         "fields": {
             "name": "Jupe Florale",
             "color": "Red",
-            "unit_price": 254,
-            "active": false,
+            "sku": null,
+            "model_height": 184,
+            "model_size": "S",
+            "gender_category": "Not attributed",
+            "active": true,
             "display_new": false,
             "slug": "jupe-florale",
             "category": "Panties",
+            "sub_category": "Not attributed",
             "created_on": "2022-03-18",
             "modified_on": "2022-03-18",
+            "unit_price": 254,
             "sale_value": 14,
             "on_sale": true
         }
@@ -66,13 +81,18 @@
         "fields": {
             "name": "Short En Jean",
             "color": "Blue",
-            "unit_price": 348,
-            "active": false,
+            "sku": null,
+            "model_height": 184,
+            "model_size": "S",
+            "gender_category": "Not attributed",
+            "active": true,
             "display_new": false,
             "slug": "short-jean",
             "category": "Activewear",
+            "sub_category": "Not attributed",
             "created_on": "2022-03-18",
             "modified_on": "2022-03-18",
+            "unit_price": 348,
             "sale_value": 17,
             "on_sale": true
         }
@@ -83,13 +103,18 @@
         "fields": {
             "name": "Shorty En Dentelle",
             "color": "Blue",
-            "unit_price": 624,
-            "active": false,
+            "sku": null,
+            "model_height": 184,
+            "model_size": "S",
+            "gender_category": "Not attributed",
+            "active": true,
             "display_new": true,
             "slug": "shorty-dentelle",
             "category": "Skirts",
+            "sub_category": "Not attributed",
             "created_on": "2022-03-18",
             "modified_on": "2022-03-18",
+            "unit_price": 624,
             "sale_value": 20,
             "on_sale": true
         }
@@ -100,13 +125,18 @@
         "fields": {
             "name": "Lingerie",
             "color": "Red",
-            "unit_price": 586,
-            "active": false,
+            "sku": null,
+            "model_height": 184,
+            "model_size": "S",
+            "gender_category": "Not attributed",
+            "active": true,
             "display_new": false,
             "slug": "lingerie",
             "category": "Skirts",
+            "sub_category": "Not attributed",
             "created_on": "2022-03-18",
             "modified_on": "2022-03-18",
+            "unit_price": 586,
             "sale_value": 0,
             "on_sale": false
         }
@@ -117,557 +147,18 @@
         "fields": {
             "name": "Bandeau Réversible En Dentelle Et Microfibre Extensible",
             "color": "Blue",
-            "unit_price": 799,
-            "active": false,
+            "sku": null,
+            "model_height": 184,
+            "model_size": "S",
+            "gender_category": "Not attributed",
+            "active": true,
             "display_new": false,
             "slug": "bandeau-reversible-dentelle-microfibre-extensible",
             "category": "Activewear",
+            "sub_category": "Not attributed",
             "created_on": "2022-03-18",
             "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 8,
-        "fields": {
-            "name": "Triangle Bustier Sans Armatures",
-            "color": "Blue",
-            "unit_price": 233,
-            "active": false,
-            "display_new": true,
-            "slug": "triangle-bustier-sans-armatures",
-            "category": "Skirts",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 45,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 9,
-        "fields": {
-            "name": "Liberty Balcony String",
-            "color": "Red",
-            "unit_price": 55,
-            "active": false,
-            "display_new": false,
-            "slug": "liberty-balcony-string",
-            "category": "Skirts",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 10,
-        "fields": {
-            "name": "Ribbed Taille Haute Shorts",
-            "color": "Red",
-            "unit_price": 395,
-            "active": false,
-            "display_new": true,
-            "slug": "ribbed-taille-haute-shorts",
-            "category": "Activewear",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 11,
-        "fields": {
-            "name": "Jupon",
-            "color": "Red",
-            "unit_price": 396,
-            "active": false,
-            "display_new": true,
-            "slug": "jupon",
-            "category": "Activewear",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 12,
-        "fields": {
-            "name": "Grace Balcony Soutien Gorge Et String Ensemble",
-            "color": "Blue",
-            "unit_price": 125,
-            "active": false,
-            "display_new": false,
-            "slug": "grace-balcony-soutien-gorge-string-ensemble",
-            "category": "Activewear",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 17,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 13,
-        "fields": {
-            "name": "Vogue Balcony Soutien Gorge Et String Ensemble",
-            "color": "Red",
-            "unit_price": 282,
-            "active": false,
-            "display_new": true,
-            "slug": "vogue-balcony-soutien-gorge-string-ensemble",
-            "category": "Panties",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 16,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 14,
-        "fields": {
-            "name": "Culotte En Dentelle Extensible",
-            "color": "Blue",
-            "unit_price": 283,
-            "active": false,
-            "display_new": true,
-            "slug": "culotte-dentelle-extensible",
-            "category": "Skirts",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 16,
-        "fields": {
-            "name": "Blazer Jupe Boutons Dor\u00e9s",
-            "color": "Red",
-            "unit_price": 135,
-            "active": false,
-            "display_new": false,
-            "slug": "blazer-jupe-boutons-dores",
-            "category": "Skirts",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 17,
-        "fields": {
-            "name": "Halterneck Triangle Rum",
-            "color": "Blue",
-            "unit_price": 504,
-            "active": false,
-            "display_new": true,
-            "slug": "halterneck-triangle-rum",
-            "category": "Panties",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 18,
-        "fields": {
-            "name": "Flair Balcony Soutien Gorge Et String Ensemble",
-            "color": "Blue",
-            "unit_price": 366,
-            "active": false,
-            "display_new": true,
-            "slug": "flair-balcony-soutien-gorge-string-ensemble",
-            "category": "Panties",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 19,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 19,
-        "fields": {
-            "name": "Bandeau Et Culotte Floral",
-            "color": "Red",
-            "unit_price": 231,
-            "active": false,
-            "display_new": true,
-            "slug": "bandeau-culotte-floral",
-            "category": "Activewear",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 17,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 20,
-        "fields": {
-            "name": "Mesh Balcony Soutien Gorge Et String Ensemble",
-            "color": "Blue",
-            "unit_price": 563,
-            "active": false,
-            "display_new": false,
-            "slug": "mesh-balcony-soutien-gorge-string-ensemble",
-            "category": "Activewear",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 21,
-        "fields": {
-            "name": "Tanga Bords Dentelle Graphique",
-            "color": "Blue",
-            "unit_price": 579,
-            "active": false,
-            "display_new": true,
-            "slug": "tanga-bords-dentelle-graphique",
-            "category": "Skirts",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 21,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 22,
-        "fields": {
-            "name": "Robe En Maille Tricot C\u00f4tel\u00e9e Douce",
-            "color": "Blue",
-            "unit_price": 685,
-            "active": false,
-            "display_new": true,
-            "slug": "robe-maille-tricot-cotelee-douce",
-            "category": "Activewear",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 23,
-        "fields": {
-            "name": "Ribbed Crop Top",
-            "color": "Blue",
-            "unit_price": 581,
-            "active": false,
-            "display_new": false,
-            "slug": "ribbed-crop-top",
-            "category": "Skirts",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 24,
-        "fields": {
-            "name": "Robe Blazer",
-            "color": "Red",
-            "unit_price": 376,
-            "active": false,
-            "display_new": false,
-            "slug": "robe-blazer",
-            "category": "Skirts",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 35,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 25,
-        "fields": {
-            "name": "Jupe En Cuir",
-            "color": "Red",
-            "unit_price": 414,
-            "active": false,
-            "display_new": true,
-            "slug": "jupe-cuir",
-            "category": "Panties",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 29,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 26,
-        "fields": {
-            "name": "Stretch Woven Thigh Low Rise Extreme Micro Mini Skirt",
-            "color": "Blue",
-            "unit_price": 380,
-            "active": false,
-            "display_new": true,
-            "slug": "stretch-woven-thigh-low-rise-extreme-micro-mini-skirt",
-            "category": "Panties",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 30,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 27,
-        "fields": {
-            "name": "Tanga En Dentelle",
-            "color": "Red",
-            "unit_price": 700,
-            "active": false,
-            "display_new": true,
-            "slug": "tanga-dentelle",
-            "category": "Activewear",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 39,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 28,
-        "fields": {
-            "name": "Floral Culotte",
-            "color": "Red",
-            "unit_price": 111,
-            "active": false,
-            "display_new": false,
-            "slug": "floral-culotte",
-            "category": "Activewear",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 30,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 29,
-        "fields": {
-            "name": "Ribbed Taille Haute Leggings",
-            "color": "Red",
-            "unit_price": 24,
-            "active": false,
-            "display_new": true,
-            "slug": "ribbed-taille-haute-leggings",
-            "category": "Skirts",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 30,
-        "fields": {
-            "name": "Mesh String",
-            "color": "Red",
-            "unit_price": 644,
-            "active": false,
-            "display_new": false,
-            "slug": "mesh-string",
-            "category": "Panties",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 31,
-        "fields": {
-            "name": "Blossom Balcony Soutien Gorge Et String Ensemble",
-            "color": "Red",
-            "unit_price": 111,
-            "active": false,
-            "display_new": false,
-            "slug": "blossom-balcony-soutien-gorge-string-ensemble",
-            "category": "Activewear",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 28,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 32,
-        "fields": {
-            "name": "Robe Moulante Gris Pierre \u00c0 D\u00e9coupes Goutte",
-            "color": "Blue",
-            "unit_price": 625,
-            "active": false,
-            "display_new": false,
-            "slug": "robe-moulante-gris-pierre-decoupes-goutte",
-            "category": "Skirts",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 38,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 33,
-        "fields": {
-            "name": "Top",
-            "color": "Blue",
-            "unit_price": 78,
-            "active": false,
-            "display_new": false,
-            "slug": "top",
-            "category": "Activewear",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 45,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 34,
-        "fields": {
-            "name": "Floral Mesh Balcony String",
-            "color": "Red",
-            "unit_price": 527,
-            "active": false,
-            "display_new": false,
-            "slug": "floral-mesh-balcony-string",
-            "category": "Panties",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 35,
-        "fields": {
-            "name": "Short",
-            "color": "Blue",
-            "unit_price": 109,
-            "active": false,
-            "display_new": false,
-            "slug": "short",
-            "category": "Activewear",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 47,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 36,
-        "fields": {
-            "name": "Desire Balcony Soutien Gorge Et String Ensemble",
-            "color": "Red",
-            "unit_price": 719,
-            "active": false,
-            "display_new": false,
-            "slug": "desire-balcony-soutien-gorge-string-ensemble",
-            "category": "Activewear",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 37,
-        "fields": {
-            "name": "Short Biker",
-            "color": "Red",
-            "unit_price": 322,
-            "active": false,
-            "display_new": false,
-            "slug": "short-biker",
-            "category": "Activewear",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 11,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 38,
-        "fields": {
-            "name": "Dress",
-            "color": "Blue",
-            "unit_price": 320,
-            "active": false,
-            "display_new": false,
-            "slug": "dress",
-            "category": "Panties",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 31,
-            "on_sale": true
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 39,
-        "fields": {
-            "name": "Sustainable Culotte",
-            "color": "Blue",
-            "unit_price": 349,
-            "active": false,
-            "display_new": false,
-            "slug": "sustainable-culotte",
-            "category": "Panties",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
-            "sale_value": 0,
-            "on_sale": false
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 40,
-        "fields": {
-            "name": "Beauty Balcony Soutien Gorge Et String Ensemble",
-            "color": "Red",
-            "unit_price": 402,
-            "active": false,
-            "display_new": true,
-            "slug": "beauty-balcony-soutien-gorge-string-ensemble",
-            "category": "Panties",
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18",
+            "unit_price": 799,
             "sale_value": 0,
             "on_sale": false
         }

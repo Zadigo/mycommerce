@@ -1,6 +1,8 @@
 from cart.models import Cart
 from cart.validators import validate_quantity
-from django.db.models import Count, Sum
+from django.db.models import Count, QuerySet, Sum
+from django.db.models.manager import BaseManager
+from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from rest_framework import fields
 from rest_framework.serializers import Serializer
@@ -9,12 +11,12 @@ from shop.choices import ClotheSizesChoices
 from shop.models import Product
 
 
-def cart_statistics(queryset):
+def cart_statistics(queryset: BaseManager[Cart]):
     """Helper function that groups each products
-    from the cart and aggregates them in ordr to return
+    from the cart and aggregates them in order to return
     the total quantity of each products, their total sum or
     any other useful pieces of information for Nuxt"""
-    values = queryset.values('product__id', 'product__name')
+    values = queryset.values('product__id', 'product__name', 'size')
     grouped = values.annotate(
         quantity=Count('product__name'),
         total=Sum('price')
@@ -22,7 +24,7 @@ def cart_statistics(queryset):
     return grouped.order_by()
 
 
-def build_cart_response(queryset, session_id):
+def build_cart_response(queryset: BaseManager[Cart], session_id: str):
     """A special helper class that resolves the
     queryset, that resolves the total count for
     each product in the cart and returns a valid

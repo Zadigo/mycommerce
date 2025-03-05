@@ -7,6 +7,7 @@ from rest_framework.mixins import status
 from rest_framework.test import APITestCase
 from shop.processors import FuzzyMatcherMixin
 from shop.models import Product
+from urllib.parse import urlencode
 from shop.utils import calculate_sale, create_slug, product_media_path
 
 #     def test_products_view_structure(self):
@@ -66,8 +67,51 @@ class TestShopApi(APITestCase):
 
     def test_recommendations(self):
         path = reverse('shop_api:recommendations')
+        query = urlencode({
+            'quantity': 1,
+            'for_mobile': 0,
+            'with_images': 0
+        })
+        response = self.client.get(path + f'?{query}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Should return products even though the url
+        # query does not specify a product
+        data = response.json()
+        self.assertTrue(len(data) > 0)
+
+    def test_recommendations_with_product_id(self):
+        path = reverse('shop_api:recommendations')
+        query = urlencode({
+            'p': 4,
+            'quantity': 30,
+            'for_mobile': 0,
+            'with_images': 0
+        })
+        response = self.client.get(path + f'?{query}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()
+        self.assertTrue(len(data) > 0)
+        # The closest result to "Short "Short En Jean"
+        self.assertEqual(data[0]['name'], 'Shorty En Dentelle')
+
+    def test_products_new(self):
+        path = reverse('shop_api:new')
         response = self.client.get(path)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_products_on_sale(self):
+        path = reverse('shop_api:sales')
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()
+        self.assertIn('results', data)
+
+        for item in data['results']:
+            with self.subTest(product=item):
+                self.assertTrue(item['on_sale'])
 
 
 class TestFuzzyMatcher(TransactionTestCase):
@@ -116,7 +160,7 @@ class TestFuzzyMatcher(TransactionTestCase):
                 a, b = item
                 result = self.instance.token_sort_ratio_match(a, b)
                 self.assertIsInstance(result, float)
-    
+
     def test_token_set_ratio_match(self):
         items = [
             ('Ribbed Taille Haute Shorts', 'Taille Shorts'),

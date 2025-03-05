@@ -7,6 +7,8 @@ export type ProductSizes = {
 declare type ProductSet = {
     id: number;
     name: string;
+    color: string
+    color_variant_name: string
 };
 
 export type ProductImage = {
@@ -87,9 +89,13 @@ export declare interface CollectionName {
 }
 
 export interface ProductStock {
-    product: Pick<Product, 'id', 'name'>
+    id: number
+    variant: {
+        id: number
+        name: string
+    }
     quantity: number
-    in_stock: bboolean 
+    in_stock: boolean
     almost_sold_out: boolean
     is_active: boolean
 }

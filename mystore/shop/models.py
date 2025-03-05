@@ -14,10 +14,10 @@ from django.utils.timezone import now, timedelta
 from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
-from shop import validators
-from shop.choices import ColorChoices
+from shop import managers, validators
+from shop.choices import ColorChoices, GenderChoices
 from shop.utils import calculate_sale, create_slug, image_path, video_path
-
+from django.utils.functional import cached_property
 from mystore.choices import CategoryChoices, SubCategoryChoices
 
 USER_MODEL = get_user_model()
@@ -145,7 +145,15 @@ class AbstractProduct(models.Model):
         blank=True,
         null=True
     )
-    # section_name = None # Woman, Man...
+    gender_category = models.CharField(
+        max_length=100,
+        choices=GenderChoices.choices,
+        default=GenderChoices.NOT_ATTRIBUTED,
+        help_text=_(
+            "Additional category in order to classify "
+            "products by gender"
+        )
+    )
     # category_en = None
     category = models.CharField(
         max_length=100,
@@ -199,7 +207,11 @@ class AbstractProduct(models.Model):
     )
     display_new = models.BooleanField(
         default=False,
-        help_text=_('Show the product as new')
+        help_text=_(
+            "Manual way of showing a product "
+            "as new in addition to the auto aggregation "
+            "in done in Novelty"
+        )
     )
     slug = models.SlugField(
         max_length=200,
@@ -324,6 +336,42 @@ class AbstractProduct(models.Model):
     def color_variant_name(self):
         return f'{self.name} {self.color}'
 
+    @cached_property
+    def validity_score(self):
+        """Indicates whether the product fulfills all
+        the follwing requirements in order to be displayed
+        on Nuxt without any fundamental issues"""
+        score_map = {
+            'number_of_images': 5,
+            'has_sizes': 3,
+            'has_category': 2,
+            'has_subcategory': 1,
+            'model': 1
+        }
+        
+        score = 0
+        total_score = sum(list(score_map.values()))
+
+        if self.has_sizes:
+            score += score_map['has_sizes']
+
+        if self.has_multiple_images:
+            score += score_map['number_of_images']
+
+        if self.category != 'Not attributed':
+            score += score_map['has_category']
+
+        logic = [
+            self.model_height is not None,
+            self.model_size is not None,
+        ]
+
+        if all(logic):
+            score += score_map['model']
+
+        return f"{score}/{total_score}"
+
+
     def clean(self):
         if self.on_sale:
             if self.sale_value == 0:
@@ -355,6 +403,31 @@ class Product(AbstractProduct):
     class Meta(AbstractProduct.Meta):
         verbose_name = _('Product')
         verbose_name_plural = _('Products')
+
+
+class Sale(Product):
+    """Returns products that are on sale"""
+
+    objects = managers.SaleManager()
+
+    class Meta:
+        proxy = True
+
+
+class Novelty(Product):
+    """Returns that were created within a specific
+    timeframe e.g. last 5 days"""
+
+    objects = managers.NoveltiesManager()
+
+    class Meta:
+        proxy = True
+        verbose_name_plural = _('novelties')
+
+
+# class Women(Product):
+#     class Meta:
+#         proxy = True
 
 
 # class ViewingHistory(models.Model):
@@ -393,21 +466,6 @@ class AbstractUserList(models.Model):
 
     def __str__(self):
         return str(self.user)
-
-# TODO: Remove this model which redundant
-# with the wishlist
-
-
-class Like(AbstractUserList):
-    """Stores products that were liked
-    by the user and added to a specific
-    liked products list"""
-
-    class Meta:
-        verbose_name = _('Like')
-        constraints = [
-            UniqueConstraint(fields=['user'], name='one_list_per_user')
-        ]
 
 
 class Wishlist(AbstractUserList):

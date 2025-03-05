@@ -6,7 +6,7 @@ from django.db.models import Count
 from django.urls import re_path
 from import_export.admin import ImportExportModelAdmin
 from import_export.resources import ModelResource
-from shop.models import Image, Like, Product, Video, Wishlist
+from shop.models import Image, Novelty, Product, Sale, Video, Wishlist
 from shop.utils import create_slug
 from shop.views import AdminUploadImageView
 
@@ -19,7 +19,12 @@ class ProductResource(ModelResource):
 @admin.register(Product)
 class ProductAdmin(ImportExportModelAdmin):
     resource_classes = [ProductResource]
-    list_display = ['name', 'color', 'category', 'unit_price', 'active']
+    list_display = [
+        'name', 'color', 'category',
+        'unit_price', 'validity_score', 
+        'active'
+    ]
+    list_per_page = 20
     filter_horizontal = ['images']
     list_filter = ['active']
     date_hiearchy = 'created_on'
@@ -34,7 +39,10 @@ class ProductAdmin(ImportExportModelAdmin):
         [
             'Variant',
             {
-                'fields': ['color', 'category', 'sub_category']
+                'fields': [
+                    'color', 'category',
+                    'sub_category', 'gender_category'
+                ]
             }
         ],
         [
@@ -53,7 +61,7 @@ class ProductAdmin(ImportExportModelAdmin):
             }
         ],
         [
-            'Fashion model',
+            'Model carachteristics',
             {
                 'fields': ['model_height', 'model_size']
             }
@@ -90,8 +98,8 @@ class ProductAdmin(ImportExportModelAdmin):
     def activate(self, request, queryset):
         queryset.update(active=True)
         self.message_user(
-            request, 
-            f'Activated {len(queryset)} products', 
+            request,
+            f'Activated {len(queryset)} products',
             messages.SUCCESS
         )
 
@@ -149,6 +157,24 @@ class ProductAdmin(ImportExportModelAdmin):
         )
 
 
+@admin.register(Sale)
+class SaleAdmin(ImportExportModelAdmin):
+    resource_classes = [ProductResource]
+    list_display = ['name', 'color', 'category', 'unit_price', 'active']
+    filter_horizontal = ['images']
+    date_hiearchy = 'created_on'
+    search_fields = ['name', 'id', 'slug']
+
+
+@admin.register(Novelty)
+class NoveltyAdmin(ImportExportModelAdmin):
+    resource_classes = [ProductResource]
+    list_display = ['name', 'color', 'category', 'unit_price', 'active']
+    filter_horizontal = ['images']
+    date_hiearchy = 'created_on'
+    search_fields = ['name', 'id', 'slug']
+
+
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
     list_display = ['name', 'variant', 'created_on', 'is_main_image']
@@ -178,17 +204,3 @@ class VideoAdmin(admin.ModelAdmin):
 class WishlistAdmin(admin.ModelAdmin):
     list_display = ['user', 'name', 'created_on']
     date_hiearchy = 'created_on'
-
-
-@admin.register(Like)
-class LikeAdmin(admin.ModelAdmin):
-    list_display = ['user', 'created_on']
-    search_fields = ['products__name']
-    date_hiearchy = 'created_on'
-
-
-# class ProductViewset:
-#     serializer_class = ProductSerializer
-
-#     def list(self, request):
-#         return super().list(request)

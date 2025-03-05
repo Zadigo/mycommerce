@@ -15,6 +15,16 @@ urlpatterns = [
         name='product'
     ),
     re_path(
+        r'^products/sales$',
+        views.ListProductsOnSale.as_view(),
+        name='sales'
+    ),
+    re_path(
+        r'^products/new$',
+        views.ListNewProducts.as_view(),
+        name='new'
+    ),
+    re_path(
         r'^products/recommendations$',
         views.ListRecommendations.as_view(),
         name='recommendations'

@@ -21,13 +21,18 @@ class GetProductStockStatus(generics.RetrieveAPIView):
     def get(self, request, pk, **kwargs):
         try:
             product = Stock.objects.get(
-                product__id=pk, 
-                product__active=True
+                variant__product__id=pk,
+                variant__product__active=True
             )
         except:
-            return Response({}, status=status.HTTP_202_ACCEPTED)
-        serializer = self.get_serializer(instance=product)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            data = {}
+            response_status = status.HTTP_202_ACCEPTED
+        else:
+            response_status = status.HTTP_200_OK
+            serializer = self.get_serializer(instance=product)
+            data = serializer.data
+
+        return Response(data, status=response_status)
 
 
 class UpdateStockStatus(generics.GenericAPIView):
@@ -35,17 +40,19 @@ class UpdateStockStatus(generics.GenericAPIView):
     products. This endpoint is triggered by the sucess
     page in Nuxt or by the payment page"""
 
-    queryset = Stock.objects.all()
-    serializer_class = serializers.StockSerializer
+    queryset = Stock.objects.filter()
+    serializer_class = serializers.UpdateStockSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        reference = serializer.validated_data['customer_order']
         customer_order = get_object_or_404(
             CustomerOrder,
-            reference=serializer.validated_data['customer_order']
+            reference=reference,
+            stock_updated=False
         )
 
         carts = Cart.objects.filter(order_reference=customer_order.reference)
@@ -58,8 +65,7 @@ class UpdateStockStatus(generics.GenericAPIView):
         updated_items = []
         for item in statistics:
             queryset = Stock.objects.filter(**{
-                'product__id': item['product__id'],
-                'stock_updated': False
+                'variant__product__id': item['product__id']
             })
 
             if not queryset.exists():
@@ -68,6 +74,7 @@ class UpdateStockStatus(generics.GenericAPIView):
             stock = queryset.get()
             stock.quantity = F('quantity') - item['quantity']
             stock.save()
+            
             updated_items.append(stock)
 
         if not updated_items:
@@ -77,10 +84,8 @@ class UpdateStockStatus(generics.GenericAPIView):
         # result of stock.quantity CombinedExpression field
         queryset = self.get_queryset()
         items = queryset.filter(id__in=[item.id for item in updated_items])
-        items.update(updated_stock=~F('updated_stock'))
 
-        serializer = self.serializer_class(
-            instance=items,
-            many=True
-        )
+        customer_order.stock_updated = ~F('stock_updated')
+
+        serializer = self.serializer_class(instance=items, many=True)
         return Response(serializer.data)

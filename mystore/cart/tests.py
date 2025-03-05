@@ -225,14 +225,18 @@ class TestCartStatistics(TestCase):
         cls.user.save()
 
     def setUp(self):
-        # self.queryset = Cart.objects.filter(session_id=DEFAULT_SESSION_ID)
         self.queryset = Cart.objects.all()
 
     def test_structure(self):
         result = cart_statistics(self.queryset)
-        data = list(result)
 
+        data = list(result)
         self.assertIsInstance(data, list)
 
         item = data[0]
-        self.assertIn('prouct__id', item)
+        self.assertIn('product__id', item)
+        # The first item should have quantity 1
+        self.assertEqual(data[0]['quantity'], 2)
+        # The first item should have quantity 2
+        # since we have two products of size "S"
+        self.assertEqual(data[1]['quantity'], 1)

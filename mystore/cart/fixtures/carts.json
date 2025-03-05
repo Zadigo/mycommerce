@@ -49,11 +49,33 @@
         "model": "variants.Size",
         "pk": 1,
         "fields": {
-            "name": "XS",
-            "sub_category": "Clothe size",
             "product": 2,
             "availability": true,
-            "active": true
+            "active": true,
+            "name": "XS",
+            "metric": "Clothe"
+        }
+    },
+    {
+        "model": "variants.Size",
+        "pk": 2,
+        "fields": {
+            "product": 2,
+            "availability": true,
+            "active": true,
+            "name": "S",
+            "metric": "Clothe"
+        }
+    },
+    {
+        "model": "variants.Size",
+        "pk": 3,
+        "fields": {
+            "product": 1,
+            "availability": true,
+            "active": true,
+            "name": "S",
+            "metric": "Clothe"
         }
     },
     {
@@ -66,8 +88,8 @@
             "is_stale": true,
             "product": 1,
             "price": 10,
-            "size": null,
-            "session_id": "other-session-value",
+            "size": "XS",
+            "session_id": "other-session-id",
             "user": null
         }
     },
@@ -81,8 +103,38 @@
             "is_stale": false,
             "product": 2,
             "price": 25,
-            "size": null,
-            "session_id": "juliette-session-value",
+            "size": "XS",
+            "session_id": "juliette-session-id",
+            "user": 1
+        }
+    },
+    {
+        "model": "cart.Cart",
+        "pk": 2,
+        "fields": {
+            "created_on": "2022-03-18 02:12:05.396826-05:00",
+            "is_anonymous": false,
+            "is_paid_for": false,
+            "is_stale": false,
+            "product": 2,
+            "price": 25,
+            "size": "S",
+            "session_id": "juliette-session-id",
+            "user": 1
+        }
+    },
+    {
+        "model": "cart.Cart",
+        "pk": 3,
+        "fields": {
+            "created_on": "2022-03-18 02:12:05.396826-05:00",
+            "is_anonymous": false,
+            "is_paid_for": false,
+            "is_stale": false,
+            "product": 2,
+            "price": 25,
+            "size": "S",
+            "session_id": "juliette-session-id",
             "user": 1
         }
     }

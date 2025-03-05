@@ -12,11 +12,8 @@ class ImageProductSerializer(Serializer):
 
     id = fields.IntegerField()
     name = fields.CharField()
-    # TODO: Implement rest of fields
-    # variant = fields.CharField()
-    # mid_size = fields.ImageField()
-    # thumbnail = fields.ImageField()
-    # is_main_image = fields.BooleanField()
+    color = fields.CharField()
+    color_variant_name = fields.CharField()
 
 
 class ImageSerializer(Serializer):

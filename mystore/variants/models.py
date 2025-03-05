@@ -1,11 +1,17 @@
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
 from django.db import models
 from django.db.models.constraints import UniqueConstraint
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-
+from shop import validators
 from shop.models import Product
 from variants.choices import VariantMetrics
+
+# TODO: Consider moving this models to the shop
+# app if we want to consider doing something
+# like how Bershka does: https://www.bershka.com/fr/pantalon-lin-taille-%C3%A9lastique-c0p175233285.html?colorId=800
+# and unify the variants into a single model
+# especially for stock management
 
 
 class AbstractVariant(models.Model):
@@ -17,9 +23,15 @@ class AbstractVariant(models.Model):
         Product,
         on_delete=models.CASCADE
     )
-    # attributed_price = models.PositiveIntegerField(
+    # attributed_price = models.DecimalField(
+    #     max_digits=5,
+    #     decimal_places=2,
     #     default=1,
-    #     help_text=_("Price attributed specifically to this variant")
+    #     help_text=_(
+    #         "Price attributed specifically to "
+    #         "this product variant"
+    #     ),
+    #     validators=[validators.price_validator]
     # )
     availability = models.BooleanField(
         default=True
@@ -74,7 +86,7 @@ class Size(AbstractVariant):
         ]
 
     def __str__(self):
-        return f'Variant: {self.product.name}'
+        return f'{self.product.name}: {self.name}'
 
 
 @receiver(pre_save, sender=Size)

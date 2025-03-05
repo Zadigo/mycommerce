@@ -31,7 +31,8 @@
         "model": "cart.Cart",
         "pk": 1,
         "fields": {
-            "session_id": "some_session",
+            "session_id": "some_session_id",
+            "order_reference": "some_reference",
             "user": 1,
             "product": 1,
             "price": 15,
@@ -56,6 +57,15 @@
             "variant": 1,
             "quantity": 20,
             "is_active": true
+        }
+    },
+    {
+        "model": "orders.ProductHistory",
+        "pk": 1,
+        "fields": {
+            "product": 1,
+            "unit_price": 11.99,
+            "created_on": "2024-07-25 14:49:13.356974+00:00"
         }
     },
     {

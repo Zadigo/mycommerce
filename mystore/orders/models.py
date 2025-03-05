@@ -115,6 +115,12 @@ class CustomerOrder(models.Model):
         verbose_name = _('customer order')
         verbose_name_plural = _('customer orders')
         ordering = ['-created_on']
+        indexes = [
+            models.Index(
+                models.Q(stock_updated=False),
+                name='stock_not_updated_index'
+            )
+        ]
 
     def __str__(self):
         return f'CustomerOrder: {self.reference}'
