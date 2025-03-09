@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'import_export',
     'django_ckeditor_5',
     'storages',
+    'django_celery_beat',
 
     'rest_framework',
     'rest_framework.authtoken',
@@ -373,7 +374,7 @@ RABBITMQ_USER = os.getenv('RABBITMQ_DEFAULT_USER', 'guest')
 
 RABBITMQ_PASSWORD = os.getenv('RABBITMQ_DEFAULT_PASS', 'guest')
 
-CELERY_BROKER_URL = f'amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@rabbitmq:5672'
+CELERY_BROKER_URL = f'amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_HOST}:5672'
 
 CELERY_RESULT_BACKEND = REDIS_URL
 
