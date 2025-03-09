@@ -1,18 +1,17 @@
 <template>
   <aside v-if="product" id="product-details" class="col-span-4 px-10">
-    <h1 id="product-name" :aria-label="product.color_variant_name" class="text-xl mt-5 font-semibold">
+    <h1 id="product-name" :aria-label="product.color_variant_name" class="text-lg mt-5 font-normal">
       {{ product.name }}
     </h1>
     
     <template v-if="product">
-      <div v-if="product.on_sale" class="font-bold text-xl inline-flex gap-2">
+      <div v-if="product.on_sale" class="font-bold text-lg inline-flex gap-2 mt-1">
         <span class="text-red-400">{{ translatePrice(product.get_price) }}</span>
-        <span class="text-red-400">{{ translatePrice(product.sale_value) }}</span>
         <span class="text-black"><s>{{ translatePrice(product.unit_price) }}</s></span>
       </div>
 
-      <p v-else class="font-bold text-xl">
-        {{ translatePrice(product?.unit_price) }}
+      <p v-else class="font-bold text-xl mt-1">
+        {{ translatePrice(product?.get_price) }}
       </p>
     </template>
 
@@ -45,22 +44,26 @@
     <NuxtLink to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('show-size-guide')">
       {{ $t('Guide des tailles') }}
     </NuxtLink>
+
+    <p v-if="showSizeSelectionWarning" class="text-red-400 mt-4">
+      Choissis une taille
+    </p>
     
-    <BaseButton v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" class="mt-10 place-content-center" color="dark" tonal @click="showAvailabilityModal=true">
+    <BaseButton v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" class="mt-5 place-content-center" color="dark" tonal @click="showAvailabilityModal=true">
       <Icon name="fa:envelope" size="12" class="me-1" />
       {{ $t('Me tenir informer') }}
     </BaseButton>
-    <BaseButton v-else class="mt-10" color="primary" tonal :disabled="false" @click="handleAddToCart">
+    <BaseButton v-else class="mt-5" color="primary" tonal :disabled="false" @click="handleAddToCart">
       <font-awesome v-if="stockState && stockState.almost_sold_out" icon="clock" class="me-1" />
       {{ $t('Ajouter au panier') }}
     </BaseButton>
 
-    <BaseButton aria-label="Ajouter au favori" @click="proxyHandleLike">
+    <BaseButton :aria-label="$t('Ajouter au favori')" @click="proxyHandleLike">
       <font-awesome v-if="isLiked" icon="heart" />
       <font-awesome v-else :icon="['far', 'heart']" />
     </BaseButton>
 
-    <BaseList class="shadow-none border border-gray-100 mt-5">
+    <BaseList class="shadow-none border border-gray-100 mt-10">
       <BaseListitem class="border-b-2 border-gray-100 flex justify-between items-center text-sm" @click="emit('show-composition-guide')">
         <div class="flex justify-start gap-2">
           <span>{{ $t('Composition, soin et traçabilité') }}</span>

@@ -13,43 +13,39 @@
       </v-btn>
     </v-toolbar>
 
-    <div class="container mt-1">
-      <div v-if="hasProducts" class="row d-flex justify-content-between">
-        <div class="col-12 mt-4">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <p v-if="freeDeliveryTarget > 0" class="fw-light">
-                {{ cartTotal }}
-                {{ $t('Livraison gratuite offerte', { n: $n(freeDeliveryTarget, 'currency') }) }}
-                <!-- Il te manque 19,02 € pour profiter de la -->
-                <span class="fw-bold text-primary text-uppercase">
-                  {{ $t('livraison standard gratuite') }}
-                </span>
-              </p>
+    <div class="px-10">
+      <div v-if="hasProducts" class="flex flex-col">
+        <div class="p-5 shadow-sm rounded-md bg-green-100">
+          <div v-if="freeDeliveryTarget > 0">
+            {{ cartTotal }}
+            {{ $t('Livraison gratuite offerte', { n: $n(freeDeliveryTarget, 'currency') }) }}
+            <!-- Il te manque 19,02 € pour profiter de la -->
+            <span class="font-bold text-green-900 uppercase">
+              {{ $t('livraison standard gratuite') }}
+            </span>
+          </div>
 
-              <div v-else class="fw-light">
-                <p class="fw-bold text-success text-uppercase mb-1">
-                  {{ $t('Livraison standard gratuite') }}
-                </p>
+          <div v-else>
+            <p class="font-bold text-blue-900 uppercase">
+              {{ $t('Livraison standard gratuite') }}
+            </p>
 
-                <p class="fw-light">
-                  Tu vas pouvoir profiter de la livraison 
-                  standard gratuite à domicile
-                </p>
-              </div>
-            </div>
+            <p class="font-light">
+              Tu vas pouvoir profiter de la livraison 
+              standard gratuite à domicile
+            </p>
           </div>
         </div>
         
         <!-- Products -->
         <CartIterator class="my-2" @edit-product="handleOpenProductEdition" />
 
-        <div class="d-flex justify-content-between align-items-center py-4">
-          <span class="fw-light">{{ $t('Total (TVA comprise)') }}</span>
-          <span class="fw-bold">{{ $n(cartTotal, 'currency') }}</span>
+        <div class="flex justify-between align-center py-4">
+          <span class="font-light">{{ $t('Total (TVA comprise)') }}</span>
+          <span class="font-bold">{{ $n(cartTotal, 'currency') }}</span>
         </div>
         
-        <div class="col-12">
+        <div class="place-self-baseline">
           <v-btn v-if="isAuthenticated" to="/cart" color="secondary" rounded flat block>
             {{ $t('Passer commande') }}
           </v-btn>
@@ -60,8 +56,8 @@
         </div>
       </div>
 
-      <div v-else class="col-12 mt-5 h-100">
-        <div class="d-flex flex-column justify-content-center text-center my-3">
+      <div v-else class="px-10 h-full">
+        <div class="flex flex-col justify-center text-center my-3">
           <font-awesome icon="shopping-bag" size="7x" class="mb-5 text-dark" />
           
           <h3 class="h5 mb-3">

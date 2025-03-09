@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { CartItem, CartUpdateAPIResponse, Product, SessionCacheData } from '~/types'
+import type { CartItem, CartUpdateApiResponse, Product, SessionCacheData } from '~/types'
 
 interface RequestData {
     session_id: string | null | undefined
@@ -37,7 +37,7 @@ export const useCart = defineStore('cart', () => {
         delivery: "Chronopost"
     })
 
-    const cache = ref<CartUpdateAPIResponse | null>()
+    const cache = ref<CartUpdateApiResponse | null>()
 
     const showAddedProductDrawer = ref(false)
     const showEditProductDrawer = ref(false)

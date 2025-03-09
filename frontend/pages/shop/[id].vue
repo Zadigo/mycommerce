@@ -1,11 +1,5 @@
 <template>
-  <section id="product" class="mt-3 relative">
-    <DevOnly>
-      <div class="fixed top-2 left-0 w-2/4 z-50 bg-yellow-200 rounded-md shadow-md p-10">
-        {{ product?.id }}
-      </div>
-    </DevOnly>
-
+  <section id="product" class="relative">
     <div class="grid grid-cols-12 grid-row-1 w-full gap-5">
       <!-- Images -->
       <template v-if="product">

@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
-import type { CartUpdateAPIResponse, LoginAPIResponse, Product, ProductToEdit, UserSelection } from "~/types";
+import type { CartUpdateApiResponse, Product, ProductToEdit, UserSelection } from "~/types";
 
-type FunctionCallback = (data: CartUpdateAPIResponse) => void
+type FunctionCallback = (data: CartUpdateApiResponse) => void
 
 /**
  * The cart composable is a function that allows
@@ -41,7 +41,7 @@ export function useCartComposable () {
      * the product size or other caracteristics are
      * available in a list (e.g. ProductsPage, CollectionsPage...) 
      */
-    async function addToCart(product: Product, size?: string | number | null, callback?: FunctionCallback, authCallback?: (data: LoginAPIResponse) => void) {
+    async function addToCart(product: Product, size?: string | number | null, callback?: FunctionCallback, authCallback?: (data) => void) {
         try {
             addingToCartState.value = true
 
@@ -87,12 +87,12 @@ export function useCartComposable () {
     /**
      * Removes a product to the customer's cart 
      */
-    async function deleteFromCart(cartItem: ProductToEdit, callback?: (deletedItem: ProductToEdit, updatedCart: CartUpdateAPIResponse) => void, authCallback?: (data: LoginAPIResponse) => void) {
+    async function deleteFromCart(cartItem: ProductToEdit, callback?: (deletedItem: ProductToEdit, updatedCart: CartUpdateApiResponse) => void, authCallback?: (data) => void) {
         console.log('deleteFromCart', cartItem)
         try {
             if (parsedSession.value) {
                 // FIXME: How does this function know which product to delete ?
-                const response = await $client.delete<CartUpdateAPIResponse>(`cart/${parsedSession.value.c}/delete`)
+                const response = await $client.delete<CartUpdateApiResponse>(`cart/${parsedSession.value.c}/delete`)
                 
                 // cartStore.removeFromCart(product)
                 if (callback && typeof callback === 'function') {

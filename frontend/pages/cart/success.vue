@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import { useSessionStorage } from '@vueuse/core'
-import type { CartUpdateAPIResponse, ProductStock } from '~/types';
+import type { CartUpdateApiResponse, ProductStock } from '~/types';
 
 definePageMeta({
   layout: 'payment-layout',
@@ -32,9 +32,9 @@ useHead({
 })
 
 const cartStore = useCart()
-const cart = useSessionStorage<CartUpdateAPIResponse>('cart', null)
+const cart = useSessionStorage<CartUpdateApiResponse>('cart', null)
 
-const { gtag } = useGtag()
+// const { gtag } = useGtag()
 const { handleError } = useErrorHandler()
 const {  $client } = useNuxtApp()
 
@@ -52,34 +52,34 @@ async function handleUpdateStock () {
 onMounted(async () => {
   await handleUpdateStock()
 
-  gtag('event', 'purchase', {
-    transaction_id: cartStore.sessionId,
-    currency: 'EUR',
-    tax: 20,
-    shipping: 1,
-    value: cartStore.cartTotal,
-    items: cartStore.products.map((item, i) => {
-      return {
-        item_id: item.product.id,
-        item_name: item.product.name,
-        price: item.product.get_price,
-        quantity: 1,
-        item_brand: null,
-        item_category: item.product.category,
-        item_category2: item.product.sub_category,
-        item_variant: item.product.color,
-        index: i,
-        size: item.size
-      }
-    })
-  })
+  // gtag('event', 'purchase', {
+  //   transaction_id: cartStore.sessionId,
+  //   currency: 'EUR',
+  //   tax: 20,
+  //   shipping: 1,
+  //   value: cartStore.cartTotal,
+  //   items: cartStore.products.map((item, i) => {
+  //     return {
+  //       item_id: item.product.id,
+  //       item_name: item.product.name,
+  //       price: item.product.get_price,
+  //       quantity: 1,
+  //       item_brand: null,
+  //       item_category: item.product.category,
+  //       item_category2: item.product.sub_category,
+  //       item_variant: item.product.color,
+  //       index: i,
+  //       size: item.size
+  //     }
+  //   })
+  // })
 
-  useTrackEvent('purchase', {
-    checkout_step: 4,
-    currency: 'EUR',
-    shipping: 1,
-    value: cartStore.cartTotal
-  })
+  // useTrackEvent('purchase', {
+  //   checkout_step: 4,
+  //   currency: 'EUR',
+  //   shipping: 1,
+  //   value: cartStore.cartTotal
+  // })
 
   cart.value = null
   cartStore.cache = null

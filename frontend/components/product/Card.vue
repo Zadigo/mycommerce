@@ -2,7 +2,7 @@
   <article v-if="product" :data-id="product.id" :aria-label="product.name" class="group relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
     <!-- Carousel -->
     <div class="relative">
-      <button v-if="isHovered" type="button" class="absolute top-2/4 left-3 py-5 rounded-full z-10 w-5 place-content-center hover:opacity-60 flex" @click="handlePreviousImage">
+      <button v-if="showCarousel && isHovered" type="button" class="absolute top-2/4 left-3 py-5 rounded-full z-10 w-5 place-content-center hover:opacity-60 flex" @click="handlePreviousImage">
         <Icon name="fa:caret-left" class="" />
       </button>
       
@@ -10,7 +10,7 @@
         <img :src="mediaPath(currentImage?.original, '/placeholder.svg')" :alt="currentImage?.name" :aria-label="currentImage?.name" class="self-center aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-full">
       </NuxtLink>
 
-      <button v-if="isHovered" type="button" class="absolute top-2/4 right-3 py-5 rounded-full z-10 w-5 place-content-center hover:opacity-60" @click="handleNextImage">
+      <button v-if="showCarousel && isHovered" type="button" class="absolute top-2/4 right-3 py-5 rounded-full z-10 w-5 place-content-center hover:opacity-60" @click="handleNextImage">
         <Icon name="fa:caret-right" class="" />
       </button>
     </div>
@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <div class="mt-4 flex justify-between align-top gap-5">
+    <div v-if="showPrices" class="mt-4 flex justify-between align-top gap-5">
       <div>
         <h3 class="text-sm text-gray-700">
           <NuxtLink :to="`/shop/${product.id}`" @click="emit('has-navigated', [index, product])">
@@ -89,6 +89,10 @@ const props = defineProps({
     required: true
   },
   showLikeButton: {
+    type: Boolean,
+    default: true
+  },
+  showCarousel: {
     type: Boolean,
     default: true
   },

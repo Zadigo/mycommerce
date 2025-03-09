@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia'
 import { useJwt } from '@vueuse/integrations/useJwt'
-import type { StringNull } from '~/types'
+import type { StringNull, SessionCacheData } from '~/types'
 import type { LoginApiResponse } from '~/composables/django_client'
 
 export const useAuthentication = defineStore('authentication', () => {
+    const sessionCache = ref<SessionCacheData>()
+
     // Modals
     const showLoginDrawer = ref(false)
 
@@ -36,6 +38,7 @@ export const useAuthentication = defineStore('authentication', () => {
     return {
         logout,
         setTokens,
+        sessionCache,
         userId,
         isAuthenticated,
         showLoginDrawer,

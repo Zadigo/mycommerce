@@ -1,5 +1,5 @@
 import type { Profile } from './accounts';
-import type { CartUpdateAPIResponse, DeliveryOption } from './cart';
+import type { CartUpdateApiResponse, DeliveryOption } from './cart';
 import type { Product } from './shop';
 
 export * from './accounts';
@@ -37,7 +37,7 @@ export interface PopularImages {
 export interface SessionCacheData {
     language: LanguageOptions
     paymentIntent: null
-    cart: CartUpdateAPIResponse | null
+    cart: CartUpdateApiResponse | null
     recommendations: Product[]
     searchHistory: string[]
     authenticatedCart: boolean

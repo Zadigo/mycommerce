@@ -5,7 +5,7 @@
     </h2>
 
     <div ref="productsRow" class="row g-1">
-      <ProductsIterator :products="recommendations" :columns="columns" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
+      <ProductsIterator :products="recommendations" :columns="columns" :show-carousel="showCarousel" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
     </div>
   </div>
 </template>
@@ -32,6 +32,10 @@ const props = defineProps({
   showLikeButton: {
     type: Boolean,
     default: false
+  },
+  showCarousel: {
+    type: Boolean,
+    default: true
   },
   showCart: {
     type: Boolean,
@@ -105,6 +109,8 @@ async function requestRecommendations () {
       if (shopStore.sessionCache) {
         shopStore.sessionCache.recommendations = response.data
       }
+    } else {
+      recommendations.value = shopStore.sessionCache.recommendations
     }
   } catch (e) {
     handleError(e)

@@ -1,43 +1,44 @@
 <template>
-  <div class="col-12">
-    <article v-for="item in cartItems" :key="item.product__id" :aria-label="item.product__name" class="card shadow-none border mb-1">
-      <div class="card-body p-2">
-        <div class="d-flex justify-content-start gap-2">
-          <div class="col-auto">
-            <!-- FIXME: Raises an error when there is not image -->
-            <!-- <v-img :src="mediaPath(item.product_info?.product.get_main_image.original)" :alt="item.product__name" :width="150" :height="150" /> -->
-          </div>
+  <div class="my-1">
+    <article v-for="item in cartItems" :key="item.product__id" :aria-label="item.product__name" class="border-2 border-gray-50 rounded-md p-3">
+      <div class="flex justify-start gap-3">
+        <div id="image" class="w-2/4">
+          <NuxtLink :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
+            <NuxtImg :src="mediaPath(item.product_info?.product.get_main_image.original, '/placeholder.svg')" class="w-full rounded-md" />
+          </NuxtLink>
+          <!-- FIXME: Raises an error when there is not image -->
+          <!-- <v-img :src="mediaPath(item.product_info?.product.get_main_image.original)" :alt="item.product__name" :width="150" :height="150" /> -->
+        </div>
 
-          <div class="infos">
-            <NuxtLink :to="`/shop/${item.product__id}`" class="link-dark" @click="$emit('show-cart-drawer')">
-              <p class="mb-1">
-                {{ item.product__name }}
-              </p>
+        <div id="infos">
+          <NuxtLink :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
+            <p class="mb-1">
+              {{ item.product__name }}
+            </p>
 
-              <div class="fw-bold">
-                {{ $n(parseFloat(item.product_info?.price), 'currency') }}
-              </div>
-              
-              <div class="fs-light fs-6 mb-1 d-flex justify-content-start align-items-center gap-3">
-                <span v-if="item.product_info">
-                  {{ item.product_info.size }}
-                </span>
-
-                <span>
-                  {{ item.quantity }}x
-                </span>
-              </div>
-            </NuxtLink>
-
-            <div id="actions">
-              <v-btn v-if="isEditable" class="me-2" size="x-small" variant="tonal" rounded @click="handleProductEdition(item)">
-                <font-awesome icon="pen" />
-              </v-btn>
-
-              <v-btn variant="tonal" size="x-small" rounded @click="deleteFromCart(item, callbackRemoveFromCart, callbackAuth)">
-                <font-awesome icon="trash" />
-              </v-btn>
+            <div class="font-bold">
+              {{ $n(parseFloat(item.product_info?.price), 'currency') }}
             </div>
+            
+            <div class="font-light mb-1 flex justify-start align-center gap-1">
+              <span v-if="item.product_info">
+                {{ item.product_info.size }}
+              </span>
+
+              <span>
+                {{ item.quantity }}x
+              </span>
+            </div>
+          </NuxtLink>
+
+          <div id="actions">
+            <v-btn v-if="isEditable" class="me-2" size="x-small" variant="tonal" rounded @click="handleProductEdition(item)">
+              <font-awesome icon="pen" />
+            </v-btn>
+
+            <v-btn variant="tonal" size="x-small" rounded @click="deleteFromCart(item, callbackRemoveFromCart, callbackAuth)">
+              <font-awesome icon="trash" />
+            </v-btn>
           </div>
         </div>
       </div>
@@ -47,7 +48,7 @@
 
 <script lang="ts" setup>
 import type { LoginApiResponse } from '~/composables/django_client';
-import type { CartUpdateAPIResponse, ProductToEdit } from '~/types';
+import type { CartUpdateApiResponse, ProductToEdit } from '~/types';
 
 defineProps({
   isEditable: {
@@ -97,7 +98,7 @@ function handleProductEdition (item: ProductToEdit) {
 /**
  * TODO: 
  */
-function callbackRemoveFromCart (deletedItem: ProductToEdit, updatedCart: CartUpdateAPIResponse) {
+function callbackRemoveFromCart (deletedItem: ProductToEdit, updatedCart: CartUpdateApiResponse) {
   const items = [
     {
       item_id: deletedItem.product__id,
