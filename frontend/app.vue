@@ -20,6 +20,8 @@ import 'animate.css';
 
 // import { doc, getFirestore, setDoc } from 'firebase/firestore';
 import { Toaster } from 'vue-sonner';
+import { baseSessionCacheData } from "~/data";
+import type { SessionCacheData } from "~/types";
 import type { ExtendedLocationQuery } from './types';
 
 useSchemaOrg([
@@ -35,6 +37,17 @@ useSchemaOrg([
   })
 ])
 
+const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData, {
+  serializer: {
+      read(raw) {
+          return JSON.parse(raw)
+      },
+      write(value) {
+          return JSON.stringify(value)
+      }
+  }
+})
+
 const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
   serializer: {
     read (raw) {
@@ -49,6 +62,7 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
 const route = useRoute()
 const shopStore = useShop()
 const authenticationStore = useAuthentication()
+const cartStore = useCart()
 
 const accessToken = useCookie('access')
 const refreshToken = useCookie('refresh')
@@ -70,7 +84,8 @@ watch((): ExtendedLocationQuery => route.query, (newValue) => {
   }
 })
 
-shopStore.$subscribe(({ storeId }) => {
+shopStore.$subscribe(({ storeId }, state) => {
+  state.sessionCache = sessionCache.value
   shopStore.likedProducts = likedProducts.value
 
   // OPTIONAL: Activate Firebase as localstorage for user data
@@ -82,15 +97,18 @@ shopStore.$subscribe(({ storeId }) => {
   // }
 })
 
-// cartStore.$subscribe(({ storeId }) => {
-//   cartStore.sessionCache = sessionCache.value
-// })
+cartStore.$subscribe(({ storeId }, state) => {
+  state.sessionCache = sessionCache.value
+})
 
 authenticationStore.$subscribe(({ storeId }, state) => {
   // When we update the tokens in the store,
   // automatically update them in the cookies
+  state.sessionCache = sessionCache.value
   accessToken.value = state.accessToken
   refreshToken.value = state.refreshToken
+
+  console.log('state.sessionCache.authenticationStore', state.sessionCache)
 })
 
 async function requestSessionId () {
@@ -110,7 +128,19 @@ async function requestSessionId () {
   }
 }
 
-onBeforeMount(async () => {  
+onBeforeMount(async () => {
+  if (!shopStore.sessionCache) {
+    shopStore.sessionCache = sessionCache.value
+  }
+  
+  if (!cartStore.sessionCache) {
+    cartStore.sessionCache = sessionCache.value
+  }
+
+  if (!authenticationStore.sessionCache) {
+    authenticationStore.sessionCache = sessionCache.value
+  }
+
   // Load the default values that will be used for
   // authentication and for the user's profile inforamtion
   authenticationStore.accessToken = accessToken.value
