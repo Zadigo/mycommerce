@@ -1,4 +1,3 @@
-from accounts import tasks
 from accounts.choices import Genders
 from django.contrib.auth.models import User
 from django.db import models
@@ -108,15 +107,3 @@ class UserProfile(models.Model):
 def create_profile(instance, created, **kwargs):
     if created:
         instance = UserProfile.objects.create(user=instance)
-
-    #     # When we first create an account, create
-    #     # a Stripe customer ID that we will save
-    #     # in the database
-    #     tasks.signup_workflow.apply_async(
-    #         args=[instance.user.email],
-    #         countdown=40
-    #     )
-    # else:
-    #     # Check for changes and update the
-    #     # user's Stripe profile account
-    #     print('create_profile', instance)

@@ -18,45 +18,57 @@ def update_profile(email):
     """Function used to sync the modifications of the
     user profile locally into Stripe when the user
     updates his user proflie"""
-    try:
-        user = get_user_model().objects.get(email=email)
-    except ObjectDoesNotExist:
-        logger.error('Signup workflow: User matching query does not exist')
-        return {}
-    else:
-        params = {
-            'id': user.userprofile.stripe_id,
-            'email': user.email,
-            'name': f'{user.first_name} {user.last_name}',
-            'phone': f'{user.userprofile.telephone}'
+    user = get_user_model().objects.get(email=email)
+
+    params = {
+        'id': user.userprofile.stripe_id,
+        'email': user.email,
+        'name': f'{user.first_name} {user.last_name}',
+        'phone': f'{user.userprofile.telephone}'
+    }
+
+    instance = user.address_set.filter(is_active=True)
+    if instance.exits():
+        address = instance.get()
+        params['address'] = {
+            'line1': address.address_line,
+            'zip_code': address.post_code,
+            'city': address.city
         }
-
-        instance = user.address_set.filter(is_active=True)
-        if instance.exits():
-            address = instance.get()
-            params['address'] = {
-                'line1': address.address_line,
-                'zip_code': address.post_code,
-                'city': address.city
-            }
-
-        result = stripe.Customer.modify(**params)
-        return {'email': user.email}
+    result = stripe.Customer.modify(**params)
+    return {'email': user.email}
 
 
 @shared_task
 def signup_workflow(email):
-    try:
-        user = get_user_model().objects.get(email=email)
-    except ObjectDoesNotExist:
-        logger.error('Signup workflow: User matching query does not exist')
-        return {}
-    else:
-        result = stripe.Customer.create(
-            email=user.email,
-            name=f'{user.first_name} {user.last_name}'
-        )
+    user = get_user_model().objects.get(email=email)
 
-        user.userprofile.stripe_id = result.id
-        user.userprofile.save()
-        return {'email': email, 'token': user.userprofile.stripe_id}
+    result = stripe.Customer.create(
+        email=user.email,
+        name=f'{user.first_name} {user.last_name}'
+    )
+
+    user.userprofile.stripe_id = result.id
+    user.userprofile.save()
+
+    return {'email': email, 'token': user.userprofile.stripe_id}
+
+
+@shared_task
+def schedule_delete_accounts():
+    """Task that iterates over accounts that are scheduled
+    to be deleted every day on the given day"""
+    qs = get_user_model().objects.filter(active=False)
+    if qs.exists():
+        params = {
+            'from_email': '',
+            'html_content': None
+        }
+
+        ids = list(qs.values_list('id', flat=True))
+        for user in qs:
+            # 1. Email the user that his account
+            # has been deleted
+            user.email_user('Account deleted', '', **params)
+            user.delete()
+        return ids

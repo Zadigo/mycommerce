@@ -1,11 +1,16 @@
+from datetime import timedelta
+
+from accounts import tasks
 from accounts.api import serializers
 from accounts.models import Address
+from accounts.permissions import CustomIsAuthenticated
 from django.contrib.auth import get_user_model
+from django.db.models import F
+from django.utils import timezone
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from accounts import tasks
 
 
 class UserInfo(generics.RetrieveUpdateAPIView):
@@ -46,7 +51,7 @@ class AddressLines(generics.ListAPIView, generics.CreateAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(user_profile__user=self.request.user)
-    
+
     def perform_create(self, serializer):
         super().perform_create(serializer)
         # tasks.update_profile.apply_async((self.request.user,), countdown=30)
@@ -58,6 +63,24 @@ class UpdateDestroyAddressLine(generics.UpdateAPIView, generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
     lookup_url_kwarg = 'address_id'
     lookup_field = 'pk'
+
+
+class DestroyProfile(generics.DestroyAPIView):
+    """Schedules an account to be deleted in the next time
+    period specified below. First the account is deactivated
+    and then scheduled to be deleted via Celery"""
+
+    queryset = get_user_model().objects.filter(is_active=True)
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def perform_destroy(self, instance):
+        if instance.active:
+            date = timezone.now() + timedelta(days=5)
+            instance.scheduled_deletion = date
+            instance.active = ~F('active')
 
 
 class Signup(generics.CreateAPIView):
