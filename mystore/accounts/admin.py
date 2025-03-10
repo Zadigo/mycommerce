@@ -1,6 +1,6 @@
 import stripe
 from django.contrib import admin, messages
-
+from django.template.loader import render_to_string
 from accounts.models import Address, UserProfile
 
 
@@ -9,7 +9,24 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_display = ['user', 'created_on', 'has_payment_method']
     date_hierarchy = 'created_on'
     search_fields = ['user__email', 'user__first_name', 'user__last_name']
-    actions = ['check_stripe_customer_details', 'create_stripe_customer']
+    actions = [
+        'check_stripe_customer_details',
+        'create_stripe_customer', 'send_test_email'
+    ]
+
+    def send_test_email(self, request, queryset):
+        subject = 'Test email'
+        text = 'This is an example text'
+        html = render_to_string('email/test_email.html')
+
+        for profile in queryset:
+            if profile.user.is_superuser:
+                profile.user.email_user(**{
+                    'subject': subject, 
+                    'message': text, 
+                    'from_email': 'example@gmail.com',
+                    'html_message': html
+                })
 
     def check_stripe_customer_details(self, request, queryset):
         if len(queryset) > 1:
