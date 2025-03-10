@@ -71,8 +71,7 @@ INSTALLED_APPS = [
     'shipments',
     'reviews',
     'stocks',
-    'django_ecommerce_mails',
-
+    
     'adminapi'
 ]
 
