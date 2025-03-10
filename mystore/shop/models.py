@@ -348,7 +348,7 @@ class AbstractProduct(models.Model):
             'has_subcategory': 1,
             'model': 1
         }
-        
+
         score = 0
         total_score = sum(list(score_map.values()))
 
@@ -370,7 +370,6 @@ class AbstractProduct(models.Model):
             score += score_map['model']
 
         return f"{score}/{total_score}"
-
 
     def clean(self):
         if self.on_sale:
