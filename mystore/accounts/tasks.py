@@ -15,6 +15,9 @@ def login_workflow():
 
 @shared_task
 def update_profile(email):
+    """Function used to sync the modifications of the
+    user profile locally into Stripe when the user
+    updates his user proflie"""
     try:
         user = get_user_model().objects.get(email=email)
     except ObjectDoesNotExist:
@@ -28,17 +31,16 @@ def update_profile(email):
             'phone': f'{user.userprofile.telephone}'
         }
 
-        # instance = user.address_set.filter(is_active=True)
-        # if instance.exits():
-        #     address = instance.get()
-        #     params['address'] = {
-        #         'line1': address.address_line,
-        #         'zip_code': address.post_code,
-        #         'city': address.city
-        #     }
+        instance = user.address_set.filter(is_active=True)
+        if instance.exits():
+            address = instance.get()
+            params['address'] = {
+                'line1': address.address_line,
+                'zip_code': address.post_code,
+                'city': address.city
+            }
 
         result = stripe.Customer.modify(**params)
-        # print(vars(result))
         return {'email': user.email}
 
 

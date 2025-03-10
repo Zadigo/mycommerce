@@ -85,13 +85,6 @@ class UserRegistrationSerializer(ModelSerializer):
             'first_name': '',
             'last_name': ''
         })
-
-        # t1 = tasks.signup_workflow.apply_async(
-        #     args=[instance.email],
-        #     countdown=30
-        # )
-        # t1.get()
-        # tasks.signup_workflow.s(instance.email)
         return instance
 
 
