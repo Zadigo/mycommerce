@@ -386,11 +386,6 @@ class AbstractProduct(models.Model):
             numbers = map(lambda _: random.choice(string.digits), range(10))
             self.sku = f"{color.upper()}{''.join(numbers)}"
 
-    def get_absolute_url(self):
-        return reverse('shop:product', kwargs={
-            'slug': self.slug
-        })
-
 
 class Product(AbstractProduct):
     """The Product model, inheriting from the `AbstractProduct` 

@@ -71,7 +71,7 @@ INSTALLED_APPS = [
     'shipments',
     'reviews',
     'stocks',
-    
+
     'adminapi'
 ]
 
