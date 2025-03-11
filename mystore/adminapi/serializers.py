@@ -25,7 +25,7 @@ class ValidateImageAssociation(Serializer):
         return instance
 
 
-class ProductSerializer(Serializer):
+class AdminProductSerializer(Serializer):
     """Updates the characteristics of a
     given product in the store"""
 

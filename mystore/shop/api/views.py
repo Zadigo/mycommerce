@@ -247,23 +247,28 @@ class ListProductsOnSale(generics.ListAPIView):
         return qs
 
 
-@api_view(http_method_names=['get'])
-def test_fuzzy(request, **kwargs):
-    results = []
-    search = request.GET.get('s')
-    qs = Product.objects.all()
-    instance = FuzzyMatcherMixin()
-    for item in qs:
-        result = instance.get_match_details(search, item.color_variant_name)
-        result['product'] = item.id
-        results.append(result)
-    df = pandas.DataFrame(results)
-    df = df[df['weighted_ratio'] >= 0.7]
 
-    ids = df['product'].to_list()
-    selected_products = qs.filter(id__in=ids)
-    # data = json.loads(df.to_json(orient='records'))
-    # return Response(data)
-    serializer = serializers.ProductSerializer(
-        instance=selected_products, many=True)
-    return Response(serializer.data)
+class TestFuzzy(generics.GenericAPIView):
+    serializer_class = serializers.ProductSerializer
+
+    def get(self, request, **kwargs):
+        results = []
+        search = request.GET.get('s')
+        qs = Product.objects.all()
+        instance = FuzzyMatcherMixin()
+        for item in qs:
+            result = instance.get_match_details(search, item.color_variant_name)
+            result['product'] = item.id
+            results.append(result)
+        df = pandas.DataFrame(results)
+        df = df[df['weighted_ratio'] >= 0.7]
+
+        ids = df['product'].to_list()
+        selected_products = qs.filter(id__in=ids)
+        # data = json.loads(df.to_json(orient='records'))
+        # return Response(data)
+        serializer = self.get_serializer(
+            instance=selected_products, 
+            many=True
+        )
+        return Response(serializer.data)

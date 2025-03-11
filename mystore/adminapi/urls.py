@@ -21,12 +21,12 @@ urlpatterns = [
     ),
     re_path(
         r'^images/associate$',
-        views.associate_images,
+        views.AssociateImages.as_view(),
         name='associate'
     ),
     re_path(
         r'^products/upload$',
-        views.upload_products,
+        views.UploadProducts.as_view(),
         name='upload_to_product'
     ),
     re_path(

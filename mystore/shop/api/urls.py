@@ -6,7 +6,7 @@ app_name = 'shop_api'
 urlpatterns = [
     re_path(
         r'^fuzzy$',
-        views.test_fuzzy,
+        views.TestFuzzy.as_view(),
         name='fuzzy'
     ),
     re_path(

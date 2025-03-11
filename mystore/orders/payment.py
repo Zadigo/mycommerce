@@ -183,20 +183,3 @@ class PaymentInterface(StripeInterfaceMixin):
                         
         self.completed = True
         return response
-
-# def refund(self, request, charge, reason=None):
-#        try:
-#             response = stripe.Refund.create(
-#                 charge=charge,
-#                 reason=None,
-#                 metadata={}
-#             )
-#         except stripe.StripeError as e:
-#             self.errors['update_error'] = e.args
-#         except Exception as e:
-#             self.errors['update_error'] = e.args
-#         else:
-#             return True
-#         finally:
-#             if self.errors:
-#                 return False

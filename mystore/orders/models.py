@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.fields import CKEditor5Field
@@ -100,6 +101,20 @@ class CustomerOrder(models.Model):
         blank=True,
         null=True
     )
+    completed = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Indicates that the order was fully completed: "
+            "packaged, shipped and received by the customer"
+        )
+    )
+    refund_requested = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Indicates that the order was cancelled "
+            "and refund was requested"
+        )
+    )
     stock_updated = models.BooleanField(
         default=False,
         help_text=_(
@@ -124,6 +139,14 @@ class CustomerOrder(models.Model):
 
     def __str__(self):
         return f'CustomerOrder: {self.reference}'
+
+    @property
+    def return_delay(self):
+        return self.created_on + timezone.timedelta(days=15)
+    
+    @property
+    def max_return_delay(self):
+        return self.created_on + timezone.timedelta(days=30)
 
 
 @receiver(pre_save, sender=CustomerOrder)

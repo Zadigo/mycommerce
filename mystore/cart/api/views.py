@@ -1,13 +1,15 @@
 from cart.api import serializers
 from cart.api.serializers import ValidateCart, build_cart_response
-from cart.sessions import RestSessionManager
 from cart.models import Cart
+from cart.sessions import RestSessionManager
 from django.db.models import F, Q
 from django.shortcuts import get_list_or_404
 from rest_framework import generics, status
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from drf_spectacular.utils import inline_serializer, extend_schema
 from rest_framework.response import Response
+from rest_framework import fields
 
 
 class CartMixin:
@@ -161,7 +163,8 @@ class UpdateInCartView(CartMixin, generics.UpdateAPIView):
 
         initial_serializer = None
         for item in items:
-            serializer = self.get_serializer(item, data=request.data, partial=partial)
+            serializer = self.get_serializer(
+                item, data=request.data, partial=partial)
             serializer.is_valid(raise_exception=True)
 
             if initial_serializer is None:
@@ -174,7 +177,7 @@ class UpdateInCartView(CartMixin, generics.UpdateAPIView):
 
         session_id = initial_serializer.validated_data['session_id']
 
-        queryset = Cart.objects.filter(id=(item.id for item in items))        
+        queryset = Cart.objects.filter(id=(item.id for item in items))
 
         data = build_cart_response(queryset, session_id)
         return Response(data=data)
@@ -236,11 +239,12 @@ class DeleteFromCart(generics.DestroyAPIView):
         return Response(data=data, status=status.HTTP_204_NO_CONTENT)
 
 
+@extend_schema(responses={201: inline_serializer(name='TokenSerializer', fields={'token': fields.CharField()})})
 class CreateSessionID(generics.CreateAPIView):
     """Endpoint for creating a new session ID that
     allows us to identify anonymous users in the 
     database when they are shopping on the website"""
-    
+
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):

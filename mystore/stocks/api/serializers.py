@@ -3,11 +3,6 @@ from rest_framework.serializers import Serializer
 from variants.api.serializers import SizeSerializer
 
 
-class SizeSerializer(Serializer):
-    id = fields.IntegerField()
-    name = fields.CharField()
-
-
 class StockSerializer(Serializer):
     id = fields.IntegerField()
     variant = SizeSerializer()
