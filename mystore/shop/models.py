@@ -10,6 +10,7 @@ from django.db.models.signals import post_delete, pre_delete, pre_save
 from django.dispatch import receiver
 from django.forms import ValidationError
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.timezone import now, timedelta
 from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
@@ -17,7 +18,7 @@ from imagekit.processors import ResizeToFill
 from shop import managers, validators
 from shop.choices import ColorChoices, GenderChoices
 from shop.utils import calculate_sale, create_slug, image_path, video_path
-from django.utils.functional import cached_property
+
 from mystore.choices import CategoryChoices, SubCategoryChoices
 
 USER_MODEL = get_user_model()
