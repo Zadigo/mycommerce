@@ -1,5 +1,6 @@
 {
-    "accueil": "Accueil",
+    "Accueil": "Accueil",
+    "currency": "EUR",
     "avis": "{n} avis",
     "Taille": "Taille",
     "Tailles standard": "Tailles standard",
@@ -142,5 +143,6 @@
     "Rouge": "Red",
     "Taille et hauteur du mannequin": "Taille et hauteur du mannequin",
     "Livraison et retours": "Livraison et retours",
-    "Print": "Print"
+    "Print": "Print",
+    "Ajouter au favori": "Ajouter au favori"
 }

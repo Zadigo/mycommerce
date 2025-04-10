@@ -1,6 +1,3 @@
-// /** @type {import('tailwindcss').Config} */
-// import PrimeUI from "tailwindcss-primeui";
-
 export default {
     content: [
         './components/**/*.{js,vue,ts}',
@@ -18,6 +15,5 @@ export default {
             screens: {},  
         },
     },
-    // plugins: [PrimeUI],
-    darkMode: 'class',
+    darkMode: 'class'
 }

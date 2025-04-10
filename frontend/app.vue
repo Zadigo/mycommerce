@@ -24,18 +24,18 @@ import { baseSessionCacheData } from "~/data";
 import type { SessionCacheData } from "~/types";
 import type { ExtendedLocationQuery } from './types';
 
-useSchemaOrg([
-  defineWebSite({
-    potentialAction: [
-      defineSearchAction({
-        target: '/search?q={search}'
-      })
-    ]
-  }),
-  defineWebPage({
-    '@type': ['CollectionPage', 'AboutPage', 'FAQPage']
-  })
-])
+// useSchemaOrg([
+//   defineWebSite({
+//     potentialAction: [
+//       defineSearchAction({
+//         target: '/search?q={search}'
+//       })
+//     ]
+//   }),
+//   defineWebPage({
+//     '@type': ['CollectionPage', 'AboutPage', 'FAQPage']
+//   })
+// ])
 
 const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData, {
   serializer: {

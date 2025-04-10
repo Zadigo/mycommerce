@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite'
 // import { defineOrganization } from 'nuxt-schema-org/schema'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -5,6 +6,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   ssr: true,
+
   routeRules: {
     '/': {
       swr: true,
@@ -30,6 +32,7 @@ export default defineNuxtConfig({
       }
     }
   },
+
   runtimeConfig: {
     public: {
       // Django/Quart/Flask
@@ -56,6 +59,7 @@ export default defineNuxtConfig({
       whatsAppUrl: process.env.NUXT_WHATS_APP_URL
     }
   },
+
   modules: [
     '@pinia/nuxt',
     '@vueuse/nuxt',
@@ -64,19 +68,25 @@ export default defineNuxtConfig({
     '@unlok-co/nuxt-stripe',
     '@nuxt/image',
     '@nuxtjs/i18n',
-    '@nuxt/test-utils',
-    '@nuxtjs/seo',
+    // '@nuxtjs/seo',
     '@vesp/nuxt-fontawesome',
     '@nuxt/icon',
-    // 'vue-sonner/nuxt',
+    '@nuxt/test-utils',
     'vuetify-nuxt-module',
-    '@nuxtjs/tailwindcss'
+    'shadcn-nuxt',
+    // 'vue-sonner/nuxt',
+    // '@nuxtjs/tailwindcss'
   ],
+
+  shadcn: {
+    prefix: 'Tail',
+    componentDir: './components/ui'
+  },
+
   i18n: {
     baseUrl: './',
     langDir: './locales',
     defaultLocale: 'fr',
-    vueI18n: './i18n.config.ts',
     locales: [
       {
         code: 'en',
@@ -101,6 +111,13 @@ export default defineNuxtConfig({
       }
     ]
   },
+
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ]
+  },
+
   schemaOrg: {
     // identity: defineOrganization({
     //   '@type': 'onlineStore',
@@ -207,12 +224,14 @@ export default defineNuxtConfig({
     //   ]
     // })
   },
+
   css: [
     '~/assets/css/main.css',
     '~/assets/style.scss',
     // '~/node_modules/bootstrap/dist/css/bootstrap.min.css',
     // '~/node_modules/mdb-ui-kit/css/mdb.min.css',
   ],
+  
   fontawesome: {
     icons: {
       solid: [
@@ -265,6 +284,7 @@ export default defineNuxtConfig({
       ]
     }
   },
+
   googleFonts: {
     families: {
       Ubuntu: {
@@ -281,6 +301,7 @@ export default defineNuxtConfig({
       }
     }
   },
+
   stripe: {
     server: {
       key: process.env.NUXT_STRIPE_PUBLISHABLE_KEY
@@ -289,12 +310,14 @@ export default defineNuxtConfig({
       key: process.env.NUXT_STRIPE_PUBLISHABLE_KEY
     }
   },
+
   image: {
     // TODO: Activate when the project images backend
     // is set correctly to cloudefare/aws
     // https://image.nuxt.com/providers/cloudflare
     provider: 'none'
   },
+
   nitro: {
     storage: {
       redis: {
