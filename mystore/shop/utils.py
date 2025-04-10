@@ -104,15 +104,11 @@ def calculate_sale(price, percentage):
     This function computes the new price 
     after applying a discount percentage to the 
     original price"""
-    # price = float(price)
-    # result = price * (1 - (percentage / 100))
-    # return Value(result)
     result = Decimal(price) * (1 - (Decimal(percentage) / 100))
     return result.quantize(Decimal('.01'), rounding=ROUND_DOWN)
 
 
 def transform_to_snake_case(value: str):
-    # return get_valid_filename(value)
     value = value.replace(' ', '_')
     value = value.replace('-', '_')
     return value.lower().strip()

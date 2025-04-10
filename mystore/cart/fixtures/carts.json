@@ -1,84 +1,5 @@
 [
     {
-        "model": "auth.User",
-        "pk": 1,
-        "fields": {
-            "email": "juliette@test-mail.com",
-            "last_name": "Juliette",
-            "first_name": "Lopez",
-            "username": "juliette"
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 1,
-        "fields": {
-            "name": "Blazer Strapped",
-            "color": "Red",
-            "unit_price": 15.2,
-            "active": true,
-            "display_new": false,
-            "slug": "blazer-strapped",
-            "category": "Panties",
-            "sub_category": "Tanga",
-            "sale_value": 36,
-            "on_sale": true,
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18"
-        }
-    },
-    {
-        "model": "shop.Product",
-        "pk": 2,
-        "fields": {
-            "name": "Haut balcony",
-            "color": "Red",
-            "unit_price": 25,
-            "active": true,
-            "display_new": false,
-            "slug": "blazer-strapped",
-            "category": "Panties",
-            "sub_category": "Tanga",
-            "sale_value": 0,
-            "on_sale": true,
-            "created_on": "2022-03-18",
-            "modified_on": "2022-03-18"
-        }
-    },
-    {
-        "model": "variants.Size",
-        "pk": 1,
-        "fields": {
-            "product": 2,
-            "availability": true,
-            "active": true,
-            "name": "XS",
-            "metric": "Clothe"
-        }
-    },
-    {
-        "model": "variants.Size",
-        "pk": 2,
-        "fields": {
-            "product": 2,
-            "availability": true,
-            "active": true,
-            "name": "S",
-            "metric": "Clothe"
-        }
-    },
-    {
-        "model": "variants.Size",
-        "pk": 3,
-        "fields": {
-            "product": 1,
-            "availability": true,
-            "active": true,
-            "name": "S",
-            "metric": "Clothe"
-        }
-    },
-    {
         "model": "cart.Cart",
         "pk": 1,
         "fields": {
@@ -134,7 +55,7 @@
             "product": 2,
             "price": 25,
             "size": "S",
-            "session_id": "juliette-session-id",
+            "session_id": "juliette-session-id-2",
             "user": 1
         }
     }

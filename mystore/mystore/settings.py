@@ -8,14 +8,13 @@ import dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+if BASE_DIR.joinpath('.env').exists():
+    dotenv.load_dotenv(BASE_DIR / '.env')
+
 
 def get_debug():
     debug = os.getenv('DEBUG', '1')
     return True if debug == '1' else False
-
-
-if BASE_DIR.joinpath('.env').exists():
-    dotenv.load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -361,35 +360,21 @@ CKEDITOR_5_CONFIGS = {
 # password to establish the connection:
 # https://github.com/redis/redis/issues/13437
 
+REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
+
 REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
 
-if not DEBUG:
-    # Use Redis as backend for caching instead of
-    # the file system caching that we use for debugging
+REDIS_URL = f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:6379'
 
-    REDIS_URL = f'redis://:{REDIS_PASSWORD}@redis:6379'
+RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', 'localhost')
 
-    RABBITMQ_HOST = os.getenv('RABBITMQ_HOST')
+RABBITMQ_USER = os.getenv('RABBITMQ_DEFAULT_USER', 'guest')
 
-    RABBITMQ_USER = os.getenv('RABBITMQ_DEFAULT_USER')
+RABBITMQ_PASSWORD = os.getenv('RABBITMQ_DEFAULT_PASS', 'guest')
 
-    RABBITMQ_PASSWORD = os.getenv('RABBITMQ_DEFAULT_PASS')
+CELERY_BROKER_URL = f'amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_HOST}:5672'
 
-    CELERY_BROKER_URL = 'amqp://{user}:{password}@rabbitmq:5672'.format(
-        user=RABBITMQ_USER,
-        password=RABBITMQ_PASSWORD
-    )
-
-    CELERY_RESULT_BACKEND = f'redis://:{REDIS_PASSWORD}@redis:6379'
-else:
-    # When using celery on Windows, see:
-    # https://stackoverflow.com/questions/45744992/celery-raises-valueerror-not-enough-values-to-unpack
-
-    CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672'
-
-    # CELERY_RESULT_BACKEND = 'rpc://'
-    CELERY_RESULT_BACKEND = f'redis://:{REDIS_PASSWORD}@localhost:6379'
-
+CELERY_RESULT_BACKEND = REDIS_URL
 
 CELERY_ACCEPT_CONTENT = ['json']
 
@@ -404,25 +389,17 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 # Caching
 
-if DEBUG:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-            'LOCATION': BASE_DIR / 'cache'
-        }
-    }
-else:
-    CACHES = {
+CACHES = {
+    'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': f'redis://:{REDIS_PASSWORD}@redis:6379',
-        'KEY_PREFIX': 'ecommerce',
-        'OPTIONS': {
-            'CLIENT_CLASS': "django_redis.client.DefaultClient"
-        }
+        'LOCATION': REDIS_URL,
+        'KEY_PREFIX': 'ecommerce'
+    },
+    'file': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': BASE_DIR / 'cache'
     }
-
-
-# HTTPS
+}
 
 if os.getenv('USES_HTTP_SCHEME', 'http') == 'https':
     SESSION_COOKIE_SECURE = True
@@ -444,3 +421,10 @@ else:
 # product price, set this value to the applicable
 # VAT for your given country
 VAT_PERCENTAGE = None
+
+
+# Fixtures
+
+FIXTURES_DIRS = [
+    'fixtures/products'
+]

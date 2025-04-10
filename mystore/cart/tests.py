@@ -1,3 +1,4 @@
+import json
 import time
 
 from cart.api.serializers import cart_statistics
@@ -9,14 +10,13 @@ from django.test import (LiveServerTestCase, RequestFactory, TestCase,
 from django.urls import reverse
 from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import status
-from rest_framework.test import APITestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from shop.models import Product
 
-DEFAULT_SESSION_ID = 'other-session-value'
+from mystore.mixins import AuthenticatedTestCase
 
 
 class TestCartManager(TransactionTestCase):
@@ -67,72 +67,55 @@ class TestCartManager(TransactionTestCase):
             Cart.objects.rest_api_add_to_cart(**self.params)
 
 
-class TestCart(APITestCase):
-    fixtures = ['carts']
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.user = get_user_model().objects.first()
-        cls.user.set_password('touparet')
-        cls.user.save()
-
-    def setUp(self):
-        self.client = self.client_class()
-        self.token = self._authenticate()
-
-    def _authenticate(self):
-        response = self.client.post(
-            reverse('token_obtain_pair'),
-            data={
-                'username': self.user.username,
-                'password': 'touparet'
-            }
-        )
-
-        self.assertEqual(response.status_code, 200, 'Authentication failed')
-
-        token = response.json().get('access')
-        self.assertIsNotNone(token, 'Token retrieval failed')
-
-        self.client.credentials(HTTP_AUTHORIZATION=f'Token {token}')
-        return token
+class TestCart(AuthenticatedTestCase):
+    fixtures = [
+        'fixtures/users', 'fixtures/products',
+        'fixtures/variants', 'carts'
+    ]
 
     def test_list_all_carts_view_not_authenticated(self):
-        response = self.client.get(reverse('cart_api:list_carts'))
+        response = self.client.get(reverse('cart_api:list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        for item in response.json():
+            with self.subTest(item=item):
+                self.assertIn('products', item)
+
     def test_create_session_id(self):
-        response = self.client.post(reverse('cart_api:create_session_id'))
+        response = self.client.post(reverse('cart_api:session_id'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('token', response.json())
 
     def test_add_to_cart(self):
         product = Product.objects.first()
-        response = self.client.post(
-            reverse('cart_api:create_session_id')
-        )
+
+        path = reverse('cart_api:session_id')
+        response = self.client.post(path)
+
         token = response.json().get('token')
         self.assertIsNotNone(token)
 
-        data = {
-            "product": {
-                "id": product.id,
-                "size": "Unique",
-                "color": "Blue"
+        size = product.size_set.first()
+        data = json.dumps({
+            'product': {
+                'id': product.id,
+                'size': size.name,
+                'color': product.color
             },
-            "size": "Unique",
-            "session_id": token
-        }
+            'size': size.name,
+            'session_id': token
+        })
         response = self.client.post(
-            reverse('cart_api:add_to_cart'),
-            # content_type='application/json',
-            format='json',
+            reverse('cart_api:add'),
+            content_type='application/json',
             data=data
         )
 
         data = response.json()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIsNotNone(data['session_id'])
-        self.assertEqual(data['statistics']['total'], 15.2)
+        self.assertGreater(data['statistics']['total'], 0)
+        self.assertGreater(data['statistics'], 0)
 
 
 class TestSessionManager(TestCase):

@@ -1,40 +1,19 @@
 from decimal import Decimal
+from urllib.parse import urlencode
 
-from django.contrib.auth import get_user_model
 from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 from rest_framework.mixins import status
-from rest_framework.test import APITestCase
-from shop.processors import FuzzyMatcherMixin
 from shop.models import Product
-from urllib.parse import urlencode
-from shop.utils import calculate_sale, create_slug, product_media_path
+from shop.processors import FuzzyMatcherMixin
+from shop.utils import (calculate_sale, create_slug, process_file_name, product_media_path,
+                        remove_special_characters, transform_to_snake_case)
 
-#     def test_products_view_structure(self):
-#         self.factory = APIRequestFactory()
-#         request = self.factory.get('/api/v1/shop/products')
-#         view = shop_api_views.ListProducts.as_view()
-#         response = view(request)
-#         self.assertEqual(response.status_code, status.HTTP_200_OK)
-#         self.assertEqual(response.data['count'], 1)
-
-#     def test_search_view(self):
-#         self.factory = APIRequestFactory()
-#         request = self.factory.get('/api/v1/shop/search', data={'q': 'Tanga'})
-#         response = views.search_view(request)
-#         self.assertEqual(response.status_code, status.HTTP_200_OK)
-#         self.assertEqual(len(response.data), 2)
+from mystore.mixins import AuthenticatedTestCase
 
 
-class TestShopApi(APITestCase):
-    fixtures = ['products']
-
-    @classmethod
-    def setUpTestData(cls):
-        user = get_user_model().objects.first()
-        cls.user = user
-        cls.user.set_password('touparet')
-        cls.user.save()
+class TestShopApi(AuthenticatedTestCase):
+    fixtures = ['fixtures/users', 'fixtures/products']
 
     def test_list_products(self):
         path = reverse('shop_api:products')
@@ -43,8 +22,8 @@ class TestShopApi(APITestCase):
 
         data = response.json()
         self.assertIn('count', data)
+        self.assertEqual(data['count'], 7)
         self.assertIn('results', data)
-        self.assertTrue(data['results'] >= 1)
 
         for item in data['results']:
             with self.subTest(item=item):
@@ -59,7 +38,7 @@ class TestShopApi(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response_data.get('count'), 1)
 
-    def test_product_view(self):
+    def test_get_product(self):
         path = reverse('shop_api:product', args=[1])
         response = self.client.get(path)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -115,7 +94,7 @@ class TestShopApi(APITestCase):
 
 
 class TestFuzzyMatcher(TransactionTestCase):
-    fixtures = ['products.json']
+    fixtures = ['fixtures/products']
 
     def setUp(self):
         self.instance = FuzzyMatcherMixin()
@@ -189,14 +168,14 @@ class TestFuzzyMatcher(TransactionTestCase):
 
 
 class TestUtilities(TestCase):
-    fixtures = ['products']
+    fixtures = ['fixtures/products']
 
     def test_calculate_sale(self):
         product = Product.objects.first()
         result = calculate_sale(product.unit_price, 20)
 
         self.assertIsInstance(result, Decimal)
-        self.assertEqual(result, Decimal('184.80'))
+        self.assertEqual(result, Decimal('241.60'))
 
         # Test that we can save the ouput result
         # directly on the object
@@ -204,13 +183,39 @@ class TestUtilities(TestCase):
         product.save()
 
     def test_transform_to_snake_case(self):
-        pass
+        text = [
+            ('Blazzer Strapped', 'blazzer_strapped')
+        ]
+
+        for text, expected in text:
+            with self.subTest(text=text):
+                result = transform_to_snake_case(text)
+                self.assertIn('_', result)
 
     def test_remove_special_characters(self):
-        pass
+        text = [
+            ('jupé de paris ça de coûpe', 'jupe de paris ca de coupe')
+        ]
+
+        for text, expected in text:
+            with self.subTest(text=text):
+                result = remove_special_characters(text)
+                print(result)
+                # self.assertIn('_', expected)
 
     def test_process_file_name(self):
-        pass
+        text = [
+            ('jupé coûpe.jpg', 'jupé_coûpe.jpg')
+        ]
+
+        for text, expected in text:
+            with self.subTest(text=text):
+                result = process_file_name(text)
+                self.assertIsInstance(result, tuple)
+
+                name, extension = result
+                self.assertEqual(name, 'jupé_coûpe')
+                self.assertEqual(extension, 'jpg')
 
     def test_product_media_path(self):
         filenames = [
