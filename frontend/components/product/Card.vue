@@ -46,11 +46,11 @@
         </h3>
         
         <p v-if="typeof product.get_price === 'number'" class="font-semibold text-sm">
-          {{ $n(product.get_price, 'currency') }}
+          {{ $n(product.get_price, 'currency', $i18n.locale) }}
         </p>
 
         <p v-else class="font-semibold text-sm">
-          {{ $n(parseFloat(product.get_price), 'currency') }}
+          {{ $n(parseFloat(product.get_price), 'currency', $i18n.locale) }}
         </p>
       </div>
       

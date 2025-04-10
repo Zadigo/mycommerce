@@ -1,6 +1,6 @@
 <template>
-  <div id="feed-header" ref="headerEl" class="card shadow-none mb-3 px-1">
-    <div class="card-body pt-1 text-center">
+  <TailCard id="feed-header" ref="headerEl" class="card shadow-none mb-3 px-1">
+    <TailCardContent class="pt-1 text-center">
       <div class="flex justify-between align-center">
         <div class="flex justify-content-left gap-1">
           <div class="d-flex justify-content-between align-items-center me-3 gap-1">
@@ -35,8 +35,8 @@
           </v-btn>
         </div>
       </div>
-    </div>
-  </div>
+    </TailCardContent>
+  </TailCard>
 </template>
 
 <script setup lang="ts">

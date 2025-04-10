@@ -11,22 +11,22 @@
 
       <ul class="inline-flex gap-3">
         <li class="nav-item">
-          <a href="#" class="nav-link" @click.prevent="handleShowCartDrawer">
-            <font-awesome icon="shopping-bag" class="me-1" />
+          <a href="#" class="inline-flex items-center gap-1" @click.prevent="handleShowCartDrawer">
+            <Icon name="fa-solid:shopping-bag" size="18" class="me-1" />
             {{ $t("Panier") }}
           </a>
         </li>
 
         <li v-if="!authStore.isAuthenticated" class="nav-item">
-          <a href="#" class="nav-link" @click.prevent="authStore.showLoginDrawer=true">
-            <font-awesome icon="right-to-bracket" class="me-1" />
+          <a href="#" class="inline-flex items-center gap-1" @click.prevent="authStore.showLoginDrawer=true">
+            <Icon name="fa-solid:sign-in-alt" size="18" class="me-1" />
             {{ $t('Se connecter') }}
           </a>
         </li>
         
         <li v-else class="nav-item">
-          <a href="#" class="nav-link" @click.prevent="proxyLogout">
-            <font-awesome icon="right-from-bracket" class="me-1" />
+          <a href="#" class="inline-flex items-center gap-1" @click.prevent="proxyLogout">
+            <Icon name="fa-solid:sign-out-alt" size="18" class="me-1" />
             {{ $t('Se déconnecter') }}
           </a>
         </li>

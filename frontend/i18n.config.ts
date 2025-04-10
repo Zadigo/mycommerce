@@ -1,23 +1,23 @@
 export default defineI18nConfig(() => ({
     legacy: false,
-    locale: 'fr',
-    fallbackLocale: 'en',
+    locale: 'fr-FR',
+    fallbackLocale: 'en-US',
     numberFormats: {
-        fr: {
+        'fr-FR': {
             currency: {
                 style: 'currency',
                 currency: 'EUR',
                 currencyDisplay: 'symbol'
             }
         },
-        es: {
+        'es-ES': {
             currency: {
                 style: 'currency',
                 currency: 'EUR',
                 currencyDisplay: 'symbol'
             }
         },
-        en: {
+        'en-US': {
             currency: {
                 style: 'currency',
                 currency: 'USD',

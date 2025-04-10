@@ -1,5 +1,5 @@
 <template>
-  <section id="products-feed" class="mt-20 mb-5">
+  <section id="products-feed" class="my-10">
     <!-- Page Title -->
     <div id="feed-title" class="px-10">
       <div class="card shadow-none">

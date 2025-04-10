@@ -29,22 +29,11 @@ defineProps({
 
 <style lang="scss" scoped>
 article {
-//   .wrapper {
-//     overflow: hidden;
-    
-    &:hover {
-      img {
-        transition: all 0.3s ease-in-out;
-        transform: scale(1.1, 1.1);
-      }
+  &:hover {
+    img {
+      transition: all 0.3s ease-in-out;
+      transform: scale(1.1, 1.1);
     }
-  // }
-
-//   h1 {
-//     position: absolute;
-//     bottom: 3%;
-//     left: 3%;
-//     width: 100%;
-//   }
+  }
 }
 </style>

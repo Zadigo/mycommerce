@@ -31,7 +31,7 @@ export function useShopComposable () {
                 price = value
             }
             
-            return $i18n.n(price, 'currency')
+            return $i18n.n(price, 'currency', $i18n.locale)
         } else {
             return '0'
         }

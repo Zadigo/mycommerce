@@ -49,19 +49,19 @@
       Choissis une taille
     </p>
     
-    <BaseButton v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" class="mt-5 place-content-center" color="dark" tonal @click="showAvailabilityModal=true">
+    <TailButton v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" class="mt-5 place-content-center" variant="secondary" tonal @click="showAvailabilityModal=true">
       <Icon name="fa:envelope" size="12" class="me-1" />
       {{ $t('Me tenir informer') }}
-    </BaseButton>
-    <BaseButton v-else class="mt-5" color="primary" tonal :disabled="false" @click="handleAddToCart">
+    </TailButton>
+    <TailButton v-else class="mt-5 me-2 place-content-cetner" :disabled="false" @click="handleAddToCart">
       <font-awesome v-if="stockState && stockState.almost_sold_out" icon="clock" class="me-1" />
       {{ $t('Ajouter au panier') }}
-    </BaseButton>
+    </TailButton>
 
-    <BaseButton :aria-label="$t('Ajouter au favori')" @click="proxyHandleLike">
+    <TailButton :aria-label="$t('Ajouter au favori')" class="mt-5" variant="outline" @click="proxyHandleLike">
       <font-awesome v-if="isLiked" icon="heart" />
       <font-awesome v-else :icon="['far', 'heart']" />
-    </BaseButton>
+    </TailButton>
 
     <BaseList class="shadow-none border border-gray-100 mt-10">
       <BaseListitem class="border-b-2 border-gray-100 flex justify-between items-center text-sm" @click="emit('show-composition-guide')">
