@@ -1,45 +1,53 @@
 <template>
-  <BaseNavbar>
-    <div class="flex justify-between align-center px-5">
-      <NuxtLink to="/" class="text-md uppercase font-bold">
-        E-commerce
+  <nav class="block w-full px-4 py-2 mx-auto text-white bg-white shadow-md lg:px-8 lg:py-3 sticky top-0 z-50">
+    <div class="container flex flex-wrap items-center justify-between mx-auto text-slate-800">
+      <NuxtLink to="/" class="mr-4 block cursor-pointer py-1.5 text-base text-slate-800 font-semibold">
+        Ecommerce
       </NuxtLink>
-      
-      <v-btn class="ms-auto me-2" variant="tonal" color="dark" rounded @click="shopStore.showSearchModal=true">
-        {{ $t('Rechercher') }}
-      </v-btn>
 
-      <ul class="inline-flex gap-3">
-        <li class="nav-item">
-          <a href="#" class="inline-flex items-center gap-1" @click.prevent="handleShowCartDrawer">
-            <Icon name="fa-solid:shopping-bag" size="18" class="me-1" />
-            {{ $t("Panier") }}
-          </a>
-        </li>
-
-        <li v-if="!authStore.isAuthenticated" class="nav-item">
-          <a href="#" class="inline-flex items-center gap-1" @click.prevent="authStore.showLoginDrawer=true">
-            <Icon name="fa-solid:sign-in-alt" size="18" class="me-1" />
-            {{ $t('Se connecter') }}
-          </a>
-        </li>
-        
-        <li v-else class="nav-item">
-          <a href="#" class="inline-flex items-center gap-1" @click.prevent="proxyLogout">
-            <Icon name="fa-solid:sign-out-alt" size="18" class="me-1" />
-            {{ $t('Se déconnecter') }}
-          </a>
-        </li>
-        
-        <li v-show="authStore.isAuthenticated" class="nav-item">
-          <NuxtLink to="/account/" class="nav-link">
-            <font-awesome icon="user" class="me-1" />
+      <div class="hidden lg:block">
+        <ul class="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+          <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
+            <v-btn class="ms-auto me-2" variant="tonal" color="dark" rounded @click="shopStore.showSearchModal=true">
+              {{ $t('Rechercher') }}
+            </v-btn>
+          </li>
+          <li v-if="!authStore.isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
+            <a href="#" class="flex items-center gap-2" @click.prevent="handleShowCartDrawer">
+              <Icon name="fa-solid:shopping-bag" size="18" />
+              {{ $t("Panier") }}
+            </a>
+          </li>
+          <li v-if="!authStore.isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
+            <a href="#" class="flex items-center gap-2" @click.prevent="authStore.showLoginDrawer=true">
+              <Icon name="fa-solid:sign-in-alt" size="18" />
+              {{ $t('Se connecter') }}
+            </a>
+          </li>
+          <li v-else class="flex items-center p-1 text-sm gap-2 text-slate-600">
+            <a href="#" class="flex items-center" @click.prevent="proxyLogout">
+              <Icon name="fa-solid:sign-out-alt" size="18" />
+              {{ $t('Se déconnecter') }}
+            </a>
+          </li>
+          <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
+            <NuxtLink to="/account/" class="flex items-center gap-2">
+            <Icon name="fa-solid:user" size="18" />
             {{ $t('Compte') }}
           </NuxtLink>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      </div>
+
+      <button class="relative ml-auto h-6 max-h-[40px] w-6 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-inherit transition-all hover:bg-transparent focus:bg-transparent active:bg-transparent disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:hidden" type="button">
+        <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </span>
+      </button>
     </div>
-  </BaseNavbar>
+  </nav>
 </template>
 
 <script setup lang="ts">

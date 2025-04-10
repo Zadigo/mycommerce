@@ -16,7 +16,7 @@
     </div>
     
     <!-- Cart -->
-    <div v-show="showCart && isHovered" class="absolute rounded-md w-full flex justify-center align-middle transition-all ease-in-out z-50 invisible lg:visible lg:bottom-[3.5rem]">
+    <div v-show="showCart && isHovered" class="absolute rounded-md w-full flex justify-center align-middle transition-all ease-in-out z-30 invisible lg:visible lg:bottom-[3.5rem]">
       <div class="bg-white p-5 w-full m-1">
         <p class="fw-semibold text-sm text-center mb-3 font-normal" aria-label="">
           {{ $t("Sélectionne la taille") }}
