@@ -8,7 +8,7 @@
           </NuxtLink>
         </h5>
 
-        <div :class="`grid-cols-${numberOfItems}`" class="grid justify-between gap-4">
+        <div class="grid grid-cols-4 justify-between gap-4">
           <ul v-for="(item, i) in items.sections" :key="i">
             <p :aria-label="$t(item.name)" class="block mb-1 text-base font-semibold  text-slate-800">
               {{ $t(item.name) }}
@@ -18,6 +18,34 @@
               <NuxtLink id="footer-link" :to="link.to" class="block text-slate-600 py-1 hover:text-slate-500 focus:text-slate-500 text-sm">
                 {{ $t(link.name) }}
               </NuxtLink>
+            </li>
+          </ul>
+
+          <ul>
+            <p class="block mb-1 text-base font-semibold text-slate-800">
+              {{ $t('Contact') }}
+            </p>
+
+            <li>
+              <a href="#" class="block text-slate-600 py-1 hover:text-slate-500 focus:text-slate-500 text-sm" @click.prevent="emit('show-whatsapp')">
+                <font-awesome :icon="['fab', 'whatsapp']" class="me-2" />
+                WhatsApp
+              </a>
+            </li>
+            <li class="text-body-tertiary">
+              <p class="text-slate-600 py-1 text-sm">
+                <font-awesome icon="phone" class="me-2" /> <span>07-11-11-11-11</span>
+              </p>
+            </li>
+            <li class="text-body-tertiary">
+              <p class="text-slate-600 py-1 text-sm">
+                Du lundi à vendredi de 09:00 à 16:00
+              </p>
+            </li>
+            <li class="text-body-tertiary">
+              <p class="text-slate-600 py-1 text-sm">
+                Appel non surtaxé, hors coût éventuel selon votre opérateur.
+              </p>
             </li>
           </ul>
         </div>
@@ -75,14 +103,40 @@
 <script setup lang="ts">
 import type { FooterLinks } from '~/types'
 
-const props = defineProps({
-  items: {
-    type: Object as PropType<FooterLinks>,
-    required: true
+const emit = defineEmits({
+  'show-whatsapp'() {
+    return true
   }
 })
 
-const newsletter = ref('')
+const props = defineProps({
+  items: {
+    type: Object as PropType<FooterLinks>,
+      required: true
+    }
+  })
 
+const shopStore = useShop()
+const { sessionCache } = storeToRefs(shopStore)
+// const { companyDetails } = useCompany()
+  
+const newsletter = ref('')
+  
 const numberOfItems = computed(() => props.items?.sections.length || 0)
+
+const languageLocation = computed(() => {
+  if (sessionCache.value) {
+    return sessionCache.value.language.location
+  } else {
+    return 'France'
+  }
+})
+
+const languageChoice = computed(() => {
+  if (sessionCache.value) {
+    return sessionCache.value.language.choice
+  } else {
+    return 'fr'
+  }
+})
 </script>
