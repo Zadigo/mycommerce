@@ -1,27 +1,27 @@
 <template>
-  <div v-for="(block, x) in blocks" :key="x" :class="{ 'mt-2': x > 0 }" class="card shadow-sm">
-    <div class="card-body">
-      <h5 v-if="block.title">
+  <TailCard v-for="(block, x) in blocks" :key="x" :class="{ 'mt-2': x > 0 }" class="border-none shadow-sm">
+    <TailCardContent>
+      <h5 v-if="block.title" class="font-bold text-2xl mb-2">
         {{ block.title }}
       </h5>
 
       <template v-for="(item, y) in block.items" :key="y">
         <template v-if="isString(item)">
-          <p class="fw-light">
+          <p class="font-light">
             {{ item }}
           </p>
         </template>
 
         <template v-else-if="isArray(item)">
-          <ul>
-            <li v-for="(subItem, z) in item" :key="z">
+          <ul class="font-light">
+            <li v-for="(subItem, z) in item" :key="z" class="">
               {{ subItem }}
             </li>
           </ul>
         </template>
       </template>
-    </div>
-  </div>
+    </TailCardContent>
+  </TailCard>
 </template>
 
 <script setup lang="ts">

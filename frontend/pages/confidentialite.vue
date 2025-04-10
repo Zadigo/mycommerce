@@ -1,6 +1,6 @@
 <template>
-  <div class="row mb-5" style="margin-top: 70px;">
-    <div class="col-sm-6 col-md-6 offset-md-3">
+  <div class="my-10">
+    <div class="mx-auto w-2/3">
       <TextIterator :blocks="privacyText" />
     </div>
   </div>
