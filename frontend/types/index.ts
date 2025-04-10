@@ -68,10 +68,10 @@ export interface ExtendedLocationQuery {
 
 export interface FooterSection {
     name: string
-        links: {
-            name: string
-            to: string
-        }[]
+    links: {
+        name: string
+        to: string
+    }[]
 }
 
 export interface FooterLinks {

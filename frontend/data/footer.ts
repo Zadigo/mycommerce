@@ -29,11 +29,11 @@ export const footerLinks: FooterLinks = {
                     "name": "Acheter en ligne"
                 },
                 {
-                    "to": "/",
+                    "to": "/guide#payment",
                     "name": "Paiement"
                 },
                 {
-                    "to": "/",
+                    "to": "/guide#delivery",
                     "name": "Livraison"
                 },
                 {
@@ -45,11 +45,11 @@ export const footerLinks: FooterLinks = {
                     "name": "Guide"
                 },
                 {
-                    "to": "/",
+                    "to": "/guide#invitee",
                     "name": "Achat en tant qu'invité"
                 },
                 {
-                    "to": "/",
+                    "to": "/guide#unsubscribe",
                     "name": "Me désabonner"
                 }
             ]
@@ -66,7 +66,7 @@ export const footerLinks: FooterLinks = {
                     "name": "Tops"
                 },
                 {
-                    "to": "/shop/collection/tops",
+                    "to": "/shop/collection/shirts",
                     "name": "Chemises"
                 },
                 {
