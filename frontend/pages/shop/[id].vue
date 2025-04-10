@@ -243,19 +243,19 @@ useHead({
   ]
 })
 
-useSchemaOrg([
-  defineProduct({
-    '@id': product.value?.name,
-    name: product.value?.name,
-    description: '',
-    image: product.value?.get_main_image?.original,
-    offers: [
-      {
-        price: product.value?.sale_price
-      }
-    ]
-  })
-])
+// useSchemaOrg([
+//   defineProduct({
+//     '@id': product.value?.name,
+//     name: product.value?.name,
+//     description: '',
+//     image: product.value?.get_main_image?.original,
+//     offers: [
+//       {
+//         price: product.value?.sale_price
+//       }
+//     ]
+//   })
+// ])
 
 const imageComponentMap: ImageComponentMap = {
   5: FiveImages,
