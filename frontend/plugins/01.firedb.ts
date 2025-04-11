@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getDatabase } from 'firebase/database'
+import { getFirestore } from 'firebase/firestore'
 
 export default defineNuxtPlugin(nuxtApp => {
     const config = useRuntimeConfig()
@@ -14,9 +15,11 @@ export default defineNuxtPlugin(nuxtApp => {
         messagingSenderId: config.public.firebaseMessageSenderId
     })
     const db = getDatabase(app)
+    const store = getFirestore(app)
 
     return {
         provide: {
+            fireStore: store,
             fireApp: app,
             fireDb: db
         }
