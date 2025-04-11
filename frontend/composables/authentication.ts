@@ -1,5 +1,5 @@
+import { useAuthenticatedAxiosClient, type LoginApiResponse } from '~/composables/client'
 import type { StringNull } from "~/types"
-import createDjangoClient, { type LoginApiResponse } from '~/composables/django_client'
 
 export function useAuthencationComposable() {
     const nuxtApp = tryUseNuxtApp()
@@ -11,6 +11,9 @@ export function useAuthencationComposable() {
     const password = ref<StringNull>('')
     const authenticationFailuresCounter = ref(0)
 
+    const access = useCookie('access')
+    const refresh = useCookie('refresh')
+
     /**
      * Base entry function used to request an authentication
      * access/refresh token in order to login the user 
@@ -18,9 +21,9 @@ export function useAuthencationComposable() {
     async function authenticate(path: string, callback: (data: LoginApiResponse) => void) {
         try {
             if (nuxtApp) {
-                const authClient = createDjangoClient('/auth/v1/')
+                const { authenticatedClient: client } = useAuthenticatedAxiosClient(access.value, refresh.value)
 
-                const response = await authClient.post<LoginApiResponse>(path, {
+                const response = await client.post<LoginApiResponse>(path, {
                     username: email.value,
                     email: email.value,
                     password: password.value
@@ -39,7 +42,7 @@ export function useAuthencationComposable() {
         await authenticate('/token/', callback)
     }
 
-    async function refresh(callback: (data: LoginApiResponse) => void) {
+    async function refreshToken(callback: (data: LoginApiResponse) => void) {
         await authenticate('/refesh/', callback)
     }
 
@@ -78,6 +81,6 @@ export function useAuthencationComposable() {
         authenticate,
         login,
         logout,
-        refresh
+        refreshToken
     }
 }

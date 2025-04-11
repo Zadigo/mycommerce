@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useJwt } from '@vueuse/integrations/useJwt'
 import type { StringNull, SessionCacheData } from '~/types'
-import type { LoginApiResponse } from '~/composables/django_client'
+import type { LoginApiResponse } from '~/composables/client'
 
 export const useAuthentication = defineStore('authentication', () => {
     const sessionCache = ref<SessionCacheData>()

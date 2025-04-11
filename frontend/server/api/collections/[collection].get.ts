@@ -1,15 +1,20 @@
-import { useAxiosClient } from "~/composables/django_client"
-import { ProductsAPIResponse } from "~/types"
-
+import { useServerAxiosClient } from '~/composables/client'
+import { ProductsAPIResponse } from '~/types'
 
 export default defineCachedEventHandler(async event => {
     const { collection } = event.context.params
     const name = collection || 'all'
-    const { client } = useAxiosClient()
     const query = getQuery(event)
+
+    const access = getCookie(event, 'access')
+    const refresh = getCookie(event, 'refresh')
+
+    const { client } = useServerAxiosClient(access, refresh, (token) => {
+        setCookie(event, 'access', token)
+    })
     
     if (name) {
-        const response = await client.get<ProductsAPIResponse>(`/collection/${name}`, {
+        const response = await client.get<ProductsAPIResponse>(`/api/v1/collection/${name}`, {
             params: {
                 sorted_by: query.sorted_by,
                 offset: query.offset,

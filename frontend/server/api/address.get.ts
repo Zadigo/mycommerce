@@ -14,22 +14,9 @@ export default defineCachedEventHandler(async event => {
         baseURL: 'https://api-adresse.data.gouv.fr',
         params: { q: query.address }
     })
-    // const client = axios.create({
-    //     baseURL: 'https://api-adresse.data.gouv.fr',
-
-    //     responseType: 'json'
-    // })
     
-    // const response = await client.get<Address>('/search', {
-    //     params: {
-    //         q: query.search,
-    //         limit: 15,
-    //         complete: 0
-    //     }
-    // })
-
     return response.data
 }, {
-    maxAge: 1,
-    base: 'fs'
+    base: 'redis',
+    maxAge: 3600
 })

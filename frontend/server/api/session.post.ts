@@ -1,4 +1,4 @@
-import { useAxiosClient } from "~/composables/django_client"
+import { useAxiosClient } from "~/composables/client"
 
 export default defineEventHandler(async event => {
     try {

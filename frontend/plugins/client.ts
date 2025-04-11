@@ -1,9 +1,7 @@
-import createDjangoClient from '~/composables/django_client'
+import { useAxiosClient } from '~/composables/client'
 
 export default defineNuxtPlugin(nuxtApp => {
-    // Provide a specific client built to work
-    // with the Django backend specifically
-    const client = createDjangoClient('/api/v1/')
+    const { client } = useAxiosClient()
     
     return {
         provide: {
