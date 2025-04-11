@@ -72,6 +72,14 @@ export const footerLinks: FooterLinks = {
                 {
                     "to": "/shop/collection/pants",
                     "name": "Pantalons"
+                },
+                {
+                    "to": "/shop/collection/novelties",
+                    "name": "Nouveautés"
+                },
+                {
+                    "to": "/shop/collection/sales",
+                    "name": "Soldes"
                 }
             ]
         },
