@@ -16,13 +16,14 @@
 </template>
 
 <script setup lang="ts">
-import 'animate.css';
+import 'animate.css'
 
-// import { doc, getFirestore, setDoc } from 'firebase/firestore';
-import { Toaster } from 'vue-sonner';
-import { baseSessionCacheData } from "~/data";
-import type { SessionCacheData } from "~/types";
-import type { ExtendedLocationQuery } from './types';
+import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { Toaster } from 'vue-sonner'
+import { baseSessionCacheData } from '~/data'
+
+import type { SessionCacheData } from '~/types'
+import type { ExtendedLocationQuery } from './types'
 
 // useSchemaOrg([
 //   defineWebSite({
@@ -37,54 +38,37 @@ import type { ExtendedLocationQuery } from './types';
 //   })
 // ])
 
-const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData, {
-  serializer: {
-      read(raw) {
-          return JSON.parse(raw)
-      },
-      write(value) {
-          return JSON.stringify(value)
-      }
-  }
-})
-
-const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    }
-  }
-})
+const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData)
+const likedProducts = useLocalStorage<number[]>('likedProducts', [])
 
 const route = useRoute()
 const shopStore = useShop()
 const authenticationStore = useAuthentication()
 const cartStore = useCart()
 
-const accessToken = useCookie('access')
-const refreshToken = useCookie('refresh')
-const cookieSessionId = useCookie('sessionId')
+// Use secure cookies (with sameSite strict, secure enabled)
+const accessToken = useCookie('access', { sameSite: 'strict', secure: true })
+const refreshToken = useCookie('refresh', { sameSite: 'strict', secure: true })
+const cookieSessionId = useCookie('sessionId', { sameSite: 'strict', secure: true })
 
-const { $client } = useNuxtApp()
+const { $client, $fireStore } = useNuxtApp()
 const { handleError } = useErrorHandler()
-const { value } = useMediaQuery('(min-width: 320px)')
-const { isSupported } = useScreenOrientation()
-const documentVisible = useDocumentVisibility()
+const isMmobile = useMediaQuery('(min-width: 320px)').value
+const { isSupported: screenOrientation } = useScreenOrientation()
 
-provide('isMobile', value)
-provide('screenOrientation', isSupported)
-provide('documentVisible', documentVisible)
+provide('isMobile', isMmobile)
+provide('screenOrientation', screenOrientation)
+provide('documentVisible', useDocumentVisibility())
 
+// Watch route query for login parameter to open login drawer
 watch((): ExtendedLocationQuery => route.query, (newValue) => {
   if (newValue.login && newValue.login === '1') {
     authenticationStore.showLoginDrawer = true
   }
 })
 
-shopStore.$subscribe(({ storeId }, state) => {
+// Synchronize store state with local storage
+shopStore.$subscribe((_, state) => {
   state.sessionCache = sessionCache.value
   shopStore.likedProducts = likedProducts.value
 
@@ -95,33 +79,44 @@ shopStore.$subscribe(({ storeId }, state) => {
   //   const dbDocument = doc(db, 'user', cookieSessionId)
   //   setDoc(dbDocument, state.sessionCache)
   // }
+}, {
+  detached: true
 })
 
-cartStore.$subscribe(({ storeId }, state) => {
+cartStore.$subscribe((_, state) => {
   state.sessionCache = sessionCache.value
+}, {
+  detached: true
 })
 
-authenticationStore.$subscribe(({ storeId }, state) => {
-  // When we update the tokens in the store,
-  // automatically update them in the cookies
+authenticationStore.$subscribe((_, state) => {
   state.sessionCache = sessionCache.value
   accessToken.value = state.accessToken
   refreshToken.value = state.refreshToken
 
   console.log('state.sessionCache.authenticationStore', state.sessionCache)
+}, {
+  detached: true
 })
 
+/**
+ * Request a new sessionId via the API and ensure a corresponding Firestore document exists.
+ */
 async function requestSessionId () {
   try {
     if (!cookieSessionId.value) {
       // TODO: Check typing for $client
       const response = await $client.post<{ token: string }>('/cart/session-id')
       cookieSessionId.value = response.data.token
-
-      // OPTIONAL: Activate Firebase as localstorage for user data
-      // Create an entry in the Firestore
-      // const dbDocument = doc(db, 'user', response.data.token)  
-      // await setDoc(dbDocument, baseSessionCacheData)
+      
+      // Reference user document in Firestore using the sessionId
+      const userRef = doc($fireStore, 'users', cookieSessionId.value)
+      const userSnapshot = await getDoc(userRef)
+      
+      // Create user document if it does not exist
+      if (!userSnapshot.exists()) {
+        await setDoc(userRef, baseSessionCacheData)
+      }
     }
   } catch (e) {
     handleError(e)
@@ -129,29 +124,19 @@ async function requestSessionId () {
 }
 
 onBeforeMount(async () => {
-  if (!shopStore.sessionCache) {
-    shopStore.sessionCache = sessionCache.value
-  }
-  
-  if (!cartStore.sessionCache) {
-    cartStore.sessionCache = sessionCache.value
-  }
+  // Ensure all store caches are initialized from session storage
+  shopStore.sessionCache = shopStore.sessionCache || sessionCache.value
+  cartStore.sessionCache = cartStore.sessionCache || sessionCache.value
+  authenticationStore.sessionCache = authenticationStore.sessionCache || sessionCache.value
 
-  if (!authenticationStore.sessionCache) {
-    authenticationStore.sessionCache = sessionCache.value
-  }
-
-  // Load the default values that will be used for
-  // authentication and for the user's profile inforamtion
+  // Load authentication tokens from cookies into the store
   authenticationStore.accessToken = accessToken.value
   authenticationStore.refreshToken = refreshToken.value
 
   await requestSessionId()
 })
 
-// When the user first comes on the
-// platform, invite him to select
-// his preferred language
+// Upon mounting, show language modal if no language is selected
 onMounted(() => {
   if (!shopStore.sessionCache.language.selected) {
     shopStore.showLanguageModal = true

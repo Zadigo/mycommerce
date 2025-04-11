@@ -15,16 +15,16 @@ export default defineNuxtConfig({
         maxAge: 1,
       }
     },
-    '/shop/collection/**': {
+    'shop/collection/**': {
       ssr: true
     },
-    '/wishlist': {
+    'wishlist': {
       ssr: false
     },
-    '/account/**': {
+    'account/**': {
       ssr: false
     },
-    '/confidentialite': {
+    'confidentialite': {
       ssr: true,
       cache: {
         base: 'redis',
