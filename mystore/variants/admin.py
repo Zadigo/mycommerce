@@ -29,9 +29,18 @@ class SizeAdmin(admin.ModelAdmin):
         ]
     ]
     actions = [
-        'make_available', 'make_unavailable', 
+        'activate', 'deactivate',
+        'make_available', 'make_unavailable',
         'use_default_metric'
     ]
+
+    def activate(self, request, queryset):
+        queryset.update(active=True)
+        messages.success(request, f'Updated {queryset.count()} products')
+
+    def deactivate(self, request, queryset):
+        queryset.update(active=False)
+        messages.success(request, f'Updated {queryset.count()} products')
 
     def make_available(self, request, queryset):
         queryset.update(availability=True)
