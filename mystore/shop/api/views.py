@@ -147,6 +147,9 @@ class ListRecommendations(generics.ListAPIView):
                 novelties = Product.objects.order_by('-created_on')
             cache.set('novelties', novelties, timeout=1)
 
+        if isinstance(quantity, str):
+            quantity = int(quantity)
+
         sliced_novelties = []
         if novelties.count() >= quantity:
             sliced_novelties = novelties[:quantity]
@@ -216,7 +219,7 @@ class ListNewProducts(generics.ListAPIView):
     as new, in other words, that were created in a
     given timeframe or who have `display_new` set to True"""
 
-    queryset = Novelty.objects.all()
+    queryset = Novelty.objects.filter(active=True)
     serializer_class = serializers.ProductSerializer
     pagination_class = CustomPagination
     permission_classes = [AllowAny]
@@ -234,7 +237,7 @@ class ListProductsOnSale(generics.ListAPIView):
     as being on sale. Both `sale_value` and `on_sale` have
     to be True in order to return the product"""
 
-    queryset = Sale.objects.all()
+    queryset = Sale.objects.filter(active=True)
     serializer_class = serializers.ProductSerializer
     pagination_class = CustomPagination
     permission_classes = [AllowAny]
