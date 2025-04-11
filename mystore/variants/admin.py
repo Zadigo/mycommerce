@@ -5,7 +5,7 @@ from django.contrib import messages
 
 @admin.register(Size)
 class SizeAdmin(admin.ModelAdmin):
-    list_display = ['name', 'product', 'metric', 'availability']
+    list_display = ['name', 'product', 'metric', 'active', 'availability']
     list_filter = ['availability', 'active']
     search_fields = ['product__name', 'name']
     fieldsets = [
