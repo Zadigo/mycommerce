@@ -58,7 +58,14 @@
           Rights Reserved.
         </p>
 
-        <div class="flex gap-4 text-slate-600 sm:justify-center">
+
+        <div class="flex gap-4 text-slate-600 sm:justify-center md:items-center">
+          <ClientOnly>
+            <a id="language-selection" href="#" @click.prevent="shopStore.showLanguageModal=true">
+              {{ languageLocation }} | {{ languageChoice }}
+            </a>
+          </ClientOnly>
+
           <a href="#" class="block transition-opacity text-inherit hover:opacity-80">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path fill-rule="evenodd"
