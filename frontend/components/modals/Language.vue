@@ -1,10 +1,10 @@
 <template>
   <v-bottom-sheet id="language-modal" v-model="shopStore.showLanguageModal" :persistent="true">
     <v-card>
-      <div v-if="shopStore.sessionCache" class="container p-5">
-        <div class="row">
-          <div class="col-6">
-            <p class="fw-bold">
+      <div v-if="shopStore.sessionCache" class="container mx-auto w-2/4">
+        <div class="px-3 py-15">
+          <div class="col">
+            <p class="font-bold mb-4">
               {{ $t('Sélectionnez votre emplacement') }}
             </p>
 
@@ -13,22 +13,22 @@
             </v-autocomplete>
           </div>
           
-          <div class="col-6">
-            <p class="fw-bold">
+          <div class="col">
+            <p class="font-bold mb-2">
               {{ $t('Sélectionnez votre langue') }}
             </p>
 
-            <div class="d-flex gap-1">
+            <div class="d-flex gap-1 mb-8">
               <v-btn v-for="value in availableLanguages" :key="value" :active="shopStore.sessionCache.language.choice === value" variant="outlined" rounded @click="handleLanguageSelection(value)">
                 {{ value.toUpperCase() }}
               </v-btn>
             </div>
           </div>
 
-          <div class="col-12 d-flex justify-content-end">
-            <v-btn id="btn-select-language" variant="tonal" color="primary" rounded @click="handleSelection">
+          <div class="col">
+            <TailButton id="btn-select-language" variant="default" class="rounded-full" @click="handleSelection">
               {{ $t('Enregistrer mon choix') }}
-            </v-btn>
+            </TailButton>
           </div>
         </div>
       </div>
