@@ -1,16 +1,3 @@
-$base_section_margin: 8%;
-$factors: (
-  1: 5,
-  2: 4,
-  3: 3,
-  4: 2,
-  5: 1
-);
-
-* {
-  font-family: "Noto Sans", "Ubuntu", "Roboto", "Lato", sans-serif;
-}
-
 .page-enter-active,
 .page-leave-active {
   transition: all 0.095s;
@@ -21,15 +8,6 @@ $factors: (
   opacity: 0;
   filter: blur(1rem);
 }
-
-/* Section */
-
-@each $key, $factor in $factors {
-  .section-margin-#{$key} {
-    margin-top: calc($base_section_margin / $factor + 80px);
-  }
-}
-
 
 .no-scroll {
   height: 100%;
