@@ -137,18 +137,18 @@ class ProductAdmin(ImportExportModelAdmin):
         sizes XS, S and M which are generally the
         average size for clothes"""
         sizes = ['XS', 'S', 'M']
+
         for product in queryset:
             for size in sizes:
-                try:
-                    product.size_set.create(
-                        product=product,
-                        name=size,
-                        vailability=False
-                    )
-                except ValidationError:
-                    # If the size already exists for a given
-                    # product, just fail silently
-                    continue
+                product.size_set.get_or_create(
+                    defaults={
+                        'availability': False,
+                        'active': False,
+                        'metric': 'Clothe'
+                    },
+                    product=product,
+                    name=size,
+                )
 
         self.message_user(
             request,
