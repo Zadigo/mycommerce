@@ -43,9 +43,9 @@
             </DevOnly>
 
             <BaseSelect v-model="userSelection.size" :items="sizeNames" item-key="name" item-value="name" />
-            <BaseButton @click="addToCart(product)">
+            <TailButton @click="addToCart(product)">
               {{ $t('Ajouter au panier') }}
-            </BaseButton>
+            </TailButton>
           </div>
         </div>
       </div>
