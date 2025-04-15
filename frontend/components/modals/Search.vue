@@ -65,7 +65,7 @@ function useSearchProducts () {
   async function requestProducts () {
     try {
       if (search.value && search.value !== "") {
-        const response = await $client.get<ProductsAPIResponse>('shop/products', {
+        const response = await $client.get<ProductsAPIResponse>('/api/v1/shop/products', {
           params: {
             q: search.value
           }
