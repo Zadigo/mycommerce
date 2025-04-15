@@ -2,7 +2,7 @@
   <article v-if="product" :data-id="product.id" :aria-label="product.name" class="group relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
     <!-- Carousel -->
     <div class="relative">
-      <button v-if="showCarousel && isHovered" type="button" class="absolute top-2/4 left-3 py-5 rounded-full z-10 w-5 place-content-center hover:opacity-60 flex" @click="handlePreviousImage">
+      <button v-if="showCarousel && isHovered" type="button" class="absolute top-2/5 left-3 py-5 rounded-full z-10 w-5 place-content-center hover:opacity-60 flex" @click="handlePreviousImage">
         <Icon name="fa:caret-left" class="" />
       </button>
       
