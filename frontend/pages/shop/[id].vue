@@ -11,7 +11,7 @@
     </div>
 
     <!-- Recommendations -->
-    <div id="recommendations" class="mt-20">
+    <div id="recommendations" class="mt-10">
       <Suspense>
         <AsyncBaseRecommendationBlock />
 
