@@ -7,7 +7,7 @@
       </template>
       
       <!-- Details -->
-      <ProductDetailsAside v-if="product" :product="product" :is-loading="isLoading" @show-size-guide="showSizeGuideDrawer=true" />
+      <ProductDetailsAside v-if="product" :product="product" @show-size-guide="showSizeGuideDrawer=true" />
     </div>
 
     <!-- Recommendations -->
