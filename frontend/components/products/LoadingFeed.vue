@@ -1,26 +1,28 @@
 <template>
   <ProductsFeedLayout>
     <template #filtering>
-      <div class="card shadow-none mb-3">
-        <div class="card-body pt-1 pb-1 px-0 d-flex justify-content-between">
-          <div class="d-flex justify-content-start gap-1">
-            <BaseSkeleton :loading="true" width="200px" height="37px" border-radius />
-            <BaseSkeleton :loading="true" width="100px" height="37px" border-radius />
-            <BaseSkeleton :loading="true" width="100px" height="37px" border-radius />
+      <TailCard class="card shadow-none mb-3 border-none">
+        <TailCardContent class="pt-1 pb-1 px-2 flex justify-between">
+          <div class="flex justify-start gap-1">
+            <TailSkeleton class="w-[100px] h-[50px] bg-gray-100" />
+            <TailSkeleton class="w-[100px] h-[50px] bg-gray-100" />
+            <TailSkeleton class="w-[100px] h-[50px] bg-gray-100" />
           </div>
 
-          <div class="d-flex justify-content-start gap-1">
-            <BaseSkeleton :loading="true" width="270px" height="37px" border-radius />
+          <div class="flex justify-content-start gap-1">
+            <TailSkeleton class="w-[270px] bg-gray-100" />
           </div>
-        </div>
-      </div>
+        </TailCardContent>
+      </TailCard>
     </template>
 
     <template #default>
-      <div v-for="i in 40" :key="i" class="col-3">
-        <BaseSkeleton :loading="true" height="427px" />
-        <BaseSkeleton :loading="true" class="mt-2" width="50%" height="10px" />
-        <BaseSkeleton :loading="true" class="mt-2" width="20%" height="10px" />
+      <div class="grid grid-cols-4 gap-2">
+        <div v-for="i in 40" :key="i" id="product">
+          <TailSkeleton class="h-[427px] w-full bg-gray-100" />
+          <TailSkeleton class="h-[15px] w-[200px] mt-1 bg-gray-100" />
+          <TailSkeleton class="h-[15px] w-[100px] mt-1 bg-gray-100" />
+        </div>
       </div>
     </template>
   </ProductsFeedLayout>
