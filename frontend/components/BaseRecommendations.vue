@@ -4,7 +4,7 @@
       {{ $t(blockTitle) }}
     </h2>
 
-    <div ref="productsRow" class="row g-1">
+    <div ref="productsRow" class="row">
       <ProductsIterator :products="recommendations" :columns="columns" :show-carousel="showCarousel" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
     </div>
   </div>
@@ -97,7 +97,7 @@ function handleNavigation (data: (number | Product)[]) {
 async function requestRecommendations () {
   try {
     if (!props.loadCache) {
-      const response = await $client.get<Product[]>('shop/products/recommendations', {
+      const response = await $client.get<Product[]>('/api/v1/shop/products/recommendations', {
         params: {
           p: route.params.id,
           q: props.quantity
