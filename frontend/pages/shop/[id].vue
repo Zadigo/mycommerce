@@ -273,7 +273,9 @@ const sizeNames = computed(() => {
 const imagesComponent = computed((): Component => {
   if (!product.value) {
     return NoImages
-  } else {
+  } else if (product && product.value.images.length === 0) {
+    return NoImages
+  }else {
     const numberOfImages = product.value.images.length
     return imageComponentMap[numberOfImages] || NoImages
   }
