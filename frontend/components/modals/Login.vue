@@ -17,12 +17,9 @@
 </template>
 
 <script setup lang="ts">
-import { useSessionStorage } from '@vueuse/core'
-
 const route = useRoute()
 const authStore = useAuthentication()
-const authenticatedCart = useSessionStorage('authenticated_cart', false)
-const sessionId = useCookie('session_id')
+const sessionId = useCookie('sessionId', { sameSite: 'strict', secure: true })
 
 const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
@@ -31,9 +28,9 @@ const { showLoginDrawer } = storeToRefs(authStore)
 const showSignup = ref(false)
 
 /**
- * Indicates whether the login modal should open
- * based on a parameter present in the url -; or, uses
- * `showLoginDrawer` to manipulate the modal
+ * Computed property to control the login modal visibility.
+ * If the URL query parameter `login` equals '0', the modal will open.
+ * Otherwise, it defaults to the store’s value
  */
 const shouldShowLoginDrawer = computed<boolean>({
   get: () => {
@@ -45,14 +42,12 @@ const shouldShowLoginDrawer = computed<boolean>({
 })
 
 /**
- * When the user has added a set of products to his
- * cart when he was not logged in, this function will
- * get called in order to attribute all the products
- * to his authenticated account once he logs in  
+ * Syncs the unauthenticated cart to the authenticated user's account
+ * by calling an API endpoint with the current session ID
  */
 async function handleAuthenticateCart () {
   try {
-    if (authenticatedCart.value) {
+    if (!authStore.sessionCache.authenticatedCart) {
       await $client.post('cart/authenticate', {
         session_id: sessionId.value
       })
@@ -62,10 +57,16 @@ async function handleAuthenticateCart () {
   }
 }
 
+/**
+ * Resets the login modal state:
+ * - Immediately hides the login drawer.
+ * - Clears the sign-up view after a 1-second delay.
+ */
 function handleReset() {
   showLoginDrawer.value = false
+  
   setTimeout(() => {
     showSignup.value = false
-  }, 1000);
+  }, 1000)
 }
 </script>
