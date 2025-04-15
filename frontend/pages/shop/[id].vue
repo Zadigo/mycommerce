@@ -128,41 +128,33 @@ const AsyncBaseRecommendationBlock = defineAsyncComponent({
 
 const { $client } = useNuxtApp()
 
-// Composable for product fetching
-function useProductDetails () {
-  const { id } = useRoute().params
+const { id } = useRoute().params
 
-  /**
-   * WRITE DOCUMENTATION
-   */
-  const { data, status } = useFetch<Product>(`/api/products/${id}`, {
-    method: 'GET',
-    transform(data) {
-      try {
-        const validItem = ProductSchema.parse(data)
-      } catch (e) {
-        console.log('Could not validate prouct', e)
-      }
-
-      return data
-    },
-    onResponseError({ error }) {
-      createError({
-        statusMessage: error?.message,
-        statusCode: 404
-      })
+/**
+ * WRITE DOCUMENTATION
+ */
+const { data: product, status } = useFetch<Product>(`/api/products/${id}`, {
+  method: 'GET',
+  transform(data) {
+    try {
+      const validItem = ProductSchema.parse(data)
+    } catch (e) {
+      console.log('Could not validate prouct', e)
     }
-  })
-  // const product = computed(() => data.value)
-  const isLoading = computed(() => status.value === 'pending')
 
-  provide('isLoading', isLoading)
-
-  return {
-    product: data,
-    isLoading
+    return data
+  },
+  onResponseError({ error }) {
+    createError({
+      statusMessage: error?.message,
+      statusCode: 404
+    })
   }
-}
+})
+
+const isLoading = computed(() => status.value === 'pending')
+
+provide('isLoading', isLoading)
 
 /**
  * This composable checks the stock for the given product
@@ -225,7 +217,6 @@ const isLargeScreen = useMediaQuery('(min-width: 320px)')
 const { y } = useScroll(window)
 
 const { translatePrice } = useShopComposable()
-const { product, isLoading } = useProductDetails()
 const { trackProduct } = useVisitedProducts(product)
 const { requestProductStock } = useProductStock(product)
 const { userSelection, addToCart } = useCartComposable()
@@ -270,7 +261,7 @@ const sizeNames = computed(() => {
     return []
   }
 })
-const imagesComponent = computed((): Component => {
+const imagesComponent = computed((): Component => {  
   if (!product.value) {
     return NoImages
   } else if (product && product.value.images.length === 0) {
