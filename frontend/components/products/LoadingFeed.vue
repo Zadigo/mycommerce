@@ -10,7 +10,7 @@
           </div>
 
           <div class="flex justify-content-start gap-1">
-            <TailSkeleton class="w-[270px] bg-gray-100" />
+            <TailSkeleton class="w-[270px] h-[37px] bg-gray-100" />
           </div>
         </TailCardContent>
       </TailCard>
