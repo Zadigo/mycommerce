@@ -37,7 +37,7 @@
     </div>
 
     <div v-if="showPrices" class="mt-4 flex justify-between align-top gap-5">
-      <div>
+      <div id="price">
         <h3 class="text-sm text-gray-700">
           <NuxtLink :to="`/shop/${product.id}`" @click="emit('has-navigated', [index, product])">
             <span aria-hidden="true" class="absolute inset-0" />
@@ -46,11 +46,11 @@
         </h3>
         
         <p v-if="typeof product.get_price === 'number'" class="font-semibold text-sm">
-          {{ $n(product.get_price, 'currency', $i18n.locale) }}
+          {{ $n(product.get_price, 'currency') }}
         </p>
 
         <p v-else class="font-semibold text-sm">
-          {{ $n(parseFloat(product.get_price), 'currency', $i18n.locale) }}
+          {{ $n(parseFloat(product.get_price), 'currency') }}
         </p>
       </div>
       
