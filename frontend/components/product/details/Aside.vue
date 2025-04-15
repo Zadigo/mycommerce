@@ -85,10 +85,6 @@ import type { PropType } from 'vue';
 import type { Product, ProductStock } from '~/types';
 
 const props = defineProps({
-  isLoading: {
-    type: Boolean,
-    default: true
-  },
   product: {
     type: Object as PropType<Product>,
     required: true
