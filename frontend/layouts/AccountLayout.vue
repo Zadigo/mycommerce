@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import createDjangoClient from '~/composables/django_client';
+import createDjangoClient from '~/composables/client';
 import type { Profile } from '~/types';
 
 const shopStore = useShop()
