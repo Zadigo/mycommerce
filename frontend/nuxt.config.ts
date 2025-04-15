@@ -88,25 +88,26 @@ export default defineNuxtConfig({
     baseUrl: './',
     langDir: './locales',
     defaultLocale: 'fr',
+    lazy: true,
     locales: [
       {
         code: 'en',
         language: 'en-US',
-        file: 'en-US.json',
+        file: 'en-US.ts',
         dir: 'ltr',
         name: 'English'
       },
       {
         code: 'es',
         language: 'es-ES',
-        file: 'es-ES.json',
+        file: 'es-ES.ts',
         dir: 'ltr',
         name: 'Spanish'
       },
       {
         code: 'fr',
         language: 'fr-FR',
-        file: 'fr-FR.json',
+        file: 'fr-FR.ts',
         dir: 'ltr',
         name: 'Français'
       }
