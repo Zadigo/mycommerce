@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { LoginApiResponse } from '~/composables/django_client';
+import type { LoginApiResponse } from '~/composables/client';
 import type { CartUpdateApiResponse, ProductToEdit } from '~/types';
 
 defineProps({
