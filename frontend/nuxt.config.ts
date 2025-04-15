@@ -75,7 +75,7 @@ export default defineNuxtConfig({
     '@nuxt/test-utils',
     'vuetify-nuxt-module',
     'shadcn-nuxt',
-    // 'vue-sonner/nuxt',
+    'vue-sonner/nuxt',
     // '@nuxtjs/tailwindcss'
   ],
 
