@@ -1,5 +1,5 @@
 <template>
-  <div id="product-images" class="grid grid-cols-1 grid-rows-2 col-span-8 auto-cols-min auto-rows-max">
+  <div id="product-images" class="grid grid-cols-1 auto-rows-min col-span-8">
     <div class="grid grid-cols-2 gap-x-1">
       <div v-for="image in images.slice(0, 2)" :key="image.id" id="image">
         <img :src="mediaPath(image.original, '/placeholder.svg')" :alt="image.name" class="cursor-zoom-in" @click="emit('zoom-image', image)">
@@ -28,7 +28,7 @@ defineProps({
 })
 
 const emit = defineEmits({
-  'zoom-image'(image: ProductImage) {
+  'zoom-image'(_image: ProductImage) {
     return true
   }
 })
