@@ -1,7 +1,7 @@
 <template>
   <section style="margin-top: 59px;margin-bottom:100px;">
     <!-- Navbar -->
-    <BaseNavbar />
+    <NavbarBase />
 
     <div class="container">
       <div class="row">

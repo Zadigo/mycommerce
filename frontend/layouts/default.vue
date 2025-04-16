@@ -1,7 +1,7 @@
 <template>
   <section id="shop" class="relative">
     <!-- Navbar -->
-    <Navbar />
+    <NavbarBase />
 
     <slot />
 
@@ -16,7 +16,6 @@
     </ClientOnly>
 
     <!-- Footer -->
-    <!-- <Footer @show-whatsapp="showWhatsAppModal=true" /> -->
     <BaseFooter :items="footerLinks" @show-whatsapp="showWhatsAppModal=true">
       <template #section>
         <BaseFooterSection>
@@ -39,6 +38,9 @@ const showWhatsAppModal = ref(false)
 
 provide('currentEditedProduct', currentEditedProduct)
 
+/**
+ * 
+ */
 function handleProductEdition (data: ProductToEdit) {
   if (data) {
     currentEditedProduct.value = data
