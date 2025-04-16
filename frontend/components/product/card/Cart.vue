@@ -43,6 +43,9 @@ const cartStore = useCart()
 
 const { showAddedProductDrawer } = storeToRefs(cartStore)
 
+/**
+ *
+ */
 const requiresSizeItems = computed(() => {
   if (props.product) {
     return props.product.sizes.length > 0
@@ -51,6 +54,9 @@ const requiresSizeItems = computed(() => {
   }
 })
 
+/**
+ *
+ */
 async function handleAddToCart (size?: string | number) {
   if (props.product) {
     await addToCart(props.product,  size, (data) => {

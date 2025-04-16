@@ -1,24 +1,16 @@
 <template>
   <article v-if="product" :data-id="product.id" :aria-label="product.name" class="relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
-    <!-- Carousel -->
-    <div class="relative">
-      <button v-if="showCarousel && isHovered" type="button" class="absolute top-2/5 left-3 py-5 rounded-full z-10 w-5 place-content-center hover:opacity-60 flex" @click="handlePreviousImage">
-        <Icon name="fa:caret-left" class="" />
-      </button>
-      
-      <NuxtLink :to="`/shop/${product.id}`" @click="emit('has-navigated', [index, product])">
-        <img v-if="currentImage" :src="mediaPath(currentImage?.original, '/placeholder.svg')" :alt="currentImage?.name" :aria-label="currentImage?.name" class="self-center aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-full">
-        <TailSkeleton v-else class="w-full h-[188px] md:h-[423px] bg-gray-100 rounded-md" />
-      </NuxtLink>
-
-      <button v-if="showCarousel && isHovered" type="button" class="absolute top-2/5 right-3 py-5 rounded-full z-10 w-5 place-content-center hover:opacity-60" @click="handleNextImage">
-        <Icon name="fa:caret-right" class="" />
-      </button>
+    <div class="absolute right-1/16 top-1/30 z-10">
+      <TailBadge>Nouveau</TailBadge>
     </div>
+    
+    <!-- Carousel -->
+    <ProductCardCarousel :product="product" :is-hovered="isHovered" :show-carousel="showCarousel" @has-navigated="emit('has-navigated', [index, product])" />
     
     <!-- Cart -->
     <ProductCardCart :product="product" :is-hovered="isHovered" :show-cart="showCart" />
 
+    <!-- Price -->
     <div v-if="showPrices" class="mt-4 flex justify-between align-top gap-5">
       <div id="price">
         <h3 class="text-sm text-gray-700">
@@ -57,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { useLocalStorage } from '@vueuse/core'
+import { useStorage } from '@vueuse/core'
 import type { PropType } from 'vue'
 import type { Product } from '~/types'
 
@@ -103,35 +95,16 @@ const emit = defineEmits({
 
 // const { gtag } = useGtag()
 const { handleLike, isLiked } = useShopComposable()
-const { mediaPath } = useDjangoUtilies()
+const likedProducts = useStorage<number[]>('likedProducts', [])
 
-const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    }
-  }
-})
-
-const currentIndex = ref<number>(0)
 const isHovered = ref(false)
-
-const numberOfImages = computed(() => props.product.images?.length || 0)
-const currentImage = computed(() => {
-  if (props.product.images) {
-    return props.product.images[currentIndex.value]
-  }
-  return null
-})
 
 function proxyHandleLike () {
   const result = handleLike(likedProducts.value, props.product)
-  console.log('handleLike', likedProducts.value, result)
+
   likedProducts.value = result
   isLiked.value = !isLiked.value
+
   // gtag('event', 'add_to_wishlist', {
   //   items: {
   //     item_id: props.product?.id,
@@ -148,27 +121,9 @@ function proxyHandleLike () {
   // })
 }
 
-function handlePreviousImage() {
-  const nextIndex = currentIndex.value - 1
-  if (nextIndex <= 0) {
-    currentIndex.value = numberOfImages.value - 1
-  } else {
-    currentIndex.value = nextIndex
-  }
-}
-
-function handleNextImage() {
-  const nextIndex = currentIndex.value + 1
-  if (nextIndex >= numberOfImages.value) {
-    currentIndex.value = 0
-  } else {
-    currentIndex.value = nextIndex
-  }
-}
-
 onMounted(() => {
   if (props.product) {
-    isLiked.value = likedProducts.value.includes(props.product.id)
+    // isLiked.value = likedProducts.value.includes(props.product.id)
   }
 })
 </script>
