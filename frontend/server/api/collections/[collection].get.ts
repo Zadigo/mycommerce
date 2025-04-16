@@ -27,7 +27,7 @@ export default defineCachedEventHandler(async event => {
         return []
     }
 }, {
-    base: 'fs',
+    base: 'redis',
     staleMaxAge: 1,
     maxAge: 1,
     getKey(event) {
