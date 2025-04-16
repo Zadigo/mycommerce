@@ -1,6 +1,6 @@
 <template>
-  <div class="card shadow-sm">
-    <div class="card-body">
+  <TailCard class="card shadow-sm">
+    <TailCardContent>
       <p class="fw-light">
         {{ $t('Choississez votre mode de paiement') }}
       </p>
@@ -16,9 +16,11 @@
 
       <div v-if="hasSelectedPaymentMethod && selectedPaymentMethod !== 'Klarna'" class="payment">
         <div class="p-4">
-          <StripeElements v-slot="{ elements }" ref="stripeElementsEl" :stripe-key="stripeKey" :instance-options="instanceOptions" :elements-options="elementsOptions">
-            <StripeElement ref="cardEl" :elements="elements" :options="cardOptions" />
-          </StripeElements>
+          <form @submit.prevent>
+            <StripeElements v-slot="{ elements }" ref="stripeElementsEl" :stripe-key="stripeKey" :instance-options="instanceOptions" :elements-options="elementsOptions">
+              <StripeElement ref="cardEl" :elements="elements" :options="cardOptions" />
+            </StripeElements>
+          </form>
         </div>
 
         <button type="button" class="btn btn-block btn-primary btn-rounded shadow-none fs-5 fw-bold" @click="handleStripe">
@@ -26,20 +28,22 @@
           {{ $t('Payer somme', { n: $n(cartStore.cartTotal, 'currency') }) }}
         </button>
       </div>
-      <div v-else-if="hasSelectedPaymentMethod && selectedPaymentMethod === 'Klarna'" id="klarna-payments-container" />
-    </div>
 
-    <div class="card-body d-flex gap-1 align-items-center justify-content-center">
+      <div v-else-if="hasSelectedPaymentMethod && selectedPaymentMethod === 'Klarna'" id="klarna-payments-container" />
+    </TailCardContent>
+
+    <TailCardContent class="flex gap-1 items-center justify-center">
       <v-img src="/cards/mastercard.svg" height="30" width="30" />
       <v-img src="/cards/visa.png" height="30" width="30" />
-    </div>
-  </div>
+    </TailCardContent>
+  </TailCard>
 </template>
 
 <script lang="ts" setup>
 import { useLocalStorage, useSessionStorage } from '@vueuse/core'
 import { AxiosError } from 'axios'
 import { StripeElement, StripeElements } from 'vue-stripe-js'
+
 import type { NewIntentAPIResponse, StripeTokenResponse } from './payment'
 
 interface TokenData {
@@ -51,12 +55,18 @@ interface TokenData {
 }
 
 definePageMeta({
-  layout: 'payment-layout',
-  middleware: ['auth', 'cart']
+  layout: 'cart',
+  middleware: ['cart']
 })
 
 useHead({
-  title: 'Payment'
+  title: 'Payment',
+  meta: [
+    {
+      key: 'description',
+      content: ''
+    }
+  ]
 })
 
 const paymentMethods = [
@@ -81,13 +91,10 @@ const tokenData = ref<TokenData>({
   client_ip: null
 })
 
-const hasSelectedPaymentMethod = computed(() => {
-  return selectedPaymentMethod.value !== null
-})
-
+const { $client } = useNuxtApp()
 const config = useRuntimeConfig()
 
-const { $client } = useNuxtApp()
+
 const paymentResponse = useSessionStorage('payment_response', null, {
   serializer: {
     read (raw) {
@@ -99,7 +106,7 @@ const paymentResponse = useSessionStorage('payment_response', null, {
   }
 })
 
-const paymentIntent = useLocalStorage<NewIntentAPIResponse>('payment_intent', null, {
+const paymentIntent = useLocalStorage<NewIntentAPIResponse>('paymentIntent', null, {
   deep: true,
   serializer: {
     read (raw) {
@@ -111,7 +118,7 @@ const paymentIntent = useLocalStorage<NewIntentAPIResponse>('payment_intent', nu
   }
 })
 
-const { gtag } = useGtag()
+// const { gtag } = useGtag()
 const router = useRouter()
 const stripeKey = ref(config.public.STRIPE_PUBLISHABLE_KEY)
 
@@ -132,6 +139,10 @@ const isLoading = ref(false)
 const cardEl = ref()
 const stripeElementsEl = ref()
 
+const hasSelectedPaymentMethod = computed(() => {
+  return selectedPaymentMethod.value !== null
+})
+
 /**
  * 
  */
@@ -145,34 +156,35 @@ async function handlePayment () {
     isLoading.value = false
     paymentIntent.value = null
 
-    gtag('event', 'add_payment_info', {
-      transaction_id: cartStore.sessionId,
-      currency: 'EUR',
-      tax: 20,
-      shipping: 1,
-      value: cartStore.cartTotal,
-      items: cartStore.products.map((item, i) => {
-        return {
-          item_id: item.product.id,
-          item_name: item.product.name,
-          price: item.product.get_price,
-          quantity: 1,
-          item_brand: null,
-          item_category: item.product.category,
-          item_category2: item.product.sub_category,
-          item_variant: item.product.color,
-          index: i,
-          size: item.size
-        }
-      })
-    })
+    // TODO: G-Analytics
+    // gtag('event', 'add_payment_info', {
+    //   transaction_id: cartStore.sessionId,
+    //   currency: 'EUR',
+    //   tax: 20,
+    //   shipping: 1,
+    //   value: cartStore.cartTotal,
+    //   items: cartStore.products.map((item, i) => {
+    //     return {
+    //       item_id: item.product.id,
+    //       item_name: item.product.name,
+    //       price: item.product.get_price,
+    //       quantity: 1,
+    //       item_brand: null,
+    //       item_category: item.product.category,
+    //       item_category2: item.product.sub_category,
+    //       item_variant: item.product.color,
+    //       index: i,
+    //       size: item.size
+    //     }
+    //   })
+    // })
 
-    useTrackEvent('add_payment_info', {
-      checkout_step: 3,
-      currency: 'EUR',
-      shipping: 1,
-      value: cartStore.cartTotal
-    })
+    // useTrackEvent('add_payment_info', {
+    //   checkout_step: 3,
+    //   currency: 'EUR',
+    //   shipping: 1,
+    //   value: cartStore.cartTotal
+    // })
 
     router.push('/cart/success')
   } catch (e) {

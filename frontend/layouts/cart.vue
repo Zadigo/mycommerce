@@ -1,73 +1,71 @@
 <template>
   <section id="payment">
     <header>
-      <nav class="navbar fixed-top navbar-dark bg-white d-flex justify-content-center shadow-none text-uppercase">
-        <NuxtLink id="link-shop-payment" to="/" class="link-dark">
-          <h1 class="h2 fw-bold">
+      <nav class="flex justify-center uppercase pa-5">
+        <NuxtLink id="link-shop-payment" to="/">
+          <h1 class="font-2xl font-bold">
             {{ $t('Boutique') }}
           </h1>
         </NuxtLink>
       </nav>
     </header>
 
-    <div class="container">
-      <div v-if="isSuccessPage" class="row my-5">
-        <div class="col-8 offset-md-2">
-          <slot />
-        </div>
+    <div class="container mx-auto px-10">
+      <div v-if="isSuccessPage" class="my-5">
+        <slot />
       </div>
 
-      <div v-else class="row my-5">
-        <div class="col-12">
+      <div v-else class="my-5 grid grid-cols-12 gap-4">
+        <div class="col-span-12">
           <nav aria-label="breadcrumb">
             <v-breadcrumbs :items="paymentLinks">
               <template #divider>
-                <v-icon icon="mdi-chevron-right" />
+                <Icon name="ic:baseline-chevron-right" size="25" />
               </template>
             </v-breadcrumbs>
           </nav>
         </div>
 
-        <div class="col-6">
+        <div class="col-span-6">
           <slot />
         </div>
 
-        <div class="col-6">
-          <div class="card shadow-none bg-light">
-            <div class="card-header border-none">
-              <h1 class="fs-5 fw-bold my-2">
+        <div class="col-span-6">
+          <TailCard class="card border-none bg-gray-50">
+            <TailCardHeader>
+              <TailCardTitle>
                 Résumé ({{ cartStore.numberOfProducts }})
-              </h1>
-            </div>
+              </TailCardTitle>
+            </TailCardHeader>
 
-            <div id="products" class="card-body">
+            <TailCardContent id="products" class="card-body">
               <div class="list-group">
                 <CartIterator :is-editable="false" />
               </div>
-            </div>
+            </TailCardContent>
 
-            <div class="card-footer border-none">
-              <div class="price d-flex justify-content-between">
+            <TailCardFooter>
+              <div class="price flex justify-between">
                 <span>Sous-total</span>
                 <span class="fw-bold">{{ $n(cartStore.cartTotal, 'currency') }}</span>
               </div>
 
-              <div class="delivery d-flex justify-content-between my-2">
+              <div class="delivery flex justify-between my-2">
                 <span>
                   {{ $t("Frais d'envoi") }}
                 </span>
 
-                <span class="fw-bold text-uppercase text-success">
+                <span class="font-bold uppercase text-green-500">
                   {{ $t('Gratuit') }}
                 </span>
               </div>
 
-              <div class="total d-flex justify-content-between">
+              <div class="total flex justify-between">
                 <span>Total (TVA comprise)</span>
-                <span class="fw-bold">{{ $n(cartStore.cartTotal, 'currency') }}</span>
+                <span class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</span>
               </div>
-            </div>
-          </div>
+            </TailCardFooter>
+          </TailCard>
         </div>
       </div>
     </div>
@@ -84,10 +82,11 @@ useHead({
   ]
 })
 
+const cartStore = useCart()
 const route = useRoute()
 
+// Checks if the user has reached the success page
 const isSuccessPage = computed(() => {
-  // Checks if the user has reached the success page
   return route.path === '/cart/success'
 })
 
@@ -116,8 +115,6 @@ const paymentLinks = computed(() => {
   
   return links
 })
-
-const cartStore = useCart()
 
 /**
  * Calculate the individual price for the given
