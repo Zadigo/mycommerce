@@ -11,7 +11,7 @@
       </div>
 
       <p v-else class="font-bold text-xl mt-1">
-        {{ translatePrice(product?.get_price) }}
+        {{ translatePrice(product.get_price) }}
       </p>
     </template>
 
@@ -22,7 +22,7 @@
     </div>
 
     <p id="product-reference" class="font-light text-sm my-5">
-      {{ $t(product.color) }} · Réf.. {{ product.reference }}
+      {{ $t(product.color) }} · Réf. {{ product.sku }}
     </p>
     
     <div class="border-t-2 border-gray-100 my-5 me-10" />
