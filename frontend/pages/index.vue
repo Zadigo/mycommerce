@@ -44,11 +44,9 @@ useSeoMeta({
   twitterCard: 'summary'
 })
 
-const collections = ref<CollectionName[]>([])
-
-const { data, status } = await useFetch('/api/collections', {
+const { data: collections, status } = await useFetch('/api/collections', {
   onResponseError({ error }) {
-    // handleError(error?.message)
+    handleError(error)
   },
   transform (data) {
     const validCollections = data.reduce<CollectionName[]>((acc, item) => {
@@ -64,10 +62,6 @@ const { data, status } = await useFetch('/api/collections', {
     return validCollections
   }
 })
-
-if (data.value) {
-  collections.value = data.value
-}
 
 onMounted(() => {
   // gtag('event', 'page_view', {
