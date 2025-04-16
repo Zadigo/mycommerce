@@ -6,6 +6,7 @@
       </div>
     </div>
   </template>
+  <ProductSkeletonLoader v-else :quantity="8" />
 </template>
 
 <script setup lang="ts">
@@ -46,6 +47,9 @@ const emit = defineEmits({
   }
 })
 
+/**
+ * 
+ */
 function handleNavigation(data: (number | Product)[]) {
   emit('has-navigated', data)
 }
