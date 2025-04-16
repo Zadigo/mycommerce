@@ -17,13 +17,12 @@
 
     <div v-if="product.variants" id="variants" class="my-5 flex gap-2 h-auto w-full">
       <NuxtLink id="link-product-variant" v-for="variant in product.variants" :key="variant.id" :to="`/shop/${variant.id}`" aria-current="true">
-        <!-- TODO: Missing variant name or color variant name -->
         <NuxtImg :src="mediaPath(variant.get_main_image?.original, '/placeholder.svg')" alt="variant.name" width="50" class="cursor-pointer hover:opacity-80" />
       </NuxtLink>
     </div>
 
     <p id="product-reference" class="font-light text-sm my-5">
-      {{ $t(product.color) }} · Réf.. 0544/360/400
+      {{ $t(product.color) }} · Réf.. {{ product.reference }}
     </p>
     
     <div class="border-t-2 border-gray-100 my-5 me-10" />
@@ -46,7 +45,7 @@
     </NuxtLink>
 
     <p v-if="showSizeSelectionWarning" class="text-red-400 mt-4">
-      Choissis une taille
+      {{ $t("Choissis une taille") }}
     </p>
     
     <TailButton v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" class="mt-5 place-content-center" variant="secondary" tonal @click="showAvailabilityModal=true">

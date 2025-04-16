@@ -7,7 +7,7 @@
       </template>
       
       <!-- Details -->
-      <ProductDetailsAside v-if="product" :product="product" @show-size-guide="showSizeGuideDrawer=true" />
+      <ProductPageAsideBase v-if="product" :product="product" @show-size-guide="showSizeGuideDrawer=true" />
     </div>
 
     <!-- Recommendations -->
@@ -117,9 +117,9 @@ type ImageComponentMap = {
   [key: number]: Component
 }
 
-const FiveImages = defineAsyncComponent(() => import('~/components/product/details/FiveImages.vue'))
-const SixImages = defineAsyncComponent(() => import('~/components/product/details/SixImages.vue'))
-const NoImages = defineAsyncComponent(() => import('~/components/product/details/NoImages.vue'))
+const FiveImages = defineAsyncComponent(() => import('~/components/product/page/images/Five.vue'))
+const SixImages = defineAsyncComponent(() => import('~/components/product/page/images/Six.vue'))
+const NoImages = defineAsyncComponent(() => import('~/components/product/page/images/Empty.vue'))
 
 const AsyncBaseRecommendationBlock = defineAsyncComponent({
   loader: async () => import('~/components/BaseRecommendations.vue'),
