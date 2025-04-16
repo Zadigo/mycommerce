@@ -1,5 +1,5 @@
 <template>
-  <section style="margin-top: 59px;margin-bottom:100px;">
+  <section id="account" class="my-10">
     <!-- Navbar -->
     <NavbarBase />
 
@@ -30,16 +30,15 @@
 </template>
 
 <script setup lang="ts">
-import createDjangoClient from '~/composables/client';
-import type { Profile } from '~/types';
+import { doc, getDoc, setDoc } from 'firebase/firestore'
 
-const shopStore = useShop()
+import type { Profile } from '~/types'
+
+const { $client } = useNuxtApp()
+const { handleError } = useErrorHandler()
 const authStore = useAuthentication()
 
-const { handleError } = useErrorHandler()
-
-const client = createDjangoClient('/api/v1/')
-const citiesClient = createAxiosSimpleClient('/api/v1/', useRuntimeConfig().public.quartProdUrl, false, 5000)
+// const citiesClient = createAxiosSimpleClient('/api/v1/', useRuntimeConfig().public.quartProdUrl, false, 5000)
 
 /**
  * Returns details on the profile for
@@ -47,8 +46,8 @@ const citiesClient = createAxiosSimpleClient('/api/v1/', useRuntimeConfig().publ
  */
 async function requestUserDetails () {
   try {
-    const response = await client.get<Profile>(`accounts/${authStore.userId}`)
-    authStore.profile = response.data
+    const response = await $client.get<Profile>(`/api/v1/accounts/${authStore.userId}`)
+    authStore.profile. = response.data
   } catch (e) {
     handleError(e)
   }
