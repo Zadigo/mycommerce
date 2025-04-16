@@ -14,7 +14,7 @@
           {{ $t('Mot de passe') }}
         </p>
 
-        <transition mode="out-in">
+        <Transition mode="out-in">
           <v-form v-if="showEditPassword" class="password-block" @submit.prevent>
             <v-text-field id="current-password" v-model="emailPasswordRequestData.current_password" variant="solo-filled" placeholder="Mot de passe actuel" type="password" autocomplete="false" aria-label="Mot de passe actuel" flat />
             <v-text-field id="password1" v-model="emailPasswordRequestData.password1" variant="solo-filled" placeholder="Nouveau mot de passe" type="password" autocomplete="new-password" aria-label="Nouveau mot de passe" flat />
@@ -35,14 +35,14 @@
             <span class="me-2">*************</span>
             <font-awesome icon="pen" />
           </v-btn>
-        </transition>
+        </Transition>
 
         <!-- Email -->
         <p class="fw-bold mt-4">
           {{ $t("Email") }}
         </p>
 
-        <v-form v-if="showEditEmail" class="password-block" @submit.prevent>
+        <form v-if="showEditEmail" class="password-block" @submit.prevent>
           <v-text-field v-model="emailPasswordRequestData.email" variant="solo-filled" placeholder="Email" type="email" aria-label="Email" flat />        
           
           <div class="d-flex gap-1">
@@ -54,7 +54,7 @@
               Annuler
             </v-btn>
           </div>
-        </v-form>
+        </form>
 
         <v-btn v-else class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block @click="handleEditEmail">
           <span class="me-2">
@@ -86,8 +86,8 @@
 
       <div class="card-body d-flex justify-content-end">
         <v-btn variant="tonal" rounded @click="showNewAddressForm=!showNewAddressForm">
-          <font-awesome icon="plus" />
-          Ajouter
+          <Icon name="fa-solid:plus" />
+          {{ $t('Ajouter') }}
         </v-btn>
       </div>
     </div>
@@ -109,7 +109,7 @@ useHead({
 })
 
 definePageMeta({
-  layout: 'account-layout'
+  layout: 'accounts'
 })
 
 const authStore = useAuthentication()
@@ -128,6 +128,9 @@ const showNewAddressForm = ref(false)
 const showEditPassword = ref(false)
 const showEditEmail = ref(false)
 
+/**
+ * 
+ */
 function resetEmailPasswordData () {
   showEditEmail.value = false
   showEditPassword.value = false
@@ -139,18 +142,33 @@ function resetEmailPasswordData () {
   }
 }
 
+/**
+ * 
+ */
 function handleEditEmail() {
-  emailPasswordRequestData.value.email = profile.value.email
-  showEditEmail.value = true
+  if (profile.value) {
+    emailPasswordRequestData.value.email = profile.value.email
+    showEditEmail.value = true
+  }
 }
 
+/**
+ * 
+ */
 function handleCreation(data: AddressSet) {
-  profile.value.userprofile.address_set.push(data)
+  if (profile.value) {
+    profile.value.userprofile.address_set.push(data)
+  }
 }
 
+/**
+ * 
+ */
 function handleDelete(id: number) {
-  const index = profile.value.userprofile.address_set.findIndex(x => x.id === id)
-  profile.value.userprofile.address_set.splice(index, 1)
+  if (profile.value) {
+    const index = profile.value.userprofile.address_set.findIndex(x => x.id === id)
+    profile.value.userprofile.address_set.splice(index, 1)
+  }
 }
 
 /**
@@ -159,7 +177,7 @@ function handleDelete(id: number) {
  */
 async function requestUpdate () {
   try {
-    await $client.patch(`accounts/${authStore.userId}`, emailPasswordRequestData)
+    await $client.patch(`/api/v1/accounts/${authStore.userId}`, emailPasswordRequestData)
 
     resetEmailPasswordData()
   } catch (e) {
