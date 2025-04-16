@@ -168,7 +168,7 @@ function useProductStock (product: Ref<Product | null>) {
   async function requestProductStock () {
     try {
       if (product.value) {
-        const response = await $client.get<ProductStock>(`stocks/products/${product.value.id}`)
+        const response = await $client.get<ProductStock>(`/api/v1/stocks/products/${product.value.id}`)
         stockState.value = response.data
       }
     } catch (e) {
