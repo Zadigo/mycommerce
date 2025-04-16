@@ -25,7 +25,7 @@
             <!-- Recommendations -->
             <Suspense v-else>
               <template #default>
-                <AsyncRecommendations />
+                <AsyncRecommendations @has-navigated="shopStore.showSearchModal=false" />
               </template>
               
               <template #fallback>
@@ -48,56 +48,44 @@ const AsyncRecommendations = defineAsyncComponent({
 })
 
 const shopStore = useShop()
+// const { gtag } = useGtag()
+const { $client } = useNuxtApp()
+const { handleError } = useErrorHandler()
 
-function useSearchProducts () {
-  // const { gtag } = useGtag()
-  const { $client } = useNuxtApp()
-  const { handleError } = useErrorHandler()
-  
-  const searchedProducts = ref<Product[]>([])
-  const search = ref<string | null>(null)
-  // const { last } = useRefHistory(search)
-  
-  const canShowSearch = computed(() => {
-    return searchedProducts.value.length > 0
-  })
+const searchedProducts = ref<Product[]>([])
+const search = ref<string | null>(null)
+// const { last } = useRefHistory(search)
 
-  async function requestProducts () {
-    try {
-      if (search.value && search.value !== "") {
-        const response = await $client.get<ProductsAPIResponse>('/api/v1/shop/products', {
-          params: {
-            q: search.value
-          }
-        })
-        
-        // gtag('event', 'search', {
-        //   search_term: search.value
-        // })
+const canShowSearch = computed(() => {
+  return searchedProducts.value.length > 0
+})
 
-        searchedProducts.value = response.data.results
-      }
-    } catch (e) {
-      handleError(e)
+async function requestProducts () {
+  try {
+    if (search.value && search.value !== "") {
+      const response = await $client.get<ProductsAPIResponse>('/api/v1/shop/products', {
+        params: {
+          q: search.value
+        }
+      })
+      
+      // gtag('event', 'search', {
+      //   search_term: search.value
+      // })
+
+      searchedProducts.value = response.data.results
     }
-  }
-
-  // TODO: Remove saving of search history because it saves
-  // all what the user has typed aka: i, i am, i am searching for etc.
-  // if (shopStore.sessionCache) {
-  //   shopStore.sessionCache.searchHistory = last
-  // }
-
-  return {
-    search,
-    requestProducts,
-    searchedProducts,
-    canShowSearch,
-    searchHistory: history
+  } catch (e) {
+    handleError(e)
   }
 }
 
-const { search, canShowSearch, searchedProducts, requestProducts } = useSearchProducts()
+// TODO: Remove saving of search history because it saves
+// all what the user has typed aka: i, i am, i am searching for etc.
+// if (shopStore.sessionCache) {
+//   shopStore.sessionCache.searchHistory = last
+// }
+
 const { debounce } = useDebounce()
 
 const proxySearchProducts = debounce(requestProducts, 1000)
