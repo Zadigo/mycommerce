@@ -17,24 +17,7 @@
     </div>
     
     <!-- Cart -->
-    <div v-show="showCart && isHovered" class="absolute w-full flex justify-center align-middle transition-all ease-in-out z-30 invisible lg:visible lg:bottom-[3.5rem]">
-      <div class="bg-white rounded-md py-5 w-5/6">
-        <p class="font-light text-sm text-center mb-3">
-          {{ $t("Sélectionne la taille") }}
-        </p>
-
-        <div v-if="requiresSizeItems" class="flex justify-center flex-wrap gap-2">
-          <button v-for="size in product.sizes" :key="size.id" :aria-label="size.name" type="button" class="py-1 px-1 text-sm flex gap-1 place-items-center underline-offset-4 transition-all duration-200 hover:underline hover:font-semibold" @click="handleAddToCart(size.name)">
-            <Icon v-if="!size.availability" name="fa-regular:clock" size="11" class="text-orange-400" />
-            <span>{{ size.name }}</span>
-          </button>
-        </div>
-
-        <v-btn v-else variant="plain" color="dark" block rounded @click="handleAddToCart('Unique')">
-          {{ $t('Ajouter au panier') }}
-        </v-btn>
-      </div>
-    </div>
+    <ProductCardCart :product="product" :is-hovered="isHovered" :show-cart="showCart" />
 
     <div v-if="showPrices" class="mt-4 flex justify-between align-top gap-5">
       <div id="price">
@@ -74,9 +57,9 @@
 </template>
 
 <script setup lang="ts">
-import { useLocalStorage } from '@vueuse/core';
-import type { PropType } from 'vue';
-import type { Product } from '~/types';
+import { useLocalStorage } from '@vueuse/core'
+import type { PropType } from 'vue'
+import type { Product } from '~/types'
 
 const props = defineProps({
   index: {
@@ -118,11 +101,8 @@ const emit = defineEmits({
   }
 })
 
-const cartStore = useCart()
 // const { gtag } = useGtag()
-const { showAddedProductDrawer } = storeToRefs(cartStore)
 const { handleLike, isLiked } = useShopComposable()
-const { addToCart } = useCartComposable()
 const { mediaPath } = useDjangoUtilies()
 
 const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
@@ -138,7 +118,6 @@ const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
 
 const currentIndex = ref<number>(0)
 const isHovered = ref(false)
-const cardCoverEl = ref<HTMLElement>()
 
 const numberOfImages = computed(() => props.product.images?.length || 0)
 const currentImage = computed(() => {
@@ -147,27 +126,6 @@ const currentImage = computed(() => {
   }
   return null
 })
-const requiresSizeItems = computed(() => {
-  if (props.product) {
-    return props.product.sizes.length > 0
-  } else {
-    return false
-  }
-})
-
-async function handleAddToCart (size?: string | number) {
-  if (props.product) {
-    await addToCart(props.product,  size, (data) => {
-      showAddedProductDrawer.value = true
-
-      if (cartStore.sessionCache) {
-        cartStore.sessionCache.cart = data
-      }
-    })
-  } else {
-    console.error('Card', 'Props does not have a product')
-  }
-}
 
 function proxyHandleLike () {
   const result = handleLike(likedProducts.value, props.product)

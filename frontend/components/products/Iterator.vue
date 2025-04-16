@@ -2,7 +2,7 @@
   <template v-if="products.length > 0">
     <div id="products" class="grid grid-cols-2 md:grid-cols-4 gap-2 px-1">
       <div v-for="(product, i) in products" id="product" :key="product.id">
-        <ProductCard :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
+        <ProductCardBase :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
       </div>
     </div>
   </template>
