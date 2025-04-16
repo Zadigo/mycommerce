@@ -61,6 +61,7 @@ const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
 // const { gtag } = useGtag()
 
+const { debounce } = useDebounce()
 const route = useRoute()
 const shopStore = useShop()
 
@@ -120,9 +121,12 @@ async function requestRecommendations () {
 // TODO: Load the recommendations that we have
 // already fetched when the block is loaded
 
-requestRecommendations()
 
-onMounted(() => {
+// requestRecommendations()
+
+onMounted(async () => {
+  debounce(requestRecommendations, 3000, false)()
+
   if (props.scrollable) {
     if (productsRow.value) {
       productsRow.value.classList.add('products-wrapper')
