@@ -105,8 +105,7 @@ authenticationStore.$subscribe((_, state) => {
 async function requestSessionId () {
   try {
     if (!cookieSessionId.value) {
-      // TODO: Check typing for $client
-      const response = await $client.post<{ token: string }>('/cart/session-id')
+      const response = await $client.post<{ token: string }>('/api/v1/cart/session-id')
       cookieSessionId.value = response.data.token
       
       // Reference user document in Firestore using the sessionId
