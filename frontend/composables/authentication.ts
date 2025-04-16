@@ -5,7 +5,6 @@ export function useAuthencationComposable() {
     const nuxtApp = tryUseNuxtApp()
 
     const router = useRouter()
-    const authStore = useAuthentication()
     
     const email = ref<StringNull>('')
     const password = ref<StringNull>('')
@@ -38,14 +37,23 @@ export function useAuthencationComposable() {
         }
     }
 
+    /**
+     * 
+     */
     async function login(callback: (data: LoginApiResponse) => void) {
-        await authenticate('/token/', callback)
+        await authenticate('/auth/v1/token/', callback)
     }
 
+    /**
+     * 
+     */
     async function refreshToken(callback: (data: LoginApiResponse) => void) {
-        await authenticate('/refesh/', callback)
+        await authenticate('/auth/v1/refesh/', callback)
     }
 
+    /**
+     * 
+     */
     async function logout(callback: () => void) {
         try {
             const accessToken = useCookie('access')
@@ -53,7 +61,6 @@ export function useAuthencationComposable() {
             
             accessToken.value = null
             refreshToken.value = null
-            authStore.profile = null
 
             router.push('/')
 
@@ -63,21 +70,10 @@ export function useAuthencationComposable() {
         }
     }
 
-    async function testLogin (callback: () => void) {
-        const accessToken = useCookie('access')
-        const refreshToken = useCookie('refresh')
-
-        accessToken.value = 'test token'
-        refreshToken.value = 'refresh token'
-
-        callback()
-    }
-
     return {
         email,
         password,
         authenticationFailuresCounter,
-        testLogin,
         authenticate,
         login,
         logout,

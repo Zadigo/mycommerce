@@ -11,7 +11,7 @@
 
       <p class="font-light mt-1 mb-8 text-center">
         En me connectant avec mon identifiant social, j'accepte de lier mon 
-        compte conformément à la <NuxtLink id="link-legal" to="/confidentialite" class="text-blue-600 underline">politique de confidentialité</NuxtLink>
+        compte conformément à la <NuxtLink id="link-legal-login-modal" to="/confidentialite" class="text-blue-600 underline">politique de confidentialité</NuxtLink>
       </p>
 
       <form id="form-login" @submit.prevent>
@@ -25,7 +25,7 @@
 
       <p class="flex-grow font-light text-center fw-light mt-3">
         {{ $t('No account signup text') }} 
-        <a href="#" class="text-blue-600 underline" @click.prevent="emit('show-signup')">
+        <a link="action-sigup" href="#" class="text-blue-600 underline" @click.prevent="emit('show-signup')">
           {{ $t("Inscris-toi") }}
         </a>
       </p>
@@ -47,20 +47,22 @@ const emit = defineEmits({
 })
 
 const { $fireApp } = useNuxtApp()
+const { handleError } = useErrorHandler()
+const { login, email, password } = useAuthencationComposable()
 const authenticationStore = useAuthentication()
 const authenticatedCart = useSessionStorage('authenticated_cart', false)
-const { login, email, password } = useAuthencationComposable()
 
-const auth = getAuth($fireApp)
-const provider = new GoogleAuthProvider()
-
-provider.addScope('email')
 
 /**
  * 
  */
 async function handleGoogle () {
   try {
+    const auth = getAuth($fireApp)
+    const provider = new GoogleAuthProvider()
+    
+    provider.addScope('email')
+
     const result = await signInWithPopup(auth, provider)
     const { user } = result
 
@@ -78,6 +80,7 @@ async function handleGoogle () {
     }
   } catch (e) {
     console.log(e)
+    handleError(e)
   }
 }
 
