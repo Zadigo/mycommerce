@@ -34,7 +34,7 @@
             </a>
           </li>
           <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-            <NuxtLink to="/account/" class="flex items-center gap-2">
+            <NuxtLink id="link-account-home" to="/account/" class="flex items-center gap-2">
             <Icon name="fa-solid:user" size="18" />
             {{ $t('Compte') }}
           </NuxtLink>

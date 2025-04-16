@@ -5,12 +5,12 @@
         {{ $t("Retour") }}
       </NuxtLink>
 
-      <NuxtLink v-else to="/" class="btn btn-lg btn-light">
+      <NuxtLink v-else id="link-shop" to="/" class="btn btn-lg btn-light">
         <font-awesome icon="arrow-left" class="me-2" />
         Boutique
       </NuxtLink>
       
-      <NuxtLink :to="nextPage" class="btn btn-lg btn-light" @click="$emit('navigate:next-page')">
+      <NuxtLink :to="nextPage" id="link-cart-next" class="btn btn-lg btn-light" @click="$emit('navigate:next-page')">
         {{ $t("Continuer") }}
       </NuxtLink>
     </div>

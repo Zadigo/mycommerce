@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     '/': {
       swr: true,
       cache: {
-        base: 'fs',
+        base: 'redis',
         maxAge: 1,
       }
     },

@@ -7,7 +7,7 @@
             <h1>{{ error?.statusCode }}</h1>
             <p class="text-wrap">{{ error?.message }}</p>
           
-            <NuxtLink href="/" @click="handleError">
+            <NuxtLink id="link-shop-error" href="/" @click="handleError">
               {{ $t('Accueil') }}
             </NuxtLink>
           </TailCardContent>

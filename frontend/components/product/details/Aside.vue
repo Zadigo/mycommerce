@@ -16,7 +16,7 @@
     </template>
 
     <div v-if="product.variants" id="variants" class="my-5 flex gap-2 h-auto w-full">
-      <NuxtLink id="variant" v-for="variant in product.variants" :key="variant.id" :to="`/shop/${variant.id}`" aria-current="true">
+      <NuxtLink id="link-product-variant" v-for="variant in product.variants" :key="variant.id" :to="`/shop/${variant.id}`" aria-current="true">
         <!-- TODO: Missing variant name or color variant name -->
         <NuxtImg :src="mediaPath(variant.get_main_image?.original, '/placeholder.svg')" alt="variant.name" width="50" class="cursor-pointer hover:opacity-80" />
       </NuxtLink>
@@ -41,7 +41,7 @@
       <span v-if="product.model_height">{{ product.model_size }} · {{ product.model_height }} cm</span> 
       <span v-else>N.D.</span>
     </p>
-    <NuxtLink to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('show-size-guide')">
+    <NuxtLink id="link-product-size-guide" to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('show-size-guide')">
       {{ $t('Guide des tailles') }}
     </NuxtLink>
 

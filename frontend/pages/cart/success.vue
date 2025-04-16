@@ -5,7 +5,7 @@
         <div class="card-body">
           <h1>Success</h1>
 
-          <NuxtLink to="/">
+          <NuxtLink id="link-shop-success" to="/">
             Back to home
           </NuxtLink>
         </div>
@@ -24,7 +24,7 @@ import type { CartUpdateApiResponse, ProductStock } from '~/types';
 
 definePageMeta({
   layout: 'payment-layout',
-  middleware: ['auth', 'cart']
+  middleware:  ['cart']
 })
 
 useHead({
@@ -38,6 +38,9 @@ const cart = useSessionStorage<CartUpdateApiResponse>('cart', null)
 const { handleError } = useErrorHandler()
 const {  $client } = useNuxtApp()
 
+/**
+ * 
+ */
 async function handleUpdateStock () {
   try {
     const response = await $client.post<ProductStock[]>('stocks/update', {

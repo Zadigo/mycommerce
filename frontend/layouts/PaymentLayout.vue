@@ -2,7 +2,7 @@
   <section id="payment">
     <header>
       <nav class="navbar fixed-top navbar-dark bg-white d-flex justify-content-center shadow-none text-uppercase">
-        <NuxtLink to="/" class="link-dark">
+        <NuxtLink id="link-shop-payment" to="/" class="link-dark">
           <h1 class="h2 fw-bold">
             {{ $t('Boutique') }}
           </h1>

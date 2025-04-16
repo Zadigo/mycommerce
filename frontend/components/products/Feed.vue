@@ -23,7 +23,7 @@
           {{ $t('Page not available text') }}
         </p>
 
-        <NuxtLink to="/shop/collection/all" class="mt-3" color="secondary" variant="tonal" rounded @click="resetQuery">
+        <NuxtLink id="link-collections-more" to="/shop/collection/all" class="mt-3" color="secondary" variant="tonal" rounded @click="resetQuery">
           {{ $t('Voir toute la collection') }}
         </NuxtLink>
       </div>

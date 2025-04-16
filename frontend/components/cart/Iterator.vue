@@ -3,7 +3,7 @@
     <article v-for="item in cartItems" :key="item.product__id" :aria-label="item.product__name" class="border-2 border-gray-50 rounded-md p-3">
       <div class="flex justify-start gap-3">
         <div id="image" class="w-2/4">
-          <NuxtLink :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
+          <NuxtLink id="link-product" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
             <NuxtImg :src="mediaPath(item.product_info?.product.get_main_image.original, '/placeholder.svg')" class="w-full rounded-md" />
           </NuxtLink>
           <!-- FIXME: Raises an error when there is not image -->
@@ -11,7 +11,7 @@
         </div>
 
         <div id="infos">
-          <NuxtLink :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
+          <NuxtLink id="link-product" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
             <p class="mb-1">
               {{ item.product__name }}
             </p>

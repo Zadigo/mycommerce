@@ -11,7 +11,7 @@
 
       <p class="font-light mt-1 mb-8 text-center">
         En me connectant avec mon identifiant social, j'accepte de lier mon 
-        compte conformément à la <NuxtLink to="/confidentialite" class="text-blue-600 underline">politique de confidentialité</NuxtLink>
+        compte conformément à la <NuxtLink id="link-legal" to="/confidentialite" class="text-blue-600 underline">politique de confidentialité</NuxtLink>
       </p>
 
       <form id="form-login" @submit.prevent>
