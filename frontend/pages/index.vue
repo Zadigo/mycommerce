@@ -4,8 +4,8 @@
       <TailSkeleton v-for="i in 3" :key="i" class="w-full h-full" />
     </div>
 
-    <div v-else class="grid grid-cols-1 grid-rows-3 md:grid-cols-3 md:grid-rows-1 gap-3">
-      <BaseStaticCollectionCard name="All" view-name="all" image="/img4.jpeg" />
+    <div v-else class="grid grid-cols-1 grid-rows-3 auto-rows-fr md:grid-cols-3 md:grid-rows-1 gap-3">
+      <BaseCollectionCard custom-name="All" view-name="all" image="/img4.jpeg" />
       <BaseCollectionCard v-for="collection in collections" :key="collection.id" :collection="collection" image="/img5.jpeg" />
     </div>
   </section>
