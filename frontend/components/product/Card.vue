@@ -1,5 +1,5 @@
 <template>
-  <article v-if="product" :data-id="product.id" :aria-label="product.name" class="group relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
+  <article v-if="product" :data-id="product.id" :aria-label="product.name" class="relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
     <!-- Carousel -->
     <div class="relative">
       <button v-if="showCarousel && isHovered" type="button" class="absolute top-2/5 left-3 py-5 rounded-full z-10 w-5 place-content-center hover:opacity-60 flex" @click="handlePreviousImage">
@@ -25,7 +25,6 @@
 
         <div v-if="requiresSizeItems" class="flex justify-center flex-wrap gap-2">
           <button v-for="size in product.sizes" :key="size.id" :aria-label="size.name" type="button" class="py-1 px-1 text-sm flex gap-1 place-items-center underline-offset-4 transition-all duration-200 hover:underline hover:font-semibold" @click="handleAddToCart(size.name)">
-          <!-- <button v-for="size in product.sizes" :key="size.id" type="button" class="py-1 px-4 rounded-full text-sm flex gap-1 place-items-center hover:bg-gray-50" aria-label=""> -->
             <Icon v-if="!size.availability" name="fa-regular:clock" size="11" class="text-orange-400" />
             <span>{{ size.name }}</span>
           </button>
