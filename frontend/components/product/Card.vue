@@ -11,7 +11,7 @@
         <TailSkeleton v-else class="w-full h-[188px] md:h-[423px] bg-gray-100 rounded-md" />
       </NuxtLink>
 
-      <button v-if="showCarousel && isHovered" type="button" class="absolute top-2/4 right-3 py-5 rounded-full z-10 w-5 place-content-center hover:opacity-60" @click="handleNextImage">
+      <button v-if="showCarousel && isHovered" type="button" class="absolute top-2/5 right-3 py-5 rounded-full z-10 w-5 place-content-center hover:opacity-60" @click="handleNextImage">
         <Icon name="fa:caret-right" class="" />
       </button>
     </div>
