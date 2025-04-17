@@ -14,7 +14,7 @@
               {{ $t('Rechercher') }}
             </v-btn>
           </li>
-          <li v-if="isHydrated && !authStore.isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
+          <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
             <a id="action-cart-navbar" href="#" class="flex items-center gap-2" @click.prevent="handleShowCartDrawer">
               <Icon name="fa-solid:shopping-bag" size="18" />
               {{ $t("Panier") }}
@@ -81,6 +81,7 @@ function handleShowCartDrawer () {
   showCartDrawer.value = true
 
   if (cartStore.cache && cartStore.hasProducts) {
+    // TODO: G-Analytics
     // gtag('event', 'view_cart', {
     //   currency: 'EUR',
     //   value: cartStore.cartTotal,
