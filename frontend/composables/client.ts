@@ -75,7 +75,7 @@ export function createSimpleClient(altDomain?: string | null | undefined, port: 
         baseURL: getDomain(altDomain, false, port),
         withCredentials: true,
         headers: { 'Content-Type': 'application/json' },
-        timeout: 10000
+        timeout: 30000
     })
 }
 
