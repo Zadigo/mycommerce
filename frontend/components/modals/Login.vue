@@ -10,8 +10,8 @@
     <v-divider />
     
     <Transition name="opacity">
-      <BlockSignup v-if="showSignup" @authenticate="handleAuthenticateCart" />
-      <BlockLogin v-else @show-signup="showSignup=true" @authenticate="handleAuthenticateCart" />
+      <BlockSignup v-if="showSignup" @authenticate="debouncedAuthenticateCart" />
+      <BlockLogin v-else @show-signup="showSignup=true" @authenticate="debouncedAuthenticateCart" />
     </Transition>
   </v-navigation-drawer>
 </template>
@@ -21,6 +21,7 @@ const route = useRoute()
 const authStore = useAuthentication()
 const sessionId = useCookie('sessionId', { sameSite: 'strict', secure: true })
 
+const { debounce } = useDebounce()
 const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
 const { showLoginDrawer } = storeToRefs(authStore)
@@ -69,4 +70,6 @@ function handleReset() {
     showSignup.value = false
   }, 1000)
 }
+
+const debouncedAuthenticateCart = debounce(handleAuthenticateCart, 5000)
 </script>
