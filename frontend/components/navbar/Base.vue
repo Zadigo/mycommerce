@@ -14,13 +14,13 @@
               {{ $t('Rechercher') }}
             </v-btn>
           </li>
-          <li v-if="!authStore.isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
+          <li v-if="isHydrated && !authStore.isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
             <a id="action-cart-navbar" href="#" class="flex items-center gap-2" @click.prevent="handleShowCartDrawer">
               <Icon name="fa-solid:shopping-bag" size="18" />
               {{ $t("Panier") }}
             </a>
           </li>
-          <li v-if="!authStore.isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
+          <li v-if="isHydrated && !authStore.isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
             <a id="action-signin" href="#" class="flex items-center gap-2" @click.prevent="authStore.showLoginDrawer=true">
               <Icon name="fa-solid:sign-in-alt" size="18" />
               {{ $t('Se connecter') }}
@@ -32,6 +32,7 @@
               {{ $t('Se déconnecter') }}
             </a>
           </li>
+          
           <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
             <NuxtLink id="link-account-navbar" to="/account/" class="flex items-center gap-2">
               <Icon name="fa-solid:user" size="18" />
@@ -61,6 +62,11 @@ const cartStore = useCart()
 const { showCartDrawer } = storeToRefs(useCart())
 // const { gtag } = useGtag()
 
+const isHydrated = ref<boolean>(false)
+
+/**
+ * 
+ */
 function proxyLogout () {
   authStore.logout()
   authStore.showLoginDrawer = false
@@ -68,6 +74,9 @@ function proxyLogout () {
   authStore.refreshToken = null
 }
 
+/**
+ * 
+ */
 function handleShowCartDrawer () {
   showCartDrawer.value = true
 
@@ -93,4 +102,8 @@ function handleShowCartDrawer () {
     // })
   }
 }
+
+onMounted(() => {
+  isHydrated.value = true
+})
 </script> 
