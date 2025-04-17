@@ -22,36 +22,11 @@
     </div>
 
     <ClientOnly>
-      <div v-if="showBanner" :class="{ 'translate-y-0 opacity-10': !showBanner, 'translate-y-0 opacity-100': showBanner }" class="bg-white p-2 rounded-md shadow-md fixed bottom-5 w-7/12 mx-auto left-1/4 h-auto transition-all ease z-50">
-        <div v-if="product" class="flex justify-between">
-          <div class="flex justify-start gap-3 align-center self-center">
-            <img :src="product.get_main_image.original" :alt="product.color_variant_name" class="w-10 rounded-md">
-            
-            <div class="flex flex-col">
-              <p class="font-normal text-sm">
-                {{ product.name }}
-              </p>
-              <p class="font-bold">
-                {{ translatePrice(product.unit_price) }}
-              </p>
-            </div>
-          </div>
-
-          <div class="flex gap-2">
-            <DevOnly>
-              {{ y }}
-            </DevOnly>
-
-            <BaseSelect v-model="userSelection.size" :items="sizeNames" item-key="name" item-value="name" />
-            <TailButton @click="addToCart(product)">
-              {{ $t('Ajouter au panier') }}
-            </TailButton>
-          </div>
-        </div>
-      </div>
+      <ProductPageBottomCart v-if="showBanner && product" :y="y" :product="product" :show-banner="showBanner" />
+      <ModalsImageZoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
+      <ModalsSizeGuide v-model="showSizeGuideDrawer" :product="product" />
     </ClientOnly>
 
-    <!-- Banner -->
     <!--
     <ClientOnly>
       <BaseModal v-model="zoomImage" fullscreen>
@@ -101,11 +76,6 @@
         </BaseCard>
       </BaseModal>
     </ClientOnly> -->
-
-    <ClientOnly>
-      <ModalsImageZoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
-      <ModalsSizeGuide v-model="showSizeGuideDrawer" :product="product" />
-    </ClientOnly>
   </section>
 </template>
 
@@ -254,13 +224,7 @@ const imageComponentMap: ImageComponentMap = {
 }
 
 const showBanner = computed(() => y.value >= 1200 && y.value <= 2100)
-const sizeNames = computed(() => {
-  if (product.value) {
-    return product.value.sizes.map(x => x.name)
-  } else {
-    return []
-  }
-})
+
 const imagesComponent = computed((): Component => {  
   if (!product.value) {
     return NoImages
