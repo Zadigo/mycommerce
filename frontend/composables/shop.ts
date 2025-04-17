@@ -4,7 +4,9 @@ import type { Ref } from 'vue'
 
 export function useShopComposable() {
   // const { $i18n } = useNuxtApp()
-  const isLiked = ref(false)
+
+  const showSearchModal = ref<boolean>(false)
+  const isLiked = ref<boolean>(false)
 
   function validateProp<T extends Product | ProductImage>(item: T | object | null | undefined): item is T {
     if (!item || typeof item !== 'object') {
