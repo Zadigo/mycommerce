@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { CartItem, CartUpdateApiResponse, Product, SessionCacheData } from '~/types'
+import type { CartItem, CartUpdateApiResponse, Product, SessionCacheData, UserSelection } from '~/types'
 
 interface RequestData {
     session_id: string | null | undefined
@@ -15,7 +15,11 @@ interface RequestData {
     delivery: 'Chronopost'
 }
 
+type FunctionCallback = (data: CartUpdateApiResponse) => void
+
 export const useCart = defineStore('cart', () => {
+    // const { handleError } = useErrorHandler()
+
     // NOTE: This is overriden the plugins.pini_plugin.ts
     // This is explicitly referenced here because there
     // computed properties that depend on this. Maybe we
@@ -42,6 +46,30 @@ export const useCart = defineStore('cart', () => {
     const showAddedProductDrawer = ref(false)
     const showEditProductDrawer = ref(false)
     const showCartDrawer = ref(false)
+
+    /**
+     * Container used to save the user selections
+     * when trying to add a product to the cart 
+     */
+    const userSelection = ref<UserSelection>({
+        id: null,
+        size: null,
+        quantity: 1,
+        product: {},
+        session_id: null
+    })
+
+    const showSizeSelectionWarning = ref<boolean>(false)
+    const addingToCartState = ref<boolean>(false)
+
+    const parsedSession = computed((): { a: string, b: string, c: string } | null => {
+        if (sessionId.value) {
+            const tokens = sessionId.value.split('-')
+            return { a: tokens[0], b: tokens[1], c: tokens[2] }
+        } else {
+            return null
+        }
+    })
 
     const sessionId = computed(() => {
         if (sessionCache.value) {
@@ -123,12 +151,79 @@ export const useCart = defineStore('cart', () => {
      */
     function removeFromCart(product: Product) {
         const index = products.value.findIndex(x => x.id === product.id)
-        products.value.splice(index, 1);
+        products.value.splice(index, 1)
+    }
+
+    /**
+     * 
+     */
+    function handleSizeSelection(product: Product, size: string | number | undefined) {
+        console.info('handleSizeSelection', product)
+        userSelection.value.product = product
+        userSelection.value.size = size || 'Unique'
+    }
+
+    /**
+     * 
+     */
+    function resetSelection() {
+        userSelection.value.size = null
+        userSelection.value.product = {}
+        console.log('resetSelection')
+    }
+
+    /**
+     * Adds a product to the customer's cart when the
+     * the product size or other caracteristics are
+     * available in a list (e.g. ProductsPage, CollectionsPage...) 
+     */
+    async function addToCart(product: Product, size?: string | number | null, callback?: FunctionCallback) {
+        try {
+            addingToCartState.value = true
+
+            // By changing this, it updates in the underlying
+            // proxy in the ref since data is that proxy
+            userSelection.value.session_id = sessionId.value || null
+            userSelection.value.product = product
+
+            if (size) {
+                userSelection.value.size = size
+            }
+
+            if (product.has_sizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null)) {
+                showSizeSelectionWarning.value = true
+                addingToCartState.value = false
+                return
+            }
+
+            // const { $client, vueApp } = useNuxtApp()
+            // const response = await $client.post('/api/v1/cart/add', userSelection.value)
+
+            // addingToCartState.value = false
+
+            // if (response.status === 201) {
+            //     if (callback && typeof callback === 'function') {
+            //         callback.call(vueApp, response.data)
+            //     }
+            // } else {
+            //     console.log(response.data)
+            // }
+            resetSelection()
+        } catch (e) {
+            // handleError(e)
+            console.log(e)
+        }
     }
 
     return {
-        sessionCache,
         removeFromCart,
+        addToCart,
+        handleSizeSelection,
+        showSizeSelectionWarning,
+        userSelection,
+        addingToCartState,
+        parsedSession,
+        sessionCache,
         cartTotal,
         freeDeliveryTarget,
         hasProducts,
