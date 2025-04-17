@@ -31,8 +31,7 @@
             </p>
 
             <p class="font-light">
-              Tu vas pouvoir profiter de la livraison 
-              standard gratuite à domicile
+              {{ $t("Tu vas pouvoir profiter de la livraison standard gratuite à domicile") }}
             </p>
           </div>
         </div>
@@ -56,19 +55,19 @@
         </div>
       </div>
 
-      <div v-else class="px-10 h-full">
-        <div class="flex flex-col justify-center text-center my-3">
-          <font-awesome icon="shopping-bag" size="7x" class="mb-5 text-dark" />
+      <div v-else class="px-5">
+        <div class="flex flex-col items-center justify-center text-center my-3">
+          <Icon name="fa-solid:shopping-bag" size="100" class="mb-5 text-dark" />
           
-          <h3 class="h5 mb-3">
+          <h3 class="text-2xl font-bold mb-3">
             {{ $t('Panier vide') }}
           </h3>
           
-          <p class="fw-light">
+          <p class="font-light">
             {{ $t('Empty cart text') }}
           </p>
           
-          <a href="#" class="btn btn-block btn-primary btn-rounded btn-lg shadow-none" @click.prevent="handleCartButtonRedirection">
+          <a href="#" @click.prevent="handleCartButtonRedirection">
             {{ $t('Découvrir') }}
           </a>
         </div>
@@ -82,8 +81,9 @@ import type { ProductToEdit } from '~/types';
 
 const router = useRouter()
 
+const cartStore = useCart()
 const { isAuthenticated, showLoginDrawer } = storeToRefs(useAuthentication())
-const { showCartDrawer, numberOfProducts, hasProducts, freeDeliveryTarget, cartTotal } = storeToRefs(useCart())
+const { showCartDrawer, numberOfProducts, hasProducts, freeDeliveryTarget, cartTotal } = storeToRefs(cartStore)
 
 const emit = defineEmits({
   'edit-product' (_product: ProductToEdit) {
@@ -100,9 +100,6 @@ function handleCartButtonRedirection () {
 }
 
 /**
- * 
- * 
- * 
  * 
  * TODO: Refactor this function
  */
