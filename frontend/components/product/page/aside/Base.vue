@@ -79,9 +79,8 @@
 </template>
 
 <script setup lang="ts">
-import { useLocalStorage } from '@vueuse/core';
-import type { PropType } from 'vue';
-import type { Product, ProductStock } from '~/types';
+import type { PropType } from 'vue'
+import type { Product } from '~/types'
 
 const props = defineProps({
   product: {
@@ -102,36 +101,12 @@ const emit = defineEmits({
   }
 })
 
-const { showAddedProductDrawer } = storeToRefs(useCart())
-
-const { translatePrice, isLiked, handleLike } = useShopComposable()
+const { translatePrice } = useShopComposable()
 const { mediaPath } = useDjangoUtilies()
-const { showSizeSelectionWarning, addToCart, userSelection, addingToCartState } = useCartComposable()
 // const { gtag } = useGtag()
 
-const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    }
-  }
-})
-
-const cartStore = useCart()
-
-const showAvailabilityModal = ref(false)
-const sizeEl = ref<HTMLElement>()
-const productAside = ref<HTMLElement>()
-
-provide('userSelection', userSelection)
-
-const stockState = inject<ProductStock>('stockState')
-
 /**
- * Indicates if the product has other color variants     * 
+ * Indicates if the product has other color variants
  */
 const hasColorVariants = computed(() => {
   if (props.product) {
@@ -140,101 +115,9 @@ const hasColorVariants = computed(() => {
     return false
   }
 })
-
-const sizeObject = computed(() => {
-  if (props.product) {
-    return props.product.sizes.find(x => x.name === userSelection.value.size) || null
-  } else {
-    return null
-  }
-})
-
-// Actions where the user selects a given size
-// for a given product 
-function handleSizeSelection (size: string | number | null | undefined) {
-  userSelection.value.size = size
-}
-
-function proxyHandleLike () {
-  const result = handleLike(likedProducts.value, props.product)
-  likedProducts.value = result
-  isLiked.value = !isLiked.value
-
-  // gtag('event', 'add_to_wishlist', {
-  //   items: {
-  //     item_id: props.product?.id,
-  //     item_name: props.product?.name,
-  //     price: props.product?.get_price,
-  //     quantity: 1,
-  //     item_brand: null,
-  //     item_category: props.product?.category,
-  //     item_category2: props.product?.sub_category,
-  //     item_variant: props.product?.color,
-  //     index: 0,
-  //     item_reference: null
-  //   }
-  // })
-}
-
-// Handles the action of adding a product
-// to the current user's cart. Products that
-// require a size will force the user to
-// select a size before handling the action
-async function handleAddToCart () {
-  if (props.product) {
-    addToCart(props.product, null, (data) => {
-      if (cartStore.sessionCache) {
-        cartStore.sessionCache.cart = data
-      }
-      
-      showAddedProductDrawer.value = true
-
-      // gtag('event', 'add_to_cart',  {
-      //   currency: 'EUR',
-      //   value: props.product?.get_price,
-      //   items: [
-      //     {
-      //       item_id: props.product?.id,
-      //       item_name: props.product?.name,
-      //       price: props.product?.get_price,
-      //       quantity: 1,
-      //       item_brand: null,
-      //       item_category: props.product?.category,
-      //       item_category2: props.product?.sub_category,
-      //       item_variant: props.product?.color,
-      //       index: 0,
-      //       item_reference: null,
-      //       size: userSelection.value.size
-      //     }
-      //   ]
-      // })
-
-      if (sizeEl.value) {
-        sizeEl.value.resetSize()
-      }
-    }, (error) => {
-      // FIXME: Error is not LoginAPIResponse so change
-      // the ts to fit the correct error response
-      console.error('handleAddToCart', error)
-    })
-  }
-}
-
-onMounted(() => {
-  if (props.product) {
-    isLiked.value = likedProducts.value.includes(props.product.id)
-  }
-})
 </script>
 
 <style lang="scss" scoped>
-$font_size: 0.8rem;
-
-h1.h3 {
-  font-size: 1.3rem;
-  font-weight: 400;
-}
-
 #product-variant.router-link-exact-active {
   opacity: 0.5;
 }
