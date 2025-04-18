@@ -27,40 +27,8 @@
     
     <div class="border-t-2 border-gray-100 my-5 me-10" />
 
-    <div v-if="product" id="sizes" class="inline-flex gap-2 mb-4">
-      <button v-for="size in product.sizes" :key="size.id" type="button" :class="{'bg-gray-200': userSelection.size === size.name, 'bg-gray-50': userSelection.size !== size.name }" class="rounded-full w-10 h-10 text-sm font-normal place-content-center hover:bg-gray-100 hover:border-2 hover:border-gray-100" @click="handleSizeSelection(size.name)">
-        <Icon v-if="!size.availability" name="fa-regular:clock" size="12" class="text-orange-400" />
-        {{ size.name }}
-      </button>
-    </div>
-    <BaseSkeleton v-else :loading="true" />
-
-    <p class="font-light">
-      {{ $t('Taille et hauteur du mannequin') }} : 
-      <span v-if="product.model_height">{{ product.model_size }} · {{ product.model_height }} cm</span> 
-      <span v-else>N.D.</span>
-    </p>
-    <NuxtLink id="link-product-size-guide" to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('show-size-guide')">
-      {{ $t('Guide des tailles') }}
-    </NuxtLink>
-
-    <p v-if="showSizeSelectionWarning" class="text-red-400 mt-4">
-      {{ $t("Choissis une taille") }}
-    </p>
-    
-    <TailButton v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" class="mt-5 place-content-center" variant="secondary" tonal @click="showAvailabilityModal=true">
-      <Icon name="fa:envelope" size="12" class="me-1" />
-      {{ $t('Me tenir informer') }}
-    </TailButton>
-    <TailButton v-else class="mt-5 me-2 place-content-cetner" :disabled="false" @click="handleAddToCart">
-      <font-awesome v-if="stockState && stockState.almost_sold_out" icon="clock" class="me-1" />
-      {{ $t('Ajouter au panier') }}
-    </TailButton>
-
-    <TailButton :aria-label="$t('Ajouter au favori')" class="mt-5" variant="outline" @click="proxyHandleLike">
-      <font-awesome v-if="isLiked" icon="heart" />
-      <font-awesome v-else :icon="['far', 'heart']" />
-    </TailButton>
+    <!-- Actions -->
+    <ProductPageAsideActions :product="product" />
 
     <BaseList class="shadow-none border border-gray-100 mt-10">
       <BaseListitem class="border-b-2 border-gray-100 flex justify-between items-center text-sm" @click="emit('show-composition-guide')">
