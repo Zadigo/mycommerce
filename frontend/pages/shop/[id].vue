@@ -6,8 +6,10 @@
         <component :is="imagesComponent" :images="product.images" :product="product" @zoom-image="handleSelectedImage" />
       </template>
       
-      <!-- Details -->
-      <ProductPageAsideBase v-if="product" :product="product" @show-size-guide="showSizeGuideDrawer=true" />
+      <ClientOnly>
+        <!-- Details -->
+        <ProductPageAsideBase v-if="product" :product="product" @show-size-guide="showSizeGuideDrawer=true" />
+      </ClientOnly>
     </div>
 
     <!-- Recommendations -->
@@ -182,17 +184,14 @@ function useVisitedProducts (product: Ref<Product | null>) {
 
 // TODO: Refactor into a composable
 const moreProductsIntersect = ref<HTMLElement>()
-const showSizeGuideDrawer = ref(false)
 const isLargeScreen = useMediaQuery('(min-width: 320px)')
+const showSizeGuideDrawer = ref(false)
 const { y } = useScroll(window)
 
-const { translatePrice } = useShopComposable()
 const { trackProduct } = useVisitedProducts(product)
 const { requestProductStock } = useProductStock(product)
-const { userSelection, addToCart } = useCartComposable()
 const { showModal, selectedImage, handleSelectedImage, handleCloseSelection } = useImages()
 // const { gtag } = useGtag()
-const shopStore = useShop()
 
 useHead({
   title: () => product.value?.name ?? 'Product Details',
