@@ -126,8 +126,26 @@ class TestCart(AuthenticatedTestCase):
         data = response.json()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIsNotNone(data['session_id'])
-        self.assertGreater(data['statistics']['total'], 0)
-        self.assertGreater(data['statistics'], 0)
+
+        results = data['results']
+        self.assertIsInstance(results, list)
+
+        for item in results:
+            with self.subTest(item=item):
+                self.assertIn('id', item)
+                self.assertIn('product', item)
+                self.assertIn('size', item)
+                self.assertIn('price', item)
+
+        statistics = data['statistics']
+        self.assertIsInstance(statistics, list)
+        self.assertGreater(len(statistics), 0)
+
+        for item in statistics:
+            with self.subTest(item=item):
+                self.assertIn('product__id', item)
+
+        self.assertGreater(data['total'], 0)
 
 
 class TestLiveCart(LiveServerTestCase):
