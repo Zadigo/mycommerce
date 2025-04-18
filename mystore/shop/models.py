@@ -195,7 +195,10 @@ class AbstractProduct(models.Model):
     )
     sale_value = models.PositiveIntegerField(
         default=0,
-        help_text=_('The current sale value for the product')
+        help_text=_(
+            'The current sale percentage on '
+            'the product unit price'
+        )
     )
     sale_price = models.DecimalField(
         max_digits=5,

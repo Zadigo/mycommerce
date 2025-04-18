@@ -97,7 +97,7 @@ def create_slug(word, *additional_words, generate_random_id=True):
     return non_accentuated_word
 
 
-def calculate_sale(price, percentage):
+def calculate_sale(price: int | float, percentage: int | float):
     """Calculates the discounted price based on 
     the original price and discount percentage.
 

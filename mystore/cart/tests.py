@@ -75,6 +75,14 @@ class TestCart(AuthenticatedTestCase):
         'fixtures/variants', 'carts'
     ]
 
+    def _create_session_id(self):
+        path = reverse('cart_api:session_id')
+        response = self.client.post(path)
+
+        token = response.json().get('token')
+        self.assertIsNotNone(token)
+        return token
+
     def test_list_all_carts_view_not_authenticated(self):
         response = self.client.get(reverse('cart_api:list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -109,6 +117,8 @@ class TestCart(AuthenticatedTestCase):
 
         size = product.size_set.first()
         data = json.dumps({
+            # Basic product item
+            # for the serializer
             'product': {
                 'id': product.id,
                 'size': size.name,
@@ -146,6 +156,92 @@ class TestCart(AuthenticatedTestCase):
                 self.assertIn('product__id', item)
 
         self.assertGreater(data['total'], 0)
+
+    def test_add_multiple(self):
+        """This function is to test the result that
+        we get when we add multiple items in a cart
+        with the same session ID"""
+        qs = Product.objects.all()
+
+        path = reverse('cart_api:session_id')
+        response = self.client.post(path)
+
+        token = response.json().get('token')
+        self.assertIsNotNone(token)
+
+        final_data = None
+
+        items_to_add = []
+        for i, product in enumerate(qs):
+            if i > 2:
+                break
+
+            with self.subTest(product=product):
+                size = 'Unique'
+                sizes = product.size_set.all()
+                if sizes.exists():
+                    size = sizes.first().name
+
+                data = json.dumps({
+                    'product': {
+                        'id': product.id,
+                        'size': size,
+                        'color': product.color
+                    },
+                    'size': size,
+                    'session_id': token
+                })
+                items_to_add.append(data)
+
+                response = self.client.post(
+                    reverse('cart_api:add'),
+                    content_type='application/json',
+                    data=data
+                )
+                self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+                final_data = response.json()
+
+                time.sleep(2)
+
+    def test_two_same_products(self):
+        """Tests the result of the cart when two same
+        products are added"""
+        token = self._create_session_id()
+
+        qs = Product.objects.filter(size__isnull=False)
+        product = qs.first()
+
+        sizes = product.size_set.all()
+        size = sizes.first().name
+
+        data = json.dumps({
+            'product': {
+                'id': product.id,
+                'size': size,
+                'color': product.color
+            },
+            'size': size,
+            'session_id': token
+        })
+
+        returned_data = []
+
+        for _ in range(2):
+            response = self.client.post(
+                reverse('cart_api:add'),
+                content_type='application/json',
+                data=data
+            )
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+            returned_data.append(response.json())
+
+        last_response_data = returned_data[-1]
+
+        # Statistics should be one and the unique
+        # element should have a quantity of 2
+        self.assertTrue(len(last_response_data['statistics']), 2)
+        self.assertTrue(last_response_data['statistics'][0]['quantity'], 2)
+        self.assertTrue(last_response_data['statistics'][0]['total'], int(product.get_price) * 2)
 
 
 class TestLiveCart(LiveServerTestCase):

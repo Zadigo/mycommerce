@@ -16,8 +16,8 @@
             "sub_category": "Not attributed",
             "created_on": "2022-03-18",
             "modified_on": "2022-03-18",
-            "unit_price": 302,
-            "sale_value": 36,
+            "unit_price": 10,
+            "sale_value": 3,
             "on_sale": true
         }
     },
@@ -38,7 +38,7 @@
             "sub_category": "Not attributed",
             "created_on": "2022-03-18",
             "modified_on": "2022-03-18",
-            "unit_price": 257,
+            "unit_price": 11,
             "sale_value": 0,
             "on_sale": false
         }
@@ -60,8 +60,8 @@
             "sub_category": "Not attributed",
             "created_on": "2022-03-18",
             "modified_on": "2022-03-18",
-            "unit_price": 254,
-            "sale_value": 14,
+            "unit_price": 10,
+            "sale_value": 5,
             "on_sale": true
         }
     },
@@ -82,8 +82,8 @@
             "sub_category": "Not attributed",
             "created_on": "2022-03-18",
             "modified_on": "2022-03-18",
-            "unit_price": 348,
-            "sale_value": 17,
+            "unit_price": 14,
+            "sale_value": 4,
             "on_sale": true
         }
     },
@@ -104,8 +104,8 @@
             "sub_category": "Not attributed",
             "created_on": "2022-03-18",
             "modified_on": "2022-03-18",
-            "unit_price": 624,
-            "sale_value": 20,
+            "unit_price": 16,
+            "sale_value": 8,
             "on_sale": true
         }
     },
@@ -126,7 +126,7 @@
             "sub_category": "Not attributed",
             "created_on": "2022-03-18",
             "modified_on": "2022-03-18",
-            "unit_price": 586,
+            "unit_price": 12,
             "sale_value": 0,
             "on_sale": false
         }
@@ -148,7 +148,7 @@
             "sub_category": "Not attributed",
             "created_on": "2022-03-18",
             "modified_on": "2022-03-18",
-            "unit_price": 799,
+            "unit_price": 17,
             "sale_value": 0,
             "on_sale": false
         }

@@ -10,9 +10,28 @@ from shop.utils import (calculate_sale, create_slug, process_file_name,
                         product_media_path, remove_special_characters,
                         transform_to_snake_case)
 
-from django.test import override_settings
 from mystore.mixins import AuthenticatedTestCase
-from mystore.custom_utilities.tokens import JWTGenerator, decode_jwt_token
+
+
+class TestProductModel(TransactionTestCase):
+    """Tests for specific model logic on prices etc"""
+
+    fixtures = ['fixtures/products']
+
+    @classmethod
+    def setUpClass(cls):
+        cls.on_sale = Product.objects.filter(on_sale=True)
+        cls.not_on_sale = Product.objects.filter(on_sale=True)
+
+    def test_price_product_not_on_sale(self):
+        product = self.on_sale.first()
+
+        unit_price = product.unit_price
+        sale_value = product.sale_value
+        result = unit_price - sale_value
+        
+        # get_price should return the sale_price
+        self.assertEqual(result, product.get_price)
 
 
 class TestShopApi(AuthenticatedTestCase):
@@ -42,8 +61,10 @@ class TestShopApi(AuthenticatedTestCase):
         self.assertEqual(response_data.get('count'), 1)
 
     def test_get_product(self):
-        path = reverse('shop_api:product', args=[1])
+        product = Product.objects.first()
+        path = reverse('shop_api:product', args=[product.id])
         response = self.client.get(path)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('id', response.json())
 
