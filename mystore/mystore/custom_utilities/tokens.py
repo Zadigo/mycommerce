@@ -3,6 +3,7 @@ import datetime
 import hashlib
 import os
 import secrets
+import time
 
 import jwt
 import pytz
@@ -104,7 +105,7 @@ class JWTGenerator:
         return jwt.encode(self.final_payload, self.secret, PY_UTILITIES_JWT_ALGORITHM)
 
 
-def decode_jwt_token(token: str, secret: str = None, raise_exception: bool = False, **kwargs):
+def decode_jwt_token(token: str, secret: str = None, raise_exception: bool = False, **kwargs) -> dict[str, str] | None:
     algorithms = ['HS256', 'HS384', 'HS512']
 
     algorithm = kwargs.get('algorithm', None)
@@ -131,7 +132,26 @@ def decode_jwt_token(token: str, secret: str = None, raise_exception: bool = Fal
 
     try:
         return jwt.decode(token, key=encoded_secret, **kwargs)
+    except jwt.exceptions.InvalidAudienceError:
+        raise jwt.exceptions.InvalidAudienceError(
+            'Invalid audience. You need to pass the intended audience '
+            'for the token in he function parameters'
+        )
     except Exception as e:
         if raise_exception:
             raise Exception(e)
         return None
+
+
+def is_token_expired(payload: dict, grace_period_seconds: int = 0) -> bool:
+    """Checks if a generated JWT token is expired"""
+    if not isinstance(payload, dict):
+        raise ValueError('Payload should be a dictionnary')
+
+    exp = payload.get('exp')
+
+    if not isinstance(exp, (int, float)):
+        raise ValueError("'exp' must be a UNIX timestamp (int or float)")
+
+    current_time = int(time.time())
+    return current_time >= (exp + grace_period_seconds)

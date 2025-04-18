@@ -6,7 +6,7 @@ from cart.models import Cart
 from cart.sessions import RestSessionManager
 from django.contrib.auth import get_user_model
 from django.test import (LiveServerTestCase, RequestFactory, TestCase,
-                         TransactionTestCase)
+                         TransactionTestCase, override_settings)
 from django.urls import reverse
 from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import status
@@ -16,6 +16,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from shop.models import Product
 
+from mystore.custom_utilities.tokens import decode_jwt_token, is_token_expired
 from mystore.mixins import AuthenticatedTestCase
 
 
@@ -81,10 +82,20 @@ class TestCart(AuthenticatedTestCase):
             with self.subTest(item=item):
                 self.assertIn('products', item)
 
+    @override_settings(PY_UTILITIES_JWT_ISSUER='ecommerce', PY_UTILITIES_JWT_SECRET='some_secret')
     def test_create_session_id(self):
         response = self.client.post(reverse('cart_api:session_id'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('token', response.json())
+
+        payload = response.json()
+        self.assertIn('token', payload)
+
+        # Test that we can decode the token efficiently and
+        # test it's expiration date
+        payload = decode_jwt_token(payload['token'], raise_exception=True, audience='cart')
+        result = is_token_expired(payload)
+        self.assertFalse(result)
+        print(payload)
 
     def test_add_to_cart(self):
         product = Product.objects.first()

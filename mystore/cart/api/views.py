@@ -1,13 +1,16 @@
+from django.conf import settings
 from cart.api import serializers
 from cart.api.serializers import ValidateCart, build_cart_response
-from cart.sessions import RestSessionManager
 from cart.models import Cart
+from cart.sessions import RestSessionManager
 from django.db.models import F, Q
 from django.shortcuts import get_list_or_404
 from rest_framework import generics, status
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+
+from mystore.custom_utilities.tokens import JWTGenerator
 
 
 class CartMixin:
@@ -244,5 +247,12 @@ class CreateSessionID(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        token = RestSessionManager.create_session_key()
-        return Response({'token': token})
+        payload = {'user_id': None}
+
+        if self.request.user.is_authenticated:
+            payload['user_id'] = self.request.user.id
+
+        issuer = getattr(settings, 'PY_UTILITIES_JWT_ISSUER')
+
+        instance = JWTGenerator(issuer, 'cart', 'cart', expiration_days=3)
+        return Response({'token': instance.create()})
