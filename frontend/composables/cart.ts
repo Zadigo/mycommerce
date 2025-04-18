@@ -1,5 +1,6 @@
-import { AxiosError } from "axios";
-import type { CartUpdateApiResponse, Product, ProductToEdit, UserSelection } from "~/types";
+import { AxiosError } from "axios"
+import { useErrorHandler } from '~/composables/errors'
+import type { CartUpdateApiResponse, Product, ProductToEdit, UserSelection } from "~/types"
 
 type FunctionCallback = (data: CartUpdateApiResponse) => void
 
