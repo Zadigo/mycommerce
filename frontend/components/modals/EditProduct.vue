@@ -76,13 +76,17 @@
 </template>
 
 <script setup lang="ts">
-import type { ProductToEdit } from '~/types';
+import type { ProductToEdit } from '~/types'
 
-const { showEditProductDrawer, showCartDrawer } = storeToRefs(useCart())
+const cartStore = useCart()
+const { showEditProductDrawer, showCartDrawer } = storeToRefs(cartStore)
 const { mediaPath } = useDjangoUtilies()
 
 const currentEditedProduct = inject<ProductToEdit>('currentEditedProduct')
 
+/**
+ * 
+ */
 function handleCloseProductEdition () {
   showEditProductDrawer.value = false
   showCartDrawer.value = true
