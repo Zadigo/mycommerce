@@ -164,7 +164,8 @@ class UpdateInCartView(CartMixin, generics.UpdateAPIView):
 
         initial_serializer = None
         for item in items:
-            serializer = self.get_serializer(item, data=request.data, partial=partial)
+            serializer = self.get_serializer(
+                item, data=request.data, partial=partial)
             serializer.is_valid(raise_exception=True)
 
             if initial_serializer is None:
@@ -177,7 +178,7 @@ class UpdateInCartView(CartMixin, generics.UpdateAPIView):
 
         session_id = initial_serializer.validated_data['session_id']
 
-        queryset = Cart.objects.filter(id=(item.id for item in items))        
+        queryset = Cart.objects.filter(id=(item.id for item in items))
 
         data = build_cart_response(queryset, session_id)
         return Response(data=data)
@@ -242,8 +243,12 @@ class DeleteFromCart(generics.DestroyAPIView):
 class CreateSessionID(generics.CreateAPIView):
     """Endpoint for creating a new session ID that
     allows us to identify anonymous users in the 
-    database when they are shopping on the website"""
-    
+    database when they are shopping on the website.
+
+    The main purpose of the token is to check whether a
+    cart that a user has started is stale or not which
+    then allows us to verify"""
+
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
@@ -254,5 +259,11 @@ class CreateSessionID(generics.CreateAPIView):
 
         issuer = getattr(settings, 'PY_UTILITIES_JWT_ISSUER')
 
-        instance = JWTGenerator(issuer, 'cart', 'cart', expiration_days=3)
+        instance = JWTGenerator(**{
+            'issuer': issuer,
+            'audience': 'cart',
+            'subject': 'cart',
+            'expiration_days': 3,
+            **payload
+        })
         return Response({'token': instance.create()})
