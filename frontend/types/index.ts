@@ -1,10 +1,10 @@
-import type { Profile } from './accounts';
-import type { CartUpdateApiResponse, DeliveryOption } from './cart';
-import type { Product } from './shop';
+import type { Profile } from './accounts'
+import type { CartUpdateApiResponse, DeliveryOption } from './cart'
+import type { Product } from './shop'
 
-export * from './accounts';
-export * from './cart';
-export * from './shop';
+export * from './accounts'
+export * from './cart'
+export * from './shop'
 export * from './feed'
 export * from './text'
 export * from './address'
@@ -43,6 +43,7 @@ export interface SessionCacheData {
     authenticatedCart: boolean
     cartViewCount: number
     profile: Profile | null
+    sessionId: string | null
     // TODO: Tracks the images on which the
     // user has zoomed the most
     popularImages: PopularImages[]
