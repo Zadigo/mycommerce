@@ -279,25 +279,3 @@ class TestUtilities(TestCase):
 
         slug = create_slug(products[0], 1, 'blue')
         print(slug)
-
-
-class TestJWTGenerator(TestCase):
-    @override_settings(PY_UTILITIES_JWT_SECRET='some_secret')
-    def test_create_token(self):
-        instance = JWTGenerator(
-            'ecommerce',
-            'users',
-            'some subject'
-        )
-        value = instance.create()
-
-        self.assertIsNotNone(value)
-        self.assertIsInstance(value, str)
-
-        decoded = decode_jwt_token(
-            value,
-            raise_exception=True,
-            audience='users'
-        )
-        self.assertIsInstance(decoded, dict)
-        self.assertIn(decoded, 'aud')

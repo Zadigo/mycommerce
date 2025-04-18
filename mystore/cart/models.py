@@ -28,10 +28,10 @@ class AbstractCart(models.Model):
       with items being linked to their profile once they log in.
     """
     session_id = models.CharField(
-        max_length=100,
+        max_length=400,
         help_text=_(
             "Unique session identifier "
-            "for the user's carts"
+            "for anonymous carts in particular"
         )
     )
     user = models.ForeignKey(

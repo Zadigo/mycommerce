@@ -1,10 +1,12 @@
 
 from cart.exceptions import ProductActiveError
-from cart.sessions import BaseSessionManager, RestSessionManager
+from django.conf import settings
 from django.db.models import QuerySet
 from django.db.models.aggregates import Sum
 from django.db.models.expressions import Q
 from rest_framework.exceptions import ValidationError
+
+from mystore.custom_utilities.tokens import JWTGenerator
 
 
 class QuerySetDoesNotExist(Exception):
@@ -144,7 +146,9 @@ class CartManager(QuerySet):
         is preserved across sessions
         """
         if session_id is None:
-            session_id = RestSessionManager.create_session_key()
+            issuer = getattr(settings, 'PY_UTILITIES_JWT_ISSUER')
+            instance = JWTGenerator(issuer, 'cart', 'cart', expiration_days=3)
+            session_id = instance.create()
         queryset = self._add_to_cart(request, session_id, product, **kwargs)
         return session_id, queryset
 
@@ -152,6 +156,7 @@ class CartManager(QuerySet):
         """Works in combination with session backends. When
         using rest `rest_api_add_to_cart`, the session does not actively 
         persist which can inadvertly create a new cart every time"""
-        session_manager = BaseSessionManager(request)
-        session_id = session_manager.get_or_create()
+        issuer = getattr(settings, 'PY_UTILITIES_JWT_ISSUER')
+        instance = JWTGenerator(issuer, 'cart', 'cart', expiration_days=3)
+        session_id = instance.create()
         return self._add_to_cart(request, session_id, product, **kwargs)

@@ -3,7 +3,6 @@ import time
 
 from cart.api.serializers import cart_statistics
 from cart.models import Cart
-from cart.sessions import RestSessionManager
 from django.contrib.auth import get_user_model
 from django.test import (LiveServerTestCase, RequestFactory, TestCase,
                          TransactionTestCase, override_settings)
@@ -18,6 +17,8 @@ from shop.models import Product
 
 from mystore.custom_utilities.tokens import decode_jwt_token, is_token_expired
 from mystore.mixins import AuthenticatedTestCase
+from cart.sessions import CartJWTGenerator
+from mystore.custom_utilities.tokens import JWTGenerator
 
 
 class TestCartManager(TransactionTestCase):
@@ -25,7 +26,7 @@ class TestCartManager(TransactionTestCase):
 
     @classmethod
     def setUpClass(cls):
-        token = RestSessionManager.create_session_key()
+        instance = CartJWTGenerator()
 
         factory = RequestFactory()
         request = factory.get(reverse('cart_api:carts'))
@@ -41,7 +42,7 @@ class TestCartManager(TransactionTestCase):
 
         cls.params = {
             'request': request,
-            'token': token,
+            'token': instance.create(),
             'product': None,
             'size':  'Unique'
         }
@@ -92,10 +93,10 @@ class TestCart(AuthenticatedTestCase):
 
         # Test that we can decode the token efficiently and
         # test it's expiration date
-        payload = decode_jwt_token(payload['token'], raise_exception=True, audience='cart')
+        payload = decode_jwt_token(
+            payload['token'], raise_exception=True, audience='cart')
         result = is_token_expired(payload)
         self.assertFalse(result)
-        print(payload)
 
     def test_add_to_cart(self):
         product = Product.objects.first()
@@ -127,41 +128,6 @@ class TestCart(AuthenticatedTestCase):
         self.assertIsNotNone(data['session_id'])
         self.assertGreater(data['statistics']['total'], 0)
         self.assertGreater(data['statistics'], 0)
-
-
-class TestSessionManager(TestCase):
-    def setUp(self):
-        # Create a mockup request so that the
-        # class can actually be used
-        factory = RequestFactory()
-        request = factory.get(reverse('cart_api:carts'))
-
-        self.instance = RestSessionManager(request)
-
-    def test_gloal_structure(self):
-        result = self.instance.create_session_key()
-        self.assertIsNotNone(result)
-        self.assertRegex(result, r'^ca_')
-
-    def test_key_scructure(self):
-        result = self.instance.create_session_key()
-        state = self.instance.test_key(result)
-        self.assertTrue(state)
-
-    # def setUp(self):
-    #     factory = RequestFactory()
-    #     request = factory.get(reverse('cart_api:api_list_carts'))
-    #     self.session = SessionManager(request)
-
-    # def test_session_structure(self):
-    #     key = self.session.create_session_key()
-    #     self.assertIsInstance(key, str)
-    #     parts = key.split('-')
-    #     self.assertEqual(len(parts), 3)
-
-    # def test_result(self):
-    #     key = self.session.create_session_key()
-    #     self.assertTrue(self.session.test_key(key))
 
 
 class TestLiveCart(LiveServerTestCase):
@@ -234,3 +200,44 @@ class TestCartStatistics(TestCase):
         # The first item should have quantity 2
         # since we have two products of size "S"
         self.assertEqual(data[1]['quantity'], 1)
+
+
+@override_settings(PY_UTILITIES_JWT_SECRET='some_secret')
+class TestJWTGenerator(TestCase):
+    def test_create_token(self):
+        instance = JWTGenerator(
+            'ecommerce',
+            'users',
+            'some subject'
+        )
+        value = instance.create()
+
+        self.assertIsNotNone(value)
+        self.assertIsInstance(value, str)
+
+        decoded = decode_jwt_token(
+            value,
+            raise_exception=True,
+            audience='users'
+        )
+        self.assertIsInstance(decoded, dict)
+        self.assertIn('aud', decoded)
+
+    def test_same_tokens(self):
+        """Ensure that we pass a unique token and that
+        both JWT would therefore not be the same"""
+        t1 = JWTGenerator(
+            'ecommerce',
+            'users',
+            'some subject',
+            cart_id='1234'
+        ).create()
+
+        t2 = JWTGenerator(
+            'ecommerce',
+            'users',
+            'some subject',
+            cart_id='2345'
+        ).create()
+
+        self.assertNotEqual(t1, t2)
