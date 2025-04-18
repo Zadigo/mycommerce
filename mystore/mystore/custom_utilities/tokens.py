@@ -6,6 +6,7 @@ import secrets
 
 import jwt
 import pytz
+from django.conf import settings
 
 # https://medium.com/@amr2018/how-to-generate-jwt-token-using-python-36c2305c5a14
 # dotenv.load_dotenv(dotenv_path='.env')
@@ -56,7 +57,7 @@ class Payload:
 
 
 class JWTGenerator:
-    def __init__(self, issuer, audience, subject, expiration_seconds=None, expiration_days=1, **payload):
+    def __init__(self, issuer: str, audience: str, subject: int, expiration_seconds: str = None, expiration_days: int = 1, **payload: str | int) -> str:
         self.secret_cache = None
         self.payload = Payload(issuer, audience, subject)
         dict_payload = dataclasses.asdict(self.payload)
@@ -71,8 +72,9 @@ class JWTGenerator:
         if expiration_seconds is not None:
             self.payload.update_expiration_date(seconds=expiration_seconds)
         else:
-            if expiration_days > 1:
-                self.payload.update_expiration_date(days=expiration_days)
+            if expiration_days < 1:
+                expiration_days = 1
+            self.payload.update_expiration_date(days=expiration_days)
 
         dict_payload.update(**payload)
         self.final_payload = dict_payload
@@ -83,7 +85,8 @@ class JWTGenerator:
 
     @property
     def secret(self):
-        secret = os.getenv('PY_UTILITIES_JWT_SECRET')
+        # secret = os.getenv('PY_UTILITIES_JWT_SECRET')
+        secret = getattr(settings, 'PY_UTILITIES_JWT_SECRET')
         if secret is None:
             secret = secrets.token_hex(20)
 
@@ -101,12 +104,33 @@ class JWTGenerator:
         return jwt.encode(self.final_payload, self.secret, PY_UTILITIES_JWT_ALGORITHM)
 
 
-def decode_jwt_token(token, secret, raise_exception=False, **kwargs):
+def decode_jwt_token(token: str, secret: str = None, raise_exception: bool = False, **kwargs):
     algorithms = ['HS256', 'HS384', 'HS512']
-    # secret_encoder(secret.encode('utf-8')).hexdigest()
+
+    algorithm = kwargs.get('algorithm', None)
+
+    if algorithm is None:
+        algorithm = 'HS256'
+
+    if algorithm is not None and algorithm not in algorithms:
+        raise ValueError(f"Unsupported algorithm: {algorithm}")
+
+    kwargs.update(algorithms=[algorithm])
+
+    if algorithm == 'HS256':
+        func = hashlib.sha256
+    elif algorithm == 'HS384':
+        func = hashlib.sha384
+    elif algorithm == 'HS512':
+        func = hashlib.sha512
+    else:
+        func = hashlib.sha256
+
+    secret = getattr(settings, 'PY_UTILITIES_JWT_SECRET', secret)
+    encoded_secret = func(secret.encode('utf-8')).hexdigest()
 
     try:
-        return jwt.decode(token, key=secret, algorithms=algorithms, **kwargs)
+        return jwt.decode(token, key=encoded_secret, **kwargs)
     except Exception as e:
         if raise_exception:
             raise Exception(e)

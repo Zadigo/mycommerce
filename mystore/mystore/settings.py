@@ -428,3 +428,8 @@ VAT_PERCENTAGE = None
 FIXTURES_DIRS = [
     'fixtures/products'
 ]
+
+
+# JWT Generator
+
+PY_UTILITIES_JWT_SECRET = os.getenv('PY_UTILITIES_JWT_SECRET')

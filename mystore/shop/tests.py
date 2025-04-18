@@ -6,10 +6,13 @@ from django.urls import reverse
 from rest_framework.mixins import status
 from shop.models import Product
 from shop.processors import FuzzyMatcherMixin
-from shop.utils import (calculate_sale, create_slug, process_file_name, product_media_path,
-                        remove_special_characters, transform_to_snake_case)
+from shop.utils import (calculate_sale, create_slug, process_file_name,
+                        product_media_path, remove_special_characters,
+                        transform_to_snake_case)
 
+from django.test import override_settings
 from mystore.mixins import AuthenticatedTestCase
+from mystore.custom_utilities.tokens import JWTGenerator, decode_jwt_token
 
 
 class TestShopApi(AuthenticatedTestCase):
@@ -276,3 +279,25 @@ class TestUtilities(TestCase):
 
         slug = create_slug(products[0], 1, 'blue')
         print(slug)
+
+
+class TestJWTGenerator(TestCase):
+    @override_settings(PY_UTILITIES_JWT_SECRET='some_secret')
+    def test_create_token(self):
+        instance = JWTGenerator(
+            'ecommerce',
+            'users',
+            'some subject'
+        )
+        value = instance.create()
+
+        self.assertIsNotNone(value)
+        self.assertIsInstance(value, str)
+
+        decoded = decode_jwt_token(
+            value,
+            raise_exception=True,
+            audience='users'
+        )
+        self.assertIsInstance(decoded, dict)
+        self.assertIn(decoded, 'aud')
