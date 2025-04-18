@@ -158,9 +158,11 @@ export const useCart = defineStore('cart', () => {
      * 
      */
     function handleSizeSelection(product: Product, size: string | number | undefined) {
-        console.info('handleSizeSelection', product)
-        userSelection.value.product = product
-        userSelection.value.size = size || 'Unique'
+        if (product) {
+            console.info('handleSizeSelection', product)
+            userSelection.value.product = product
+            userSelection.value.size = size || 'Unique'
+        }
     }
 
     /**
@@ -196,18 +198,18 @@ export const useCart = defineStore('cart', () => {
                 return
             }
 
-            // const { $client, vueApp } = useNuxtApp()
-            // const response = await $client.post('/api/v1/cart/add', userSelection.value)
+            const { $client, vueApp } = useNuxtApp()
+            const response = await $client.post('/api/v1/cart/add', userSelection.value)
 
-            // addingToCartState.value = false
+            addingToCartState.value = false
 
-            // if (response.status === 201) {
-            //     if (callback && typeof callback === 'function') {
-            //         callback.call(vueApp, response.data)
-            //     }
-            // } else {
-            //     console.log(response.data)
-            // }
+            if (response.status === 201) {
+                if (callback && typeof callback === 'function') {
+                    callback.call(vueApp, response.data)
+                }
+            } else {
+                console.log(response.data)
+            }
             resetSelection()
         } catch (e) {
             // handleError(e)
