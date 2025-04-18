@@ -3,6 +3,7 @@ import time
 
 from cart.api.serializers import cart_statistics
 from cart.models import Cart
+from cart.sessions import CartJWTGenerator
 from django.contrib.auth import get_user_model
 from django.test import (LiveServerTestCase, RequestFactory, TestCase,
                          TransactionTestCase, override_settings)
@@ -15,10 +16,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from shop.models import Product
 
-from mystore.custom_utilities.tokens import decode_jwt_token, is_token_expired
+from mystore.custom_utilities.tokens import (JWTGenerator, decode_jwt_token,
+                                             is_token_expired)
 from mystore.mixins import AuthenticatedTestCase
-from cart.sessions import CartJWTGenerator
-from mystore.custom_utilities.tokens import JWTGenerator
 
 
 class TestCartManager(TransactionTestCase):
