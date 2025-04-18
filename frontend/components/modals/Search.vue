@@ -47,8 +47,8 @@ const AsyncRecommendations = defineAsyncComponent({
   loader: async () => import('~/components/BaseRecommendations.vue')
 })
 
-const shopStore = useShop()
 // const { gtag } = useGtag()
+const shopStore = useShop()
 const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
 
