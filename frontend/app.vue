@@ -71,14 +71,6 @@ watch((): ExtendedLocationQuery => route.query, (newValue) => {
 shopStore.$subscribe((_, state) => {
   state.sessionCache = sessionCache.value
   shopStore.likedProducts = likedProducts.value
-
-  // OPTIONAL: Activate Firebase as localstorage for user data
-  // When the data changes in the store,
-  // sync it with the Firestore directly
-  // if (cookieSessionId) {
-  //   const dbDocument = doc(db, 'user', cookieSessionId)
-  //   setDoc(dbDocument, state.sessionCache)
-  // }
 }, {
   detached: true
 })
@@ -137,6 +129,8 @@ onBeforeMount(async () => {
 
 // Upon mounting, show language modal if no language is selected
 onMounted(() => {
+  cartStore.sessionCache.sessionId = cookieSessionId.value || null
+
   if (!shopStore.sessionCache.language.selected) {
     shopStore.showLanguageModal = true
   }
