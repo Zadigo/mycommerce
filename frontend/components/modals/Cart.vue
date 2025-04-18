@@ -15,18 +15,20 @@
 
     <div class="px-10">
       <div v-if="hasProducts" class="flex flex-col">
-        <div class="p-5 shadow-sm rounded-md bg-green-100">
+        <div class="pa-5 shadow-sm rounded-md bg-green-100">
           <div v-if="freeDeliveryTarget > 0">
             {{ cartTotal }}
             {{ $t('Livraison gratuite offerte', { n: $n(freeDeliveryTarget, 'currency') }) }}
+            
             <!-- Il te manque 19,02 € pour profiter de la -->
+            
             <span class="font-bold text-green-900 uppercase">
               {{ $t('livraison standard gratuite') }}
             </span>
           </div>
 
           <div v-else>
-            <p class="font-bold text-blue-900 uppercase">
+            <p class="font-bold text-green-900 uppercase">
               {{ $t('Livraison standard gratuite') }}
             </p>
 
@@ -37,7 +39,7 @@
         </div>
         
         <!-- Products -->
-        <CartIterator class="my-2" @edit-product="handleOpenProductEdition" />
+        <CartIterator class="mt-2 mb-5" @edit-product="handleOpenProductEdition" />
 
         <div class="flex justify-between align-center py-4">
           <span class="font-light">{{ $t('Total (TVA comprise)') }}</span>
