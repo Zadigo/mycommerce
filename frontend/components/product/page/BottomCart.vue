@@ -48,11 +48,14 @@
 </template>
 
 <script setup lang="ts">
+// import { doc, updateDoc, getDoc } from 'firebase/firestore'
+import type { Product } from '~/types'
+
 const cartStore = useCart()
 const { userSelection, showSizeSelectionWarning } = storeToRefs(cartStore)
+// const { $fireStore } = useNuxtApp()
 
 const { translatePrice } = useShopComposable()
-import type { Product } from '~/types'
 
 const props = defineProps({
   product: {
@@ -90,9 +93,20 @@ const selectedSize = computed({
   }
 })
 
-function handleProxyAddToCart() {
-  cartStore.addToCart(props.product, null, (data) => {
+/**
+ * 
+ */
+async function handleProxyAddToCart() {
+  cartStore.addToCart(props.product, null, async (data) => {
     console.log(data)
+
+    // TODO: Firebase
+    // const userRef = doc($fireStore, 'users', cartStore.sessionId)
+    // const userSnapshot = await getDoc(userRef)
+    
+    // if (userSnapshot.exists()) {
+    //   updateDoc(userRef, { cart: data })
+    // }
   })
 }
 </script>

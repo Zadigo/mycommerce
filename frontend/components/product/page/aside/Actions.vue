@@ -40,6 +40,7 @@
 </template>
 
 <script setup lang="ts">
+import { doc, updateDoc, getDoc } from 'firebase/firestore'
 import { useStorage } from '@vueuse/core'
 
 import type { PropType } from 'vue'
@@ -60,6 +61,7 @@ const emit = defineEmits({
 
 const stockState = inject<ProductStock>('stockState')
 
+const { $fireStore } = useNuxtApp()
 const cartStore = useCart()
 const { userSelection, showSizeSelectionWarning, showAddedProductDrawer } = storeToRefs(cartStore)
 const { isLiked, handleLike } = useShopComposable()
@@ -106,12 +108,25 @@ function proxyHandleLike() {
 // select a size before handling the action
 async function proxyAddToCart() {
   if (props.product) {
-    cartStore.addToCart(props.product, null, (data) => {
+    cartStore.addToCart(props.product, null, async (data) => {
       if (cartStore.sessionCache) {
         cartStore.sessionCache.cart = data
-      }
-      
-      showAddedProductDrawer.value = true
+        
+        showAddedProductDrawer.value = true
+        
+        console.log('Cart API response', data)
+        
+        // if (cartStore.sessionId) {
+        //   const userRef = doc($fireStore, 'users', cartStore.sessionId)
+        //   const userSnapshot = await getDoc(userRef)
+
+        //   console.info('has user snapshot', userSnapshot.exists())
+          
+        //   if (userSnapshot.exists()) {
+        //     await updateDoc(userRef, { cart: data })
+        //   }
+        // }
+      }      
 
       // TODO: G-Analytics
       // gtag('event', 'add_to_cart',  {
