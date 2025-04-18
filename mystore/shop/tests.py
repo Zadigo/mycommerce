@@ -1,6 +1,6 @@
 from decimal import Decimal
 from urllib.parse import urlencode
-
+import unittest
 from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 from rest_framework.mixins import status
@@ -29,7 +29,7 @@ class TestProductModel(TransactionTestCase):
         unit_price = product.unit_price
         sale_value = product.sale_value
         result = unit_price - sale_value
-        
+
         # get_price should return the sale_price
         self.assertEqual(result, product.get_price)
 
@@ -50,6 +50,17 @@ class TestShopApi(AuthenticatedTestCase):
         for item in data['results']:
             with self.subTest(item=item):
                 self.assertIn('id', item)
+
+                if item['on_sale']:
+                    try:
+                        self.assertEqual(
+                            item['get_price'],
+                            item['sale_price'],
+                            f'Prices do not match'
+                        )
+                    except AssertionError as e:
+                        print(
+                            f'{item['id']}: clean not called on fixtures? {e}')
 
     def test_lists_products_as_search(self):
         path = reverse('shop_api:products')

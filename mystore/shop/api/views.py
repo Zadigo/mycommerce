@@ -28,7 +28,7 @@ class ListProducts(generics.ListAPIView):
     * `sizes` - Filters the products by a given size
     """
 
-    queryset = Product.objects.all()
+    queryset = Product.objects.filter(active=True)
     serializer_class = serializers.ProductSerializer
     pagination_class = CustomPagination
     permission_classes = [AllowAny]
@@ -69,7 +69,7 @@ class ListProducts(generics.ListAPIView):
 class GetProduct(generics.RetrieveAPIView):
     """Returns a specific product from the database"""
 
-    queryset = Product.objects.all()
+    queryset = Product.objects.filter(active=True)
     serializer_class = serializers.ProductSerializer
 
     def retrieve(self, request, *args, **kwargs):
@@ -250,23 +250,23 @@ class ListProductsOnSale(generics.ListAPIView):
         return qs
 
 
-@api_view(http_method_names=['get'])
-def test_fuzzy(request, **kwargs):
-    results = []
-    search = request.GET.get('s')
-    qs = Product.objects.all()
-    instance = FuzzyMatcherMixin()
-    for item in qs:
-        result = instance.get_match_details(search, item.color_variant_name)
-        result['product'] = item.id
-        results.append(result)
-    df = pandas.DataFrame(results)
-    df = df[df['weighted_ratio'] >= 0.7]
+# @api_view(http_method_names=['get'])
+# def test_fuzzy(request, **kwargs):
+#     results = []
+#     search = request.GET.get('s')
+#     qs = Product.objects.all()
+#     instance = FuzzyMatcherMixin()
+#     for item in qs:
+#         result = instance.get_match_details(search, item.color_variant_name)
+#         result['product'] = item.id
+#         results.append(result)
+#     df = pandas.DataFrame(results)
+#     df = df[df['weighted_ratio'] >= 0.7]
 
-    ids = df['product'].to_list()
-    selected_products = qs.filter(id__in=ids)
-    # data = json.loads(df.to_json(orient='records'))
-    # return Response(data)
-    serializer = serializers.ProductSerializer(
-        instance=selected_products, many=True)
-    return Response(serializer.data)
+#     ids = df['product'].to_list()
+#     selected_products = qs.filter(id__in=ids)
+#     # data = json.loads(df.to_json(orient='records'))
+#     # return Response(data)
+#     serializer = serializers.ProductSerializer(
+#         instance=selected_products, many=True)
+#     return Response(serializer.data)
