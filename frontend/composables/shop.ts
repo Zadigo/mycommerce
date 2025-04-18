@@ -67,6 +67,7 @@ export function useShopComposable() {
 
   return {
     isLiked,
+    showSearchModal,
     validateProp,
     translatePrice,
     handleLike
