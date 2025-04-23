@@ -9,6 +9,17 @@ export * from './feed'
 export * from './text'
 export * from './address'
 
+export interface JWTData {
+    exp: number
+    iat: number
+    iss: string
+    typ: string
+    aud: string
+    sub: string
+    user_id: number
+    cart_id: string
+}
+
 export type StringNull = string | null | undefined
 
 const availableLocales = ['fr', 'en', 'es'] as const;
