@@ -1,14 +1,3 @@
-export interface JWTData {
-  exp: number
-  iat: number
-  iss: string
-  typ: string
-  aud: string
-  sub: string
-  user_id: number
-  cart_id: string
-}
-
 export function inProduction() {
   return process.env.NODE_ENV !== 'development'
 }
