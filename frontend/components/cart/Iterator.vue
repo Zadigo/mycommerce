@@ -33,11 +33,11 @@
 
           <div id="actions">
             <v-btn v-if="isEditable" class="me-2" size="x-small" variant="tonal" rounded @click="handleProductEdition(item)">
-              <font-awesome icon="pen" />
+              <Icon name="fa-solid:pen" />
             </v-btn>
 
-            <v-btn variant="tonal" size="x-small" rounded @click="deleteFromCart(item, callbackRemoveFromCart, callbackAuth)">
-              <font-awesome icon="trash" />
+            <v-btn variant="tonal" size="x-small" rounded @click="proxyDeleteFromCart(item)">
+              <Icon name="fa-solid:trash" />
             </v-btn>
           </div>
         </div>

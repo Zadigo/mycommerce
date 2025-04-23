@@ -33,7 +33,7 @@
         </div>
       </div>
 
-      <BaseSkeleton v-else :loading="true" />
+      <TailSkeleton v-else :loading="true" />
     </v-card>
   </v-bottom-sheet>
 </template>
