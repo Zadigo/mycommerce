@@ -30,19 +30,19 @@
     <!-- Actions -->
     <ProductPageAsideActions :product="product" />
 
-    <BaseList class="shadow-none border border-gray-100 mt-10">
-      <BaseListitem class="border-b-2 border-gray-100 flex justify-between items-center text-sm" @click="emit('show-composition-guide')">
+    <TailList class="shadow-none border border-gray-100 mt-10">
+      <TailListItem class="border-b-2 border-gray-100 flex justify-between items-center text-sm" @click="emit('show-composition-guide')">
         <div class="flex justify-start gap-2">
           <span>{{ $t('Composition, soin et traçabilité') }}</span>
         </div>
         <Icon name="fa:chevron-right" size="10" />
-      </BaseListitem>
+      </TailListItem>
 
-      <BaseListitem class="flex justify-between text-sm" @click="emit('show-delivery-guide')">
+      <TailListItem class="flex justify-between text-sm" @click="emit('show-delivery-guide')">
         {{ $t('Livraison et retours') }}
         <Icon name="fa:chevron-right" size="10" />
-      </BaseListitem>
-    </BaseList>
+      </TailListItem>
+    </TailList>
   </aside>
 </template>
 
