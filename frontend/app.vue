@@ -1,5 +1,4 @@
 <template>
-  <!-- Main -->
   <VApp>
     <NuxtLayout>
       <!-- Loader -->
@@ -92,7 +91,8 @@ authenticationStore.$subscribe((_, state) => {
 })
 
 /**
- * Request a new sessionId via the API and ensure a corresponding Firestore document exists.
+ * Request a new sessionId via the API and ensure a
+ * corresponding Firestore document exists.
  */
 async function requestSessionId () {
   try {
@@ -100,11 +100,9 @@ async function requestSessionId () {
       const response = await $client.post<{ token: string }>('/api/v1/cart/session-id')
       cookieSessionId.value = response.data.token
       
-      // Reference user document in Firestore using the sessionId
       const userRef = doc($fireStore, 'users', cookieSessionId.value)
       const userSnapshot = await getDoc(userRef)
       
-      // Create user document if it does not exist
       if (!userSnapshot.exists()) {
         await setDoc(userRef, baseSessionCacheData)
       }
@@ -127,11 +125,11 @@ onBeforeMount(async () => {
   await requestSessionId()
 })
 
-// Upon mounting, show language modal if no language is selected
 onMounted(() => {
   cartStore.sessionCache.sessionId = cookieSessionId.value || null
-
+  
   if (!shopStore.sessionCache.language.selected) {
+    // Upon mounting, show language modal if no language is selected
     shopStore.showLanguageModal = true
   }
 })
