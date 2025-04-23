@@ -69,7 +69,8 @@ class TestCartManager(TransactionTestCase):
             Cart.objects.rest_api_add_to_cart(**self.params)
 
 
-class TestCart(AuthenticatedTestCase):
+@override_settings(PY_UTILITIES_JWT_ISSUER='ecommerce', PY_UTILITIES_JWT_SECRET='some_secret')
+class TestCartApi(AuthenticatedTestCase):
     fixtures = [
         'fixtures/users', 'fixtures/products',
         'fixtures/variants', 'carts'
@@ -81,7 +82,9 @@ class TestCart(AuthenticatedTestCase):
 
         token = response.json().get('token')
         self.assertIsNotNone(token)
-        return token
+
+        payload = decode_jwt_token(token, audience='cart')
+        return token, payload['cart_id']
 
     def test_list_all_carts_view_not_authenticated(self):
         response = self.client.get(reverse('cart_api:list'))
@@ -91,7 +94,6 @@ class TestCart(AuthenticatedTestCase):
             with self.subTest(item=item):
                 self.assertIn('products', item)
 
-    @override_settings(PY_UTILITIES_JWT_ISSUER='ecommerce', PY_UTILITIES_JWT_SECRET='some_secret')
     def test_create_session_id(self):
         response = self.client.post(reverse('cart_api:session_id'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -206,7 +208,7 @@ class TestCart(AuthenticatedTestCase):
     def test_two_same_products(self):
         """Tests the result of the cart when two same
         products are added"""
-        token = self._create_session_id()
+        token, _ = self._create_session_id()
 
         qs = Product.objects.filter(size__isnull=False)
         product = qs.first()
@@ -241,7 +243,30 @@ class TestCart(AuthenticatedTestCase):
         # element should have a quantity of 2
         self.assertTrue(len(last_response_data['statistics']), 2)
         self.assertTrue(last_response_data['statistics'][0]['quantity'], 2)
-        self.assertTrue(last_response_data['statistics'][0]['total'], int(product.get_price) * 2)
+        self.assertTrue(last_response_data['statistics'][0]['total'], int(
+            product.get_price) * 2)
+
+    def test_delete_item_in_cart_authenticated(self):
+        token, cart_id = self._create_session_id()
+
+        product = Product.objects.filter(size__isnull=False).first()
+        instance = Cart.objects.create(**{
+            'session_id': token,
+            'product': product,
+            'user': self.user,
+            'size': product.size_set.first().name,
+            'price': product.get_price
+        })
+
+        self.assertIsNotNone(instance, 'Product was not created')
+
+        path = reverse('cart_api:delete', args=[cart_id])
+        response = self.client.delete(path, data={
+            'session_id': token,
+            'product_id': product.id,
+            'size': product.size_set.first().name
+        })
+        self.assertIsNone(response.json()['total'])
 
 
 class TestLiveCart(LiveServerTestCase):

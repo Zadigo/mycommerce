@@ -1,8 +1,8 @@
 from cart.api import serializers
-from cart.api.serializers import ValidateCart, build_cart_response
+from cart.api.serializers import ValidateCart, build_cart_response, DeleteFromCartSerializer
 from cart.models import Cart
 from django.conf import settings
-from django.db.models import F, Q
+from django.db.models import F, Q, QuerySet
 from django.shortcuts import get_list_or_404
 from rest_framework import generics, status
 from rest_framework.exceptions import NotFound
@@ -182,60 +182,28 @@ class UpdateInCartView(CartMixin, generics.UpdateAPIView):
         return Response(data=data)
 
 
-class DeleteFromCart(generics.DestroyAPIView):
+class DeleteFromCart(generics.GenericAPIView):
     """Delete one or multiple products
     from the user cart"""
 
-    serializer_class = ValidateCart
+    serializer_class = DeleteFromCartSerializer
     queryset = Cart.objects.all()
-    lookup_url_kwarg = 'unique_id'
-    lookup_field = 'session_id'
 
-    def get_object(self):
-        # Since the cart contains multiple porducts we might
-        # to perform a delete on multiple objects
-        queryset = self.get_queryset()
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if self.request.user.is_authenticated:
+            return qs.filter(user=self.request.user)
+        return qs
 
-        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
-        filter_kwargs = {
-            f'{self.lookup_field}__icontains': self.kwargs[lookup_url_kwarg]
-        }
-        items = get_list_or_404(queryset, **filter_kwargs)
-
-        for item in items:
-            self.check_object_permissions(self.request, item)
-        return items
-
-    def destroy(self, request, *args, **kwargs):
-        items = self.get_object()
-
-        serializer = self.get_serializer(data=self.request.data)
+    def post(self, request, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        serializer.delete()
 
         session_id = serializer.validated_data['session_id']
-        product_id = serializer.validated_data['product']['id']
-        size = serializer.validated_data['size']
-        color = serializer.validated_data['product']['color']
-
-        items_to_delete = []
-        items_to_keep = []
-        for item in items:
-            if item.product.id == product_id:
-                if item.size == size:
-                    items_to_delete.append(item)
-                    continue
-            items_to_keep.append(item)
-
-        for item in items:
-            # self.perform_destroy(item)
-            pass
-
-        queryset = Cart.objects.filter(
-            id__in=(item.id for item in items_to_keep)
-        )
-
+        queryset = self.get_queryset().filter(session_id=session_id)
         data = build_cart_response(queryset, session_id)
-        return Response(data=data, status=status.HTTP_204_NO_CONTENT)
+        return Response(data)
 
 
 class CreateSessionID(generics.CreateAPIView):

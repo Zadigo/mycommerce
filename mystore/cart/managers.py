@@ -30,26 +30,43 @@ class CartManager(QuerySet):
             queryset = self.filter(session_id=session_id)
         return queryset.aggregate(Sum('price'))
 
-    def remove_from_cart(self, request, product_id, session_id, size=None, color=None):
-        logic = Q(session_id__iexact=session_id)
-        if request.user.is_authenticated:
-            logic = logic & Q(user=request.user.id)
+    def items_to_remove(self, request, product_id, session_id, size=None):
+        queryset = self.filter(product__id=product_id)
+
+        logic = Q(session_id=session_id)
 
         if size is not None:
             logic = logic & Q(size=size)
 
-        if color is not None:
-            logic = logic & Q(color=color)
+        if request.user.is_authenticated:
+            logic = logic & Q(user=request.user)
 
-        queryset = self.filter(logic)
+        queryset = queryset.filter(logic)
 
-        queryset = queryset.filter(id=product_id)
         if not queryset.exists():
             raise QuerySetDoesNotExist()
 
-        for product in queryset:
-            product.delete()
-        return self.filter(logic)
+        return queryset
+
+        # logic = Q(session_id=session_id)
+        # if request.user.is_authenticated:
+        #     logic = logic & Q(user=request.user)
+
+        # if size is not None:
+        #     logic = logic & Q(size=size)
+
+        # if color is not None:
+        #     logic = logic & Q(color=color)
+
+        # queryset = self.filter(logic)
+
+        # queryset = queryset.filter(id=product_id)
+        # if not queryset.exists():
+        #     raise QuerySetDoesNotExist()
+
+        # for product in queryset:
+        #     product.delete()
+        # return self.filter(logic)
 
     def _add_to_cart(self, request, session_id, product, **kwargs):
         """The `_add_to_cart` function is a core method in the CartManager 
@@ -77,7 +94,8 @@ class CartManager(QuerySet):
         params = {
             'session_id': session_id,
             'product': product,
-            'price': product.get_price, # TODO: Implement the ability to use VAT price if applicable
+            # TODO: Implement the ability to use VAT price if applicable
+            'price': product.get_price,
             'size': None,
             'is_anonymous': not request.user.is_authenticated
         }
@@ -95,7 +113,7 @@ class CartManager(QuerySet):
             else:
                 if not size.active or not size.availability:
                     raise ValidationError(detail={'size': message})
-                
+
                 params['size'] = size.name
 
         # If the frontend is trying to create
