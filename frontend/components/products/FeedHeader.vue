@@ -1,5 +1,5 @@
 <template>
-  <TailCard id="feed-header" ref="headerEl" class="card shadow-none mb-3 px-1">
+  <TailCard id="feed-header" ref="headerEl" class="card shadow-none border-none mb-3 px-1">
     <TailCardContent class="pt-1 text-center">
       <div class="flex justify-between align-center">
         <div class="flex justify-content-left gap-1">
