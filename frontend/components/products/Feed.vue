@@ -49,7 +49,6 @@
         </div>
       </ClientOnly>    
     </template>
-
   </ProductsFeedLayout>
 </template>
 
@@ -75,7 +74,6 @@ const products = ref<Product[]>([])
 const cachedResponse = ref<ProductsAPIResponse>()
 
 const intersectionTarget = ref<HTMLElement | null>(null)
-
 const showProductFilters = ref(false)
 
 const query = ref<ProductsQuery>({
@@ -144,8 +142,10 @@ const productCount = computed(() => {
   }
 })
 
-// Provides the total product count for all children
-// since they do not have that information on load
+/**
+ *  Provides the total product count for all children
+ * since they do not have that information on load
+ */
 const totalProductCount = computed(() => {
   if (cachedResponse.value) {
     return cachedResponse.value.count
