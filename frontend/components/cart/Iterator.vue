@@ -6,8 +6,6 @@
           <NuxtLink id="link-product" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
             <NuxtImg :src="mediaPath(item.product_info?.product.get_main_image.original, '/placeholder.svg')" class="w-full rounded-md" />
           </NuxtLink>
-          <!-- FIXME: Raises an error when there is not image -->
-          <!-- <v-img :src="mediaPath(item.product_info?.product.get_main_image.original)" :alt="item.product__name" :width="150" :height="150" /> -->
         </div>
 
         <div id="infos">
@@ -46,9 +44,8 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import type { LoginApiResponse } from '~/composables/client';
-import type { CartUpdateApiResponse, ProductToEdit } from '~/types';
+<script setup lang="ts">
+import type { CartUpdateApiResponse, ProductToEdit } from '~/types'
 
 defineProps({
   isEditable: {
