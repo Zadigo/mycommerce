@@ -1,7 +1,9 @@
 <template>
   <article v-if="product" :data-id="product.id" :aria-label="product.name" class="relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
-    <div class="absolute right-1/16 top-1/30 z-10">
-      <TailBadge>Nouveau</TailBadge>
+    <div v-if="product.display_new" class="absolute right-1/16 top-1/30 z-10">
+      <TailBadge>
+        {{ $t('Nouveau') }}
+      </TailBadge>
     </div>
     
     <!-- Carousel -->
@@ -29,9 +31,6 @@
         </p>
       </div>
       
-      <!-- <p class="text-sm font-medium text-gray-900">
-        35€
-      </p> -->
       <div class="flex align-center">
         <button type="button" class="bg-white rounded-full p-2" @click="proxyHandleLike">
           <Icon v-if="isLiked" name="fa:heart" size="13" />
@@ -105,6 +104,7 @@ function proxyHandleLike () {
   likedProducts.value = result
   isLiked.value = !isLiked.value
 
+  // TODO: G-Analytics
   // gtag('event', 'add_to_wishlist', {
   //   items: {
   //     item_id: props.product?.id,
