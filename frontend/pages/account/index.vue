@@ -182,13 +182,16 @@ function handleDelete(id: number) {
  * the email address by the user 
  */
 async function requestUpdate () {
-  try {
-    await $client.patch(`/api/v1/accounts/${authStore.userId}`, emailPasswordRequestData)
-
-    resetEmailPasswordData()
-  } catch (e) {
-    handleError(e)
-    resetEmailPasswordData()
-  }
+  await $client(`/api/v1/accounts/${authStore.userId}`, {
+    method: 'PATCH',
+    body: emailPasswordRequestData.value,
+    onResponse() {
+      resetEmailPasswordData()
+    },
+    onRequestError({ error }) {
+      resetEmailPasswordData()
+      handleError(error)
+    }
+  })
 }
 </script>

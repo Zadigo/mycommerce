@@ -36,9 +36,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       // Django/Quart/Flask
-      djangoProdUrl: process.env.NUXT_DJANGO_PROD_URL,
-      quartProdUrl: process.env.NUXT_QUART_PROD_URL,
-      prodDomain: process.env.NUXT_DJANGO_PROD_URL,
+      djangoProdUrl: process.env.NUXT_DJANGO_PROD_URL, //TODELETE: Use prodDomain
+      quartProdUrl: process.env.NUXT_QUART_PROD_URL, //TODELETE: Use prodDomain
+      prodDomain: process.env.NUXT_DJANGO_PROD_URL || 'http://127.0.0.1:8000',
       
       // Firebase
       firebaseApiKey: process.env.NUXT_FIREBASE_API_KEY,

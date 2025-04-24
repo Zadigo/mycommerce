@@ -48,19 +48,20 @@ const { data: collections, status } = await useFetch('/api/collections', {
   onResponseError({ error }) {
     handleError(error)
   },
-  transform (data) {
-    const validCollections = data.reduce<CollectionName[]>((acc, item) => {
-      try {
-        const validItem = CollectionSchema.parse(item)
-        acc.push(validItem)
-        return acc
-      } catch (e) {
-        console.log('collections.validate', e)
-        return acc
-      }
-    }, [])
-    return validCollections
-  }
+  // TODO: Review this code
+  // transform (data) {
+  //   const validCollections = data.reduce<CollectionName[]>((acc, item) => {
+  //     try {
+  //       const validItem = CollectionSchema.parse(item)
+  //       acc.push(validItem)
+  //       return acc
+  //     } catch (e) {
+  //       console.log('collections.validate', e)
+  //       return acc
+  //     }
+  //   }, [])
+  //   return validCollections
+  // }
 })
 
 onMounted(() => {

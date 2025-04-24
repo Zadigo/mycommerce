@@ -198,4 +198,3 @@ export function useServerAxiosClient(access?: string, refresh?: string, refreshC
         authenticatedClient
     }
 }
-

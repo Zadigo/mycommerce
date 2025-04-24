@@ -1,3 +1,5 @@
+export * from './client'
+
 export function inProduction() {
   return process.env.NODE_ENV !== 'development'
 }
@@ -58,18 +60,3 @@ export function useDebounce() {
     debounce
   }
 }
-
-/**
- * 
- */
-// export function parseJwt<T extends JWTData | null>(token: string | undefined | null): T {
-//   console.log('parseJWT', token)
-//   if (token && typeof token !== 'undefined') {
-//     const base64Payload = token.split('.')[1]
-//     const payload = Buffer.from(base64Payload, 'base64')
-
-//     return JSON.parse(payload.toString())
-//   } else {
-//     return null
-//   }
-// }

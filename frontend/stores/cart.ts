@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-// import { parseJwt } from '~/utils'
-import type { CartItem, CartUpdateApiResponse, Product, SessionCacheData, UserSelection, ProductToEdit } from '~/types'
+import { useJwt } from '@vueuse/integrations/useJwt'
+
+import type { CartItem, CartUpdateApiResponse, Product, SessionCacheData, UserSelection, ProductToEdit, JWTData } from '~/types'
 
 interface RequestData {
   session_id: string | null | undefined
@@ -171,73 +172,78 @@ export const useCart = defineStore('cart', () => {
    * available in a list (e.g. ProductsPage, CollectionsPage...) 
    */
   async function addToCart(product: Product, size?: string | number | null, callback?: FunctionCallback) {
-    try {
-      addingToCartState.value = true
+    addingToCartState.value = true
 
-      // By changing this, it updates in the underlying
-      // proxy in the ref since data is that proxy
-      userSelection.value.session_id = sessionId.value || null
-      userSelection.value.product = product
+    // By changing this, it updates in the underlying
+    // proxy in the ref since data is that proxy
+    userSelection.value.session_id = sessionId.value || null
+    userSelection.value.product = product
 
-      if (size) {
-        userSelection.value.size = size
-      }
-
-      if (product.has_sizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null)) {
-        showSizeSelectionWarning.value = true
-        addingToCartState.value = false
-        return
-      }
-
-      const { $client, vueApp } = useNuxtApp()
-      const response = await $client.post('/api/v1/cart/add', userSelection.value)
-
-      addingToCartState.value = false
-
-      if (response.status === 201) {
-        if (callback && typeof callback === 'function') {
-          callback.call(vueApp, response.data)
-        }
-      } else {
-        console.log(response.data)
-      }
-      resetSelection()
-    } catch (e) {
-      // handleError(e)
-      console.log(e)
+    if (size) {
+      userSelection.value.size = size
     }
+
+    if (product.has_sizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null)) {
+      showSizeSelectionWarning.value = true
+      addingToCartState.value = false
+      return
+    }
+
+    const { $client, vueApp } = useNuxtApp()
+
+    const response = await $client('/api/v1/cart/add', {
+      method: 'POST',
+      body: userSelection.value,
+      onResponse({ response }) {
+        if (response.status === 201) {
+          addingToCartState.value = false
+          resetSelection()
+        }
+      }
+    })
+    
+    // if (callback && typeof callback === 'function') {
+    //   callback.call(vueApp, response)
+    // }
   }
 
   /**
    * Removes a product to the customer's cart 
    */
-  // async function deleteFromCart(cartItem: ProductToEdit, callback?: (deletedItem: ProductToEdit, updatedCart: CartUpdateApiResponse) => void, authCallback?: (data) => void) {
-  //   console.log('deleteFromCart', cartItem)
-  //   try {
-  //     const parsedSession = parseJwt(sessionId.value)
+  async function deleteFromCart(cartItem: ProductToEdit, callback?: (deletedItem: ProductToEdit, updatedCart: CartUpdateApiResponse) => void) {
+    console.log('deleteFromCart', cartItem)
+    if (sessionId.value) {
+      console.log(sessionId.value)
 
-  //     if (parsedSession) {
-  //       const { $client, vueApp } = useNuxtApp()
-  //       // const response = await $client.delete<CartUpdateApiResponse>(`cart/${parsedSession.cart_id}/delete`, {
-          
-  //       // })
-  //       console.log('deleteFromCart', cartItem)
+      const { payload } = useJwt<JWTData>(sessionId.value)
+      const { $client } = useNuxtApp()
 
-  //       // cartStore.removeFromCart(product)
-  //       if (callback && typeof callback === 'function') {
-  //         // callback.call(vueApp, cartItem, {})
-  //       }
-  //     }
-  //   } catch (e) {
-  //     console.log(e)
-  //   }
-  // }
+      console.log(payload.value)
+
+      if (payload.value) {
+        const response = await $client<CartUpdateApiResponse>(`cart/${payload.value.cart_id}/delete`, {
+          method: 'POST',
+          body: {
+            session_id: sessionId.value,
+            product_id: cartItem.product_info?.product.id,
+            size: cartItem.product_info?.size
+          }
+        })
+
+        console.log('deleteFromCart', payload)
+        
+        // if (callback && typeof callback === 'function') {
+        //   callback.call(cartItem, response)
+        // }
+      }
+    }
+  }
 
   return {
     removeFromCart,
     addToCart,
     handleSizeSelection,
-    // deleteFromCart,
+    deleteFromCart,
     showSizeSelectionWarning,
     userSelection,
     addingToCartState,

@@ -105,6 +105,7 @@ const AsyncBaseRecommendationBlock = defineAsyncComponent({
 const stockState = ref<ProductStock>()
 const showSizeGuideDrawer = ref(false)
 
+const { debounce } = useDebounce()
 const { handleError } = useErrorHandler()
 const visitedProducts = useStorage<number[]>('visitedProducts', [])
 const { y } = useScroll(window)
@@ -170,15 +171,17 @@ function trackProduct () {
  *
  */
 async function requestProductStock () {
-    try {
-      if (product.value) {
-        const response = await $client.get<ProductStock>(`/api/v1/stocks/products/${product.value.id}`)
-        stockState.value = response.data
-      }
-    } catch (e) {
-      handleError(e)
+  try {
+    if (product.value) {
+      const response = await $client<ProductStock>(`/api/v1/stocks/products/${product.value.id}`, {
+        method: 'GET'
+      })
+      stockState.value = response
     }
+  } catch (e) {
+    handleError(e)
   }
+}
 
 useHead({
   title: () => product.value?.name ?? 'Product Details',
@@ -210,7 +213,8 @@ onMounted(async () => {
   nextTick(trackProduct)
 
   if (!isLoading) {
-    await requestProductStock()
+    debounce(requestProductStock, 1000)()
+    // await requestProductStock()
 
     // gtag('event', 'view_item', {
     //   items: [

@@ -47,19 +47,23 @@ const { profile  } = storeToRefs(authStore)
  * the currently authenticated user 
  */
 async function requestUserDetails () {
-  try {
-    const response = await $client.get<Profile>(`/api/v1/accounts/${authStore.userId}`)
-    
-    profile.value = response.data
+  const response = await $client<Profile>(`/api/v1/accounts/${authStore.userId}`, {
+    method: 'GET',
+    onResponse() {
 
-    const userRef = doc($fireStore, 'users', cookieSessionId.value)
-    const userSnapshot = await getDoc(userRef)
-
-    if (userSnapshot.exists()) {
-      updateDoc(userRef, { profile: response.data })
+    },
+    onRequestError({ error }) {
+      handleError(error)
     }
-  } catch (e) {
-    handleError(e)
+  })
+
+  profile.value = response
+
+  const userRef = doc($fireStore, 'users', cookieSessionId.value)
+  const userSnapshot = await getDoc(userRef)
+
+  if (userSnapshot.exists()) {
+    updateDoc(userRef, { profile: response })
   }
 }
 

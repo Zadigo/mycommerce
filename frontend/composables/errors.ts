@@ -1,7 +1,5 @@
 import { ref } from 'vue'
-import type { AxiosError } from 'axios'
-
-import axios from 'axios'
+import { FetchError } from 'ofetch'
 
 interface ErrorContext {
     message: string
@@ -15,14 +13,14 @@ export function useErrorHandler () {
     const { $toast } = useNuxtApp()
 
     // Utility for logging errors to a service
-    function logErrorToService(_error: AxiosError) {
+    function logErrorToService(_error: FetchError) {
         // Implementation depends on your error logging service
         // Could be Sentry, LogRocket, custom backend endpoint, etc.
     }
 
     // Specific error type handlers
-    function handleBadRequest (error: AxiosError) {
-        const errorMessage = error.response?.data?.message || 'Invalid request'
+    function handleBadRequest (error: FetchError) {
+        const errorMessage = error.message || 'Invalid request'
 
         $toast.error('Bad Request', {
             description: errorMessage,
@@ -35,34 +33,29 @@ export function useErrorHandler () {
         }
     }
 
-    function handleUnauthorized (_error: AxiosError) {
+    function handleUnauthorized (_error: FetchError) {
         // Potential redirect to login or token refresh
         $toast.error('Unauthorized', {
             description: 'Please log in again',
             position: 'top-center'
         })
-
-        // Example of potential logout and redirect
-        const authStore = useAuthentication()
-        authStore.logout()
-        // navigateTo('/login')
     }
 
-    function handleForbidden (_error: AxiosError) {
+    function handleForbidden (_error: FetchError) {
         $toast.error('Access Denied', {
             description: 'You do not have permission to perform this action',
             position: 'top-center'
         })
     }
 
-    function handleNotFound (_error: AxiosError) {
+    function handleNotFound (_error: FetchError) {
         $toast.error('Not Found', {
             description: 'The requested resource could not be found',
             position: 'top-center'
         })
     }
 
-    function handleServerError (error: AxiosError) {
+    function handleServerError (error: FetchError) {
         // Log to error tracking service
         logErrorToService(error)
 
@@ -88,31 +81,28 @@ export function useErrorHandler () {
         // Potentially log the entire error object for debugging
         console.error('Unhandled error:', error)
     }
-
+    
+    // Type guard to check if it's an Axios error
     function handleError(error: unknown) {
-        // Type guard to check if it's an Axios error
-        if (axios.isAxiosError(error)) {
-            const axiosError = error as AxiosError
-
-            // Different handling based on error status
-            switch (axiosError.response?.status) {
+        if (error instanceof FetchError) {
+            switch (error.statusCode) {
                 case 400:
-                    handleBadRequest(axiosError)
+                    handleBadRequest(error)
                     break
                 case 401:
-                    handleUnauthorized(axiosError)
+                    handleUnauthorized(error)
                     break
                 case 403:
-                    handleForbidden(axiosError)
+                    handleForbidden(error)
                     break
                 case 404:
-                    handleNotFound(axiosError)
+                    handleNotFound(error)
                     break
                 case 500:
-                    handleServerError(axiosError)
+                    handleServerError(error)
                     break
                 default:
-                    handleGenericError(axiosError)
+                    handleGenericError(error)
             }
         } else if (error instanceof Error) {
             // Handle standard JavaScript errors

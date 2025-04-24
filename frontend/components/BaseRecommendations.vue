@@ -96,25 +96,25 @@ function handleNavigation (data: (number | Product)[]) {
 }
 
 async function requestRecommendations () {
-  try {
-    if (!props.loadCache) {
-      const response = await $client.get<Product[]>('/api/v1/shop/products/recommendations', {
-        params: {
-          p: route.params.id,
-          q: props.quantity
-        }
-      })
-
-      recommendations.value = response.data
-
-      if (shopStore.sessionCache) {
-        shopStore.sessionCache.recommendations = response.data
+  if (!props.loadCache) {
+    const response = await $client<Product[]>('/api/v1/shop/products/recommendations', {
+      method: 'GET',
+      params: {
+        p: route.params.id,
+        q: props.quantity
+      },
+      onRequestError({ error }) {
+        handleError(error)
       }
-    } else {
-      recommendations.value = shopStore.sessionCache.recommendations
+    })
+
+    recommendations.value = response
+
+    if (shopStore.sessionCache) {
+      shopStore.sessionCache.recommendations = response
     }
-  } catch (e) {
-    handleError(e)
+  } else {
+    recommendations.value = shopStore.sessionCache.recommendations
   }
 }
 
