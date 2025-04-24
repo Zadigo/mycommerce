@@ -63,11 +63,10 @@ const emit = defineEmits({
   }
 })
 
-const cartStore = useCart()
 
 // const { gtag } = useGtag()
+const cartStore = useCart()
 const { mediaPath } = useDjangoUtilies()
-const { deleteFromCart } = useCartComposable()
 
 const { sessionCache } = storeToRefs(cartStore)
 
@@ -95,7 +94,7 @@ function handleProductEdition (item: ProductToEdit) {
 /**
  * TODO: 
  */
-function callbackRemoveFromCart (deletedItem: ProductToEdit, updatedCart: CartUpdateApiResponse) {
+function callbackRemoveFromCart(deletedItem: ProductToEdit, updatedCart: CartUpdateApiResponse) {
   const items = [
     {
       item_id: deletedItem.product__id,
@@ -107,6 +106,7 @@ function callbackRemoveFromCart (deletedItem: ProductToEdit, updatedCart: CartUp
     }
   ]
 
+  // TODO: G-Analytics
   // gtag('event', 'remove_from_cart', {
   //   currency: 'EUR',
   //   value: updatedCart.total,
@@ -123,7 +123,9 @@ function callbackRemoveFromCart (deletedItem: ProductToEdit, updatedCart: CartUp
 /**
  * 
  */
-function callbackAuth (data: LoginApiResponse) {
-  console.log('cart > iterator > callbackAuth', data)
+function proxyDeleteFromCart(cartItem: ProductToEdit) {
+  cartStore.deleteFromCart(cartItem, () => {
+
+  })
 }
 </script>
