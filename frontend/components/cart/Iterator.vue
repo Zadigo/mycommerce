@@ -1,6 +1,6 @@
 <template>
   <div class="my-1">
-    <article v-for="item in cartItems" :key="item.product__id" :aria-label="item.product__name" class="border-2 border-gray-50 rounded-md p-3">
+    <article v-for="item in cartItems" :key="item.product__id" :aria-label="item.product__name" class="border-2 border-gray-50 rounded-md pa-3 mb-2">
       <div class="flex justify-start gap-3">
         <div id="image" class="w-2/4">
           <NuxtLink id="link-product" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
