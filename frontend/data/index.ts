@@ -1,6 +1,7 @@
 import type { SessionCacheData } from "~/types"
 
 export * from './guide'
+export * from './footer'
 
 export const countries: string[] = [
     "France",
@@ -15,6 +16,7 @@ export const baseSessionCacheData: SessionCacheData = {
         location: 'France',
         selected: false
     },
+    sessionId: null,
     paymentIntent: null,
     cart: null,
     recommendations: [],
@@ -67,12 +69,4 @@ export const defaultSortingFilters = [
     ['New', 'Nouveautés'],
     ['Price up', 'Prix croissant'],
     ['Price down', 'Prix décroissant']
-]
-
-export const socialLinks = [
-    {
-        name: 'Facebook',
-        href: 'http://example.com',
-        icon: 'facebook-f'
-    }
 ]
