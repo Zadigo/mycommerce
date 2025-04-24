@@ -86,6 +86,7 @@ function proxyHandleLike() {
   likedProducts.value = result
   isLiked.value = !isLiked.value
 
+  // TODO: G-Analytics
   // gtag('event', 'add_to_wishlist', {
   //   items: {
   //     item_id: props.product?.id,
@@ -156,8 +157,10 @@ async function proxyAddToCart() {
   }
 }
 
-// Actions where the user selects a given size
-// for a given product 
+/**
+ * Actions where the user selects a given size 
+ * for a given product 
+ */
 function proxySelectSize(size: string | number | null | undefined) {
   if (size) {
     showSizeSelectionWarning.value = false
