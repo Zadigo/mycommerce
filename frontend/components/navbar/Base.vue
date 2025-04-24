@@ -63,7 +63,7 @@ const shopStore = useShop()
 const authStore = useAuthentication()
 const cartStore = useCart()
 
-const { showCartDrawer } = storeToRefs(useCart())
+const { showCartDrawer } = storeToRefs(cartStore)
 const isHydrated = ref<boolean>(false)
 
 /**
@@ -82,28 +82,28 @@ function proxyLogout() {
 function handleShowCartDrawer() {
   showCartDrawer.value = true
 
-  if (cartStore.cache && cartStore.hasProducts) {
-    // TODO: G-Analytics
-    // gtag('event', 'view_cart', {
-    //   currency: 'EUR',
-    //   value: cartStore.cartTotal,
-    //   items: cartStore.cache.statistics.map((item, i) => {
-    //     const result = cartStore.cache?.results.find(x => x.id === item.product__id)
-    //     return {
-    //       item_id: item.product__id,
-    //       item_name: item.product__name,
-    //       price: result?.product.get_price,
-    //       quantity: item.quantity,
-    //       item_brand: null,
-    //       item_category: result?.product.category,
-    //       item_category2: result?.product.sub_category,
-    //       item_variant: result?.product.color,
-    //       index: i,
-    //       size: result?.size
-    //     }
-    //   })
-    // })
-  }
+  // TODO: G-Analytics
+  // if (cartStore.cache && cartStore.hasProducts) {
+  //   gtag('event', 'view_cart', {
+  //     currency: 'EUR',
+  //     value: cartStore.cartTotal,
+  //     items: cartStore.cache.statistics.map((item, i) => {
+  //       const result = cartStore.cache?.results.find(x => x.id === item.product__id)
+  //       return {
+  //         item_id: item.product__id,
+  //         item_name: item.product__name,
+  //         price: result?.product.get_price,
+  //         quantity: item.quantity,
+  //         item_brand: null,
+  //         item_category: result?.product.category,
+  //         item_category2: result?.product.sub_category,
+  //         item_variant: result?.product.color,
+  //         index: i,
+  //         size: result?.size
+  //       }
+  //     })
+  //   })
+  // }
 }
 
 onMounted(() => {
