@@ -98,7 +98,7 @@ const emit = defineEmits({
 // in the cart modal
 function handleCartButtonRedirection () {
   showCartDrawer.value = false
-  router.push('/shop/collection/novelties')
+  router.push('/api/v1/shop/collection/novelties')
 }
 
 /**
