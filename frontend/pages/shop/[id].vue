@@ -82,24 +82,34 @@
 </template>
 
 <script setup lang="ts">
-import { useLocalStorage } from '@vueuse/core'
+import { useStorage } from '@vueuse/core'
+import { onMounted } from 'vue'
 import type { Product, ProductStock } from '~/types'
 
-type ImageComponentMap = {
-  [key: number]: Component
-}
+type ImageComponentMap = {[key: number]: Component}
 
 const FiveImages = defineAsyncComponent(() => import('~/components/product/page/images/Five.vue'))
 const SixImages = defineAsyncComponent(() => import('~/components/product/page/images/Six.vue'))
 const NoImages = defineAsyncComponent(() => import('~/components/product/page/images/Empty.vue'))
+
+const imageComponentMap: ImageComponentMap = {
+  5: FiveImages,
+  6: SixImages
+}
 
 const AsyncBaseRecommendationBlock = defineAsyncComponent({
   loader: async () => import('~/components/BaseRecommendations.vue'),
   timeout: 5000
 })
 
-const { $client } = useNuxtApp()
+const stockState = ref<ProductStock>()
+const showSizeGuideDrawer = ref(false)
 
+const { handleError } = useErrorHandler()
+const visitedProducts = useStorage<number[]>('visitedProducts', [])
+const { y } = useScroll(window)
+const { showModal, selectedImage, handleSelectedImage, handleCloseSelection } = useImages()
+const { $client } = useNuxtApp()
 const { id } = useRoute().params
 
 /**
@@ -125,19 +135,41 @@ const { data: product, status } = useFetch<Product>(`/api/products/${id}`, {
 })
 
 const isLoading = computed(() => status.value === 'pending')
+const showBanner = computed(() => y.value >= 1200 && y.value <= 2100)
 
-provide('isLoading', isLoading)
+/**
+ * 
+ */
+const imagesComponent = computed((): Component => {  
+  if (!product.value) {
+    return NoImages
+  } else if (product && product.value.images.length === 0) {
+    return NoImages
+  }else {
+    const numberOfImages = product.value.images.length
+    return imageComponentMap[numberOfImages] || NoImages
+  }
+})
 
 /**
  * This composable checks the stock for the given product
  * and then allows use to indicate whether the product is
  * available or not 
  */
-function useProductStock (product: Ref<Product | null>) {
-  const stockState = ref<ProductStock>()
-  const { handleError } = useErrorHandler()
+function trackProduct () {
+  if (product.value) {
+    if (visitedProducts.value) {
+      visitedProducts.value.push(product.value.id)
+    } else {
+      visitedProducts.value = [product.value.id]
+    }
+  }
+}
 
-  async function requestProductStock () {
+/**
+ *
+ */
+async function requestProductStock () {
     try {
       if (product.value) {
         const response = await $client.get<ProductStock>(`/api/v1/stocks/products/${product.value.id}`)
@@ -147,51 +179,6 @@ function useProductStock (product: Ref<Product | null>) {
       handleError(e)
     }
   }
-
-  provide('stockState', stockState)
-
-  return {
-    stockState,
-    requestProductStock
-  }
-}
-
-/**
- * Composable for tracking visited products
- */
-function useVisitedProducts (product: Ref<Product | null>) {
-  const visitedProducts = useLocalStorage<number[]>('visited', null, {
-    serializer: {
-      read: (raw) => JSON.parse(raw),
-      write: (value) => JSON.stringify(value)
-    }
-  })
-  
-  function trackProduct () {
-    if (product.value) {
-      if (visitedProducts.value) {
-        visitedProducts.value.push(product.value.id)
-      } else {
-        visitedProducts.value = [product.value.id]
-      }
-    }
-  }
-
-  return {
-    trackProduct
-  }
-}
-
-// TODO: Refactor into a composable
-const moreProductsIntersect = ref<HTMLElement>()
-const isLargeScreen = useMediaQuery('(min-width: 320px)')
-const showSizeGuideDrawer = ref(false)
-const { y } = useScroll(window)
-
-const { trackProduct } = useVisitedProducts(product)
-const { requestProductStock } = useProductStock(product)
-const { showModal, selectedImage, handleSelectedImage, handleCloseSelection } = useImages()
-// const { gtag } = useGtag()
 
 useHead({
   title: () => product.value?.name ?? 'Product Details',
@@ -217,32 +204,14 @@ useHead({
 //   })
 // ])
 
-const imageComponentMap: ImageComponentMap = {
-  5: FiveImages,
-  6: SixImages
-}
-
-const showBanner = computed(() => y.value >= 1200 && y.value <= 2100)
-
-const imagesComponent = computed((): Component => {  
-  if (!product.value) {
-    return NoImages
-  } else if (product && product.value.images.length === 0) {
-    return NoImages
-  }else {
-    const numberOfImages = product.value.images.length
-    return imageComponentMap[numberOfImages] || NoImages
-  }
-})
-
-onBeforeMount(() => {
-  nextTick(trackProduct)
-})
+provide('stockState', stockState)
 
 onMounted(async () => {
-  await requestProductStock()
+  nextTick(trackProduct)
 
-  if (product.value) {
+  if (!isLoading) {
+    await requestProductStock()
+
     // gtag('event', 'view_item', {
     //   items: [
     //     {
