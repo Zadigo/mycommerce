@@ -38,7 +38,6 @@ const props = defineProps({
   }
 })
 
-const { addToCart } = useCartComposable()
 const cartStore = useCart()
 
 const { showAddedProductDrawer } = storeToRefs(cartStore)
@@ -59,7 +58,7 @@ const requiresSizeItems = computed(() => {
  */
 async function handleAddToCart (size?: string | number) {
   if (props.product) {
-    await addToCart(props.product,  size, (data) => {
+    await cartStore.addToCart(props.product,  size, (data) => {
       showAddedProductDrawer.value = true
 
       if (cartStore.sessionCache) {
