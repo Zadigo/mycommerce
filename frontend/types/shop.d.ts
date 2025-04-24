@@ -52,6 +52,7 @@ export type Product = {
     sale_value: number;
     sale_price: string;
     on_sale: boolean;
+    display_new: boolean
     collection_set: ProductCollection[] | null;
     get_main_image: ProductImage;
     images: ProductImage[];
@@ -72,6 +73,9 @@ export type ProductsAPIResponse = {
     limit: number
     next: number | null
     previous: number | null
+    infos: {
+        total_count: number
+    }
     results: Product[]
 }
 
