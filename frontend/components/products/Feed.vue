@@ -18,12 +18,12 @@
     </template>
     
     <template v-else #default>
-      <div class="col-6 offset-md-3 text-center p-5 my-5">
+      <div class="mx-auto text-center font-light text-2xl max-w-3xl p-10 my-10">
         <p class="h4 fw-light">
           {{ $t('Page not available text') }}
         </p>
 
-        <NuxtLink id="link-collections-more" to="/shop/collection/all" class="mt-3" color="secondary" variant="tonal" rounded @click="resetQuery">
+        <NuxtLink id="link-collections-more" to="/shop/collection/all" class="mt-8" color="secondary" @click="resetQuery">
           {{ $t('Voir toute la collection') }}
         </NuxtLink>
       </div>
@@ -104,21 +104,19 @@ const { data, status, error, refresh } = await useFetch<ProductsAPIResponse>(`/a
     cachedResponse.value = data
     
     // TODO: Use the schema ValidateProduct from zod to unify the typing for Product
-    const validItems = data.results.reduce<ValidateProduct[]>((acc, item) => {
-      try {
-        const product = ProductSchema.parse(item)
-        acc.push(product)
-        return acc
-      } catch (e) {
-        console.log('Failed to validate product:', e)
-        return acc
-      }
-    }, [])
+    // const validItems = data.results.reduce<ValidateProduct[]>((acc, item) => {
+    //   try {
+    //     const product = ProductSchema.parse(item)
+    //     acc.push(product)
+    //     return acc
+    //   } catch (e) {
+    //     console.log('Failed to validate product:', e)
+    //     return acc
+    //   }
+    // }, [])
         
     products.value.push(...data.results)
-    // products.value = validItems
     emit('products-loaded', products.value)
-
     return data
   }
 })
@@ -178,10 +176,16 @@ function handleNavigation (data: (number | Product)[] | null | undefined) {
   }
 }
 
+/**
+ * 
+ */
 function handleGridSize(grid: number) {
   currentGridSize.value = grid
 }
 
+/**
+ * 
+ */
 function resetQuery() {
   query.value = {
     sorted_by: 'New',
