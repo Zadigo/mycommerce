@@ -28,7 +28,7 @@
     <div class="border-t-2 border-gray-100 my-5 me-10" />
 
     <!-- Actions -->
-    <ProductPageAsideActions :product="product" />
+    <ProductPageAsideActions :product="product" @show-size-guide="emit('show-size-guide')" />
 
     <TailList class="shadow-none border border-gray-100 mt-10">
       <TailListItem class="border-b-2 border-gray-100 flex justify-between items-center text-sm" @click="emit('show-composition-guide')">
@@ -84,14 +84,3 @@ const hasColorVariants = computed(() => {
   }
 })
 </script>
-
-<style lang="scss" scoped>
-#product-variant.router-link-exact-active {
-  opacity: 0.5;
-}
-
-.fixed-aside {
-  position: sticky;
-  top: 0;
-}
-</style>
