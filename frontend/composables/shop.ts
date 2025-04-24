@@ -54,12 +54,15 @@ export function useShopComposable() {
    * wishlist
    */
   function handleLike(items: number[], product: Product | null | undefined): number[] {
+    console.log('handleLike', items, product)
     if (product) {
       if (items.includes(product.id)) {
+        console.log('handleLike', items)
         items.push(product.id)
       } else {
         const index = items.findIndex(x => product.id)
-        items.splice(index, 1)
+        console.log('handleLike', index, items)
+        return items.splice(index, 1)
       }
     }
     return items

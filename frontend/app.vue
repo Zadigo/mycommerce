@@ -92,13 +92,18 @@ authenticationStore.$subscribe((_, state) => {
 
 /**
  * Request a new sessionId via the API and ensure a
- * corresponding Firestore document exists.
+ * corresponding Firestore document exists
+ * 
+ * TODO: Use server?
  */
 async function requestSessionId () {
   try {
     if (!cookieSessionId.value) {
-      const response = await $client.post<{ token: string }>('/api/v1/cart/session-id')
-      cookieSessionId.value = response.data.token
+      const response = await $client<{ token: string }>('/api/v1/cart/session-id', {
+        method: 'POST'
+      })
+
+      cookieSessionId.value = response.token
       
       const userRef = doc($fireStore, 'users', cookieSessionId.value)
       const userSnapshot = await getDoc(userRef)
