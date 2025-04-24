@@ -12,12 +12,12 @@
 
         <div id="infos">
           <NuxtLink id="link-product" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
-            <p class="mb-1">
+            <p class="mb-1 font-light text-sm">
               {{ item.product__name }}
             </p>
 
             <div class="font-bold">
-              {{ $n(parseFloat(item.product_info?.price), 'currency') }}
+              <!-- {{ $n(parseFloat(item.product_info?.price), 'currency') }} -->
             </div>
             
             <div class="font-light mb-1 flex justify-start align-center gap-1">
