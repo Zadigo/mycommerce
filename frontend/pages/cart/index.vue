@@ -53,16 +53,14 @@ const paymentIntent = useCookie<NewIntentAPIResponse>('paymentIntent')
  * the products 
  */
 async function requestDeliveryOptions () {
-  try {
-    if (!deliveryOptions.value) {
-      const response = await $client.get<DeliveryOption[]>('orders/delivery-options')
-      deliveryOptions.value = response.data
+  const response = await $client<DeliveryOption[]>('orders/delivery-options', {
+    method: 'GET',
+    onRequestError() {
+      console.log('TODO: Point to the Quart backend')
     }
-  } catch (e) {
-    if (e instanceof AxiosError && e.response) {
-      // Handle error
-    }
-  }
+  })
+
+  deliveryOptions.value = response
 }
 
 /**
@@ -71,15 +69,18 @@ async function requestDeliveryOptions () {
  * on the actual payment page
  */
 async function handleNewPaymentIntent () {
-  try {
-    if (!paymentIntent.value) {
-      const response = await $client.post<NewIntentAPIResponse>('/api/v1/orders/intent', {
+  if (!paymentIntent.value) {
+    const response = await $client<NewIntentAPIResponse>('/api/v1/orders/intent', {
+      method: 'POST',
+      body: {
         session_id: cartStore.sessionId
-      })
-      paymentIntent.value = response.data
-    }
-  } catch (e) {
-    handleError(e)
+      },
+      onRequestError({ error }) {
+        handleError(error)
+      }
+    })
+    
+    paymentIntent.value = response
   }
 }
 

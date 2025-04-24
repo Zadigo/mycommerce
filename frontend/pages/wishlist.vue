@@ -5,7 +5,7 @@
         <div class="card shadow-sm" style="height: 557px;">
           <div class="card-body text-center p-5 d-flex flex-column justify-content-center">
             <div class="information">
-              <font-awesome icon="star" class="text-warning mb-4" size="4x" />
+              <Icon icon="fa-solid:star" class="text-warning mb-4" size="4x" />
               
               <h1 class="card-title h6 fw-bold mt-4 mb-3">
                 {{ $t('Conservation des favoris') }}
@@ -16,7 +16,7 @@
               </p>
 
               <v-btn color="secondary" flat rounded @click="showLoginDrawer = true">
-                <font-awesome icon="right-to-bracket" class="me-2" />
+                <Icon icon="fa-solid:right-to-bracket" class="me-2" />
                 {{ $t('Se connecter') }}
               </v-btn>
             </div>
@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { useLocalStorage } from '@vueuse/core'
+// import { useStorage } from '@vueuse/core'
 import type { Product } from '~/types'
 
 useHead({
@@ -46,46 +46,31 @@ useHead({
   ]
 })
 
+const { $client } = useNuxtApp()
 const shopStore = useShop()
 const authenticationStore = useAuthentication()
 const { handleError } = useErrorHandler()
 
+// const likedProducts = useStorage('likedProducts', [])
 const { likedProducts } = storeToRefs(shopStore)
 const { showLoginDrawer } = storeToRefs(authenticationStore)
+const products = ref<Product[]>([])
 
-function useWhishlistProducts () {
-  const { $client } = useNuxtApp()
-  const products = ref<Product[]>([])
-
-  const likedProducts = useLocalStorage('likedProducts', null, {
-    serializer: {
-      read (raw) {
-        return JSON.parse(raw)
-      },
-      write (value) {
-        return JSON.stringify(value) 
-      },
+/**
+ * 
+ */
+async function requestLikedProducts () {
+  const response = await $client<Product[]>('/api/v1/products', {
+    method: 'POST',
+    body: {
+      products: likedProducts.value
+    },
+    onRequestError({ error }) {
+      handleError(error)
     }
   })
-
-  async function requestLikedProducts () {
-    try {
-      const response = await $client.post<Product[]>('products', {
-        products: likedProducts.value
-      })
-      products.value = response.data
-    } catch (e) {
-      handleError(e)
-    }
-  }
-
-  return {
-    requestLikedProducts,
-    products
-  }
+  products.value = response
 }
-
-const { products, requestLikedProducts } = useWhishlistProducts()
 
 onBeforeMount(requestLikedProducts)
 </script>

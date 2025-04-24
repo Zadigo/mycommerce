@@ -140,35 +140,41 @@ function resetEmailPasswordData() {
  * backend 
  */
 async function requestUpdate () {
-  try {
-    const response = await $client.patch<EditableAddressSet>(
-      `/accounts/${authStore.userId}/address-lines/${props.address.id}`, 
-      requestData.value
-    )
-    
-    emit('edit-complete', response.data)
-    showBillingForm.value = false
-  } catch (e) {
-    showBillingForm.value = false
-    handleError(e)
-  }
+  const response = await $client<EditableAddressSet>(
+    `/accounts/${authStore.userId}/address-lines/${props.address.id}`, 
+    {
+      method: 'PATCH',
+      body: requestData.value,
+      onRequestError({ error }) {
+        handleError(error)
+        showBillingForm.value = false
+      },
+      onResponse() {
+        emit('edit-complete', response)
+        showBillingForm.value = false
+      }
+    }
+  )
 }
 
 /**
  * 
  */
 async function requestCreate() {
-  try {
-    const response = await $client.post<EditableAddressSet>(
-      `/accounts/${authStore.userId}/address-lines`, 
-      requestData.value
-    )
-    
-    emit('create-complete', response.data)
-    emit('close')
-  } catch (e) {
-    handleError(e)
-  }
+  const response = await $client<EditableAddressSet>(
+    `/accounts/${authStore.userId}/address-lines`, 
+    {
+      method: 'POST',
+      body: requestData.value,
+      onRequestError({ error }) {
+        handleError(error)
+      },
+      onResponse() {
+        emit('create-complete', response)
+        emit('close')
+      }
+    }
+  )
 }
 
 /**
@@ -176,13 +182,16 @@ async function requestCreate() {
  * the email address by the user 
  */
 async function requestDelete() {
-  try {
-    await $client.delete(`accounts/${authStore.userId}/address-lines/${props.address.id}`)
-    emit('delete-complete', props.address.id)
-  } catch (e) {
-    handleError(e)
-    resetEmailPasswordData()
-  }
+  await $client(`accounts/${authStore.userId}/address-lines/${props.address.id}`, {
+    method: 'DELETE',
+    onResponse() {
+      emit('delete-complete', props.address.id)
+    },
+    onRequestError({ error }) {
+      handleError(error)
+      resetEmailPasswordData()
+    }
+  })
 }
 
 const maxBirthdayDate = computed(() => {

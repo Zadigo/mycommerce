@@ -58,10 +58,13 @@ const {  $client } = useNuxtApp()
  */
 async function handleUpdateStock () {
   try {
-    const response = await $client.post<ProductStock[]>('stocks/update', {
-      customer_order: null
+    const response = await $client<ProductStock[]>('stocks/update', {
+      method: 'POST',
+      body: {
+        customer_order: null
+      }
     })
-    console.log(response.data)
+    console.log(response)
   } catch (e) {
     handleError(e)
   }
