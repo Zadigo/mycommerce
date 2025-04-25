@@ -3,7 +3,10 @@
     <NuxtLayout>
       <!-- Loader -->
       <NuxtLoadingIndicator />
-      <Toaster />
+      
+      <ClientOnly>
+        <Toaster />
+      </ClientOnly>
     
       <NuxtPage />
  
