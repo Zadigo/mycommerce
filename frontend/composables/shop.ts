@@ -1,23 +1,8 @@
 import type { Product, ProductImage } from "~/types"
-// import { isRef } from 'vue'
 import type { Ref } from 'vue'
 
 export function useShopComposable() {
-  // const { $i18n } = useNuxtApp()
-
-  const showSearchModal = ref<boolean>(false)
   const isLiked = ref<boolean>(false)
-
-  function validateProp<T extends Product | ProductImage>(item: T | object | null | undefined): item is T {
-    if (!item || typeof item !== 'object') {
-      return false
-    } else {
-      return (
-        'id' in item &&
-        typeof (item as T).id === 'number'
-      )
-    }
-  }
 
   /**
    * A composable that implements default
@@ -54,24 +39,11 @@ export function useShopComposable() {
    * wishlist
    */
   function handleLike(items: number[], product: Product | null | undefined): number[] {
-    console.log('handleLike', items, product)
-    if (product) {
-      if (items.includes(product.id)) {
-        console.log('handleLike', items)
-        items.push(product.id)
-      } else {
-        const index = items.findIndex(x => product.id)
-        console.log('handleLike', index, items)
-        return items.splice(index, 1)
-      }
-    }
-    return items
+    return [1, 2]
   }
 
   return {
     isLiked,
-    showSearchModal,
-    validateProp,
     translatePrice,
     handleLike
   }
