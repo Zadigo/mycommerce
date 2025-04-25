@@ -49,9 +49,10 @@ const authenticationStore = useAuthentication()
 const cartStore = useCart()
 
 // Use secure cookies (with sameSite strict, secure enabled)
-const accessToken = useCookie('access', { sameSite: 'strict', secure: true })
-const refreshToken = useCookie('refresh', { sameSite: 'strict', secure: true })
-const cookieSessionId = useCookie('sessionId', { sameSite: 'strict', secure: true })
+const cookieOptions = { sameSite: 'strict', secure: true } as const
+const accessToken = useCookie('access', cookieOptions)
+const refreshToken = useCookie('refresh', cookieOptions)
+const cookieSessionId = useCookie('sessionId', cookieOptions)
 
 const { $client, $fireStore } = useNuxtApp()
 const { handleError } = useErrorHandler()
@@ -69,29 +70,34 @@ watch((): ExtendedLocationQuery => route.query, (newValue) => {
   }
 })
 
+watch([accessToken, refreshToken], ([access, refresh]) => {
+  authenticationStore.accessToken = access
+  authenticationStore.refreshToken = refresh
+})
+
 // Synchronize store state with local storage
 shopStore.$subscribe((_, state) => {
-  state.sessionCache = sessionCache.value
+  // state.sessionCache = sessionCache.value
   shopStore.likedProducts = likedProducts.value
 }, {
   detached: true
 })
 
-cartStore.$subscribe((_, state) => {
-  state.sessionCache = sessionCache.value
-}, {
-  detached: true
-})
+// cartStore.$subscribe((_, state) => {
+//   state.sessionCache = sessionCache.value
+// }, {
+//   detached: true
+// })
 
-authenticationStore.$subscribe((_, state) => {
-  state.sessionCache = sessionCache.value
-  accessToken.value = state.accessToken
-  refreshToken.value = state.refreshToken
+// authenticationStore.$subscribe((_, state) => {
+//   state.sessionCache = sessionCache.value
+//   accessToken.value = state.accessToken
+//   refreshToken.value = state.refreshToken
 
-  console.log('state.sessionCache.authenticationStore', state.sessionCache)
-}, {
-  detached: true
-})
+//   console.log('state.sessionCache.authenticationStore', state.sessionCache)
+// }, {
+//   detached: true
+// })
 
 /**
  * Request a new sessionId via the API and ensure a
@@ -120,24 +126,24 @@ async function requestSessionId () {
   }
 }
 
-onBeforeMount(async () => {
-  // Ensure all store caches are initialized from session storage
-  shopStore.sessionCache = shopStore.sessionCache || sessionCache.value
-  cartStore.sessionCache = cartStore.sessionCache || sessionCache.value
-  authenticationStore.sessionCache = authenticationStore.sessionCache || sessionCache.value
+function syncSessionToStores() {
+  const cache = sessionCache.value
 
-  // Load authentication tokens from cookies into the store
+  shopStore.sessionCache = cache
+  cartStore.sessionCache = cache
+  authenticationStore.sessionCache = cache
+}
+
+onBeforeMount(async () => {
+  syncSessionToStores()
   authenticationStore.accessToken = accessToken.value
   authenticationStore.refreshToken = refreshToken.value
-
   await requestSessionId()
 })
 
 onMounted(() => {
   cartStore.sessionCache.sessionId = cookieSessionId.value || null
-  
   if (!shopStore.sessionCache.language.selected) {
-    // Upon mounting, show language modal if no language is selected
     shopStore.showLanguageModal = true
   }
 })
