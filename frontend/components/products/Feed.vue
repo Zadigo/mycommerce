@@ -90,7 +90,7 @@ const query = ref<ProductsQuery>({
 
 const { data, status, error, refresh } = await useFetch<ProductsAPIResponse>(`/api/collections/${id}`, {
   method: 'GET',
-  query,
+  query: query.value,
   onRequest() {
     isLoadingMoreProducts.value = true
   },
