@@ -18,11 +18,7 @@
 
     <template #default>
       <div class="grid grid-cols-4 gap-2">
-        <div v-for="i in 40" :key="i" id="product">
-          <TailSkeleton class="h-[427px] w-full bg-gray-100" />
-          <TailSkeleton class="h-[15px] w-[200px] mt-1 bg-gray-100" />
-          <TailSkeleton class="h-[15px] w-[100px] mt-1 bg-gray-100" />
-        </div>
+        <ProductsLoadingCards :quantity="40" />
       </div>
     </template>
   </ProductsFeedLayout>

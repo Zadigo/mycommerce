@@ -47,14 +47,13 @@ const shouldShowLoginDrawer = computed<boolean>({
  * by calling an API endpoint with the current session ID
  */
 async function handleAuthenticateCart () {
-  try {
-    if (!authStore.sessionCache.authenticatedCart) {
-      await $client.post('/api/v1/cart/authenticate', {
+  if (!authStore.sessionCache.authenticatedCart) {
+    await $client('/api/v1/cart/authenticate', {
+      method: 'POST',
+      body: {
         session_id: sessionId.value
-      })
-    }
-  } catch (e) {
-    handleError(e)
+      }
+    })
   }
 }
 

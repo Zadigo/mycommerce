@@ -5,7 +5,7 @@ export function useImages () {
     
     const showModal = ref(false)
     const selectedImage = ref<ProductImage | null | undefined>()
-
+    
     function selectImage (image: ProductImage, fn: () => void) {
         showModal.value = true
         selectedImage.value = image

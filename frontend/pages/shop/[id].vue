@@ -18,7 +18,9 @@
         <AsyncBaseRecommendationBlock />
 
         <template #fallback>
-          <BaseLoadingRecommendations :quantity="30" />
+          <div class="grid grid-cols-4 gap-2">
+            <ProductsLoadingCards :quantity="8" />
+          </div>
         </template>
       </Suspense>
     </div>
@@ -99,6 +101,7 @@ const imageComponentMap: ImageComponentMap = {
 
 const AsyncBaseRecommendationBlock = defineAsyncComponent({
   loader: async () => import('~/components/BaseRecommendations.vue'),
+  suspensible: true,
   timeout: 5000
 })
 
@@ -214,8 +217,8 @@ onMounted(async () => {
 
   if (!isLoading) {
     debounce(requestProductStock, 1000)()
-    // await requestProductStock()
-
+    
+    // TODO: G-Analytics
     // gtag('event', 'view_item', {
     //   items: [
     //     {

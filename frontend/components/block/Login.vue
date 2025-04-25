@@ -23,7 +23,7 @@
         </TailButton>
       </form>
 
-      <p class="flex-grow font-light text-center fw-light mt-3">
+      <p class="flex-grow font-light text-center mt-3">
         {{ $t('No account signup text') }} 
         <a link="action-sigup" href="#" class="text-blue-600 underline" @click.prevent="emit('show-signup')">
           {{ $t("Inscris-toi") }}
@@ -46,12 +46,14 @@ const emit = defineEmits({
   }
 })
 
-const { $fireApp } = useNuxtApp()
+const { $fireStore, $fireApp } = useNuxtApp()
 const { handleError } = useErrorHandler()
-const { login, email, password } = useAuthencationComposable()
-const authenticationStore = useAuthentication()
-const authenticatedCart = useSessionStorage('authenticated_cart', false)
+const authenticatedCart = useSessionStorage('authenticatedCart', false)
+const authStore = useAuthentication()
+const { showLoginDrawer } = storeToRefs(authStore)
 
+const email = ref<string>('')
+const password = ref<string>('')
 
 /**
  * 
@@ -89,28 +91,28 @@ async function handleGoogle () {
  * to the backend
  */
 async function handleLogin () {
-  login((data) => {
-    authenticationStore.accessToken = data.access
-    authenticationStore.refreshToken = data.refresh
-    authenticationStore.showLoginDrawer = false
-    
-    if (!authenticatedCart.value) {
-      // When the user logs, we know from the start that the
-      // items in the cart were not authenticated
-      authenticatedCart.value = true
-    }
+  const accessToken = useCookie('access', { sameSite: 'strict', secure: true })
+  const refreshToken = useCookie('refresh', { sameSite: 'strict', secure: true })
 
-    // useTrackEvent('login', {
-    //   method: 'Email'
-    // })
+  const { access, refresh } = await login(email.value, password.value)
 
-    emit('authenticate')
-  })
+  accessToken.value = access
+  refreshToken.value = refresh
+
+  if (!authenticatedCart.value) {
+    // When the user logs, we know from the start that the
+    // items in the cart were not authenticated
+    authenticatedCart.value = true
+  }
+
+  email.value = ''
+  email.value = ''
+  showLoginDrawer.value = false
+
+  // useTrackEvent('login', {
+  //   method: 'Email'
+  // })
+
+  emit('authenticate')
 }
-
-// function handleGoogleAuthCallback () {
-//   useTrackEvent('login', {
-//     method: 'Google'
-//   })
-// }
 </script>

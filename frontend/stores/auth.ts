@@ -1,8 +1,7 @@
 import { useJwt } from '@vueuse/integrations/useJwt'
 import { defineStore } from 'pinia'
 
-import type { LoginApiResponse } from '~/composables/client'
-import type { Profile, SessionCacheData, StringNull } from '~/types'
+import type { Profile, SessionCacheData, StringNull, LoginApiResponse } from '~/types'
 
 interface JWTResponseData {
     user_id: number

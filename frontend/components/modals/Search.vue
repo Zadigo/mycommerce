@@ -29,7 +29,9 @@
               </template>
               
               <template #fallback>
-                <BaseLoadingRecommendations :load-cache="true" />
+                <div class="grid grid-cols-4 gap-2">
+                  <ProductsLoadingCards :quantity="8" />
+                </div>
               </template>
             </Suspense>
           </div>
@@ -40,11 +42,13 @@
 </template>
 
 <script setup lang="ts">
-// import { useRefHistory } from '@vueuse/core'
 import type { Product, ProductsAPIResponse } from '~/types'
 
 const AsyncRecommendations = defineAsyncComponent({
-  loader: async () => import('~/components/BaseRecommendations.vue')
+  loader: async () => import('~/components/BaseRecommendations.vue'),
+  suspensible: true,
+  delay: 200,
+  timeout: 10000
 })
 
 // const { gtag } = useGtag()
@@ -54,39 +58,31 @@ const { handleError } = useErrorHandler()
 
 const searchedProducts = ref<Product[]>([])
 const search = ref<string | null>(null)
-// const { last } = useRefHistory(search)
 
 const canShowSearch = computed(() => {
   return searchedProducts.value.length > 0
 })
 
-async function requestProducts () {
-  try {
-    if (search.value && search.value !== "") {
-      const response = await $client.get<ProductsAPIResponse>('/api/v1/shop/products', {
-        params: {
-          q: search.value
-        }
-      })
-      
-      // gtag('event', 'search', {
-      //   search_term: search.value
-      // })
-
-      searchedProducts.value = response.data.results
-    }
-  } catch (e) {
-    handleError(e)
+async function requestProducts (): Promise<void> {
+  if (search.value && search.value !== "") {
+    const response = await $client<ProductsAPIResponse>('/api/v1/shop/products', {
+      params: {
+        q: search.value
+      },
+      onRequestError({ error }) {
+        handleError(error)
+      },
+      onResponse() {
+        searchedProducts.value = response.results
+      }
+    })
   }
+  
+  // TODO: G-Analytics
+  // gtag('event', 'search', { search_term: search.value })
 }
 
-// TODO: Remove saving of search history because it saves
-// all what the user has typed aka: i, i am, i am searching for etc.
-// if (shopStore.sessionCache) {
-//   shopStore.sessionCache.searchHistory = last
-// }
 
 const { debounce } = useDebounce()
-
 const proxySearchProducts = debounce(requestProducts, 1000)
 </script>
