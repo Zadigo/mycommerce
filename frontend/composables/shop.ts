@@ -1,7 +1,11 @@
 import { useArrayFindIndex, useStorage, watchArray } from '@vueuse/core'
 import type { Product } from "~/types"
 
-export function useShopComposable(product: Product) {
+/**
+ * Composable for working with likes on the product
+ * on a single product page 
+ */
+export function useLikeComposable(product: Product) {
   if (import.meta.server) {
     return {
       productToCheck: ref<Product>(),
@@ -23,11 +27,8 @@ export function useShopComposable(product: Product) {
   })
 
   /**
-   * Main entry function for managing the user liked
-   * products either locally or in the backend.
-   * Handles the action of liking a product
-   * and therefore adding it to the user's
-   * wishlist
+   * Adds a product to the list of products
+   * added to the user's whishlist
    */
   function handleLike() {
     if (product) {
@@ -37,7 +38,7 @@ export function useShopComposable(product: Product) {
       } else {
         likedProducts.value.push(productToCheck.value.id)
       }
-      console.log('useShopComposable', isLiked.value, likedProducts.value)
+      console.log('useLikeComposable', isLiked.value, likedProducts.value)
     }
   }
 

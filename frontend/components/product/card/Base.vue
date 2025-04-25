@@ -86,7 +86,7 @@ const emit = defineEmits({
 })
 
 // const { gtag } = useGtag()
-const { handleLike, isLiked } = useShopComposable(props.product)
+const { handleLike, isLiked } = useLikeComposable(props.product)
 
 function proxyHandleLike () {
   handleLike()

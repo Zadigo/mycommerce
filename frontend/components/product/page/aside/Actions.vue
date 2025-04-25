@@ -64,7 +64,7 @@ const stockState = inject<ProductStock>('stockState')
 const { $fireStore } = useNuxtApp()
 const cartStore = useCart()
 const { userSelection, showSizeSelectionWarning } = storeToRefs(cartStore)
-const { isLiked, handleLike } = useShopComposable(props.product)
+const { isLiked, handleLike } = useLikeComposable(props.product)
 
 const showAvailabilityModal = ref(false)
 
