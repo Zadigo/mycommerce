@@ -89,6 +89,9 @@ importers:
       vue-sonner:
         specifier: ^1.3.0
         version: 1.3.0
+      vue-stripe-js:
+        specifier: ^2.0.2
+        version: 2.0.2
       zod:
         specifier: ^3.24.2
         version: 3.24.2
@@ -1886,6 +1889,10 @@ packages:
 
   '@stripe/stripe-js@4.10.0':
     resolution: {integrity: sha512-KrMOL+sH69htCIXCaZ4JluJ35bchuCCznyPyrbN8JXSGQfwBI1SuIEMZNwvy8L8ykj29t6sa5BAAiL7fNoLZ8A==}
+    engines: {node: '>=12.16'}
+
+  '@stripe/stripe-js@5.10.0':
+    resolution: {integrity: sha512-PTigkxMdMUP6B5ISS7jMqJAKhgrhZwjprDqR1eATtFfh0OpKVNp110xiH+goeVdrJ29/4LeZJR4FaHHWstsu0A==}
     engines: {node: '>=12.16'}
 
   '@swc/helpers@0.5.15':
@@ -5688,6 +5695,9 @@ packages:
   vue-sonner@1.3.0:
     resolution: {integrity: sha512-jAodBy4Mri8rQjVZGQAPs4ZYymc1ywPiwfa81qU0fFl+Suk7U8NaOxIDdI1oBGLeQJqRZi/oxNIuhCLqsBmOwg==}
 
+  vue-stripe-js@2.0.2:
+    resolution: {integrity: sha512-tYDUw0zzXfo7kTTyTAFYCDZP7BPq1TM5mAgCRcjcLg7IgUiJlSBcnReDoCCZ6RDhSjFC4Yl5hwKO5Zs38fV63A==}
+
   vue@3.5.13:
     resolution: {integrity: sha512-wmeiSMxkZCSc+PM2w2VRsOYAZC8GdipNFRTsLSfodVqI9mbejKeXEGr8SckuLnrQPGe3oJN5c3K0vpoU9q/wCQ==}
     peerDependencies:
@@ -7865,6 +7875,8 @@ snapshots:
   '@speed-highlight/core@1.2.7': {}
 
   '@stripe/stripe-js@4.10.0': {}
+
+  '@stripe/stripe-js@5.10.0': {}
 
   '@swc/helpers@0.5.15':
     dependencies:
@@ -12275,6 +12287,10 @@ snapshots:
       vue: 3.5.13(typescript@5.8.3)
 
   vue-sonner@1.3.0: {}
+
+  vue-stripe-js@2.0.2:
+    dependencies:
+      '@stripe/stripe-js': 5.10.0
 
   vue@3.5.13(typescript@5.8.3):
     dependencies:
