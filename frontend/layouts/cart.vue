@@ -47,7 +47,7 @@
             <TailCardFooter>
               <div class="price flex justify-between">
                 <span>Sous-total</span>
-                <span class="fw-bold">{{ $n(cartStore.cartTotal, 'currency') }}</span>
+                <span class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</span>
               </div>
 
               <div class="delivery flex justify-between my-2">
