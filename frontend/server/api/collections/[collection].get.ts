@@ -17,7 +17,9 @@ export default defineCachedEventHandler(async event => {
   const access = getCookie(event, 'access')
   const refresh = getCookie(event, 'refresh')
 
+  
   try {
+    console.log('[collection].get.ts', query.price)
     const data = await $fetch<ProductsAPIResponse>(`/api/v1/collection/${name}`, {
       baseURL: useRuntimeConfig().public.prodDomain,
       method: 'GET',
@@ -47,18 +49,11 @@ export default defineCachedEventHandler(async event => {
   }
 }, {
   base: 'redis',
-  staleMaxAge: 1,
-  maxAge: 1,
+  maxAge: 15*60,
   getKey(event) {
     const collectionName = getRouterParam(event, 'collection')
     const query = getQuery(event)
-    const tokens = [collectionName || 'all']
-
-    if (query.sorted_by) {
-      if (typeof query.sorted_by === 'string') {
-        tokens.push(query.sorted_by.replace(' ', '-'))
-      }
-    }
+    const tokens = [collectionName || 'all', query.offset]
 
     return `collection-${tokens.join('-').toLowerCase()}`
   }
