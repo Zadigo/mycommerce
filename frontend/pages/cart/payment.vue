@@ -153,7 +153,7 @@ async function handlePayment () {
       body: tokenData.value
     })
 
-    paymentResponse.value = response.data
+    paymentResponse.value = response
     // cartStore.cache = null
     // cart.value = null
     isLoading.value = false
