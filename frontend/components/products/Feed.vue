@@ -62,8 +62,7 @@ const emit = defineEmits({
   }
 })
 
-const route = useRoute()
-const { id } = route.params
+const { id } = useRoute().params
 const currentGridSize = useLocalStorage('grid', 3)
 
 // const { gtag } = useGtag()
@@ -91,16 +90,18 @@ const query = ref<ProductsQuery>({
 const { data, status, error, refresh } = await useFetch<ProductsAPIResponse>(`/api/collections/${id}`, {
   method: 'GET',
   query: query.value,
-  onRequest() {
-    isLoadingMoreProducts.value = true
-  },
+  // onRequest() {
+  //   isLoadingMoreProducts.value = true
+  // },
   onResponseError({ error }) {
+    // TODO: G-Analytics
     // gtag('event', 'exception', {
     //   fatal: true, 
     //   description: error?.message
     // })
+    handleError(error)
   },
-  transform: (data) => {
+  transform(data) {
     cachedResponse.value = data
     
     // TODO: Use the schema ValidateProduct from zod to unify the typing for Product
@@ -156,23 +157,24 @@ function handleNavigation (data: (number | Product)[] | null | undefined) {
   if (data) {
     const product = data[1]
 
-    if (product && typeof product === 'object' && 'id' in product) {
-      // gtag('event',  'select_item',  {
-      //   items: [
-      //     {
-      //       item_id: product.id,
-      //       item_name: product.name,
-      //       price: product.get_price,
-      //       item_brand: null,
-      //       item_category: product.category,
-      //       index: data[0]
-      //     }
-      //   ],
-      //   item_list_name: route.params.id,
-      //   item_list_id: route.params.id,
-      //   currency: 'EUR'
-      // })
-    }
+    // TODO: G-Analytics
+    // if (product && typeof product === 'object' && 'id' in product) {
+    //   gtag('event',  'select_item',  {
+    //     items: [
+    //       {
+    //         item_id: product.id,
+    //         item_name: product.name,
+    //         price: product.get_price,
+    //         item_brand: null,
+    //         item_category: product.category,
+    //         index: data[0]
+    //       }
+    //     ],
+    //     item_list_name: route.params.id,
+    //     item_list_id: route.params.id,
+    //     currency: 'EUR'
+    //   })
+    // }
   }
 }
 
@@ -227,6 +229,7 @@ async function requestFilteredProducts(newQuery: SelectedFilters) {
  */
 useIntersectionObserver(intersectionTarget, ([{ isIntersecting }]) => {
   if (isIntersecting && cachedResponse.value?.next) {
+    isLoadingMoreProducts.value = true
     requestOffsetProducts(cachedResponse.value.next)
     isLoadingMoreProducts.value = false
   }
