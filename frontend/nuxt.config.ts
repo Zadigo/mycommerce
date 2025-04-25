@@ -230,9 +230,7 @@ export default defineNuxtConfig({
 
   css: [
     '~/assets/css/main.css',
-    '~/assets/style.scss',
-    // '~/node_modules/bootstrap/dist/css/bootstrap.min.css',
-    // '~/node_modules/mdb-ui-kit/css/mdb.min.css',
+    '~/assets/css/style.scss'
   ],
   
   // TODELETE
