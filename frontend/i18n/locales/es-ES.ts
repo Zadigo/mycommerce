@@ -108,23 +108,7 @@ export default defineI18nLocale(async locale => {
         "Mes commandes": "Mes commandes",
         "Date d'anniversaire": "Date d'anniversaire",
         "Sexe": "Sexe",
-        "measurements": {
-            "cm": {
-                "short": "cm",
-                "long": "centimètre",
-                "longPlural": "centimètres"
-            },
-            "m": {
-                "short": "m",
-                "long": "mètre",
-                "longPlural": "mètres"
-            },
-            "ft": {
-                "short": "pi",
-                "long": "pied",
-                "longPlural": "pieds"
-            }
-        },
+        "Nouveau": "Nouveau",
         "Mentions légales": "Mentions légales",
         "Conditions générales": "Conditions générales",
         "Aide": "Aide",
