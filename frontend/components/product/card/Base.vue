@@ -1,5 +1,5 @@
 <template>
-  <article v-if="product" :data-id="product.id" :aria-label="product.name" class="relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
+  <article :data-id="product.id" :aria-label="product.name" class="relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
     <div v-if="product.display_new" class="absolute right-1/16 top-1/30 z-10">
       <TailBadge>
         {{ $t('Nouveau') }}
@@ -38,12 +38,6 @@
         </button>
       </div>
     </div>
-  </article>
-
-  <article v-else>
-    <BaseSkeleton :loading="true" height="427px" />
-    <BaseSkeleton :loading="true" height="10px" />
-    <BaseSkeleton :loading="true" height="10px" width="50px" />
   </article>
 </template>
 
