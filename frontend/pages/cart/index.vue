@@ -20,7 +20,6 @@
 
 <script lang="ts" setup>
 import { useStorage } from '@vueuse/core'
-import { AxiosError } from 'axios'
 import type { DeliveryOption } from '~/types'
 import type { NewIntentAPIResponse } from './payment'
 
@@ -52,41 +51,40 @@ const paymentIntent = useCookie<NewIntentAPIResponse>('paymentIntent')
  * user can choose from in order to deliver
  * the products 
  */
-async function requestDeliveryOptions () {
-  const response = await $client<DeliveryOption[]>('orders/delivery-options', {
-    method: 'GET',
-    onRequestError() {
-      console.log('TODO: Point to the Quart backend')
-    }
-  })
+const { data } = useAsyncData('delivery-options', async () => {
+  return await Promise.all(
+    [
+      await $client<DeliveryOption[]>('/api/v1/orders/delivery-options', {
+        method: 'GET',
+        baseURL: useRuntimeConfig().public.quartProdUrl,
+        onRequestError() {
+          console.log('TODO: Point to the Quart backend')
+        }
+      }),
 
-  deliveryOptions.value = response
-}
+      /**
+       * Requests a new payment intent and returns an
+       * intent ID that will be used to confirm the payment
+       * on the actual payment page
+       */
+      await $client<NewIntentAPIResponse>('/api/v1/orders/intent', {
+        method: 'POST',
+        body: {
+          session_id: cartStore.sessionId
+        },
+        onRequestError({ error }) {
+          handleError(error)
+        }
+      })
+    ]
+  )
+})
 
-/**
- * Requests a new payment intent and returns an
- * intent ID that will be used to confirm the payment
- * on the actual payment page
- */
-async function handleNewPaymentIntent () {
-  if (!paymentIntent.value) {
-    const response = await $client<NewIntentAPIResponse>('/api/v1/orders/intent', {
-      method: 'POST',
-      body: {
-        session_id: cartStore.sessionId
-      },
-      onRequestError({ error }) {
-        handleError(error)
-      }
-    })
-    
-    paymentIntent.value = response
-  }
-}
+deliveryOptions.value = data.value[0]
+paymentIntent.value = data.value[1]
 
 onMounted(async () => {
-  await requestDeliveryOptions()
-  await handleNewPaymentIntent()
+  // await handleNewPaymentIntent()
 
   // TODO: G-Analytics
   // gtag('event', 'begin_checkout', {

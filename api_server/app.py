@@ -22,7 +22,7 @@ cors_app = cors(
 # cache = pymemcache.Client(('127.0.0.1', 11211))
 
 
-@cors_app.route('/api/v1/cities', methods=['get'])
+@cors_app.get('/api/v1/cities')
 async def cities():
     def transform(df):
         return json.loads(
@@ -72,6 +72,12 @@ async def cities():
         data = transform(states)
 
     return jsonify(data)
+
+
+@cors_app.get('/api/v1/orders/delivery-options')
+async def delivery_options():
+    with open(MEDIA_PATH.joinpath('delivery_options.json'), mode='r') as f:
+        return json.load(f)
 
 
 if __name__ == '__main__':
