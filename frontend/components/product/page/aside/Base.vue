@@ -6,12 +6,12 @@
     
     <template v-if="product">
       <div v-if="product.on_sale" class="font-bold text-lg inline-flex gap-2 mt-1">
-        <span class="text-red-400">{{ translatePrice(product.get_price) }}</span>
-        <span class="text-black"><s>{{ translatePrice(product.unit_price) }}</s></span>
+        <span class="text-red-400">{{ $n(parseInt(product.get_price), 'currency') }}</span>
+        <span class="text-black"><s>{{ $n(parseInt(product.unit_price), 'currency') }}</s></span>
       </div>
 
       <p v-else class="font-bold text-xl mt-1">
-        {{ translatePrice(product.get_price) }}
+        {{ $n(parseInt(product.get_price), 'currency') }}
       </p>
     </template>
 
@@ -69,7 +69,6 @@ const emit = defineEmits({
   }
 })
 
-const { translatePrice } = useShopComposable()
 const { mediaPath } = useDjangoUtilies()
 // const { gtag } = useGtag()
 
