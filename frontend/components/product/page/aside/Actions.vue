@@ -7,11 +7,11 @@
         {{ size.name }}
       </button>
     </div>
-    <BaseSkeleton v-else :loading="true" />
+    <TailSkeleton v-else class="h-[100px] w-2/6" />
 
     <p class="font-light">
       {{ $t('Taille et hauteur du mannequin') }} : 
-      <span v-if="product.model_height">{{ product.model_size }} · {{ product.model_height }} cm</span> 
+      <span v-if="product.model_height">{{ product.model_size }} · {{ $n(parseInt(product.model_height), 'unit') }}</span> 
       <span v-else>N.D.</span>
     </p>
     
@@ -103,20 +103,18 @@ function proxyHandleLike() {
   // })
 }
 
-// Handles the action of adding a product
-// to the current user's cart. Products that
-// require a size will force the user to
-// select a size before handling the action
+/**
+ * Handles the action of adding a product
+ * to the current user's cart. Products that
+ * require a size will force the user to
+ * select a size before handling the action 
+ */
 async function proxyAddToCart() {
   if (props.product) {
     cartStore.addToCart(props.product, null, async (data) => {
+      console.log('proxyAddToCart', data)
+
       if (cartStore.sessionCache) {
-        cartStore.sessionCache.cart = data
-        
-        showAddedProductDrawer.value = true
-        
-        console.log('Cart API response', data)
-        
         // if (cartStore.sessionId) {
         //   const userRef = doc($fireStore, 'users', cartStore.sessionId)
         //   const userSnapshot = await getDoc(userRef)
