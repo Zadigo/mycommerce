@@ -58,7 +58,7 @@ const {  $client } = useNuxtApp()
  */
 async function handleUpdateStock () {
   try {
-    const response = await $client<ProductStock[]>('stocks/update', {
+    const response = await $client<ProductStock[]>('/api/v1/stocks/update', {
       method: 'POST',
       body: {
         customer_order: null

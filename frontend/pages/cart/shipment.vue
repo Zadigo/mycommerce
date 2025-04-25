@@ -75,7 +75,7 @@ const rules = {
 const { handleError } = useErrorHandler()
 const { $client } = useNuxtApp()
 
-const paymentIntent = useLocalStorage<NewIntentAPIResponse>('payment_intent', null, {
+const paymentIntent = useLocalStorage<NewIntentAPIResponse>('paymentIntent', null, {
   deep: true,
   serializer: {
     read (raw) {
@@ -118,9 +118,12 @@ async function handleUpdatePaymentIntent () {
   try {
     requestData.value.session_id = cartStore.sessionId
 
-    await $client.post('orders/intent/update', {
-      intent: paymentIntent.value.intent,
-      ...requestData.value
+    await $client('/api/v1/orders/intent/update', {
+      method: 'POST',
+      body: {
+        intent: paymentIntent.value.intent,
+        ...requestData.value
+      }
     })
 
     // TODO: G-Analytics

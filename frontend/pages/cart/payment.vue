@@ -148,7 +148,10 @@ const hasSelectedPaymentMethod = computed(() => {
  */
 async function handlePayment () {
   try {
-    const response = await $client.post('orders/create', tokenData.value)
+    const response = await $client('orders/create', {
+      method: 'POST',
+      body: tokenData.value
+    })
 
     paymentResponse.value = response.data
     // cartStore.cache = null
