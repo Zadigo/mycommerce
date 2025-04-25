@@ -141,7 +141,7 @@ function resetEmailPasswordData() {
  */
 async function requestUpdate () {
   const response = await $client<EditableAddressSet>(
-    `/accounts/${authStore.userId}/address-lines/${props.address.id}`, 
+    `/api/v1/accounts/${authStore.userId}/address-lines/${props.address.id}`, 
     {
       method: 'PATCH',
       body: requestData.value,
@@ -162,7 +162,7 @@ async function requestUpdate () {
  */
 async function requestCreate() {
   const response = await $client<EditableAddressSet>(
-    `/accounts/${authStore.userId}/address-lines`, 
+    `/api/v1/accounts/${authStore.userId}/address-lines`, 
     {
       method: 'POST',
       body: requestData.value,
@@ -182,7 +182,7 @@ async function requestCreate() {
  * the email address by the user 
  */
 async function requestDelete() {
-  await $client(`accounts/${authStore.userId}/address-lines/${props.address.id}`, {
+  await $client(`/api/v1/accounts/${authStore.userId}/address-lines/${props.address.id}`, {
     method: 'DELETE',
     onResponse() {
       emit('delete-complete', props.address.id)
