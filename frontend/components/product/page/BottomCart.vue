@@ -11,7 +11,7 @@
           </p>
 
           <p class="font-bold">
-            {{ translatePrice(product.unit_price) }}
+            {{ $n(parseFloat(product.unit_price), 'currency') }}
           </p>
         </div>
       </div>
