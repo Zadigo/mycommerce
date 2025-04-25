@@ -17,7 +17,7 @@
 
     <!-- Footer -->
     <ClientOnly>
-      <BaseFooter :items="footerLinks" @show-whatsapp="showWhatsAppModal=true" />
+      <BaseFooter :items="footerLinks" class="mt-40" @show-whatsapp="showWhatsAppModal=true" />
     </ClientOnly>
   </section>
 </template>
