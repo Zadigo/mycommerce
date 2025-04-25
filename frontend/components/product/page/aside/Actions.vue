@@ -63,11 +63,9 @@ const stockState = inject<ProductStock>('stockState')
 
 const { $fireStore } = useNuxtApp()
 const cartStore = useCart()
-const { userSelection, showSizeSelectionWarning, showAddedProductDrawer } = storeToRefs(cartStore)
-const { isLiked, handleLike } = useShopComposable()
-const likedProducts = useStorage<number[]>('likedProducts', [])
+const { userSelection, showSizeSelectionWarning } = storeToRefs(cartStore)
+const { isLiked, handleLike } = useShopComposable(props.product)
 
-// const sizeEl = ref<HTMLElement>()
 const showAvailabilityModal = ref(false)
 
 const sizeObject = computed(() => {
@@ -82,9 +80,7 @@ const sizeObject = computed(() => {
  * 
  */
 function proxyHandleLike() {
-  const result = handleLike(likedProducts.value, props.product)
-  likedProducts.value = result
-  isLiked.value = !isLiked.value
+  handleLike()
 
   // TODO: G-Analytics
   // gtag('event', 'add_to_wishlist', {
@@ -165,10 +161,4 @@ function proxySelectSize(size: string | number | null | undefined) {
     cartStore.handleSizeSelection(props.product, size)
   }
 }
-
-onMounted(() => {
-  if (props.product) {
-    isLiked.value = likedProducts.value.includes(props.product.id)
-  }
-})
 </script>
