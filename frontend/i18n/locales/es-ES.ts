@@ -129,6 +129,8 @@ export default defineI18nLocale(async locale => {
         "Livraison et retours": "Livraison et retours",
         "Print": "Print",
         "Ajouter au favori": "Ajouter au favori",
-        "Soldes": "Soldes"
+        "Soldes": "Soldes",
+        "Ajouter": "Ajouter",
+        "Tu vas pouvoir profiter de la livraison standard gratuite à domicile": "Tu vas pouvoir profiter de la livraison standard gratuite à domicile"
     }
 })
