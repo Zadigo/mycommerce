@@ -191,20 +191,25 @@ export const useCart = defineStore('cart', () => {
 
     const { $client, vueApp } = useNuxtApp()
 
-    const response = await $client('/api/v1/cart/add', {
+    const response = await $client<CartUpdateApiResponse>('/api/v1/cart/add', {
       method: 'POST',
       body: userSelection.value,
       onResponse({ response }) {
         if (response.status === 201) {
           addingToCartState.value = false
+          showAddedProductDrawer.value = true
           resetSelection()
         }
       }
     })
-    
-    // if (callback && typeof callback === 'function') {
-    //   callback.call(vueApp, response)
-    // }
+
+    if (sessionCache.value) {
+      sessionCache.value.cart = response
+    }
+
+    if (callback && typeof callback === 'function') {
+      callback.call(vueApp, response)
+    }
   }
 
   /**
