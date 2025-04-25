@@ -31,6 +31,7 @@ export function useDjangoUtilies() {
         }
     }
 
+    // TODELETE: Remove we are getting the numbers directly
     function builLimitOffset(url: string | null | undefined, limit = 100, offset = 100) {
         let defaultLimit: string | number = 100
         let defaultOffset: string | number = 0

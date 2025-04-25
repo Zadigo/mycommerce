@@ -235,6 +235,7 @@ export default defineNuxtConfig({
     // '~/node_modules/mdb-ui-kit/css/mdb.min.css',
   ],
   
+  // TODELETE
   fontawesome: {
     icons: {
       solid: [
