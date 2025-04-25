@@ -250,6 +250,24 @@ class ListProductsOnSale(generics.ListAPIView):
         return qs
 
 
+class ListWishlist(generics.GenericAPIView):
+    """Lists the different products present in
+    a user's wishlist"""
+
+    serializer_class = serializers.ProductSerializer
+    queryset = Product.objects.filter(active=True)
+
+    def post(self, request, **kwargs):
+        serializer = serializers.WishlistSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        qs = self.get_queryset()
+        products = qs.filter(id__in=serializer.validated_data['products'])
+
+        serializer = self.get_serializer(instance=products, many=True)
+        return Response(serializer.data)
+
+
 # @api_view(http_method_names=['get'])
 # def test_fuzzy(request, **kwargs):
 #     results = []

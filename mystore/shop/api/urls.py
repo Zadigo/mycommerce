@@ -30,6 +30,11 @@ urlpatterns = [
         name='recommendations'
     ),
     re_path(
+        r'^wishlist$',
+        views.ListWishlist.as_view(),
+        name='wishlist'
+    ),
+    re_path(
         r'^products$',
         views.ListProducts.as_view(),
         name='products'
