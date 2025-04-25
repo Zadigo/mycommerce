@@ -56,8 +56,6 @@ const cartStore = useCart()
 const { userSelection, showSizeSelectionWarning } = storeToRefs(cartStore)
 // const { $fireStore } = useNuxtApp()
 
-const { translatePrice } = useShopComposable()
-
 const props = defineProps({
   product: {
     type: Object as PropType<Product>,
