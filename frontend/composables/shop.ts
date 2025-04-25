@@ -1,35 +1,26 @@
-import type { Product, ProductImage } from "~/types"
-import type { Ref } from 'vue'
+import { useArrayFindIndex, useStorage, watchArray } from '@vueuse/core'
+import type { Product } from "~/types"
 
-export function useShopComposable() {
-  const isLiked = ref<boolean>(false)
-
-  /**
-   * A composable that implements default
-   * resusable functions for the shop, such
-   * as liking a product or adding it to
-   * the user cart
-   */
-  function translatePrice(value: string | number | undefined | Ref) {
-    return value
-    // if (isRef<string | number>(value)) {
-    //   price = value.value
-    // }
-
-    // if (value) {
-    //   let price
-
-    //   if (typeof value === 'string') {
-    //     price = parseFloat(value)
-    //   } else {
-    //     price = value
-    //   }
-
-    //   return $i18n.n(price, 'currency', $i18n.locale)
-    // } else {
-    //   return '0'
-    // }
+export function useShopComposable(product: Product) {
+  if (import.meta.server) {
+    return {
+      productToCheck: ref<Product>(),
+      likedProducts: ref<number[]>([]),
+      isLiked: ref<boolean>(false),
+      handleLike: (_product?: Product | null | undefined): void => {}
+    }
   }
+
+  const productToCheck = ref<Product>(product)
+  
+  const likedProducts = useStorage<number[]>('likedProducts', [])
+  const isLiked = computed(() => {
+    return useArrayIncludes(likedProducts, productToCheck.value.id).value
+  })
+
+  watchArray(likedProducts, () => {
+    // Do something
+  })
 
   /**
    * Main entry function for managing the user liked
@@ -38,13 +29,21 @@ export function useShopComposable() {
    * and therefore adding it to the user's
    * wishlist
    */
-  function handleLike(items: number[], product: Product | null | undefined): number[] {
-    return [1, 2]
+  function handleLike() {
+    if (product) {
+      if (isLiked.value) {
+        const index = useArrayFindIndex<number>(likedProducts, () => productToCheck.value.id)
+        likedProducts.value.splice(index.value, 1)
+      } else {
+        likedProducts.value.push(productToCheck.value.id)
+      }
+      console.log('useShopComposable', isLiked.value, likedProducts.value)
+    }
   }
 
   return {
+    productToCheck,
     isLiked,
-    translatePrice,
     handleLike
   }
 }
