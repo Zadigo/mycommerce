@@ -42,7 +42,6 @@
 </template>
 
 <script setup lang="ts">
-import { useStorage } from '@vueuse/core'
 import type { PropType } from 'vue'
 import type { Product } from '~/types'
 
@@ -87,16 +86,10 @@ const emit = defineEmits({
 })
 
 // const { gtag } = useGtag()
-const { handleLike, isLiked } = useShopComposable()
-const likedProducts = useStorage<number[]>('likedProducts', [])
-
-const isHovered = ref(false)
+const { handleLike, isLiked } = useShopComposable(props.product)
 
 function proxyHandleLike () {
-  const result = handleLike(likedProducts.value, props.product)
-
-  likedProducts.value = result
-  isLiked.value = !isLiked.value
+  handleLike()
 
   // TODO: G-Analytics
   // gtag('event', 'add_to_wishlist', {
@@ -115,9 +108,5 @@ function proxyHandleLike () {
   // })
 }
 
-onMounted(() => {
-  if (props.product) {
-    // isLiked.value = likedProducts.value.includes(props.product.id)
-  }
-})
+const isHovered = ref(false)
 </script>
