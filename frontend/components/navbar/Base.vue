@@ -8,40 +8,42 @@
       <NavbarDropdownCollections />
 
       <div class="hidden lg:block">
-        <ul class="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-          <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-            <v-btn id="action-search" class="ms-auto me-2" variant="tonal" color="dark" rounded @click="shopStore.showSearchModal=true">
-              {{ $t('Rechercher') }}
-            </v-btn>
-          </li>
+        <ClientOnly>
+          <ul class="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+            <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
+              <v-btn id="action-search" class="ms-auto me-2" variant="tonal" color="dark" rounded @click="shopStore.showSearchModal=true">
+                {{ $t('Rechercher') }}
+              </v-btn>
+            </li>
 
-          <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-            <a id="action-cart-navbar" href="#" class="flex items-center gap-2" @click.prevent="handleShowCartDrawer">
-              <Icon name="fa-solid:shopping-bag" size="18" />
-              {{ $t("Panier") }}
-            </a>
-          </li>
-          
-          <li v-if="isHydrated && !authStore.isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-            <a id="action-signin" href="#" class="flex items-center gap-2" @click.prevent="authStore.showLoginDrawer=true">
-              <Icon name="fa-solid:sign-in-alt" size="18" />
-              {{ $t('Se connecter') }}
-            </a>
-          </li>
-          <li v-else class="flex items-center p-1 text-sm gap-2 text-slate-600">
-            <a id="action-signout" href="#" class="flex items-center" @click.prevent="proxyLogout">
-              <Icon name="fa-solid:sign-out-alt" size="18" />
-              {{ $t('Se déconnecter') }}
-            </a>
-          </li>
-          
-          <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-            <NuxtLink id="link-account-navbar" to="/account/" class="flex items-center gap-2">
-              <Icon name="fa-solid:user" size="18" />
-              {{ $t('Compte') }}
-            </NuxtLink>
-          </li>
-        </ul>
+            <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
+              <a id="action-cart-navbar" href="#" class="flex items-center gap-2" @click.prevent="handleShowCartDrawer">
+                <Icon name="fa-solid:shopping-bag" size="18" />
+                {{ $t("Panier") }}
+              </a>
+            </li>
+            
+            <li v-if="!authStore.isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
+              <a id="action-signin" href="#" class="flex items-center gap-2" @click.prevent="authStore.showLoginDrawer=true">
+                <Icon name="fa-solid:sign-in-alt" size="18" />
+                {{ $t('Se connecter') }}
+              </a>
+            </li>
+            <li v-else class="flex items-center p-1 text-sm gap-2 text-slate-600">
+              <a id="action-signout" href="#" class="flex items-center" @click.prevent="proxyLogout">
+                <Icon name="fa-solid:sign-out-alt" size="18" />
+                {{ $t('Se déconnecter') }}
+              </a>
+            </li>
+            
+            <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
+              <NuxtLink id="link-account-navbar" to="/account/" class="flex items-center gap-2">
+                <Icon name="fa-solid:user" size="18" />
+                {{ $t('Compte') }}
+              </NuxtLink>
+            </li>
+          </ul>
+        </ClientOnly>
       </div>
 
       <button id="action-menu" class="relative ml-auto h-6 max-h-[40px] w-6 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-inherit transition-all hover:bg-transparent focus:bg-transparent active:bg-transparent disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:hidden" type="button">
@@ -64,7 +66,6 @@ const authStore = useAuthentication()
 const cartStore = useCart()
 
 const { showCartDrawer } = storeToRefs(cartStore)
-const isHydrated = ref<boolean>(false)
 
 /**
  * 
@@ -105,8 +106,4 @@ function handleShowCartDrawer() {
   //   })
   // }
 }
-
-onMounted(() => {
-  isHydrated.value = true
-})
 </script> 
