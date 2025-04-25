@@ -136,7 +136,7 @@ const { data: product, status } = useFetch<Product>(`/api/products/${id}`, {
 })
 
 const isLoading = computed(() => status.value === 'pending')
-const showBanner = computed(() => y.value >= 1200 && y.value <= 2100)
+const showBanner = computed(() => y.value >= 1200 && y.value <= 7000)
 
 /**
  * 
