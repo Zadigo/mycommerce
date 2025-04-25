@@ -226,14 +226,17 @@ export const useCart = defineStore('cart', () => {
       console.log(payload.value)
 
       if (payload.value) {
-        const response = await $client<CartUpdateApiResponse>(`cart/${payload.value.cart_id}/delete`, {
-          method: 'POST',
-          body: {
-            session_id: sessionId.value,
-            product_id: cartItem.product_info?.product.id,
-            size: cartItem.product_info?.size
+        const response = await $client<CartUpdateApiResponse>(
+          `/api/v1/cart/${payload.value.cart_id}/delete`, 
+          {
+            method: 'POST',
+            body: {
+              session_id: sessionId.value,
+              product_id: cartItem.product_info?.product.id,
+              size: cartItem.product_info?.size
+            }
           }
-        })
+        )
 
         console.log('deleteFromCart', payload)
         
