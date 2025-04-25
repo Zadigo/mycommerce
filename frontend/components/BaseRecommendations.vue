@@ -57,15 +57,12 @@ const emit = defineEmits({
   }
 })
 
+// const { gtag } = useGtag()
 const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
-// const { gtag } = useGtag()
-
-const { debounce } = useDebounce()
-const route = useRoute()
+const { id } = useRoute().params
 const shopStore = useShop()
 
-const recommendations = ref<Product[]>([])
 const productsRow = ref<HTMLElement>()
 
 function handleNavigation (data: (number | Product)[]) {
@@ -76,6 +73,8 @@ function handleNavigation (data: (number | Product)[]) {
     
     if (product && typeof product === 'object' && 'id' in product) {
       emit('has-navigated', product)
+
+      // TODO: G-Analytics
       // gtag('event',  'select_item',  {
       //   items: [
       //     {
@@ -95,38 +94,22 @@ function handleNavigation (data: (number | Product)[]) {
   }
 }
 
-async function requestRecommendations () {
-  if (!props.loadCache) {
-    const response = await $client<Product[]>('/api/v1/shop/products/recommendations', {
-      method: 'GET',
+const { data: recommendations } = await useAsyncData<Product[]>(
+  `recommendations-${id}`,
+  async () => {
+    return await $client('/api/v1/shop/products/recommendations', {
       params: {
-        p: route.params.id,
+        p: id,
         q: props.quantity
       },
       onRequestError({ error }) {
         handleError(error)
       }
     })
-
-    recommendations.value = response
-
-    if (shopStore.sessionCache) {
-      shopStore.sessionCache.recommendations = response
-    }
-  } else {
-    recommendations.value = shopStore.sessionCache.recommendations
   }
-}
-
-// TODO: Load the recommendations that we have
-// already fetched when the block is loaded
-
-
-// requestRecommendations()
+)
 
 onMounted(async () => {
-  debounce(requestRecommendations, 3000, false)()
-
   if (props.scrollable) {
     if (productsRow.value) {
       productsRow.value.classList.add('products-wrapper')
