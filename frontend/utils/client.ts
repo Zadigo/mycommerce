@@ -5,7 +5,7 @@ import type { LoginApiResponse, TokenRefreshApiResponse } from "~/types"
  * token for the user
  */
 export async function refreshAccessToken(refresh: string) {
-  const response = await $fetch<TokenRefreshApiResponse>('/auth/v1/refresh/token/', {
+  const response = await $fetch<TokenRefreshApiResponse>('/auth/v1/token/refresh/', {
     baseURL: useRuntimeConfig().public.prodDomain,
     method: 'POST',
     body: {
