@@ -1,10 +1,10 @@
+import unittest
+from accounts import tasks
 from accounts.models import Address
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from rest_framework.test import APITestCase
-from django.contrib.auth import get_user_model
-from accounts import tasks
 from orders.payment import StripeInterfaceMixin
+from rest_framework.test import APITestCase
 
 
 class TestApiEndpoints(APITestCase):
@@ -36,6 +36,17 @@ class TestApiEndpoints(APITestCase):
 
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {token}')
         return token
+
+    @unittest.skipIf(False, 'Login with email not yet implemented')
+    def test_authenticate_with_email(self):
+        response = self.client.post(
+            reverse('token_obtain_pair'),
+            data={
+                'email': self.user.email,
+                'password': 'touparet'
+            }
+        )
+        self.assertEqual(response.status_code, 200, 'Cannot login with email')
 
     def test_get_user_details(self):
         path = reverse('accounts_api:user', args=[self.user.id])
