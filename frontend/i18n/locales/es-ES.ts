@@ -12,7 +12,7 @@ export default defineI18nLocale(async locale => {
         "Livraison gratuite offerte": "Il te manque {n} pour profiter de la",
         "Se connecter": "Se connecter",
         "Conservations des favoris": "Tes favoris seront conservés pour une durée limitée",
-        "Produits trouvés": "0 produits trouvés | 1 produit trouvé | {count} produits trouvés",
+        "Produits trouvés": "0 produits trouvés | 1 produit trouvé | {n} produits trouvés",
         "Cela peut t'intéresser": "Cela peut t'intéresser",
         "Choisis un mode d'expédition": "Choisis un mode d'expédition",
         "Enregistrer": "Enregistrer",
@@ -131,6 +131,7 @@ export default defineI18nLocale(async locale => {
         "Ajouter au favori": "Ajouter au favori",
         "Soldes": "Soldes",
         "Ajouter": "Ajouter",
-        "Tu vas pouvoir profiter de la livraison standard gratuite à domicile": "Tu vas pouvoir profiter de la livraison standard gratuite à domicile"
+        "Tu vas pouvoir profiter de la livraison standard gratuite à domicile": "Tu vas pouvoir profiter de la livraison standard gratuite à domicile",
+        "Filtres": "Filtres"
     }
 })

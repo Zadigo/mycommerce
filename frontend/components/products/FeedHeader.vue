@@ -4,35 +4,37 @@
       <div class="flex justify-between align-center">
         <div class="flex justify-content-left gap-1">
           <div class="d-flex justify-content-between align-items-center me-3 gap-1">
-            <v-btn to="/shop/collection/all" variant="tonal">
-              {{ $t('Afficher tout') }}
-            </v-btn>
+            <TailButton variant="light" as-child>
+              <NuxtLink to="/shop/collection/all">
+                {{ $t('Afficher tout') }}
+              </NuxtLink>
+            </TailButton>
 
             <!-- Categories -->
             <v-btn v-for="category in productCategories" :key="category" :to="`/shop/collection/${category.toLowerCase()}`" variant="tonal">
               {{ category }}
             </v-btn>
 
-            <v-btn variant="tonal" class="ms-3" @click="emit('show-product-filters')">
-              <font-awesome icon="sliders" class="me-2" /> Filtres
-            </v-btn>
+            <TailButton variant="light" class="ms-3" @click="emit('show-product-filters')">
+              <font-awesome icon="sliders" class="me-2" /> {{ $t('Filtres') }}
+            </TailButton>
           </div>
         </div>
         
         <div class="flex justify-end gap-1 align-center">
           <v-skeleton-loader :is-loading="productsLoading" type="text">
             <span id="product-count" class="font-bold me-2">
-              {{ count }} produits trouvés
+              {{ $t('Produits trouvés', { n: count }) }}
             </span>
           </v-skeleton-loader>
 
-          <v-btn :active="gridSize === 3" variant="tonal" flat @click="handleGridSize(3)">
+          <TailButton :active="gridSize === 3" variant="light" flat @click="handleGridSize(3)">
             <font-awesome icon="table-cells" />
-          </v-btn>
+          </TailButton>
 
-          <v-btn :active="gridSize === 4" variant="tonal" flat @click="handleGridSize(4)">
+          <TailButton :active="gridSize === 4" variant="light" flat @click="handleGridSize(4)">
             <font-awesome icon="table-cells-large" />
-          </v-btn>
+          </TailButton>
         </div>
       </div>
     </TailCardContent>
