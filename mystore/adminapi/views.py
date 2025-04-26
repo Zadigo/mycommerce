@@ -1,3 +1,5 @@
+from rest_framework import fields
+from drf_spectacular.utils import extend_schema, inline_serializer
 from functools import lru_cache
 import datetime
 from collections import defaultdict
@@ -21,6 +23,7 @@ from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from shop.models import Image, Product
 
 from mystore.choices import CategoryChoices, SubCategoryChoices
@@ -135,54 +138,57 @@ class UploadImages(generics.GenericAPIView):
         return Response(serializer.data)
 
 
-@api_view(http_method_names=['post'])
-def upload_images(request, **kwargs):
-    names = request.data.getlist('file_names', [])
-    files = request.data.getlist('files', [])
+# class UploadImages(generics.GenericAPIView):
+#     serializer_class = serializers.ImageSerializer
 
-    if not names:
-        return Response([], status=status.HTTP_304_NOT_MODIFIED)
+#     def post(self, request, **kwargs):
+#         names = request.data.getlist('file_names', [])
+#         files = request.data.getlist('files', [])
 
-    association = []
-    for i, name in enumerate(names):
-        association.append((name, files[i]))
+#         if not names:
+#             return Response([], status=status.HTTP_304_NOT_MODIFIED)
 
-    validator = FileExtensionValidator(
-        allowed_extensions=['jpg', 'jpeg', 'webp']
-    )
-    for item in association:
-        file = item[1]
+#         association = []
+#         for i, name in enumerate(names):
+#             association.append((name, files[i]))
 
-        extension = guess_extension(file.content_type)
-        clean_name = remove_accents(item[0])
-        file_name = f'{clean_name}{extension}'
+#         validator = FileExtensionValidator(
+#             allowed_extensions=['jpg', 'jpeg', 'webp']
+#         )
+#         for item in association:
+#             file = item[1]
 
-        image = ImageFile(file, name=file_name)
-        validator(image)
+#             extension = guess_extension(file.content_type)
+#             clean_name = remove_accents(item[0])
+#             file_name = f'{clean_name}{extension}'
 
-        Image.objects.create(
-            name=item[0],
-            original=image
+#             image = ImageFile(file, name=file_name)
+#             validator(image)
+
+#             Image.objects.create(
+#                 name=item[0],
+#                 original=image
+#             )
+
+#         images = Image.objects.all()
+#         serializer = self.get_serializer(
+#             instance=images,
+#             many=True
+#         )
+#         return Response(serializer.data)
+
+
+@extend_schema(responses={200: inline_serializer('AssociateImages', fields={'state': fields.BooleanField()})})
+class AssociateImages(generics.GenericAPIView):
+    def post(self, request, **kwargs):
+        product = get_object_or_404(Product, pk=request.data['product'])
+        serializer = serializers.ValidateImageAssociation(
+            instance=product,
+            data=request.data
         )
-
-    images = Image.objects.all()
-    serializer = serializers.ImageSerializer(
-        instance=images,
-        many=True
-    )
-    return Response(serializer.data)
-
-
-@api_view(http_method_names=['post'])
-def associate_images(request, **kwargs):
-    product = get_object_or_404(Product, pk=request.data['product'])
-    serializer = serializers.ValidateImageAssociation(
-        instance=product,
-        data=request.data
-    )
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
-    return Response({'state': True})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'state': True})
 
 
 class UploadImagesToProduct(generics.GenericAPIView):
@@ -236,7 +242,7 @@ class UploadImagesToProduct(generics.GenericAPIView):
 
 class GetProduct(generics.RetrieveUpdateAPIView):
     queryset = Product.objects.all()
-    serializer_class = serializers.ProductSerializer
+    serializer_class = serializers.AdminProductSerializer
     permission_classes = []
 
 
@@ -252,25 +258,31 @@ def update_product(request, pk, **kwargs):
     serializer.is_valid(raise_exception=True)
     updated = serializer.save()
 
-    serializer = serializers.ProductSerializer(instance=updated)
+    serializer = serializers.AdminProductSerializer(instance=updated)
     return Response(serializer.data)
 
 
-@api_view(['post'])
-def upload_products(request, **kwargs):
-    """Upload a file containing a set of products
-    to create in the database"""
-    serializer = serializers.ValidateFileUpload(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    created_products = serializer.save()
-    # TODO: Send this back to the user
-    print(serializer._db_creation_errors)
+class UploadProducts(GenericAPIView):
+    serializer_class = serializers.AdminProductSerializer
+    permission_classes = []
 
-    serializer = serializers.AdminProductSerializer(
-        instance=created_products,
-        many=True
-    )
-    return Response(serializer.data)
+    def get_serializer_class(self):
+        return serializers.ValidateFileUpload
+
+    def post(self, request, **kwargs):
+        """Upload a file containing a set of products
+        to create in the database"""
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        created_products = serializer.save()
+        # TODO: Send this back to the user
+        print(serializer._db_creation_errors)
+
+        serializer = self.serializer_class(
+            instance=created_products,
+            many=True
+        )
+        return Response(serializer.data)
 
 
 @api_view(['post'])
@@ -377,20 +389,22 @@ class CalculateShopStatistics(generics.GenericAPIView):
         return Response(template)
 
 
-@api_view(['post'])
-def toggle_product_state(request, method, **kwargs):
-    product_ids = request.data.get('products', [])
-    products = Product.objects.filter(id__in=product_ids)
+class ToggleProductState(GenericAPIView):
+    serializer_class = serializers.AdminProductSerializer
+    permission_classes = []
 
-    if method == 'activate':
-        products.update(active=True)
+    def post(self, request, method, **kwargs):
+        product_ids = request.data.get('products', [])
+        products = Product.objects.filter(id__in=product_ids)
 
-    if method == 'deactivate':
-        products.update(active=False)
+        if method == 'activate':
+            products.update(active=True)
 
-    serializer = serializers.ProductSerializer(
-        instance=products, many=True)
-    return Response(serializer.data)
+        if method == 'deactivate':
+            products.update(active=False)
+
+        serializer = self.get_serializer(instance=products, many=True)
+        return Response(serializer.data)
 
 
 class CartStatistics(APIView):

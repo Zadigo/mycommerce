@@ -3,6 +3,10 @@ import os
 from celery import Celery
 from celery.schedules import crontab
 
+# Windows: celery -A mystore.celery_app worker -E --pool=solo
+# Windows - Beat: celery -A mystore.celery_app beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+# Windows - Flower: celery -A mystore.celery_app flower
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mystore.settings')
 
 
@@ -54,4 +58,9 @@ def check_orders():
     database to check if there are new
     orders to process of the day. This
     triggers a 'process order' workflow"""
-    return NotImplemented
+    from orders.models import CustomerOrder
+    from django.utils import timezone
+
+    qs = CustomerOrder.objects.filter(created_on=timezone.now())
+    if qs.exists():
+        print('We should check these orders')

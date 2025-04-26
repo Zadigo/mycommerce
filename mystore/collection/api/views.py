@@ -15,12 +15,6 @@ from shop.models import Product
 from mystore.utils import PaginationHelper
 
 
-def build_colors(colors):
-    def build_color(name):
-        return {'name': name, 'image': f"/media/{name.lower()}.png"}
-    return map(build_color, colors)
-
-
 class ListCollectionProducts(generics.ListAPIView):
     """Enpoint used to list the products from a
     given fashion collection. This endpoint works in

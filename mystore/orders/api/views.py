@@ -1,3 +1,4 @@
+from orders import tasks
 from cart.models import Cart
 from django.core.cache import cache
 from django.db.models import F, Sum
@@ -6,7 +7,7 @@ from orders.api import serializers
 from orders.models import CustomerOrder, ProductHistory
 from orders.payment import PaymentInterface
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -48,7 +49,7 @@ class CartMixin:
     """This mixin provides the subclasses with functions that
     can provide basic information on the items in a customer's
     cart .e.g. the items in the cart, the cart's total etc."""
-    
+
     def get_cart_queryset(self, request, serializer):
         session_id = serializer.validated_data['session_id']
         return Cart.objects.cart_items(session_id)
@@ -213,3 +214,20 @@ class CapturePaymentIntent(CartMixin, CreateAPIView):
             return interface.get_success_response(customer_order=customer_order.reference)
 
         return self.cart_empty_response()
+
+
+class CancelOrder(UpdateAPIView):
+    queryset = CustomerOrder.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.CancelOrderSerializer
+    lookup_field = 'reference'
+    lookup_url_kwarg = 'reference'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(user__id=self.request.user, refund_requested=True)
+
+    def update(self, request, *args, **kwargs):
+        instance = super().get_object()
+        tasks.refund_request.apply_async((instance.reference,), countdown=60)
+        return super().update(request, *args, **kwargs)

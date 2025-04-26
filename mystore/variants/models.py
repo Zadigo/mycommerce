@@ -3,6 +3,7 @@ from django.db.models.constraints import UniqueConstraint
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
+from shop import validators
 from shop.models import Product
 from variants.choices import VariantMetrics
 
@@ -22,16 +23,16 @@ class AbstractVariant(models.Model):
         Product,
         on_delete=models.CASCADE
     )
-    # attributed_price = models.DecimalField(
-    #     max_digits=5,
-    #     decimal_places=2,
-    #     default=1,
-    #     help_text=_(
-    #         "Price attributed specifically to "
-    #         "this product variant"
-    #     ),
-    #     validators=[validators.price_validator]
-    # )
+    attributed_price = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=1,
+        help_text=_(
+            "Price attributed specifically to "
+            "this product variant"
+        ),
+        validators=[validators.price_validator]
+    )
     availability = models.BooleanField(
         default=True
     )
@@ -61,19 +62,6 @@ class Size(AbstractVariant):
         default=VariantMetrics.CLOTHE
     )
 
-    # name = models.CharField(
-    #     max_length=100,
-    #     help_text=_('Variant human readable name'),
-    #     choices=ClotheSizesChoices.choices(),
-    #     default=ClotheSizesChoices.default('S')
-    # )
-    # sub_category = models.CharField(
-    #     max_length=100,
-    #     help_text=_('Variant specific for product type'),
-    #     choices=VariantSubcategoryChoices.choices,
-    #     default=VariantSubcategoryChoices.CLOTHE_SIZE
-    # )
-
     class Meta:
         verbose_name = _('Size')
         verbose_name_plural = _('Sizes')
@@ -96,6 +84,6 @@ def transform_size(instance, **kwargs):
         capitalize = ['Bra', 'Clothe']
         if instance.metric in capitalize:
             instance.name = str(instance.name).upper()
-
+        
         if instance.metric == 'Text':
             instance.name = str(instance.name).lower().title()

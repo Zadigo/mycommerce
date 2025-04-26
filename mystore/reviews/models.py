@@ -3,12 +3,10 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
-from shop.models import Product
-
 from reviews.utils import review_media_path
 from reviews.validators import validate_rating, validate_video
+from shop.models import Product
 
-USER_MODEL = get_user_model()
 
 class ReviewMedia(models.Model):
     image = ProcessedImageField(
@@ -33,7 +31,7 @@ class ReviewMedia(models.Model):
 
 class Review(models.Model):
     user = models.ForeignKey(
-        USER_MODEL,
+        get_user_model(),
         on_delete=models.CASCADE
     )
     product = models.ForeignKey(
@@ -48,7 +46,9 @@ class Review(models.Model):
         default=1,
         validators=[validate_rating]
     )
-    title = models.CharField(max_length=200)
+    title = models.CharField(
+        max_length=200
+    )
     comment = models.TextField(
         max_length=5000
     )

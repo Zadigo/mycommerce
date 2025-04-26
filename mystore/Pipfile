@@ -39,6 +39,8 @@ requests = "*"
 djangorestframework-simplejwt = "*"
 thefuzz = "*"
 daphne = "*"
+django-celery-beat = "*"
+flower = "*"
 
 [dev-packages]
 autopep8 = "*"

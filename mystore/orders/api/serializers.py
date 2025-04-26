@@ -1,6 +1,7 @@
 from orders.api.validators import validate_card_token, validate_intent_token
+from orders.models import CustomerOrder
 from rest_framework import fields
-from rest_framework.serializers import Serializer
+from rest_framework.serializers import ModelSerializer, Serializer
 from shop.api.serializers import ImageSerializer
 
 from mystore.choices import ShipmentChoices
@@ -101,3 +102,11 @@ class ValidateOrder(Serializer):
         ShipmentChoices.choices,
         default='Chronopost'
     )
+
+
+class CancelOrderSerializer(ModelSerializer):
+    refund_requested = fields.BooleanField(default=True)
+
+    class Meta:
+        model = CustomerOrder
+        fields = ['id', 'reference', 'refund_requested']

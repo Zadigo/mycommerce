@@ -6,6 +6,11 @@ app_name = 'orders_api'
 
 urlpatterns = [
     re_path(
+        r'^(?P<reference>[a-z0-9]+)$/cancel',
+        views.CancelOrder.as_view(),
+        name='cancel'
+    ),
+    re_path(
         r'^delivery-options$',
         views.ListDeliveryOptions.as_view()
     ),
@@ -26,6 +31,7 @@ urlpatterns = [
     ),
     re_path(
         r'^$',
-        views.ListCustomerOrders.as_view()
+        views.ListCustomerOrders.as_view(),
+        name='orders'
     )
 ]

@@ -55,10 +55,12 @@ INSTALLED_APPS = [
     'import_export',
     'django_ckeditor_5',
     'storages',
+    'django_celery_beat',
 
     'rest_framework',
     'rest_framework.authtoken',
 
+    'django_ecommerce',
     'legal',
     'accounts',
     'collection',
@@ -69,7 +71,6 @@ INSTALLED_APPS = [
     'shipments',
     'reviews',
     'stocks',
-    'django_ecommerce_mails',
 
     'adminapi'
 ]

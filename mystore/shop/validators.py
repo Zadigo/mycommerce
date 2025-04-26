@@ -17,7 +17,7 @@ def price_validator(value):
         raise ValidationError(
             _(
                 "The product's price should "
-                "be at least above 0"
+                "be at least 1"
             )
         )
     return value

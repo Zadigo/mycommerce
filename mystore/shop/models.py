@@ -10,6 +10,7 @@ from django.db.models.signals import post_delete, pre_delete, pre_save
 from django.dispatch import receiver
 from django.forms import ValidationError
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.timezone import now, timedelta
 from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
@@ -17,7 +18,7 @@ from imagekit.processors import ResizeToFill
 from shop import managers, validators
 from shop.choices import ColorChoices, GenderChoices
 from shop.utils import calculate_sale, create_slug, image_path, video_path
-from django.utils.functional import cached_property
+
 from mystore.choices import CategoryChoices, SubCategoryChoices
 
 
@@ -392,11 +393,6 @@ class AbstractProduct(models.Model):
             color = self.color[:3]
             numbers = map(lambda _: random.choice(string.digits), range(10))
             self.sku = f"{color.upper()}{''.join(numbers)}"
-
-    def get_absolute_url(self):
-        return reverse('shop:product', kwargs={
-            'slug': self.slug
-        })
 
 
 class Product(AbstractProduct):
