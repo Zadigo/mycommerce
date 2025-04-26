@@ -87,11 +87,7 @@ class ListCollectionProducts(generics.ListAPIView):
         pagination_helper = PaginationHelper()
         pagination_helper(self.request, queryset, self.serializer_class)
 
-        template = pagination_helper.get_custom_response_template(
-            infos={
-                'total_count': queryset.count()
-            }
-        )
+        template = pagination_helper.get_custom_response_template(infos={})
         return Response(template)
 
     def get_queryset(self):
