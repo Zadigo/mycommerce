@@ -1,5 +1,15 @@
 <template>
-  <v-navigation-drawer id="delivery" v-model="proxyShow" width="400" location="right" temporary @close="emit('close')">
+  <v-navigation-drawer id="delivery" v-model="show" width="400" location="right" temporary @close="show=false">
+    <v-toolbar class="border-bottom" color="white">
+      <v-toolbar-title class="fw-bold">
+        {{ $t("Livraison") }}
+      </v-toolbar-title>
+
+      <v-spacer />
+
+      <v-btn icon="mdi-close" @click="show=false" />
+    </v-toolbar>
+
     <div class="container my-4 fw-light">
       <div class="row">
         <p class="fw-bold mb-1 mt-3">
@@ -104,21 +114,21 @@
 
 <script lang="ts" setup>
 const props = defineProps({
-  showModal: {
+  modelValue: {
     type: Boolean
   }
 })
 
 const emit = defineEmits({
-  close() {
+  'update:modelValue'(_value: boolean) {
     return true
   }
 })
 
-const proxyShow = computed({
-  get: () => props.showModal,
-  set: () => {
-    emit('close')
+const show = computed({
+  get: () => props.modelValue,
+  set: (value: boolean) => {
+    emit('update:modelValue', value)
   }
 })
 </script>>

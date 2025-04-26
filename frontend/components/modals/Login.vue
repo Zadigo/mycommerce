@@ -10,20 +10,18 @@
     <v-divider />
     
     <Transition name="opacity">
-      <BlockSignup v-if="showSignup" @authenticate="handleAuthenticateCart" />
-      <BlockLogin v-else @show-signup="showSignup=true" @authenticate="handleAuthenticateCart" />
+      <BlockSignup v-if="showSignup" @authenticate="debouncedAuthenticateCart" />
+      <BlockLogin v-else @show-signup="showSignup=true" @authenticate="debouncedAuthenticateCart" />
     </Transition>
   </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
-import { useSessionStorage } from '@vueuse/core'
-
 const route = useRoute()
 const authStore = useAuthentication()
-const authenticatedCart = useSessionStorage('authenticated_cart', false)
-const sessionId = useCookie('session_id')
+const sessionId = useCookie('sessionId', { sameSite: 'strict', secure: true })
 
+const { debounce } = useDebounce()
 const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
 const { showLoginDrawer } = storeToRefs(authStore)
@@ -31,9 +29,9 @@ const { showLoginDrawer } = storeToRefs(authStore)
 const showSignup = ref(false)
 
 /**
- * Indicates whether the login modal should open
- * based on a parameter present in the url -; or, uses
- * `showLoginDrawer` to manipulate the modal
+ * Computed property to control the login modal visibility.
+ * If the URL query parameter `login` equals '0', the modal will open.
+ * Otherwise, it defaults to the store’s value
  */
 const shouldShowLoginDrawer = computed<boolean>({
   get: () => {
@@ -45,27 +43,32 @@ const shouldShowLoginDrawer = computed<boolean>({
 })
 
 /**
- * When the user has added a set of products to his
- * cart when he was not logged in, this function will
- * get called in order to attribute all the products
- * to his authenticated account once he logs in  
+ * Syncs the unauthenticated cart to the authenticated user's account
+ * by calling an API endpoint with the current session ID
  */
 async function handleAuthenticateCart () {
-  try {
-    if (authenticatedCart.value) {
-      await $client.post('cart/authenticate', {
+  if (!authStore.sessionCache.authenticatedCart) {
+    await $client('/api/v1/cart/authenticate', {
+      method: 'POST',
+      body: {
         session_id: sessionId.value
-      })
-    }
-  } catch (e) {
-    handleError(e)
+      }
+    })
   }
 }
 
+/**
+ * Resets the login modal state:
+ * - Immediately hides the login drawer.
+ * - Clears the sign-up view after a 1-second delay.
+ */
 function handleReset() {
   showLoginDrawer.value = false
+  
   setTimeout(() => {
     showSignup.value = false
-  }, 1000);
+  }, 1000)
 }
+
+const debouncedAuthenticateCart = debounce(handleAuthenticateCart, 5000)
 </script>

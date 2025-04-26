@@ -1,57 +1,50 @@
 <template>
-  <section id="products" class="mb-5" style="margin-top: 59px;">
-    <div class="row">
-      <!-- Page Title -->
-      <div class="col-12">
-        <div class="card shadow-none">
-          <div class="card-body pb-1 d-flex flex-row justify-content-start">
-            <h1 :aria-labelledby="route.params.id" class="text-uppercase fw-bold h4">
-              {{ route.params.id }}
-            </h1>
-          </div>
-        </div>
-      </div>
-
-      <!-- Feed -->
-      <div class="col-12">
-        <Suspense>
-          <template #default>
-            <AsyncFeed @products-loaded="handleLoadedProducts" />
-          </template>
-
-          <template #fallback>
-            <ProductsLoadingFeed />
-          </template>
-        </Suspense>
-      </div>
+  <section id="products-feed" class="my-10">
+    <!-- Page Title -->
+    <div id="feed-title" class="px-10">
+      <TailCard class="shadow-none border-none p-1">
+        <TailCardContent class="flex flex-row justify-start">
+          <h1 :aria-labelledby="id" class="uppercase font-bold text-2xl">
+            {{ id }}
+          </h1>
+        </TailCardContent>
+      </TailCard>
     </div>
+
+    <!-- Feed -->
+    <Suspense>
+      <AsyncProductsFeed @products-loaded="handleLoadedProducts" />
+
+      <template #fallback>
+        <ProductsLoadingFeed />
+      </template>
+    </Suspense>
   </section>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useChangeCase } from '@vueuse/integrations/useChangeCase'
 import type { Product } from '~/types'
 
-const route = useRoute()
+const AsyncProductsFeed = defineAsyncComponent({
+  loader: async () => import('~/components/products/Feed.vue')
+})
 
 const productsLoading = ref(true)
 const products = ref<Product[]>([])
 
+const { id } = useRoute().params
+
 provide('productsLoading', productsLoading)
 
 useHead({
-  title: useChangeCase(route.params.id as string, 'capitalCase'),
+  title: useChangeCase(id as string, 'capitalCase'),
   meta: [
     {
       key: 'description',
-      content: ''
+      content: 'Découvrez toutes notre collection de vêtements'
     }
   ]
-})
-
-const AsyncFeed = defineAsyncComponent({
-  loader: async () => import('~/components/products/Feed.vue'),
-  timeout: 10000
 })
 
 /**

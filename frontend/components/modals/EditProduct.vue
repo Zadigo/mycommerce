@@ -66,21 +66,27 @@
         </div>
       </div>
 
-      <BaseSkeleton v-else :loading="true" />
+      <ModalsSkeletonLoader v-else class="mt-4" />
     </div>
-
-    <BaseSkeleton v-else :loading="true" />
+    
+    <div v-else class="container my-5">
+      <ModalsSkeletonLoader class="mt-4" />
+    </div>
   </v-navigation-drawer>
 </template>
 
-<script lang="ts" setup>
-import type { ProductToEdit } from '~/types';
+<script setup lang="ts">
+import type { ProductToEdit } from '~/types'
 
-const { showEditProductDrawer, showCartDrawer } = storeToRefs(useCart())
+const cartStore = useCart()
+const { showEditProductDrawer, showCartDrawer } = storeToRefs(cartStore)
 const { mediaPath } = useDjangoUtilies()
 
 const currentEditedProduct = inject<ProductToEdit>('currentEditedProduct')
 
+/**
+ * 
+ */
 function handleCloseProductEdition () {
   showEditProductDrawer.value = false
   showCartDrawer.value = true

@@ -7,1208 +7,1350 @@
 	},
 	"item": [
 		{
-			"name": "Products",
-			"event": [
+			"name": "Shop",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('number of products', () => {\r",
-							"    pm.response.to.have.status(200)\r",
-							"    pm.response.to.have.jsonBody('count')\r",
-							"    pm.response.to.have.jsonBody('results')\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept-Language",
-						"value": "fr,en-US,q=0.8;en-GB,q=0.7;",
-						"type": "text",
-						"disabled": true
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text",
-						"disabled": true
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/products",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
+					"name": "Products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('list all products', () => {\r",
+									"    const data = pm.response.json()\r",
+									"    const results = data.results\r",
+									"    const randomNumber = Math.floor(Math.random() * results.length) + 1\r",
+									"    const randomProduct = results[randomNumber]\r",
+									"\r",
+									"    pm.expect(randomProduct).to.have.property(\"id\")\r",
+									"    pm.expect(randomProduct).to.have.property('count')\r",
+									"    pm.expect(randomProduct).to.have.property('results')\r",
+									"\r",
+									"    pm.environment.set('productID', randomProduct.id)\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
 					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"shop",
-						"products"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Products - Details",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('number of products', () => {\r",
-							"    pm.response.to.have.status(200)\r",
-							"    pm.response.to.have.jsonBody('variants')\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Accept-Language",
-						"value": "fr,en-US,q=0.8;en-GB,q=0.7;",
-						"type": "text",
-						"disabled": true
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}shop/products",
+							"host": [
+								"{{apiUrl}}shop"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "admin",
+									"value": "false",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "mini",
+									"disabled": true
+								},
+								{
+									"key": "colors",
+									"value": "White",
+									"disabled": true
+								},
+								{
+									"key": "min_price",
+									"value": "30",
+									"disabled": true
+								},
+								{
+									"key": "max_price",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sizes",
+									"value": "XS,M",
+									"disabled": true
+								},
+								{
+									"key": "q",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "cat",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "sub",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
 					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text",
-						"disabled": true
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/products/1",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"shop",
-						"products",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Products - Search",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('products are tanga', () => {\r",
-							"    pm.response.json().map((product) => {\r",
-							"        return product['name'].includes('Tanga')\r",
-							"    })\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
+					"response": []
 				},
+				{
+					"name": "Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('number of products', () => {\r",
+									"    pm.response.to.have.status(200)\r",
+									"    pm.response.to.have.jsonBody('variants')\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "fr,en-US,q=0.8;en-GB,q=0.7;",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{apiUrl}}shop/products/{{productID}}",
+							"host": [
+								"{{apiUrl}}shop"
+							],
+							"path": [
+								"products",
+								"{{productID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Collections Names",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"test collection names\", () => {\r",
+									"    pm.expect(pm.response.code).to.equal(200)\r",
+									"\r",
+									"    const data = pm.response.json()\r",
+									"    const firstItem = data[0]\r",
+									"    pm.environment.set(\"collectionName\", firstItem.category.toLowerCase())\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}collection",
+							"host": [
+								"{{apiUrl}}collection"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Collection",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}collection/{{collectionName}}",
+							"host": [
+								"{{apiUrl}}collection"
+							],
+							"path": [
+								"{{collectionName}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recommendations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}shop/products/recommendations?q=5",
+							"host": [
+								"{{apiUrl}}shop"
+							],
+							"path": [
+								"products",
+								"recommendations"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "5"
+								},
+								{
+									"key": "p",
+									"value": "{{productID}}",
+									"disabled": true
+								},
+								{
+									"key": "i",
+									"value": "0",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product Stock",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}stocks/products/{{productID}}",
+							"host": [
+								"{{apiUrl}}stocks"
+							],
+							"path": [
+								"products",
+								"{{productID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Stock Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customer_order\": \"{{customerOrder}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiUrl}}stocks/update",
+							"host": [
+								"{{apiUrl}}stocks"
+							],
+							"path": [
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Liked Products",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_ids\": [10, 30]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiUrl}}shop/liked",
+							"host": [
+								"{{apiUrl}}shop"
+							],
+							"path": [
+								"liked"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Carts",
+			"item": [
+				{
+					"name": "Add",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.test('add cart', () => {\r",
+									"    const data = pm.response.json()\r",
+									"    pm.environment.set('sessionID', data.session_id)\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('add product to cart', () => {\r",
+									"    if (pm.response.status === 400) {\r",
+									"        console.log(\"Failed to add product to cart. Status: 400\")\r",
+									"    } else {\r",
+									"        const data = pm.response.json()\r",
+									"\r",
+									"        pm.expect(data).to.have.property('session_id')\r",
+									"\r",
+									"        const token = data.token.split('-')\r",
+									"        const cartIdentifier = token[tokens.length - 1]\r",
+									"\r",
+									"        pm.environment.set('sessionID', data.token)\r",
+									"        pm.environment.set('cartUniqueIdentifier', cartIdentifier)\r",
+									"    }\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product\": {\r\n        \"id\": \"{{productID}}\",\r\n        \"color\": \"Black\"\r\n    },\r\n    \"size\": \"Unique\",\r\n    \"session_id\": \"{{sessionID}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiUrl}}cart/add",
+							"host": [
+								"{{apiUrl}}cart"
+							],
+							"path": [
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"list the user's cart\", () => {\r",
+									"\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}cart/{{cartUniqueIdentifier}}/items",
+							"host": [
+								"{{apiUrl}}cart"
+							],
+							"path": [
+								"{{cartUniqueIdentifier}}",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}cart/{{cartID}}",
+							"host": [
+								"{{apiUrl}}cart"
+							],
+							"path": [
+								"{{cartID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authenticate Products",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "session_id",
+									"value": "{{sessionID}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}cart/authenticate",
+							"host": [
+								"{{apiUrl}}cart"
+							],
+							"path": [
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}orders",
+							"host": [
+								"{{apiUrl}}orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Session ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('test create session ID', () => {\r",
+									"    const data = pm.response.json()\r",
+									"    const token = data.token.split('-')\r",
+									"    const cartIdentifier = token[tokens.length - 1]\r",
+									"\r",
+									"    pm.environment.set('sessionID', data.token)\r",
+									"    pm.environment.set('cartUniqueIdentifier', cartIdentifier)\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}cart/session-id",
+							"host": [
+								"{{apiUrl}}cart"
+							],
+							"path": [
+								"session-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Item",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product\": {\r\n        \"id\": \"{{productID}}\",\r\n        \"color\": \"Black\"\r\n    },\r\n    \"size\": \"Unique\",\r\n    \"session_id\": \"{{sessionID}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiUrl}}cart/{{cartUniqueIdentifier}}/delete",
+							"host": [
+								"{{apiUrl}}cart"
+							],
+							"path": [
+								"{{cartUniqueIdentifier}}",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Intent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"create Stripe payment intent\", () => {\r",
+									"    const data = pm.response.json()\r",
+									"    pm.expect(pm.response.status).to.equal(200)\r",
+									"    pm.expect(data).to.have.property(\"intent\")\r",
+									"    pm.environment.set(\"stripePaymentIntent\", data.intent) \r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "session_id",
+									"value": "{{sessionID}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}orders/intent",
+							"host": [
+								"{{apiUrl}}orders"
+							],
+							"path": [
+								"intent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Intent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "session_id",
+									"value": "{{sessionID}}",
+									"type": "text"
+								},
+								{
+									"key": "intent",
+									"value": "{{stripePaymentIntent}}",
+									"type": "text"
+								},
+								{
+									"key": "lastname",
+									"value": "Julie",
+									"type": "text"
+								},
+								{
+									"key": "firstname",
+									"value": "Pauline",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "zadigo@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "address_line",
+									"value": "1 rue de Paris",
+									"type": "text"
+								},
+								{
+									"key": "zip_code",
+									"value": "59000",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Lille",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "France",
+									"type": "text"
+								},
+								{
+									"key": "telephone",
+									"value": "0611222222",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}orders/intent/update",
+							"host": [
+								"{{apiUrl}}orders"
+							],
+							"path": [
+								"intent",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "token",
+									"value": "tok_visa",
+									"description": "This should be tok_visa or tok_xyz for testing",
+									"type": "text"
+								},
+								{
+									"key": "card",
+									"value": "card_1QRv0PFCpXT3GMhEDZU55F6p",
+									"type": "text"
+								},
+								{
+									"key": "client_ip",
+									"value": "0.0.0.0",
+									"type": "text"
+								},
+								{
+									"key": "session_id",
+									"value": "{{sessionID}}",
+									"type": "text"
+								},
+								{
+									"key": "intent",
+									"value": "{{stripePaymentIntent}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}orders/create",
+							"host": [
+								"{{apiUrl}}orders"
+							],
+							"path": [
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}accounts/{{userID}}",
+							"host": [
+								"{{apiUrl}}accounts"
+							],
+							"path": [
+								"{{userID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Email or Password",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\": \"John\",\r\n    \"lastname\": \"Pendenque\",\r\n    \"email\": \"pifeg33976@bitflirt.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiUrl}}accounts/{{userID}}",
+							"host": [
+								"{{apiUrl}}accounts"
+							],
+							"path": [
+								"{{userID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Address",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\": \"Jelena\",\r\n    \"lastname\": \"Boskovic\",\r\n    \"address_line\": \"1 rue de Marseille\",\r\n    \"zip_code\": 59000,\r\n    \"country\": \"France\",\r\n    \"city\": \"Lille\",\r\n    \"telephone\": null,\r\n    \"gender\": 1,\r\n    \"is_active\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiUrl}}accounts/addresses/{{userID}}/update",
+							"host": [
+								"{{apiUrl}}accounts"
+							],
+							"path": [
+								"addresses",
+								"{{userID}}",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "JWT Access",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"function parseJwt(token) {\r",
+									"  var base64Payload = token.split('.')[1];\r",
+									"  var payload = Buffer.from(base64Payload, 'base64');\r",
+									"  return JSON.parse(payload.toString());\r",
+									"}\r",
+									"\r",
+									"pm.test(\"get access token\", () => {\r",
+									"    const data = pm.response.json()\r",
+									"\r",
+									"    pm.expect(pm.response.code).to.be.equal(200)\r",
+									"    pm.expect(data).to.have.property(\"access\")\r",
+									"    pm.expect(data).to.have.property(\"refresh\")\r",
+									"    \r",
+									"    pm.environment.set(\"access\", data.access)\r",
+									"    pm.environment.set(\"refresh\", data.refresh)\r",
+									"\r",
+									"    pm.environment.set(parseJwt(data.access).user_id)\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"zadigo\",\r\n    \"password\": \"touparet\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authUrl}}token/",
+							"host": [
+								"{{authUrl}}token"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "JWT Verify",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"verify access token\", () => {\r",
+									"    const data = pm.response.json()\r",
+									"\r",
+									"    pm.expect(pm.response.code).to.be.equal(200)\r",
+									"    pm.expect(Object.keys(data) === 0).to.be.true()\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{authUrl}}token/verify/",
+							"host": [
+								"{{authUrl}}token"
+							],
+							"path": [
+								"verify",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "JWT Refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('refresh access token', () => {\r",
+									"    const data = pm.response.json()\r",
+									"\r",
+									"    pm.expect(data).to.have.property('access')\r",
+									"    pm.environment.set('access', data.access)\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "refresh",
+									"value": "{{refresh}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{authUrl}}token/refresh/",
+							"host": [
+								"{{authUrl}}token"
+							],
+							"path": [
+								"refresh",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"gida.1@gmail.com\",\r\n    \"password1\": \"touparette-go\",\r\n    \"password2\": \"touparette-go\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiUrl}}accounts/signup",
+							"host": [
+								"{{apiUrl}}accounts"
+							],
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Address Line",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "firstname",
+									"value": "Pauline",
+									"type": "text"
+								},
+								{
+									"key": "lastname",
+									"value": "Garoup",
+									"type": "text"
+								},
+								{
+									"key": "address_line",
+									"value": "16 rue de Paris",
+									"type": "text"
+								},
+								{
+									"key": "zip_code",
+									"value": "76001",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "France",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Lille",
+									"type": "text"
+								},
+								{
+									"key": "telephone",
+									"value": "0661010101",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}accounts/{{userID}}/address-lines",
+							"host": [
+								"{{apiUrl}}accounts"
+							],
+							"path": [
+								"{{userID}}",
+								"address-lines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Address Line",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "firstname",
+									"value": "Pauline",
+									"type": "text"
+								},
+								{
+									"key": "lastname",
+									"value": "Garoup",
+									"type": "text"
+								},
+								{
+									"key": "address_line",
+									"value": "16 rue de Paris",
+									"type": "text"
+								},
+								{
+									"key": "zip_code",
+									"value": "76001",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "France",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Lille",
+									"type": "text"
+								},
+								{
+									"key": "telephone",
+									"value": "0661010101",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}accounts/{{userID}}/address-lines/1",
+							"host": [
+								"{{apiUrl}}accounts"
+							],
+							"path": [
+								"{{userID}}",
+								"address-lines",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Address Lines",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}accounts/{{userID}}/address-lines",
+							"host": [
+								"{{apiUrl}}accounts"
+							],
+							"path": [
+								"{{userID}}",
+								"address-lines"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
 				{
 					"listen": "prerequest",
 					"script": {
+						"type": "text/javascript",
+						"packages": {},
 						"exec": [
 							""
-						],
-						"type": "text/javascript"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
 					}
 				}
-			],
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Upload Products File",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/E:/mywebsites/mycommerce/products_smky8.json"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}shop/products/upload",
+							"host": [
+								"{{apiUrl}}shop"
+							],
+							"path": [
+								"products",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Images",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Jupe Gaufrée",
+									"type": "text"
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": "/E:/personnal/myscrap/media/fr/jupe-cargo-lani%C3%A8res-c0p151013323_1.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}shop/images/upload",
+							"host": [
+								"{{apiUrl}}shop"
+							],
+							"path": [
+								"images",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Product Images",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Test jupe",
+									"type": "text"
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": [
+										"/E:/personnal/myscrap/media/fr/jupe-cargo-lani%C3%A8res-c0p151013323_1.jpg",
+										"/E:/personnal/myscrap/media/fr/jupe-cargo-lani%C3%A8res-c0p151013323_2.jpg"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apiUrl}}shop/products/{{productID}}/upload-images",
+							"host": [
+								"{{apiUrl}}shop"
+							],
+							"path": [
+								"products",
+								"{{productID}}",
+								"upload-images"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Images",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiUrl}}shop/images",
+							"host": [
+								"{{apiUrl}}shop"
+							],
+							"path": [
+								"images"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Associate Images",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product\": {{productID}},\r\n    \"images\": [1, 2]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiUrl}}shop/images/associate",
+							"host": [
+								"{{apiUrl}}shop"
+							],
+							"path": [
+								"images",
+								"associate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cities",
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "Accept-Language",
-						"value": "fr,en-US,q=0.8;en-GB,q=0.7;",
-						"type": "text",
-						"disabled": true
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text",
-						"disabled": true
-					}
-				],
+				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/search?q=tanga",
-					"protocol": "http",
+					"raw": "{{quartUrl}}cities?city=villeneuve",
 					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"shop",
-						"search"
+						"{{quartUrl}}cities"
 					],
 					"query": [
-						{
-							"key": "q",
-							"value": "tanga"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Products - Advanced Search",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('results structure', () => {\r",
-							"    pm.response.to.have.jsonBody('results')\r",
-							"})\r",
-							"\r",
-							"pm.test('products are either red or blue', () => {\r",
-							"    var result = pm.response.json()['results'].map((product) => {\r",
-							"        // return product['color'] === 'Red' || product['color'] === 'Blue'\r",
-							"        return product['color'] === 'Red'\r",
-							"    })\r",
-							"    return result.every((item) => {\r",
-							"        return item == true\r",
-							"    })\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept-Language",
-						"value": "fr,en-US,q=0.8;en-GB,q=0.7;",
-						"type": "text",
-						"disabled": true
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text",
-						"disabled": true
-					}
-				],
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/advanced/search?colors=blue,red&sizes=XS&novelties=1",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"shop",
-						"advanced",
-						"search"
-					],
-					"query": [
-						{
-							"key": "colors",
-							"value": "blue,red"
-						},
-						{
-							"key": "sizes",
-							"value": "XS"
-						},
-						{
-							"key": "novelties",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Products - Like",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/products/11/like",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"shop",
-						"products",
-						"11",
-						"like"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Products - Unlike",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/products/11/unlike",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"shop",
-						"products",
-						"11",
-						"unlike"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Products - Reviews",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/products/1/reviews",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"products",
-						"1",
-						"reviews"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "_Cart",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Token {{authenticationToken}}",
-						"type": "text",
-						"disabled": true
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "session_id",
-							"value": "{{sessionId}}",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/cart/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"cart",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Cart - Add",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('update session id', () => {\r",
-							"    pm.environment.set('sessionId', pm.response.json()['session_id'])\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Token 471b4329d2a2f0868c85c8248cf5c66a43a2f711",
-						"description": "Test for when the user is authenticated\n",
-						"type": "text",
-						"disabled": true
-					},
-					{
-						"key": "Accept-Language",
-						"value": "fr,en-US,q=0.9;",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "product",
-							"value": "18",
-							"type": "text"
-						},
-						{
-							"key": "default_size",
-							"value": "Unique",
-							"type": "text"
-						},
-						{
-							"key": "session_id",
-							"value": "{{sessionId}}",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/cart/add",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"cart",
-						"add"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Cart - Remove",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "session_id",
-							"value": "{{sessionId}}",
-							"type": "text"
-						},
-						{
-							"key": "product",
-							"value": "12",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/cart/remove",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"cart",
-						"remove"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Wishlists",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": []
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/wishlists",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"shop",
-						"wishlists"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Wishlist - Details",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": []
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/wishlists/1",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"shop",
-						"wishlists",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Wishlist - Create",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "name",
-							"value": "My dresses",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/wishlists/create",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"shop",
-						"wishlists",
-						"create"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Wishlist - Add product",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "product",
-							"value": "11",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/wishlists/1/add",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"shop",
-						"wishlists",
-						"1",
-						"add"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Wishlist - Remove product",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "product",
-							"value": "11",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/wishlists/1/remove",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"shop",
-						"wishlists",
-						"1",
-						"remove"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Orders - List",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/orders/",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"orders",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Orders - Create",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "session_id",
-							"value": "{{sessionId}}",
-							"type": "text"
-						},
-						{
-							"key": "email",
-							"value": "zadigo@gmail.com",
-							"type": "text"
-						},
-						{
-							"key": "firstname",
-							"value": "Lucie\n",
-							"type": "text"
-						},
-						{
-							"key": "lastname",
-							"value": "Lopez",
-							"type": "text"
-						},
-						{
-							"key": "address",
-							"value": "1 rue de Paris",
-							"type": "text"
-						},
-						{
-							"key": "zip_code",
-							"value": "59000",
-							"type": "text"
-						},
-						{
-							"key": "country",
-							"value": "France",
-							"type": "text"
-						},
-						{
-							"key": "telephone",
-							"value": "0315201520",
-							"type": "text"
-						},
-						{
-							"key": "delivery_option",
-							"value": "Colissimo - Livraison standard",
-							"type": "text"
-						},
-						{
-							"key": "card_token",
-							"value": "stripe_something",
-							"type": "text"
-						},
 						{
 							"key": "city",
-							"value": "Lille",
-							"type": "text"
+							"value": "villeneuve"
 						}
 					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/cart/payment",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"cart",
-						"payment"
-					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Test Session",
+			"name": "Fuzzy Test",
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/test-session",
-					"protocol": "http",
+					"raw": "{{apiUrl}}shop/fuzzy?s=marine",
 					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
+						"{{apiUrl}}shop"
 					],
-					"port": "8000",
 					"path": [
-						"api",
-						"v1",
-						"test-session"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Authentication - Login",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('update global token', () => {\r",
-							"    pm.environment.set('authenticationToken', pm.response.json()['token'])\r",
-							"})\r",
-							"\r",
-							"pm.test('has token', () => {\r",
-							"    pm.response.to.have.jsonBody('token')\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "email",
-							"value": "zadigo@gmail.com",
-							"type": "text"
-						},
-						{
-							"key": "password",
-							"value": "touparet",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/accounts/login",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"accounts",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Authentication - Logout",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('remove authentication token', () => {\r",
-							"    pm.environment.set('authenticationToken', null)\r",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/accounts/logout",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"accounts",
-						"logout"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Authentication - Profile",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/accounts/profile",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"accounts",
-						"profile"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Likes - List",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/likes",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"shop",
-						"likes"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Dashboard Images",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/images?limit=100&offset=0",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"images"
+						"fuzzy"
 					],
 					"query": [
 						{
-							"key": "limit",
-							"value": "100"
-						},
-						{
-							"key": "offset",
-							"value": "0"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Products generic",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/dashboard/products/generic",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"dashboard",
-						"products",
-						"generic"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "http://127.0.0.1:8000/api/v1/collection/all",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/collection/all",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"collection",
-						"all"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Dashboard - Product",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/dashboard/products/1",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"shop",
-						"dashboard",
-						"products",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Payment",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "session_id",
-							"value": "{{sessionId}}",
-							"type": "text"
-						},
-						{
-							"key": "email",
-							"value": "zadigo@gmail.com",
-							"type": "text"
-						},
-						{
-							"key": "firstname",
-							"value": "Lucile",
-							"type": "text"
-						},
-						{
-							"key": "lastname",
-							"value": "Lopez",
-							"type": "text"
-						},
-						{
-							"key": "address",
-							"value": "1 rue de Rivoli",
-							"type": "text"
-						},
-						{
-							"key": "zip_code",
-							"value": "75001",
-							"type": "text"
-						},
-						{
-							"key": "city",
-							"value": "Paris",
-							"type": "text"
-						},
-						{
-							"key": "country",
-							"value": "France",
-							"type": "text"
-						},
-						{
-							"key": "telephone",
-							"value": "0590010102",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/cart/payment",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"cart",
-						"payment"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Products - Latest",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/v1/shop/latest?limit=20",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"shop",
-						"latest"
-					],
-					"query": [
-						{
-							"key": "limit",
-							"value": "20"
+							"key": "s",
+							"value": "marine"
 						}
 					]
 				}
@@ -1223,12 +1365,18 @@
 				"type": "text/javascript",
 				"exec": [
 					"pm.test('set authorization token', () => {",
-					"    var token = pm.environment.get('authenticationToken')",
+					"    const basicToken = pm.environment.get('authenticationToken')",
+					"    const accessToken = pm.environment.get('access')",
 					"",
-					"    if (token) {",
+					"    if (basicToken && basicToken !== 'null') {",
 					"        pm.request.headers.add({",
 					"            key: 'Authorization',",
-					"            value: `Token ${token}`",
+					"            value: `Token ${basicToken}`",
+					"        })",
+					"    } else if (accessToken && accessToken !== 'null') {",
+					"        pm.request.headers.add({",
+					"            key: 'Authorization',",
+					"            value: `Token ${accessToken}`",
 					"        }) ",
 					"    }",
 					"",
@@ -1245,7 +1393,12 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					""
+					"pm.test('invalid token', () => {\r",
+					"    if (pm.response.status === 401) {\r",
+					"        pm.environment.set(\"access\", null)\r",
+					"        pm.environment.set(\"refresh\", null)\r",
+					"    }\r",
+					"})"
 				]
 			}
 		}

@@ -1,8 +1,7 @@
-
+from django.forms import ValidationError
+from collection.api.serializers import CollectionSerializer
 from rest_framework import fields
 from rest_framework.serializers import Serializer
-
-from collection.api.serializers import CollectionSerializer
 from variants.api.serializers import SizeSerializer
 
 
@@ -12,11 +11,8 @@ class ImageProductSerializer(Serializer):
 
     id = fields.IntegerField()
     name = fields.CharField()
-    # TODO: Implement rest of fields
-    # variant = fields.CharField()
-    # mid_size = fields.ImageField()
-    # thumbnail = fields.ImageField()
-    # is_main_image = fields.BooleanField()
+    color = fields.CharField()
+    color_variant_name = fields.CharField()
 
 
 class ImageSerializer(Serializer):
@@ -86,3 +82,14 @@ class LikeSerializer(Serializer):
                     'product_ids': 'ID is not valid'
                 })
         return attrs
+
+
+class WishlistSerializer(Serializer):
+    session_id = fields.CharField()
+    products = fields.ListField()
+
+    def validate_products(self, value):
+        for item in value:
+            if not isinstance(item, int):
+                raise ValidationError('Products are not valid')
+        return value

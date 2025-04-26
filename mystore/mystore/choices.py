@@ -69,12 +69,12 @@ class SubCategoryChoices:
         item_tuples = [(category, category) for category in result]
         cls.sub_categories.extend(item_tuples)
         return cls.sub_categories
-    
+
     @classmethod
     def default(cls, name):
         result = list(filter(lambda x: name in x, cls.choices()))
         if result:
-            return result[-1]
+            return list(result[-1])[0]
         return 'Not attributed'
 
     @classmethod

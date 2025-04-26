@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <v-navigation-drawer id="composition" v-model="proxyShow" width="400" location="right" temporary @close="emit('close')">
+    <v-navigation-drawer id="composition" v-model="show" width="400" location="right" temporary @close="show=false">
       <div class="container my-4 fw-light">
         <h4 class="h5 mb-1 mt-3">
           {{ $t("Composition") }}
@@ -18,21 +18,21 @@
 
 <script lang="ts" setup>
 const props = defineProps({
-  showModal: {
+  modelValue: {
     type: Boolean
   }
 })
 
 const emit = defineEmits({
-  close() {
+  'update:modelValue'(_value: boolean) {
     return true
   }
 })
 
-const proxyShow = computed({
-  get: () => props.showModal,
-  set: () => {
-    emit('close')
+const show = computed({
+  get: () => props.modelValue,
+  set: (value: boolean) => {
+    emit('update:modelValue', value)
   }
 })
 </script>>

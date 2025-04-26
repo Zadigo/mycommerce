@@ -1,115 +1,179 @@
 <template>
   <section id="user-page">
     <!-- Email / Password -->
-    <div v-if="profile" id="email-password" class="card shadow-sm">
-      <div class="card-header">
-        <h1 class="h6 text-uppercase fw-bold my-3">
+    <TailCard v-if="profile" id="email-password" class="card border-none">
+      <TailCardHeader>
+        <TailCardTitle>
           {{ $t("Accédez à votre compte") }}
-        </h1>
-      </div>
+        </TailCardTitle>
+      </TailCardHeader>
 
-      <div class="card-body">
+      <TailCardContent>
         <!-- Password -->
-        <p class="fw-bold">
+        <p class="font-bold">
           {{ $t('Mot de passe') }}
         </p>
 
-        <transition name="opacity" mode="out-in">
-          <v-form v-if="showEditPassword" class="password-block" @submit.prevent>
-            <v-text-field id="password1" v-model="emailPasswordData.password1" variant="solo-filled" placeholder="Password 1" type="password" aria-label="Password 1" flat />
-            <v-text-field id="password2" v-model="emailPasswordData.password2" variant="solo-filled" placeholder="Password 2" type="password" aria-label="Password 2" flat />
+        <Transition mode="out-in">
+          <form v-if="showEditPassword" class="password-block" @submit.prevent>
+            <v-text-field id="current-password" v-model="emailPasswordRequestData.current_password" variant="solo-filled" placeholder="Mot de passe actuel" type="password" autocomplete="false" aria-label="Mot de passe actuel" flat />
+            <v-text-field id="password1" v-model="emailPasswordRequestData.password1" variant="solo-filled" placeholder="Nouveau mot de passe" type="password" autocomplete="new-password" aria-label="Nouveau mot de passe" flat />
+            <v-text-field id="password2" v-model="emailPasswordRequestData.password2" variant="solo-filled" placeholder="Taper le mot de passe à nouveau" autocomplete="new-password" type="password" aria-label="Taper le mot de passe à nouveau" flat />
             
-            <v-btn color="secondary" rounded @click="requestChangeEmailPassword">
-              {{ $t('Changer le mot de passe') }}
-            </v-btn>
-          </v-form>
+            <div class="flex gap-1">
+              <v-btn color="secondary" variant="tonal" rounded @click="requestUpdate">
+                {{ $t('Changer le mot de passe') }}
+              </v-btn>
 
-          <v-btn v-else class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block @click="showEditPassword=true">
+              <v-btn class="flex justify-between items-center" color="dark" variant="text" rounded flat @click="showEditPassword=false">
+                Annuler
+              </v-btn>
+            </div>
+          </form>
+          
+          <v-btn v-else class="flex justify-between items-center" color="dark" variant="text" flat block @click="showEditPassword=true">
             <span class="me-2">*************</span>
-            <font-awesome icon="pen" />
+            <Icon name="fa-solid:pen" />
           </v-btn>
-        </transition>
+        </Transition>
 
         <!-- Email -->
-        <p class="fw-bold mt-4">
+        <p class="font-bold mt-4">
           {{ $t("Email") }}
         </p>
 
-        <v-form v-if="showEditEmail" class="password-block" @submit.prevent>
-          <v-text-field v-model="emailPasswordData.email" variant="solo-filled" placeholder="Email" type="email" aria-label="Email" flat />        
+        <form v-if="showEditEmail" class="password-block" @submit.prevent>
+          <v-text-field v-model="emailPasswordRequestData.email" variant="solo-filled" placeholder="Email" type="email" aria-label="Email" flat />        
           
-          <v-btn color="secondary" rounded @click="requestChangeEmailPassword">
-            {{ $t("Changer l'email") }}
-          </v-btn>
-        </v-form>
+          <div class="d-flex gap-1">
+            <v-btn color="secondary" variant="tonal" rounded @click="requestUpdate">
+              {{ $t("Changer l'email") }}
+            </v-btn>
+            
+            <v-btn class="d-flex justify-content-between align-items-center" color="dark" variant="text" rounded flat @click="showEditEmail=false">
+              Annuler
+            </v-btn>
+          </div>
+        </form>
 
-        <v-btn v-else class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block @click="showEditEmail = true">
+        <v-btn v-else class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block @click="handleEditEmail">
           <span class="me-2">
             {{ profile?.email }}
           </span>
 
-          <font-awesome icon="pen" />
+          <Icon name="fa-solid:pen" />
         </v-btn>
 
-        <p class="fw-light mt-4">
+        <p class="font-light mt-4">
           BERSHKA prend très au sérieux le respect de votre vie privée
           et nous sommes engagés dans la protection de vos données personnelles.
           Découvrez comment nous prenons soin et comment nous traitons vos
           données dans notre Politique de confidentialité.
         </p>
-      </div>
-    </div>
+      </TailCardContent>
+    </TailCard>
 
     <!-- Billing -->
-    <div v-if="profile" id="billing" class="card shadow-sm mt-2">
-      <div class="card-header">
-        <h1 class="h6 text-uppercase fw-bold my-3">
+    <TailCard v-if="profile" id="billing" class="card border-none mt-2">
+      <TailCardHeader>
+        <TailCardTitle>
           {{ $t('Information pour la facturation') }}
-        </h1>
-      </div>
+        </TailCardTitle>
+      </TailCardHeader>
 
-      <AccountsBilliingForm v-for="address in profile.userprofile.address_set" :key="address.id" :address="address" />
-    </div>
+      <AccountBillingForm v-for="address in profile.userprofile.address_set" :key="address.id" :address="address" @delete-complete="handleDelete" />
+      <AccountBillingForm v-if="showNewAddressForm" @create-complete="handleCreation"  @close="showNewAddressForm=false" />
+
+      <TailCardContent class="flex justify-end">
+        <v-btn variant="tonal" rounded @click="showNewAddressForm=!showNewAddressForm">
+          <Icon name="fa-solid:plus" />
+          {{ $t('Ajouter') }}
+        </v-btn>
+      </TailCardContent>
+    </TailCard>
   </section>
 </template>
 
-<script lang="ts" setup>
-type CredentialsMethod = 'email' | 'password'
+<script setup lang="ts">
+import type { AddressSet } from '~/types'
 
 interface EmailPasswordData {
-  email: string,
+  email: string
+  current_password: string
   password1: string,
   password2: string
 }
 
-definePageMeta({
-  layout: 'account-layout',
-  middleware: [
-    'auth'
+useHead({
+  title: 'Mon compte',
+  meta: [
+    {
+      key: 'description',
+      content: ''
+    }
   ]
 })
 
+definePageMeta({
+  layout: 'accounts'
+})
+
+const authStore = useAuthentication()
 const { $client } = useNuxtApp() 
 const { handleError } = useErrorHandler()
+const { profile } = storeToRefs(authStore)
 
-const authenticationStore = useAuthentication()
-const { profile } = storeToRefs(authenticationStore)
-
-const emailPasswordData = ref<EmailPasswordData>({
+const emailPasswordRequestData = ref<EmailPasswordData>({
   email: '',
+  current_password: '',
   password1: '',
   password2: ''
 })
 
-// const showBillingForm = ref(false)
+const showNewAddressForm = ref(false)
 const showEditPassword = ref(false)
 const showEditEmail = ref(false)
 
+/**
+ * 
+ */
 function resetEmailPasswordData () {
-  emailPasswordData.value = {
+  showEditEmail.value = false
+  showEditPassword.value = false
+  emailPasswordRequestData.value = {
     email: '',
+    current_password: '',
     password1: '',
     password2: ''
+  }
+}
+
+/**
+ * 
+ */
+function handleEditEmail() {
+  if (profile.value) {
+    emailPasswordRequestData.value.email = profile.value.email
+    showEditEmail.value = true
+  }
+}
+
+/**
+ * 
+ */
+function handleCreation(data: AddressSet) {
+  if (profile.value) {
+    profile.value.userprofile.address_set.push(data)
+  }
+}
+
+/**
+ * 
+ */
+function handleDelete(id: number) {
+  if (profile.value) {
+    const index = profile.value.userprofile.address_set.findIndex(x => x.id === id)
+    profile.value.userprofile.address_set.splice(index, 1)
   }
 }
 
@@ -117,24 +181,17 @@ function resetEmailPasswordData () {
  * Requests an update for the password and/or
  * the email address by the user 
  */
-async function requestChangeEmailPassword (method: CredentialsMethod) {
-  try {
-    await $client.post('accounts/update', emailPasswordData)
-
-    emailPasswordData.value.email = ''
-    emailPasswordData.value.password1 = ''
-    emailPasswordData.value.password2 = ''
-    
-    if (method === 'password') {
-      showEditPassword.value = false
-    } else if (method === 'email') {
-      showEditEmail.value= false
+async function requestUpdate () {
+  await $client(`/api/v1/accounts/${authStore.userId}`, {
+    method: 'PATCH',
+    body: emailPasswordRequestData.value,
+    onResponse() {
+      resetEmailPasswordData()
+    },
+    onRequestError({ error }) {
+      resetEmailPasswordData()
+      handleError(error)
     }
-  } catch (e) {
-    handleError(e)
-    showEditEmail.value = false
-    showEditPassword.value = false
-    resetEmailPasswordData()
-  }
+  })
 }
 </script>

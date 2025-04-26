@@ -5,5 +5,6 @@ from rest_framework.serializers import Serializer
 class SizeSerializer(Serializer):
     id = fields.IntegerField()
     name = fields.CharField()
-    sub_category = fields.CharField()
-    availability = fields.BooleanField(default=True)
+    metric = fields.CharField()
+    availability = fields.BooleanField()
+    active = fields.BooleanField()

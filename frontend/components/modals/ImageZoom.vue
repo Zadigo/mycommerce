@@ -1,7 +1,7 @@
 <template>
-  <v-dialog v-model="showImageDetails" fullscreen hide-overlay scrollable transition="dialog-bottom-transition">
+  <v-dialog v-model="show" fullscreen hide-overlay scrollable transition="dialog-bottom-transition">
     <v-card class="position-relative">
-      <div v-if="image" :style="`background-image: url('${image.original}');`" class="zoomed-image" @click="emit('close')" />
+      <div v-if="image" :style="`background-image: url('${image.original}');`" class="zoomed-image" @click="show=false" />
 
       <div v-if="product && image" id="image-choices" class="d-flex flex-column gap-3">
         <NuxtImg v-for="otherImage in product.images" :key="otherImage.id" :class="{ 'selected': otherImage.id === image.id }" :src="otherImage.thumbnail" width="100px" @click="handleSelectedImage(image)" />
@@ -15,7 +15,7 @@ import type { PropType } from 'vue';
 import type { Product, ProductImage } from '~/types';
 
 const props = defineProps({
-  show: {
+  modelValue: {
     type: Boolean,
     default: false
   },
@@ -30,7 +30,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits({
-  close () {
+  'update:modelValue'(_value: boolean) {
     return true
   },
   'select-image' (_image: ProductImage) {
@@ -40,10 +40,10 @@ const emit = defineEmits({
 
 const { handleSelectedImage } = useImages()
 
-const showImageDetails = computed({
-  get: () => props.show,
-  set: () => {
-    emit('close')
+const show = computed({
+  get: () => props.modelValue,
+  set: (value) => {
+    emit('update:modelValue', value)
   }
 })
 </script>

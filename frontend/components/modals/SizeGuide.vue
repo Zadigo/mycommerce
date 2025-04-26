@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="proxyShow" width="400" location="right" temporary @close="emit('close')">
+  <v-navigation-drawer v-model="show" width="400" location="right" temporary>
     <v-toolbar class="border-bottom" color="white">
       <v-toolbar-title class="fw-bold">
         {{ $t("Guide des tailles") }}
@@ -7,7 +7,7 @@
 
       <v-spacer />
 
-      <v-btn icon="mdi-close" @click="emit('close')" />
+      <v-btn icon="mdi-close" @click="show=false" />
     </v-toolbar>
 
     <div v-if="product" class="container my-4">
@@ -17,7 +17,7 @@
             {{ $t("Sélectionne une taille") }}
           </p>
           
-          <ProductSizeBlock :sizes="product.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="proxyShow=true" />
+          <ProductSizeBlock :sizes="product.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="show=false" />
 
           <p class="fs-6 fw-bold mt-4 mb-1">
             {{ $t("Mensurations") }}
@@ -84,32 +84,33 @@
   </v-navigation-drawer>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { PropType } from 'vue';
 import type { Product } from '~/types';
 
 const props = defineProps({
-  showModal: {
+  modelValue: {
     type: Boolean
   },
   product: {
-    type: Object as PropType<Product | null>,
+    type: Object as PropType<Product>,
     required: true
   }
 })
 
 const emit = defineEmits({
-  close() {
+  'update:modelValue' (_value: boolean) {
     return true
   }
 })
 
 // const { mediaPath } = useDjangoUtilies()
 const { addToCart, handleSizeSelection } = useCartComposable()
-const proxyShow = computed({
-  get: () => props.showModal,
-  set: () => {
-    emit('close')
+
+const show = computed({
+  get: () => props.modelValue,
+  set: (value: boolean) => {
+    emit('update:modelValue', value)
   }
 })
 </script>

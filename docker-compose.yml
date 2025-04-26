@@ -96,6 +96,7 @@ services:
   db:
     build: ./docker/database
     container_name: app_database
+    env_file: ./docker/environment/postgres.env
     restart: always
     ports:
       - 5432:5432
@@ -103,11 +104,11 @@ services:
       - PostgresData:/var/lib/postgresql/data/
     networks:
       - ecommerce
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -h localhost -U $$DB_USER -d $$DB_NAME"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -h localhost -U $$DB_USER -d $$DB_NAME"]
+    #   interval: 5s
+    #   timeout: 5s
+    #   retries: 10
   
   pgadmin:
     image: dpage/pgadmin4
@@ -312,6 +313,27 @@ services:
       - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
     environment:
       - PROMETHEUS_URL=https://prometheus.example.fr
+    networks:
+      - ecommerce
+
+  n8n:
+    image: n8nio/n8n
+    container_name: app_n8n
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.n8n.entrypoints=websecure
+      - traefik.http.routers.n8n.rule=Host(`n8n.ecommerce.fr`)
+      - traefik.http.routers.n8n.tls=true
+      - traefik.http.routers.n8n.tls.certresolver=production
+      - traefik.http.services.n8n-service.loadbalancer.server.port=5678
+      - traefik.http.routers.n8n.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    env_file:
+      - ./docker/environment/automation.env
+      - ./docker/environment/secure_automation.env
+    ports:
+      - 5678:5678
     networks:
       - ecommerce
   

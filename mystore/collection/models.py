@@ -1,7 +1,7 @@
 from collection.utils import create_slug
 from django.db import models
 from django.db.models import UniqueConstraint
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -18,7 +18,8 @@ class Collection(models.Model):
     name by the user in the frontend"""
 
     name = models.CharField(
-        max_length=100
+        max_length=100,
+        help_text=_("User friendly custom name for the collection")
     )
     category = models.CharField(
         max_length=100,
@@ -81,16 +82,17 @@ class Collection(models.Model):
     def number_of_items(self):
         return self.products.count()
 
-    def get_absolute_url(self):
-        return reverse('collection:detail', kwargs={
-            'slug': self.slug
-        })
+    def save(self, **kwargs):
+        super().save(**kwargs)
 
-    def get_subcategory_absolute_url(self):
-        return reverse('collection:sub_category', kwargs={
-            'slug': self.slug,
-            'sub_category': self.subcategory_slug
-        })
+        # To avoid different values on the
+        # product category and collection category,
+        # save the collection category value also on
+        # the product -; this allows consistency between
+        # both models especially when running queries
+        qs = self.products.all()
+        if qs.exists():
+            qs.update(category=self.category)
 
 
 @receiver(pre_save, sender=Collection)

@@ -1,8 +1,8 @@
 <template>
-  <div id="feed-header" ref="headerEl" class="card shadow-none mb-3">
-    <div class="card-body pt-1 text-center">
-      <div class="d-flex justify-content-between align-items-center">
-        <div class="d-flex justify-content-left gap-1">
+  <TailCard id="feed-header" ref="headerEl" class="card shadow-none border-none mb-3 px-1">
+    <TailCardContent class="pt-1 text-center">
+      <div class="flex justify-between align-center">
+        <div class="flex justify-content-left gap-1">
           <div class="d-flex justify-content-between align-items-center me-3 gap-1">
             <v-btn to="/shop/collection/all" variant="tonal">
               {{ $t('Afficher tout') }}
@@ -19,9 +19,9 @@
           </div>
         </div>
         
-        <div class="d-flex justify-content-right gap-1 align-items-center">
+        <div class="flex justify-end gap-1 align-center">
           <v-skeleton-loader :is-loading="productsLoading" type="text">
-            <span id="product-count" class="fw-bold me-2">
+            <span id="product-count" class="font-bold me-2">
               {{ count }} produits trouvés
             </span>
           </v-skeleton-loader>
@@ -35,12 +35,11 @@
           </v-btn>
         </div>
       </div>
-    </div>
-  </div>
+    </TailCardContent>
+  </TailCard>
 </template>
 
 <script setup lang="ts">
-// import { useScroll } from '@vueuse/core'
 import type { Product } from '~/types'
 
 const props = defineProps({
@@ -59,7 +58,6 @@ const emit = defineEmits({
     return [3, 4].includes(size)
   },
   'update:sorting' (_value: string) {
-    // return sortingOptions.includes(value)
     return true
   },
   'show-product-filters' () {
@@ -70,21 +68,14 @@ const emit = defineEmits({
 const gridSize = ref(3)
 const productsLoading = inject<boolean>('productsLoading')
 
-// const headerEl = useTemplateRef<HTMLElement>('headerEl')
-
 /**
- * When the user scrolls to a certain level,
- * this positions the header to a fixed position 
+ * Returns a set of categories that the user can use
+ * to filter the products on the page 
  */
-// const { y } = useScroll(window, {
-//   throttle: 100
-// })
-
-
 const productCategories = computed(() => {
   const items = props.products.map(product => {
     return product.category
-  })
+  }).filter(x => x !== 'Not attributed')
   return Array.from(new Set(items))
 })
 
@@ -97,18 +88,6 @@ function handleGridSize (size: number) {
   gridSize.value = size
   emit('update:grid-size', size)
 }
-
-// watch(y, (newValue) => {
-//   if (headerEl.value) {
-//     console.info('Feed', 'Place to fixed')
-
-//     if (newValue > 100) {
-//       headerEl.value.classList.add('to-fixed')
-//     } else {
-//       headerEl.value.classList.remove('to-fixed')
-//     }
-//   }
-// })
 </script>
 
 <style lang="scss" scoped>

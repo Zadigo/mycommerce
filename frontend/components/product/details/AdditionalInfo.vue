@@ -11,11 +11,13 @@
     </a>
 
     <ClientOnly>
-      <!-- Composition -->
-      <ModalsComposition :show-modal="showCompositionDrawer" @close="showCompositionDrawer=false" />
+      <Teleport to="body">
+        <!-- Composition -->
+        <ModalsComposition v-model="showCompositionDrawer" />
 
-      <!-- Delivery And Returns -->
-      <ModalsDelivery :show-modal="showDeliveryDrawer" @close="showDeliveryDrawer=false" />
+        <!-- Delivery And Returns -->
+        <ModalsDelivery v-model="showDeliveryDrawer" />
+      </Teleport>
     </ClientOnly>
   </div>
 </template>

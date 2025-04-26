@@ -90,20 +90,16 @@ urlpatterns = [
         include('django_ckeditor_5.urls')
     ),
     path(
-        'all-accounts/',
-        include('allauth.urls')
-    ),
-    path(
-        'admin/', 
+        'admin/',
         admin.site.urls
     ),
     path(
-        'legal/', 
+        'legal/',
         include('legal.urls')
     ),
     re_path(
-        r'^$', 
-        views.HomeView.as_view(), 
+        r'^$',
+        views.HomeView.as_view(),
         name='home'
     )
 ]

@@ -1,27 +1,21 @@
 <template>
-  <section id="collections" class="container-fluid section-margin-1 mb-5">
-    <div class="row">
-      <div class="col-sm-12 col-md-10 offset-md-1">
-        <div v-if="isLoading" class="row g-1">
-          <div v-for="i in 3" :key="i" class="col-sm-12 col-md-4 my-1">
-            <BaseSkeleton :loading="true" height="400px" />
-          </div>
-        </div>
-        
-        <div v-else class="row g-1">
-          <BaseStaticCollectionCard name="All" view-name="all" image="/img4.jpeg" />
-          <BaseCollectionCard v-for="collection in collections" :key="collection.id" :collection="collection" image="/img5.jpeg" />
-        </div>
-      </div>
+  <section id="collections" class="my-5 md:my-10 mx-5">
+    <div v-if="status === 'pending'" class="grid grid-cols-1 md:grid-cols-3 gap-2">
+      <TailSkeleton v-for="i in 3" :key="i" class="w-full h-full" />
+    </div>
+
+    <div v-else class="grid grid-cols-1 grid-rows-3 auto-rows-fr md:grid-cols-3 md:grid-rows-1 gap-3">
+      <BaseCollectionCard custom-name="All" view-name="all" image="/img4.jpeg" />
+      <BaseCollectionCard v-for="collection in collections" :key="collection.id" :collection="collection" image="/img5.jpeg" />
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { useStorageAsync } from '@vueuse/core'
 import type { CollectionName } from '~/types'
 
-const { gtag } = useGtag()
+// const { gtag } = useGtag()
+const { handleError } = useErrorHandler()
 
 useHead({
   title: 'Achat en ligne de vêtements',
@@ -30,67 +24,49 @@ useHead({
       key: 'description',
       content: 'Découvrez notre collection de vêtements en ligne'
     }
+  ],
+  link: [
+    {
+      rel: 'icon',
+      type: 'image/png',
+      href: '/favicon.ico'
+    }
   ]
 })
 
-// Composable for Collection Fetching
-function useCollectionDetails () {
-  const cachedCollections = useStorageAsync<CollectionName[]>('collections', [])
-  
-  const collections = ref<CollectionName[]>([])
-  const isLoading = ref(true)
-  
-  const { $client } = useNuxtApp()
-  const { handleError } = useErrorHandler()
-  
-  /**
-   * Gets all the names of the collections that are
-   * available to be displayed on this page
-   */
-  async function requestCollectionNames () {
-    try {
-      // FIXME: This does not catch the cached collections
-      // on the client side -; using local storage raises
-      // hydration error since the server side does not
-      // know about the local storage
-      if (cachedCollections.value.length > 0) {
-        collections.value = cachedCollections.value
-        isLoading.value = false
-        return
-      }
+useSeoMeta({
+  description: 'Découvrez notre collection de vêtements en ligne',
+  ogDescription: 'Découvrez notre collection de vêtements en ligne',
+  ogImage: '/img4.jpeg',
+  twitterTitle: '[twitter:title]',
+  twitterDescription: 'Découvrez notre collection de vêtements en ligne',
+  twitterImage: '/img4.jpeg',
+  twitterCard: 'summary'
+})
 
-      const response = await $client.get<CollectionName[]>('collection') 
+const { data: collections, status } = await useFetch('/api/collections', {
+  onResponseError({ error }) {
+    handleError(error)
+  },
+  // TODO: Review this code
+  // transform (data) {
+  //   const validCollections = data.reduce<CollectionName[]>((acc, item) => {
+  //     try {
+  //       const validItem = CollectionSchema.parse(item)
+  //       acc.push(validItem)
+  //       return acc
+  //     } catch (e) {
+  //       console.log('collections.validate', e)
+  //       return acc
+  //     }
+  //   }, [])
+  //   return validCollections
+  // }
+})
 
-      // Validate data with Zod
-      // const validatedCollections = response.data.map(collection => 
-      //   CollectionSchema.parse(collection)
-      // )
-
-      // collections.value = validatedCollections
-      // cachedCollections.value = validatedCollections
-
-      collections.value = response.data
-      cachedCollections.value = response.data
-
-      isLoading.value = false
-    } catch (e) {
-      handleError(e)
-    }
-  }
-  
-  return {
-    collections,
-    isLoading,
-    requestCollectionNames
-  }
-}
-
-const { collections, isLoading, requestCollectionNames } = useCollectionDetails()
-
-onBeforeMount(requestCollectionNames)
 onMounted(() => {
-  gtag('event', 'page_view', {
-    screen_name: 'Achat en ligne de vêtements'
-  })
+  // gtag('event', 'page_view', {
+  //   screen_name: 'Achat en ligne de vêtements'
+  // })
 })
 </script>

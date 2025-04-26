@@ -1,13 +1,11 @@
-// types/nuxt.d.ts
+// declare module '#app' {
+//     interface NuxtApp {
+//     }
+// }
 
-import type { AxiosInstance } from 'axios'
+// declare module 'vue' {
+//     interface ComponentCustomProperties {
+//     }
+// }
 
-declare module '#app' {
-    interface NuxtApp {
-        $client: AxiosInstance
-    }
-
-    interface ComponentCustomProperties {
-        $client: AxiosInstance
-    }
-}
+// export {}

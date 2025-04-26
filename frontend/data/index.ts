@@ -1,6 +1,7 @@
 import type { SessionCacheData } from "~/types"
 
 export * from './guide'
+export * from './footer'
 
 export const countries: string[] = [
     "France",
@@ -15,6 +16,7 @@ export const baseSessionCacheData: SessionCacheData = {
         location: 'France',
         selected: false
     },
+    sessionId: null,
     paymentIntent: null,
     cart: null,
     recommendations: [],

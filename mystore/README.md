@@ -72,7 +72,6 @@ This project comes with a full translation for spanish, english and french, with
 * Spacy
 * Numpy
 * JWT
-* Django Allauth
 * Django CKEditor 5
 * DRF Spectacular
 * Mardown

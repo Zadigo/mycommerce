@@ -1,13 +1,15 @@
+import asyncio
 import json
 
 import pandas
-# import pymemcache
+from hypercorn.asyncio import serve
+from hypercorn.config import Config
 from quart import Quart, jsonify, request
 from quart_cors import cors
 
-from mycommerce.api_server import MEDIA_PATH, PROJECT_PATH, get_debug
+from api_server import BASE_PROJECT, MEDIA_PATH, debug_mode, get_host
 
-app = Quart(__name__, root_path=PROJECT_PATH)
+app = Quart(__name__, root_path=BASE_PROJECT)
 cors_app = cors(
     app,
     allow_credentials=True,
@@ -20,7 +22,7 @@ cors_app = cors(
 # cache = pymemcache.Client(('127.0.0.1', 11211))
 
 
-@cors_app.route('/api/v1/cities', methods=['get'])
+@cors_app.get('/api/v1/cities')
 async def cities():
     def transform(df):
         return json.loads(
@@ -72,5 +74,16 @@ async def cities():
     return jsonify(data)
 
 
+@cors_app.get('/api/v1/orders/delivery-options')
+async def delivery_options():
+    with open(MEDIA_PATH.joinpath('delivery_options.json'), mode='r') as f:
+        return json.load(f)
+
+
 if __name__ == '__main__':
-    app.run('127.0.0.1', debug=get_debug())
+    if debug_mode():
+        cors_app.run(host=get_host(), debug=debug_mode())
+    else:
+        config = Config()
+        production_config = config.from_toml(BASE_PROJECT / 'hypercorn.toml')
+        asyncio.run(serve(cors_app, production_config))

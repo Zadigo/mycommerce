@@ -1,13 +1,14 @@
 export type ProductSizes = {
     id: number;
     name: string;
-    sub_category: string;
     availability: boolean;
 };
 
 declare type ProductSet = {
     id: number;
     name: string;
+    color: string
+    color_variant_name: string
 };
 
 export type ProductImage = {
@@ -33,7 +34,7 @@ export type ProductCollection = {
     category: string;
     sub_category: string;
     number_of_items: number;
-    illustration: string;
+    illustration: string | null;
     tags: string[] | null;
     get_view_name: string;
 };
@@ -46,12 +47,13 @@ export type Product = {
     sub_category: string;
     sizes: ProductSizes[];
     has_sizes: boolean;
-    unit_price: number
-    get_price: number;
+    unit_price: string
+    get_price: string;
     sale_value: number;
-    sale_price: number;
+    sale_price: string;
     on_sale: boolean;
-    collection_set: ProductCollection[];
+    display_new: boolean
+    collection_set: ProductCollection[] | null;
     get_main_image: ProductImage;
     images: ProductImage[];
     model_height: string
@@ -68,8 +70,12 @@ export type Product = {
 
 export type ProductsAPIResponse = {
     count: number
-    next: string
-    previous: string
+    limit: number
+    next: number | null
+    previous: number | null
+    infos: {
+        total_count: number
+    }
     results: Product[]
 }
 
@@ -87,9 +93,13 @@ export declare interface CollectionName {
 }
 
 export interface ProductStock {
-    product: Pick<Product, 'id', 'name'>
+    id: number
+    variant: {
+        id: number
+        name: string
+    }
     quantity: number
-    in_stock: bboolean 
+    in_stock: boolean
     almost_sold_out: boolean
     is_active: boolean
 }

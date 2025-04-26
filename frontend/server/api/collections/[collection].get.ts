@@ -1,33 +1,60 @@
-// import { useNuxtApp } from "nuxt/app"
-import { useAxiosClient } from '../../../composables/utils'
-import type { ProductsAPIResponse } from '../../../types'
+import { FetchError } from 'ofetch'
+import { refreshAccessToken } from '~/utils'
 
-// defineCachedEventHandler
-export default defineEventHandler(async (event) => {
-    const { createClient } = useAxiosClient()
-    const client = createClient()
-    const { collection } = event.context.params
+import type { H3EventContext } from 'h3'
+import type { ProductsAPIResponse } from '~/types'
 
-    const testCollection = collection || 'all'
+interface EventContextParams extends H3EventContext {
+  collection: string
+}
 
-    try {
-        if (testCollection) {
-            const response = await client.get<ProductsAPIResponse>(`/collection/${testCollection}`)
-            return response.data
-        } else {
-            throw createError({
-                statusCode: 404,
-                message: 'Collection does not exist'
-            })
-        }
-    } catch (e) {
-        return {
-            error: e
-        }
+export default defineCachedEventHandler(async event => {
+  const { collection } = event.context.params as EventContextParams
+
+  const name = collection || 'all'
+  const query = getQuery(event)
+
+  const access = getCookie(event, 'access')
+  const refresh = getCookie(event, 'refresh')
+
+  
+  try {
+    console.log('[collection].get.ts', query.price)
+    const data = await $fetch<ProductsAPIResponse>(`/api/v1/collection/${name}`, {
+      baseURL: useRuntimeConfig().public.prodDomain,
+      method: 'GET',
+      params: {
+        sorted_by: query.sorted_by,
+        offset: query.offset,
+        price: query.price,
+        sizes: query.sizes
+      },
+      headers: [
+        ['Authorization', access ? `Token ${access}` : '']
+      ]
+    })
+    return data
+  } catch (e) {
+    if (e instanceof FetchError) {
+      if (e.status === 401 && refresh) {
+        const { access } = await refreshAccessToken(refresh)
+        setCookie(event, 'access', access)
+      } else {
+        throw createError({
+          statusCode: e.status || 500,
+          message: e.message
+        })
+      }
     }
-})
+  }
+}, {
+  base: 'redis',
+  maxAge: 15*60,
+  getKey(event) {
+    const collectionName = getRouterParam(event, 'collection')
+    const query = getQuery(event)
+    const tokens = [collectionName || 'all', query.offset]
 
-// {
-//     maxAge: 2 * 60,
-//     swr: true
-// }
+    return `collection-${tokens.join('-').toLowerCase()}`
+  }
+})

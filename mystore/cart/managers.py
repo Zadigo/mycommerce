@@ -1,10 +1,12 @@
 
 from cart.exceptions import ProductActiveError
-from cart.sessions import BaseSessionManager, RestSessionManager
+from django.conf import settings
 from django.db.models import QuerySet
 from django.db.models.aggregates import Sum
 from django.db.models.expressions import Q
 from rest_framework.exceptions import ValidationError
+
+from mystore.custom_utilities.tokens import JWTGenerator
 
 
 class QuerySetDoesNotExist(Exception):
@@ -28,26 +30,43 @@ class CartManager(QuerySet):
             queryset = self.filter(session_id=session_id)
         return queryset.aggregate(Sum('price'))
 
-    def remove_from_cart(self, request, product_id, session_id, size=None, color=None):
-        logic = Q(session_id__iexact=session_id)
-        if request.user.is_authenticated:
-            logic = logic & Q(user=request.user.id)
+    def items_to_remove(self, request, product_id, session_id, size=None):
+        queryset = self.filter(product__id=product_id)
+
+        logic = Q(session_id=session_id)
 
         if size is not None:
             logic = logic & Q(size=size)
 
-        if color is not None:
-            logic = logic & Q(color=color)
+        if request.user.is_authenticated:
+            logic = logic & Q(user=request.user)
 
-        queryset = self.filter(logic)
+        queryset = queryset.filter(logic)
 
-        queryset = queryset.filter(id=product_id)
         if not queryset.exists():
             raise QuerySetDoesNotExist()
 
-        for product in queryset:
-            product.delete()
-        return self.filter(logic)
+        return queryset
+
+        # logic = Q(session_id=session_id)
+        # if request.user.is_authenticated:
+        #     logic = logic & Q(user=request.user)
+
+        # if size is not None:
+        #     logic = logic & Q(size=size)
+
+        # if color is not None:
+        #     logic = logic & Q(color=color)
+
+        # queryset = self.filter(logic)
+
+        # queryset = queryset.filter(id=product_id)
+        # if not queryset.exists():
+        #     raise QuerySetDoesNotExist()
+
+        # for product in queryset:
+        #     product.delete()
+        # return self.filter(logic)
 
     def _add_to_cart(self, request, session_id, product, **kwargs):
         """The `_add_to_cart` function is a core method in the CartManager 
@@ -72,37 +91,41 @@ class CartManager(QuerySet):
             )
             authenticated_items.update(is_stale=True)
 
-        size = kwargs.get('size')
+        params = {
+            'session_id': session_id,
+            'product': product,
+            # TODO: Implement the ability to use VAT price if applicable
+            'price': product.get_price,
+            'size': None,
+            'is_anonymous': not request.user.is_authenticated
+        }
 
-        if size != 'Unique':
-            message = f'Product with size {size} is no available'
-            sizes = product.size_set.filter(name=size)
+        size_string = kwargs.get('size')
 
-            if sizes.exists():
-                size = sizes.get(name=size)
+        if size_string != 'Unique':
+            message = f'Product with size {size_string} is no available'
+            sizes = product.size_set.filter(name=size_string)
+
+            try:
+                size = sizes.get(name=size_string)
+            except:
+                raise ValidationError(detail={'size': message})
+            else:
                 if not size.active or not size.availability:
                     raise ValidationError(detail={'size': message})
-            else:
-                raise ValidationError(detail={'size': message})
+
+                params['size'] = size.name
 
         # If the frontend is trying to create
         # an object with a product that requires
         # a specific size, raise a ValidationError
-        if size == 'Unique':
+        if size_string == 'Unique':
             if product.has_sizes:
                 message = (
                     "Trying to use a 'unique' size "
-                    "on a produt that contains sizes"
+                    "on a product that contains sizes"
                 )
                 raise ValidationError(detail={'size': message})
-
-        params = {
-            'session_id': session_id,
-            'product': product,
-            'price': product.get_price, # TODO: Implement the ability to use VAT price if applicable
-            'size': size,
-            'is_anonymous': not request.user.is_authenticated
-        }
 
         if request.user.is_authenticated:
             params['user'] = request.user
@@ -141,7 +164,9 @@ class CartManager(QuerySet):
         is preserved across sessions
         """
         if session_id is None:
-            session_id = RestSessionManager.create_session_key()
+            issuer = getattr(settings, 'PY_UTILITIES_JWT_ISSUER')
+            instance = JWTGenerator(issuer, 'cart', 'cart', expiration_days=3)
+            session_id = instance.create()
         queryset = self._add_to_cart(request, session_id, product, **kwargs)
         return session_id, queryset
 
@@ -149,6 +174,7 @@ class CartManager(QuerySet):
         """Works in combination with session backends. When
         using rest `rest_api_add_to_cart`, the session does not actively 
         persist which can inadvertly create a new cart every time"""
-        session_manager = BaseSessionManager(request)
-        session_id = session_manager.get_or_create()
+        issuer = getattr(settings, 'PY_UTILITIES_JWT_ISSUER')
+        instance = JWTGenerator(issuer, 'cart', 'cart', expiration_days=3)
+        session_id = instance.create()
         return self._add_to_cart(request, session_id, product, **kwargs)

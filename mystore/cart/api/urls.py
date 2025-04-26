@@ -38,6 +38,6 @@ urlpatterns = [
     re_path(
         r'^$',
         views.ListCartsView.as_view(),
-        name='carts'
+        name='list'
     )
 ]

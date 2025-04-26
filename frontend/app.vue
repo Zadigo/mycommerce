@@ -1,168 +1,149 @@
 <template>
-  <!-- Main -->
-  <NuxtLayout>
-    <!-- Loader -->
-    <NuxtLoadingIndicator />
-    <Toaster />
+  <VApp>
+    <NuxtLayout>
+      <!-- Loader -->
+      <NuxtLoadingIndicator />
+      
+      <ClientOnly>
+        <Toaster />
+      </ClientOnly>
     
-    <VApp>
       <NuxtPage />
  
-      <!-- Modals -->
-      <ModalsLanguage />
-    </VApp>
-  </NuxtLayout>
+      <ClientOnly>
+        <ModalsLanguage />
+      </ClientOnly>
+    </NuxtLayout>
+  </VApp>
 </template>
 
-<script lang="ts" setup>
-import 'animate.css';
+<script setup lang="ts">
+import 'animate.css'
 
-import { useDocumentVisibility, useLocalStorage, useMediaQuery, useScreenOrientation, useSessionStorage } from '@vueuse/core';
-// import { doc, getFirestore, setDoc } from 'firebase/firestore';
-import { Toaster } from 'vue-sonner';
-import { baseSessionCacheData } from '~/data';
-import type { SessionCacheData } from '~/types';
+import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { Toaster } from 'vue-sonner'
+import { baseSessionCacheData } from '~/data'
 
-// INFO: Instead of using the session storage to store the
-// user data, we can use firebase and then sync pinia w/ firebase
+import type { SessionCacheData } from '~/types'
+import type { ExtendedLocationQuery } from './types'
 
-const sessionCache = useSessionStorage<SessionCacheData>('cache', null, {
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    }
-  }
-})
+// useSchemaOrg([
+//   defineWebSite({
+//     potentialAction: [
+//       defineSearchAction({
+//         target: '/search?q={search}'
+//       })
+//     ]
+//   }),
+//   defineWebPage({
+//     '@type': ['CollectionPage', 'AboutPage', 'FAQPage']
+//   })
+// ])
 
-const likedProducts = useLocalStorage<number[]>('likedProducts', [], {
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    }
-  }
-})
+const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData)
+const likedProducts = useLocalStorage<number[]>('likedProducts', [])
 
+const route = useRoute()
 const shopStore = useShop()
 const authenticationStore = useAuthentication()
 const cartStore = useCart()
 
-const accessToken = useCookie('access')
-const refreshToken = useCookie('refresh')
-const cookieSessionId = useCookie('sessionId')
+// Use secure cookies (with sameSite strict, secure enabled)
+const cookieOptions = { sameSite: 'strict', secure: true } as const
+const accessToken = useCookie('access', cookieOptions)
+const refreshToken = useCookie('refresh', cookieOptions)
+const cookieSessionId = useCookie('sessionId', cookieOptions)
 
-const { $client } = useNuxtApp()
+const { $client, $fireStore } = useNuxtApp()
 const { handleError } = useErrorHandler()
-const { value } = useMediaQuery('(min-width: 320px)')
-const { isSupported } = useScreenOrientation()
-const documentVisible = useDocumentVisibility()
+const isMmobile = useMediaQuery('(min-width: 320px)').value
+const { isSupported: screenOrientation } = useScreenOrientation()
 
-// OPTIONAL: Activate Firebase as localstorage for user data
-// const db = getFirestore()
+provide('isMobile', isMmobile)
+provide('screenOrientation', screenOrientation)
+provide('documentVisible', useDocumentVisibility())
 
-provide('isMobile', value)
-provide('screenOrientation', isSupported)
-provide('documentVisible', documentVisible)
-
-shopStore.$subscribe(({ storeId }) => {
-  if (storeId === 'shop') {
-    shopStore.sessionCache = sessionCache.value
-    shopStore.likedProducts = likedProducts.value
-
-    // OPTIONAL: Activate Firebase as localstorage for user data
-    // When the data changes in the store,
-    // sync it with the Firestore directly
-    // if (cookieSessionId) {
-    //   const dbDocument = doc(db, 'user', cookieSessionId)
-    //   setDoc(dbDocument, state.sessionCache)
-    // }
+// Watch route query for login parameter to open login drawer
+watch((): ExtendedLocationQuery => route.query, (newValue) => {
+  if (newValue.login && newValue.login === '1') {
+    authenticationStore.showLoginDrawer = true
   }
 })
 
-cartStore.$subscribe(({ storeId }) => {
-  if (storeId === 'cart') {
-    cartStore.sessionCache = sessionCache.value
-  }
+watch([accessToken, refreshToken], ([access, refresh]) => {
+  authenticationStore.accessToken = access
+  authenticationStore.refreshToken = refresh
 })
 
-authenticationStore.$subscribe(({ storeId }, state) => {
-  if (storeId === 'authentication') {
-    // When we update the tokens in the store,
-    // automatically update them in the cookies
-    accessToken.value = state.accessToken
-    refreshToken.value = state.refreshToken
-  }
+// Synchronize store state with local storage
+shopStore.$subscribe((_, state) => {
+  // state.sessionCache = sessionCache.value
+  shopStore.likedProducts = likedProducts.value
+}, {
+  detached: true
 })
 
-// watch(currentLanguage, (newValue) => {
-//   if (newValue) {
-//     i18n.locale.value = newValue
-//   }
+// cartStore.$subscribe((_, state) => {
+//   state.sessionCache = sessionCache.value
 // }, {
-//   immediate: true
+//   detached: true
 // })
 
-// TODO: Use cookie or session? The session
-// deletes the key which allows us to catch
-// repeated connexions where as the cookie
-// remembers single connexions
+// authenticationStore.$subscribe((_, state) => {
+//   state.sessionCache = sessionCache.value
+//   accessToken.value = state.accessToken
+//   refreshToken.value = state.refreshToken
+
+//   console.log('state.sessionCache.authenticationStore', state.sessionCache)
+// }, {
+//   detached: true
+// })
+
+/**
+ * Request a new sessionId via the API and ensure a
+ * corresponding Firestore document exists
+ * 
+ * TODO: Use server?
+ */
 async function requestSessionId () {
   try {
     if (!cookieSessionId.value) {
-      const response = await $client.post<{ token: string }>('/cart/session-id')
-      cookieSessionId.value = response.data.token
+      const response = await $client<{ token: string }>('/api/v1/cart/session-id', {
+        method: 'POST'
+      })
 
-      // OPTIONAL: Activate Firebase as localstorage for user data
-      // Create an entry in the Firestore
-      // const dbDocument = doc(db, 'user', response.data.token)  
-      // await setDoc(dbDocument, baseSessionCacheData)
+      cookieSessionId.value = response.token
+      
+      const userRef = doc($fireStore, 'users', cookieSessionId.value)
+      const userSnapshot = await getDoc(userRef)
+      
+      if (!userSnapshot.exists()) {
+        await setDoc(userRef, baseSessionCacheData)
+      }
     }
   } catch (e) {
     handleError(e)
   }
 }
 
+function syncSessionToStores() {
+  const cache = sessionCache.value
+
+  shopStore.sessionCache = cache
+  cartStore.sessionCache = cache
+  authenticationStore.sessionCache = cache
+}
+
 onBeforeMount(async () => {
-  // Populate the cache with the required data
-  // before loading each page
-  if (!sessionCache.value) {
-    sessionCache.value = baseSessionCacheData
-  }
-
-  // Hook the data from the session to
-  // the cache of the store
-  if (!shopStore.sessionCache) {
-    shopStore.sessionCache = sessionCache.value
-  }
-  
-  if (!cartStore.sessionCache) {
-    cartStore.sessionCache = sessionCache.value
-  }
-
-  // Load the default values that will be used for
-  // authentication and for the user's profile inforamtion
+  syncSessionToStores()
   authenticationStore.accessToken = accessToken.value
   authenticationStore.refreshToken = refreshToken.value
-  authenticationStore.profile = sessionCache.value.profile
-
-  // Get the session ID token that we
-  // will be using for the user adds
-  // an item to his cart -; this is
-  // is mainly for adding items to
-  // the cart anonymously
   await requestSessionId()
 })
 
-// When the user first comes on the
-// platform, invite him to select
-// his preferred language
 onMounted(() => {
-  if (!sessionCache.value.language.selected) {
+  cartStore.sessionCache.sessionId = cookieSessionId.value || null
+  if (!shopStore.sessionCache.language.selected) {
     shopStore.showLanguageModal = true
   }
 })

@@ -2,7 +2,10 @@
 for testing/development purposes and allows to 
 reset the project to a blank state by removing 
 stored images and products in the database which
-can be numerous and complicated to delete one by one
+can be numerous and complicated to delete one by one.
+
+It can also be used to delete migration files from
+the project
 """
 
 import argparse
@@ -27,7 +30,7 @@ def delete_images():
 def delete_migration_files():
     folders = BASE_DIR.glob('**/migrations')
 
-    valid_files = []
+    valid_files: list[list[pathlib.Path]] = []
     for folder in folders:
         files = folder.glob('**/*.py')
         valid_files.append(
@@ -40,6 +43,7 @@ def delete_migration_files():
     for iterator in valid_files:
         for file in iterator:
             if file.exists() and file.is_file():
+                file.unlink()
                 print('Deleted', file)
 
 

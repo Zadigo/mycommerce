@@ -28,11 +28,12 @@ export interface CartItem {
 interface CartStatistic {
     product__id: number;
     product__name: string;
+    size: string
     quantity: number;
     total: number;
 }
 
-export interface CartUpdateAPIResponse {
+export interface CartUpdateApiResponse {
     session_id: string;
     results: CartItem[];
     statistics: CartStatistic[];

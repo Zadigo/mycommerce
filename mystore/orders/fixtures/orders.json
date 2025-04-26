@@ -37,5 +37,44 @@
             "price": 15,
             "created_on": "2024-07-25 14:49:13.356974+00:00"
         }
+    },
+    {
+        "model": "variants.Size",
+        "pk": 1,
+        "fields": {
+            "product": 1,
+            "name": "XS",
+            "metric": "Clothe",
+            "availability": true,
+            "active": true
+        }
+    },
+    {
+        "model": "stocks.Stock",
+        "pk": 1,
+        "fields": {
+            "variant": 1,
+            "quantity": 20,
+            "is_active": true
+        }
+    },
+    {
+        "model": "orders.CustomerOrder",
+        "pk": 1,
+        "fields": {
+            "reference": "some_reference",
+            "stripe_charge": "ch_1234",
+            "user": 1,
+            "address": "1 rue de Paris",
+            "city": "Paris",
+            "zip_code": "75001",
+            "country": "France",
+            "products": [
+                1
+            ],
+            "total": 11.99,
+            "stock_updated": false,
+            "created_on": "2024-07-25 14:49:13.356974+00:00"
+        }
     }
 ]

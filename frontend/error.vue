@@ -1,35 +1,42 @@
 <template>
   <NuxtLayout>
-    <section class="error-page container">
-      <div class="row" style="margin-top: 5rem;margin-bottom: 3rem;">
-        <div class="col-sm-12 col-md-6 offset-md-3 my-5">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <h1>{{ error?.statusCode }}</h1>
-              <p>{{ $t("La page n'existe pas") }}</p>
-              <NuxtLink href="#" @click="handleError">
-                {{ $t('Accueil') }}
-              </NuxtLink>
-            </div>
+    <section class="error-page my-10">
+      <div class="mx-auto md:max-w-2xl">
+        <TailCard class="card border-none shadow-sm">
+          <TailCardContent>
+            <h1>{{ error?.statusCode }}</h1>
+            <p class="text-wrap">{{ error?.message }}</p>
+          
+            <NuxtLink id="link-shop-error" href="/" @click="handleError">
+              {{ $t('Accueil') }}
+            </NuxtLink>
+          </TailCardContent>
+        </TailCard>
+
+        <DevOnly>
+          <div class="text-wrap overflow-y-scroll pa-10 rounded-3xl bg-red-300 mt-10">
+            {{ error }}
           </div>
-        </div>
+        </DevOnly>
       </div>
     </section>
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
+import { TailCardContent } from '#components';
+
 const error = useError()
 
 useHead({
   title: "La page n'exist pas"
 })
 
-const { gtag } = useGtag()
+// const { gtag } = useGtag()
 
-gtag('event', 'exception', {
-  description: `${error.statusCode}`
-})
+// gtag('event', 'exception', {
+//   description: `${error.statusCode}`
+// })
 
 function handleError() {
   clearError({ redirect: '/' })

@@ -1,63 +1,50 @@
-import type { Product, ProductImage } from "~/types"
+import { useArrayFindIndex, useStorage, watchArray } from '@vueuse/core'
+import type { Product } from "~/types"
 
-export function useShopComposable () {
-    const { $i18n } = useNuxtApp()
-    const isLiked = ref(false)
-
-    function validateProp<T extends Product | ProductImage>(item: T | object | null | undefined): item is T {
-        if (!item || typeof item !== 'object') {
-            return false
-        } else {
-            return (
-                'id' in item &&
-                typeof (item as T).id === 'number'
-            )
-        }
-    }
-    
-    /**
-     * A composable that implements default
-     * resusable functions for the shop, such
-     * as liking a product or adding it to
-     * the user cart
-     */
-    function translatePrice(value: string | number | undefined) {
-        if (value) {
-            let price
-
-            if (typeof value === 'string') {
-                price = parseFloat(value)
-            } else {
-                price = value
-            }
-            
-            return $i18n.n(price, 'currency')
-        } else {
-            return '0'
-        }
-    }
-
-    /**
-     * Main entry function for managing the user liked
-     * products either locally or in the backend.
-     * Handles the action of liking a product
-     * and therefore adding it to the user's
-     * wishlist
-     */
-    function handleLike(items: number[], product: Product | null | undefined): (boolean | number[])[] {
-        if (product) {
-            const { save, managedList } = useListManager()
-            const state = save(items, product.id)
-            return [state, managedList.value]
-        } else {
-            return []
-        }
-    }
-
+/**
+ * Composable for working with likes on the product
+ * on a single product page 
+ */
+export function useLikeComposable(product: Product) {
+  if (import.meta.server) {
     return {
-        isLiked,
-        validateProp,
-        translatePrice,
-        handleLike
+      productToCheck: ref<Product>(),
+      likedProducts: ref<number[]>([]),
+      isLiked: ref<boolean>(false),
+      handleLike: (_product?: Product | null | undefined): void => {}
     }
+  }
+
+  const productToCheck = ref<Product>(product)
+  
+  const likedProducts = useStorage<number[]>('likedProducts', [])
+  const isLiked = computed(() => {
+    return useArrayIncludes(likedProducts, productToCheck.value.id).value
+  })
+
+  watchArray(likedProducts, () => {
+    // Do something
+  })
+
+  /**
+   * Adds a product to the list of products
+   * added to the user's whishlist
+   */
+  function handleLike() {
+    if (product) {
+      if (isLiked.value) {
+        const index = useArrayFindIndex<number>(likedProducts, () => productToCheck.value.id)
+        likedProducts.value.splice(index.value, 1)
+      } else {
+        likedProducts.value.push(productToCheck.value.id)
+      }
+      console.log('useLikeComposable', isLiked.value, likedProducts.value)
+    }
+  }
+
+  return {
+    productToCheck,
+    isLiked,
+    handleLike
+  }
 }

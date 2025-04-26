@@ -6,7 +6,7 @@
       <div v-if="subText" class="d-flex flex-column">
         <span class="fw-bold">{{ text }}</span>
         <span class="text-body-tertiary">
-          {{ $t(subText) }}
+          {{ subText }}
         </span>
       </div>
 

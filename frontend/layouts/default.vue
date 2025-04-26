@@ -1,55 +1,42 @@
 <template>
-  <section id="shop" class="position-relative">
+  <section id="shop" class="relative">
     <!-- Navbar -->
-    <BaseNavbar />
+    <NavbarBase />
 
-    <div class="container-fluid">
-      <slot />
-    </div>
+    <slot />
 
     <!-- Modals -->
     <ClientOnly>
       <ModalsLogin />
+      <ModalsCart @edit-product="handleProductEdition" />
       <ModalsAddedProduct />
       <ModalsEditProduct />
-      <ModalsCart @edit-product="handleProductEdition" />
       <ModalsSearch />
-
-      <!-- Modals -->
-      <v-dialog v-model="showWhatsAppModal" width="400" transition="dialog-bottom-transition">
-        <v-card>
-          <v-card-text>
-            <div class="text-center">
-              <h6 claass="fw-bold mb-5">WhatsApp</h6>
-              
-              <img :src="qrCode">
-
-              <p class="text-small mt-5">Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone</p>
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
+      <ModalsWhatsApp v-model="showWhatsAppModal" />
     </ClientOnly>
 
     <!-- Footer -->
-    <BaseFooter @show-modal="showWhatsAppModal=true" />
+    <ClientOnly>
+      <BaseFooter :items="footerLinks" class="mt-40" @show-whatsapp="showWhatsAppModal=true" />
+    </ClientOnly>
   </section>
 </template>
 
-<script lang="ts" setup>
-import { useQRCode } from '@vueuse/integrations/useQRCode'
+<script setup lang="ts">
+import { footerLinks } from '~/data/footer'
 import type { ProductToEdit } from '~/types';
 
-const config = useRuntimeConfig()
 const cartStore = useCart()
 const { showCartDrawer, showEditProductDrawer } = storeToRefs(cartStore)
-const qrCode = useQRCode(config.public.WHATS_APP_URL)
 
 const currentEditedProduct = ref<ProductToEdit>()
 const showWhatsAppModal = ref(false)
 
 provide('currentEditedProduct', currentEditedProduct)
 
+/**
+ * 
+ */
 function handleProductEdition (data: ProductToEdit) {
   if (data) {
     currentEditedProduct.value = data

@@ -1,9 +1,9 @@
 from django.db import models
-from django.db.models import F
+from django.db.models import ExpressionWrapper, F
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from shop.models import Product
+from variants.models import Size
 
 
 class Isle(models.Model):
@@ -32,6 +32,12 @@ class Isle(models.Model):
         return f'Isle: {self.shortname}'
 
 
+# TODO: In definitive update link this model to a Variant
+# model in shop.Variant and which removes the "variant" app.
+# The end goal is to normalize variants into one single model
+# so that we can have a single flag "active" which can be activated
+# on combination of variants ex. S.active, (S + Petite).active
+
 class Stock(models.Model):
     """Represents the current stock for the given product 
     or collection. This is an independent model that can
@@ -39,10 +45,16 @@ class Stock(models.Model):
     for stock management
     """
 
-    product = models.ForeignKey(
-        Product,
-        on_delete=models.CASCADE
+    variant = models.ForeignKey(
+        Size,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
     )
+
+    # TODO: Allow the user to link stocks to a
+    # specific product variant
+
     # isle = models.OneToOneField(
     #     Isle,
     #     help_text=_('The isle on which the product is stored'),
@@ -84,7 +96,7 @@ class Stock(models.Model):
         ]
 
     def __str__(self):
-        return f'Stock: {self.product}'
+        return f'Stock: {self.variant}'
 
     # def clean(self):
     #     # We should not be able to add products to
@@ -114,9 +126,12 @@ class Stock(models.Model):
 
 
 @receiver(post_save, sender=Stock)
-def update_stock(instance, created, **kwargs):
+def update_stock_total(instance, created, **kwargs):
     if created:
-        calculation = F('quantity') * instance.product.unit_price
-        # FIXME: Raises error on decimal field
-        instance.total = calculation
-        # instance.save()
+        calculation = F('quantity') * instance.variant.product.unit_price
+        expression = ExpressionWrapper(
+            calculation,
+            output_field=models.DecimalField(max_digits=5, decimal_places=2)
+        )
+        instance.total = expression
+        instance.save()

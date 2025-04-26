@@ -1,75 +1,61 @@
-# Nuxt Minimal Starter
+## Nuxt Frontend
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+### Environment variables
 
-## Setup
+```conf
+NUXT_DJANGO_PROD_URL=
 
-Make sure to install dependencies:
+NUXT_QUART_PROD_URL=
 
-```bash
-# npm
-npm install
+# Stripe
 
-# pnpm
-pnpm install
+NUXT_STRIPE_PUBLISHABLE_KEY=
 
-# yarn
-yarn install
+NUXT_STRIPE_SECRET_KEY=
 
-# bun
-bun install
+NUXT_STRIPE_TEST_PUBLISHABLE_KEY=
+
+NUXT_STRIPE_TEST_SECRET_KEY=
+
+NUXT_STRIPE_ACCOUNT=
+
+NUXT_STRIPE_API_VERSION="2024-06-20"
+
+NUXT_STRIPE_LOCALE="fr"
+
+# Google
+
+GOOGLE_CLIENT_ID=
+
+GOOGLE_CLIENT_SECRET=
+
+# Facebook Pixels
+
+NUXT_PUBLIC_METAPIXEL_DEFAULT_ID=
+
+NUXT_PUBLIC_METAPIXEL_ADS01_ID=
+
+NUXT_PUBLIC_METAPIXEL_ADS02_ID=
+
+# Firebase
+
+NUXT_FIREBASE_API_KEY=
+
+NUXT_FIREBASE_AUTH_DOMAIN=
+
+NUXT_FIREBASE_DB_URL=
+
+NUXT_FIREBASE_PROJECT_ID=
+
+NUXT_FIREBASE_STORAGE_BUCKET=
+
+NUXT_FIREBASE_MESSAGE_SENDER_ID=
+
+NUXT_FIREBASE_APP_ID=
+
+NUXT_FIREBASE_MEASUREMENT_ID=
+
+# What's App
+
+NUXT_WHATS_APP_URL=
 ```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.

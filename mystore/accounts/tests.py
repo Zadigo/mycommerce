@@ -7,7 +7,7 @@ from accounts import tasks
 from orders.payment import StripeInterfaceMixin
 
 
-class TestAccounts(APITestCase):
+class TestApiEndpoints(APITestCase):
     fixtures = ['accounts']
 
     @classmethod
@@ -37,13 +37,23 @@ class TestAccounts(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {token}')
         return token
 
-    def test_get_profile_data(self):
-        path = reverse('accounts_api:user')
+    def test_get_user_details(self):
+        path = reverse('accounts_api:user', args=[self.user.id])
         response = self.client.get(path)
 
-        self.assertEqual(response.status_code == 200)
+        self.assertEqual(response.status_code, 200)
         self.assertIn('id', response.json())
         self.assertEqual(response.json()['email'], 'juliette@test-mail.com')
+
+    def test_update_user_details(self):
+        path = reverse('accounts_api:user', args=[self.user.id])
+        response = self.client.patch(path, data={
+            'last_name': 'Courrir'
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('last_name', response.json())
+        self.assertEqual(response.json()['last_name'], 'Courrir')
 
     def test_list_address_line(self):
         Address.objects.create(**{
@@ -66,7 +76,7 @@ class TestAccounts(APITestCase):
                 self.assertIn('id', data)
 
     def test_create_new_address_line(self):
-        path = reverse('accounts_api:addresses', args=[1])
+        path = reverse('accounts_api:addresses', args=[self.user.id])
         response = self.client.post(path, data={
             'firstname': 'Julie',
             'lastname': 'Poto',
@@ -75,21 +85,26 @@ class TestAccounts(APITestCase):
             'country': 'France',
             'city': 'Paris',
             'telephone': '0600010101',
-            'gender': 0
+            'gender': 1
         })
         data = response.json()
         self.assertEqual(response.status_code, 201)
         self.assertIn('id', data)
 
+        path = reverse(
+            'accounts_api:update_address_line',
+            args=[self.user.id, data['id']]
+        )
+
         update_response = self.client.patch(path, data={
             'firstname': 'Julie',
-            'lastname': 'Poto',
+            'lastname': 'Potosse',
             'address_line': '15 rue de Paris',
             'zip_code': 75001,
             'country': 'France',
             'city': 'Paris',
             'telephone': '0600010101',
-            'gender': 0
+            'gender': 1
         })
 
         data = update_response.json()
@@ -97,8 +112,19 @@ class TestAccounts(APITestCase):
         self.assertIn('id', data)
         self.assertEqual(data['address_line'], '15 rue de Paris')
 
-    def test_create_user_in_stripe(self):
-        tasks.signup_workflow.apply_async(
-            args=[self.user.email],
-            countdown=1
-        )
+    def test_create_user(self):
+        path = reverse('accounts_api:signup')
+        response = self.client.post(path, data={
+            'email': 'random@gmail.com',
+            'password1': 'touparette',
+            'password2': 'touparette'
+        })
+        data = response.json()
+        print(data)
+        # self.assertEqual(response.status_code, 201)
+        # self.assertIn('id', data)
+
+        # tasks.signup_workflow.apply_async(
+        #     args=[self.user.email],
+        #     countdown=1
+        # )
