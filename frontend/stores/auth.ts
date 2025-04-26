@@ -42,7 +42,6 @@ export const useAuthentication = defineStore('authentication', () => {
 
     return {
         logout,
-        setTokens,
         profile,
         sessionCache,
         userId,
