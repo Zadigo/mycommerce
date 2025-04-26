@@ -34,7 +34,7 @@
           <TailCard class="card border-none bg-gray-50">
             <TailCardHeader>
               <TailCardTitle>
-                Résumé ({{ cartStore.numberOfProducts }})
+                {{ $t('Résumé', { n: cartStore.numberOfProducts }) }}
               </TailCardTitle>
             </TailCardHeader>
 
@@ -46,7 +46,7 @@
 
             <TailCardFooter>
               <div class="price flex justify-between">
-                <span>Sous-total</span>
+                <span>{{ $t('Sous-total') }}</span>
                 <span class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</span>
               </div>
 
@@ -61,7 +61,7 @@
               </div>
 
               <div class="total flex justify-between">
-                <span>Total (TVA comprise)</span>
+                <span>{{ $t('Total (TVA comprise)') }}</span>
                 <span class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</span>
               </div>
             </TailCardFooter>

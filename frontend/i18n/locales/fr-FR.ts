@@ -132,7 +132,9 @@ export default defineI18nLocale(async locale => {
         "Soldes": "Soldes",
         "Ajouter": "Ajouter",
         "Tu vas pouvoir profiter de la livraison standard gratuite à domicile": "Tu vas pouvoir profiter de la livraison standard gratuite à domicile",
-        "Filtres": "Filtres"
+        "Filtres": "Filtres",
+        "Sous-total": "Sous-total",
+        "Résumé": "Résumé {n}"
     }
 })
 
