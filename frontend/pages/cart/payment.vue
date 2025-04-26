@@ -41,7 +41,6 @@
 
 <script lang="ts" setup>
 import { useLocalStorage, useSessionStorage } from '@vueuse/core'
-import { AxiosError } from 'axios'
 import { StripeElement, StripeElements } from 'vue-stripe-js'
 
 import type { NewIntentAPIResponse, StripeTokenResponse } from './payment'
@@ -191,9 +190,7 @@ async function handlePayment () {
 
     router.push('/cart/success')
   } catch (e) {
-    if (e instanceof AxiosError && e.response) {
-      isLoading.value = false
-    }
+    console.log(e)
   }
 }
 
