@@ -65,7 +65,6 @@ class ListCartView(generics.ListAPIView):
         return Response(data=data)
 
 
-# TODO: Test this class
 class DeleteFromCart(generics.DestroyAPIView):
     """Delete a set of objects from the cart"""
 

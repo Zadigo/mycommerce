@@ -7,8 +7,6 @@ from django.utils.translation import gettext_lazy as _
 from shop.choices import ClotheSizesChoices
 from shop.models import Product
 
-USER_MODEL = get_user_model()
-
 
 class AbstractCart(models.Model):
     """The AbstractCart model represents a cart that holds 
@@ -35,7 +33,7 @@ class AbstractCart(models.Model):
         )
     )
     user = models.ForeignKey(
-        USER_MODEL,
+        get_user_model(),
         on_delete=models.CASCADE,
         help_text=_('Identifies a logged in user'),
         blank=True,

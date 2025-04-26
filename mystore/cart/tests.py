@@ -92,7 +92,7 @@ class TestCartApi(AuthenticatedTestCase):
 
         for item in response.json():
             with self.subTest(item=item):
-                self.assertIn('products', item)
+                self.assertIn('product', item)
 
     def test_create_session_id(self):
         response = self.client.post(reverse('cart_api:session_id'))
@@ -261,7 +261,7 @@ class TestCartApi(AuthenticatedTestCase):
         self.assertIsNotNone(instance, 'Product was not created')
 
         path = reverse('cart_api:delete', args=[cart_id])
-        response = self.client.delete(path, data={
+        response = self.client.post(path, data={
             'session_id': token,
             'product_id': product.id,
             'size': product.size_set.first().name
