@@ -1,11 +1,11 @@
 <template>
   <div :data-count="quantity" class="recommendations">
-    <h2 class="h4 text-center mb-5">
+    <h2 class="text-2xl font-bold text-center mb-5">
       {{ $t(blockTitle) }}
     </h2>
 
-    <div ref="productsRow" class="row g-1">
-      <ProductsIterator :products="recommendations" :columns="columns" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
+    <div ref="productsRow" class="row">
+      <ProductsIterator :products="recommendations" :columns="columns" :show-carousel="showCarousel" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
     </div>
   </div>
 </template>
@@ -16,9 +16,7 @@ import type { Product } from '~/types';
 const props = defineProps({
   blockTitle: {
     type: String,
-    default: () => {
-      return "Cela peut t'intéresser"
-    }
+    default: "Cela peut t'intéresser"
   },
   quantity: {
     type: Number,
@@ -35,6 +33,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  showCarousel: {
+    type: Boolean,
+    default: true
+  },
   showCart: {
     type: Boolean,
     default: true
@@ -49,23 +51,30 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits({
+  'has-navigated'(_product: Product) {
+    return true
+  }
+})
+
+// const { gtag } = useGtag()
 const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
-// const { gtag } = useGtag()
-
-const route = useRoute()
+const { id } = useRoute().params
 const shopStore = useShop()
 
-const recommendations = ref<Product[]>([])
 const productsRow = ref<HTMLElement>()
 
-function handleNavigation (data: (number | Product)[] | null | undefined) {
+function handleNavigation (data: (number | Product)[]) {
   if (data) {
     const product = data[1]
-
+    
     shopStore.closeAllModals()
-
+    
     if (product && typeof product === 'object' && 'id' in product) {
+      emit('has-navigated', product)
+
+      // TODO: G-Analytics
       // gtag('event',  'select_item',  {
       //   items: [
       //     {
@@ -85,33 +94,22 @@ function handleNavigation (data: (number | Product)[] | null | undefined) {
   }
 }
 
-async function requestRecommendations () {
-  try {
-    if (!props.loadCache) {
-      const response = await $client.get<Product[]>('shop/products/recommendations', {
-        params: {
-          p: route.params.id,
-          q: props.quantity
-        }
-      })
-
-      recommendations.value = response.data
-
-      if (shopStore.sessionCache) {
-        shopStore.sessionCache.recommendations = response.data
+const { data: recommendations } = await useAsyncData<Product[]>(
+  `recommendations-${id}`,
+  async () => {
+    return await $client('/api/v1/shop/products/recommendations', {
+      params: {
+        p: id,
+        q: props.quantity
+      },
+      onRequestError({ error }) {
+        handleError(error)
       }
-    }
-  } catch (e) {
-    handleError(e)
+    })
   }
-}
+)
 
-// TODO: Load the recommendations that we have
-// already fetched when the block is loaded
-
-requestRecommendations()
-
-onMounted(() => {
+onMounted(async () => {
   if (props.scrollable) {
     if (productsRow.value) {
       productsRow.value.classList.add('products-wrapper')

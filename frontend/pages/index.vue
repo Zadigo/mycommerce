@@ -1,18 +1,12 @@
 <template>
-  <section id="collections" class="container-fluid section-margin-1 mb-5">
-    <div class="row">
-      <div class="col-sm-12 col-md-10 offset-md-1">
-        <div v-if="status === 'pending'" class="row g-1">
-          <div v-for="i in 3" :key="i" class="col-sm-12 col-md-4 my-1">
-            <BaseSkeleton :loading="true" height="400px" />
-          </div>
-        </div>
-        
-        <div v-else class="row g-1">
-          <BaseStaticCollectionCard name="All" view-name="all" image="/img4.jpeg" />
-          <BaseCollectionCard v-for="collection in collections" :key="collection.id" :collection="collection" image="/img5.jpeg" />
-        </div>
-      </div>
+  <section id="collections" class="my-5 md:my-10 mx-5">
+    <div v-if="status === 'pending'" class="grid grid-cols-1 md:grid-cols-3 gap-2">
+      <TailSkeleton v-for="i in 3" :key="i" class="w-full h-full" />
+    </div>
+
+    <div v-else class="grid grid-cols-1 grid-rows-3 auto-rows-fr md:grid-cols-3 md:grid-rows-1 gap-3">
+      <BaseCollectionCard custom-name="All" view-name="all" image="/img4.jpeg" />
+      <BaseCollectionCard v-for="collection in collections" :key="collection.id" :collection="collection" image="/img5.jpeg" />
     </div>
   </section>
 </template>
@@ -20,10 +14,8 @@
 <script setup lang="ts">
 import type { CollectionName } from '~/types'
 
-const collections = ref<CollectionName[]>([])
-
-const { handleError } = useErrorHandler()
 // const { gtag } = useGtag()
+const { handleError } = useErrorHandler()
 
 useHead({
   title: 'Achat en ligne de vêtements',
@@ -52,32 +44,25 @@ useSeoMeta({
   twitterCard: 'summary'
 })
 
-useSchemaOrg([
-
-])
-
-const { data, status } = await useFetch('/api/collections', {
+const { data: collections, status } = await useFetch('/api/collections', {
   onResponseError({ error }) {
-    handleError(error?.message)
+    handleError(error)
   },
-  transform (data) {
-    const validCollections = data.reduce<CollectionName[]>((acc, item) => {
-      try {
-        const validItem = CollectionSchema.parse(item)
-        acc.push(validItem)
-        return acc
-      } catch (e) {
-        console.log('collections.validate', e)
-        return acc
-      }
-    }, [])
-    return validCollections
-  }
+  // TODO: Review this code
+  // transform (data) {
+  //   const validCollections = data.reduce<CollectionName[]>((acc, item) => {
+  //     try {
+  //       const validItem = CollectionSchema.parse(item)
+  //       acc.push(validItem)
+  //       return acc
+  //     } catch (e) {
+  //       console.log('collections.validate', e)
+  //       return acc
+  //     }
+  //   }, [])
+  //   return validCollections
+  // }
 })
-
-if (data.value) {
-  collections.value = data.value
-}
 
 onMounted(() => {
   // gtag('event', 'page_view', {

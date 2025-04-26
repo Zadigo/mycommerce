@@ -1,13 +1,24 @@
-import type { Profile } from './accounts';
-import type { CartUpdateAPIResponse, DeliveryOption } from './cart';
-import type { Product } from './shop';
+import type { Profile } from './accounts'
+import type { CartUpdateApiResponse, DeliveryOption } from './cart'
+import type { Product } from './shop'
 
-export * from './accounts';
-export * from './cart';
-export * from './shop';
+export * from './accounts'
+export * from './cart'
+export * from './shop'
 export * from './feed'
 export * from './text'
 export * from './address'
+
+export interface JWTData {
+    exp: number
+    iat: number
+    iss: string
+    typ: string
+    aud: string
+    sub: string
+    user_id: number
+    cart_id: string
+}
 
 export type StringNull = string | null | undefined
 
@@ -37,12 +48,13 @@ export interface PopularImages {
 export interface SessionCacheData {
     language: LanguageOptions
     paymentIntent: null
-    cart: CartUpdateAPIResponse | null
+    cart: CartUpdateApiResponse | null
     recommendations: Product[]
     searchHistory: string[]
     authenticatedCart: boolean
     cartViewCount: number
     profile: Profile | null
+    sessionId: string | null
     // TODO: Tracks the images on which the
     // user has zoomed the most
     popularImages: PopularImages[]
@@ -63,4 +75,22 @@ export interface GuideText {
 
 export interface ExtendedLocationQuery {
     login?: string | null
+}
+
+
+export interface FooterSection {
+    name: string
+    links: {
+        name: string
+        to: string
+    }[]
+}
+
+export interface FooterLinks {
+    socials: {
+        name: string
+        url: string
+        icon: string | null
+    }[],
+    sections: FooterSection[]
 }

@@ -1,61 +1,68 @@
 import { defineStore } from 'pinia'
-import type { Product, SessionCacheData } from "~/types";
+import type { Product, SessionCacheData } from "~/types"
 
-export const useShop =  defineStore('shop', () => {
-    // Modals
-    const showSearchModal = ref(false)
-    const showLanguageModal = ref(false)
+export const useShop = defineStore('shop', () => {
+  const sessionCache = ref<SessionCacheData>()
 
-    const visitedProducts = ref<number[]>([])
-    const likedProducts = ref<number[]>([])
-    
-    // This references the index of the product that
-    // was clicked within a given list of items. This
-    // is for Google Analytics
-    const currentProductIndex = ref<number>(0)
+  // Modals
+  const showSearchModal = ref(false)
+  const showLanguageModal = ref(false)
 
-    /**
-     * Returns the number of products that
-     * were visited by the user for the
-     * actual given session
-     */
-    const numberOfVisitedProducts = computed((): number => {
-        return visitedProducts.value.length;
-    })
+  const visitedProducts = ref<number[]>([])
+  const likedProducts = ref<number[]>([])
 
-    /**
-     * Returns the unique IDs of each products that
-     * were visited by the user during his session
-     */
-    const uniqueVisitedProductIds = computed((): number[] => {
-        return Array.from(new Set(visitedProducts.value))
-    })
+  // This references the index of the product that
+  // was clicked within a given list of items. This
+  // is for Google Analytics
+  const currentProductIndex = ref<number>(0)
 
-    function closeAllModals() {
-        showSearchModal.value = false
-        showLanguageModal.value = false
+  /**
+   * Returns the number of products that
+   * were visited by the user for the
+   * actual given session
+   */
+  const numberOfVisitedProducts = computed((): number => {
+    return visitedProducts.value.length
+  })
+
+  /**
+   * Returns the unique IDs of each products that
+   * were visited by the user during his session
+   */
+  const uniqueVisitedProductIds = computed((): number[] => {
+    return Array.from(new Set(visitedProducts.value))
+  })
+
+  /**
+   * Function used to close all the modals
+   * referenced in this store 
+   */
+  function closeAllModals() {
+    showSearchModal.value = false
+    showLanguageModal.value = false
+  }
+
+  /**
+   * Adds the product to the list of
+   * products that were historically
+   * visited by the user in the store
+   */
+  function addToHistory(product: Product) {
+    if (product) {
+      visitedProducts.value.push(product.id)
     }
+  }
 
-    /**
-     * Adds the product to the list of
-     * products that were historically
-     * visited by the user in the store
-     */
-    function addToHistory(product: Product) {
-        if (product) {
-            visitedProducts.value.push(product.id);
-        }
-    }
-
-    return {
-        closeAllModals,
-        currentProductIndex,
-        addToHistory,
-        showSearchModal,
-        numberOfVisitedProducts,
-        uniqueVisitedProductIds,
-        visitedProducts,
-        likedProducts,
-        showLanguageModal
-    }
+  return {
+    closeAllModals,
+    addToHistory,
+    sessionCache,
+    currentProductIndex,
+    showSearchModal,
+    numberOfVisitedProducts,
+    uniqueVisitedProductIds,
+    visitedProducts,
+    likedProducts,
+    showLanguageModal
+  }
 })

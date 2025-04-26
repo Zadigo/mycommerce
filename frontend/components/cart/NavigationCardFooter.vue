@@ -1,20 +1,20 @@
 <template>
-  <div class="card-footer">
-    <div class="d-flex justify-content-between align-items-center">
-      <NuxtLink v-if="currentStep > 1" to="/cart/" class="btn btn-lg btn-light" @click="$emit('navigate:previous-page')">
+  <TailCardFooter>
+    <div class="flex justify-between items-center">
+      <NuxtLink v-if="currentStep > 1" id="link-card-previous" to="/cart/" class="block" @click="$emit('navigate:previous-page')">
         {{ $t("Retour") }}
       </NuxtLink>
 
-      <NuxtLink v-else to="/" class="btn btn-lg btn-light">
-        <font-awesome icon="arrow-left" class="me-2" />
+      <NuxtLink v-else id="link-cart-shop" to="/">
+        <Icon name="fa-solid:arrow-left" class="me-2" />
         Boutique
       </NuxtLink>
       
-      <NuxtLink :to="nextPage" class="btn btn-lg btn-light" @click="$emit('navigate:next-page')">
+      <NuxtLink :to="nextPage" id="link-cart-next" class="block" @click="$emit('navigate:next-page')">
         {{ $t("Continuer") }}
       </NuxtLink>
     </div>
-  </div>
+  </TailCardFooter>
 </template>
 
 <script lang="ts" setup>

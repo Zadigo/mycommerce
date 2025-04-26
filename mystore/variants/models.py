@@ -3,7 +3,6 @@ from django.db.models.constraints import UniqueConstraint
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from shop import validators
 from shop.models import Product
 from variants.choices import VariantMetrics
 

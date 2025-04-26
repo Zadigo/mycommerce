@@ -25,11 +25,13 @@
             <!-- Recommendations -->
             <Suspense v-else>
               <template #default>
-                <AsyncRecommendations />
+                <AsyncRecommendations @has-navigated="shopStore.showSearchModal=false" />
               </template>
               
               <template #fallback>
-                <BaseLoadingRecommendations :load-cache="true" />
+                <div class="grid grid-cols-4 gap-2">
+                  <ProductsLoadingCards :quantity="8" />
+                </div>
               </template>
             </Suspense>
           </div>
@@ -40,65 +42,47 @@
 </template>
 
 <script setup lang="ts">
-// import { useRefHistory } from '@vueuse/core'
 import type { Product, ProductsAPIResponse } from '~/types'
 
 const AsyncRecommendations = defineAsyncComponent({
-  loader: async () => import('~/components/BaseRecommendations.vue')
+  loader: async () => import('~/components/BaseRecommendations.vue'),
+  suspensible: true,
+  delay: 200,
+  timeout: 10000
 })
 
+// const { gtag } = useGtag()
 const shopStore = useShop()
+const { $client } = useNuxtApp()
+const { handleError } = useErrorHandler()
 
-function useSearchProducts () {
-  // const { gtag } = useGtag()
-  const { $client } = useNuxtApp()
-  const { handleError } = useErrorHandler()
-  
-  const searchedProducts = ref<Product[]>([])
-  const search = ref<string | null>(null)
-  // const { last } = useRefHistory(search)
-  
-  const canShowSearch = computed(() => {
-    return searchedProducts.value.length > 0
-  })
+const searchedProducts = ref<Product[]>([])
+const search = ref<string | null>(null)
 
-  async function requestProducts () {
-    try {
-      if (search.value && search.value !== "") {
-        const response = await $client.get<ProductsAPIResponse>('shop/products', {
-          params: {
-            q: search.value
-          }
-        })
-        
-        // gtag('event', 'search', {
-        //   search_term: search.value
-        // })
+const canShowSearch = computed(() => {
+  return searchedProducts.value.length > 0
+})
 
-        searchedProducts.value = response.data.results
+async function requestProducts (): Promise<void> {
+  if (search.value && search.value !== "") {
+    const response = await $client<ProductsAPIResponse>('/api/v1/shop/products', {
+      params: {
+        q: search.value
+      },
+      onRequestError({ error }) {
+        handleError(error)
+      },
+      onResponse() {
+        searchedProducts.value = response.results
       }
-    } catch (e) {
-      handleError(e)
-    }
+    })
   }
-
-  // TODO: Remove saving of search history because it saves
-  // all what the user has typed aka: i, i am, i am searching for etc.
-  // if (shopStore.sessionCache) {
-  //   shopStore.sessionCache.searchHistory = last
-  // }
-
-  return {
-    search,
-    requestProducts,
-    searchedProducts,
-    canShowSearch,
-    searchHistory: history
-  }
+  
+  // TODO: G-Analytics
+  // gtag('event', 'search', { search_term: search.value })
 }
 
-const { search, canShowSearch, searchedProducts, requestProducts } = useSearchProducts()
-const { debounce } = useDebounce()
 
+const { debounce } = useDebounce()
 const proxySearchProducts = debounce(requestProducts, 1000)
 </script>

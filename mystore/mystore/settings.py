@@ -8,14 +8,13 @@ import dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+if BASE_DIR.joinpath('.env').exists():
+    dotenv.load_dotenv(BASE_DIR / '.env')
+
 
 def get_debug():
     debug = os.getenv('DEBUG', '1')
     return True if debug == '1' else False
-
-
-if BASE_DIR.joinpath('.env').exists():
-    dotenv.load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -403,9 +402,6 @@ CACHES = {
     }
 }
 
-
-# HTTPS
-
 if os.getenv('USES_HTTP_SCHEME', 'http') == 'https':
     SESSION_COOKIE_SECURE = True
 
@@ -426,3 +422,21 @@ else:
 # product price, set this value to the applicable
 # VAT for your given country
 VAT_PERCENTAGE = None
+
+
+# Fixtures
+
+FIXTURES_DIRS = [
+    'fixtures/products'
+]
+
+
+# JWT Generator
+
+PY_UTILITIES_JWT_ISSUER = 'ecommerce'
+
+# PY_UTILITIES_JWT_AUDIENCE = 'cart'
+
+# PY_UTILITIES_JWT_SUBJECT = 'cart'
+
+PY_UTILITIES_JWT_SECRET = os.getenv('PY_UTILITIES_JWT_SECRET')

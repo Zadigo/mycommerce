@@ -1,0 +1,156 @@
+[
+    {
+        "model": "shop.Product",
+        "pk": 1,
+        "fields": {
+            "name": "Blazer Strapped",
+            "color": "Red",
+            "sku": null,
+            "model_height": 184,
+            "model_size": "S",
+            "gender_category": "Not attributed",
+            "active": true,
+            "display_new": false,
+            "slug": "blazer-strapped",
+            "category": "Panties",
+            "sub_category": "Not attributed",
+            "created_on": "2022-03-18",
+            "modified_on": "2022-03-18",
+            "unit_price": 10,
+            "sale_value": 3,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 2,
+        "fields": {
+            "name": "Floral Mesh Balcony Soutien Gorge Et String Ensemble",
+            "color": "Blue",
+            "sku": null,
+            "model_height": 184,
+            "model_size": "S",
+            "gender_category": "Not attributed",
+            "active": true,
+            "display_new": false,
+            "slug": "floral-mesh-balcony-soutien-gorge-string-ensemble",
+            "category": "Panties",
+            "sub_category": "Not attributed",
+            "created_on": "2022-03-18",
+            "modified_on": "2022-03-18",
+            "unit_price": 11,
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 3,
+        "fields": {
+            "name": "Jupe Florale",
+            "color": "Red",
+            "sku": null,
+            "model_height": 184,
+            "model_size": "S",
+            "gender_category": "Not attributed",
+            "active": true,
+            "display_new": false,
+            "slug": "jupe-florale",
+            "category": "Panties",
+            "sub_category": "Not attributed",
+            "created_on": "2022-03-18",
+            "modified_on": "2022-03-18",
+            "unit_price": 10,
+            "sale_value": 5,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 4,
+        "fields": {
+            "name": "Short En Jean",
+            "color": "Blue",
+            "sku": null,
+            "model_height": 184,
+            "model_size": "S",
+            "gender_category": "Not attributed",
+            "active": true,
+            "display_new": false,
+            "slug": "short-jean",
+            "category": "Activewear",
+            "sub_category": "Not attributed",
+            "created_on": "2022-03-18",
+            "modified_on": "2022-03-18",
+            "unit_price": 14,
+            "sale_value": 4,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 5,
+        "fields": {
+            "name": "Shorty En Dentelle",
+            "color": "Blue",
+            "sku": null,
+            "model_height": 184,
+            "model_size": "S",
+            "gender_category": "Not attributed",
+            "active": true,
+            "display_new": true,
+            "slug": "shorty-dentelle",
+            "category": "Skirts",
+            "sub_category": "Not attributed",
+            "created_on": "2022-03-18",
+            "modified_on": "2022-03-18",
+            "unit_price": 16,
+            "sale_value": 8,
+            "on_sale": true
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 6,
+        "fields": {
+            "name": "Lingerie",
+            "color": "Red",
+            "sku": null,
+            "model_height": 184,
+            "model_size": "S",
+            "gender_category": "Not attributed",
+            "active": true,
+            "display_new": false,
+            "slug": "lingerie",
+            "category": "Skirts",
+            "sub_category": "Not attributed",
+            "created_on": "2022-03-18",
+            "modified_on": "2022-03-18",
+            "unit_price": 12,
+            "sale_value": 0,
+            "on_sale": false
+        }
+    },
+    {
+        "model": "shop.Product",
+        "pk": 7,
+        "fields": {
+            "name": "Bandeau Réversible En Dentelle Et Microfibre Extensible",
+            "color": "Blue",
+            "sku": null,
+            "model_height": 184,
+            "model_size": "S",
+            "gender_category": "Not attributed",
+            "active": true,
+            "display_new": false,
+            "slug": "bandeau-reversible-dentelle-microfibre-extensible",
+            "category": "Activewear",
+            "sub_category": "Not attributed",
+            "created_on": "2022-03-18",
+            "modified_on": "2022-03-18",
+            "unit_price": 17,
+            "sale_value": 0,
+            "on_sale": false
+        }
+    }
+]

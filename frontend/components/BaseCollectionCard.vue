@@ -1,13 +1,21 @@
 <template>
-  <article class="col-sm-12 col-md-4 my-1">
-    <NuxtLink :to="`/shop/collection/${collection.category.toLowerCase()}`">
-      <div :aria-label="collection.name" class="card shadow-none">
-        <div class="wrapper rounded-2">
-          <NuxtImg :alt="collection.name" :src="image" class="card-img" format="webp" quality="80" placeholder />
-        </div>
-        
-        <h1 class="text-white text-left h3 fw-bold text-uppercase px-2 py-4">
+  <article v-if="collection" class="relative rounded-md overflow-hidden">
+    <NuxtLink id="link-collection-card" :to="`/shop/collection/${collection.category.toLowerCase()}`">
+      <div class="rounded-md">
+        <NuxtImg :alt="collection.name" :src="image" format="webp" quality="80" class="rounded-md" placeholder />
+        <h1 class="text-white text-3xl absolute bottom-4 left-3 uppercase font-bold">
           {{ collection.category }}
+        </h1>
+      </div>
+    </NuxtLink>
+  </article>
+
+  <article v-else class="relative rounded-md overflow-hidden">
+    <NuxtLink id="link-collection-card" :to="`/shop/collection/${viewName}`">
+      <div class="rounded-md">
+        <NuxtImg :alt="customName" :src="image" format="webp" quality="80" class="rounded-md" placeholder />
+        <h1 class="text-white text-3xl absolute bottom-4 left-3 uppercase font-bold">
+          {{ customName }}
         </h1>
       </div>
     </NuxtLink>
@@ -15,13 +23,18 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
-import type { CollectionName } from '~/types';
+import type { PropType } from 'vue'
+import type { CollectionName } from '~/types'
 
 defineProps({
   collection: {
-    type: Object as PropType<CollectionName>,
-    required: true
+    type: Object as PropType<CollectionName>
+  },
+  customName: {
+    type: String,
+  },
+  viewName: {
+    type: String,
   },
   image: {
     type: String,
@@ -32,22 +45,11 @@ defineProps({
 
 <style lang="scss" scoped>
 article {
-  .wrapper {
-    overflow: hidden;
-    
-    &:hover {
-      img {
-        transition: all 0.3s ease-in;
-        transform: scale(1.1, 1.1);
-      }
+  &:hover {
+    img {
+      transition: all 0.3s ease-in-out;
+      transform: scale(1.1, 1.1);
     }
-  }
-
-  h1 {
-    position: absolute;
-    bottom: 3%;
-    left: 3%;
-    width: 100%;
   }
 }
 </style>

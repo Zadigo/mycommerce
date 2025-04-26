@@ -1,21 +1,21 @@
 <template>
-<v-dialog v-model="show" width="400" transition="dialog-bottom-transition">
-  <v-card>
-    <v-card-text>
-      <div class="text-center">
-        <h6 claass="fw-bold mb-5">
-          WhatsApp
-        </h6>
-        
-        <img :src="qrCode">
+<TailDialog v-model:open="show" @close="show=false">
+  <TailDialogContent>
+    <TailDialogHeader>
+      <TailDialogTitle>
+        WhatsApp
+      </TailDialogTitle>
+    </TailDialogHeader>
+    
+    <div class="text-center">      
+      <img :src="qrCode">
 
-        <p class="text-small mt-5">
-          Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone
-        </p>
-      </div>
-    </v-card-text>
-  </v-card>
-</v-dialog>
+      <p class="text-small mt-5">
+        Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone
+      </p>
+    </div>
+  </TailDialogContent>
+</TailDialog>
 </template>
 
 <script setup lang="ts">

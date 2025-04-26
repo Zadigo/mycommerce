@@ -97,29 +97,25 @@ def create_slug(word, *additional_words, generate_random_id=True):
     return non_accentuated_word
 
 
-def calculate_sale(price, percentage):
+def calculate_sale(price: int | float, percentage: int | float):
     """Calculates the discounted price based on 
     the original price and discount percentage.
 
     This function computes the new price 
     after applying a discount percentage to the 
     original price"""
-    # price = float(price)
-    # result = price * (1 - (percentage / 100))
-    # return Value(result)
     result = Decimal(price) * (1 - (Decimal(percentage) / 100))
     return result.quantize(Decimal('.01'), rounding=ROUND_DOWN)
 
 
 def transform_to_snake_case(value: str):
-    # return get_valid_filename(value)
     value = value.replace(' ', '_')
     value = value.replace('-', '_')
     return value.lower().strip()
 
 
 def remove_special_characters(value: str):
-    result = re.sub(r'[\(\-\)\#\!\*\.]', '', value)
+    result = re.sub(r'[\(\-\)\#\!\*\.\W]', ' ', value)
     tokens = result.split(' ')
     name = ' '.join([token for token in tokens if token != ''])
     return name.lower()
@@ -138,7 +134,8 @@ def product_media_path(filename):
     by cleaning it's base name"""
     unique_identifier = get_random_string(12)
     basename, ext = process_file_name(filename)
-    return f"{basename}_{unique_identifier}.{ext}"
+    snaked_case_name = transform_to_snake_case(basename)
+    return f"{snaked_case_name}_{unique_identifier}.{ext}"
 
 
 def video_path(instance, filename):

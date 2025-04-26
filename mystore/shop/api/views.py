@@ -28,7 +28,7 @@ class ListProducts(generics.ListAPIView):
     * `sizes` - Filters the products by a given size
     """
 
-    queryset = Product.objects.all()
+    queryset = Product.objects.filter(active=True)
     serializer_class = serializers.ProductSerializer
     pagination_class = CustomPagination
     permission_classes = [AllowAny]
@@ -69,7 +69,7 @@ class ListProducts(generics.ListAPIView):
 class GetProduct(generics.RetrieveAPIView):
     """Returns a specific product from the database"""
 
-    queryset = Product.objects.all()
+    queryset = Product.objects.filter(active=True)
     serializer_class = serializers.ProductSerializer
 
     def retrieve(self, request, *args, **kwargs):
@@ -147,6 +147,9 @@ class ListRecommendations(generics.ListAPIView):
                 novelties = Product.objects.order_by('-created_on')
             cache.set('novelties', novelties, timeout=1)
 
+        if isinstance(quantity, str):
+            quantity = int(quantity)
+
         sliced_novelties = []
         if novelties.count() >= quantity:
             sliced_novelties = novelties[:quantity]
@@ -216,7 +219,7 @@ class ListNewProducts(generics.ListAPIView):
     as new, in other words, that were created in a
     given timeframe or who have `display_new` set to True"""
 
-    queryset = Novelty.objects.all()
+    queryset = Novelty.objects.filter(active=True)
     serializer_class = serializers.ProductSerializer
     pagination_class = CustomPagination
     permission_classes = [AllowAny]
@@ -234,7 +237,7 @@ class ListProductsOnSale(generics.ListAPIView):
     as being on sale. Both `sale_value` and `on_sale` have
     to be True in order to return the product"""
 
-    queryset = Sale.objects.all()
+    queryset = Sale.objects.filter(active=True)
     serializer_class = serializers.ProductSerializer
     pagination_class = CustomPagination
     permission_classes = [AllowAny]
@@ -247,28 +250,41 @@ class ListProductsOnSale(generics.ListAPIView):
         return qs
 
 
+class ListWishlist(generics.GenericAPIView):
+    """Lists the different products present in
+    a user's wishlist"""
 
-class TestFuzzy(generics.GenericAPIView):
     serializer_class = serializers.ProductSerializer
+    queryset = Product.objects.filter(active=True)
 
-    def get(self, request, **kwargs):
-        results = []
-        search = request.GET.get('s')
-        qs = Product.objects.all()
-        instance = FuzzyMatcherMixin()
-        for item in qs:
-            result = instance.get_match_details(search, item.color_variant_name)
-            result['product'] = item.id
-            results.append(result)
-        df = pandas.DataFrame(results)
-        df = df[df['weighted_ratio'] >= 0.7]
+    def post(self, request, **kwargs):
+        serializer = serializers.WishlistSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        ids = df['product'].to_list()
-        selected_products = qs.filter(id__in=ids)
-        # data = json.loads(df.to_json(orient='records'))
-        # return Response(data)
-        serializer = self.get_serializer(
-            instance=selected_products, 
-            many=True
-        )
+        qs = self.get_queryset()
+        products = qs.filter(id__in=serializer.validated_data['products'])
+
+        serializer = self.get_serializer(instance=products, many=True)
         return Response(serializer.data)
+
+
+# @api_view(http_method_names=['get'])
+# def test_fuzzy(request, **kwargs):
+#     results = []
+#     search = request.GET.get('s')
+#     qs = Product.objects.all()
+#     instance = FuzzyMatcherMixin()
+#     for item in qs:
+#         result = instance.get_match_details(search, item.color_variant_name)
+#         result['product'] = item.id
+#         results.append(result)
+#     df = pandas.DataFrame(results)
+#     df = df[df['weighted_ratio'] >= 0.7]
+
+#     ids = df['product'].to_list()
+#     selected_products = qs.filter(id__in=ids)
+#     # data = json.loads(df.to_json(orient='records'))
+#     # return Response(data)
+#     serializer = serializers.ProductSerializer(
+#         instance=selected_products, many=True)
+#     return Response(serializer.data)

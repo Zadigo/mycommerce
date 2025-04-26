@@ -1,22 +1,16 @@
 <template>
-  <section id="product-feed" class="row">
+  <section id="feed-structure" class="relative">
     <!-- Filtering -->
-    <div class="col-12">
+    <div id="feed-header">
       <slot name="filtering" />
     </div>
 
     <!-- Feed -->
-    <div id="feed" class="row gx-1 gy-1">
-      <slot />
-    </div>
-
+    <slot />
+    
     <!-- Intersect -->
-    <slot name="intersect" />
+    <div class="flex justify-center mt-4 mb-10">
+      <slot name="intersect" />
+    </div>
   </section>
 </template>
-
-<style lang="scss" scoped>
-#product-feed {
-  position: relative;
-}
-</style>

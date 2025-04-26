@@ -1,28 +1,24 @@
 <template>
-  <section id="products" class="mb-5" style="margin-top: 59px;">
-    <div class="row">
-      <!-- Page Title -->
-      <div class="col-12">
-        <div class="card shadow-none">
-          <div class="card-body pb-1 d-flex flex-row justify-content-start">
-            <h1 :aria-labelledby="id" class="text-uppercase fw-bold h4">
-              {{ id }}
-            </h1>
-          </div>
-        </div>
-      </div>
-
-      <!-- Feed -->
-      <div class="col-12">
-        <Suspense>
-          <AsyncProductsFeed @products-loaded="handleLoadedProducts" />
-
-          <template #fallback>
-            <ProductsLoadingFeed />
-          </template>
-        </Suspense>
-      </div>
+  <section id="products-feed" class="my-10">
+    <!-- Page Title -->
+    <div id="feed-title" class="px-10">
+      <TailCard class="shadow-none border-none p-1">
+        <TailCardContent class="flex flex-row justify-start">
+          <h1 :aria-labelledby="id" class="uppercase font-bold text-2xl">
+            {{ id }}
+          </h1>
+        </TailCardContent>
+      </TailCard>
     </div>
+
+    <!-- Feed -->
+    <Suspense>
+      <AsyncProductsFeed @products-loaded="handleLoadedProducts" />
+
+      <template #fallback>
+        <ProductsLoadingFeed />
+      </template>
+    </Suspense>
   </section>
 </template>
 

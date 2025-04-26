@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite'
 // import { defineOrganization } from 'nuxt-schema-org/schema'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -5,20 +6,25 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   ssr: true,
+
   routeRules: {
     '/': {
-      swr: true
+      swr: true,
+      cache: {
+        base: 'redis',
+        maxAge: 1,
+      }
     },
-    '/shop/collection/**': {
+    'shop/collection/**': {
       ssr: true
     },
-    '/wishlist': {
+    'wishlist': {
       ssr: false
     },
-    '/account/**': {
+    'account/**': {
       ssr: false
     },
-    '/confidentialite': {
+    'confidentialite': {
       ssr: true,
       cache: {
         base: 'redis',
@@ -26,11 +32,12 @@ export default defineNuxtConfig({
       }
     }
   },
+
   runtimeConfig: {
     public: {
       // Django/Quart/Flask
-      djangoProdUrl: process.env.NUXT_DJANGO_PROD_URL,
-      quartProdUrl: process.env.NUXT_QUART_PROD_URL,
+      quartProdUrl: process.env.NUXT_QUART_PROD_URL || 'http://127.0.0.1:5000',
+      prodDomain: process.env.NUXT_DJANGO_PROD_URL || 'http://127.0.0.1:8000',
       
       // Firebase
       firebaseApiKey: process.env.NUXT_FIREBASE_API_KEY,
@@ -52,6 +59,7 @@ export default defineNuxtConfig({
       whatsAppUrl: process.env.NUXT_WHATS_APP_URL
     }
   },
+
   modules: [
     '@pinia/nuxt',
     '@vueuse/nuxt',
@@ -60,41 +68,58 @@ export default defineNuxtConfig({
     '@unlok-co/nuxt-stripe',
     '@nuxt/image',
     '@nuxtjs/i18n',
-    '@nuxt/test-utils',
-    '@nuxtjs/seo',
+    // '@nuxtjs/seo',
     '@vesp/nuxt-fontawesome',
+    '@nuxt/icon',
+    '@nuxt/test-utils',
     'vuetify-nuxt-module',
-    'vue-sonner/nuxt'
+    'shadcn-nuxt',
+    'vue-sonner/nuxt',
+    // '@nuxtjs/tailwindcss'
   ],
+
+  shadcn: {
+    prefix: 'Tail',
+    componentDir: './components/ui'
+  },
+
   i18n: {
     baseUrl: './',
     langDir: './locales',
     defaultLocale: 'fr',
+    lazy: true,
     vueI18n: './i18n.config.ts',
     locales: [
       {
         code: 'en',
         language: 'en-US',
-        file: 'en-US.json',
+        file: 'en-US.ts',
         dir: 'ltr',
         name: 'English'
       },
       {
         code: 'es',
         language: 'es-ES',
-        file: 'es-ES.json',
+        file: 'es-ES.ts',
         dir: 'ltr',
         name: 'Spanish'
       },
       {
         code: 'fr',
         language: 'fr-FR',
-        file: 'fr-FR.json',
+        file: 'fr-FR.ts',
         dir: 'ltr',
         name: 'Français'
       }
     ]
   },
+
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ]
+  },
+
   schemaOrg: {
     // identity: defineOrganization({
     //   '@type': 'onlineStore',
@@ -201,11 +226,13 @@ export default defineNuxtConfig({
     //   ]
     // })
   },
+
   css: [
-    '~/assets/style.scss',
-    '~/node_modules/bootstrap/dist/css/bootstrap.min.css',
-    '~/node_modules/mdb-ui-kit/css/mdb.min.css',
+    '~/assets/css/main.css',
+    '~/assets/css/style.scss'
   ],
+  
+  // TODELETE
   fontawesome: {
     icons: {
       solid: [
@@ -258,6 +285,7 @@ export default defineNuxtConfig({
       ]
     }
   },
+
   googleFonts: {
     families: {
       Ubuntu: {
@@ -274,6 +302,7 @@ export default defineNuxtConfig({
       }
     }
   },
+
   stripe: {
     server: {
       key: process.env.NUXT_STRIPE_PUBLISHABLE_KEY
@@ -282,12 +311,14 @@ export default defineNuxtConfig({
       key: process.env.NUXT_STRIPE_PUBLISHABLE_KEY
     }
   },
+
   image: {
     // TODO: Activate when the project images backend
     // is set correctly to cloudefare/aws
     // https://image.nuxt.com/providers/cloudflare
     provider: 'none'
   },
+
   nitro: {
     storage: {
       redis: {

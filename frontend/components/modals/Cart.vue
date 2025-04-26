@@ -13,43 +13,40 @@
       </v-btn>
     </v-toolbar>
 
-    <div class="container mt-1">
-      <div v-if="hasProducts" class="row d-flex justify-content-between">
-        <div class="col-12 mt-4">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <p v-if="freeDeliveryTarget > 0" class="fw-light">
-                {{ cartTotal }}
-                {{ $t('Livraison gratuite offerte', { n: $n(freeDeliveryTarget, 'currency') }) }}
-                <!-- Il te manque 19,02 € pour profiter de la -->
-                <span class="fw-bold text-primary text-uppercase">
-                  {{ $t('livraison standard gratuite') }}
-                </span>
-              </p>
+    <div class="px-10">
+      <div v-if="hasProducts" class="flex flex-col">
+        <div class="pa-5 shadow-sm rounded-md bg-green-100">
+          <div v-if="freeDeliveryTarget > 0">
+            {{ cartTotal }}
+            {{ $t('Livraison gratuite offerte', { n: $n(freeDeliveryTarget, 'currency') }) }}
+            
+            <!-- Il te manque 19,02 € pour profiter de la -->
+            
+            <span class="font-bold text-green-900 uppercase">
+              {{ $t('livraison standard gratuite') }}
+            </span>
+          </div>
 
-              <div v-else class="fw-light">
-                <p class="fw-bold text-success text-uppercase mb-1">
-                  {{ $t('Livraison standard gratuite') }}
-                </p>
+          <div v-else>
+            <p class="font-bold text-green-900 uppercase">
+              {{ $t('Livraison standard gratuite') }}
+            </p>
 
-                <p class="fw-light">
-                  Tu vas pouvoir profiter de la livraison 
-                  standard gratuite à domicile
-                </p>
-              </div>
-            </div>
+            <p class="font-light">
+              {{ $t("Tu vas pouvoir profiter de la livraison standard gratuite à domicile") }}
+            </p>
           </div>
         </div>
         
         <!-- Products -->
-        <CartIterator class="my-2" @edit-product="handleOpenProductEdition" />
+        <CartIterator class="mt-2 mb-5" @edit-product="handleOpenProductEdition" />
 
-        <div class="d-flex justify-content-between align-items-center py-4">
-          <span class="fw-light">{{ $t('Total (TVA comprise)') }}</span>
-          <span class="fw-bold">{{ $n(cartTotal, 'currency') }}</span>
+        <div class="flex justify-between align-center py-4">
+          <span class="font-light">{{ $t('Total (TVA comprise)') }}</span>
+          <span class="font-bold">{{ $n(cartTotal, 'currency') }}</span>
         </div>
         
-        <div class="col-12">
+        <div class="place-self-baseline">
           <v-btn v-if="isAuthenticated" to="/cart" color="secondary" rounded flat block>
             {{ $t('Passer commande') }}
           </v-btn>
@@ -60,19 +57,19 @@
         </div>
       </div>
 
-      <div v-else class="col-12 mt-5 h-100">
-        <div class="d-flex flex-column justify-content-center text-center my-3">
-          <font-awesome icon="shopping-bag" size="7x" class="mb-5 text-dark" />
+      <div v-else class="px-5">
+        <div class="flex flex-col items-center justify-center text-center my-3">
+          <Icon name="fa-solid:shopping-bag" size="100" class="mb-5 text-dark" />
           
-          <h3 class="h5 mb-3">
+          <h3 class="text-2xl font-bold mb-3">
             {{ $t('Panier vide') }}
           </h3>
           
-          <p class="fw-light">
+          <p class="font-light">
             {{ $t('Empty cart text') }}
           </p>
           
-          <a href="#" class="btn btn-block btn-primary btn-rounded btn-lg shadow-none" @click.prevent="handleCartButtonRedirection">
+          <a href="#" @click.prevent="handleCartButtonRedirection">
             {{ $t('Découvrir') }}
           </a>
         </div>
@@ -86,8 +83,9 @@ import type { ProductToEdit } from '~/types';
 
 const router = useRouter()
 
+const cartStore = useCart()
 const { isAuthenticated, showLoginDrawer } = storeToRefs(useAuthentication())
-const { showCartDrawer, numberOfProducts, hasProducts, freeDeliveryTarget, cartTotal } = storeToRefs(useCart())
+const { showCartDrawer, numberOfProducts, hasProducts, freeDeliveryTarget, cartTotal } = storeToRefs(cartStore)
 
 const emit = defineEmits({
   'edit-product' (_product: ProductToEdit) {
@@ -100,13 +98,10 @@ const emit = defineEmits({
 // in the cart modal
 function handleCartButtonRedirection () {
   showCartDrawer.value = false
-  router.push('/shop/collection/novelties')
+  router.push('/api/v1/shop/collection/novelties')
 }
 
 /**
- * 
- * 
- * 
  * 
  * TODO: Refactor this function
  */

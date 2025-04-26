@@ -1,91 +1,90 @@
 <template>
-  <section id="wishlist" class="container mb-5" style="margin-top:58px;">
-    <div class="row g-2">
-      <div v-if="!authenticationStore.isAuthenticated" class="col-sm-12 col-md-4">
-        <div class="card shadow-sm" style="height: 557px;">
-          <div class="card-body text-center p-5 d-flex flex-column justify-content-center">
-            <div class="information">
-              <font-awesome icon="star" class="text-warning mb-4" size="4x" />
-              
-              <h1 class="card-title h6 fw-bold mt-4 mb-3">
-                {{ $t('Conservation des favoris') }}
-              </h1>
+  <section id="wishlist" class="mx-10 px-10 my-10">
+    <div v-if="!authenticationStore.isAuthenticated" class="w-full md:w-2/6">
+      <TailCard class="card shadow-sm border-0">
+        <TailCardContent class="card-body text-center p-5 d-flex flex-col justify-center">
+          <div class="information">
+            <Icon name="fa-solid:star" class="text-warning mb-4" size="120" />
+            
+            <h1 class="font-bold mt-4 mb-3 text-3xl">
+              {{ $t('Conservation des favoris') }}
+            </h1>
 
-              <p class="fw-light">
-                {{ $t('Keep favorites text') }}
-              </p>
+            <p class="font-light">
+              {{ $t('Keep favorites text') }}
+            </p>
 
-              <v-btn color="secondary" flat rounded @click="showLoginDrawer = true">
-                <font-awesome icon="right-to-bracket" class="me-2" />
-                {{ $t('Se connecter') }}
-              </v-btn>
-            </div>
+            <v-btn class="mt-10" color="secondary" flat rounded @click="showLoginDrawer = true">
+              <Icon name="fa-solid:right-to-bracket" class="me-2" />
+              {{ $t('Se connecter') }}
+            </v-btn>
           </div>
-        </div>
-      </div>
+        </TailCardContent>
+      </TailCard>
+    </div>
 
-      <div v-if="likedProducts.length > 0">
-        <!-- TODO: Analytics to track product click from wishlist @has-navigated -->
-        <ProductsIterator :products="products" />
-      </div>
+    <div v-if="likedProducts.length > 0">
+      <!-- TODO: Analytics to track product click from wishlist @has-navigated -->
+      <ProductsIterator v-if="products" :products="products" />
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { useLocalStorage } from '@vueuse/core'
+// import { useStorage } from '@vueuse/core'
 import type { Product } from '~/types'
 
+const { t } = useI18n()
+
 useHead({
-  title: 'Wishlist',
+  title: t('Wishlist'),
   meta: [
     {
       key: 'description',
-      content: 'Tout les produits que vous avez aimé'
+      content: t('Tout les produits que vous avez aimé')
     }
   ]
 })
 
+const { $client } = useNuxtApp()
+const { handleError } = useErrorHandler()
 const shopStore = useShop()
 const authenticationStore = useAuthentication()
-const { handleError } = useErrorHandler()
 
+// const likedProducts = useStorage('likedProducts', [])
 const { likedProducts } = storeToRefs(shopStore)
 const { showLoginDrawer } = storeToRefs(authenticationStore)
 
-function useWhishlistProducts () {
-  const { $client } = useNuxtApp()
-  const products = ref<Product[]>([])
-
-  const likedProducts = useLocalStorage('likedProducts', null, {
-    serializer: {
-      read (raw) {
-        return JSON.parse(raw)
-      },
-      write (value) {
-        return JSON.stringify(value) 
-      },
+/**
+ * 
+ */
+const { data: products } = useAsyncData(async () => {
+  return $client<Product[]>('/api/v1/shop/wishlist', {
+    method: 'POST',
+    body: {
+      session_id: shopStore.sessionCache.sessionId,
+      products: likedProducts.value
+    },
+    onRequestError({ error }) {
+      handleError(error)
     }
   })
+}, {
+  lazy: true,
+  server: false
+})
 
-  async function requestLikedProducts () {
-    try {
-      const response = await $client.post<Product[]>('products', {
-        products: likedProducts.value
-      })
-      products.value = response.data
-    } catch (e) {
-      handleError(e)
-    }
-  }
+// const response = await $client<Product[]>('/api/v1/shop/wishlist', {
+//   method: 'POST',
+//   body: {
+//     session_id: shopStore.sessionCache.sessionId,
+//     products: likedProducts.value
+//   },
+//   onRequestError({ error }) {
+//     handleError(error)
+//   }
+// })
+// products.value = response
 
-  return {
-    requestLikedProducts,
-    products
-  }
-}
-
-const { products, requestLikedProducts } = useWhishlistProducts()
-
-onBeforeMount(requestLikedProducts)
+// onBeforeMount(requestLikedProducts)
 </script>

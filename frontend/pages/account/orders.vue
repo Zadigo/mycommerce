@@ -1,38 +1,43 @@
 <template>
-  <div v-if="showFindOrder" class="card shadow-sm">
-    <div class="card-body">
-      <h1 class="h4 text-uppercase fw-bold">
+  <TailCard v-if="showFindOrder" class="card border-none">
+    <TailCardHeader>
+      <TailCardTitle>
         {{ $t("Tu as réalisé des commandes sans être inscrit ?") }}
-      </h1>
-
-      <p class="my-4 fw-light">
+      </TailCardTitle>
+    </TailCardHeader>
+    
+    <TailCardContent class="card-body">
+      <p class="my-4 font-light">
         {{ $t("Saisis ton e-mail et ton téléphone pour recevoir un SMS avec le code d'accès à tes commandes *") }}
       </p>
 
-      <v-text-field type="email" variant="outlined" placeholder="Email" autocomplete="email" />
-      <v-text-field type="tel" variant="outlined" placeholder="Téléphone" autocomplete="tel" />
+      <form @submit.prevent>
+        <v-text-field type="email" variant="outlined" placeholder="Email" autocomplete="email" />
+        <v-text-field type="tel" variant="outlined" placeholder="Téléphone" autocomplete="tel" />
+      
+        <TailButton class="w-full">
+          {{ $t("Envoyer") }}
+        </TailButton>
+      </form>
+    </TailCardContent>
+  </TailCard>
 
-      <v-btn color="primary" flat block>
-        {{ $t("Envoyer") }}
-      </v-btn>
-    </div>
-  </div>
-
-  <div v-else class="card shadow-sm">
-    <div class="card-header">
-      <h1 class="h4">
+  <TailCard v-else class="card border-none">
+    <TailCardHeader>
+      <TailCardTitle>
         {{ $t('Mes achats') }}
-      </h1>
-    </div>
+      </TailCardTitle>
+    </TailCardHeader>
 
-    <div v-if="hasOrders" class="card-body">
+    <TailCardContent v-if="hasOrders">
       Orders
-    </div>
+    </TailCardContent>
 
-    <div v-else class="card-body text-center">
+    <TailCardContent v-else class="text-center">
       <p class="fw-bold">
         {{ $t("Tu n'as encore aucun achat en ligne") }}
       </p>
+
       <p class="fw-light">
         Si tu ne trouves pas ton achat, tu as
         peut-être passé commande sans être
@@ -43,17 +48,23 @@
         {{ $t('Trouver ma commande') }}
         <font-awesome icon="arrow-right" class="ms-2" />
       </v-btn>
-    </div>
-  </div>
+    </TailCardContent>
+  </TailCard>
 </template>
 
 <script setup lang="ts">
 definePageMeta({
-  layout: 'account-layout'
+  layout: 'accounts'
 })
 
 useHead({
-  title: 'Commandes'
+  title: 'Commandes',
+  meta: [
+    {
+      key: 'description',
+      content: ''
+    }
+  ]
 })
 
 const showFindOrder = ref(false)

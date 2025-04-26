@@ -1,0 +1,27 @@
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.095s;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
+}
+
+.no-scroll {
+  height: 100%;
+  overflow: hidden;
+}
+
+.product-image {
+  &:hover {
+    cursor: zoom-in;
+  }
+}
+
+.list-group-item {
+  &.router-link-active.router-link-exact-active {
+    background-color: rgba(0, 0, 0, 0.015);
+  }
+}

@@ -1,0 +1,35 @@
+[
+    {
+        "model": "variants.Size",
+        "pk": 1,
+        "fields": {
+            "product": 2,
+            "availability": true,
+            "active": true,
+            "name": "XS",
+            "metric": "Clothe"
+        }
+    },
+    {
+        "model": "variants.Size",
+        "pk": 2,
+        "fields": {
+            "product": 2,
+            "availability": true,
+            "active": true,
+            "name": "S",
+            "metric": "Clothe"
+        }
+    },
+    {
+        "model": "variants.Size",
+        "pk": 3,
+        "fields": {
+            "product": 1,
+            "availability": true,
+            "active": true,
+            "name": "S",
+            "metric": "Clothe"
+        }
+    }
+]

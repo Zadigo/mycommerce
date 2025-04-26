@@ -9,6 +9,27 @@
     <template v-if="products.length > 0" #default>
       <ProductsIterator :products="products" :columns="currentGridSize" @has-navigated="handleNavigation" />
 
+      <ClientOnly>
+        <!-- Modals -->
+        <Teleport to="body">
+          <ModalsProductFilters v-model="showProductFilters" :count="productCount" @update-query="requestFilteredProducts" />
+        </Teleport>
+      </ClientOnly>
+    </template>
+    
+    <template v-else #default>
+      <div class="mx-auto text-center font-light text-2xl max-w-3xl p-10 my-10">
+        <p class="h4 fw-light">
+          {{ $t('Page not available text') }}
+        </p>
+
+        <NuxtLink id="link-collections-more" to="/shop/collection/all" class="mt-8" color="secondary" @click="resetQuery">
+          {{ $t('Voir toute la collection') }}
+        </NuxtLink>
+      </div>
+    </template>
+
+    <template #intersect>
       <!-- Intersect -->
       <ClientOnly>
         <div v-if="products.length > 0" id="product-pagination" ref="intersectionTarget" class="fw-bold text-uppercase d-flex justify-content-center mt-5">
@@ -26,26 +47,7 @@
             </v-btn>
           </div>
         </div>
-      </ClientOnly>
-
-      <ClientOnly>
-        <!-- Modals -->
-        <Teleport to="body">
-          <ModalsProductFilters v-model="showProductFilters" :count="productCount" @update-query="requestFilteredProducts" />
-        </Teleport>
-      </ClientOnly>
-    </template>
-
-    <template v-else #default>
-      <div class="col-6 offset-md-3 text-center p-5 my-5">
-        <p class="h4 fw-light">
-          {{ $t('Page not available text') }}
-        </p>
-
-        <NuxtLink to="/shop/collection/all" class="mt-3" color="secondary" variant="tonal" rounded @click="resetQuery">
-          {{ $t('Voir toute la collection') }}
-        </NuxtLink>
-      </div>
+      </ClientOnly>    
     </template>
   </ProductsFeedLayout>
 </template>
@@ -60,8 +62,7 @@ const emit = defineEmits({
   }
 })
 
-const route = useRoute()
-const { id } = route.params
+const { id } = useRoute().params
 const currentGridSize = useLocalStorage('grid', 3)
 
 // const { gtag } = useGtag()
@@ -72,7 +73,6 @@ const products = ref<Product[]>([])
 const cachedResponse = ref<ProductsAPIResponse>()
 
 const intersectionTarget = ref<HTMLElement | null>(null)
-
 const showProductFilters = ref(false)
 
 const query = ref<ProductsQuery>({
@@ -89,35 +89,35 @@ const query = ref<ProductsQuery>({
 
 const { data, status, error, refresh } = await useFetch<ProductsAPIResponse>(`/api/collections/${id}`, {
   method: 'GET',
-  query,
-  onRequest() {
-    isLoadingMoreProducts.value = true
-  },
+  query: query.value,
+  // onRequest() {
+  //   isLoadingMoreProducts.value = true
+  // },
   onResponseError({ error }) {
+    // TODO: G-Analytics
     // gtag('event', 'exception', {
     //   fatal: true, 
     //   description: error?.message
     // })
+    handleError(error)
   },
-  transform: (data) => {
+  transform(data) {
     cachedResponse.value = data
     
     // TODO: Use the schema ValidateProduct from zod to unify the typing for Product
-    const validItems = data.results.reduce<ValidateProduct[]>((acc, item) => {
-      try {
-        const product = ProductSchema.parse(item)
-        acc.push(product)
-        return acc
-      } catch (e) {
-        console.log('Failed to validate product:', e)
-        return acc
-      }
-    }, [])
+    // const validItems = data.results.reduce<ValidateProduct[]>((acc, item) => {
+    //   try {
+    //     const product = ProductSchema.parse(item)
+    //     acc.push(product)
+    //     return acc
+    //   } catch (e) {
+    //     console.log('Failed to validate product:', e)
+    //     return acc
+    //   }
+    // }, [])
         
     products.value.push(...data.results)
-    // products.value = validItems
     emit('products-loaded', products.value)
-
     return data
   }
 })
@@ -141,8 +141,10 @@ const productCount = computed(() => {
   }
 })
 
-// Provides the total product count for all children
-// since they do not have that information on load
+/**
+ *  Provides the total product count for all children
+ * since they do not have that information on load
+ */
 const totalProductCount = computed(() => {
   if (cachedResponse.value) {
     return cachedResponse.value.count
@@ -155,30 +157,37 @@ function handleNavigation (data: (number | Product)[] | null | undefined) {
   if (data) {
     const product = data[1]
 
-    if (product && typeof product === 'object' && 'id' in product) {
-      // gtag('event',  'select_item',  {
-      //   items: [
-      //     {
-      //       item_id: product.id,
-      //       item_name: product.name,
-      //       price: product.get_price,
-      //       item_brand: null,
-      //       item_category: product.category,
-      //       index: data[0]
-      //     }
-      //   ],
-      //   item_list_name: route.params.id,
-      //   item_list_id: route.params.id,
-      //   currency: 'EUR'
-      // })
-    }
+    // TODO: G-Analytics
+    // if (product && typeof product === 'object' && 'id' in product) {
+    //   gtag('event',  'select_item',  {
+    //     items: [
+    //       {
+    //         item_id: product.id,
+    //         item_name: product.name,
+    //         price: product.get_price,
+    //         item_brand: null,
+    //         item_category: product.category,
+    //         index: data[0]
+    //       }
+    //     ],
+    //     item_list_name: route.params.id,
+    //     item_list_id: route.params.id,
+    //     currency: 'EUR'
+    //   })
+    // }
   }
 }
 
+/**
+ * 
+ */
 function handleGridSize(grid: number) {
   currentGridSize.value = grid
 }
 
+/**
+ * 
+ */
 function resetQuery() {
   query.value = {
     sorted_by: 'New',
@@ -220,6 +229,7 @@ async function requestFilteredProducts(newQuery: SelectedFilters) {
  */
 useIntersectionObserver(intersectionTarget, ([{ isIntersecting }]) => {
   if (isIntersecting && cachedResponse.value?.next) {
+    isLoadingMoreProducts.value = true
     requestOffsetProducts(cachedResponse.value.next)
     isLoadingMoreProducts.value = false
   }
