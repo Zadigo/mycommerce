@@ -25,7 +25,7 @@ id,name,color,unit_price,active,display_new,slug,category,created_on,modified_on
 23,Jupe midi popeline taille élastique,Grey,29.99,False,False,jupe-midi-popeline-taille-elastique-24-grey-406867,Dresses,2024-07-17,2024-07-17,False,0
 24,Jupe midi popeline taille élastique,White,29.99,False,False,jupe-midi-popeline-taille-elastique-25-white-209964,Dresses,2024-07-17,2024-07-17,True,24
 25,Jupe midi popeline taille élastique,Black,29.99,False,False,jupe-midi-popeline-taille-elastique-26-black-788163,Dresses,2024-07-17,2024-07-17,False,0
-26,Jupe midi popeline taille élastique,White,29.99,False,False,jupe-midi-popeline-taille-elastique-27-white-580593,Dresses,2024-07-17,2024-07-17,True,10
+26,Jupe midi popeline taille élastique,Blue,29.99,False,False,jupe-midi-popeline-taille-elastique-27-white-580593,Dresses,2024-07-17,2024-07-17,True,10
 27,Jupe midi rayée en maille,Print,15.99,False,False,jupe-midi-rayee-maille-28-print-505441,Dresses,2024-07-17,2024-07-17,True,18
 28,Jupe midi rayures,Print,25.99,False,True,jupe-midi-rayures-29-print-630701,Dresses,2024-07-17,2024-07-17,False,0
 29,Jupe midi rustique,Yellow,25.99,False,True,jupe-midi-rustique-30-yellow-549367,Dresses,2024-07-17,2024-07-17,False,0

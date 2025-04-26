@@ -61,19 +61,6 @@ class Size(AbstractVariant):
         default=VariantMetrics.CLOTHE
     )
 
-    # name = models.CharField(
-    #     max_length=100,
-    #     help_text=_('Variant human readable name'),
-    #     choices=ClotheSizesChoices.choices(),
-    #     default=ClotheSizesChoices.default('S')
-    # )
-    # sub_category = models.CharField(
-    #     max_length=100,
-    #     help_text=_('Variant specific for product type'),
-    #     choices=VariantSubcategoryChoices.choices,
-    #     default=VariantSubcategoryChoices.CLOTHE_SIZE
-    # )
-
     class Meta:
         verbose_name = _('Size')
         verbose_name_plural = _('Sizes')
