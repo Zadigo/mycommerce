@@ -115,7 +115,7 @@ def transform_to_snake_case(value: str):
 
 
 def remove_special_characters(value: str):
-    result = re.sub(r'[\(\-\)\#\!\*\.]', '', value)
+    result = re.sub(r'[\(\-\)\#\!\*\.\W]', ' ', value)
     tokens = result.split(' ')
     name = ' '.join([token for token in tokens if token != ''])
     return name.lower()
@@ -134,7 +134,8 @@ def product_media_path(filename):
     by cleaning it's base name"""
     unique_identifier = get_random_string(12)
     basename, ext = process_file_name(filename)
-    return f"{basename}_{unique_identifier}.{ext}"
+    snaked_case_name = transform_to_snake_case(basename)
+    return f"{snaked_case_name}_{unique_identifier}.{ext}"
 
 
 def video_path(instance, filename):

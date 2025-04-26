@@ -20,8 +20,6 @@ from shop.utils import calculate_sale, create_slug, image_path, video_path
 from django.utils.functional import cached_property
 from mystore.choices import CategoryChoices, SubCategoryChoices
 
-USER_MODEL = get_user_model()
-
 
 class Image(models.Model):
     """The `Image` model represents image content associated 
@@ -351,7 +349,7 @@ class AbstractProduct(models.Model):
             'has_subcategory': 1,
             'model': 1
         }
-        
+
         score = 0
         total_score = sum(list(score_map.values()))
 
@@ -374,6 +372,11 @@ class AbstractProduct(models.Model):
 
         return f"{score}/{total_score}"
 
+    @property
+    def sale_percentage(self):
+        if self.on_sale:
+            return self.sale_price / self.unit_price
+        return 0
 
     def clean(self):
         if self.on_sale:
@@ -459,7 +462,7 @@ class AbstractUserList(models.Model):
         blank=True
     )
     user = models.ForeignKey(
-        USER_MODEL,
+        get_user_model(),
         on_delete=models.CASCADE
     )
     created_on = models.DateField(auto_now=True)
