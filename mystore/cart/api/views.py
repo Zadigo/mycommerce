@@ -1,15 +1,16 @@
 from cart.api import serializers
-from cart.api.serializers import ValidateCart, build_cart_response, DeleteFromCartSerializer
+from cart.api.serializers import (DeleteFromCartSerializer, ValidateCart,
+                                  build_cart_response)
 from cart.models import Cart
+from cart.sessions import CartJWTGenerator
 from django.conf import settings
 from django.db.models import F, Q, QuerySet
 from django.shortcuts import get_list_or_404
-from rest_framework import generics, status
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework import fields, generics, status
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from drf_spectacular.utils import inline_serializer, extend_schema
 from rest_framework.response import Response
-from cart.sessions import CartJWTGenerator
 
 
 class CartMixin:
