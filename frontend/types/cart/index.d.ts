@@ -1,6 +1,7 @@
 export * from './address'
 export * from './payment'
 
+import type { DefaultClotheSize } from '~/data';
 import type { Product } from "../shop";
 
 /**
@@ -10,7 +11,7 @@ import type { Product } from "../shop";
 export type UserSelection = {
     id: number | null;
     product: Product | object;
-    size: number | string | null | undefined;
+    size: DefaultClotheSize;
     quantity: number | 1;
     session_id: string | null;
 };
@@ -20,14 +21,14 @@ export type AddToCartData = {
         id: number;
         color: string;
     };
-    size: string;
+    size: DefaultClotheSize;
     session_id: string;
 };
 
 export interface CartItem {
     id: number;
     product: Product;
-    size: string | null;
+    size: DefaultClotheSize;
     price: number;
     created_on: string;
 }
@@ -35,7 +36,7 @@ export interface CartItem {
 interface CartStatistic {
     product__id: number;
     product__name: string;
-    size: string
+    size: DefaultClotheSize
     quantity: number;
     total: number;
 }

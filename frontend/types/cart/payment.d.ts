@@ -1,3 +1,4 @@
+// TODO:: Rename to DefaultPaymentProviders
 export type PaymentType = 'Stripe' | 'Klarna'
 
 export interface NewIntentAPIResponse {
