@@ -5,15 +5,15 @@ import type { CartItem, CartUpdateApiResponse, Product, SessionCacheData, UserSe
 
 interface RequestData {
   session_id: string | null | undefined
-  card_token: string | null
-  firstname: string | null
-  lastname: string | null
-  email: string | null
-  telephone: string | null
-  address_line: string | null
-  zip_code: string | null
-  country: string | null
-  city: string | null
+  card_token: string
+  firstname: string
+  lastname: string
+  email: string
+  telephone: string
+  address_line: string
+  zip_code: string
+  country: string
+  city: string
   delivery: 'Chronopost'
 }
 
@@ -28,16 +28,16 @@ export const useCart = defineStore('cart', () => {
   const sessionCache = ref<SessionCacheData>()
 
   const requestData = ref<RequestData>({
-    session_id: null,
-    card_token: null,
-    firstname: null,
-    lastname: null,
-    email: null,
-    telephone: null,
-    address_line: null,
-    zip_code: null,
-    country: null,
-    city: null,
+    session_id: '',
+    card_token: '',
+    firstname: '',
+    lastname: '',
+    email: '',
+    telephone: "",
+    address_line: "",
+    zip_code: "",
+    country: '',
+    city: '',
     delivery: "Chronopost"
   })
 
