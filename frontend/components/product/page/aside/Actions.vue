@@ -44,7 +44,7 @@ import { doc, updateDoc, getDoc } from 'firebase/firestore'
 import { useStorage } from '@vueuse/core'
 
 import type { PropType } from 'vue'
-import type { Product, ProductStock } from '~/types'
+import type { Product, ProductStockApiResponse } from '~/types'
 
 const props = defineProps({
   product: {
@@ -59,7 +59,7 @@ const emit = defineEmits({
   }
 })
 
-const stockState = inject<ProductStock>('stockState')
+const stockState = inject<ProductStockApiResponse>('stockState')
 
 const { $fireStore } = useNuxtApp()
 const cartStore = useCart()

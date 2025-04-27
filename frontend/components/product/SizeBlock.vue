@@ -17,8 +17,10 @@
  * the model that is carrying clothing
  */
 
-import type { ProductSizes } from '~/types';
-import { useRefHistory } from '@vueuse/core';
+import { useRefHistory } from '@vueuse/core'
+
+import type { ProductSizes } from '~/types'
+import type { DefaultClotheSize } from '~/data'
 
 defineProps({
   sizes: {
@@ -29,18 +31,18 @@ defineProps({
 })
 
 const emit = defineEmits({
-  'update-size' (_size: string | number | undefined) {
+  'update-size' (_size: DefaultClotheSize) {
     return true
   }
 })
 
-const selectedSize = ref<string | number | undefined | null>()
+const selectedSize = ref<DefaultClotheSize>()
 useRefHistory(selectedSize)
 
 /**
  * 
  */
-function handleSizeSelection (size: string | number | undefined) {
+function handleSizeSelection (size: DefaultClotheSize) {
   selectedSize.value = size
   emit('update-size', selectedSize.value)
 }

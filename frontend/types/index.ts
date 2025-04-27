@@ -7,9 +7,11 @@ export * from './cart'
 export * from './shop'
 export * from './feed'
 export * from './text'
-export * from './address'
-export * from './payment'
 
+/**
+ * Token returned by the Django backend in order
+ * to identify anonymous users on the website
+ */
 export interface JWTData {
     exp: number
     iat: number
@@ -17,7 +19,11 @@ export interface JWTData {
     typ: string
     aud: string
     sub: string
-    user_id: number
+    user_id?: number | null
+    /**
+     * A unique random string used to make the JWT
+     * token unique if the user is anonymous 
+     */
     cart_id: string
 }
 
@@ -27,7 +33,7 @@ const availableLocales = ['fr', 'en', 'es'] as const;
 export type Languages = (typeof availableLocales)[number];
 
 export type LanguageOptions = {
-    location: string | null
+    location: string | null //TODELETE: This is now saved in the cookie
     choice: Languages
     selected: boolean
 };
@@ -76,22 +82,4 @@ export interface GuideText {
 
 export interface ExtendedLocationQuery {
     login?: string | null
-}
-
-
-export interface FooterSection {
-    name: string
-    links: {
-        name: string
-        to: string
-    }[]
-}
-
-export interface FooterLinks {
-    socials: {
-        name: string
-        url: string
-        icon: string | null
-    }[],
-    sections: FooterSection[]
 }

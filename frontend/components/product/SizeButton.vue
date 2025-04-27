@@ -6,10 +6,11 @@
 </template>
 
 <script lang="ts" setup>
-import type { ProductSizes } from '~/types';
+import type { ProductSizes } from '~/types'
+import type { DefaultClotheSize } from '~/data'
 
 const emit = defineEmits({
-  'select-size' (_size: string | number) {
+  'select-size' (_size: DefaultClotheSize) {
     return true
   }
 })
@@ -20,7 +21,7 @@ const props = defineProps({
     required: true
   },
   selectedSize: {
-    type: [String, Number],
+    type: String as PropType<DefaultClotheSize>,
     default: null
   },
   selectable: {
@@ -49,6 +50,9 @@ const buttonClass = computed(() => {
   ]
 })
 
+/**
+ * 
+ */
 function handleSizeSelection (size: ProductSizes) {
   emit('select-size', size.name)
 }

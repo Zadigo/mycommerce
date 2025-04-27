@@ -1,14 +1,14 @@
 import { refreshAccessToken } from '~/utils'
 import { FetchError } from 'ofetch'
 
-import type { CollectionName } from "~/types"
+import type { CollectionApiResponse } from "~/types"
 
 export default defineCachedEventHandler(async event => {
   const access = getCookie(event, 'access')
   const refresh = getCookie(event, 'refresh')
 
   try {
-    const data = await $fetch<CollectionName>(`/api/v1/collection`, {
+    const data = await $fetch<CollectionApiResponse>(`/api/v1/collection`, {
       baseURL: useRuntimeConfig().public.prodDomain,
       method: 'GET',
       headers: [

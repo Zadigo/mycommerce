@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { useJwt } from '@vueuse/integrations/useJwt'
 
 import type { CartItem, CartUpdateApiResponse, Product, SessionCacheData, UserSelection, ProductToEdit, JWTData } from '~/types'
+import type { DefaultClotheSize } from '~/data'
 
 interface RequestData {
   session_id: string | null | undefined
@@ -149,7 +150,7 @@ export const useCart = defineStore('cart', () => {
   /**
    * 
    */
-  function handleSizeSelection(product: Product, size: string | number | undefined) {
+  function handleSizeSelection(product: Product, size: DefaultClotheSize) {
     if (product) {
       console.info('handleSizeSelection', product)
       userSelection.value.product = product

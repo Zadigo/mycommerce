@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CollectionName } from '~/types'
+import type { CollectionApiResponse } from '~/types'
 
 // const { gtag } = useGtag()
 const { t } = useI18n()
@@ -35,7 +35,7 @@ const { data: collections, status } = await useFetch('/api/collections', {
   
   // TODO: Review this code
   // transform (data) {
-  //   const validCollections = data.reduce<CollectionName[]>((acc, item) => {
+  //   const validCollections = data.reduce<CollectionApiResponse[]>((acc, item) => {
   //     try {
   //       const validItem = CollectionSchema.parse(item)
   //       acc.push(validItem)

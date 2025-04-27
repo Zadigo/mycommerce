@@ -39,15 +39,14 @@
 </template>
 
 <script setup lang="ts">
-import { countries } from '~/data/countries'
+import { countries, type DefaultCountries } from '~/data'
 
 type AvailableLanguages = typeof i18n.locale.value
-type AvailableCountries = typeof countries[number]
 
 const i18n = useI18n()
 const localePath = useLocalePath()
 const shopStore = useShop()
-const i18nCountry = useCookie<AvailableCountries>('i18nCountry', { sameSite: 'strict', secure: true, default: () => 'France' })
+const i18nCountry = useCookie<DefaultCountries>('i18nCountry', { sameSite: 'strict', secure: true, default: () => 'France' })
 
 const availableLanguages = ref<AvailableLanguages[]>(i18n.availableLocales)
 

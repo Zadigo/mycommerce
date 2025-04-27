@@ -1,5 +1,12 @@
-import type { Product } from "./shop";
+export * from './address'
+export * from './payment'
 
+import type { Product } from "../shop";
+
+/**
+ * The options selected by the user for the
+ * product that he wants to add to his cart 
+ */
 export type UserSelection = {
     id: number | null;
     product: Product | object;
@@ -40,8 +47,10 @@ export interface CartUpdateApiResponse {
     total: number;
 }
 
-// A modified object of the cart results which allows
-// edition and quick selection of information
+/**
+ * A modified object of the cart results which allows
+ * edition and quick selection of information
+ */
 export interface ProductToEdit extends CartStatistic {
     product_info: CartItem | undefined
 }

@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 import { useIntersectionObserver, useLocalStorage  } from '@vueuse/core'
-import type { Product, ProductsAPIResponse, ProductsQuery, SelectedFilters } from '~/types';
+import type { Product, ProductsApiResponse, ProductsQuery, SelectedFilters } from '~/types';
 
 const emit = defineEmits({
   'products-loaded' (_data: Product[]) {
@@ -72,7 +72,7 @@ const { handleError } = useErrorHandler()
 
 const isLoadingMoreProducts = ref(false)
 const products = ref<Product[]>([])
-const cachedResponse = ref<ProductsAPIResponse>()
+const cachedResponse = ref<ProductsApiResponse>()
 
 const intersectionTarget = ref<HTMLElement | null>(null)
 const showProductFilters = ref(false)
@@ -89,7 +89,7 @@ const query = ref<ProductsQuery>({
 // TODO: Add a provide so that all the components have access
 // to the products from this parent component
 
-const { data, status, error, refresh } = await useFetch<ProductsAPIResponse>(`/api/collections/${id}`, {
+const { data, status, error, refresh } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
   method: 'GET',
   query: query.value,
   // onRequest() {

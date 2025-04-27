@@ -29,7 +29,7 @@
 
 <script lang="ts" setup>
 import { useSessionStorage } from '@vueuse/core'
-import type { CartUpdateApiResponse, ProductStock } from '~/types';
+import type { CartUpdateApiResponse, ProductStockApiResponse } from '~/types';
 
 definePageMeta({
   layout: 'cart',
@@ -49,7 +49,7 @@ const {  $client } = useNuxtApp()
  */
 async function handleUpdateStock () {
   try {
-    const response = await $client<ProductStock[]>('/api/v1/stocks/update', {
+    const response = await $client<ProductStockApiResponse[]>('/api/v1/stocks/update', {
       method: 'POST',
       body: {
         customer_order: null

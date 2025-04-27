@@ -24,11 +24,11 @@
 
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import type { CollectionName } from '~/types'
+import type { CollectionApiResponse } from '~/types'
 
 defineProps({
   collection: {
-    type: Object as PropType<CollectionName>
+    type: Object as PropType<CollectionApiResponse>
   },
   customName: {
     type: String,

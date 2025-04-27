@@ -23,7 +23,7 @@
 <script lang="ts" setup>
 import { useStorage } from '@vueuse/core'
 import type { DeliveryOption } from '~/types'
-import type { NewIntentAPIResponse } from '../../types/payment'
+import type { NewIntentAPIResponse } from '../../types/cart/payment'
 
 definePageMeta({
   layout: 'cart',

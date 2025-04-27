@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Product, ProductsAPIResponse } from '~/types'
+import type { Product, ProductsApiResponse } from '~/types'
 
 const AsyncRecommendations = defineAsyncComponent({
   loader: async () => import('~/components/BaseRecommendations.vue'),
@@ -65,7 +65,7 @@ const canShowSearch = computed(() => {
 
 async function requestProducts (): Promise<void> {
   if (search.value && search.value !== "") {
-    const response = await $client<ProductsAPIResponse>('/api/v1/shop/products', {
+    const response = await $client<ProductsApiResponse>('/api/v1/shop/products', {
       params: {
         q: search.value
       },

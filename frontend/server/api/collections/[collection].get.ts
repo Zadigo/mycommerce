@@ -2,7 +2,7 @@ import { FetchError } from 'ofetch'
 import { refreshAccessToken } from '~/utils'
 
 import type { H3EventContext } from 'h3'
-import type { ProductsAPIResponse } from '~/types'
+import type { ProductsApiResponse } from '~/types'
 
 interface EventContextParams extends H3EventContext {
   collection: string
@@ -20,7 +20,7 @@ export default defineCachedEventHandler(async event => {
   
   try {
     console.log('[collection].get.ts', query.price)
-    const data = await $fetch<ProductsAPIResponse>(`/api/v1/collection/${name}`, {
+    const data = await $fetch<ProductsApiResponse>(`/api/v1/collection/${name}`, {
       baseURL: useRuntimeConfig().public.prodDomain,
       method: 'GET',
       params: {

@@ -86,7 +86,7 @@
 <script setup lang="ts">
 import { useStorage } from '@vueuse/core'
 import { onMounted } from 'vue'
-import type { Product, ProductStock } from '~/types'
+import type { Product, ProductStockApiResponse } from '~/types'
 
 type ImageComponentMap = {[key: number]: Component}
 
@@ -105,7 +105,7 @@ const AsyncBaseRecommendationBlock = defineAsyncComponent({
   timeout: 5000
 })
 
-const stockState = ref<ProductStock>()
+const stockState = ref<ProductStockApiResponse>()
 const showSizeGuideDrawer = ref(false)
 
 const { debounce } = useDebounce()
@@ -176,7 +176,7 @@ function trackProduct () {
 async function requestProductStock () {
   try {
     if (product.value) {
-      const response = await $client<ProductStock>(`/api/v1/stocks/products/${product.value.id}`, {
+      const response = await $client<ProductStockApiResponse>(`/api/v1/stocks/products/${product.value.id}`, {
         method: 'GET'
       })
       stockState.value = response

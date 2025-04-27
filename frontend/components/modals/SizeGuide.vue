@@ -41,7 +41,7 @@
         </div>
 
         <div class="col-12 mt-4">
-          <v-btn color="primary" block @click="addToCart">
+          <v-btn color="primary" block @click="cartStore.addToCart(product)">
             {{ $t('Ajouter au panier') }}
           </v-btn>
         </div>
@@ -85,8 +85,9 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
-import type { Product } from '~/types';
+import type { PropType } from 'vue'
+import type { DefaultClotheSize } from '~/data'
+import type { Product } from '~/types'
 
 const props = defineProps({
   modelValue: {
@@ -104,8 +105,8 @@ const emit = defineEmits({
   }
 })
 
+const cartStore = useCart()
 // const { mediaPath } = useDjangoUtilies()
-const { addToCart, handleSizeSelection } = useCartComposable()
 
 const show = computed({
   get: () => props.modelValue,
@@ -113,4 +114,8 @@ const show = computed({
     emit('update:modelValue', value)
   }
 })
+
+function handleSizeSelection(value: DefaultClotheSize) {
+  cartStore.handleSizeSelection(props.product, value)
+}
 </script>
