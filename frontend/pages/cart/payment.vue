@@ -1,16 +1,16 @@
 <template>
-  <TailCard class="card shadow-sm">
+  <TailCard class="card shadow-sm border-none">
     <TailCardContent>
       <p class="fw-light">
         {{ $t('Choississez votre mode de paiement') }}
       </p>
 
-      <div class="list-group">
-        <a v-for="paymentMethod in paymentMethods" :key="paymentMethod.name" href="#" :class="{ active: selectedPaymentMethod === paymentMethod.name }" class="list-group-item list-group-item-action p-3" @click.prevent="handlePaymentType(paymentMethod.name)">
-          <font-awesome :icon="['fab', paymentMethod.icon]" class="me-3" />
+      <TailList>
+        <TailListItem v-for="paymentMethod in paymentMethods" :key="paymentMethod.name" :active="selectedPaymentMethod === paymentMethod.name" @click.prevent="handlePaymentType(paymentMethod.name)">
+          <Icon :name="`fa-brands:${paymentMethod.icon}`" class="me-3" />
           {{ paymentMethod.name }}
-        </a>
-      </div>
+        </TailListItem>
+      </TailList>
 
       <hr v-if="hasSelectedPaymentMethod" class="my-5">
 
@@ -23,18 +23,18 @@
           </form>
         </div>
 
-        <button type="button" class="btn btn-block btn-primary btn-rounded shadow-none fs-5 fw-bold" @click="handleStripe">
+        <TailButton @click="handleStripe">
           <v-progress-circular v-if="isLoading" indeterminate />
           {{ $t('Payer somme', { n: $n(cartStore.cartTotal, 'currency') }) }}
-        </button>
+        </TailButton>
       </div>
 
       <div v-else-if="hasSelectedPaymentMethod && selectedPaymentMethod === 'Klarna'" id="klarna-payments-container" />
     </TailCardContent>
 
     <TailCardContent class="flex gap-1 items-center justify-center">
-      <v-img src="/cards/mastercard.svg" height="30" width="30" />
-      <v-img src="/cards/visa.png" height="30" width="30" />
+      <NuxtImg src="/cards/mastercard.svg" height="30" width="30" />
+      <NuxtImg src="/cards/visa.png" height="30" width="30" />
     </TailCardContent>
   </TailCard>
 </template>
@@ -119,7 +119,16 @@ const paymentIntent = useLocalStorage<NewIntentAPIResponse>('paymentIntent', nul
 
 // const { gtag } = useGtag()
 const router = useRouter()
-const stripeKey = ref(config.public.STRIPE_PUBLISHABLE_KEY)
+
+let publisheableKey = null
+
+if (import.meta.env.DEV) {
+  publisheableKey = config.public.stripeTestPublishableKey
+} else {
+  publisheableKey = config.public.stripeTestPublishableKey
+}
+
+const stripeKey = ref(publisheableKey)
 
 // https://stripe.com/docs/js/initializing#init_stripe_js-options
 const instanceOptions = ref({})

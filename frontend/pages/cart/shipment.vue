@@ -6,12 +6,12 @@
           {{ $t("Adresse de livraison") }}
         </h2>
 
-        <v-text-field v-model="requestData.address_line" placeholder="Addresse" variant="outlined" autocomplete="street-address" />
-        <v-text-field v-model="requestData.city" variant="outlined" placeholder="Ville" autocomplete="address-level1" />
+        <TailInput v-model="requestData.address_line" placeholder="Addresse" autocomplete="street-address" />
+        <TailInput v-model="requestData.city" placeholder="Ville" autocomplete="address-level1" class="my-1" />
 
         <div class="d-flex justify-content-between gap-1">
-          <v-text-field v-model="requestData.zip_code" :rules="[ rules.postalCode ]" placeholder="Zip code" variant="outlined" autocomplete="postal-code" />
-          <v-text-field v-model="requestData.country" variant="outlined" autocomplete="country" />
+          <TailInput v-model="requestData.zip_code" :rules="[ rules.postalCode ]" placeholder="Zip code" autocomplete="postal-code" />
+          <TailInput v-model="requestData.country" autocomplete="country" />
         </div>
 
         <hr class="my-5">
@@ -20,14 +20,14 @@
           {{ $t("Mes données") }}
         </h2>
 
-        <div class="d-flex justify-content-between gap-1">
-          <v-text-field v-model="requestData.firstname" placeholder="Nom" variant="outlined" autocomplete="family-name" />
-          <v-text-field v-model="requestData.lastname" placeholder="Prénom" variant="outlined" autocomplete="given-name" />
+        <div class="flex justify-between gap-1">
+          <TailInput v-model="requestData.firstname" placeholder="Nom" autocomplete="family-name" />
+          <TailInput v-model="requestData.lastname" placeholder="Prénom" autocomplete="given-name" />
         </div>
 
-        <div class="d-flex justify-content-between gap-1">
-          <v-text-field v-model="requestData.email" type="email" placeholder="Email" variant="outlined" autocomplete="email" />
-          <v-text-field v-model="requestData.telephone" placeholder="Téléphone" variant="outlined" autocomplete="tel" />
+        <div class="flex justify-between gap-2 my-2">
+          <TailInput v-model="requestData.email" type="email" placeholder="Email" autocomplete="email" />
+          <TailInput v-model="requestData.telephone" placeholder="Téléphone" autocomplete="tel" />
         </div>
 
         <div class="flex items-center space-x-2">
@@ -61,6 +61,7 @@ useHead({
   ]
 })
 
+const router = useRouter()
 const cartStore = useCart()
 const { requestData } = storeToRefs(cartStore)
 
@@ -117,7 +118,7 @@ const saveShipmentDetails = ref(false)
 /**
  * Update an existing payment intent
  */
-async function handleUpdatePaymentIntent () {
+async function handleUpdatePaymentIntent() {
   try {
     requestData.value.session_id = cartStore.sessionId
 
@@ -140,4 +141,18 @@ async function handleUpdatePaymentIntent () {
     handleError(e)
   }
 }
+
+const { execute } = useAsyncData(() => $fetch('/api/v1/address-set/create', {
+  method: 'POST',
+  body: requestData.value,
+  immediate: false
+}))
+
+onBeforeRouteLeave((to, from, next) => {
+  if (to.path === '/cart/payment') {
+    if (saveShipmentDetails.value) {
+      console.log('Save new address set')
+    }
+  }
+})
 </script>

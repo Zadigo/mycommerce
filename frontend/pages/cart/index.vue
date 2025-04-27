@@ -5,13 +5,15 @@
         {{ $t("Choisis un mode d'expédition") }}
       </h2>
 
-      <v-radio-group v-model="cartStore.requestData.delivery">
-        <template v-if="deliveryOptions.length > 0">
-          <v-radio v-for="delivery in deliveryOptions" :key="delivery.id" v-model="cartStore.requestData.delivery" :label="delivery.name" :value="delivery.name" />
-        </template>
-
-        <TailSkeleton v-else class="h-[30px] mt-5 bg-gray-50" />
-      </v-radio-group>
+      <TailRadioGroup v-if="deliveryOptions.length > 0" v-model="cartStore.requestData.delivery" default-value="Relais colis">
+        <div v-for="(delivery, i) in deliveryOptions" :key="delivery.id" class="flex items-center space-x-8">
+          <TailRadioGroupItem :id="`delivery-${i}`" :value="delivery.id" />
+          <TailLabel :for="`delivery-${i}`">
+            {{ delivery.name }}
+          </TailLabel>
+        </div>
+      </TailRadioGroup>
+      <TailSkeleton v-else class="h-[30px] mt-5 bg-gray-50" />
     </TailCardContent>
 
     <CartNavigationCardFooter next-page="/cart/shipment" />
@@ -80,8 +82,10 @@ const { data } = useAsyncData('delivery-options', async () => {
   )
 })
 
-deliveryOptions.value = data.value[0]
-paymentIntent.value = data.value[1]
+if (data.value) {
+  deliveryOptions.value = data.value[0]
+  paymentIntent.value = data.value[1]
+}
 
 onMounted(async () => {
   // await handleNewPaymentIntent()
