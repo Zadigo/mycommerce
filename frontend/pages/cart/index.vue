@@ -23,23 +23,14 @@
 <script lang="ts" setup>
 import { useStorage } from '@vueuse/core'
 import type { DeliveryOption } from '~/types'
-import type { NewIntentAPIResponse } from './payment'
+import type { NewIntentAPIResponse } from '../../types/payment'
 
 definePageMeta({
   layout: 'cart',
   middleware: ['cart']
 })
 
-useHead({
-  title: 'Shipment',
-  meta: [
-    {
-      key: 'description',
-      content: ''
-    }
-  ]
-})
-
+const { t } = useI18n()
 const { handleError } = useErrorHandler()
 const cartStore = useCart()
 const { $client } = useNuxtApp()
@@ -116,5 +107,15 @@ onMounted(async () => {
   //   currency: 'EUR',
   //   shipping: 1
   // })
+})
+
+useHead({
+  title: t('Options de livraison'),
+  meta: [
+    {
+      key: 'description',
+      content: t('Choississez votre option de livraison')
+    }
+  ]
 })
 </script>

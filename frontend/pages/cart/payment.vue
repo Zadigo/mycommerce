@@ -1,7 +1,7 @@
 <template>
   <TailCard class="card shadow-sm border-none">
     <TailCardContent>
-      <p class="fw-light">
+      <p class="font-light mb-5">
         {{ $t('Choississez votre mode de paiement') }}
       </p>
 
@@ -14,22 +14,8 @@
 
       <hr v-if="hasSelectedPaymentMethod" class="my-5">
 
-      <div v-if="hasSelectedPaymentMethod && selectedPaymentMethod !== 'Klarna'" class="payment">
-        <div class="p-4">
-          <form @submit.prevent>
-            <StripeElements v-slot="{ elements }" ref="stripeElementsEl" :stripe-key="stripeKey" :instance-options="instanceOptions" :elements-options="elementsOptions">
-              <StripeElement ref="cardEl" :elements="elements" :options="cardOptions" />
-            </StripeElements>
-          </form>
-        </div>
-
-        <TailButton @click="handleStripe">
-          <v-progress-circular v-if="isLoading" indeterminate />
-          {{ $t('Payer somme', { n: $n(cartStore.cartTotal, 'currency') }) }}
-        </TailButton>
-      </div>
-
-      <div v-else-if="hasSelectedPaymentMethod && selectedPaymentMethod === 'Klarna'" id="klarna-payments-container" />
+      <CartPaymentStripeBlock v-if="stripeSelected" @payment-complete="handlePaymentComplete" />
+      <CartPaymentKlarnaBlock v-else-if="klarnaSelected" />
     </TailCardContent>
 
     <TailCardContent class="flex gap-1 items-center justify-center">
@@ -40,18 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useLocalStorage, useSessionStorage } from '@vueuse/core'
-import { StripeElement, StripeElements } from 'vue-stripe-js'
-
-import type { NewIntentAPIResponse, StripeTokenResponse } from './payment'
-
-interface TokenData {
-  session_id: string | null | undefined
-  card: string | null
-  intent: string | null
-  token: string | null
-  client_ip: string | null
-}
+import type { PaymentType } from '~/types'
 
 definePageMeta({
   layout: 'cart',
@@ -68,6 +43,8 @@ useHead({
   ]
 })
 
+const router = useRouter()
+
 const paymentMethods = [
   {
     name: 'Visa / Mastercard',
@@ -79,96 +56,30 @@ const paymentMethods = [
   }
 ]
 
-const cartStore = useCart()
-
 const selectedPaymentMethod = ref<string | null>(null)
-const tokenData = ref<TokenData>({
-  session_id: null,
-  card: null,
-  intent: null,
-  token: null,
-  client_ip: null
-})
-
-const { $client } = useNuxtApp()
-const config = useRuntimeConfig()
-
-
-const paymentResponse = useSessionStorage('payment_response', null, {
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    }
-  }
-})
-
-const paymentIntent = useLocalStorage<NewIntentAPIResponse>('paymentIntent', null, {
-  deep: true,
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    }
-  }
-})
-
-// const { gtag } = useGtag()
-const router = useRouter()
-
-let publisheableKey = null
-
-if (import.meta.env.DEV) {
-  publisheableKey = config.public.stripeTestPublishableKey
-} else {
-  publisheableKey = config.public.stripeTestPublishableKey
-}
-
-const stripeKey = ref(publisheableKey)
-
-// https://stripe.com/docs/js/initializing#init_stripe_js-options
-const instanceOptions = ref({})
-
-// https://stripe.com/docs/js/elements_object/create#stripe_elements-options
-const elementsOptions = ref({})
-
-// https://stripe.com/docs/stripe.js#element-options
-const cardOptions = ref({
-  // value: {
-  //   postalCode: '12345',
-  // }
-})
-
-const isLoading = ref(false)
-const cardEl = ref()
-const stripeElementsEl = ref()
 
 const hasSelectedPaymentMethod = computed(() => {
   return selectedPaymentMethod.value !== null
 })
 
+// Stripe payment method was selected
+const stripeSelected = computed(() => hasSelectedPaymentMethod.value && selectedPaymentMethod.value !== 'Klarna')
+const klarnaSelected = computed(() => hasSelectedPaymentMethod.value && selectedPaymentMethod.value === 'Klarna')
+
+/**
+ * Executes card tokenization and initiates the
+ * payment on the backend side
+ */
+function handlePaymentType (cardType: string) {
+  selectedPaymentMethod.value = cardType
+}
+
 /**
  * 
  */
-async function handlePayment () {
-  try {
-    const response = await $client('orders/create', {
-      method: 'POST',
-      body: tokenData.value
-    })
-
-    paymentResponse.value = response
-    // cartStore.cache = null
-    // cart.value = null
-    isLoading.value = false
-    paymentIntent.value = null
-
-    // TODO: G-Analytics
-    // gtag('event', 'add_payment_info', {
+function handlePaymentComplete(blockName: PaymentType) {
+  // TODO: G-Analytics
+  // gtag('event', 'add_payment_info', {
     //   transaction_id: cartStore.sessionId,
     //   currency: 'EUR',
     //   tax: 20,
@@ -196,41 +107,7 @@ async function handlePayment () {
     //   shipping: 1,
     //   value: cartStore.cartTotal
     // })
-
-    router.push('/cart/success')
-  } catch (e) {
-    console.log(e)
+    console.log('handlePaymentComplete', blockName)
+    // router.push('/cart/success')
   }
-}
-
-/**
- * @link https://github.com/ectoflow/vue-stripe-js 
- */
-async function handleStripe () {
-  // Test card number: 4242424242424242
-  // Test card number: 4000056655665556
-  // Test card number: 5200828282828210
-  isLoading.value = true
-
-  const result = await stripeElementsEl.value.instance.createToken(cardEl.value.stripeElement) as StripeTokenResponse
-
-  if (paymentIntent.value) {
-    tokenData.value.session_id = cartStore.sessionId
-    tokenData.value.card = result.token.card.id
-    tokenData.value.intent = paymentIntent.value.intent
-    tokenData.value.token = result.token.id
-    tokenData.value.client_ip = result.token.client_ip
-    await handlePayment()
-  } else {
-    console.error('No payment intent')
-  }
-}
-
-/**
- * Executes card tokenization and initiates the
- * payment on the backend side
- */
-function handlePaymentType (cardType: string) {
-  selectedPaymentMethod.value = cardType
-}
 </script>

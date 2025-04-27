@@ -8,6 +8,7 @@ export * from './shop'
 export * from './feed'
 export * from './text'
 export * from './address'
+export * from './payment'
 
 export interface JWTData {
     exp: number

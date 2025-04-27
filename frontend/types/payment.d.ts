@@ -1,3 +1,5 @@
+export type PaymentType = 'Stripe' | 'Klarna'
+
 export interface NewIntentAPIResponse {
     intent: string | null
     client: string | null
