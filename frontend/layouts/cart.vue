@@ -31,9 +31,11 @@
                     <TailBreadcrumbSeparator v-if="i < 2">
                       <Slash />
                     </TailBreadcrumbSeparator>
-              </template>
-            </v-breadcrumbs>
-          </nav>
+                  </template>
+                </TailBreadcrumbList>
+              </TailBreadcrumb>
+            </TailCardContent>
+          </TailCard>
         </div>
 
         <div class="col-span-6">
@@ -59,15 +61,15 @@
                 <div class="price flex justify-between w-full">
                   <div class="w-full">{{ $t('Sous-total') }}</div>
                   <div class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</div>
-              </div>
+                </div>
 
                 <div class="delivery flex justify-between my-2 w-full">
                   <span>{{ $t("Frais d'envoi") }}</span>
 
                   <div class="font-bold uppercase text-green-500">
-                  {{ $t('Gratuit') }}
+                    {{ $t('Gratuit') }}
                   </div>
-              </div>
+                </div>
 
                 <div class="total flex justify-between w-full">
                   <div class="p-5">{{ $t('Total (TVA comprise)') }}</div>
