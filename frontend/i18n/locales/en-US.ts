@@ -94,7 +94,7 @@ export default defineI18nLocale(async locale => {
         "Tu dois sélectionner une taille": "Tu dois sélectionner une taille",
         "Nom d'utilisateur ou email": "Nom d'utilisateur ou email",
         "Se déconnecter": "Se déconnecter",
-        "Panier": "Panier",
+        "Panier": "Cart",
         "Compte": "Compte",
         "Taille unique": "Taille unique",
         "Rechercher": "Search",

@@ -97,7 +97,7 @@ export default defineI18nLocale(async locale => {
         "Panier": "Panier",
         "Compte": "Compte",
         "Taille unique": "Taille unique",
-        "Rechercher": "Search",
+        "Rechercher": "Rechercher",
         "Tu n'as encore aucun achat en ligne": "Tu n'as encore aucun achat en ligne",
         "Trouver ma commande": "Trouver ma commande",
         "Mes achats": "Mes achats",

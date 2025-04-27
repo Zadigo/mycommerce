@@ -65,13 +65,15 @@
             {{ $t('Panier vide') }}
           </h3>
           
-          <p class="font-light">
+          <p class="font-light mb-10">
             {{ $t('Empty cart text') }}
           </p>
           
-          <a href="#" @click.prevent="handleCartButtonRedirection">
-            {{ $t('Découvrir') }}
-          </a>
+          <TailButton size="lg" @click.prevent="handleCartButtonRedirection">
+            <NuxtLink>
+              {{ $t('Découvrir') }}
+            </NuxtLink>
+          </TailButton>
         </div>
       </div>
     </div>
@@ -81,6 +83,7 @@
 <script lang="ts" setup>
 import type { ProductToEdit } from '~/types';
 
+const toLocalePath = useLocalePath()
 const router = useRouter()
 
 const cartStore = useCart()
@@ -93,21 +96,22 @@ const emit = defineEmits({
   }
 })
 
-// Handles the redirection to the correct page
-// if the user clicks on the discover button
-// in the cart modal
+/**
+ * Handles the redirection to the correct page
+ * if the user clicks on the discover button
+ * in the cart modal
+ */
 function handleCartButtonRedirection () {
   showCartDrawer.value = false
-  router.push('/api/v1/shop/collection/novelties')
+  router.push(toLocalePath('/shop/collection/novelties'))
 }
 
 /**
- * 
+ * Handle the opening or the closing of 
+ * the product edition dialog by ensuring
+ * that cartDrawer is closed
  * TODO: Refactor this function
  */
-// Handle the opening or the closing of 
-// the product edition dialog by ensuring
-// that cartDrawer is closed
 function handleOpenProductEdition (editedProduct: ProductToEdit) {
   emit('edit-product', editedProduct)
 }

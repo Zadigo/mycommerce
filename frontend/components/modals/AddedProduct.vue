@@ -42,21 +42,25 @@
 </template>
 
 <script setup lang="ts">
+const toLocalePath = useLocalePath()
 const cartStore = useCart()
 const authenticationStore = useAuthentication()
 const router = useRouter()
 
-const { lastAddedProduct, showAddedProductDrawer, showCartDrawer, hasProducts } = storeToRefs(cartStore)
 const { mediaPath } = useDjangoUtilies()
 
-// Handles the situation where the user tries
-// to go to the cart but is not logged in. If
-// he tries to access the cart while anonymous,
-// he is invited to login before pursuing
+const { lastAddedProduct, showAddedProductDrawer, showCartDrawer, hasProducts } = storeToRefs(cartStore)
+
+/**
+ * Handles the situation where the user tries
+ * to go to the cart but is not logged in. If
+ * he tries to access the cart while anonymous,
+ * he is invited to login before pursuing
+ */
 function handleNotAuthenticatedOrdering () {
   if (authenticationStore.isAuthenticated) {
     showAddedProductDrawer.value = false
-    router.push('/cart/')
+    router.push(toLocalePath('/cart/'))
   } else {
     showCartDrawer.value = false
     showAddedProductDrawer.value = false
