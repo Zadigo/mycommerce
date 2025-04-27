@@ -55,24 +55,24 @@
             </TailCardContent>
 
             <TailCardFooter>
-              <div class="price flex justify-between">
-                <span>{{ $t('Sous-total') }}</span>
-                <span class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</span>
+              <div class="flex flex-col w-full">
+                <div class="price flex justify-between w-full">
+                  <div class="w-full">{{ $t('Sous-total') }}</div>
+                  <div class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</div>
               </div>
 
-              <div class="delivery flex justify-between my-2">
-                <span>
-                  {{ $t("Frais d'envoi") }}
-                </span>
+                <div class="delivery flex justify-between my-2 w-full">
+                  <span>{{ $t("Frais d'envoi") }}</span>
 
-                <span class="font-bold uppercase text-green-500">
+                  <div class="font-bold uppercase text-green-500">
                   {{ $t('Gratuit') }}
-                </span>
+                  </div>
               </div>
 
-              <div class="total flex justify-between">
-                <span>{{ $t('Total (TVA comprise)') }}</span>
-                <span class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</span>
+                <div class="total flex justify-between w-full">
+                  <div class="p-5">{{ $t('Total (TVA comprise)') }}</div>
+                  <div class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</div>
+                </div>
               </div>
             </TailCardFooter>
           </TailCard>
@@ -83,6 +83,8 @@
 </template>
 
 <script setup lang="ts">
+import { Slash } from 'lucide-vue-next'
+
 useHead({
   script: [
     {
