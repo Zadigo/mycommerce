@@ -4,7 +4,7 @@
       <TailCard class="card border-none">
         <TailCardContent class="text-center">
           <h1 class="text-3xl font-bold mb-5">
-            Succès
+            {{ $t('Récapitualif de la commande') }}
           </h1>
 
           <p class="font-light">
@@ -36,16 +36,7 @@ definePageMeta({
   middleware:  ['cart']
 })
 
-useHead({
-  title: 'Success',
-  meta: [
-    {
-      key: 'description',
-      content: ''
-    }
-  ]
-})
-
+const { t } = useI18n()
 const cartStore = useCart()
 const cart = useSessionStorage<CartUpdateApiResponse>('cart', null)
 
@@ -105,5 +96,15 @@ onMounted(async () => {
 
   cart.value = null
   cartStore.cache = null
+})
+
+useHead({
+  title: t('Récapitualif de la commande'),
+  meta: [
+    {
+      key: 'description',
+      content: ''
+    }
+  ]
 })
 </script>

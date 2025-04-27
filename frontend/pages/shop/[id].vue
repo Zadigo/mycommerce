@@ -187,7 +187,7 @@ async function requestProductStock () {
 }
 
 useHead({
-  title: () => product.value?.name ?? 'Product Details',
+  title: () => product.value?.name ?? '...',
   meta: [
     {
       key: 'description',

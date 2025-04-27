@@ -135,6 +135,15 @@ export default defineI18nLocale(async locale => {
         "Filtres": "Filtres",
         "Sous-total": "Sous-total",
         "Résumé": "Résumé {n}",
-        "Sauvegarder mes données": "Sauvegarder mes données"
+        "Sauvegarder mes données": "Sauvegarder mes données",
+        "Options de livraison": "Options de livraison",
+        "Choississez votre option de livraison": "Choississez votre option de livraison",
+        "Achat en ligne de vêtements": "Achat en ligne de vêtements",
+        "Confidentialité": "Confidentialité",
+        "Conditions générales d'achat": "Conditions générales d'achat",
+        "Liste de souhait": "Liste de souhait",
+        "Découvrez toutes notre collection de vêtements": "Découvrez toutes notre collection de vêtements",
+        "Paiemnent de la commande": "Paiemnent de la commande",
+        "Récapitualif de la commande": "Récapitualif de la commande"
     }
 })

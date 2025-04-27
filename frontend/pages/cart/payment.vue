@@ -33,16 +33,7 @@ definePageMeta({
   middleware: ['cart']
 })
 
-useHead({
-  title: 'Payment',
-  meta: [
-    {
-      key: 'description',
-      content: ''
-    }
-  ]
-})
-
+const { t } = useI18n()
 const router = useRouter()
 
 const paymentMethods = [
@@ -78,36 +69,46 @@ function handlePaymentType (cardType: string) {
  * 
  */
 function handlePaymentComplete(blockName: PaymentType) {
-  // TODO: G-Analytics
-  // gtag('event', 'add_payment_info', {
-    //   transaction_id: cartStore.sessionId,
-    //   currency: 'EUR',
-    //   tax: 20,
-    //   shipping: 1,
-    //   value: cartStore.cartTotal,
-    //   items: cartStore.products.map((item, i) => {
-    //     return {
-    //       item_id: item.product.id,
-    //       item_name: item.product.name,
-    //       price: item.product.get_price,
-    //       quantity: 1,
-    //       item_brand: null,
-    //       item_category: item.product.category,
-    //       item_category2: item.product.sub_category,
-    //       item_variant: item.product.color,
-    //       index: i,
-    //       size: item.size
-    //     }
-    //   })
-    // })
+// TODO: G-Analytics
+// gtag('event', 'add_payment_info', {
+  //   transaction_id: cartStore.sessionId,
+  //   currency: 'EUR',
+  //   tax: 20,
+  //   shipping: 1,
+  //   value: cartStore.cartTotal,
+  //   items: cartStore.products.map((item, i) => {
+  //     return {
+  //       item_id: item.product.id,
+  //       item_name: item.product.name,
+  //       price: item.product.get_price,
+  //       quantity: 1,
+  //       item_brand: null,
+  //       item_category: item.product.category,
+  //       item_category2: item.product.sub_category,
+  //       item_variant: item.product.color,
+  //       index: i,
+  //       size: item.size
+  //     }
+  //   })
+  // })
 
-    // useTrackEvent('add_payment_info', {
-    //   checkout_step: 3,
-    //   currency: 'EUR',
-    //   shipping: 1,
-    //   value: cartStore.cartTotal
-    // })
-    console.log('handlePaymentComplete', blockName)
-    // router.push('/cart/success')
-  }
+  // useTrackEvent('add_payment_info', {
+  //   checkout_step: 3,
+  //   currency: 'EUR',
+  //   shipping: 1,
+  //   value: cartStore.cartTotal
+  // })
+  console.log('handlePaymentComplete', blockName)
+  // router.push('/cart/success')
+}
+
+useHead({
+  title: t('Paiemnent de la commande'),
+  meta: [
+    {
+      key: 'description',
+      content: ''
+    }
+  ]
+})
 </script>

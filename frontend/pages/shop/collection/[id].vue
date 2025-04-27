@@ -33,6 +33,7 @@ const AsyncProductsFeed = defineAsyncComponent({
 const productsLoading = ref(true)
 const products = ref<Product[]>([])
 
+const { t } = useI18n()
 const { id } = useRoute().params
 
 provide('productsLoading', productsLoading)
@@ -42,7 +43,7 @@ useHead({
   meta: [
     {
       key: 'description',
-      content: 'Découvrez toutes notre collection de vêtements'
+      content: t('Découvrez toutes notre collection de vêtements')
     }
   ]
 })

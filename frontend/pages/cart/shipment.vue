@@ -1,40 +1,42 @@
 <template>
   <TailCard class="card border-none">
     <TailCardContent>
-      <form @submit.prevent>
-        <h2 class="font-bold text-2xl">
-          {{ $t("Adresse de livraison") }}
-        </h2>
+      <KeepAlive>
+        <form @submit.prevent>
+          <h2 class="font-bold text-2xl">
+            {{ $t("Adresse de livraison") }}
+          </h2>
 
-        <TailInput v-model="requestData.address_line" placeholder="Addresse" autocomplete="street-address" />
-        <TailInput v-model="requestData.city" placeholder="Ville" autocomplete="address-level1" class="my-1" />
+          <TailInput v-model="requestData.address_line" placeholder="Addresse" autocomplete="street-address" />
+          <TailInput v-model="requestData.city" placeholder="Ville" autocomplete="address-level1" class="my-1" />
 
-        <div class="d-flex justify-content-between gap-1">
-          <TailInput v-model="requestData.zip_code" :rules="[ rules.postalCode ]" placeholder="Zip code" autocomplete="postal-code" />
-          <TailInput v-model="requestData.country" autocomplete="country" />
-        </div>
+          <div class="d-flex justify-content-between gap-1">
+            <TailInput v-model="requestData.zip_code" :rules="[ rules.postalCode ]" placeholder="Zip code" autocomplete="postal-code" />
+            <TailInput v-model="requestData.country" autocomplete="country" />
+          </div>
 
-        <hr class="my-5">
+          <hr class="my-5">
 
-        <h2 class="font-bold text-2xl">
-          {{ $t("Mes données") }}
-        </h2>
+          <h2 class="font-bold text-2xl">
+            {{ $t("Mes données") }}
+          </h2>
 
-        <div class="flex justify-between gap-1">
-          <TailInput v-model="requestData.firstname" placeholder="Nom" autocomplete="family-name" />
-          <TailInput v-model="requestData.lastname" placeholder="Prénom" autocomplete="given-name" />
-        </div>
+          <div class="flex justify-between gap-1">
+            <TailInput v-model="requestData.firstname" placeholder="Nom" autocomplete="family-name" />
+            <TailInput v-model="requestData.lastname" placeholder="Prénom" autocomplete="given-name" />
+          </div>
 
-        <div class="flex justify-between gap-2 my-2">
-          <TailInput v-model="requestData.email" type="email" placeholder="Email" autocomplete="email" />
-          <TailInput v-model="requestData.telephone" placeholder="Téléphone" autocomplete="tel" />
-        </div>
+          <div class="flex justify-between gap-2 my-2">
+            <TailInput v-model="requestData.email" type="email" placeholder="Email" autocomplete="email" />
+            <TailInput v-model="requestData.telephone" placeholder="Téléphone" autocomplete="tel" />
+          </div>
 
-        <div class="flex items-center space-x-2">
-          <TailSwitch id="create-address-set" v-model="saveShipmentDetails" />
-          <TailLabel for="create-address-set">{{ $t('Sauvegarder mes données') }}</TailLabel>
-        </div>
-      </form>
+          <div class="flex items-center space-x-2">
+            <TailSwitch id="create-address-set" v-model="saveShipmentDetails" />
+            <TailLabel for="create-address-set">{{ $t('Sauvegarder mes données') }}</TailLabel>
+          </div>
+        </form>
+      </KeepAlive>
     </TailCardContent>
 
     <!-- @navigate:next-page="handleNewPaymentIntent" -->
@@ -44,7 +46,7 @@
 
 <script lang="ts" setup>
 import { useLocalStorage } from '@vueuse/core'
-import type { NewIntentAPIResponse } from './payment'
+import type { NewIntentAPIResponse } from '../../types/payment'
 
 definePageMeta({
   layout: 'cart',
@@ -126,6 +128,9 @@ async function handleUpdatePaymentIntent() {
       body: {
         intent: paymentIntent.value.intent,
         ...requestData.value
+      },
+      onRequestError({ error }) {
+        handleError(error)
       }
     })
 

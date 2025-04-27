@@ -34,18 +34,8 @@
 // import { useStorage } from '@vueuse/core'
 import type { Product } from '~/types'
 
+
 const { t } = useI18n()
-
-useHead({
-  title: t('Wishlist'),
-  meta: [
-    {
-      key: 'description',
-      content: t('Tout les produits que vous avez aimé')
-    }
-  ]
-})
-
 const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
 const shopStore = useShop()
@@ -72,6 +62,17 @@ const { data: products } = useAsyncData(async () => {
 }, {
   lazy: true,
   server: false
+})
+
+
+useHead({
+  title: t('Liste de souhait'),
+  meta: [
+    {
+      key: 'description',
+      content: t('Tout les produits que vous avez aimé')
+    }
+  ]
 })
 
 // const response = await $client<Product[]>('/api/v1/shop/wishlist', {

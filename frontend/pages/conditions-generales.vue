@@ -5,8 +5,10 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
+
 useHead({
-  title: "Conditions générales d'achat",
+  title: t("Conditions générales d'achat"),
   meta: [
     {
       key: 'description',
