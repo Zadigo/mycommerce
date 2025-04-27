@@ -20,11 +20,11 @@
             "maxDelivery_date": "29/03/22"
         },
         "shipping_costValue": 4.9,
-        "shopRunBackValues": {
-            "isLinkOrderReturnActive": true,
-            "orderReturnType": {},
-            "orderReturnLink": null,
-            "orderReturnNumberOfDay": 60,
+        "shop_runback_values": {
+            "is_link_order_return_active": true,
+            "order_return_type": {},
+            "order_return_link": null,
+            "order_return_number_of_day": 60,
             "url": "https://returns.shoprunback.com/etam"
         }
     },
@@ -49,11 +49,11 @@
             "maxDelivery_date": "29/03/22"
         },
         "shipping_costValue": 4.9,
-        "shopRunBackValues": {
-            "isLinkOrderReturnActive": true,
-            "orderReturnType": {},
-            "orderReturnLink": null,
-            "orderReturnNumberOfDay": 60,
+        "shop_runback_values": {
+            "is_link_order_return_active": true,
+            "order_return_type": {},
+            "order_return_link": null,
+            "order_return_number_of_day": 60,
             "url": "https://returns.shoprunback.com/etam"
         }
     },
@@ -78,11 +78,11 @@
             "maxDelivery_date": "30/03/22"
         },
         "shipping_costValue": 2.9,
-        "shopRunBackValues": {
-            "isLinkOrderReturnActive": true,
-            "orderReturnType": {},
-            "orderReturnLink": null,
-            "orderReturnNumberOfDay": 60,
+        "shop_runback_values": {
+            "is_link_order_return_active": true,
+            "order_return_type": {},
+            "order_return_link": null,
+            "order_return_number_of_day": 60,
             "url": "https://returns.shoprunback.com/etam"
         }
     },
@@ -107,11 +107,11 @@
             "maxDelivery_date": "01/04/22"
         },
         "shipping_costValue": 9,
-        "shopRunBackValues": {
-            "isLinkOrderReturnActive": false,
-            "orderReturnType": {},
-            "orderReturnLink": null,
-            "orderReturnNumberOfDay": 45,
+        "shop_runback_values": {
+            "is_link_order_return_active": false,
+            "order_return_type": {},
+            "order_return_link": null,
+            "order_return_number_of_day": 45,
             "url": "https://returns.shoprunback.com/etam"
         }
     },
@@ -136,11 +136,11 @@
             "maxDelivery_date": "01/04/22"
         },
         "shipping_costValue": 15,
-        "shopRunBackValues": {
-            "isLinkOrderReturnActive": false,
-            "orderReturnType": {},
-            "orderReturnLink": null,
-            "orderReturnNumberOfDay": 45,
+        "shop_runback_values": {
+            "is_link_order_return_active": false,
+            "order_return_type": {},
+            "order_return_link": null,
+            "order_return_number_of_day": 45,
             "url": "https://returns.shoprunback.com/etam"
         }
     },
@@ -165,11 +165,11 @@
             "maxDelivery_date": "01/04/22"
         },
         "shipping_costValue": 5.9,
-        "shopRunBackValues": {
-            "isLinkOrderReturnActive": false,
-            "orderReturnType": {},
-            "orderReturnLink": null,
-            "orderReturnNumberOfDay": 45,
+        "shop_runback_values": {
+            "is_link_order_return_active": false,
+            "order_return_type": {},
+            "order_return_link": null,
+            "order_return_number_of_day": 45,
             "url": "https://returns.shoprunback.com/etam"
         }
     },
@@ -194,11 +194,11 @@
             "maxDelivery_date": "29/03/22"
         },
         "shipping_costValue": 0,
-        "shopRunBackValues": {
-            "isLinkOrderReturnActive": true,
-            "orderReturnType": {},
-            "orderReturnLink": null,
-            "orderReturnNumberOfDay": 60,
+        "shop_runback_values": {
+            "is_link_order_return_active": true,
+            "order_return_type": {},
+            "order_return_link": null,
+            "order_return_number_of_day": 60,
             "url": "https://returns.shoprunback.com/etam"
         }
     },
@@ -223,11 +223,11 @@
             "maxDelivery_date": "28/03/22"
         },
         "shipping_costValue": 7.5,
-        "shopRunBackValues": {
-            "isLinkOrderReturnActive": true,
-            "orderReturnType": {},
-            "orderReturnLink": null,
-            "orderReturnNumberOfDay": 60,
+        "shop_runback_values": {
+            "is_link_order_return_active": true,
+            "order_return_type": {},
+            "order_return_link": null,
+            "order_return_number_of_day": 60,
             "url": "https://returns.shoprunback.com/etam"
         }
     }
