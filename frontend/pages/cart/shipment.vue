@@ -30,7 +30,10 @@
           <v-text-field v-model="requestData.telephone" placeholder="Téléphone" variant="outlined" autocomplete="tel" />
         </div>
 
-        <v-switch v-model="saveShipmentDetails" label="Sauvegarder mes données" inset />
+        <div class="flex items-center space-x-2">
+          <TailSwitch id="create-address-set" v-model="saveShipmentDetails" />
+          <TailLabel for="create-address-set">{{ $t('Sauvegarder mes données') }}</TailLabel>
+        </div>
       </form>
     </TailCardContent>
 
