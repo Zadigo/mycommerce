@@ -17,10 +17,20 @@
 
       <div v-else class="my-5 grid grid-cols-12 gap-4">
         <div class="col-span-12">
-          <nav aria-label="breadcrumb">
-            <v-breadcrumbs :items="paymentLinks">
-              <template #divider>
-                <Icon name="ic:baseline-chevron-right" size="25" />
+          <TailCard class="shadow-none border-none">
+            <TailCardContent>
+              <TailBreadcrumb>
+                <TailBreadcrumbList>
+                  <template v-for="(link, i) in paymentLinks" :key="link.title">
+                    <TailBreadcrumbItem>
+                      <TailBreadcrumbLink id="link-breadcrumb-cart" :to="link.href">
+                        {{ link.title }}
+                      </TailBreadcrumbLink>
+                    </TailBreadcrumbItem>
+
+                    <TailBreadcrumbSeparator v-if="i < 2">
+                      <Slash />
+                    </TailBreadcrumbSeparator>
               </template>
             </v-breadcrumbs>
           </nav>
