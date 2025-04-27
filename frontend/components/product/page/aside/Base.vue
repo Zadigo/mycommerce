@@ -16,9 +16,9 @@
     </template>
 
     <div v-if="product.variants" id="variants" class="my-5 flex gap-2 h-auto w-full">
-      <NuxtLink id="link-product-variant" v-for="variant in product.variants" :key="variant.id" :to="`/shop/${variant.id}`" aria-current="true">
+      <NuxtLinkLocale  id="link-product-variant" v-for="variant in product.variants" :key="variant.id" :to="`/shop/${variant.id}`" aria-current="true">
         <NuxtImg :src="mediaPath(variant.get_main_image?.original, '/placeholder.svg')" alt="variant.name" width="50" class="cursor-pointer hover:opacity-80" />
-      </NuxtLink>
+      </NuxtLinkLocale >
     </div>
 
     <p id="product-reference" class="font-light text-sm my-5">

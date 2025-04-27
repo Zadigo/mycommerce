@@ -14,9 +14,9 @@
             deleniti est quae nesciunt repellat non.
           </p>
 
-          <NuxtLink id="link-shop-success" to="/" class="mt-5">
+          <NuxtLinkLocale  id="link-shop-success" to="/" class="mt-5">
             {{ $t('Boutique') }}
-          </NuxtLink>
+          </NuxtLinkLocale >
         </TailCardContent>
       </TailCard>
     </div>

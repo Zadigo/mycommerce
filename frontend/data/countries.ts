@@ -1,6 +1,6 @@
-export const countries: string[] = [
+export const countries = [
     "France",
     "Guadeloupe",
     "Martinique",
     "Réunion"
-]
+] as const

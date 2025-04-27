@@ -3,13 +3,13 @@
     <article v-for="item in cartItems" :key="item.product__id" :aria-label="item.product__name" class="border-2 border-gray-50 rounded-md pa-3 mb-2">
       <div class="flex justify-start gap-3">
         <div id="image" class="w-2/4">
-          <NuxtLink id="link-product" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
+          <NuxtLinkLocale  id="link-product" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
             <NuxtImg :src="mediaPath(item.product_info?.product.get_main_image.original, '/placeholder.svg')" class="w-full rounded-md" />
-          </NuxtLink>
+          </NuxtLinkLocale >
         </div>
 
         <div id="infos">
-          <NuxtLink id="link-product" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
+          <NuxtLinkLocale  id="link-product" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
             <p class="mb-1 font-light text-sm">
               {{ item.product__name }}
             </p>
@@ -27,7 +27,7 @@
                 {{ item.quantity }}x
               </span>
             </div>
-          </NuxtLink>
+          </NuxtLinkLocale >
 
           <div id="actions">
             <v-btn v-if="isEditable" class="me-2" size="x-small" variant="tonal" rounded @click="handleProductEdition(item)">

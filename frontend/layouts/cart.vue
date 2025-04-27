@@ -2,11 +2,11 @@
   <section id="payment">
     <header>
       <nav class="flex justify-center uppercase pa-5">
-        <NuxtLink id="link-shop-payment" to="/">
+        <NuxtLinkLocale  id="link-shop-payment" to="/">
           <h1 class="font-2xl font-bold">
             {{ $t('Boutique') }}
           </h1>
-        </NuxtLink>
+        </NuxtLinkLocale >
       </nav>
     </header>
 

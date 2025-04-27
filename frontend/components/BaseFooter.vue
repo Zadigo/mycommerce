@@ -2,9 +2,9 @@
   <footer class="relative w-full md-5 md:mt-10 border-t-1 border-gray-50">
     <div class="mx-auto w-full max-w-7xl pa-10">
       <div class="grid grid-cols-1 justify-between gap-4 md:grid-cols-2">
-        <NuxtLink to="/" class="font-bold text-3xl mb-6">
+        <NuxtLinkLocale  to="/" class="font-bold text-3xl mb-6">
           Material Tailwind
-        </NuxtLink>
+        </NuxtLinkLocale >
 
         <div :class="`grid grid-cols-${numberOfSections}`" class="justify-between gap-4">
           <ul v-for="section in footerLinks.sections" :key="section.name">
@@ -13,9 +13,9 @@
             </h5>
             
             <li v-for="item in section.links" :key="item.name">
-              <NuxtLink :to="item.to" class="py-1.5 font-normal transition-colors hover:text-blue-gray-900">
+              <NuxtLinkLocale  :to="item.to" class="py-1.5 font-normal transition-colors hover:text-blue-gray-900">
                 {{ $t(item.name) }}
-              </NuxtLink>
+              </NuxtLinkLocale >
             </li>
           </ul>
         </div>
@@ -23,7 +23,7 @@
 
       <div class="mt-12 flex w-full flex-col items-center justify-center border-t border-blue-gray-50 py-4 md:flex-row md:justify-between">
         <div class="mb-4 text-center font-normal text-blue-gray-900 md:mb-0">
-          &copy; {{ currentYear }} <a href="#" @click.prevent="emit('show-modal')">{{ languageLocation }}|{{ languageChoice }}</a> <NuxtLink to="/">Material Tailwind</NuxtLink>. All Rights Reserved.
+          &copy; {{ currentYear }} <a href="#" @click.prevent="showLanguageModal=true">{{ languageLocation }}|{{ languageChoice }}</a> <NuxtLinkLocale  to="/">Material Tailwind</NuxtLinkLocale >. All Rights Reserved.
         </div>
 
         <div class="flex gap-4 text-blue-gray-900 sm:justify-center">
@@ -41,10 +41,10 @@ import { socialLinks, footerLinks } from '~/data'
 
 const { $dayjs } = useNuxtApp()
 const shopStore = useShop()
-const { sessionCache } = storeToRefs(shopStore)
+const { sessionCache, showLanguageModal } = storeToRefs(shopStore)
 
 const emit = defineEmits({
-  'show-modal'() {
+  'show-whatsapp'() {
     return true
   }
 })

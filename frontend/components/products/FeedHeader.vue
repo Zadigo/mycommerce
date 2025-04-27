@@ -5,9 +5,9 @@
         <div class="flex justify-content-left gap-1">
           <div class="d-flex justify-content-between align-items-center me-3 gap-1">
             <TailButton variant="light" as-child>
-              <NuxtLink to="/shop/collection/all">
+              <NuxtLinkLocale  to="/shop/collection/all">
                 {{ $t('Afficher tout') }}
-              </NuxtLink>
+              </NuxtLinkLocale >
             </TailButton>
 
             <!-- Categories -->

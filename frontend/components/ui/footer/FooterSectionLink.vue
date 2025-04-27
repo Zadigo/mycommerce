@@ -1,8 +1,8 @@
 <template>
   <li data-slot="footer-section-link">
-    <NuxtLink :to="to" :class="cn('py-1.5 font-normal transition-colors hover:text-blue-gray-900', props.class)">
+    <NuxtLinkLocale  :to="to" :class="cn('py-1.5 font-normal transition-colors hover:text-blue-gray-900', props.class)">
       <slot />
-    </NuxtLink>
+    </NuxtLinkLocale >
   </li>
 </template>
 

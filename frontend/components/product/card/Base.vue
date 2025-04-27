@@ -16,10 +16,10 @@
     <div v-if="showPrices" class="mt-4 flex justify-between align-top gap-5">
       <div id="price">
         <h3 class="text-sm text-gray-700">
-          <NuxtLink id="link-product-card-info" :to="`/shop/${product.id}`" @click="emit('has-navigated', [index, product])">
+          <NuxtLinkLocale  id="link-product-card-info" :to="`/shop/${product.id}`" @click="emit('has-navigated', [index, product])">
             <span aria-hidden="true" class="absolute inset-0" />
             {{ product.name }}
-          </NuxtLink>
+          </NuxtLinkLocale >
         </h3>
         
         <p v-if="typeof product.get_price === 'number'" class="font-semibold text-sm">

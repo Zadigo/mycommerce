@@ -24,9 +24,9 @@
         </p>
 
         <TailButton variant="default" size="lg" as-child>
-          <NuxtLink id="link-collections-more" to="/shop/collection/all" class="mt-8" color="secondary" @click="resetQuery">
+          <NuxtLinkLocale  id="link-collections-more" to="/shop/collection/all" class="mt-8" color="secondary" @click="resetQuery">
             {{ $t('Voir toute la collection') }}
-          </NuxtLink>
+          </NuxtLinkLocale >
         </TailButton>
       </div>
     </template>
