@@ -1,18 +1,24 @@
 <template>
   <TailCardFooter>
-    <div class="flex justify-between items-center">
-      <NuxtLink v-if="currentStep > 1" id="link-card-previous" to="/cart/" class="block" @click="$emit('navigate:previous-page')">
-        {{ $t("Retour") }}
-      </NuxtLink>
+    <div class="flex justify-between items-center w-full">
+      <TailButton v-if="currentStep > 1" as-child> 
+        <NuxtLink id="link-card-previous" to="/cart/" class="block" @click="$emit('navigate:previous-page')">
+          {{ $t("Retour") }}
+        </NuxtLink>
+      </TailButton>
 
-      <NuxtLink v-else id="link-cart-shop" to="/">
-        <Icon name="fa-solid:arrow-left" class="me-2" />
-        Boutique
-      </NuxtLink>
+      <TailButton v-else as-child>
+        <NuxtLink id="link-cart-shop" to="/">
+          <Icon name="fa-solid:arrow-left" class="me-2" />
+          {{ $t('Boutique') }}
+        </NuxtLink>
+      </TailButton>
       
-      <NuxtLink :to="nextPage" id="link-cart-next" class="block" @click="$emit('navigate:next-page')">
-        {{ $t("Continuer") }}
-      </NuxtLink>
+      <TailButton as-child>
+        <NuxtLink :to="nextPage" id="link-cart-next" class="block" @click="$emit('navigate:next-page')">
+          {{ $t("Continuer") }}
+        </NuxtLink>
+      </TailButton>
     </div>
   </TailCardFooter>
 </template>
