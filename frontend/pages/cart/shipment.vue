@@ -61,7 +61,6 @@ useHead({
   ]
 })
 
-const router = useRouter()
 const cartStore = useCart()
 const { requestData } = storeToRefs(cartStore)
 
