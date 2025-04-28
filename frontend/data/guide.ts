@@ -93,7 +93,7 @@ export const guideText: GuideText[] = [
         ]
     },
     {
-        id: "",
+        id: "achat",
         title: "Comment puis-je m'assurer que mes achats ont été réalisés avec succès ?",
         text: [
             {
@@ -105,7 +105,7 @@ export const guideText: GuideText[] = [
         ]
     },
     {
-        id: "",
+        id: "retour-articles",
         title: "Puis-je retourner n'importe quel article ?",
         text: [
             {
@@ -137,7 +137,7 @@ export const guideText: GuideText[] = [
         ]
     },
     {
-        id: "",
+        id: "enlever-article-commande",
         title: "Puis-je éliminer un article de ma commande ?",
         text: [
             {
@@ -149,7 +149,7 @@ export const guideText: GuideText[] = [
         ]
     },
     {
-        id: "",
+        id: "annulation-commande",
         title: "Puis-je annuler ma commande ?",
         text: [
             {
@@ -165,7 +165,7 @@ export const guideText: GuideText[] = [
         ]
     },
     {
-        id: "",
+        id: "ticket-electronique",
         title: "Ticket électronique",
         text: [
             {
@@ -204,7 +204,7 @@ export const guideText: GuideText[] = [
         ]
     },
     {
-        id: "",
+        id: "produits",
         title: "Produits",
         "text": [
             {
@@ -254,7 +254,7 @@ export const guideText: GuideText[] = [
         ]
     },
     {
-        id: "",
+        id: "moyens-paiements",
         title: "Moyens de paiements",
         text: [
             {
@@ -303,7 +303,7 @@ export const guideText: GuideText[] = [
         ]
     },
     {
-        id: "",
+        id: "envoi",
         title: "Envoi",
         text: [
             {
@@ -408,7 +408,7 @@ export const guideText: GuideText[] = [
         ]
     },
     {
-        id: "",
+        id: "achat-anonyme",
         title: "Acheter en tant qu'invité",
         text: [
             {
