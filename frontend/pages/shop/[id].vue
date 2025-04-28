@@ -91,7 +91,7 @@ const { data: product, status } = useFetch<Product>(`/api/products/${id}`, {
 
 const stockState = ref<ProductStockApiResponse>()
 const showSizeGuideDrawer = ref<boolean>(false)
-const showAvailabilityModal = ref<boolean>(true)
+const showAvailabilityModal = ref<boolean>(false)
 
 const isLoading = computed(() => status.value === 'pending')
 const showBanner = computed(() => y.value >= 1200 && y.value <= 7000)

@@ -1,12 +1,12 @@
 <template>
   <TailDialog v-model="show">
-    <TailDialogHeader>
-      <TailDialogTitle>
-        Alerte inventaire
-      </TailDialogTitle>
-    </TailDialogHeader>
-    
     <TailDialogContent>
+      <TailDialogHeader>
+        <TailDialogTitle>
+          Alerte inventaire
+        </TailDialogTitle>
+      </TailDialogHeader>
+
       <h2 class="text-2xl font-semibold mb-3">
         La taille "{{ selectedSize }}" n'est plus en stock
       </h2>
@@ -19,7 +19,7 @@
 
       <form class="mt-4" @submit.prevent>
         <TailInput v-model="email" type="email" class="w-full block" placeholer="Addresse email" />
-
+  
         <TailButton color="primary" class="w-full block" @click="execute">
           S'inscrire
         </TailButton>

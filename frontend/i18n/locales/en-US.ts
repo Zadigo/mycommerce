@@ -148,7 +148,8 @@ export default defineI18nLocale(async locale => {
         "Step: Measure waistline": "Place le mètre ruban autour de la partie la plus étroite de ta taille",
         "Step: Measure hip-size": "Mets tes pieds l'un contre l'autre et place le mètre ruban autour de la partie la plus large de ton tour de hanche",
         "Notre guide complet": "Notre guide complet",
-        "Product: Sku": "Ref. {sku}"
+        "Product: Sku": "Ref. {sku}",
+        "Découvrez notre collection de vêtements en ligne": "Découvrez notre collection de vêtements en ligne"
     }
 })
 
