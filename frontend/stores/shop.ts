@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { Product, SessionCacheData } from "~/types"
+import type { Product, SessionCacheData } from '~/types'
 
 export const useShop = defineStore('shop', () => {
   const sessionCache = ref<SessionCacheData>()
@@ -49,7 +49,7 @@ export const useShop = defineStore('shop', () => {
    * products that were historically
    * visited by the user in the store
    */
-  function addToHistory(product: Product) {
+  function trackProduct(product: Product | null | undefined) {
     if (product) {
       visitedProducts.value.push(product.id)
     }
@@ -57,7 +57,7 @@ export const useShop = defineStore('shop', () => {
 
   return {
     closeAllModals,
-    addToHistory,
+    trackProduct,
     sessionCache,
     currentProductIndex,
     showSearchModal,

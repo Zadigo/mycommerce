@@ -84,7 +84,6 @@
 </template>
 
 <script setup lang="ts">
-import { useStorage } from '@vueuse/core'
 import { onMounted } from 'vue'
 import { ProductSchema } from '~/utils/schemas'
 
@@ -107,15 +106,13 @@ const AsyncBaseRecommendationBlock = defineAsyncComponent({
   timeout: 5000
 })
 
-const stockState = ref<ProductStockApiResponse>()
-const showSizeGuideDrawer = ref(false)
+const shopStore = useShop()
 
-const { debounce } = useDebounce()
 const { handleError } = useErrorHandler()
-const visitedProducts = useStorage<number[]>('visitedProducts', [])
-const { y } = useScroll(window)
 const { showModal, selectedImage, handleSelectedImage, handleCloseSelection } = useImages()
+
 const { $client } = useNuxtApp()
+const { y } = useScroll(window)
 const { id } = useRoute().params
 
 /**
@@ -140,11 +137,14 @@ const { data: product, status } = useFetch<Product>(`/api/products/${id}`, {
   }
 })
 
+const stockState = ref<ProductStockApiResponse>()
+const showSizeGuideDrawer = ref(false)
+
 const isLoading = computed(() => status.value === 'pending')
 const showBanner = computed(() => y.value >= 1200 && y.value <= 7000)
 
 /**
- * 
+ * TODO: Documentation
  */
 const imagesComponent = computed((): Component => {  
   if (!product.value) {
@@ -156,21 +156,6 @@ const imagesComponent = computed((): Component => {
     return imageComponentMap[numberOfImages] || NoImages
   }
 })
-
-/**
- * This composable checks the stock for the given product
- * and then allows use to indicate whether the product is
- * available or not 
- */
-function trackProduct () {
-  if (product.value) {
-    if (visitedProducts.value) {
-      visitedProducts.value.push(product.value.id)
-    } else {
-      visitedProducts.value = [product.value.id]
-    }
-  }
-}
 
 /**
  * TODO: Documentation
@@ -215,24 +200,27 @@ useHead({
 provide('stockState', stockState)
 
 onMounted(async () => {
-  nextTick(trackProduct)
-
   if (!isLoading) {
-    debounce(requestProductStock, 1000)()
+    await delay(1000)
+    await requestProductStock()
     
-    // TODO: G-Analytics
-    // gtag('event', 'view_item', {
-    //   items: [
-    //     {
-    //       item_id: product.value.id,
-    //       item_name: product.value.name,
-    //       price: product.value.get_price,
-    //       item_brand: null,
-    //       item_category: product.value.category,
-    //       index: shopStore.currentProductIndex
-    //     }
-    //   ]
-    // })
+    nextTick(() => {
+      shopStore.trackProduct(product.value)
+
+      // TODO: G-Analytics
+      // gtag('event', 'view_item', {
+      //   items: [
+      //     {
+      //       item_id: product.value.id,
+      //       item_name: product.value.name,
+      //       price: product.value.get_price,
+      //       item_brand: null,
+      //       item_category: product.value.category,
+      //       index: shopStore.currentProductIndex
+      //     }
+      //   ]
+      // })
+    })
   }
 })
 </script>
