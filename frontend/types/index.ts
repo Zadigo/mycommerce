@@ -7,6 +7,7 @@ export * from './cart'
 export * from './shop'
 export * from './feed'
 export * from './text'
+export * from './other'
 
 /**
  * Token returned by the Django backend in order

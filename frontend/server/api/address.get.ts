@@ -9,13 +9,13 @@ export default defineCachedEventHandler(async event => {
     return
   }
 
-  const query = getQuery(event)
+  const query = getQuery<{ address: string }>(event)
   const response = await $fetch<Address>('https://api-adresse.data.gouv.fr', {
     method: 'GET',
     headers: [
       ['Content-Type', 'application/json']
     ],
-    params: { q: query.address }
+    params: { q: query.address } as { q: string }
   })
 
   return response
