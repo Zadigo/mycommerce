@@ -5,15 +5,17 @@ export const useShop = defineStore('shop', () => {
   const sessionCache = ref<SessionCacheData>()
 
   // Modals
-  const showSearchModal = ref(false)
-  const showLanguageModal = ref(false)
+  const showSearchModal = ref<boolean>(false)
+  const showLanguageModal = ref<boolean>(false)
 
   const visitedProducts = ref<number[]>([])
   const likedProducts = ref<number[]>([])
 
-  // This references the index of the product that
-  // was clicked within a given list of items. This
-  // is for Google Analytics
+  /**
+   * This references the index of the product that
+   * was clicked within a given list of items. This
+   * is for Google Analytics tracking
+   */
   const currentProductIndex = ref<number>(0)
 
   /**
