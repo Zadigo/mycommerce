@@ -5,7 +5,7 @@
     </h2>
 
     <div ref="productsRow" class="row">
-      <ProductsIterator :products="recommendations" :columns="columns" :show-carousel="showCarousel" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
+      <ProductsIterator :products="recommendations || []" :columns="columns" :show-carousel="showCarousel" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
     </div>
   </div>
 </template>

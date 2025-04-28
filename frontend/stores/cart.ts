@@ -148,9 +148,13 @@ export const useCart = defineStore('cart', () => {
   }
 
   /**
+   * Proxy function used to associate a product
+   * and the a size for the giving product selected by the user
    * 
+   * @param product The product to use
+   * @param size The size selected by the user
    */
-  function handleSizeSelection(product: Product, size: DefaultClotheSize) {
+  function handleSizeSelection(product: Product | null | undefined, size: DefaultClotheSize) {
     if (product) {
       console.info('handleSizeSelection', product)
       userSelection.value.product = product
@@ -168,11 +172,22 @@ export const useCart = defineStore('cart', () => {
   }
 
   /**
-   * Adds a product to the customer's cart when the
-   * the product size or other caracteristics are
-   * available in a list (e.g. ProductsPage, CollectionsPage...) 
+   * Adds a product to the customer's cart by calling the corresponding
+   * Django endpoint. Requires the user to have selected a size (if required).
+   * This function can be both used on a single product individual page or with
+   * a list of products (e.g. ProductsPage, CollectionsPage...)
+   * 
+   * @param product The product to use
+   * @param size The selected size for the given product
+   * @param callback A callback function that accepts the Api's response data
+   * 
    */
-  async function addToCart(product: Product, size?: string | number | null, callback?: FunctionCallback) {
+  async function addToCart(product: Product | null | undefined, size?: string | number | null, callback?: FunctionCallback) {
+    if (!product) {
+      console.error('Product is empty')
+      return
+    }
+
     addingToCartState.value = true
 
     // By changing this, it updates in the underlying
@@ -215,6 +230,9 @@ export const useCart = defineStore('cart', () => {
 
   /**
    * Removes a product to the customer's cart 
+   * 
+   * @param cartItem The data of the product to edit
+   * @param callback A callback function that accepts the data of the product to edit and the Api's resposne data
    */
   async function deleteFromCart(cartItem: ProductToEdit, callback?: (deletedItem: ProductToEdit, updatedCart: CartUpdateApiResponse) => void) {
     console.log('deleteFromCart', cartItem)

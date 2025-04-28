@@ -2,14 +2,14 @@
   <section id="product" class="relative">
     <div class="grid grid-cols-12 grid-row-1 w-full gap-5">
       <!-- Images -->
-      <template>
+      <ClientOnly>
         <component v-if="product" :is="imagesComponent" :images="product.images" :product="product" @zoom-image="handleSelectedImage" />
         <NoImages v-else :product="product" />
-      </template>
+      </ClientOnly>
       
       <ClientOnly>
         <!-- Details -->
-        <ProductPageAsideBase v-if="product" :product="product" @show-size-guide="showSizeGuideDrawer=true" />
+        <ProductPageAsideBase :product="product" @show-size-guide="showSizeGuideDrawer=true" />
       </ClientOnly>
     </div>
 
@@ -30,6 +30,7 @@
       <ProductPageBottomCart v-if="showBanner && product" :y="y" :product="product" :show-banner="showBanner" />
       <ModalsImageZoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
       <ModalsSizeGuide v-model="showSizeGuideDrawer" :product="product" />
+      <ModalsAvailability v-model="showAvailabilityModal" :selected-size="'XS'" />
     </ClientOnly>
   </section>
 </template>
@@ -89,7 +90,8 @@ const { data: product, status } = useFetch<Product>(`/api/products/${id}`, {
 })
 
 const stockState = ref<ProductStockApiResponse>()
-const showSizeGuideDrawer = ref<boolean>(true)
+const showSizeGuideDrawer = ref<boolean>(false)
+const showAvailabilityModal = ref<boolean>(true)
 
 const isLoading = computed(() => status.value === 'pending')
 const showBanner = computed(() => y.value >= 1200 && y.value <= 7000)

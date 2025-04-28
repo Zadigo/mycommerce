@@ -21,8 +21,8 @@
       </NuxtLinkLocale >
     </div>
 
-    <p id="product-reference" class="font-light text-sm my-5">
-      {{ $t(product.color) }} · Réf. {{ product.sku }}
+    <p v-if="product" id="product-reference" class="font-light text-sm my-5">
+      {{ $t(product.color) }} · {{ $t('Product: Sku', { sku: product.sku }) }}
     </p>
     
     <div class="border-t-2 border-gray-100 my-5 me-10" />
@@ -52,7 +52,7 @@ import type { Product } from '~/types'
 
 const props = defineProps({
   product: {
-    type: Object as PropType<Product>,
+    type: Object as PropType<Product | null | undefined>,
     required: true
   }
 })

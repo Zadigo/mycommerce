@@ -143,7 +143,12 @@ export default defineI18nLocale(async locale => {
         "Liste de souhait": "Liste de souhait",
         "Découvrez toutes notre collection de vêtements": "Découvrez toutes notre collection de vêtements",
         "Paiemnent de la commande": "Paiemnent de la commande",
-        "Récapitualif de la commande": "Récapitualif de la commande"
+        "Récapitualif de la commande": "Récapitualif de la commande",
+        "Step: Measure bust size": "Pour mesurer la circonférence de ta poitrine, utilise un mètre ruban et place- le autour de la partie la plus large de ta poitrine",
+        "Step: Measure waistline": "Place le mètre ruban autour de la partie la plus étroite de ta taille",
+        "Step: Measure hip-size": "Mets tes pieds l'un contre l'autre et place le mètre ruban autour de la partie la plus large de ton tour de hanche",
+        "Notre guide complet": "Notre guide complet",
+        "Product: Sku": "Réf. {sku}"
     }
 })
 

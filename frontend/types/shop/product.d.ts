@@ -67,6 +67,7 @@ export type Product = {
   active: boolean;
   display_new: boolean;
   slug: string;
+  sku: string
   variants: ProductVariant[]
   modified_on: string;
   created_on: string;

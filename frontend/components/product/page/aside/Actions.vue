@@ -9,7 +9,7 @@
     </div>
     <TailSkeleton v-else class="h-[100px] w-2/6" />
 
-    <p class="font-light">
+    <p v-if="product" class="font-light">
       {{ $t('Taille et hauteur du mannequin') }} : 
       <span v-if="product.model_height">{{ product.model_size }} · {{ $n(parseInt(product.model_height), 'unit') }}</span> 
       <span v-else>N.D.</span>
@@ -49,7 +49,7 @@ import type { DefaultClotheSize } from '~/data'
 
 const props = defineProps({
   product: {
-    type: Object as PropType<Product>,
+    type: Object as PropType<Product | null | undefined>,
     required: true
   }
 })
