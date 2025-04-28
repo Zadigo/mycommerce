@@ -17,7 +17,7 @@
         <TailInput v-model="email" :placeholder="$t(`Nom d'utilisateur ou email`)" type="text" autocomplete="email" />
         <TailInput v-model="password" :placeholder="$t('Mot de passe')" class="my-2" type="password" autocomplete="current-password" />
 
-        <TailButton id="signin-email" class="rounded-full w-full" size="lg" @click="handleLogin">
+        <TailButton id="signin-email" class="rounded-full w-full mt-5" size="lg" @click="handleLogin">
           {{ $t('Se connecter') }}
         </TailButton>
       </form>

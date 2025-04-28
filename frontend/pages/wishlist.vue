@@ -14,10 +14,10 @@
               {{ $t('Keep favorites text') }}
             </p>
 
-            <v-btn class="mt-10" color="secondary" flat rounded @click="showLoginDrawer = true">
+            <TailButton class="mt-10" @click="showLoginDrawer=true">
               <Icon name="fa-solid:right-to-bracket" class="me-2" />
               {{ $t('Se connecter') }}
-            </v-btn>
+            </TailButton>
           </div>
         </TailCardContent>
       </TailCard>
