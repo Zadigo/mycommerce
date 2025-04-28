@@ -1,6 +1,6 @@
 <template>
   <TailCardContent v-if="showBillingForm || forCreation">
-    <v-form id="user-information" @submit.prevent>
+    <form id="user-information" @submit.prevent>
       <div class="flex justify-end">
         <v-btn class="mb-2" variant="text" icon="mdi-close" @click="handleClose" />
       </div>
@@ -60,7 +60,7 @@
       <v-btn v-else class="mt-4" color="secondary" block rounded @click="requestUpdate">
         Mettre à jour
       </v-btn>
-    </v-form>
+    </form>
   </TailCardContent>
 
   <TailCardContent v-else class="bg-slate-50 cursor-pointer hover:bg-slate-100 mx-5 pa-5 rounded-md">
