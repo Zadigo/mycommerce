@@ -11,7 +11,19 @@
 </template>
 
 <script lang="ts" setup>
-import type { Product } from '~/types';
+import type { ExtendedRouteParamsRawGeneric, Product } from '~/types'
+
+interface FetchOptions {
+  /**
+   * The product's ID used for the Fuzzy
+   * matcher in Django
+   */
+  p: string | number
+  /**
+   * The amount of products to get 
+   */
+  q: number
+}
 
 const props = defineProps({
   blockTitle: {
@@ -60,7 +72,7 @@ const emit = defineEmits({
 // const { gtag } = useGtag()
 const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
-const { id } = useRoute().params
+const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
 const shopStore = useShop()
 
 const productsRow = ref<HTMLElement>()
@@ -101,7 +113,7 @@ const { data: recommendations } = await useAsyncData<Product[]>(
       params: {
         p: id,
         q: props.quantity
-      },
+      } as FetchOptions,
       onRequestError({ error }) {
         handleError(error)
       }

@@ -45,6 +45,7 @@ import { useStorage } from '@vueuse/core'
 
 import type { PropType } from 'vue'
 import type { Product, ProductStockApiResponse } from '~/types'
+import type { DefaultClotheSize } from '~/data'
 
 const props = defineProps({
   product: {
@@ -153,9 +154,11 @@ async function proxyAddToCart() {
 
 /**
  * Actions where the user selects a given size 
- * for a given product 
+ * for a given product
+ * 
+ * @param size The item's size
  */
-function proxySelectSize(size: string | number | null | undefined) {
+function proxySelectSize(size: DefaultClotheSize) {
   if (size) {
     showSizeSelectionWarning.value = false
     cartStore.handleSizeSelection(props.product, size)

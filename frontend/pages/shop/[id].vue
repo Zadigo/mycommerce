@@ -2,8 +2,9 @@
   <section id="product" class="relative">
     <div class="grid grid-cols-12 grid-row-1 w-full gap-5">
       <!-- Images -->
-      <template v-if="product">
-        <component :is="imagesComponent" :images="product.images" :product="product" @zoom-image="handleSelectedImage" />
+      <template>
+        <component v-if="product" :is="imagesComponent" :images="product.images" :product="product" @zoom-image="handleSelectedImage" />
+        <NoImages v-else :product="product" />
       </template>
       
       <ClientOnly>
@@ -30,56 +31,6 @@
       <ModalsImageZoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
       <ModalsSizeGuide v-model="showSizeGuideDrawer" :product="product" />
     </ClientOnly>
-
-    <!--
-    <ClientOnly>
-      <BaseModal v-model="zoomImage" fullscreen>
-        <BaseCard>
-          <div v-if="product && selectedImage" class="relative rounded-md">
-            <div class="flex absolute top-0 right-0 gap-2 z-40 p-5 bg-white">
-              <img v-for="image in product.images" :key="image.id" :src="image.original" :alt="image.name" width="70" :class="{ 'opacity-50': selectedImage.id === image.id}" class="cursor-pointer" @click="selectedImage=image">
-            </div>
-            
-            <img :src="selectedImage.original" :alt="selectedImage.name" class="w-full cursor-zoom-out" @click="zoomImage=false">
-          </div>
-        </BaseCard>
-      </BaseModal>
-    </ClientOnly>
-
-    <ClientOnly>
-      <BaseOffcanvas v-model="sizeGuide" />
-    </ClientOnly>
-
-    <ClientOnly>
-      <BaseModal v-model="availabilityModal">
-        <h2 class="text-2xl font-semibold mb-3">
-          La taille "{{ selectedSize }}" n'est plus en stock
-        </h2>
-
-        <p class="font-light">
-          Renseignes ton adresse e-mail dans le champ 
-          ci-dessous pour être averti lorsque cet article est 
-          de retour en stock
-        </p>
-
-        <form class="mt-4" @submit.prevent>
-          <BaseInput v-model="emailForAvailability" input-type="email" class="w-full block" placeholer="Addresse email" />
-          <BaseButton color="primary" class="w-full block">
-            S'inscrire
-          </BaseButton>
-        </form>
-      </BaseModal>
-    </ClientOnly>
-
-    <ClientOnly>
-      <BaseModal v-model="showCart">
-        <BaseCard>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores debitis 
-          porro quasi adipisci similique tempore accusamus cupiditate magnam ipsa repellat. 
-          Possimus molestias voluptas ipsam iste quisquam distinctio minus, delectus aperiam.
-        </BaseCard>
-      </BaseModal>
-    </ClientOnly> -->
   </section>
 </template>
 
@@ -87,7 +38,7 @@
 import { onMounted } from 'vue'
 import { ProductSchema } from '~/utils/schemas'
 
-import type { Product, ProductStockApiResponse } from '~/types'
+import type { ExtendedRouteParamsRawGeneric, Product, ProductStockApiResponse } from '~/types'
 
 type ImageComponentMap = {[key: number]: Component}
 
@@ -113,7 +64,7 @@ const { showModal, selectedImage, handleSelectedImage, handleCloseSelection } = 
 
 const { $client } = useNuxtApp()
 const { y } = useScroll(window)
-const { id } = useRoute().params
+const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
 
 /**
  * TODO: Documentation
@@ -138,7 +89,7 @@ const { data: product, status } = useFetch<Product>(`/api/products/${id}`, {
 })
 
 const stockState = ref<ProductStockApiResponse>()
-const showSizeGuideDrawer = ref(false)
+const showSizeGuideDrawer = ref<boolean>(true)
 
 const isLoading = computed(() => status.value === 'pending')
 const showBanner = computed(() => y.value >= 1200 && y.value <= 7000)

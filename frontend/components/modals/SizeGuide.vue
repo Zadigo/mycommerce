@@ -10,7 +10,7 @@
       <v-btn icon="mdi-close" @click="show=false" />
     </v-toolbar>
 
-    <div v-if="product" class="container my-4">
+    <div class="container my-4">
       <div class="row g-1">
         <div class="col-12">
           <p class="fs-6 fw-bold mb-1">
@@ -94,7 +94,7 @@ const props = defineProps({
     type: Boolean
   },
   product: {
-    type: Object as PropType<Product>,
+    type: Object as PropType<Product | null | undefined>,
     required: true
   }
 })
@@ -115,7 +115,12 @@ const show = computed({
   }
 })
 
+/**
+ * TODO: Write documentation
+ */
 function handleSizeSelection(value: DefaultClotheSize) {
-  cartStore.handleSizeSelection(props.product, value)
+  if (props.product) {
+    cartStore.handleSizeSelection(props.product, value)
+  }
 }
 </script>
