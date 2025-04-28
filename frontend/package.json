@@ -53,6 +53,7 @@
     "@vesp/nuxt-fontawesome": "^1.2.1",
     "@vueuse/nuxt": "^12.8.2",
     "shadcn-nuxt": "^2.0.1",
+    "tw-animate-css": "^1.2.8",
     "vuetify-nuxt-module": "^0.18.6"
   }
 }
