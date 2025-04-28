@@ -86,6 +86,8 @@
 <script setup lang="ts">
 import { useStorage } from '@vueuse/core'
 import { onMounted } from 'vue'
+import { ProductSchema } from '~/utils/schemas'
+
 import type { Product, ProductStockApiResponse } from '~/types'
 
 type ImageComponentMap = {[key: number]: Component}
@@ -117,7 +119,7 @@ const { $client } = useNuxtApp()
 const { id } = useRoute().params
 
 /**
- * WRITE DOCUMENTATION
+ * TODO: Documentation
  */
 const { data: product, status } = useFetch<Product>(`/api/products/${id}`, {
   method: 'GET',
@@ -171,7 +173,7 @@ function trackProduct () {
 }
 
 /**
- *
+ * TODO: Documentation
  */
 async function requestProductStock () {
   try {
