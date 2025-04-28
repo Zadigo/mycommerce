@@ -1,4 +1,9 @@
-import type { DefaultClotheSize } from "./product_filtering"
+export const defaultClotheSize = ['XS', 'S', 'M', 'L', 'XL', 'Unique'] as const
+
+/**
+ * Default options for filtering a product by size
+ */
+export type DefaultClotheSize = (typeof defaultClotheSize)[number] | (string & {})
 
 export interface ShoeSize {
   eu: number

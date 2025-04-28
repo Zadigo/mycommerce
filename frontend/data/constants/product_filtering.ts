@@ -1,3 +1,5 @@
+import type { DefaultClotheSize } from "./measurements"
+
 export const defaultColors = [
   'Bleu',
   'Rose',
@@ -16,13 +18,6 @@ export const defaultColors = [
 
 export type DefaultColors = (typeof defaultColors)[number] | (string & {})
 
-
-export const defaultClotheSize = [ 'XS', 'S', 'M', 'L', 'XL', 'Unique' ] as const
-
-/**
- * Default options for filtering a product by size
- */
-export type DefaultClotheSize = (typeof defaultClotheSize)[number] | (string & {})
 
 /**
  * 
