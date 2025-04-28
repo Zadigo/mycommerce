@@ -32,6 +32,7 @@ export default defineI18nLocale(async locale => {
         "Sélectionnez votre emplacement": "Sélectionnez votre emplacement",
         "Condition général d'achat": "Condition général d'achat",
         "Politique de confidentialité": "Politique de confidentialité",
+        "politique de confidentialité": "politique de confidentialité",
         "Mention légal": "Mention légal",
         "Sitemap": "Sitemap",
         "Sélectionnez votre langue": "Sélectionnez votre langue",
@@ -150,6 +151,9 @@ export default defineI18nLocale(async locale => {
         "Step: Measure hip-size": "Mets tes pieds l'un contre l'autre et place le mètre ruban autour de la partie la plus large de ton tour de hanche",
         "Notre guide complet": "Notre guide complet",
         "Product: Sku": "Ref. {sku}",
-        "Découvrez notre collection de vêtements en ligne": "Découvrez notre collection de vêtements en ligne"
+        "Découvrez notre collection de vêtements en ligne": "Découvrez notre collection de vêtements en ligne",
+        "Login: Privacy Policy": "En me connectant avec mon identifiant social, j'accepte de lier mon compte conformément à la",
+        "Créer un compte": "Créer un compte",
+        "Signup: Password constraints": "8 caractères minimum, comprenant une minuscule, une majuscule et un chiffre. Ne pas répéter plus de 3 fois le même caractère"
     }
 })

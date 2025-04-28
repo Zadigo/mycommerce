@@ -46,7 +46,7 @@ const shouldShowLoginDrawer = computed<boolean>({
  * Syncs the unauthenticated cart to the authenticated user's account
  * by calling an API endpoint with the current session ID
  */
-async function handleAuthenticateCart () {
+async function handleAuthenticateCart() {
   if (!authStore.sessionCache.authenticatedCart) {
     await $client('/api/v1/cart/authenticate', {
       method: 'POST',
@@ -63,11 +63,16 @@ async function handleAuthenticateCart () {
  * - Clears the sign-up view after a 1-second delay.
  */
 function handleReset() {
-  showLoginDrawer.value = false
-  
-  setTimeout(() => {
+  if (showSignup.value) {
+    showLoginDrawer.value = true
     showSignup.value = false
-  }, 1000)
+  } else {
+    showLoginDrawer.value = false
+    
+    setTimeout(() => {
+      showSignup.value = false
+    }, 1000)
+  }
 }
 
 const debouncedAuthenticateCart = debounce(handleAuthenticateCart, 5000)

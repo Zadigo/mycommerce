@@ -83,6 +83,10 @@ export const footerLinks: FooterLinks = {
         {
           "to": "/guide#unsubscribe",
           "name": "Me désabonner"
+        },
+        {
+          "to": "/complete-size-guide",
+          "name": "Guide des tailles"
         }
       ]
     },

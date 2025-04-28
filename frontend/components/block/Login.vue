@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div class="mx-auto px-10">
     <div class="flex flex-column justify-content-center h-full">
       <h3 class="font-semibold text-1xl grow text-center">
         {{ $t('Connecte-toi ou crée un compte') }}
@@ -10,13 +10,12 @@
       </TailButton>
 
       <p class="font-light mt-1 mb-8 text-center">
-        En me connectant avec mon identifiant social, j'accepte de lier mon 
-        compte conformément à la <NuxtLinkLocale  id="link-legal-login-modal" to="/confidentialite" class="text-blue-600 underline">politique de confidentialité</NuxtLinkLocale >
+        {{ $t('Login: Privacy Policy') }} <NuxtLinkLocale  id="link-legal-login-modal" to="/confidentialite" class="text-blue-600 underline">{{ $t('politique de confidentialité') }}</NuxtLinkLocale >
       </p>
 
       <form id="form-login" @submit.prevent>
-        <v-text-field v-model="email" :placeholder="$t(`Nom d'utilisateur ou email`)" variant="outlined" type="text" autocomplete="email" />
-        <v-text-field v-model="password" :placeholder="$t('Mot de passe')" variant="outlined" type="password" autocomplete="current-password" />
+        <TailInput v-model="email" :placeholder="$t(`Nom d'utilisateur ou email`)" type="text" autocomplete="email" />
+        <TailInput v-model="password" :placeholder="$t('Mot de passe')" class="my-2" type="password" autocomplete="current-password" />
 
         <TailButton id="signin-email" class="rounded-full w-full" size="lg" @click="handleLogin">
           {{ $t('Se connecter') }}
@@ -30,7 +29,7 @@
         </a>
       </p>
     </div>
-  </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
