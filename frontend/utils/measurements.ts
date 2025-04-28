@@ -1,37 +1,20 @@
-export type Measurement = 'cm' | 'in' | 'ft';
-
-export interface MeasurementTranslation {
-    short: string;
-    long: string;
-    longPlural: string;
+/**
+ * Converts a value in centimeters to feet
+ * 
+ * @param height The height in centimeters 
+ */
+export function convertHeight(height: number | null) {
+  if (height) {
+    return Math.ceil((height * 30.48) * 10) / 10
+  } else {
+    return null
+  }
 }
 
-export type MeasurementTranslations = Record<Measurement, MeasurementTranslation>
+export function useHeightConverter() {
+  const height = reactify(convertHeight)
 
-export const measurementTranslations: MeasurementTranslations = {
-    cm: {
-        short: 'cm',
-        long: 'centimeter',
-        longPlural: 'centimeters'
-    },
-    in: {
-        short: 'in',
-        long: 'inch',
-        longPlural: 'inches'
-    },
-    ft: {
-        short: 'ft',
-        long: 'foot',
-        longPlural: 'feet'
-    }
-}
-
-export function formatMeasurement(value: number, unit: keyof typeof measurementTranslations, format: 'short' | 'long' | 'longPlural' = 'short') {
-    return `${value} ${measurementTranslations[unit][format]}`
-}
-
-export function useFormatMeasurement() {
-    return {
-        formatMeasurement
-    }
+  return {
+    height
+  }
 }
