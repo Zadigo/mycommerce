@@ -11,11 +11,11 @@
             </TailButton>
 
             <!-- Categories -->
-            <v-btn v-for="category in productCategories" :key="category" :to="`/shop/collection/${category.toLowerCase()}`" variant="tonal">
+            <TailButton v-for="category in productCategories" :key="category" :to="`/shop/collection/${category.toLowerCase()}`">
               {{ category }}
-            </v-btn>
+            </TailButton>
 
-            <TailButton variant="light" class="ms-3" @click="emit('show-product-filters')">
+            <TailButton variant="light" class="ms-3" @click="emit('product-filters')">
               <font-awesome icon="sliders" class="me-2" /> {{ $t('Filtres') }}
             </TailButton>
           </div>
@@ -62,7 +62,7 @@ const emit = defineEmits({
   'update:sorting' (_value: string) {
     return true
   },
-  'show-product-filters' () {
+  'product-filters' () {
     return true
   }
 })

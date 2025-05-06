@@ -1,4 +1,4 @@
-import type { DefaultClotheSize } from "./measurements"
+import type { DefaultClotheSize } from "~/data/constants"
 
 export const defaultColors = [
   'Bleu',
@@ -41,10 +41,15 @@ export const defaultSizes: { clothes: DefaultClotheSize[] } = {
 
 export const defaultSortingFilters = [ 'Nouveautés', 'Prix croissant', 'Prix décroissant' ] as const
 
+
 /**
  * Default options for filtering a product by price
- */
+*/
 export type DefaultSortingFilters = (typeof defaultSortingFilters)[number]
+
+export const defaultSortingFilterActions = [ 'New', 'Price up', 'Price down' ] as const
+
+export type DefaultSortingFilterActions = (typeof defaultSortingFilterActions)[number]
 
 export const priceFilter = [
   "Jusqu'à 15€",
@@ -88,3 +93,16 @@ export const defaultPriceFilters: { text: DefaultPriceFilters, value: string }[]
     value: 'Up to 50'
   }
 ]
+
+// export interface DefaultPriceFilters {
+//   text: PriceFilter
+//   value: string
+// }
+
+export const sortingFilterActions: (DefaultSortingFilterActions | DefaultSortingFilters)[][] = [
+  ['New', 'Nouveautés'],
+  ['Price up', 'Prix croissant'],
+  ['Price down', 'Prix décroissant']
+]
+
+export type Actions = 'sorted by' | 'typology' | 'colors' | 'sizes' | 'price'

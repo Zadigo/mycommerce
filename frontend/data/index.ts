@@ -19,9 +19,3 @@ export const baseSessionCacheData: SessionCacheData = {
     profile: null,
     popularImages: []
 }
-
-export const defaultSortingFilters = [
-    ['New', 'Nouveautés'],
-    ['Price up', 'Prix croissant'],
-    ['Price down', 'Prix décroissant']
-]
