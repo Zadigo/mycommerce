@@ -78,7 +78,7 @@
 
 <script setup lang="ts">
 import { defaultPriceFilters, defaultSizes, sortingFilterActions, type Actions, type DefaultClotheSize, type DefaultPriceFilters } from '~/data'
-import type { ProductsQuery, ProductsApiResponse, ExtendedRouteParamsRawGeneric } from '~/types'
+import type { ProductsQuery, ProductsApiResponse, ExtendedRouteParamsRawGeneric, ExtendedLocationQuery } from '~/types'
 
 const props = defineProps({
   modelValue: {
@@ -100,7 +100,7 @@ const emit = defineEmits({
 })
 
 const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
-const queryParams = useUrlSearchParams('history', {
+const queryParams = useUrlSearchParams<ProductsQuery>('history', {
   removeNullishValues: true
 })
 
