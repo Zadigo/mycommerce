@@ -3,10 +3,14 @@
   <TailSheet v-model:open="shouldShowLoginDrawer" @close="handleReset">
     <TailSheetContent>
       <TailSheetHeader>
+        <TailSheetTitle />
+      </TailSheetHeader>
+
+      <TailSheetHeader>
        <div class="flex justify-between align-center">
-          <Button variant="destructive" @click="handleReset">
-            <font-awesome icon="chevron-left" />
-          </Button>
+          <TailButton variant="destructive" @click="handleReset">
+            <Icon icon="fa-solid:chevron-left" />
+          </TailButton>
 
           <TailSheetClose />
        </div>
