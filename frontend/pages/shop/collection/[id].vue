@@ -13,7 +13,7 @@
 
     <!-- Feed -->
     <Suspense>
-      <AsyncProductsFeed @products-loaded="handleLoadedProducts" />
+      <AsyncProductsFeed @products-loaded="handleLoadedProducts" @products-filter="showProductFilters=true" />
 
       <template #fallback>
         <ProductsLoadingFeed />
@@ -21,20 +21,20 @@
     </Suspense>
 
     <ClientOnly>
-      <ModalsProductFilters v-model="showProductFilters" :count="productCount" @update-products="handleUpdateProducts" @products-filter="() => showProductFilters=true" />
+      <ModalsProductFilters v-model="showProductFilters" :count="productCount" @update-products="handleUpdateProducts" />
     </ClientOnly>
   </section>
 </template>
 
 <script setup lang="ts">
 import { useChangeCase } from '@vueuse/integrations/useChangeCase'
-import type { Product } from '~/types'
+import type { Product, ProductsApiResponse } from '~/types'
 
 const AsyncProductsFeed = defineAsyncComponent({
   loader: async () => import('~/components/products/Feed.vue')
 })
 
-const showProductFilters = ref<boolean>(true)
+const showProductFilters = ref<boolean>(false)
 const productsLoading = ref<boolean>(true)
 const products = ref<Product[]>([])
 
@@ -78,7 +78,7 @@ function handleLoadedProducts(data: Product[]) {
  * 
  * @param data The filtered products
  */
-function handleUpdateProducts(data: Product[]) {
+function handleUpdateProducts(data: ProductsApiResponse) {
   console.log(data)
 }
 </script>
