@@ -34,9 +34,9 @@ export const useCart = defineStore('cart', () => {
     firstname: '',
     lastname: '',
     email: '',
-    telephone: "",
-    address_line: "",
-    zip_code: "",
+    telephone: '',
+    address_line: '',
+    zip_code: '',
     country: '',
     city: '',
     delivery: "Chronopost"
@@ -44,9 +44,9 @@ export const useCart = defineStore('cart', () => {
 
   const cache = ref<CartUpdateApiResponse | null>()
 
-  const showAddedProductDrawer = ref(false)
-  const showEditProductDrawer = ref(false)
-  const showCartDrawer = ref(false)
+  const showAddedProductDrawer = ref<boolean>(false)
+  const showEditProductDrawer = ref<boolean>(false)
+  const showCartDrawer = ref<boolean>(false)
 
   /**
    * Container used to save the user selections
@@ -141,6 +141,8 @@ export const useCart = defineStore('cart', () => {
   /**
    * Removes a product entirely from the cart
    * regardless of quantity
+   * 
+   * @param product The product to remove from the cart
    */
   function removeFromCart(product: Product) {
     const index = products.value.findIndex(x => x.id === product.id)
