@@ -212,6 +212,10 @@ function handleFiltersReset() {
     sizes: [],
     price: null
   }
+
+  queryParams.price = null
+  queryParams.size = null
+  queryParams.sorted_by = null
 }
 
 onMounted(() => {
