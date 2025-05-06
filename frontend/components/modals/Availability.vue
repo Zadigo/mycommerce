@@ -1,5 +1,5 @@
 <template>
-  <TailDialog v-model="show">
+  <TailDialog v-model:open="show">
     <TailDialogContent>
       <TailDialogHeader>
         <TailDialogTitle>
@@ -7,23 +7,25 @@
         </TailDialogTitle>
       </TailDialogHeader>
 
-      <h2 class="text-2xl font-semibold mb-3">
-        La taille "{{ selectedSize }}" n'est plus en stock
-      </h2>
+      <div class="pa-10">
+        <h2 class="text-2xl font-semibold mb-3">
+          La taille "{{ selectedSize }}" n'est plus en stock
+        </h2>
 
-      <p class="font-light">
-        Renseignes ton adresse e-mail dans le champ 
-        ci-dessous pour être averti lorsque cet article est 
-        de retour en stock
-      </p>
+        <p class="font-light">
+          Renseignes ton adresse e-mail dans le champ 
+          ci-dessous pour être averti lorsque cet article est 
+          de retour en stock
+        </p>
 
-      <form class="mt-4" @submit.prevent>
-        <TailInput v-model="email" type="email" class="w-full block" placeholer="Addresse email" />
-  
-        <TailButton color="primary" class="w-full block" @click="execute">
-          S'inscrire
-        </TailButton>
-      </form>
+        <form class="mt-4" @submit.prevent>
+          <TailInput v-model="email" :placeholer="$t('Addresse email')" type="email" class="w-full block" />
+    
+          <TailButton class="w-full block mt-5" size="lg" @click="execute">
+            S'inscrire
+          </TailButton>
+        </form>
+      </div>
     </TailDialogContent>
   </TailDialog>
 </template>

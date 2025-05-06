@@ -1,6 +1,6 @@
 <template>
-  <v-bottom-sheet id="language-modal" v-model="shopStore.showLanguageModal" :persistent="true">
-    <v-card>
+  <TailSheet id="language-modal" v-model:open="shopStore.showLanguageModal">
+    <TailSheetContent side="bottom">
       <div v-if="shopStore.sessionCache" class="container mx-auto w-2/4">
         <div class="px-3 py-15">
           <div class="col">
@@ -34,8 +34,8 @@
       </div>
 
       <TailSkeleton v-else height="100px" />
-    </v-card>
-  </v-bottom-sheet>
+    </TailSheetContent>
+  </TailSheet>
 </template>
 
 <script setup lang="ts">

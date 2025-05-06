@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer id="dialog-edit-product" v-model="showEditProductDrawer" location="right" width="400" temporary>
+  <TailSheet id="dialog-edit-product" v-model:open="showEditProductDrawer">
     <v-toolbar class="border-bottom" color="white">
       <v-btn variant="text" rounded @click="handleCloseProductEdition">
         <font-awesome icon="angle-left" />
@@ -8,7 +8,7 @@
       <v-toolbar-title>{{ $t('Modifier') }}</v-toolbar-title>
     </v-toolbar>
 
-    <div v-if="currentEditedProduct" class="container my-5">
+    <TailSheetContent v-if="currentEditedProduct">
       <div v-if="currentEditedProduct.product_info" class="row">
         <div class="col-12">
           <v-img :src="mediaPath(currentEditedProduct.product_info.product.get_main_image.original)" />
@@ -67,12 +67,12 @@
       </div>
 
       <ModalsSkeletonLoader v-else class="mt-4" />
-    </div>
+    </TailSheetContent>
     
-    <div v-else class="container my-5">
+    <TailSheetContent v-else>
       <ModalsSkeletonLoader class="mt-4" />
-    </div>
-  </v-navigation-drawer>
+    </TailSheetContent>
+  </TailSheet>
 </template>
 
 <script setup lang="ts">

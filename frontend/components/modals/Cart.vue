@@ -1,83 +1,87 @@
 <template>
-  <v-navigation-drawer v-model="showCartDrawer" width="400" location="right" sticky temporary @close="showCartDrawer=false">
-    <v-toolbar class="border-bottom" color="white">
-      <v-toolbar-title class="fw-bold">
+  <TailSheet v-model:open="showCartDrawer" @close="showCartDrawer=false">
+    <TailSheetHeader>
+      <TailSheetTitle class="fw-bold">
         {{ $t('Cart quantity', { n: numberOfProducts }) }}
-      </v-toolbar-title>
+      </TailSheetTitle>
 
-      <v-spacer />
+      <TailButton variant="outlined" as-child >
+        <NuxtLink to="/wishlist" @click="showCartDrawer = false">
+          <font-awesome :icon="['far', 'heart']" class="me-2" />
+          {{ $t('Favoris') }}
+        </NuxtLink>
+      </TailButton>
+    </TailSheetHeader>
 
-      <v-btn to="/wishlist" rounded variant="outlined" @click="showCartDrawer = false">
-        <font-awesome :icon="['far', 'heart']" class="me-2" />
-        {{ $t('Favoris') }}
-      </v-btn>
-    </v-toolbar>
+    <TailSheetContent>
+      <div class="px-5">
+        <div v-if="hasProducts" class="flex flex-col my-10">
+          <div class="pa-5 shadow-sm rounded-md bg-green-100">
+            <div v-if="freeDeliveryTarget > 0">
+              {{ cartTotal }}
+              {{ $t('Livraison gratuite offerte', { n: $n(freeDeliveryTarget, 'currency') }) }}
+              
+              <!-- Il te manque 19,02 € pour profiter de la -->
+              
+              <span class="font-bold text-green-900 uppercase">
+                {{ $t('livraison standard gratuite') }}
+              </span>
+            </div>
 
-    <div class="px-10">
-      <div v-if="hasProducts" class="flex flex-col">
-        <div class="pa-5 shadow-sm rounded-md bg-green-100">
-          <div v-if="freeDeliveryTarget > 0">
-            {{ cartTotal }}
-            {{ $t('Livraison gratuite offerte', { n: $n(freeDeliveryTarget, 'currency') }) }}
-            
-            <!-- Il te manque 19,02 € pour profiter de la -->
-            
-            <span class="font-bold text-green-900 uppercase">
-              {{ $t('livraison standard gratuite') }}
-            </span>
+            <div v-else>
+              <p class="font-bold text-green-900 uppercase">
+                {{ $t('Livraison standard gratuite') }}
+              </p>
+
+              <p class="font-light">
+                {{ $t("Tu vas pouvoir profiter de la livraison standard gratuite à domicile") }}
+              </p>
+            </div>
           </div>
+          
+          <!-- Products -->
+          <CartIterator class="mt-2 mb-5" @edit-product="handleOpenProductEdition" />
 
-          <div v-else>
-            <p class="font-bold text-green-900 uppercase">
-              {{ $t('Livraison standard gratuite') }}
-            </p>
+          <div class="flex justify-between align-center py-4">
+            <span class="font-light">{{ $t('Total (TVA comprise)') }}</span>
+            <span class="font-bold">{{ $n(cartTotal, 'currency') }}</span>
+          </div>
+          
+          <div class="place-self-baseline">
+            <TailButton v-if="isAuthenticated">
+              <NuxtLink to="/cart">
+                {{ $t('Passer commande') }}
+              </NuxtLink>
+            </TailButton>
 
-            <p class="font-light">
-              {{ $t("Tu vas pouvoir profiter de la livraison standard gratuite à domicile") }}
-            </p>
+            <TailButton v-else class="w-full rounded-full" size="lg" @click="showCartDrawer=false, showLoginDrawer=true">
+              {{ $t('Passer commande') }}
+            </TailButton>
           </div>
         </div>
-        
-        <!-- Products -->
-        <CartIterator class="mt-2 mb-5" @edit-product="handleOpenProductEdition" />
 
-        <div class="flex justify-between align-center py-4">
-          <span class="font-light">{{ $t('Total (TVA comprise)') }}</span>
-          <span class="font-bold">{{ $n(cartTotal, 'currency') }}</span>
-        </div>
-        
-        <div class="place-self-baseline">
-          <v-btn v-if="isAuthenticated" to="/cart" color="secondary" rounded flat block>
-            {{ $t('Passer commande') }}
-          </v-btn>
-
-          <v-btn v-else color="secondary" rounded flat block @click="showCartDrawer=false, showLoginDrawer=true">
-            {{ $t('Passer commande') }}
-          </v-btn>
+        <div v-else class="px-1">
+          <div class="flex flex-col items-center justify-center text-center h-screen">
+            <Icon name="fa-solid:shopping-bag" size="100" class="mb-5 text-dark" />
+            
+            <h3 class="text-2xl font-bold mb-3">
+              {{ $t('Panier vide') }}
+            </h3>
+            
+            <p class="font-light mb-10">
+              {{ $t('Empty cart text') }}
+            </p>
+            
+            <TailButton size="lg" class="rounded-full" @click.prevent="handleCartButtonRedirection">
+              <NuxtLink>
+                {{ $t('Découvrir') }}
+              </NuxtLink>
+            </TailButton>
+          </div>
         </div>
       </div>
-
-      <div v-else class="px-5">
-        <div class="flex flex-col items-center justify-center text-center my-3">
-          <Icon name="fa-solid:shopping-bag" size="100" class="mb-5 text-dark" />
-          
-          <h3 class="text-2xl font-bold mb-3">
-            {{ $t('Panier vide') }}
-          </h3>
-          
-          <p class="font-light mb-10">
-            {{ $t('Empty cart text') }}
-          </p>
-          
-          <TailButton size="lg" @click.prevent="handleCartButtonRedirection">
-            <NuxtLink>
-              {{ $t('Découvrir') }}
-            </NuxtLink>
-          </TailButton>
-        </div>
-      </div>
-    </div>
-  </v-navigation-drawer>
+    </TailSheetContent>
+  </TailSheet>
 </template>
 
 <script lang="ts" setup>

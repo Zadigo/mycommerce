@@ -1,19 +1,25 @@
 
 <template>
-  <v-navigation-drawer v-model="shouldShowLoginDrawer" width="400" location="right" sticky temporary @close="handleReset">
-    <div class="container">
-      <v-btn variant="plain" class="mt-2" @click="handleReset">
-        <font-awesome icon="chevron-left" />
-      </v-btn>
-    </div>
+  <TailSheet v-model:open="shouldShowLoginDrawer" @close="handleReset">
+    <TailSheetContent>
+      <TailSheetHeader>
+       <div class="flex justify-between align-center">
+          <Button variant="destructive" @click="handleReset">
+            <font-awesome icon="chevron-left" />
+          </Button>
 
-    <v-divider />
-    
-    <Transition name="opacity">
-      <BlockSignup v-if="showSignup" @authenticate="debouncedAuthenticateCart" />
-      <BlockLogin v-else @show-signup="showSignup=true" @authenticate="debouncedAuthenticateCart" />
-    </Transition>
-  </v-navigation-drawer>
+          <TailSheetClose />
+       </div>
+      </TailSheetHeader>
+      
+      <div class="mb-10 overflow-y-scroll">
+        <Transition name="opacity">
+          <BlockSignup v-if="showSignup" @authenticate="debouncedAuthenticateCart" />
+          <BlockLogin v-else @show-signup="showSignup=true" @authenticate="debouncedAuthenticateCart" />
+        </Transition>
+      </div>
+    </TailSheetContent>    
+  </TailSheet>
 </template>
 
 <script setup lang="ts">

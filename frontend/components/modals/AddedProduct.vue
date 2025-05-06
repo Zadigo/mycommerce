@@ -1,44 +1,49 @@
 <template>
-  <v-navigation-drawer v-model="showAddedProductDrawer" width="400" location="right" temporary @close="showAddedProductDrawer=false">
-    <div class="px-5">
-      <div v-if="hasProducts" class="my-5">
-        <div class="d-flex justify-content-start mb-5 fs-5 align-items-center gap-2">
-          <font-awesome icon="circle-check" class="text-success" />
-          <span>{{ $t('Ajouté au panier') }}</span>
+  <TailSheet v-model:open="showAddedProductDrawer" @close="showAddedProductDrawer=false">
+    <TailSheetContent>
+      <div class="px-5">
+        <div v-if="hasProducts" class="my-5">
+          <div class="flex justify-start mb-5 fs-5 items-center gap-2">
+            <font-awesome icon="circle-check" class="text-green-500" />
+            <span>{{ $t('Ajouté au panier') }}</span>
+          </div>
+
+          <div v-if="lastAddedProduct" class="my-2">
+            <NuxtImg :src="mediaPath(lastAddedProduct.product.get_main_image?.original, '/placeholder.svg')" :alt="lastAddedProduct.product.name" format="webp" class="rounded-md" />            
+
+            <p class="font-bold mt-5">
+              {{ $n(parseFloat(lastAddedProduct.product.get_price.toString()), 'currency') }}
+            </p>
+            
+            <p class="font-normal">
+              {{ lastAddedProduct.product.name }}
+            </p>
+            
+            <p class="text-slate-500">
+              Taille: {{ lastAddedProduct.size }}
+            </p>
+
+            <div class="my-5">
+              <TailButton class="w-full" @click="handleNotAuthenticatedOrdering">
+                {{ $t('Passer commande') }}
+              </TailButton>
+
+              <TailButton class="mt-2 w-full" @click="showAddedProductDrawer = false, showCartDrawer = true">
+                {{ $t('Voir le panier') }}
+              </TailButton>
+            </div>
+          </div>
+
+          <TailSkeleton v-else class="w-full h-[300px] mb-10" />
+
+          <!-- Recommendations -->
+          <BaseRecommendations :quantity="20" :columns="3" :load-cache="true" :show-carousel="false" :show-like-button="false" :show-cart="false" :show-prices="false" />
         </div>
 
-        <div v-if="lastAddedProduct" class="my-2">
-          <NuxtImg v-if="lastAddedProduct" :src="mediaPath(lastAddedProduct.product.get_main_image?.original, '/placeholder.svg')" :alt="lastAddedProduct.product.name" format="webp" class="rounded-md" />            
-
-          <p class="font-bold mt-5">
-            {{ $n(parseFloat(lastAddedProduct.product.get_price.toString()), 'currency') }}
-          </p>
-          
-          <p class="font-normal">
-            {{ lastAddedProduct?.product.name }}
-          </p>
-          
-          <p class="text-slate-500">
-            Taille: {{ lastAddedProduct?.size }}
-          </p>
-        </div>
-
-        <div class="my-5">
-          <v-btn color="primary" block @click="handleNotAuthenticatedOrdering">
-            {{ $t('Passer commande') }}
-          </v-btn>
-
-          <v-btn class="mt-2" variant="text" block @click="showAddedProductDrawer = false, showCartDrawer = true">
-            {{ $t('Voir le panier') }}
-          </v-btn>
-        </div>
-        
-        <!-- Recommendations -->
-        <BaseRecommendations :quantity="20" :columns="3" :load-cache="true" :show-carousel="false" :show-like-button="false" :show-cart="false" :show-prices="false" />
+        <ModalsSkeletonLoader v-else />
       </div>
-      <ModalsSkeletonLoader v-else />
-    </div>
-  </v-navigation-drawer>
+    </TailSheetContent>
+  </TailSheet>
 </template>
 
 <script setup lang="ts">
