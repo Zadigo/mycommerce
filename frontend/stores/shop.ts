@@ -48,6 +48,8 @@ export const useShop = defineStore('shop', () => {
    * Adds the product to the list of
    * products that were historically
    * visited by the user in the store
+   *
+   * @param product The product to track
    */
   function trackProduct(product: Product | null | undefined) {
     if (product) {
