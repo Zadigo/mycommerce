@@ -154,6 +154,7 @@ export default defineI18nLocale(async locale => {
         "Découvrez notre collection de vêtements en ligne": "Découvrez notre collection de vêtements en ligne",
         "Login: Privacy Policy": "En me connectant avec mon identifiant social, j'accepte de lier mon compte conformément à la",
         "Créer un compte": "Créer un compte",
-        "Signup: Password constraints": "8 caractères minimum, comprenant une minuscule, une majuscule et un chiffre. Ne pas répéter plus de 3 fois le même caractère"
+        "Signup: Password constraints": "8 caractères minimum, comprenant une minuscule, une majuscule et un chiffre. Ne pas répéter plus de 3 fois le même caractère",
+        "Voir résulats": "Voir résulats {n}"
     }
 })
