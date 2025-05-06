@@ -96,9 +96,6 @@ const showAvailabilityModal = ref<boolean>(false)
 const isLoading = computed(() => status.value === 'pending')
 const showBanner = computed(() => y.value >= 1200 && y.value <= 7000)
 
-/**
- * TODO: Documentation
- */
 const imagesComponent = computed((): Component => {  
   if (!product.value) {
     return NoImages
@@ -111,7 +108,8 @@ const imagesComponent = computed((): Component => {
 })
 
 /**
- * TODO: Documentation
+ * Get the state for the current stock
+ * of the product
  */
 async function requestProductStock () {
   try {
