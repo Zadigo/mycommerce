@@ -31,6 +31,7 @@
       <ModalsImageZoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
       <ModalsSizeGuide v-model="showSizeGuideDrawer" :product="product" />
       <ModalsAvailability v-model="showAvailabilityModal" :selected-size="'XS'" />
+      <ModalsComposition v-model="showCompositionModal" />
     </ClientOnly>
   </section>
 </template>
@@ -92,6 +93,7 @@ const { data: product, status } = useFetch<Product>(`/api/products/${id}`, {
 const stockState = ref<ProductStockApiResponse>()
 const showSizeGuideDrawer = ref<boolean>(false)
 const showAvailabilityModal = ref<boolean>(false)
+const showCompositionModal = ref<boolean>(false)
 
 const isLoading = computed(() => status.value === 'pending')
 const showBanner = computed(() => y.value >= 1200 && y.value <= 7000)

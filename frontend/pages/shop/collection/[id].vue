@@ -50,7 +50,9 @@ useHead({
 
 /**
  * Callback function used to set the products loaded
- * in the async component feed back to here 
+ * in the async component feed back to here
+ * 
+ * @param data The product to use
  */
 function handleLoadedProducts(data: Product[]) {
   productsLoading.value = false

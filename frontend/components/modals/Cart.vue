@@ -1,16 +1,18 @@
 <template>
   <TailSheet v-model:open="showCartDrawer" @close="showCartDrawer=false">
     <TailSheetHeader>
-      <TailSheetTitle class="fw-bold">
-        {{ $t('Cart quantity', { n: numberOfProducts }) }}
-      </TailSheetTitle>
+      <div class="flex justify-between items-center">
+        <TailSheetTitle class="fw-bold">
+          {{ $t('Cart quantity', { n: numberOfProducts }) }}
+        </TailSheetTitle>
 
-      <TailButton variant="outlined" as-child >
-        <NuxtLink to="/wishlist" @click="showCartDrawer = false">
-          <font-awesome :icon="['far', 'heart']" class="me-2" />
-          {{ $t('Favoris') }}
-        </NuxtLink>
-      </TailButton>
+        <TailButton variant="outlined" as-child >
+          <NuxtLink to="/wishlist" @click="showCartDrawer = false">
+            <font-awesome :icon="['far', 'heart']" class="me-2" />
+            {{ $t('Favoris') }}
+          </NuxtLink>
+        </TailButton>
+      </div>
     </TailSheetHeader>
 
     <TailSheetContent>
