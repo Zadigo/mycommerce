@@ -29,7 +29,7 @@
         </p>
 
         <div>
-          <div class="d-flex justify-content-between fw-bold">
+          <div class="flex justify-between fw-bold">
             <span>Standard</span>
             <span>4.95€</span>
           </div>
@@ -37,7 +37,7 @@
         </div>
 
         <div>
-          <div class="d-flex justify-content-between fw-bold">
+          <div class="flex justify-between fw-bold">
             <span>Express</span>
             <span>9.95€</span>
           </div>
@@ -45,7 +45,7 @@
         </div>
 
         <div>
-          <div class="d-flex justify-content-between fw-bold">
+          <div class="flex justify-between fw-bold">
             <span>Point Relais Colis</span>
             <span>3.95€</span>
           </div>
@@ -78,7 +78,7 @@
         </p>
 
         <div class="mt-3">
-          <div class="d-flex justify-content-between fw-bold">
+          <div class="flex  justify-between fw-bold">
             <span>Retour à domicile</span>
             <span>5,95€</span>
           </div>

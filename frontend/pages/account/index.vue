@@ -45,7 +45,7 @@
         <form v-if="showEditEmail" class="password-block" @submit.prevent>
           <v-text-field v-model="emailPasswordRequestData.email" variant="solo-filled" placeholder="Email" type="email" aria-label="Email" flat />        
           
-          <div class="d-flex gap-1">
+          <div class="flex gap-1">
             <TailButton class="rounded-full" @click="requestUpdate">
               {{ $t("Changer l'email") }}
             </TailButton>
@@ -56,7 +56,7 @@
           </div>
         </form>
 
-        <v-btn v-else class="d-flex justify-content-between align-items-center" color="dark" variant="text" flat block @click="handleEditEmail">
+        <v-btn v-else class="flex justify-between items-center" color="dark" variant="text" flat block @click="handleEditEmail">
           <span class="me-2">
             {{ profile?.email }}
           </span>

@@ -2,7 +2,7 @@
   <section id="wishlist" class="mx-10 px-10 my-10">
     <div v-if="!authenticationStore.isAuthenticated" class="w-full md:w-2/6">
       <TailCard class="shadow-sm border-0">
-        <TailCardContent class="text-center p-5 d-flex flex-col justify-center">
+        <TailCardContent class="text-center p-5 flex flex-col justify-center">
           <div class="information">
             <Icon name="fa-solid:star" class="text-warning mb-4" size="120" />
             

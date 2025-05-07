@@ -10,7 +10,7 @@
           <TailInput v-model="requestData.address_line" placeholder="Addresse" autocomplete="street-address" />
           <TailInput v-model="requestData.city" placeholder="Ville" autocomplete="address-level1" class="my-1" />
 
-          <div class="d-flex justify-content-between gap-1">
+          <div class="flex justify-between gap-1">
             <TailInput v-model="requestData.zip_code" :rules="[ rules.postalCode ]" placeholder="Zip code" autocomplete="postal-code" />
             <TailInput v-model="requestData.country" autocomplete="country" />
           </div>

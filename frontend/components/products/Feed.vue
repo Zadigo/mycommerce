@@ -27,7 +27,7 @@
     <template #intersect>
       <!-- Intersect -->
       <ClientOnly>
-        <div v-if="products.length > 0" id="product-pagination" ref="intersectionTarget" class="font-bold text-uppercase d-flex justify-content-center mt-5">
+        <div v-if="products.length > 0" id="product-pagination" ref="intersectionTarget" class="font-bold text-uppercase flex justify-content-center mt-5">
           <TailButton v-if="isEndOfPage" size="lg" @click="scrollToTop">
             <font-awesome icon="arrow-up" class="me-2" />
             {{ $t('Tu es arrivé à la fin') }}

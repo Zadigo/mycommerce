@@ -1,9 +1,9 @@
 <template>
-  <div class="list-group-item d-flex justify-content-between gap-3 align-items-center p-3">
-    <div class="d-flex gap-2 align-items-center">
+  <div class="list-group-item flex justify-between gap-3 items-center p-3">
+    <div class="flex gap-2 items-center">
       <font-awesome :icon="`${iconName}`" />
 
-      <div v-if="subText" class="d-flex flex-column">
+      <div v-if="subText" class="flex  flex-column">
         <span class="font-bold">{{ text }}</span>
         <span class="text-body-tertiary">
           {{ subText }}

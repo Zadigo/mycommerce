@@ -1,5 +1,5 @@
 <template>
-  <div v-if="sizes.length > 0" id="sizes" class="d-flex justify-content-start gap-1" aria-label="Product sizes">
+  <div v-if="sizes.length > 0" id="sizes" class="flex justify-content-start gap-1" aria-label="Product sizes">
     <ProductSizeButton v-for="size in sizes" :key="size.id" :size="size" :selected-size="selectedSize" @select-size="handleSizeSelection" />
   </div>
 
