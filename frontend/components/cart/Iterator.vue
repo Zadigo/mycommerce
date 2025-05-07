@@ -30,13 +30,13 @@
           </NuxtLinkLocale >
 
           <div id="actions">
-            <v-btn v-if="isEditable" id="action-edit-product" class="me-2" size="x-small" variant="tonal" rounded @click="handleProductEdition(item)">
+            <TailButton v-if="isEditable" id="action-edit-product" class="me-2" size="sm rounded-full" @click="handleProductEdition(item)">
               <Icon name="fa-solid:pen" />
-            </v-btn>
+            </TailButton>
 
-            <v-btn variant="tonal" id="action-delete-product" size="x-small" rounded @click="proxyDeleteFromCart(item)">
+            <TailButton id="action-delete-product" size="sm rounded-full" @click="proxyDeleteFromCart(item)">
               <Icon name="fa-solid:trash" />
-            </v-btn>
+            </TailButton>
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CartUpdateApiResponse, ProductToEdit } from '~/types'
+import type { ProductToEdit } from '~/types'
 
 defineProps({
   isEditable: {

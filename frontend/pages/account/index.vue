@@ -21,13 +21,13 @@
             <v-text-field id="password2" v-model="emailPasswordRequestData.password2" variant="solo-filled" placeholder="Taper le mot de passe à nouveau" autocomplete="new-password" type="password" aria-label="Taper le mot de passe à nouveau" flat />
             
             <div class="flex gap-1">
-              <v-btn color="secondary" variant="tonal" rounded @click="requestUpdate">
+              <TailButton @click="requestUpdate">
                 {{ $t('Changer le mot de passe') }}
-              </v-btn>
+              </TailButton>
 
-              <v-btn class="flex justify-between items-center" color="dark" variant="text" rounded flat @click="showEditPassword=false">
-                Annuler
-              </v-btn>
+              <TailButton class="flex justify-between items-center" color="dark" variant="text" rounded flat @click="showEditPassword=false">
+                {{ $t("Annuler") }}
+              </TailButton>
             </div>
           </form>
           
@@ -46,13 +46,13 @@
           <v-text-field v-model="emailPasswordRequestData.email" variant="solo-filled" placeholder="Email" type="email" aria-label="Email" flat />        
           
           <div class="d-flex gap-1">
-            <v-btn color="secondary" variant="tonal" rounded @click="requestUpdate">
+            <TailButton class="rounded-full" @click="requestUpdate">
               {{ $t("Changer l'email") }}
-            </v-btn>
+            </TailButton>
             
-            <v-btn class="d-flex justify-content-between align-items-center" color="dark" variant="text" rounded flat @click="showEditEmail=false">
-              Annuler
-            </v-btn>
+            <TailButton class="rounded-full" @click="showEditEmail=false">
+              {{ $t("Annuler") }}
+            </TailButton>
           </div>
         </form>
 
@@ -65,10 +65,7 @@
         </v-btn>
 
         <p class="font-light mt-4">
-          BERSHKA prend très au sérieux le respect de votre vie privée
-          et nous sommes engagés dans la protection de vos données personnelles.
-          Découvrez comment nous prenons soin et comment nous traitons vos
-          données dans notre Politique de confidentialité.
+          {{ $t("Policy: account") }} <NuxtLinkLocale to="/privacy">{{ $t("politique de confidentialité") }}</NuxtLinkLocale>
         </p>
       </TailCardContent>
     </TailCard>
@@ -85,10 +82,10 @@
       <AccountBillingForm v-if="showNewAddressForm" @create-complete="handleCreation"  @close="showNewAddressForm=false" />
 
       <TailCardContent class="flex justify-end">
-        <v-btn variant="tonal" rounded @click="showNewAddressForm=!showNewAddressForm">
+        <TailButton class="rounded-full" @click="showNewAddressForm=!showNewAddressForm">
           <Icon name="fa-solid:plus" />
           {{ $t('Ajouter') }}
-        </v-btn>
+        </TailButton>
       </TailCardContent>
     </TailCard>
   </section>
@@ -104,20 +101,11 @@ interface EmailPasswordData {
   password2: string
 }
 
-useHead({
-  title: 'Mon compte',
-  meta: [
-    {
-      key: 'description',
-      content: ''
-    }
-  ]
-})
-
 definePageMeta({
   layout: 'accounts'
 })
 
+const { t } = useI18n()
 const authStore = useAuthentication()
 const { $client } = useNuxtApp() 
 const { handleError } = useErrorHandler()
@@ -130,9 +118,9 @@ const emailPasswordRequestData = ref<EmailPasswordData>({
   password2: ''
 })
 
-const showNewAddressForm = ref(false)
-const showEditPassword = ref(false)
-const showEditEmail = ref(false)
+const showNewAddressForm = ref<boolean>(false)
+const showEditPassword = ref<boolean>(false)
+const showEditEmail = ref<boolean>(false)
 
 /**
  * 
@@ -149,7 +137,8 @@ function resetEmailPasswordData () {
 }
 
 /**
- * 
+ * Toggles the section that reveals the input for the
+ * user to modify his email
  */
 function handleEditEmail() {
   if (profile.value) {
@@ -159,7 +148,7 @@ function handleEditEmail() {
 }
 
 /**
- * 
+ * @param data The addresse set to be created
  */
 function handleCreation(data: AddressSet) {
   if (profile.value) {
@@ -168,7 +157,9 @@ function handleCreation(data: AddressSet) {
 }
 
 /**
+ * Deletes an address set
  * 
+ * @param id The id of the address set to delete
  */
 function handleDelete(id: number) {
   if (profile.value) {
@@ -181,7 +172,7 @@ function handleDelete(id: number) {
  * Requests an update for the password and/or
  * the email address by the user 
  */
-async function requestUpdate () {
+async function requestUpdate() {
   await $client(`/api/v1/accounts/${authStore.userId}`, {
     method: 'PATCH',
     body: emailPasswordRequestData.value,
@@ -194,4 +185,15 @@ async function requestUpdate () {
     }
   })
 }
+
+useHead({
+  title: t('Mon compte'),
+  meta: [
+    {
+      key: 'description',
+      content: ''
+    }
+  ]
+})
+
 </script>

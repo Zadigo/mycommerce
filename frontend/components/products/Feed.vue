@@ -28,18 +28,18 @@
       <!-- Intersect -->
       <ClientOnly>
         <div v-if="products.length > 0" id="product-pagination" ref="intersectionTarget" class="fw-bold text-uppercase d-flex justify-content-center mt-5">
-          <v-btn v-if="isEndOfPage" size="x-large" variant="tonal" rounded flat @click="scrollToTop">
+          <TailButton v-if="isEndOfPage" size="lg" @click="scrollToTop">
             <font-awesome icon="arrow-up" class="me-2" />
             {{ $t('Tu es arrivé à la fin') }}
-          </v-btn>
+          </TailButton>
 
           <div v-else class="flex-grow">
             <v-progress-circular v-if="isLoadingMoreProducts" :size="50" color="dark" indeterminate />
 
-            <v-btn v-else size="x-large" variant="tonal" rounded flat>
+            <TailButton v-else size="lg">
               <font-awesome icon="arrow-down" class="me-2" />
               {{ $t('Voir plus de produits') }}
-            </v-btn>
+            </TailButton>
           </div>
         </div>
       </ClientOnly>    

@@ -39,30 +39,26 @@
               {{ $t('Taille') }}
             </p>
 
-            <div v-if="currentEditedProduct.product_info.product.has_sizes" class="d-flex gap-2">
-              <!-- <v-btn v-for="i in 3" :key="i" color="primary" rounded>
-                XS
-              </v-btn> -->
-
+            <div v-if="currentEditedProduct.product_info.product.has_sizes" class="flex gap-2">
               <ProductSizeButton v-for="size in currentEditedProduct.product_info.product.sizes" :key="size.id" :size="size" />
             </div>
 
             <p v-else class="fw-light">
-              Taille unique
+              {{ $t("Taille unique") }}
             </p>
           </div>
 
           <div class="my-4">
-            <p class="fw-bold">
+            <p class="font-bold">
               {{ $t('Quantité') }}
             </p>
             
-            <v-text-field v-model="currentEditedProduct.quantity" type="number" min="1" max="999" variant="outlined" style="width:50%;" />
+            <TailInput v-model="currentEditedProduct.quantity" type="number" class="w-[2/4]" min="1" max="999" />
           </div>
 
-          <v-btn color="primary" block @click="handleCloseProductEdition">
+          <TailButton class="w-full" @click="handleCloseProductEdition">
             {{ $t('Enregistrer') }}
-          </v-btn>
+          </TailButton>
         </div>
       </div>
 
@@ -85,9 +81,9 @@ const { mediaPath } = useDjangoUtilies()
 const currentEditedProduct = inject<ProductToEdit>('currentEditedProduct')
 
 /**
- * 
+ * Closes the modal that edits a given product
  */
-function handleCloseProductEdition () {
+function handleCloseProductEdition() {
   showEditProductDrawer.value = false
   showCartDrawer.value = true
 }

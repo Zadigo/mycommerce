@@ -12,8 +12,8 @@
       </p>
 
       <form @submit.prevent>
-        <v-text-field type="email" variant="outlined" placeholder="Email" autocomplete="email" />
-        <v-text-field type="tel" variant="outlined" placeholder="Téléphone" autocomplete="tel" />
+        <TailInput type="email" :placeholder="$t('Email')" autocomplete="email" />
+        <TailInput type="tel" :placeholder="$t('Téléphone')" autocomplete="tel" />
       
         <TailButton id="action-newsletter=product" class="w-full">
           {{ $t("Envoyer") }}
@@ -22,7 +22,7 @@
     </TailCardContent>
   </TailCard>
 
-  <TailCard v-else class="card border-none">
+  <TailCard v-else class="border-none">
     <TailCardHeader>
       <TailCardTitle>
         {{ $t('Mes achats') }}
@@ -30,7 +30,7 @@
     </TailCardHeader>
 
     <TailCardContent v-if="hasOrders">
-      Orders
+      {{ $t("Commandes") }}
     </TailCardContent>
 
     <TailCardContent v-else class="text-center">
@@ -39,15 +39,13 @@
       </p>
 
       <p class="fw-light">
-        Si tu ne trouves pas ton achat, tu as
-        peut-être passé commande sans être
-        inscrit(e).
+        {{ $t("Si tu ne trouves pas ton achat, tu as peut-être passé commande sans être inscrit(e)") }}
       </p>
 
-      <v-btn variant="text" @click="showFindOrder = true">
+      <TailButton @click="showFindOrder = true">
         {{ $t('Trouver ma commande') }}
         <font-awesome icon="arrow-right" class="ms-2" />
-      </v-btn>
+      </TailButton>
     </TailCardContent>
   </TailCard>
 </template>
@@ -57,8 +55,14 @@ definePageMeta({
   layout: 'accounts'
 })
 
+const { t } = useI18n()
+
+const showFindOrder = ref(false)
+
+const hasOrders = computed(() => false)
+
 useHead({
-  title: 'Commandes',
+  title: t('Commandes'),
   meta: [
     {
       key: 'description',
@@ -66,8 +70,4 @@ useHead({
     }
   ]
 })
-
-const showFindOrder = ref(false)
-
-const hasOrders = computed(() => false)
 </script>
