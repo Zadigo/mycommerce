@@ -2,7 +2,7 @@
   <TailSheet v-model:open="showCartDrawer" @close="showCartDrawer=false">
     <TailSheetHeader>
       <div class="flex justify-between items-center">
-        <TailSheetTitle class="fw-bold">
+        <TailSheetTitle class="font-bold">
           {{ $t('Cart quantity', { n: numberOfProducts }) }}
         </TailSheetTitle>
 

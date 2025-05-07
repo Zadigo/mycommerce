@@ -4,7 +4,7 @@
   </div>
 
   <div v-else>
-    <p class="fw-bold">
+    <p class="font-bold">
       {{ $t("Taille unique") }}
     </p>
   </div>

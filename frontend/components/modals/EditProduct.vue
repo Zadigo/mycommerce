@@ -16,7 +16,7 @@
 
         <div class="col-12">
           <div class="my-4">
-            <p class="fw-bold mb-1">
+            <p class="font-bold mb-1">
               {{ currentEditedProduct.product_info.price }}
               <!-- {{ $n(currentEditedProduct.product_info.price, 'currency') }} -->
             </p>
@@ -26,7 +26,7 @@
           </div>
 
           <div class="my-4">
-            <p class="fw-bold">
+            <p class="font-bold">
               {{ $t('Couleur') }}
             </p>
             <p>
@@ -35,7 +35,7 @@
           </div>
 
           <div class="my-4">
-            <p class="fw-bold">
+            <p class="font-bold">
               {{ $t('Taille') }}
             </p>
 
@@ -43,7 +43,7 @@
               <ProductSizeButton v-for="size in currentEditedProduct.product_info.product.sizes" :key="size.id" :size="size" />
             </div>
 
-            <p v-else class="fw-light">
+            <p v-else class="font-light">
               {{ $t("Taille unique") }}
             </p>
           </div>

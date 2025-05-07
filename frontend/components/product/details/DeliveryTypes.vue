@@ -4,16 +4,16 @@
       <font-awesome :icon="`${iconName}`" />
 
       <div v-if="subText" class="d-flex flex-column">
-        <span class="fw-bold">{{ text }}</span>
+        <span class="font-bold">{{ text }}</span>
         <span class="text-body-tertiary">
           {{ subText }}
         </span>
       </div>
 
-      <span v-else class="fw-bold">{{ text }}</span>
+      <span v-else class="font-bold">{{ text }}</span>
     </div>
     
-    <span class="fw-bold text-uppercase text-success">
+    <span class="font-bold text-uppercase text-success">
       {{ $t("Gratuit") }}
     </span>
   </div>

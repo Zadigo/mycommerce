@@ -34,11 +34,11 @@
     </TailCardContent>
 
     <TailCardContent v-else class="text-center">
-      <p class="fw-bold">
+      <p class="font-bold">
         {{ $t("Tu n'as encore aucun achat en ligne") }}
       </p>
 
-      <p class="fw-light">
+      <p class="font-light">
         {{ $t("Si tu ne trouves pas ton achat, tu as peut-être passé commande sans être inscrit(e)") }}
       </p>
 
