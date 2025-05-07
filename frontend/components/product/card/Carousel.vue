@@ -4,7 +4,7 @@
       <Icon name="fa:caret-left" class="" />
     </button>
     
-    <NuxtLinkLocale  id="link-product-card-carousel" :to="`/shop/${product.id}`" @click="emit('has-navigated')">
+    <NuxtLinkLocale id="link-product-carousel" :to="`/shop/${product.id}`" @click="emit('has-navigated')">
       <img v-if="currentImage" :src="mediaPath(currentImage?.original, '/placeholder.svg')" :alt="currentImage?.name" :aria-label="currentImage?.name" class="self-center aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-full">
       <TailSkeleton v-else class="w-full h-[188px] md:h-[423px] bg-gray-100 rounded-md" />
     </NuxtLinkLocale >

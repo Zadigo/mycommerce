@@ -5,7 +5,7 @@
         <div class="flex justify-content-left gap-1">
           <div class="d-flex justify-content-between align-items-center me-3 gap-1">
             <TailButton variant="light" as-child>
-              <NuxtLinkLocale  to="/shop/collection/all">
+              <NuxtLinkLocale id="link-collections-feed-header" to="/shop/collection/all">
                 {{ $t('Afficher tout') }}
               </NuxtLinkLocale >
             </TailButton>

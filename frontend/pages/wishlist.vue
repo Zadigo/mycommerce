@@ -1,8 +1,8 @@
 <template>
   <section id="wishlist" class="mx-10 px-10 my-10">
     <div v-if="!authenticationStore.isAuthenticated" class="w-full md:w-2/6">
-      <TailCard class="card shadow-sm border-0">
-        <TailCardContent class="card-body text-center p-5 d-flex flex-col justify-center">
+      <TailCard class="shadow-sm border-0">
+        <TailCardContent class="text-center p-5 d-flex flex-col justify-center">
           <div class="information">
             <Icon name="fa-solid:star" class="text-warning mb-4" size="120" />
             
@@ -14,7 +14,7 @@
               {{ $t('Keep favorites text') }}
             </p>
 
-            <TailButton class="mt-10" @click="showLoginDrawer=true">
+            <TailButton id="action-start-login" class="mt-10" @click="showLoginDrawer=true">
               <Icon name="fa-solid:right-to-bracket" class="me-2" />
               {{ $t('Se connecter') }}
             </TailButton>

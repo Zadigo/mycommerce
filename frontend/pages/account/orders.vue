@@ -15,7 +15,7 @@
         <v-text-field type="email" variant="outlined" placeholder="Email" autocomplete="email" />
         <v-text-field type="tel" variant="outlined" placeholder="Téléphone" autocomplete="tel" />
       
-        <TailButton class="w-full">
+        <TailButton id="action-newsletter=product" class="w-full">
           {{ $t("Envoyer") }}
         </TailButton>
       </form>

@@ -3,13 +3,13 @@
     <article v-for="item in cartItems" :key="item.product__id" :aria-label="item.product__name" class="border-2 border-gray-50 rounded-md pa-3 mb-2">
       <div class="flex justify-start gap-3">
         <div id="image" class="w-2/4">
-          <NuxtLinkLocale  id="link-product" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
+          <NuxtLinkLocale  id="link-product-img" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
             <NuxtImg :src="mediaPath(item.product_info?.product.get_main_image.original, '/placeholder.svg')" class="w-full rounded-md" />
           </NuxtLinkLocale >
         </div>
 
         <div id="infos">
-          <NuxtLinkLocale  id="link-product" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
+          <NuxtLinkLocale  id="link-product-body" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
             <p class="mb-1 font-light text-sm">
               {{ item.product__name }}
             </p>
@@ -30,11 +30,11 @@
           </NuxtLinkLocale >
 
           <div id="actions">
-            <v-btn v-if="isEditable" class="me-2" size="x-small" variant="tonal" rounded @click="handleProductEdition(item)">
+            <v-btn v-if="isEditable" id="action-edit-product" class="me-2" size="x-small" variant="tonal" rounded @click="handleProductEdition(item)">
               <Icon name="fa-solid:pen" />
             </v-btn>
 
-            <v-btn variant="tonal" size="x-small" rounded @click="proxyDeleteFromCart(item)">
+            <v-btn variant="tonal" id="action-delete-product" size="x-small" rounded @click="proxyDeleteFromCart(item)">
               <Icon name="fa-solid:trash" />
             </v-btn>
           </div>
@@ -70,8 +70,10 @@ const { mediaPath } = useDjangoUtilies()
 
 const { sessionCache } = storeToRefs(cartStore)
 
-// Computed property that get the items from the session
-// and iterates on each statistic object to be displayed 
+/**
+ * Computed property that get the items from the session
+ * and iterates on each statistic object to be displayed
+ */
 const cartItems = computed((): ProductToEdit[] => {
   if (sessionCache.value) {
     if (sessionCache.value.cart) {
@@ -86,42 +88,50 @@ const cartItems = computed((): ProductToEdit[] => {
   return []
 })
 
-// Function to open the product edition drawer
+/**
+ * Function to open the product edition drawer
+ * 
+ * @param item The item to edit
+ */
 function handleProductEdition (item: ProductToEdit) {
   emit('edit-product', item)
 }
 
 /**
- * TODO: 
+ * TODO: Callback function used to construct a valid GA-4
+ * object to be sent to Analytics
+ * 
+ * @param deletedItem The deleted product
+ * @param updatedCart The updated cart object
  */
-function callbackRemoveFromCart(deletedItem: ProductToEdit, updatedCart: CartUpdateApiResponse) {
-  const items = [
-    {
-      item_id: deletedItem.product__id,
-      item_name: deletedItem.product__name,
-      item_category: null,
-      item_category2: null,
-      price: deletedItem.total,
-      quantity: deletedItem.quantity
-    }
-  ]
+// function callbackRemoveFromCart(deletedItem: ProductToEdit, updatedCart: CartUpdateApiResponse) {
+//   const items = [
+//     {
+//       item_id: deletedItem.product__id,
+//       item_name: deletedItem.product__name,
+//       item_category: null,
+//       item_category2: null,
+//       price: deletedItem.total,
+//       quantity: deletedItem.quantity
+//     }
+//   ]
 
-  // TODO: G-Analytics
-  // gtag('event', 'remove_from_cart', {
-  //   currency: 'EUR',
-  //   value: updatedCart.total,
-  //   items
-  // })
+//   TODO: G-Analytics
+//   gtag('event', 'remove_from_cart', {
+//     currency: 'EUR',
+//     value: updatedCart.total,
+//     items
+//   })
 
-  // useTrackEvent('remove_from_cart', {
-  //   currency: 'EUR',
-  //   checkout_step: 1,
-  //   items
-  // })
-}
+//   useTrackEvent('remove_from_cart', {
+//     currency: 'EUR',
+//     checkout_step: 1,
+//     items
+//   })
+// }
 
 /**
- * 
+ * @param cartItem The item t odelete from the cart
  */
 function proxyDeleteFromCart(cartItem: ProductToEdit) {
   cartStore.deleteFromCart(cartItem, () => {

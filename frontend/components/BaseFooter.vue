@@ -2,18 +2,18 @@
   <footer class="relative w-full md-5 mt-5 md:mt-10 border-t-1 border-gray-50">
     <div class="mx-auto w-full max-w-7xl pa-10">
       <div class="grid grid-cols-1 justify-between gap-4 md:grid-cols-2">
-        <NuxtLinkLocale  to="/" class="font-bold text-3xl mb-6">
+        <NuxtLinkLocale id="link-home-footer" to="/" class="font-bold text-3xl mb-6">
           Material Tailwind
         </NuxtLinkLocale >
 
         <div :class="`grid grid-cols-${numberOfSections}`" class="justify-between gap-4">
-          <ul v-for="section in footerLinks.sections" :key="section.name">
+          <ul v-for="(section, x) in footerLinks.sections" :key="section.name">
             <h5 class="mb-3 font-bold opacity-90 ">
               {{ $t(section.name) }}
             </h5>
             
-            <li v-for="item in section.links" :key="item.name">
-              <NuxtLinkLocale  :to="item.to" class="py-1.5 font-normal transition-colors hover:text-blue-gray-900">
+            <li v-for="(item, y) in section.links" :key="item.name">
+              <NuxtLinkLocale :id="`link-footer-${x}-${y}`" :to="item.to" class="py-1.5 font-normal transition-colors hover:text-blue-gray-900">
                 {{ $t(item.name) }}
               </NuxtLinkLocale >
             </li>

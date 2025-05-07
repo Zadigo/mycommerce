@@ -15,7 +15,7 @@
       <span v-else>N.D.</span>
     </p>
     
-    <NuxtLinkLocale  id="link-product-size-guide" to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('show-size-guide')">
+    <NuxtLinkLocale id="link-product-size-guide" to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('show-size-guide')">
       {{ $t('Guide des tailles') }}
     </NuxtLinkLocale >
 

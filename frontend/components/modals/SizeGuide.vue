@@ -76,7 +76,7 @@
         </div>
 
         <TailButton variant="link">
-          <NuxtLinkLocale to="/">
+          <NuxtLinkLocale id="link-size-guide" to="/">
             <Icon name="fa-solid:link" />
             {{ $t('Notre guide complet') }}
           </NuxtLinkLocale>

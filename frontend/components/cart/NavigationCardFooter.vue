@@ -2,13 +2,13 @@
   <TailCardFooter>
     <div class="flex justify-between items-center w-full">
       <TailButton v-if="currentStep > 1" as-child> 
-        <NuxtLinkLocale  id="link-card-previous" to="/cart/" class="block" @click="$emit('navigate:previous-page')">
+        <NuxtLinkLocale  id="link-cart-previous" to="/cart/" class="block" @click="$emit('navigate:previous-page')">
           {{ $t("Retour") }}
         </NuxtLinkLocale >
       </TailButton>
 
       <TailButton v-else as-child>
-        <NuxtLinkLocale  id="link-cart-shop" to="/">
+        <NuxtLinkLocale  id="link-home" to="/">
           <Icon name="fa-solid:arrow-left" class="me-2" />
           {{ $t('Boutique') }}
         </NuxtLinkLocale >

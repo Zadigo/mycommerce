@@ -2,7 +2,7 @@
   <section id="payment">
     <header>
       <nav class="flex justify-center uppercase pa-5">
-        <NuxtLinkLocale  id="link-shop-payment" to="/">
+        <NuxtLinkLocale id="link-home-cart-navbar" to="/">
           <h1 class="font-2xl font-bold">
             {{ $t('Boutique') }}
           </h1>
@@ -87,15 +87,7 @@
 <script setup lang="ts">
 import { Slash } from 'lucide-vue-next'
 
-useHead({
-  script: [
-    {
-      async: true,
-      src: 'https://js.stripe.com/v3/'
-    }
-  ]
-})
-
+const { t } = useI18n()
 const cartStore = useCart()
 const route = useRoute()
 
@@ -137,11 +129,20 @@ const paymentLinks = computed(() => {
 function calculateItemTotalCost (price: number, quantity: number) {
   return price * quantity
 }
-</script>>
 
-<style scoped>
-#products {
-  overflow-y: scroll;
-  height: 400px;
-}
-</style>
+useHead({
+  title: t('Cart'),
+  meta: [
+    {
+      key: 'description',
+      content: ''
+    }
+  ],
+  script: [
+    {
+      async: true,
+      src: 'https://js.stripe.com/v3/'
+    }
+  ]
+})
+</script>>

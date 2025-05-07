@@ -6,8 +6,8 @@
           {{ $t('Cart quantity', { n: numberOfProducts }) }}
         </TailSheetTitle>
 
-        <TailButton variant="outlined" as-child >
-          <NuxtLink to="/wishlist" @click="showCartDrawer = false">
+        <TailButton variant="outline" as-child >
+          <NuxtLink id="link-wishlist" to="/wishlist" @click="showCartDrawer = false">
             <font-awesome :icon="['far', 'heart']" class="me-2" />
             {{ $t('Favoris') }}
           </NuxtLink>
@@ -51,12 +51,12 @@
           
           <div class="place-self-baseline">
             <TailButton v-if="isAuthenticated">
-              <NuxtLink to="/cart">
+              <NuxtLink od="link-start-checkout" to="/cart">
                 {{ $t('Passer commande') }}
               </NuxtLink>
             </TailButton>
 
-            <TailButton v-else class="w-full rounded-full" size="lg" @click="showCartDrawer=false, showLoginDrawer=true">
+            <TailButton v-else id="action-login-cart" class="w-full rounded-full" size="lg" @click="showCartDrawer=false, showLoginDrawer=true">
               {{ $t('Passer commande') }}
             </TailButton>
           </div>
@@ -74,8 +74,8 @@
               {{ $t('Empty cart text') }}
             </p>
             
-            <TailButton size="lg" class="rounded-full" @click.prevent="handleCartButtonRedirection">
-              <NuxtLink>
+            <TailButton size="lg" class="rounded-full" as-child @click.prevent="handleCartButtonRedirection">
+              <NuxtLink id="link-collections-cart" to="/collections/all">
                 {{ $t('Découvrir') }}
               </NuxtLink>
             </TailButton>

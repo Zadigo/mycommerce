@@ -1,6 +1,6 @@
 <template>
   <article v-if="collection" class="relative rounded-md overflow-hidden">
-    <NuxtLinkLocale  id="link-collection-card" :to="`/shop/collection/${collection.category.toLowerCase()}`">
+    <NuxtLinkLocale id="link-collection-card" :to="`/shop/collection/${collection.category.toLowerCase()}`">
       <div class="rounded-md">
         <NuxtImg :alt="collection.name" :src="image" format="webp" quality="80" class="rounded-md" placeholder />
         <h1 class="text-white text-3xl absolute bottom-4 left-3 uppercase font-bold">

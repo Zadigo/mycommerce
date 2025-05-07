@@ -9,11 +9,11 @@
           <TailCard class="card border-none">
             <TailCardContent>
               <div class="rounde-md border-gray-50  border-2 rounded-md border-b-2 border-b-gray-50">
-                <NuxtLinkLocale  to="/account/" class="pa-5 block hover:bg-gray-50">
+                <NuxtLinkLocale id="link-account-aside"  to="/account/" class="pa-5 block hover:bg-gray-50">
                   {{ $t("Mon compte") }}
                 </NuxtLinkLocale >
 
-                <NuxtLinkLocale  to="/account/orders/" class="pa-5 block hover:bg-gray-50">
+                <NuxtLinkLocale id="link-orders-aside"  to="/account/orders/" class="pa-5 block hover:bg-gray-50">
                   {{ $t("Mes commandes") }}
                 </NuxtLinkLocale >
               </div>
@@ -34,6 +34,7 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore'
 
 import type { Profile } from '~/types'
 
+const { t }  = useI18n()
 const cookieSessionId = useCookie('sessionId')
 const authStore = useAuthentication()
 const { $client, $fireStore } = useNuxtApp()
@@ -68,6 +69,16 @@ async function requestUserDetails () {
 }
 
 requestUserDetails()
+
+useHead({
+  title: t("Mon compte"),
+  meta: [
+    {
+      key: 'description',
+      content: ''
+    }
+  ]
+})
 
 onBeforeMount(async () => {
   // TODO: Get the cities from the Quart backend
