@@ -2,11 +2,11 @@
   <section id="payment">
     <header>
       <nav class="flex justify-center uppercase pa-5">
-        <NuxtLink id="link-shop-payment" to="/">
+        <NuxtLinkLocale id="link-home-cart-navbar" to="/">
           <h1 class="font-2xl font-bold">
             {{ $t('Boutique') }}
           </h1>
-        </NuxtLink>
+        </NuxtLinkLocale >
       </nav>
     </header>
 
@@ -17,13 +17,25 @@
 
       <div v-else class="my-5 grid grid-cols-12 gap-4">
         <div class="col-span-12">
-          <nav aria-label="breadcrumb">
-            <v-breadcrumbs :items="paymentLinks">
-              <template #divider>
-                <Icon name="ic:baseline-chevron-right" size="25" />
-              </template>
-            </v-breadcrumbs>
-          </nav>
+          <TailCard class="shadow-none border-none">
+            <TailCardContent>
+              <TailBreadcrumb>
+                <TailBreadcrumbList>
+                  <template v-for="(link, i) in paymentLinks" :key="link.title">
+                    <TailBreadcrumbItem>
+                      <TailBreadcrumbLink id="link-breadcrumb-cart" :to="link.href">
+                        {{ link.title }}
+                      </TailBreadcrumbLink>
+                    </TailBreadcrumbItem>
+
+                    <TailBreadcrumbSeparator v-if="i < 2">
+                      <Slash />
+                    </TailBreadcrumbSeparator>
+                  </template>
+                </TailBreadcrumbList>
+              </TailBreadcrumb>
+            </TailCardContent>
+          </TailCard>
         </div>
 
         <div class="col-span-6">
@@ -34,7 +46,7 @@
           <TailCard class="card border-none bg-gray-50">
             <TailCardHeader>
               <TailCardTitle>
-                Résumé ({{ cartStore.numberOfProducts }})
+                {{ $t('Résumé', { n: cartStore.numberOfProducts }) }}
               </TailCardTitle>
             </TailCardHeader>
 
@@ -45,24 +57,24 @@
             </TailCardContent>
 
             <TailCardFooter>
-              <div class="price flex justify-between">
-                <span>Sous-total</span>
-                <span class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</span>
-              </div>
+              <div class="flex flex-col w-full">
+                <div class="price flex justify-between w-full">
+                  <div class="w-full">{{ $t('Sous-total') }}</div>
+                  <div class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</div>
+                </div>
 
-              <div class="delivery flex justify-between my-2">
-                <span>
-                  {{ $t("Frais d'envoi") }}
-                </span>
+                <div class="delivery flex justify-between my-2 w-full">
+                  <span>{{ $t("Frais d'envoi") }}</span>
 
-                <span class="font-bold uppercase text-green-500">
-                  {{ $t('Gratuit') }}
-                </span>
-              </div>
+                  <div class="font-bold uppercase text-green-500">
+                    {{ $t('Gratuit') }}
+                  </div>
+                </div>
 
-              <div class="total flex justify-between">
-                <span>Total (TVA comprise)</span>
-                <span class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</span>
+                <div class="total flex justify-between w-full">
+                  <div class="p-5">{{ $t('Total (TVA comprise)') }}</div>
+                  <div class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</div>
+                </div>
               </div>
             </TailCardFooter>
           </TailCard>
@@ -73,15 +85,9 @@
 </template>
 
 <script setup lang="ts">
-useHead({
-  script: [
-    {
-      async: true,
-      src: 'https://js.stripe.com/v3/'
-    }
-  ]
-})
+import { Slash } from 'lucide-vue-next'
 
+const { t } = useI18n()
 const cartStore = useCart()
 const route = useRoute()
 
@@ -123,11 +129,20 @@ const paymentLinks = computed(() => {
 function calculateItemTotalCost (price: number, quantity: number) {
   return price * quantity
 }
-</script>>
 
-<style scoped>
-#products {
-  overflow-y: scroll;
-  height: 400px;
-}
-</style>
+useHead({
+  title: t('Cart'),
+  meta: [
+    {
+      key: 'description',
+      content: ''
+    }
+  ],
+  script: [
+    {
+      async: true,
+      src: 'https://js.stripe.com/v3/'
+    }
+  ]
+})
+</script>>

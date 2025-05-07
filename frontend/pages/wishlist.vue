@@ -1,8 +1,8 @@
 <template>
   <section id="wishlist" class="mx-10 px-10 my-10">
     <div v-if="!authenticationStore.isAuthenticated" class="w-full md:w-2/6">
-      <TailCard class="card shadow-sm border-0">
-        <TailCardContent class="card-body text-center p-5 d-flex flex-col justify-center">
+      <TailCard class="shadow-sm border-0">
+        <TailCardContent class="text-center p-5 flex flex-col justify-center">
           <div class="information">
             <Icon name="fa-solid:star" class="text-warning mb-4" size="120" />
             
@@ -14,10 +14,10 @@
               {{ $t('Keep favorites text') }}
             </p>
 
-            <v-btn class="mt-10" color="secondary" flat rounded @click="showLoginDrawer = true">
+            <TailButton id="action-start-login" class="mt-10" @click="showLoginDrawer=true">
               <Icon name="fa-solid:right-to-bracket" class="me-2" />
               {{ $t('Se connecter') }}
-            </v-btn>
+            </TailButton>
           </div>
         </TailCardContent>
       </TailCard>
@@ -34,18 +34,8 @@
 // import { useStorage } from '@vueuse/core'
 import type { Product } from '~/types'
 
+
 const { t } = useI18n()
-
-useHead({
-  title: t('Wishlist'),
-  meta: [
-    {
-      key: 'description',
-      content: t('Tout les produits que vous avez aimé')
-    }
-  ]
-})
-
 const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
 const shopStore = useShop()
@@ -72,6 +62,17 @@ const { data: products } = useAsyncData(async () => {
 }, {
   lazy: true,
   server: false
+})
+
+
+useHead({
+  title: t('Liste de souhait'),
+  meta: [
+    {
+      key: 'description',
+      content: t('Tout les produits que vous avez aimé')
+    }
+  ]
 })
 
 // const response = await $client<Product[]>('/api/v1/shop/wishlist', {

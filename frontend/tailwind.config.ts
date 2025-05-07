@@ -11,7 +11,14 @@ export default {
     theme: {
         extend: {
             fontFamily: {},
-            colors: {},
+            colors: {
+                'warning': 'hasl(var(--warning))',
+                'warning-foreground': 'hasl(var(--warning-foreground))',
+                'info': 'hasl(var(--info))',
+                'info-foreground': 'hasl(var(--info-foreground))',
+                'light': 'hasl(var(--light))',
+                'light-foreground': 'hasl(var(--light-foreground))'
+            },
             screens: {},  
         },
     },

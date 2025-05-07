@@ -12,27 +12,11 @@
 </template>
 
 <script setup lang="ts">
-import type { CollectionName } from '~/types'
+import type { CollectionApiResponse } from '~/types'
 
 // const { gtag } = useGtag()
+const { t } = useI18n()
 const { handleError } = useErrorHandler()
-
-useHead({
-  title: 'Achat en ligne de vêtements',
-  meta: [
-    {
-      key: 'description',
-      content: 'Découvrez notre collection de vêtements en ligne'
-    }
-  ],
-  link: [
-    {
-      rel: 'icon',
-      type: 'image/png',
-      href: '/favicon.ico'
-    }
-  ]
-})
 
 useSeoMeta({
   description: 'Découvrez notre collection de vêtements en ligne',
@@ -48,9 +32,10 @@ const { data: collections, status } = await useFetch('/api/collections', {
   onResponseError({ error }) {
     handleError(error)
   },
+  
   // TODO: Review this code
   // transform (data) {
-  //   const validCollections = data.reduce<CollectionName[]>((acc, item) => {
+  //   const validCollections = data.reduce<CollectionApiResponse[]>((acc, item) => {
   //     try {
   //       const validItem = CollectionSchema.parse(item)
   //       acc.push(validItem)
@@ -68,5 +53,22 @@ onMounted(() => {
   // gtag('event', 'page_view', {
   //   screen_name: 'Achat en ligne de vêtements'
   // })
+})
+
+useHead({
+  title: t('Achat en ligne de vêtements'),
+  meta: [
+    {
+      key: 'description',
+      content: t('Découvrez notre collection de vêtements en ligne')
+    }
+  ],
+  link: [
+    {
+      rel: 'icon',
+      type: 'image/png',
+      href: '/favicon.ico'
+    }
+  ]
 })
 </script>

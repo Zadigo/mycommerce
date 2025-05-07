@@ -1,98 +1,84 @@
 <template>
-  <!-- FIXME: Component does not mount -->
-  <v-navigation-drawer v-model="show" width="400" location="right" sticky temporary @close="emit('update:modelValue', false)">
-    <div class="d-flex flex-column justify-content-around">
-      <v-container class="border-bottom d-flex justify-content-between align-items-center">
-        <h4 class="m-0">
-          {{ $t("Filtrer") }}
-        </h4>
+  <TailSheet v-model:open="show" id="modal-product-filters">
+    <TailSheetContent>
+      <TailSheetHeader>
+        <div class="flex justify-between items-center">
+          <h4 class="m-0">
+            {{ $t("Filtrer") }}
+          </h4>
+        </div>
+      </TailSheetHeader>
 
-        <v-btn variant="tonal" @click="emit('update:modelValue', false)">
-          <font-awesome icon="close" round />
-        </v-btn>
-      </v-container>
+      <div class="flex flex-column justify-around px-5">    
+        <div>
+          {{ query }}
+
+          <TailAccordion type="single" collapsible>
+            <!-- Order by -->
+            <TailAccordionItem value="sort by">
+              <TailAccordionTrigger>
+                {{ $t('Trier par') }}
+              </TailAccordionTrigger>
+
+              <TailAccordionContent class="flex gap-2">
+                <TailButton v-for="sortingFilter in sortingFilterActions" id="action-sorting-direction" :key="sortingFilter[0]" :active="query.sorted_by===sortingFilter[0]" variant="outline" size="sm" @click="handleFilterSelection('sorted by', sortingFilter[0])">
+                  {{ $t(sortingFilter[0]) }}
+                </TailButton>
+              </TailAccordionContent>
+            </TailAccordionItem>
             
-      <v-container>
-        {{ selectedFilters }}
+            <!-- Size -->
+            <TailAccordionItem value="size">
+              <TailAccordionTrigger>
+                <div class="flex gap-2 items-center">
+                  {{ $t('Taille') }}
 
-        <v-expansion-panels>
-          <!-- Filter By -->
-          <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
-            <v-expansion-panel-title>Trier par</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <div class="price-filters p-2">
-                <div class="d-flex justify-content-start flex-wrap gap-2">
-                  <v-btn v-for="sortingFilter in defaultSortingFilters" :key="sortingFilter[0]" :active="selectedFilters.sorted_by===sortingFilter[0]" variant="outlined" size="small" rounded @click="handleFilterSelection('sorted by', sortingFilter[0])">
-                    {{ $t(sortingFilter[1]) }}
-                  </v-btn>
+                  <TailBadge>
+                    {{ query.sizes.length }}
+                  </TailBadge>
                 </div>
-              </div>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
+              </TailAccordionTrigger>
 
-          <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
-            <v-expansion-panel-title>
-              {{ $t("Typologie") }}
-            </v-expansion-panel-title>
-          </v-expansion-panel>
+              <TailAccordionContent class="flex gap-2">
+                <TailButton v-for="size in defaultSizes.clothes" id="action-filter-size" :key="size" :active="query.sizes.includes(size)" size="sm" variant="outline" class="ms-2" @click="handleFilterSelection('sizes', size)">
+                  {{ size }}
+                </TailButton>
+              </TailAccordionContent>
+            </TailAccordionItem>
+
+            <!-- Price -->
+            <TailAccordionItem value="size">
+              <TailAccordionTrigger>
+                {{ $t("Prix") }}
+              </TailAccordionTrigger>
+
+              <TailAccordionContent class="flex justify-start flex-wrap gap-2">
+                <TailButton v-for="priceFilter in defaultPriceFilters" id="action-filter-price"  :key="priceFilter.value" :active="priceFilter.value===query.price" variant="outline" size="sm" @click="handleFilterSelection('price', priceFilter.value)">
+                  {{ priceFilter.text }}
+                </TailButton>
+              </TailAccordionContent>
+            </TailAccordionItem>
+          </TailAccordion>
+          <!-- Typologie, Couleur -->
+        </div>
+
+        <div class="border-top flex justify-around mt-10 gap-2">
+          <TailButton id="action-delete-filters" variant="default" @click="handleFiltersReset">
+            {{ $t("Supprimer") }}
+          </TailButton>
           
-          <!-- Color -->
-          <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
-            <v-expansion-panel-title>
-              {{ $t("Couleur") }}
-            </v-expansion-panel-title>
-          </v-expansion-panel>
-
-          <!-- Size -->
-          <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
-            <v-expansion-panel-title>
-              {{ $t("Taille") }}
-
-              <div v-if="selectedFilters.sizes.length > 0" class="badge badge-success ms-3">
-                {{ selectedFilters.sizes.length }}
-              </div>
-            </v-expansion-panel-title>
-
-            <v-expansion-panel-text>
-              <v-btn v-for="size in defaultSizes.clothes" :key="size" :active="selectedFilters.sizes.includes(size)" size="small" variant="outlined" class="ms-2" rounded @click="handleFilterSelection('sizes', size)">
-                {{ size }}
-              </v-btn>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-
-          <!-- Price -->
-          <v-expansion-panel collapse-icon="mdi-minus" expand-icon="mdi-plus">
-            <v-expansion-panel-title>
-              {{ $t("Prix") }}
-            </v-expansion-panel-title>
-            
-            <v-expansion-panel-text>
-              <v-btn v-for="priceFilter in defaultPriceFilters" :key="priceFilter.value" :active="priceFilter.value===selectedFilters.price" class="me-2 mb-2" variant="outlined" size="small" color="dark" rounded @click="handleFilterSelection('price', priceFilter.value)">
-                {{ priceFilter.text }}
-              </v-btn>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </v-container>
-
-      <v-container class="border-top d-flex justify-content-around gap-2">
-        <v-btn color="secondary" variant="outlined" rounded @click="handleFiltersReset">
-          {{ $t("Supprimer") }}
-        </v-btn>
-        
-        <v-btn color="secondary" variant="tonal" rounded @click="handleShowResults">
-          Voir résulats ({{ count }})
-        </v-btn>
-      </v-container>
-    </div>
-  </v-navigation-drawer>
+          <TailButton id="action-filters-result" variant="default" @click="handleShowResults">
+            {{ $t('Voir résulats', { n: count }) }}
+          </TailButton>
+        </div>
+      </div>
+    </TailSheetContent>
+  </TailSheet>
 </template>
 
 <script setup lang="ts">
-import { defaultPriceFilters, defaultSizes, defaultSortingFilters } from '~/data'
-import type { SelectedFilters } from '~/types'
-
-type Actions = 'sorted by' | 'typology' | 'colors' | 'sizes' | 'price'
+import { defaultPriceFilters, defaultSizes, sortingFilterActions, type Actions, type DefaultClotheSize, type DefaultPriceFilters } from '~/data'
+import type { ProductsQuery, ProductsApiResponse, ExtendedRouteParamsRawGeneric, ExtendedLocationQuery } from '~/types'
 
 const props = defineProps({
   modelValue: {
@@ -105,38 +91,26 @@ const props = defineProps({
 })
 
 const emit = defineEmits({
-  'update-query' (_data: SelectedFilters) {
+  'update-products' (_data: ProductsApiResponse) {
     return true
   },
-  'update:modelValue'(_value: boolean) {
+  'update:modelValue'(_value) {
     return true
   }
 })
 
-const selectedFilters = ref<SelectedFilters>({
+const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
+const queryParams = useUrlSearchParams<ProductsQuery>('history', {
+  removeNullishValues: true
+})
+
+const query = ref<ProductsQuery>({
   sorted_by: 'New',
   typology: [],
   colors: [],
   sizes: [],
-  price: null
-})
-
-const queryString = computed(() => {
-  const typology = selectedFilters.value.typology.join(',')
-  const colors = selectedFilters.value.colors.join(',')
-  const sizes = selectedFilters.value.sizes.join(',')
-  const params = [
-    `sorted_by=${selectedFilters.value.sorted_by}`,
-    `colors=${colors}`,
-    `sizes=${sizes}`,
-    `typology=${typology}`
-  ]
-
-  if (selectedFilters.value.price) {
-    params.push(`price=${selectedFilters.value.price}`)
-  }
-
-  return params.filter(x => !x.endsWith('=')).join('&')
+  price: null,
+  offset: 0
 })
 
 const show = computed({
@@ -146,7 +120,18 @@ const show = computed({
   }
 })
 
-function updateList<T extends (string | number)[]>(items: T, value: string | number): T {
+const { data: products, execute } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
+  method: 'GET',
+  immediate: false,
+  query: query.value
+})
+
+/**
+ * 
+ * @param items The items with which the list should be update
+ * @param value The value
+ */
+function updateList<T extends (DefaultClotheSize | number)[]>(items: T, value: string | number) {  
   if (items.includes(value)) {
     const index = items.findIndex(x => {
       if (typeof x === 'number' || typeof x === 'string') {
@@ -159,60 +144,83 @@ function updateList<T extends (string | number)[]>(items: T, value: string | num
   } else {
     items.push(value)
   }
-  return items
 }
 
 /**
  * Receives a filter and then sorts the products
+ *
+ * @param action The filter action
+ * @param value The value of the filter
  */
-function handleFilterSelection (action: Actions, value: string) {
+function handleFilterSelection (action: Actions, value: DefaultClotheSize | DefaultPriceFilters) {
   switch (action) {
     case 'sorted by':
-      selectedFilters.value.sorted_by = value
-      break;
+      query.value.sorted_by = value
+      queryParams.sorted_by = value
+      break
 
-    case 'typology':
-      updateList<string[]>(selectedFilters.value.typology, value)
-      break;
+    // case 'typology':
+    //   updateList<string[]>(query.value.typology, value)
+    //   break
 
-    case 'colors':
-      updateList<string[]>(selectedFilters.value.colors, value)
-      break;
+    // case 'colors':
+    //   updateList<string[]>(query.value.colors, value)
+    //   break
 
     case 'sizes':
-      updateList<string[]>(selectedFilters.value.sizes, value)
-      break;
+      updateList<DefaultClotheSize[]>(query.value.sizes, value)
+      queryParams.size = query.value.sizes.join(',')
+      break
 
     case 'price':
       // If the user double-clicks, then write
       // the price as null
-      if (selectedFilters.value.price === value) {
-        selectedFilters.value.price = null
+      if (query.value.price === value) {
+        query.value.price = null
+        queryParams.price = null
       } else {
-        selectedFilters.value.price = value
+        query.value.price = value
+        queryParams.price = value
       }
-      break;
+      break
   
     default:
-      break;
+      break
   }
 }
 
+/**
+ * Gets the results based on the provided filters
+ * from the backend
+ */
 function handleShowResults() {
-  show.value = false
-  emit('update-query', selectedFilters.value)
+  execute()
+
+  if (products.value) {
+    emit('update-products', products.value)
+  }
 }
 
 /**
  *  
  */
 function handleFiltersReset() {
-  selectedFilters.value = {
+  query.value = {
     sorted_by: 'New',
     typology: [],
     colors: [],
     sizes: [],
     price: null
   }
+
+  queryParams.price = null
+  queryParams.size = null
+  queryParams.sorted_by = null
 }
+
+onMounted(() => {
+  // TODO: Check the filters from the url and if they
+  // not null, request the products based on the provided
+  // values - call refresh()
+})
 </script>

@@ -1,19 +1,29 @@
 
 <template>
-  <v-navigation-drawer v-model="shouldShowLoginDrawer" width="400" location="right" sticky temporary @close="handleReset">
-    <div class="container">
-      <v-btn variant="plain" class="mt-2" @click="handleReset">
-        <font-awesome icon="chevron-left" />
-      </v-btn>
-    </div>
+  <TailSheet v-model:open="shouldShowLoginDrawer" @close="handleReset">
+    <TailSheetContent>
+      <TailSheetHeader>
+        <TailSheetTitle />
+      </TailSheetHeader>
 
-    <v-divider />
-    
-    <Transition name="opacity">
-      <BlockSignup v-if="showSignup" @authenticate="debouncedAuthenticateCart" />
-      <BlockLogin v-else @show-signup="showSignup=true" @authenticate="debouncedAuthenticateCart" />
-    </Transition>
-  </v-navigation-drawer>
+      <TailSheetHeader>
+       <div class="flex justify-between align-center">
+          <TailButton variant="destructive" @click="handleReset">
+            <Icon icon="fa-solid:chevron-left" />
+          </TailButton>
+
+          <TailSheetClose />
+       </div>
+      </TailSheetHeader>
+      
+      <div class="mb-10 overflow-y-scroll">
+        <Transition name="opacity">
+          <BlockSignup v-if="showSignup" @authenticate="debouncedAuthenticateCart" />
+          <BlockLogin v-else @show-signup="showSignup=true" @authenticate="debouncedAuthenticateCart" />
+        </Transition>
+      </div>
+    </TailSheetContent>    
+  </TailSheet>
 </template>
 
 <script setup lang="ts">
@@ -46,7 +56,7 @@ const shouldShowLoginDrawer = computed<boolean>({
  * Syncs the unauthenticated cart to the authenticated user's account
  * by calling an API endpoint with the current session ID
  */
-async function handleAuthenticateCart () {
+async function handleAuthenticateCart() {
   if (!authStore.sessionCache.authenticatedCart) {
     await $client('/api/v1/cart/authenticate', {
       method: 'POST',
@@ -63,11 +73,16 @@ async function handleAuthenticateCart () {
  * - Clears the sign-up view after a 1-second delay.
  */
 function handleReset() {
-  showLoginDrawer.value = false
-  
-  setTimeout(() => {
+  if (showSignup.value) {
+    showLoginDrawer.value = true
     showSignup.value = false
-  }, 1000)
+  } else {
+    showLoginDrawer.value = false
+    
+    setTimeout(() => {
+      showSignup.value = false
+    }, 1000)
+  }
 }
 
 const debouncedAuthenticateCart = debounce(handleAuthenticateCart, 5000)

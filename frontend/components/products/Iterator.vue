@@ -15,7 +15,8 @@ import type { Product } from '~/types';
 
 defineProps({
   products: {
-    type: Array as PropType<Product[] | null>,
+    type: Array as PropType<Product[] | null | undefined>,
+    default: () => [],
     required: true
   },
   columns: {

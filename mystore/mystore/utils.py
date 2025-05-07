@@ -33,7 +33,7 @@ class PaginationHelper:
         """Paginates a list of items using the
         CustomPagination class above and the serializer
         to be used in order to return the data"""
-        self.total_count = queryset.count()
+        self.total_count = len(queryset)
         paginated_data = self.paginator.paginate_queryset(
             queryset,
             request

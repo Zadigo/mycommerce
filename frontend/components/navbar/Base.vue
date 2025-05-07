@@ -1,9 +1,9 @@
 <template>
   <nav class="block w-full px-4 py-2 mx-auto text-white bg-white shadow-md lg:px-8 lg:py-3 sticky top-0 z-50">
     <div class="container flex flex-wrap items-center justify-between mx-auto text-slate-800">
-      <NuxtLink id="link-home-navbar" to="/" class="mr-4 block cursor-pointer py-1.5 text-base text-slate-800 font-semibold">
+      <NuxtLinkLocale  id="link-home-navbar" to="/" class="mr-4 block cursor-pointer py-1.5 text-base text-slate-800 font-semibold">
         Ecommerce
-      </NuxtLink>
+      </NuxtLinkLocale >
 
       <NavbarDropdownCollections />
 
@@ -37,10 +37,10 @@
             </li>
             
             <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-              <NuxtLink id="link-account-navbar" to="/account/" class="flex items-center gap-2">
+              <NuxtLinkLocale id="link-account-navbar" to="/account/" class="flex items-center gap-2">
                 <Icon name="fa-solid:user" size="18" />
                 {{ $t('Compte') }}
-              </NuxtLink>
+              </NuxtLinkLocale >
             </li>
           </ul>
         </ClientOnly>

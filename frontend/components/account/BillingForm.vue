@@ -1,6 +1,6 @@
 <template>
   <TailCardContent v-if="showBillingForm || forCreation">
-    <v-form id="user-information" @submit.prevent>
+    <form id="user-information" @submit.prevent>
       <div class="flex justify-end">
         <v-btn class="mb-2" variant="text" icon="mdi-close" @click="handleClose" />
       </div>
@@ -53,14 +53,14 @@
         </v-menu>
       </v-btn> -->
 
-      <v-btn  v-if="forCreation" class="mt-4" color="secondary" block rounded @click="requestCreate">
-        Ajouter l'addresse
-      </v-btn>
+      <TailButton  v-if="forCreation" class="mt-4 rounded-full" @click="requestCreate">
+        {{ $t("Ajouter l'addresse") }}
+      </TailButton>
 
-      <v-btn v-else class="mt-4" color="secondary" block rounded @click="requestUpdate">
-        Mettre à jour
-      </v-btn>
-    </v-form>
+      <TailButton v-else class="mt-4 rounded-full" @click="requestUpdate">
+        {{ $t("Mettre à jour") }}
+      </TailButton>
+    </form>
   </TailCardContent>
 
   <TailCardContent v-else class="bg-slate-50 cursor-pointer hover:bg-slate-100 mx-5 pa-5 rounded-md">
@@ -87,8 +87,8 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
-import type { AddressSet } from '~/types';
+import type { PropType } from 'vue'
+import type { AddressSet } from '~/types'
 
 type EditableAddressSet = Omit<AddressSet, 'id' | 'is_active' | 'created_on'>
 
@@ -119,7 +119,7 @@ const { profile } = storeToRefs(authStore)
 const { handleError } = useErrorHandler()
 const { $dayjs, $client } = useNuxtApp()
 
-const showBillingForm = ref(false)
+const showBillingForm = ref<boolean>(false)
 const requestData = ref<EditableAddressSet>(props.address || {
   firstname: '',
   lastname: '',
@@ -131,6 +131,9 @@ const requestData = ref<EditableAddressSet>(props.address || {
   gender: 1
 })
 
+/**
+ * 
+ */
 function resetEmailPasswordData() {
 
 }
@@ -210,7 +213,7 @@ const fullName = computed(() => {
 /**
  * 
  */
-function handleShowBillingForm () {
+function handleShowBillingForm() {
   requestData.value = props.address
   showBillingForm.value = true
 }

@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer id="delivery" v-model="show" width="400" location="right" temporary @close="show=false">
     <v-toolbar class="border-bottom" color="white">
-      <v-toolbar-title class="fw-bold">
+      <v-toolbar-title class="font-bold">
         {{ $t("Livraison") }}
       </v-toolbar-title>
 
@@ -12,7 +12,7 @@
 
     <div class="container my-4 fw-light">
       <div class="row">
-        <p class="fw-bold mb-1 mt-3">
+        <p class="font-bold mb-1 mt-3">
           {{ $t("Livraison") }}
         </p>
         
@@ -20,7 +20,7 @@
           {{ $t("Livraison en magasin GRATUITE") }}
         </p>
 
-        <p class="fw-bold mb-1 mt-3">
+        <p class="font-bold mb-1 mt-3">
           {{ $t("Dans le magasin de votre choix") }}
         </p>
 
@@ -29,7 +29,7 @@
         </p>
 
         <div>
-          <div class="d-flex justify-content-between fw-bold">
+          <div class="flex justify-between fw-bold">
             <span>Standard</span>
             <span>4.95€</span>
           </div>
@@ -37,7 +37,7 @@
         </div>
 
         <div>
-          <div class="d-flex justify-content-between fw-bold">
+          <div class="flex justify-between fw-bold">
             <span>Express</span>
             <span>9.95€</span>
           </div>
@@ -45,7 +45,7 @@
         </div>
 
         <div>
-          <div class="d-flex justify-content-between fw-bold">
+          <div class="flex justify-between fw-bold">
             <span>Point Relais Colis</span>
             <span>3.95€</span>
           </div>
@@ -56,7 +56,7 @@
           {{ $t("Remboursement") }}:
         </h4>
 
-        <p class="fw-bold mb-1 mt-3">
+        <p class="font-bold mb-1 mt-3">
           {{ $t("Remboursement") }}
         </p>
 
@@ -64,7 +64,7 @@
 
         <p>Vous pouvez restituer un produit dans l'un de nos magasins situé dans le pays dans lequel vous avez effectué votre achat.</p>
 
-        <p class="fw-bold mb-1 mt-3">
+        <p class="font-bold mb-1 mt-3">
           {{ $t("Retour en point relais") }}  
         </p>
         
@@ -78,7 +78,7 @@
         </p>
 
         <div class="mt-3">
-          <div class="d-flex justify-content-between fw-bold">
+          <div class="flex  justify-between fw-bold">
             <span>Retour à domicile</span>
             <span>5,95€</span>
           </div>
@@ -89,7 +89,7 @@
           </p>
         </div>
 
-        <p class="fw-bold mb-1 mt-3">
+        <p class="font-bold mb-1 mt-3">
           {{ $t("Ne peuvent être ni échangés ni retournés") }} :
         </p>
         

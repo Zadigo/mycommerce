@@ -4,7 +4,7 @@
       <TailCard class="card border-none">
         <TailCardContent class="text-center">
           <h1 class="text-3xl font-bold mb-5">
-            Succès
+            {{ $t('Récapitualif de la commande') }}
           </h1>
 
           <p class="font-light">
@@ -14,9 +14,9 @@
             deleniti est quae nesciunt repellat non.
           </p>
 
-          <NuxtLink id="link-shop-success" to="/" class="mt-5">
+          <NuxtLinkLocale id="link-home" to="/" class="mt-5">
             {{ $t('Boutique') }}
-          </NuxtLink>
+          </NuxtLinkLocale >
         </TailCardContent>
       </TailCard>
     </div>
@@ -29,23 +29,14 @@
 
 <script lang="ts" setup>
 import { useSessionStorage } from '@vueuse/core'
-import type { CartUpdateApiResponse, ProductStock } from '~/types';
+import type { CartUpdateApiResponse, ProductStockApiResponse } from '~/types';
 
 definePageMeta({
   layout: 'cart',
   middleware:  ['cart']
 })
 
-useHead({
-  title: 'Success',
-  meta: [
-    {
-      key: 'description',
-      content: ''
-    }
-  ]
-})
-
+const { t } = useI18n()
 const cartStore = useCart()
 const cart = useSessionStorage<CartUpdateApiResponse>('cart', null)
 
@@ -58,7 +49,7 @@ const {  $client } = useNuxtApp()
  */
 async function handleUpdateStock () {
   try {
-    const response = await $client<ProductStock[]>('/api/v1/stocks/update', {
+    const response = await $client<ProductStockApiResponse[]>('/api/v1/stocks/update', {
       method: 'POST',
       body: {
         customer_order: null
@@ -105,5 +96,15 @@ onMounted(async () => {
 
   cart.value = null
   cartStore.cache = null
+})
+
+useHead({
+  title: t('Récapitualif de la commande'),
+  meta: [
+    {
+      key: 'description',
+      content: ''
+    }
+  ]
 })
 </script>

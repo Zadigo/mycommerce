@@ -9,15 +9,15 @@
     </div>
     <TailSkeleton v-else class="h-[100px] w-2/6" />
 
-    <p class="font-light">
+    <p v-if="product" class="font-light">
       {{ $t('Taille et hauteur du mannequin') }} : 
       <span v-if="product.model_height">{{ product.model_size }} · {{ $n(parseInt(product.model_height), 'unit') }}</span> 
       <span v-else>N.D.</span>
     </p>
     
-    <NuxtLink id="link-product-size-guide" to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('show-size-guide')">
+    <NuxtLinkLocale id="link-product-size-guide" to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('show-size-guide')">
       {{ $t('Guide des tailles') }}
-    </NuxtLink>
+    </NuxtLinkLocale >
 
     <p v-if="showSizeSelectionWarning" class="text-red-400 mt-4">
       {{ $t("Choissis une taille") }}
@@ -44,11 +44,12 @@ import { doc, updateDoc, getDoc } from 'firebase/firestore'
 import { useStorage } from '@vueuse/core'
 
 import type { PropType } from 'vue'
-import type { Product, ProductStock } from '~/types'
+import type { Product, ProductStockApiResponse } from '~/types'
+import type { DefaultClotheSize } from '~/data'
 
 const props = defineProps({
   product: {
-    type: Object as PropType<Product>,
+    type: Object as PropType<Product | null | undefined>,
     required: true
   }
 })
@@ -59,7 +60,7 @@ const emit = defineEmits({
   }
 })
 
-const stockState = inject<ProductStock>('stockState')
+const stockState = inject<ProductStockApiResponse>('stockState')
 
 const { $fireStore } = useNuxtApp()
 const cartStore = useCart()
@@ -153,9 +154,11 @@ async function proxyAddToCart() {
 
 /**
  * Actions where the user selects a given size 
- * for a given product 
+ * for a given product
+ * 
+ * @param size The item's size
  */
-function proxySelectSize(size: string | number | null | undefined) {
+function proxySelectSize(size: DefaultClotheSize) {
   if (size) {
     showSizeSelectionWarning.value = false
     cartStore.handleSizeSelection(props.product, size)

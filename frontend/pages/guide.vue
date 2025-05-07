@@ -9,7 +9,9 @@
 <script setup lang="ts">
 import { guideText } from '~/data'
 
+const { t } = useI18n()
+
 useHead({
-  title: 'Guide'
+  title: t('Guide')
 })
 </script>

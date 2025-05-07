@@ -1,7 +1,9 @@
 <template>
-  <v-navigation-drawer v-model="showModal" width="400" location="right" temporary @close="showModal=false">
-    <slot />
-  </v-navigation-drawer>
+  <TailSheet v-model="showModal" @close="showModal=false">
+    <TailSheetContent>
+      <slot />
+    </TailSheetContent>
+  </TailSheet>
 </template>
 
 <script lang="ts" setup>

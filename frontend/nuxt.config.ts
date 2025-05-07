@@ -74,8 +74,7 @@ export default defineNuxtConfig({
     '@nuxt/test-utils',
     'vuetify-nuxt-module',
     'shadcn-nuxt',
-    'vue-sonner/nuxt',
-    // '@nuxtjs/tailwindcss'
+    'vue-sonner/nuxt'
   ],
 
   shadcn: {
@@ -89,6 +88,7 @@ export default defineNuxtConfig({
     defaultLocale: 'fr',
     lazy: true,
     vueI18n: './i18n.config.ts',
+    // customRoutes: 'config',
     locales: [
       {
         code: 'en',
@@ -111,7 +111,25 @@ export default defineNuxtConfig({
         dir: 'ltr',
         name: 'Français'
       }
-    ]
+    ],
+    // pages: {
+    //   'guide': { fr: '/guide-achat', en: '/guide-achat', es: '/guide-achat' },
+    //   'wishlist': { fr: '/liste-souhait', en: '/wishlist', es: '/wishlist' },
+    //   'mentions-legales': { fr: '/mentions-legales', en: '/mentions-legales', es: '/mentions-legales' },
+    //   'confidentialite': { fr: '/confidentialite', en: '/confidentialite', es: '/confidentialite' },
+    //   'conditions-generales': { fr: '/conditions-generales', en: '/conditions-generales', es: '/conditions-generales' },
+
+    //   'shop-id': { fr: '/boutique/[id]', en: '/shop/[id]', es: '/tienda/[id]' },
+    //   'shop-collection-id': { fr: '/boutique/collection/[id]', en: '/shop/collection/[id]', es: '/tienda/collecion/[id]' },
+
+    //   'cart': { fr: '/cart', en: '/cart', es: '/cart' },
+    //   'cart-shipment': { fr: '/panier/livraison', en: '/cart/shipment', es: '/cart/shipment' },
+    //   'cart-payment': { fr: '/panier/paiement', en: '/cart/payment', es: '/cart/payment' },
+    //   'cart-success': { fr: '/panier/recapitulatif', en: '/cart/success', es: '/cart/success' },
+      
+    //   'account': { fr: '/compte', en: '/account', es: '/account' },
+    //   'orders': { fr: '/compte/commandes', en: '/account/orders', es: '/account/orders' },
+    // }
   },
 
   vite: {

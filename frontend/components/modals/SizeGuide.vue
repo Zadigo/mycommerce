@@ -1,99 +1,102 @@
 <template>
-  <v-navigation-drawer v-model="show" width="400" location="right" temporary>
-    <v-toolbar class="border-bottom" color="white">
-      <v-toolbar-title class="fw-bold">
-        {{ $t("Guide des tailles") }}
-      </v-toolbar-title>
-
-      <v-spacer />
-
-      <v-btn icon="mdi-close" @click="show=false" />
-    </v-toolbar>
-
-    <div v-if="product" class="container my-4">
-      <div class="row g-1">
-        <div class="col-12">
-          <p class="fs-6 fw-bold mb-1">
+  <TailSheet v-model:open="show">
+    <TailSheetContent class="overflow-y-scroll">
+      <TailSheetHeader>
+        <TailSheetTitle>
+          {{ $t("Guide des tailles") }}
+        </TailSheetTitle>
+      </TailSheetHeader>
+     
+      <div class="px-5 my-10">
+        <div class="col">
+          <p class="text-1xl font-semibold mb-1">
             {{ $t("Sélectionne une taille") }}
           </p>
           
-          <ProductSizeBlock :sizes="product.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="show=false" />
+          <ProductSizeBlock v-if="product" :sizes="product.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="show=false" />
+          <TailSkeleton v-else class="w-[60px] h-[20px]" />
 
-          <p class="fs-6 fw-bold mt-4 mb-1">
+          <p class="text-1xl font-semibold mt-4 mb-1">
             {{ $t("Mensurations") }}
           </p>
 
-          <p class="fw-light text-body-secondary text-uppercase">
+          <p class="font-light">
             {{ $t("Corps") }}
           </p>
 
           <div class="sizes">
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="col-auto">
+            <div class="flex justify-between items-center">
+              <div class="col">
                 {{ $t("Tour de Poitrine") }}
               </div>
               
-              <div class="col-auto">
+              <div class="col">
                 82
               </div>
             </div>
           </div>
         </div>
 
-        <div class="col-12 mt-4">
-          <v-btn color="primary" block @click="addToCart">
+        <div class="col mt-4 mb-10">
+          <TailButton class="w-full" @click="cartStore.addToCart(product)">
             {{ $t('Ajouter au panier') }}
-          </v-btn>
+          </TailButton>
         </div>
 
-        <div class="col-12 mt-4">
-          <p class="fs-6 fw-bold">
+        <div class="col">
+          <p class="text-1xl font-bold">
             {{ $t("Comprendre tes mesures ?") }}
           </p>
 
-          <!-- <v-img src="/size-guide.jpg" :width="300" /> -->
+          <NuxtImg src="img1.jpeg" class="mt-3 rounded-md aspect-square object-cover object-center" />
         </div>
 
-        <div class="col-12 mt-4">
-          <p class="fs-6 fw-bold mb-1">
+        <!-- Steps -->
+        <div class="col mt-4">
+          <p class="text-1xl font-semibold mb-1">
             {{ $t("Tour de Poitrine") }}
           </p>
-          <p class="fw-light text-body-secondary mb-4">
-            Pour mesurer la circonférence de ta poitrine, utilise un mètre
-            ruban et place-le autour de la partie la plus large de ta poitrine.
+          <p class="font-light text-slate-700 mb-4">
+            {{ $t('Step: Measure bust size') }}
           </p>
 
           <p class="fs-6 fw-bold mb-1">
             {{ $t("Tour de Taille") }}
           </p>
-          <p class="fw-light text-body-secondary mb-4">
-            Place le mètre ruban autour de la partie la plus
-            étroite de ta taille.
+          <p class="font-light text-slate-700 mb-4">
+            {{ $t('Step: Measure waistline') }}
           </p>
 
           <p class="fs-6 fw-bold mb-1">
             {{ $t("Tour de Hanches") }}
           </p>
-          <p class="fw-light text-body-secondary mb-4">
-            Mets tes pieds l'un contre l'autre et place le mètre ruban
-            autour de la partie la plus large de ton tour de hanche.
-          </p>
+          <p class="font-light text-slate-700 mb-4">
+            {{ $t('Step: Measure hip-size') }}
+          </p>  
         </div>
+
+        <TailButton variant="link">
+          <NuxtLinkLocale id="link-size-guide" to="/">
+            <Icon name="fa-solid:link" />
+            {{ $t('Notre guide complet') }}
+          </NuxtLinkLocale>
+        </TailButton>
       </div>
-    </div>
-  </v-navigation-drawer>
+    </TailSheetContent>
+  </TailSheet>
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
-import type { Product } from '~/types';
+import type { PropType } from 'vue'
+import type { DefaultClotheSize } from '~/data'
+import type { Product } from '~/types'
 
 const props = defineProps({
   modelValue: {
     type: Boolean
   },
   product: {
-    type: Object as PropType<Product>,
+    type: Object as PropType<Product | null | undefined>,
     required: true
   }
 })
@@ -104,8 +107,8 @@ const emit = defineEmits({
   }
 })
 
+const cartStore = useCart()
 // const { mediaPath } = useDjangoUtilies()
-const { addToCart, handleSizeSelection } = useCartComposable()
 
 const show = computed({
   get: () => props.modelValue,
@@ -113,4 +116,13 @@ const show = computed({
     emit('update:modelValue', value)
   }
 })
+
+/**
+ * TODO: Write documentation
+ */
+function handleSizeSelection(value: DefaultClotheSize) {
+  if (props.product) {
+    cartStore.handleSizeSelection(props.product, value)
+  }
+}
 </script>

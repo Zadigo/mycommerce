@@ -2,19 +2,12 @@
   <ProductsFeedLayout>
     <!-- Filters -->
     <template #filtering>
-      <ProductsFeedHeader :products="products" :count="totalProductCount" @update:grid-size="handleGridSize" @show-product-filters="showProductFilters=true" />
+      <ProductsFeedHeader :products="products" :count="totalProductCount" @update:grid-size="handleGridSize" @product-filters="emit('products-filter')" />
     </template>
 
     <!-- Products -->
     <template v-if="products.length > 0" #default>
       <ProductsIterator :products="products" :columns="currentGridSize" @has-navigated="handleNavigation" />
-
-      <ClientOnly>
-        <!-- Modals -->
-        <Teleport to="body">
-          <ModalsProductFilters v-model="showProductFilters" :count="productCount" @update-query="requestFilteredProducts" />
-        </Teleport>
-      </ClientOnly>
     </template>
     
     <template v-else #default>
@@ -23,28 +16,30 @@
           {{ $t('Page not available text') }}
         </p>
 
-        <NuxtLink id="link-collections-more" to="/shop/collection/all" class="mt-8" color="secondary" @click="resetQuery">
-          {{ $t('Voir toute la collection') }}
-        </NuxtLink>
+        <TailButton variant="default" size="lg" as-child>
+          <NuxtLinkLocale  id="link-collections-more" to="/shop/collection/all" class="mt-8" color="secondary" @click="query.offset=0">
+            {{ $t('Voir toute la collection') }}
+          </NuxtLinkLocale >
+        </TailButton>
       </div>
     </template>
 
     <template #intersect>
       <!-- Intersect -->
       <ClientOnly>
-        <div v-if="products.length > 0" id="product-pagination" ref="intersectionTarget" class="fw-bold text-uppercase d-flex justify-content-center mt-5">
-          <v-btn v-if="isEndOfPage" size="x-large" variant="tonal" rounded flat @click="scrollToTop">
+        <div v-if="products.length > 0" id="product-pagination" ref="intersectionTarget" class="font-bold text-uppercase flex justify-content-center mt-5">
+          <TailButton v-if="isEndOfPage" size="lg" @click="scrollToTop">
             <font-awesome icon="arrow-up" class="me-2" />
             {{ $t('Tu es arrivé à la fin') }}
-          </v-btn>
+          </TailButton>
 
           <div v-else class="flex-grow">
             <v-progress-circular v-if="isLoadingMoreProducts" :size="50" color="dark" indeterminate />
 
-            <v-btn v-else size="x-large" variant="tonal" rounded flat>
+            <TailButton v-else size="lg">
               <font-awesome icon="arrow-down" class="me-2" />
               {{ $t('Voir plus de produits') }}
-            </v-btn>
+            </TailButton>
           </div>
         </div>
       </ClientOnly>    
@@ -54,10 +49,13 @@
 
 <script setup lang="ts">
 import { useIntersectionObserver, useLocalStorage  } from '@vueuse/core'
-import type { Product, ProductsAPIResponse, ProductsQuery, SelectedFilters } from '~/types';
+import type { Product, ProductsApiResponse, ProductsQuery, SelectedFilters } from '~/types'
 
 const emit = defineEmits({
   'products-loaded' (_data: Product[]) {
+    return true
+  },
+  'products-filter'() {
     return true
   }
 })
@@ -70,29 +68,20 @@ const { handleError } = useErrorHandler()
 
 const isLoadingMoreProducts = ref(false)
 const products = ref<Product[]>([])
-const cachedResponse = ref<ProductsAPIResponse>()
+const cachedResponse = ref<ProductsApiResponse>()
 
 const intersectionTarget = ref<HTMLElement | null>(null)
-const showProductFilters = ref(false)
 
 const query = ref<ProductsQuery>({
-  sorted_by: 'New',
-  typology: '',
-  colors: '',
-  sizes: '',
-  price: null,
   offset: 0
 })
 
 // TODO: Add a provide so that all the components have access
 // to the products from this parent component
 
-const { data, status, error, refresh } = await useFetch<ProductsAPIResponse>(`/api/collections/${id}`, {
+const { data, status, error, refresh } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
   method: 'GET',
   query: query.value,
-  // onRequest() {
-  //   isLoadingMoreProducts.value = true
-  // },
   onResponseError({ error }) {
     // TODO: G-Analytics
     // gtag('event', 'exception', {
@@ -133,14 +122,6 @@ const isEndOfPage = computed(() => {
   return cachedResponse.value?.next === null
 })
 
-const productCount = computed(() => {
-  if (products.value) {
-    return products.value.length
-  } else {
-    return 0
-  }
-})
-
 /**
  *  Provides the total product count for all children
  * since they do not have that information on load
@@ -179,48 +160,22 @@ function handleNavigation (data: (number | Product)[] | null | undefined) {
 }
 
 /**
- * 
+ * Changes the size of the grid
  */
 function handleGridSize(grid: number) {
   currentGridSize.value = grid
 }
 
 /**
- * 
- */
-function resetQuery() {
-  query.value = {
-    sorted_by: 'New',
-    typology: '',
-    colors: '',
-    sizes: '',
-    price: null,
-    offset: 0
-  }
-}
-
-/**
  * This is the main pagination function that is
  * used to load more products on the page when
  * the trigger section is reached
+ * 
+ * @param offset The page to get
  */
 async function requestOffsetProducts(offset: number) {
   query.value.offset = offset
   refresh()
-}
-
-/**
- * A pagination function that considers additional
- * queries that were passed by the user via the 
- * select filters panel
- */
-async function requestFilteredProducts(newQuery: SelectedFilters) {
-  query.value.colors = newQuery.colors.join(',')
-  query.value.sizes = newQuery.sizes.join(',')
-  query.value.typology = newQuery.typology.join(',')
-  query.value.price = newQuery.price
-  query.value.sorted_by = newQuery.sorted_by
-  await requestOffsetProducts(34)
 }
 
 /**

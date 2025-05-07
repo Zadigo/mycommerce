@@ -9,8 +9,10 @@
 <script setup lang="ts">
 import { privacyText } from '~/data/privacy';
 
+const { t } = useI18n()
+
 useHead({
-  title: 'Confidentialité',
+  title: t('Confidentialité'),
   meta: [
     {
       key: 'description',

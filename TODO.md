@@ -47,4 +47,4 @@
 # Overall
 
 - [ ] Normalize and test the composables: utilities, use django utilities, use axios client
-- [ ] Finalize and test the final website prototype
+- [x] Finalize and test the final website prototype

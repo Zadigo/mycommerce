@@ -1,5 +1,5 @@
 <template>
-  <div id="product-images" class="grid grid-cols-2 grid-rows-2 gap-1 col-span-8">
+  <div id="product-images" class="grid grid-cols-2 auto-rows-min gap-1 col-span-8">
     <TailSkeleton class="w-full h-[600px] bg-gray-100 rounded-none" />
     <TailSkeleton class="w-full h-[600px] bg-gray-100 rounded-none" />
     <TailSkeleton class="w-full h-[600px] bg-gray-100 rounded-none" />
@@ -13,12 +13,12 @@
 </template>
 
 <script setup lang="ts">
-import type { Product } from '~/types';
+import type { Product } from '~/types'
 
 defineProps({
   product: {
-    type: Object as PropType<Product>,
-    required: true
+    type: Object as PropType<Product | null | undefined>,
+    required: false
   }
 })
 </script>

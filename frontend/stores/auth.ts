@@ -40,21 +40,8 @@ export const useAuthentication = defineStore('authentication', () => {
         return null
     })
 
-    // TODELETE
-    function logout() {
-        accessToken.value = null
-        refreshToken.value = null
-    }
-
-    // TODELETE
-    function setTokens (data: LoginApiResponse) {
-        accessToken.value = data.access
-        refreshToken.value = data.refresh
-    }
-
     return {
         logout,
-        setTokens,
         profile,
         sessionCache,
         userId,

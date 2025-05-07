@@ -1,19 +1,21 @@
 import { defineStore } from 'pinia'
-import type { Product, SessionCacheData } from "~/types"
+import type { Product, SessionCacheData } from '~/types'
 
 export const useShop = defineStore('shop', () => {
   const sessionCache = ref<SessionCacheData>()
 
   // Modals
-  const showSearchModal = ref(false)
-  const showLanguageModal = ref(false)
+  const showSearchModal = ref<boolean>(false)
+  const showLanguageModal = ref<boolean>(false)
 
   const visitedProducts = ref<number[]>([])
   const likedProducts = ref<number[]>([])
 
-  // This references the index of the product that
-  // was clicked within a given list of items. This
-  // is for Google Analytics
+  /**
+   * This references the index of the product that
+   * was clicked within a given list of items. This
+   * is for Google Analytics tracking
+   */
   const currentProductIndex = ref<number>(0)
 
   /**
@@ -46,8 +48,10 @@ export const useShop = defineStore('shop', () => {
    * Adds the product to the list of
    * products that were historically
    * visited by the user in the store
+   *
+   * @param product The product to track
    */
-  function addToHistory(product: Product) {
+  function trackProduct(product: Product | null | undefined) {
     if (product) {
       visitedProducts.value.push(product.id)
     }
@@ -55,7 +59,7 @@ export const useShop = defineStore('shop', () => {
 
   return {
     closeAllModals,
-    addToHistory,
+    trackProduct,
     sessionCache,
     currentProductIndex,
     showSearchModal,

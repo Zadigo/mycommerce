@@ -7,9 +7,9 @@
             <h1>{{ error?.statusCode }}</h1>
             <p class="text-wrap">{{ error?.message }}</p>
           
-            <NuxtLink id="link-shop-error" href="/" @click="handleError">
+            <NuxtLinkLocale id="link-home-error-page" href="/" @click="handleError">
               {{ $t('Accueil') }}
-            </NuxtLink>
+            </NuxtLinkLocale >
           </TailCardContent>
         </TailCard>
 
@@ -24,12 +24,17 @@
 </template>
 
 <script setup lang="ts">
-import { TailCardContent } from '#components';
-
+const { t } = useI18n()
 const error = useError()
 
 useHead({
-  title: "La page n'exist pas"
+  title: t(`Erreur ${error.value?.statusCode || 500}`),
+  meta: [
+    {
+      key: 'description',
+      content: ''
+    }
+  ]
 })
 
 // const { gtag } = useGtag()
@@ -38,14 +43,11 @@ useHead({
 //   description: `${error.statusCode}`
 // })
 
+/**
+ * Clears the error stack and redirects
+ *  the user to the home page
+ */
 function handleError() {
   clearError({ redirect: '/' })
 }
 </script>
-
-<style lang="scss" scoped>
-h1 {
-  font-size: 4rem;
-  font-weight: 800;
-}
-</style>

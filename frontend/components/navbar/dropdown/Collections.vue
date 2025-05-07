@@ -2,15 +2,23 @@
   <TailNavigationMenu>
     <TailNavigationMenuList>
       <TailNavigationMenuItem>
-        <TailNavigationMenuTrigger>Getting started</TailNavigationMenuTrigger>
+        <NuxtLinkLocale v-slot="{ isActive, href, navigate }" to="/shop/collection/novelties" custom>
+          <TailNavigationMenuLink :active="isActive" :href="href" :class="navigationMenuTriggerStyle()" @click="navigate">
+            Nouvelle collection
+          </TailNavigationMenuLink>
+        </NuxtLinkLocale>
+      </TailNavigationMenuItem>
+      
+      <TailNavigationMenuItem>
+        <TailNavigationMenuTrigger>
+          Getting started
+        </TailNavigationMenuTrigger>
+
         <TailNavigationMenuContent>
           <ul class="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[minmax(0,.75fr)_minmax(0,1fr)]">
             <li class="row-span-3">
               <TailNavigationMenuLink as-child>
-                <a
-                  class="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                  href="/"
-                >
+                <NuxtLink class="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md" to="/">
                   <img src="https://www.reka-ui.com/logo.svg" class="h-6 w-6">
                   <div class="mb-2 mt-4 text-lg font-medium">
                     shadcn/ui
@@ -19,47 +27,7 @@
                     Beautifully designed components built with Radix UI and
                     Tailwind CSS.
                   </p>
-                </a>
-              </TailNavigationMenuLink>
-            </li>
-
-            <li>
-              <TailNavigationMenuLink as-child>
-                <a
-                  href="/docs/introduction"
-                  class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                >
-                  <div class="text-sm font-medium leading-none">Introduction</div>
-                  <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Re-usable components built using Radix UI and Tailwind CSS.
-                  </p>
-                </a>
-              </TailNavigationMenuLink>
-            </li>
-            <li>
-              <TailNavigationMenuLink as-child>
-                <a
-                  href="/docs/installation"
-                  class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                >
-                  <div class="text-sm font-medium leading-none">Installation</div>
-                  <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    How to install dependencies and structure your app.
-                  </p>
-                </a>
-              </TailNavigationMenuLink>
-            </li>
-            <li>
-              <TailNavigationMenuLink as-child>
-                <a
-                  href="/docs/typography"
-                  class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                >
-                  <div class="text-sm font-medium leading-none">Typography</div>
-                  <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Styles for headings, paragraphs, lists...etc
-                  </p>
-                </a>
+                </NuxtLink>
               </TailNavigationMenuLink>
             </li>
           </ul>
@@ -67,15 +35,15 @@
       </TailNavigationMenuItem>
 
       <TailNavigationMenuItem>
-        <TailNavigationMenuTrigger>Components</TailNavigationMenuTrigger>
+        <TailNavigationMenuTrigger>
+          {{ $t('Collections') }}
+        </TailNavigationMenuTrigger>
+        
         <TailNavigationMenuContent>
-          <ul class="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+          <ul class="grid w-[400px] gap-3 pa-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
             <li v-for="component in components" :key="component.title">
               <TailNavigationMenuLink as-child>
-                <a
-                  :href="component.href"
-                  class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                >
+                <a :href="component.href" class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                   <div class="text-sm font-medium leading-none">{{ component.title }}</div>
                   <p class="line-clamp-2 text-sm leading-snug text-muted-foreground">
                     {{ component.description }}
@@ -85,12 +53,6 @@
             </li>
           </ul>
         </TailNavigationMenuContent>
-      </TailNavigationMenuItem>
-      
-      <TailNavigationMenuItem>
-        <TailNavigationMenuLink href="/docs/introduction" :class="navigationMenuTriggerStyle()">
-          Documentation
-        </TailNavigationMenuLink>
       </TailNavigationMenuItem>
     </TailNavigationMenuList>
   </TailNavigationMenu>

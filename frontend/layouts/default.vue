@@ -23,14 +23,14 @@
 </template>
 
 <script setup lang="ts">
-import { footerLinks } from '~/data/footer'
-import type { ProductToEdit } from '~/types';
+import { footerLinks } from '~/data'
+import type { ProductToEdit } from '~/types'
 
 const cartStore = useCart()
 const { showCartDrawer, showEditProductDrawer } = storeToRefs(cartStore)
 
 const currentEditedProduct = ref<ProductToEdit>()
-const showWhatsAppModal = ref(false)
+const showWhatsAppModal = ref<boolean>(false)
 
 provide('currentEditedProduct', currentEditedProduct)
 

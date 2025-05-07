@@ -54,7 +54,9 @@ const requiresSizeItems = computed(() => {
 })
 
 /**
- *
+ * Adds a new product in the cart
+ * 
+ * @param size The size to associate the product in the cart with
  */
 async function handleAddToCart (size?: string | number) {
   if (props.product) {

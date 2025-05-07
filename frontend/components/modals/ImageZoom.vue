@@ -3,7 +3,7 @@
     <v-card class="position-relative">
       <div v-if="image" :style="`background-image: url('${image.original}');`" class="zoomed-image" @click="show=false" />
 
-      <div v-if="product && image" id="image-choices" class="d-flex flex-column gap-3">
+      <div v-if="product && image" id="image-choices" class="flex flex-column gap-3">
         <NuxtImg v-for="otherImage in product.images" :key="otherImage.id" :class="{ 'selected': otherImage.id === image.id }" :src="otherImage.thumbnail" width="100px" @click="handleSelectedImage(image)" />
       </div>
     </v-card>

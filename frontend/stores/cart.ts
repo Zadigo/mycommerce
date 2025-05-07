@@ -2,18 +2,19 @@ import { defineStore } from 'pinia'
 import { useJwt } from '@vueuse/integrations/useJwt'
 
 import type { CartItem, CartUpdateApiResponse, Product, SessionCacheData, UserSelection, ProductToEdit, JWTData } from '~/types'
+import type { DefaultClotheSize } from '~/data'
 
 interface RequestData {
   session_id: string | null | undefined
-  card_token: string | null
-  firstname: string | null
-  lastname: string | null
-  email: string | null
-  telephone: string | null
-  address_line: string | null
-  zip_code: string | null
-  country: string | null
-  city: string | null
+  card_token: string
+  firstname: string
+  lastname: string
+  email: string
+  telephone: string
+  address_line: string
+  zip_code: string
+  country: string
+  city: string
   delivery: 'Chronopost'
 }
 
@@ -28,24 +29,24 @@ export const useCart = defineStore('cart', () => {
   const sessionCache = ref<SessionCacheData>()
 
   const requestData = ref<RequestData>({
-    session_id: null,
-    card_token: null,
-    firstname: null,
-    lastname: null,
-    email: null,
-    telephone: null,
-    address_line: null,
-    zip_code: null,
-    country: null,
-    city: null,
+    session_id: '',
+    card_token: '',
+    firstname: '',
+    lastname: '',
+    email: '',
+    telephone: '',
+    address_line: '',
+    zip_code: '',
+    country: '',
+    city: '',
     delivery: "Chronopost"
   })
 
   const cache = ref<CartUpdateApiResponse | null>()
 
-  const showAddedProductDrawer = ref(false)
-  const showEditProductDrawer = ref(false)
-  const showCartDrawer = ref(false)
+  const showAddedProductDrawer = ref<boolean>(false)
+  const showEditProductDrawer = ref<boolean>(false)
+  const showCartDrawer = ref<boolean>(false)
 
   /**
    * Container used to save the user selections
@@ -140,6 +141,8 @@ export const useCart = defineStore('cart', () => {
   /**
    * Removes a product entirely from the cart
    * regardless of quantity
+   * 
+   * @param product The product to remove from the cart
    */
   function removeFromCart(product: Product) {
     const index = products.value.findIndex(x => x.id === product.id)
@@ -147,9 +150,13 @@ export const useCart = defineStore('cart', () => {
   }
 
   /**
+   * Proxy function used to associate a product
+   * and the a size for the giving product selected by the user
    * 
+   * @param product The product to use
+   * @param size The size selected by the user
    */
-  function handleSizeSelection(product: Product, size: string | number | undefined) {
+  function handleSizeSelection(product: Product | null | undefined, size: DefaultClotheSize) {
     if (product) {
       console.info('handleSizeSelection', product)
       userSelection.value.product = product
@@ -167,11 +174,22 @@ export const useCart = defineStore('cart', () => {
   }
 
   /**
-   * Adds a product to the customer's cart when the
-   * the product size or other caracteristics are
-   * available in a list (e.g. ProductsPage, CollectionsPage...) 
+   * Adds a product to the customer's cart by calling the corresponding
+   * Django endpoint. Requires the user to have selected a size (if required).
+   * This function can be both used on a single product individual page or with
+   * a list of products (e.g. ProductsPage, CollectionsPage...)
+   * 
+   * @param product The product to use
+   * @param size The selected size for the given product
+   * @param callback A callback function that accepts the Api's response data
+   * 
    */
-  async function addToCart(product: Product, size?: string | number | null, callback?: FunctionCallback) {
+  async function addToCart(product: Product | null | undefined, size?: string | number | null, callback?: FunctionCallback) {
+    if (!product) {
+      console.error('Product is empty')
+      return
+    }
+
     addingToCartState.value = true
 
     // By changing this, it updates in the underlying
@@ -214,6 +232,9 @@ export const useCart = defineStore('cart', () => {
 
   /**
    * Removes a product to the customer's cart 
+   * 
+   * @param cartItem The data of the product to edit
+   * @param callback A callback function that accepts the data of the product to edit and the Api's resposne data
    */
   async function deleteFromCart(cartItem: ProductToEdit, callback?: (deletedItem: ProductToEdit, updatedCart: CartUpdateApiResponse) => void) {
     console.log('deleteFromCart', cartItem)
