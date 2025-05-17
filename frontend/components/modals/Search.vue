@@ -12,11 +12,17 @@
         <div class="container">
           <div class="row g-1">
             <div class="col-12">
-              <v-text-field v-model="search" type="Search" placeholder="Ecris les produits à rechercher" variant="outlined" @keypress="proxySearchProducts">
+              <div class="relative w-full items-center mb-10">
+                <TailInput id="search" :placeholder="$t('Ecris les produits à rechercher')" type="search" class="pl-10" />
+                <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
+                  <Icon name="fa-solid:search" />
+                </span>
+              </div>
+              <!-- <v-text-field v-model="search" type="Search" placeholder="Ecris les produits à rechercher" variant="outlined" @keypress="proxySearchProducts">
                 <template #prepend>
                   <font-awesome icon="search" />
                 </template>
-              </v-text-field>
+              </v-text-field> -->
             </div>
             
             <div v-if="canShowSearch" class="row gx-1 gy-1">
@@ -65,6 +71,9 @@ const canShowSearch = computed(() => {
   return searchedProducts.value.length > 0
 })
 
+/**
+ * Function used to search the product's database
+ */
 async function requestProducts (): Promise<void> {
   if (search.value && search.value !== "") {
     const response = await $client<ProductsApiResponse>('/api/v1/shop/products', {
