@@ -12,9 +12,9 @@
         </button>
       </div>
 
-      <v-btn v-else variant="plain" color="dark" block rounded @click="handleAddToCart('Unique')">
+      <TailButton v-else variant="default" @click="handleAddToCart('Unique')">
         {{ $t('Ajouter au panier') }}
-      </v-btn>
+      </TailButton>
     </div>
   </div>
 </template>

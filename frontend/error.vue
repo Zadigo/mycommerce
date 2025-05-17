@@ -39,6 +39,7 @@ useHead({
 
 // const { gtag } = useGtag()
 
+// TODO: G-Analytics
 // gtag('event', 'exception', {
 //   description: `${error.statusCode}`
 // })

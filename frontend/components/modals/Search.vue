@@ -3,7 +3,9 @@
     <v-card>
       <v-toolbar>
         <v-spacer />
-        <v-btn icon="mdi-close" @click="shopStore.showSearchModal=false" />
+        <TailButton icon="mdi-close" @click="shopStore.showSearchModal=false">
+          <Icon name="fa-solid:x-mark" />
+        </TailButton>
       </v-toolbar>
 
       <v-card-text>

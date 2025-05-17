@@ -7,7 +7,9 @@
 
       <v-spacer />
 
-      <v-btn icon="mdi-close" @click="show=false" />
+      <TailButton class="mb-2" @click="show=false">
+        <Icon name="fa-solid:x-mark" />
+      </TailButton>
     </v-toolbar>
 
     <div class="container my-4 fw-light">

@@ -1,9 +1,9 @@
 <template>
   <TailSheet id="dialog-edit-product" v-model:open="showEditProductDrawer">
     <v-toolbar class="border-bottom" color="white">
-      <v-btn variant="text" rounded @click="handleCloseProductEdition">
-        <font-awesome icon="angle-left" />
-      </v-btn>
+      <TailButton class="mb-2" @click="handleCloseProductEdition">
+        <Icon name="fa-solid:angle-left" />
+      </TailButton>
 
       <v-toolbar-title>{{ $t('Modifier') }}</v-toolbar-title>
     </v-toolbar>

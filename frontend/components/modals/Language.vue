@@ -19,9 +19,9 @@
             </p>
 
             <div class="flex gap-1 mb-8">
-              <v-btn v-for="value in availableLanguages" :key="value" :active="shopStore.sessionCache.language.choice === value" variant="outline" rounded @click="handleLanguageSelection(value)">
+              <TailButton v-for="value in availableLanguages" :key="value" :active="shopStore.sessionCache.language.choice === value" @click="handleLanguageSelection(value)">
                 {{ value.toUpperCase() }}
-              </v-btn>
+              </TailButton>
             </div>
           </div>
 

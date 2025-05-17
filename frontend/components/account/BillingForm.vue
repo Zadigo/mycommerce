@@ -2,7 +2,9 @@
   <TailCardContent v-if="showBillingForm || forCreation">
     <form id="user-information" @submit.prevent>
       <div class="flex justify-end">
-        <v-btn class="mb-2" variant="text" icon="mdi-close" @click="handleClose" />
+        <TailButton class="mb-2" @click="handleClose">
+          <Icon name="fa-solid:x-mark" />
+        </TailButton>
       </div>
       
       <div class="flex justify-between gap-1">
@@ -29,29 +31,12 @@
           <p class="font-bold">
             {{ $t("Sexe") }}
           </p>
-
-          <!-- TODO: Add gender -->
-          <!-- <v-radio-group v-model="requestData.sexe" hide-details>
-            <v-radio label="Femme" value="Femme" />
-            <v-radio label="Homme" value="Homme" />
-          </v-radio-group> -->
         </TailCardContent>
       </TailCard>
 
       <p class="font-bold mt-4">
         {{ $t("Date d'anniversaire") }}
       </p>
-
-      <!-- TODO: Date of birth -->
-      <!-- <v-btn variant="tonal" flat>
-        {{ $t("Choisir la date d'anniversaire") }}
-
-        <v-menu activator="parent" :close-on-content-click="false">
-          <v-list>
-            <v-date-picker v-model="requestData.date_of_birth" :max="maxBirthdayDate" />
-          </v-list>
-        </v-menu>
-      </v-btn> -->
 
       <TailButton  v-if="forCreation" class="mt-4 rounded-full" @click="requestCreate">
         {{ $t("Ajouter l'addresse") }}
@@ -65,9 +50,9 @@
 
   <TailCardContent v-else class="bg-slate-50 cursor-pointer hover:bg-slate-100 mx-5 pa-5 rounded-md">
     <div class="flex justify-end">
-      <v-btn variant="tonal" size="x-small" rounded @click="requestDelete">
-        <font-awesome icon="trash" />
-      </v-btn>
+      <TailButton variant="ghost" size="sm" class="rounded-full" @click="requestDelete">
+        <Icon name="fa-solid:trash" />
+      </TailButton>
     </div>
     
     <div class="p-1" @click="handleShowBillingForm">
