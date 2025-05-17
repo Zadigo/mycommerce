@@ -1,5 +1,5 @@
 <template>
-<TailDialog v-model:open="show" @close="show=false">
+<TailDialog v-model:open="showWhatsAppModal" @close="showWhatsAppModal=false">
   <TailDialogContent>
     <TailDialogHeader>
       <TailDialogTitle>
@@ -8,10 +8,10 @@
     </TailDialogHeader>
     
     <div class="text-center">      
-      <img :src="qrCode">
+      <NuxtImg :src="qrCode" />
 
       <p class="text-small mt-5">
-        Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone
+        {{ $t('Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone') }}
       </p>
     </div>
   </TailDialogContent>
@@ -24,22 +24,6 @@ import { useQRCode } from '@vueuse/integrations/useQRCode'
 const config = useRuntimeConfig()
 const qrCode = useQRCode(config.public.whatsAppUrl)
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean
-  }
-})
-
-const emit = defineEmits({
-  'update:modelValue'(_value: boolean) {
-    return true
-  }
-})
-
-const show = computed({
-  get: () => props.modelValue,
-  set: (value) => {
-    emit('update:modelValue', value)
-  }
-})
+const shopStore = useShop()
+const { showWhatsAppModal } = storeToRefs(shopStore)
 </script>

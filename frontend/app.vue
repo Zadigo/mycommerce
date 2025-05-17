@@ -12,6 +12,7 @@
  
       <ClientOnly>
         <ModalsLanguage />
+        <ModalsWhatsApp />
       </ClientOnly>
     </NuxtLayout>
   </VApp>

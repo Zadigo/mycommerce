@@ -1,7 +1,9 @@
 import type { NavigationGuard } from 'vue-router'
 // import { useCart } from "~/stores/cart"
 
-// TODO: Activate when design process is complete
+/**
+ * TODO: Activate when design process is complete
+ */
 export default defineNuxtRouteMiddleware((to): ReturnType<NavigationGuard> => {
   if (import.meta.server) return
 

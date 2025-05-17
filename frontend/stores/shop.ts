@@ -7,6 +7,7 @@ export const useShop = defineStore('shop', () => {
   // Modals
   const showSearchModal = ref<boolean>(false)
   const showLanguageModal = ref<boolean>(false)
+  const showWhatsAppModal = ref<boolean>(false)
 
   const visitedProducts = ref<number[]>([])
   const likedProducts = ref<number[]>([])
@@ -62,11 +63,12 @@ export const useShop = defineStore('shop', () => {
     trackProduct,
     sessionCache,
     currentProductIndex,
-    showSearchModal,
     numberOfVisitedProducts,
     uniqueVisitedProductIds,
     visitedProducts,
     likedProducts,
+    showSearchModal,
+    showWhatsAppModal,
     showLanguageModal
   }
 })

@@ -49,7 +49,8 @@ const emit = defineEmits({
 })
 
 /**
- * 
+ * Function used to indicate to the parent that an
+ * item within this block has been clicked for navigation
  */
 function handleNavigation(data: (number | Product)[]) {
   emit('has-navigated', data)

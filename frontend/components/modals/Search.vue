@@ -13,17 +13,14 @@
           <div class="row g-1">
             <div class="col-12">
               <div class="relative w-full items-center mb-10">
-                <TailInput id="search" :placeholder="$t('Ecris les produits à rechercher')" type="search" class="pl-10" />
+                <TailInput id="search" v-model="search" :placeholder="$t('Ecris les produits à rechercher')" type="search" class="pl-10" />
                 <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
                   <Icon name="fa-solid:search" />
                 </span>
               </div>
-              <!-- <v-text-field v-model="search" type="Search" placeholder="Ecris les produits à rechercher" variant="outlined" @keypress="proxySearchProducts">
-                <template #prepend>
-                  <font-awesome icon="search" />
-                </template>
-              </v-text-field> -->
             </div>
+
+            {{ history }} {{ last }}
             
             <div v-if="canShowSearch" class="row gx-1 gy-1">
               <!-- TODO: Gtag analytics to track product click from search @has-navigated -->
@@ -65,7 +62,9 @@ const { $client } = useNuxtApp()
 const { handleError } = useErrorHandler()
 
 const searchedProducts = ref<Product[]>([])
-const search = ref<string | null>(null)
+const search = shallowRef<string>('')
+const searchDebounced = refDebounced(search, 2000)
+const { history, last } = useDebouncedRefHistory(search, { debounce: 5000 })
 
 const canShowSearch = computed(() => {
   return searchedProducts.value.length > 0
@@ -82,18 +81,19 @@ async function requestProducts (): Promise<void> {
       },
       onRequestError({ error }) {
         handleError(error)
-      },
-      onResponse() {
-        searchedProducts.value = response.results
       }
     })
+    searchedProducts.value = response.results
   }
+}
+
+// const { debounce } = useDebounce()
+// const proxySearchProducts = debounce(requestProducts, 1000)
+
+watch(searchDebounced, async () => {
+  await requestProducts()
   
   // TODO: G-Analytics
   // gtag('event', 'search', { search_term: search.value })
-}
-
-
-const { debounce } = useDebounce()
-const proxySearchProducts = debounce(requestProducts, 1000)
+})
 </script>

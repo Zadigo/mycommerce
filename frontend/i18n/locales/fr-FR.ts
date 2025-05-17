@@ -155,9 +155,11 @@ export default defineI18nLocale(async locale => {
     "Créer un compte": "Créer un compte",
     "Signup: Password constraints": "8 caractères minimum, comprenant une minuscule, une majuscule et un chiffre. Ne pas répéter plus de 3 fois le même caractère",
     "Voir résulats": "Voir résulats {n}",
+    "Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone": "Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone",
     "Je veux recevoir les nouveautés et des communications commerciales personnalisées de BERSHKA par e-mail ou d'autres moyens": "Je veux recevoir les nouveautés et des communications commerciales personnalisées de BERSHKA par e-mail ou d'autres moyens",
     "J'ai lu et j'accepte les Conditions générales et je comprends les informations sur le traitement de mes données personnelles expliquées dans la": "J'ai lu et j'accepte les Conditions générales et je comprends les informations sur le traitement de mes données personnelles expliquées dans la",
-    "Policy: account": "BERSHKA prend très au sérieux le respect de votre vie privée et nous sommes engagés dans la protection de vos données personnelles. Découvrez comment nous prenons soin et comment nous traitons vos données dans notre"
+    "Policy: account": "BERSHKA prend très au sérieux le respect de votre vie privée et nous sommes engagés dans la protection de vos données personnelles. Découvrez comment nous prenons soin et comment nous traitons vos données dans notre",
+    "Ecris les produits à rechercher": "Ecris les produits à rechercher"
   }
 })
 
