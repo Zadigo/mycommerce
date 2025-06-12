@@ -18,17 +18,7 @@ import type { CollectionApiResponse } from '~/types'
 const { t } = useI18n()
 const { handleError } = useErrorHandler()
 
-useSeoMeta({
-  description: 'Découvrez notre collection de vêtements en ligne',
-  ogDescription: 'Découvrez notre collection de vêtements en ligne',
-  ogImage: '/img4.jpeg',
-  twitterTitle: '[twitter:title]',
-  twitterDescription: 'Découvrez notre collection de vêtements en ligne',
-  twitterImage: '/img4.jpeg',
-  twitterCard: 'summary'
-})
-
-const { data: collections, status } = await useFetch('/api/collections', {
+const { data: collections, status } = await useFetch<CollectionApiResponse>('/api/collections', {
   onResponseError({ error }) {
     handleError(error)
   },
@@ -49,26 +39,23 @@ const { data: collections, status } = await useFetch('/api/collections', {
   // }
 })
 
+const title = t('Achat en ligne de vêtements')
+const description = t('Découvrez notre collection de vêtements en ligne')
+
+useSeoMeta({
+  title,
+  description,
+  ogDescription: description,
+  ogImage: '/img4.jpeg',
+  twitterTitle: title,
+  twitterDescription: description,
+  twitterImage: '/img4.jpeg',
+  twitterCard: 'summary'
+})
+
 onMounted(() => {
   // gtag('event', 'page_view', {
   //   screen_name: 'Achat en ligne de vêtements'
   // })
-})
-
-useHead({
-  title: t('Achat en ligne de vêtements'),
-  meta: [
-    {
-      key: 'description',
-      content: t('Découvrez notre collection de vêtements en ligne')
-    }
-  ],
-  link: [
-    {
-      rel: 'icon',
-      type: 'image/png',
-      href: '/favicon.ico'
-    }
-  ]
 })
 </script>
