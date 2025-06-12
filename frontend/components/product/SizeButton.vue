@@ -1,8 +1,8 @@
 <template>
-  <button v-if="size.availability" type="button" :class="buttonClass" @click="handleSizeSelection(size)">
+  <TailButton v-if="size.availability" variant="light" :class="buttonClass" @click="handleSizeSelection(size)">
     <font-awesome v-if="!size.availability" icon="clock-rotate-left" class="text-warning me-2" />
     {{ size.name }}
-  </button>
+  </TailButton>
 </template>
 
 <script lang="ts" setup>
@@ -40,12 +40,11 @@ const isSelected = computed(() => {
 
 const buttonClass = computed(() => {
   return [
-    'btn',
-    'btn-rounded',
+    'rounded-full border',
     props.customClass,
     { 
-      'btn-outline-dark': !isSelected.value,
-      'btn-secondary': isSelected.value && props.selectable
+      '': !isSelected.value,
+      'bg-primary': isSelected.value && props.selectable
     }
   ]
 })
@@ -57,9 +56,3 @@ function handleSizeSelection (size: ProductSizes) {
   emit('select-size', size.name)
 }
 </script>
-
-<style lang="scss" scoped>
-button {
-  border: 1px solid rgba($color: #000000, $alpha: 0.15);
-}
-</style>

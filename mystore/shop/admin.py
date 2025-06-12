@@ -5,15 +5,37 @@ from django.core.exceptions import ValidationError
 from django.db.models import Count
 from django.urls import re_path
 from import_export.admin import ImportExportModelAdmin
+from import_export.fields import Field
 from import_export.resources import ModelResource
+from import_export.widgets import BooleanWidget
 from shop.models import Image, Novelty, Product, Sale, Video, Wishlist
 from shop.utils import create_slug
 from shop.views import AdminUploadImageView
 
 
+class IsActiveWidget(BooleanWidget):
+    """Ensures that the products are not active when
+    imported in the database considering that they
+    do not have any images"""
+
+    def clean(self, value, row=None, **kwargs):
+        value = super().clean(value, row, **kwargs)
+        if value:
+            return False
+        return value
+
+
 class ProductResource(ModelResource):
+    active = Field(widget=IsActiveWidget())
+
     class Meta:
         model = Product
+        # fields = [
+        #     'name', 'color', 'unit_price', 'active',
+        #     'display_new', 'slug', 'category', 
+        #     'on_sale', 'sale_value'
+        # ]
+        # exclude = ['id']  # Exclude the ID field on import/export
 
 
 @admin.register(Product)
@@ -21,7 +43,7 @@ class ProductAdmin(ImportExportModelAdmin):
     resource_classes = [ProductResource]
     list_display = [
         'name', 'color', 'category',
-        'unit_price', 'validity_score', 
+        'unit_price', 'validity_score',
         'active'
     ]
     list_per_page = 20

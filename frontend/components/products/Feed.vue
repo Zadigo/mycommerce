@@ -34,7 +34,7 @@
           </TailButton>
 
           <div v-else class="flex-grow">
-            <v-progress-circular v-if="isLoadingMoreProducts" :size="50" color="dark" indeterminate />
+            <p v-if="isLoadingMoreProducts">Loading...</p>
 
             <TailButton v-else size="lg">
               <font-awesome icon="arrow-down" class="me-2" />

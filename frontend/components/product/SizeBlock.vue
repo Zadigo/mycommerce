@@ -47,6 +47,9 @@ function handleSizeSelection (size: DefaultClotheSize) {
   emit('update-size', selectedSize.value)
 }
 
+/**
+ *
+ */
 function resetSize () {
   selectedSize.value = null
 }

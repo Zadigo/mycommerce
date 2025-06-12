@@ -15,12 +15,18 @@ export default defineNuxtConfig({
     '/': {
       swr: true,
       cache: {
+        swr: true,
         base: 'redis',
         maxAge: 1,
       }
     },
-    'shop/collection/**': {
-      swr: true
+    'shop/**': {
+      swr: true,
+      cache: {
+        swr: true,
+        base: 'redis',
+        maxAge: 1
+      }
     },
     'wishlist': {
       ssr: false

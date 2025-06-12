@@ -56,21 +56,21 @@
           <p class="text-1xl font-semibold mb-1">
             {{ $t("Tour de Poitrine") }}
           </p>
-          <p class="font-light text-slate-700 mb-4">
+          <p class="font-light mb-4">
             {{ $t('Step: Measure bust size') }}
           </p>
 
           <p class="fs-6 fw-bold mb-1">
             {{ $t("Tour de Taille") }}
           </p>
-          <p class="font-light text-slate-700 mb-4">
+          <p class="font-light mb-4">
             {{ $t('Step: Measure waistline') }}
           </p>
 
           <p class="fs-6 fw-bold mb-1">
             {{ $t("Tour de Hanches") }}
           </p>
-          <p class="font-light text-slate-700 mb-4">
+          <p class="font-light mb-4">
             {{ $t('Step: Measure hip-size') }}
           </p>  
         </div>
@@ -108,7 +108,6 @@ const emit = defineEmits({
 })
 
 const cartStore = useCart()
-// const { mediaPath } = useDjangoUtilies()
 
 const show = computed({
   get: () => props.modelValue,
