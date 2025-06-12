@@ -9,7 +9,7 @@
         </div>
       </TailSheetHeader>
 
-      <div class="flex flex-column justify-around px-5">    
+      <div class="flex-col justify-around px-5">    
         <div>
           {{ query }}
 

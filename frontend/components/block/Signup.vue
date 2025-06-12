@@ -16,14 +16,14 @@
       <div class="my-5">
         <div class="flex items-center space-x-2">
           <TailCheckbox v-model="requestData.newsletter" id="action-novelty-newsletter" />
-          <TailLabel>
+          <TailLabel class="leading-5">
             {{ $t("Je veux recevoir les nouveautés et des communications commerciales personnalisées de BERSHKA par e-mail ou d'autres moyens") }}
           </TailLabel>
         </div>
 
         <div class="flex items-center space-x-2 mt-5">
           <TailCheckbox v-model="acceptPrivacy" id="action-accept-conditions" />
-          <TailLabel>
+          <TailLabel class="leading-5">
             <p>
               {{ $t("J'ai lu et j'accepte les Conditions générales et je comprends les informations sur le traitement de mes données personnelles expliquées dans la") }} <RouterLink to="/conditions-generales">{{ $t("politique de confidentialité") }}</RouterLink>
             </p>

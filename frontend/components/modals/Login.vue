@@ -9,7 +9,7 @@
       <TailSheetHeader>
        <div class="flex justify-between align-center">
           <TailButton variant="destructive" @click="handleReset">
-            <Icon icon="fa-solid:chevron-left" />
+            <Icon name="fa-solid:chevron-left" />
           </TailButton>
 
           <TailSheetClose />

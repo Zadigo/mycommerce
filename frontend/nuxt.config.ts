@@ -81,7 +81,6 @@ export default defineNuxtConfig({
     '@vesp/nuxt-fontawesome',
     '@nuxt/icon',
     '@nuxt/test-utils',
-    'vuetify-nuxt-module',
     'shadcn-nuxt',
     'vue-sonner/nuxt'
   ],

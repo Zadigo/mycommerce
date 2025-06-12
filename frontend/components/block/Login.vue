@@ -1,11 +1,11 @@
 <template>
   <div class="mx-auto px-10">
-    <div class="flex flex-column justify-content-center h-full">
+    <div class="flex-col justify-center h-full">
       <h3 class="font-semibold text-1xl grow text-center">
         {{ $t('Connecte-toi ou crée un compte') }}
       </h3>
 
-      <TailButton id="signin-google" variant="outline" size="lg" class="mt-3 mb-5 rounded-full" @click="handleGoogle">
+      <TailButton id="signin-google" variant="outline" size="lg" class="mt-3 mb-5 rounded-full w-full" @click="handleGoogle">
         <Icon name="fa-brands:google" />
       </TailButton>
 

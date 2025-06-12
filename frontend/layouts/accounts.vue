@@ -9,11 +9,11 @@
           <TailCard class="card border-none">
             <TailCardContent>
               <div class="rounde-md border-gray-50  border-2 rounded-md border-b-2 border-b-gray-50">
-                <NuxtLinkLocale id="link-account-aside"  to="/account/" class="pa-5 block hover:bg-gray-50">
+                <NuxtLinkLocale id="link-account-aside"  to="/account/" class="p-5 block hover:bg-gray-50">
                   {{ $t("Mon compte") }}
                 </NuxtLinkLocale >
 
-                <NuxtLinkLocale id="link-orders-aside"  to="/account/orders/" class="pa-5 block hover:bg-gray-50">
+                <NuxtLinkLocale id="link-orders-aside"  to="/account/orders/" class="p-5 block hover:bg-gray-50">
                   {{ $t("Mes commandes") }}
                 </NuxtLinkLocale >
               </div>
