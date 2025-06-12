@@ -82,7 +82,8 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxt/test-utils',
     'shadcn-nuxt',
-    'vue-sonner/nuxt'
+    'vue-sonner/nuxt',
+    'pinia-plugin-persistedstate'
   ],
 
   shadcn: {

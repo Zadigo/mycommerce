@@ -8,9 +8,17 @@
               {{ $t('Sélectionnez votre emplacement') }}
             </p>
 
-            <v-autocomplete v-model="i18nCountry" :items="countries" variant="solo-filled" flat>
-              <v-text-field type="text" />
-            </v-autocomplete>
+            <TailSelect v-model="i18nCountry">
+              <TailSelectTrigger>
+                <TailSelectValue placeholder="Sélectionnez votre pays" />
+              </TailSelectTrigger>
+              
+              <TailSelectContent>
+                <TailSelectItem v-for="country in countries" :key="country" :value="country">
+                  {{ country }}
+                </TailSelectItem>
+              </TailSelectContent>
+            </TailSelect>
           </div>
           
           <div class="col">

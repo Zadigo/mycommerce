@@ -63,6 +63,7 @@
     "@vueuse/nuxt": "^12.8.2",
     "happy-dom": "^17.4.6",
     "jsdom": "^26.1.0",
+    "pinia-plugin-persistedstate": "^4.3.0",
     "playwright-core": "^1.52.0",
     "shadcn-nuxt": "^2.0.1",
     "tw-animate-css": "^1.2.8",

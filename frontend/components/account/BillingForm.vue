@@ -1,9 +1,9 @@
 <template>
   <TailCardContent v-if="showBillingForm || forCreation">
-    <form id="user-information" @submit.prevent>
+    <form id="user-information" class="space-y-3" @submit.prevent>
       <div class="flex justify-end">
-        <TailButton class="mb-2" @click="handleClose">
-          <Icon name="fa-solid:x-mark" />
+        <TailButton variant="light" class="mb-2 rounded-full" @click="handleClose">
+          <Icon name="fa6-solid:xmark" />
         </TailButton>
       </div>
       
@@ -20,9 +20,9 @@
       </div>
 
       <!-- TODO: Get data from quart -->
-      <v-autocomplete v-model="requestData.city" :items="['Lille', 'Paris']" variant="outlined">
+      <!-- <v-autocomplete v-model="requestData.city" :items="['Lille', 'Paris']" variant="outlined">
         <v-text-field />
-      </v-autocomplete>
+      </v-autocomplete> -->
       
       <TailInput v-model="requestData.telephone" type="tel" variant="outlined" placeholder="Telephone" autocomplete="tel" />          
 
@@ -56,7 +56,7 @@
     </div>
     
     <div class="p-1" @click="handleShowBillingForm">
-      <p class="font-bold mb-2">{{ fullName }}</p>
+      <p class="font-semibold mb-2">{{ fullName }}</p>
       <p class="mb-1">
         <span v-if="profile">{{ profile.email }}</span>
       </p>

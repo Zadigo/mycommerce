@@ -1,21 +1,21 @@
 <template>
   <section id="user-page">
     <!-- Email / Password -->
-    <TailCard v-if="profile" id="email-password" class="card border-none">
+    <TailCard v-if="profile" id="email-password">
       <TailCardHeader>
-        <TailCardTitle>
+        <TailCardTitle class="font-title">
           {{ $t("Accédez à votre compte") }}
         </TailCardTitle>
       </TailCardHeader>
 
       <TailCardContent>
         <!-- Password -->
-        <p class="font-bold">
+        <p class="font-semibold">
           {{ $t('Mot de passe') }}
         </p>
 
         <Transition mode="out-in">
-          <form v-if="showEditPassword" class="password-block" @submit.prevent>
+          <form v-if="showEditPassword" class="my-3" @submit.prevent>
             <TailInput id="current-password" v-model="emailPasswordRequestData.current_password" :placeholder="$t('Mot de passe actuel')" type="password" autocomplete="false" />
             <TailInput id="password1" v-model="emailPasswordRequestData.password1" :placeholder="$t('Nouveau mot de passe')" class="my-2" type="password" autocomplete="new-password" />
             <TailInput id="password2" v-model="emailPasswordRequestData.password2" :placeholder="$t('Taper le mot de passe à nouveau')" autocomplete="new-password" type="password" />
@@ -31,18 +31,18 @@
             </div>
           </form>
           
-          <TailButton v-else class="flex items-center rounded-full" variant="light" @click="showEditPassword=true">
+          <TailButton v-else class="my-3 flex items-center rounded-full" variant="light" @click="showEditPassword=true">
             <span class="me-2">*************</span>
             <Icon name="fa-solid:pen" />
           </TailButton>
         </Transition>
 
         <!-- Email -->
-        <p class="font-bold mt-4">
+        <p class="font-semibold mt-4">
           {{ $t("Email") }}
         </p>
 
-        <form v-if="showEditEmail" class="password-block" @submit.prevent>
+        <form v-if="showEditEmail" class="my-3" @submit.prevent>
           <TailInput v-model="emailPasswordRequestData.email" placeholder="Email" type="email" aria-label="Email" flat />        
           
           <div class="flex gap-1 mt-5">
@@ -56,7 +56,7 @@
           </div>
         </form>
 
-        <TailButton v-else class=" rounded-full" variant="light" @click="handleEditEmail">
+        <TailButton v-else class="my-3 rounded-full lowercase" variant="light" @click="handleEditEmail">
           <span class="me-2">
             {{ profile?.email }}
           </span>

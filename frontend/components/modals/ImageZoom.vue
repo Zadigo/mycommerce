@@ -1,50 +1,35 @@
 <template>
-  <v-dialog v-model="show" fullscreen hide-overlay scrollable transition="dialog-bottom-transition">
-    <v-card class="position-relative">
-      <div v-if="image" :style="`background-image: url('${image.original}');`" class="zoomed-image" @click="show=false" />
+  <TailSheet id="image-zoom" v-model:open="show">
+    <TailSheetContent side="bottom" class="relative">
+      <div class="px-20">
+        <div v-if="image" :style="`background-image: url('${image.original}');`" class="zoomed-image" @click="show=false" />
 
-      <div v-if="product && image" id="image-choices" class="flex flex-column gap-3">
-        <NuxtImg v-for="otherImage in product.images" :key="otherImage.id" :class="{ 'selected': otherImage.id === image.id }" :src="otherImage.thumbnail" width="100px" @click="handleSelectedImage(image)" />
+        <div v-if="product && image" id="image-choices" class="flex flex-column gap-3">
+          <NuxtImg v-for="otherImage in product.images" :key="otherImage.id" :class="{ 'selected': otherImage.id === image.id }" :src="otherImage.thumbnail" width="100px" @click="handleSelectedImage(image)" />
+        </div>
       </div>
-    </v-card>
-  </v-dialog>
+    </TailSheetContent>
+  </TailSheet>
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
-import type { Product, ProductImage } from '~/types';
+import type { Product, ProductImage } from '~/types'
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false
-  },
-  product: {
-    type: Object as PropType<Product | null | undefined>,
-    default: () => ({})
-  },
-  image: {
-    type: Object as PropType<ProductImage | null | undefined>,
-    default: () => ({})
-  }
-})
+const props = defineProps<{
+  modelValue: boolean
+  product: Product | null | undefined
+  image: ProductImage | null | undefined
+}>()
 
-const emit = defineEmits({
-  'update:modelValue'(_value: boolean) {
-    return true
-  },
-  'select-image' (_image: ProductImage) {
-    return true
-  }
-})
+const emit = defineEmits<{
+  'update:modelValue': [value: boolean]
+  'select-image': [image: ProductImage]
+}>()
 
 const { handleSelectedImage } = useImages()
-
-const show = computed({
-  get: () => props.modelValue,
-  set: (value) => {
-    emit('update:modelValue', value)
-  }
+const show = useVModel(props, 'modelValue', emit, {
+  passive: true,
+  defaultValue: false
 })
 </script>
 

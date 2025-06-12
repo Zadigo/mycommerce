@@ -1,4 +1,4 @@
-import type { DefaultClotheSize } from "~/data/constants"
+import type { DefaultClotheSize } from '~/data/constants'
 
 export const defaultColors = [
   'Bleu',
