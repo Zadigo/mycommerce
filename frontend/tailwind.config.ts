@@ -12,12 +12,7 @@ export default {
     extend: {
       fontFamily: {},
       colors: {
-        'warning': 'hsl(var(--warning))',
-        'warning-foreground': 'hsl(var(--warning-foreground))',
-        'secondary': 'hsl(var(--secondary))',
-        'secondary-foreground': 'hsl(var(--secondary-foreground))',
-        'info': 'hsl(var(--info))',
-        'info-foreground': 'hsl(var(--info-foreground))'
+        
       },
       screens: {},
     }

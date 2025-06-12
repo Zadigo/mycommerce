@@ -16,25 +16,25 @@
 
         <Transition mode="out-in">
           <form v-if="showEditPassword" class="password-block" @submit.prevent>
-            <v-text-field id="current-password" v-model="emailPasswordRequestData.current_password" variant="solo-filled" placeholder="Mot de passe actuel" type="password" autocomplete="false" aria-label="Mot de passe actuel" flat />
-            <v-text-field id="password1" v-model="emailPasswordRequestData.password1" variant="solo-filled" placeholder="Nouveau mot de passe" type="password" autocomplete="new-password" aria-label="Nouveau mot de passe" flat />
-            <v-text-field id="password2" v-model="emailPasswordRequestData.password2" variant="solo-filled" placeholder="Taper le mot de passe à nouveau" autocomplete="new-password" type="password" aria-label="Taper le mot de passe à nouveau" flat />
+            <TailInput id="current-password" v-model="emailPasswordRequestData.current_password" :placeholder="$t('Mot de passe actuel')" type="password" autocomplete="false" />
+            <TailInput id="password1" v-model="emailPasswordRequestData.password1" :placeholder="$t('Nouveau mot de passe')" class="my-2" type="password" autocomplete="new-password" />
+            <TailInput id="password2" v-model="emailPasswordRequestData.password2" :placeholder="$t('Taper le mot de passe à nouveau')" autocomplete="new-password" type="password" />
             
-            <div class="flex gap-1">
-              <TailButton @click="requestUpdate">
+            <div class="flex gap-1 mt-5">
+              <TailButton class="rounded-full" @click="requestUpdate">
                 {{ $t('Changer le mot de passe') }}
               </TailButton>
 
-              <TailButton class="flex justify-between items-center" color="dark" variant="text" rounded flat @click="showEditPassword=false">
+              <TailButton class="flex justify-between items-center rounded-full" rounded flat @click="showEditPassword=false">
                 {{ $t("Annuler") }}
               </TailButton>
             </div>
           </form>
           
-          <v-btn v-else class="flex justify-between items-center" color="dark" variant="text" flat block @click="showEditPassword=true">
+          <TailButton v-else class="flex items-center rounded-full" variant="light" @click="showEditPassword=true">
             <span class="me-2">*************</span>
             <Icon name="fa-solid:pen" />
-          </v-btn>
+          </TailButton>
         </Transition>
 
         <!-- Email -->
@@ -43,9 +43,9 @@
         </p>
 
         <form v-if="showEditEmail" class="password-block" @submit.prevent>
-          <v-text-field v-model="emailPasswordRequestData.email" variant="solo-filled" placeholder="Email" type="email" aria-label="Email" flat />        
+          <TailInput v-model="emailPasswordRequestData.email" placeholder="Email" type="email" aria-label="Email" flat />        
           
-          <div class="flex gap-1">
+          <div class="flex gap-1 mt-5">
             <TailButton class="rounded-full" @click="requestUpdate">
               {{ $t("Changer l'email") }}
             </TailButton>
@@ -56,13 +56,13 @@
           </div>
         </form>
 
-        <v-btn v-else class="flex justify-between items-center" color="dark" variant="text" flat block @click="handleEditEmail">
+        <TailButton v-else class=" rounded-full" variant="light" @click="handleEditEmail">
           <span class="me-2">
             {{ profile?.email }}
           </span>
 
           <Icon name="fa-solid:pen" />
-        </v-btn>
+        </TailButton>
 
         <p class="font-light mt-4">
           {{ $t("Policy: account") }} <NuxtLinkLocale to="/privacy">{{ $t("politique de confidentialité") }}</NuxtLinkLocale>

@@ -16,13 +16,22 @@ export default defineNuxtConfig({
       }
     },
     'shop/collection/**': {
-      ssr: true
+      swr: true
     },
     'wishlist': {
       ssr: false
     },
     'account/**': {
       ssr: false
+    },
+    'cart/**': {
+      ssr: false
+    },
+    'complete-size-guide': {
+      isr: true
+    },
+    'guide': {
+      isr: true
     },
     'confidentialite': {
       ssr: true,
@@ -305,19 +314,13 @@ export default defineNuxtConfig({
   },
 
   googleFonts: {
+    display: 'swap',
     families: {
-      Ubuntu: {
-        wght: '100..700'
-      },
-      Roboto: {
-        wght: '100..700'
-      },
-      Lato: {
-        wght: '100..700'
-      },
-      'Noto Sans': {
-        wght: '100..700'
-      }
+      // Body
+      Inter: true,
+      Sora: true,
+      // TItle
+      Manrope: true
     }
   },
 
@@ -338,6 +341,12 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    prerender: {
+      routes: [
+        '/mentions-legales',
+        '/confidentialite'
+      ]
+    },
     storage: {
       redis: {
         driver: 'redis',

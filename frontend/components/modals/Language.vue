@@ -1,7 +1,7 @@
 <template>
   <TailSheet id="language-modal" v-model:open="shopStore.showLanguageModal">
     <TailSheetContent side="bottom">
-      <div v-if="shopStore.sessionCache" class="container mx-auto w-2/4">
+      <div v-if="shopStore.sessionCache" class="mx-auto w-2/4">
         <div class="px-3 py-15">
           <div class="col">
             <p class="font-bold mb-4">

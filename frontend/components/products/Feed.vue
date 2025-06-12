@@ -134,6 +134,10 @@ const totalProductCount = computed(() => {
   }
 })
 
+/**
+ *
+ * @param data
+ */
 function handleNavigation (data: (number | Product)[] | null | undefined) {
   if (data) {
     const product = data[1]

@@ -11,7 +11,8 @@
     "test": "npx vitest run",
     "test:vi": "npx vitest watch",
     "test:nuxt": "npx vitest run --project nuxt",
-    "test:unit": "npx vitest run --project unit"
+    "test:unit": "npx vitest run --project unit",
+    "cleanup": "nuxt cleanup && rm -rf .nuxt .output dist node_modules/.cache"
   },
   "dependencies": {
     "@nuxtjs/seo": "^2.2.0",
@@ -46,6 +47,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@iconify-json/fa-brands": "^1.2.1",
     "@iconify-json/fa-solid": "^1.2.1",
     "@nuxt/icon": "^1.12.0",
     "@nuxt/image": "^1.10.0",

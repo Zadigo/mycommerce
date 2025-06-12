@@ -28,7 +28,7 @@ export const buttonVariants = cva(
         info:
           'bg-info text-primary-foreground shadow-xs hover:bg-info/70',
         light:
-          'bg-gray-50 shadow-xs hover:bg-accent active:bg-gray-500'
+          'bg-accent shadow-xs hover:bg-accent active:bg-gray-500'
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',

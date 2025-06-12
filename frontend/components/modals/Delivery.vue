@@ -1,18 +1,16 @@
 <template>
-  <v-navigation-drawer id="delivery" v-model="show" width="400" location="right" temporary @close="show=false">
-    <v-toolbar class="border-bottom" color="white">
-      <v-toolbar-title class="font-bold">
-        {{ $t("Livraison") }}
-      </v-toolbar-title>
+  <TailSheet id="delivery" v-model="show" @close="show=false">
+    <TailSheetContent>
+      <TailSheetHeder>
+        <TailSheetTitle class="font-bold">
+          {{ $t("Livraison") }}
+        </TailSheetTitle>
 
-      <v-spacer />
+        <TailButton class="mb-2" @click="show=false">
+          <Icon name="fa-solid:x-mark" />
+        </TailButton>
+      </TailSheetHeder>
 
-      <TailButton class="mb-2" @click="show=false">
-        <Icon name="fa-solid:x-mark" />
-      </TailButton>
-    </v-toolbar>
-
-    <div class="container my-4 fw-light">
       <div class="row">
         <p class="font-bold mb-1 mt-3">
           {{ $t("Livraison") }}
@@ -110,8 +108,8 @@
           pour les retours et les échanges
         </a>
       </div>
-    </div>
-  </v-navigation-drawer>
+    </TailSheetContent>
+  </TailSheet>
 </template>
 
 <script lang="ts" setup>

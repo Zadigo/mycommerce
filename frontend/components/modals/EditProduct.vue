@@ -1,17 +1,18 @@
 <template>
   <TailSheet id="dialog-edit-product" v-model:open="showEditProductDrawer">
-    <v-toolbar class="border-bottom" color="white">
-      <TailButton class="mb-2" @click="handleCloseProductEdition">
-        <Icon name="fa-solid:angle-left" />
-      </TailButton>
-
-      <v-toolbar-title>{{ $t('Modifier') }}</v-toolbar-title>
-    </v-toolbar>
 
     <TailSheetContent v-if="currentEditedProduct">
+      <TailSheetHeader class="border-bottom" color="white">
+        <TailButton class="mb-2" @click="handleCloseProductEdition">
+          <Icon name="fa-solid:angle-left" />
+        </TailButton>
+
+        <TailSheetTitle>{{ $t('Modifier') }}</TailSheetTitle>
+      </TailSheetHeader>
+      
       <div v-if="currentEditedProduct.product_info" class="row">
         <div class="col-12">
-          <v-img :src="mediaPath(currentEditedProduct.product_info.product.get_main_image.original)" />
+          <NuxtImg :src="mediaPath(currentEditedProduct.product_info.product.get_main_image.original)" />
         </div>
 
         <div class="col-12">

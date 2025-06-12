@@ -8,15 +8,15 @@
       </div>
       
       <div class="flex justify-between gap-1">
-        <v-text-field v-model="requestData.firstname" variant="outlined" placeholder="Firstname" autocomplete="given-name " />
-        <v-text-field v-model="requestData.lastname" variant="outlined" placeholder="Lastname" autocomplete="family-name " />
+        <TailInput v-model="requestData.firstname" variant="outlined" placeholder="Firstname" autocomplete="given-name " />
+        <TailInput v-model="requestData.lastname" variant="outlined" placeholder="Lastname" autocomplete="family-name " />
       </div>
 
-      <v-text-field v-model="requestData.address_line" variant="outlined" placeholder="Address line" autocomplete="street-address" />
+      <TailInput v-model="requestData.address_line" variant="outlined" placeholder="Address line" autocomplete="street-address" />
 
       <div class="flex justify-between gap-1">
-        <v-text-field v-model="requestData.zip_code" variant="outlined" placeholder="Zip code" autocomplete="postal-code" />
-        <v-text-field v-model="requestData.country" variant="outlined" placeholder="Country" autocomplete="country" />
+        <TailInput v-model="requestData.zip_code" variant="outlined" placeholder="Zip code" autocomplete="postal-code" />
+        <TailInput v-model="requestData.country" variant="outlined" placeholder="Country" autocomplete="country" />
       </div>
 
       <!-- TODO: Get data from quart -->
@@ -24,7 +24,7 @@
         <v-text-field />
       </v-autocomplete>
       
-      <v-text-field v-model="requestData.telephone" type="tel" variant="outlined" placeholder="Telephone" autocomplete="tel" />          
+      <TailInput v-model="requestData.telephone" type="tel" variant="outlined" placeholder="Telephone" autocomplete="tel" />          
 
       <TailCard class="card shadow-none border">
         <TailCardContent>

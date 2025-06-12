@@ -11,7 +11,7 @@
         <ClientOnly>
           <ul class="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
             <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-              <TailButton id="action-search" class="ms-auto me-2 rounded-full" variant="default" @click="shopStore.showSearchModal=true">
+              <TailButton id="action-search" class="ms-auto me-2 rounded-full" @click="shopStore.showSearchModal=true">
                 {{ $t('Rechercher') }}
               </TailButton>
             </li>

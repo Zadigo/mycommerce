@@ -22,17 +22,16 @@
         </div>
         
         <div class="flex justify-end gap-1 align-center">
-          <v-skeleton-loader :is-loading="productsLoading" type="text">
-            <span id="product-count" class="font-bold me-2">
-              {{ $t('Produits trouvés', { n: count }) }}
-            </span>
-          </v-skeleton-loader>
+          <TailSkeleton v-if="productsLoading" class="w-[100px] h-[50px]" />
+          <span id="product-count" v-else class="font-semibold text-sm me-2">
+            {{ $t('Produits trouvés', { n: count }) }}
+          </span>
 
-          <TailButton :active="gridSize === 3" variant="light" flat @click="handleGridSize(3)">
+          <TailButton :active="gridSize === 3" variant="ghost" flat @click="handleGridSize(3)">
             <font-awesome icon="table-cells" />
           </TailButton>
 
-          <TailButton :active="gridSize === 4" variant="light" flat @click="handleGridSize(4)">
+          <TailButton :active="gridSize === 4" variant="ghost" flat @click="handleGridSize(4)">
             <font-awesome icon="table-cells-large" />
           </TailButton>
         </div>
@@ -93,10 +92,6 @@ function handleGridSize (size: number) {
 </script>
 
 <style lang="scss" scoped>
-#product-count {
-  font-size: .9rem;
-}
-
 .to-fixed {
   position: fixed;
   top: 13%;
