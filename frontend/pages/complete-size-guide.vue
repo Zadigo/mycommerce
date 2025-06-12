@@ -23,5 +23,10 @@
 </template>
 
 <script setup lang="ts">
-import '~/assets/css/main.css'
+const { t } = useI18n()
+
+useSeoMeta({
+  title: t("Guide de taille complet"),
+  titleTemplate: '%s | E-Woman'
+})
 </script>

@@ -11,13 +11,8 @@ import { privacyText } from '~/data/privacy'
 
 const { t } = useI18n()
 
-useHead({
+useSeoMeta({
   title: t('Confidentialité'),
-  meta: [
-    {
-      key: 'description',
-      content: ''
-    }
-  ]
+  titleTemplate: '%s | E-Woman'
 })
 </script>

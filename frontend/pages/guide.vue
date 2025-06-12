@@ -11,7 +11,8 @@ import { guideText } from '~/data'
 
 const { t } = useI18n()
 
-useHead({
-  title: t('Guide')
+useSeoMeta({
+  title: t('Guide'),
+  titleTemplate: '%s | E-Woman'
 })
 </script>

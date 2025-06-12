@@ -43,16 +43,6 @@ const { id } = useRoute().params
 
 provide('productsLoading', productsLoading)
 
-useHead({
-  title: useChangeCase(id as string, 'capitalCase'),
-  meta: [
-    {
-      key: 'description',
-      content: t('Découvrez toutes notre collection de vêtements')
-    }
-  ]
-})
-
 const productCount = computed(() => {
   if (products.value) {
     return products.value.length
@@ -81,4 +71,39 @@ function handleLoadedProducts(data: Product[]) {
 function handleUpdateProducts(data: ProductsApiResponse) {
   console.log(data)
 }
+
+useSeoMeta({
+  title: useChangeCase(id as string, 'capitalCase'),
+  description: t('Découvrez toutes notre collection de vêtements'),
+  titleTemplate: '%s | E-Woman'
+})
+
+useSchemaOrg(products.value.map(x => defineProduct({
+  "@type": 'Product',
+  "@id": `https://example.com/products/${x.slug}`,
+  name: x.name,
+  sku: x.sku,
+  image: x.images?.map(image => image.original) ?? [],
+  url: `https://example.com/products/${x.slug}`,
+  itemCondition: "https://schema.org/NewCondition",
+  brand: {
+    "@type": 'Brand',
+    name: 'E-Woman',
+    logo: 'https://example.com/image.png',
+  },
+  offers: {
+    price: x.get_price,
+    priceCurrency: 'EUR',
+    availability: 'https://schema.org/InStock',
+    image: x.get_main_image,
+    shippingDetails: {
+      "@type": 'OfferShippingDetails',
+      shippingDestination: [
+        { "@type": "DefinedRegion", addressCountry: 'FR' },
+        { "@type": "DefinedRegion", addressCountry: 'GP' }
+      ],
+      deliveryTime: null
+    }
+  }
+})))
 </script>

@@ -7,13 +7,8 @@
 <script setup lang="ts">
 const { t } = useI18n()
 
-useHead({
+useSeoMeta({
   title: t("Conditions générales d'achat"),
-  meta: [
-    {
-      key: 'description',
-      content: ''
-    }
-  ]
+  titleTemplate: '%s | E-Woman'
 })
 </script>

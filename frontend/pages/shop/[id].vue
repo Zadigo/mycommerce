@@ -71,7 +71,7 @@ const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
 /**
  * TODO: Documentation
  */
-const { data: product, status } = useFetch<Product>(`/api/products/${id}`, {
+const { data: product, status } = await useFetch<Product>(`/api/products/${id}`, {
   method: 'GET',
   transform(data) {
     try {
@@ -126,29 +126,42 @@ async function requestProductStock () {
   }
 }
 
-useHead({
-  title: () => product.value?.name ?? '...',
-  meta: [
-    {
-      key: 'description',
-      content: ''
-    }
-  ]
+const name = product.value?.name ?? '...'
+
+useSeoMeta({
+  title: name,
+  description: '',
+  titleTemplate: '%s | E-Woman'
 })
 
-// useSchemaOrg([
-//   defineProduct({
-//     '@id': product.value?.name,
-//     name: product.value?.name,
-//     description: '',
-//     image: product.value?.get_main_image?.original,
-//     offers: [
-//       {
-//         price: product.value?.sale_price
-//       }
-//     ]
-//   })
-// ])
+useSchemaOrg(defineProduct({
+  "@type": 'Product',
+  "@id": `https://example.com/products/${product.value.slug}`,
+  name,
+  sku: product.value.sku,
+  image: product.value.images?.map(image => image.original) ?? [],
+  url: `https://example.com/products/${x.slug}`,
+  itemCondition: "https://schema.org/NewCondition",
+  brand: {
+    "@type": 'Brand',
+    name: 'E-Woman',
+    logo: 'https://example.com/image.png',
+  },
+  offers: {
+    price: product.value.get_price,
+    priceCurrency: 'EUR',
+    availability: 'https://schema.org/InStock',
+    image: product.value.get_main_image,
+    shippingDetails: {
+      "@type": 'OfferShippingDetails',
+      shippingDestination: [
+        { "@type": "DefinedRegion", addressCountry: 'FR' },
+        { "@type": "DefinedRegion", addressCountry: 'GP' }
+      ],
+      deliveryTime: null
+    }
+  }
+}))
 
 provide('stockState', stockState)
 
