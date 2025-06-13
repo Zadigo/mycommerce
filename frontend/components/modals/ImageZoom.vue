@@ -1,11 +1,15 @@
 <template>
   <TailSheet id="image-zoom" v-model:open="show">
-    <TailSheetContent side="bottom" class="relative">
-      <div class="px-20">
-        <div v-if="image" :style="`background-image: url('${image.original}');`" class="zoomed-image" @click="show=false" />
+    <TailSheetContent aria-describedby="Product image details" class="max-h-[600px]" side="bottom">
+      <TailSheetTitle>
+        Product
+      </TailSheetTitle>
 
-        <div v-if="product && image" id="image-choices" class="flex flex-column gap-3">
-          <NuxtImg v-for="otherImage in product.images" :key="otherImage.id" :class="{ 'selected': otherImage.id === image.id }" :src="otherImage.thumbnail" width="100px" @click="handleSelectedImage(image)" />
+      <div class="px-20 my-2 relative overflow-y-scroll">
+        <div v-if="image" :style="`background-image: url('${image.original}');`" class="zoomed-image z-30" @click="show=false" />
+
+        <div v-if="product && image" id="image-choices" class="flex flex-col gap-3 absolute top-1/12 right-1/12">
+          <NuxtImg v-for="otherImage in product.images" :key="otherImage.id" :class="{ 'selected': otherImage.id === image.id }" :src="otherImage.thumbnail" class="aspect-square object-fill w-[100px] z-50"  @click="handleSelectedImage(image)" />
         </div>
       </div>
     </TailSheetContent>
@@ -45,10 +49,6 @@ const show = useVModel(props, 'modelValue', emit, {
 }
 
 #image-choices {
-  position: absolute;
-  top: 10%;
-  right: 3%;
-
   .selected {
     border: 1px solid rgba(0, 0, 0, 0.1);
   }

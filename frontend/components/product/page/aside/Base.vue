@@ -47,15 +47,9 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue'
 import type { Product } from '~/types'
 
-const props = defineProps({
-  product: {
-    type: Object as PropType<Product | null | undefined>,
-    required: true
-  }
-})
+const props = defineProps<{ product: Product | null | undefined }>()
 
 const emit = defineEmits({
   'show-size-guide' () {

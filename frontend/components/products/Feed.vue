@@ -12,12 +12,12 @@
     
     <template v-else #default>
       <div class="mx-auto text-center font-light text-2xl max-w-3xl p-10 my-10">
-        <p class="h4 fw-light">
+        <p class="font-light">
           {{ $t('Page not available text') }}
         </p>
 
-        <TailButton variant="default" size="lg" as-child>
-          <NuxtLinkLocale  id="link-collections-more" to="/shop/collection/all" class="mt-8" color="secondary" @click="query.offset=0">
+        <TailButton size="lg" as-child>
+          <NuxtLinkLocale  id="link-collections-more" to="/shop/collection/all" class="mt-8" @click="query.offset=0">
             {{ $t('Voir toute la collection') }}
           </NuxtLinkLocale >
         </TailButton>
@@ -27,7 +27,7 @@
     <template #intersect>
       <!-- Intersect -->
       <ClientOnly>
-        <div v-if="products.length > 0" id="product-pagination" ref="intersectionTarget" class="font-bold text-uppercase flex justify-content-center mt-5">
+        <div v-if="products.length > 0" id="product-pagination" ref="intersectionTarget" class="font-bold text-uppercase flex justify-center mt-5">
           <TailButton v-if="isEndOfPage" size="lg" @click="scrollToTop">
             <font-awesome icon="arrow-up" class="me-2" />
             {{ $t('Tu es arrivé à la fin') }}

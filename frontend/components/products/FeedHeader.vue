@@ -4,15 +4,17 @@
       <div class="flex justify-between align-center">
         <div class="flex justify-content-left gap-1">
           <div class="flex justify-between items-center me-3 gap-1">
-            <TailButton variant="light" as-child>
+            <TailButton class="has-[.router-link-exact-active]:bg-primary" variant="light" as-child>
               <NuxtLinkLocale id="link-collections-feed-header" to="/shop/collection/all">
                 {{ $t('Afficher tout') }}
               </NuxtLinkLocale >
             </TailButton>
 
             <!-- Categories -->
-            <TailButton v-for="category in productCategories" :key="category" :to="`/shop/collection/${category.toLowerCase()}`">
-              {{ category }}
+            <TailButton v-for="category in productCategories" :key="category" as-child>
+              <NuxtLinkLocale :id="`link-collection-${category.toLowerCase()}`" :to="`/shop/collection/${category.toLowerCase()}`">
+                {{ category }}
+              </NuxtLinkLocale>
             </TailButton>
 
             <TailButton variant="light" class="ms-3" @click="emit('product-filters')">
@@ -21,17 +23,17 @@
           </div>
         </div>
         
-        <div class="flex justify-end gap-1 align-center">
+        <div class="flex justify-end gap-1 items-center">
           <TailSkeleton v-if="productsLoading" class="w-[100px] h-[50px]" />
           <span id="product-count" v-else class="font-semibold text-sm me-2">
             {{ $t('Produits trouvés', { n: count }) }}
           </span>
 
-          <TailButton :active="gridSize === 3" variant="ghost" flat @click="handleGridSize(3)">
+          <TailButton :variant="gridSize === 3 ? 'light' : 'ghost'" flat @click="handleGridSize(3)">
             <font-awesome icon="table-cells" />
           </TailButton>
 
-          <TailButton :active="gridSize === 4" variant="ghost" flat @click="handleGridSize(4)">
+          <TailButton :variant="gridSize === 4 ? 'light' : 'ghost'" flat @click="handleGridSize(4)">
             <font-awesome icon="table-cells-large" />
           </TailButton>
         </div>

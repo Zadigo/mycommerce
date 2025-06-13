@@ -43,6 +43,7 @@ class ProductSerializer(Serializer):
 
     id = fields.IntegerField()
     name = fields.CharField()
+    sku = fields.CharField()
     color = fields.CharField()
     category = fields.CharField()
     sub_category = fields.CharField()

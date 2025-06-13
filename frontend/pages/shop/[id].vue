@@ -151,7 +151,7 @@ if (product.value) {
       price: product.value.get_price,
       priceCurrency: 'EUR',
       availability: 'https://schema.org/InStock',
-      image: product.value.get_main_image,
+      image: product.value.get_main_image.original,
       shippingDetails: {
         "@type": 'OfferShippingDetails',
         shippingDestination: [

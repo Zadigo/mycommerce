@@ -52,22 +52,22 @@
         </div>
 
         <!-- Steps -->
-        <div class="col mt-4">
-          <p class="text-1xl font-semibold mb-1">
+        <div class="mt-4">
+          <p class="font-semibold mb-1">
             {{ $t("Tour de Poitrine") }}
           </p>
           <p class="font-light mb-4">
             {{ $t('Step: Measure bust size') }}
           </p>
 
-          <p class="fs-6 fw-bold mb-1">
+          <p class="font-semibold mb-1">
             {{ $t("Tour de Taille") }}
           </p>
           <p class="font-light mb-4">
             {{ $t('Step: Measure waistline') }}
           </p>
 
-          <p class="fs-6 fw-bold mb-1">
+          <p class="font-semibold mb-1">
             {{ $t("Tour de Hanches") }}
           </p>
           <p class="font-light mb-4">
@@ -87,33 +87,23 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue'
 import type { DefaultClotheSize } from '~/data'
 import type { Product } from '~/types'
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean
-  },
-  product: {
-    type: Object as PropType<Product | null | undefined>,
-    required: true
-  }
-})
+const props = defineProps<{
+  modelValue: boolean,
+  product: Product | null | undefined
+}>()
 
-const emit = defineEmits({
-  'update:modelValue' (_value: boolean) {
-    return true
-  }
-})
+const emit = defineEmits<{
+  'update:modelValue': [_value: boolean]
+}>()
 
 const cartStore = useCart()
 
-const show = computed({
-  get: () => props.modelValue,
-  set: (value: boolean) => {
-    emit('update:modelValue', value)
-  }
+const show = useVModel(props, 'modelValue', emit, {
+  passive: true,
+  defaultValue: false
 })
 
 /**
