@@ -7,7 +7,7 @@
         </TailDialogTitle>
       </TailDialogHeader>
 
-      <div class="pa-10">
+      <div class="p-10">
         <h2 class="text-2xl font-semibold mb-3">
           La taille "{{ selectedSize }}" n'est plus en stock
         </h2>

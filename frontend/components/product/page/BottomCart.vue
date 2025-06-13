@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'translate-y-0 opacity-10': !showBanner, 'translate-y-0 opacity-100': showBanner }" class="bg-white pa-2 rounded-md shadow-md fixed bottom-5 w-7/12 mx-auto left-1/4 h-auto transition-all ease z-50">
+  <div :class="{ 'translate-y-0 opacity-10': !showBanner, 'translate-y-0 opacity-100': showBanner }" class="bg-white p-2 rounded-md shadow-md fixed bottom-5 w-7/12 mx-auto left-1/4 h-auto transition-all ease z-50">
     <div v-if="product" class="flex justify-between">
       <div class="flex justify-start gap-3 items-center self-center">
         <NuxtImg v-if="product.get_main_image" :src="product.get_main_image.original" :alt="product.color_variant_name" class="w-10 rounded-md" />

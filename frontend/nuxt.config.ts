@@ -93,7 +93,8 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     'vue-sonner/nuxt',
     'pinia-plugin-persistedstate',
-    'nuxt-schema-org'
+    'nuxt-schema-org',
+    '@nuxt/scripts'
   ],
 
   shadcn: {

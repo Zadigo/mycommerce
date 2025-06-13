@@ -18,7 +18,7 @@
 
       <div class="px-5">
         <div v-if="hasProducts" class="flex flex-col my-10">
-          <div class="pa-5 shadow-sm rounded-md bg-green-100">
+          <div class="p-5 shadow-sm rounded-md bg-green-100">
             <div v-if="freeDeliveryTarget > 0">
               {{ cartTotal }}
               {{ $t('Livraison gratuite offerte', { n: $n(freeDeliveryTarget, 'currency') }) }}

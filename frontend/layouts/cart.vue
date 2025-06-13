@@ -138,11 +138,11 @@ useHead({
       content: ''
     }
   ],
-  script: [
-    {
-      async: true,
-      src: 'https://js.stripe.com/v3/'
-    }
-  ]
+  // script: [
+  //   {
+  //     async: true,
+  //     src: 'https://js.stripe.com/v3/'
+  //   }
+  // ]
 })
 </script>>

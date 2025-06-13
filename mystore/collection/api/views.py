@@ -11,7 +11,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from shop.api.serializers import ProductSerializer
 from shop.models import Product
-
+from django.db.models import QuerySet
 from mystore.utils import PaginationHelper
 
 
@@ -91,7 +91,7 @@ class ListCollectionProducts(generics.ListAPIView):
         return Response(template)
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset: QuerySet[Collection] = super().get_queryset()
         collection_name = self.kwargs['name']
 
         search = self.request.GET.get('q', None)
@@ -133,6 +133,12 @@ class ListCollectionProducts(generics.ListAPIView):
 
         if collection_name == 'all':
             cache_params['key'] = create_cache_key('all', *other_cache_keys)
+            cache.set(**cache_params)
+            return queryset
+        elif collection_name == 'sales':
+            queryset = queryset.filter(on_sale=True)
+            cache_params['key'] = create_cache_key('sales', *other_cache_keys)
+            cache_params['value'] = queryset
             cache.set(**cache_params)
             return queryset
         elif collection_name == 'novelties':

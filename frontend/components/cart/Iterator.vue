@@ -1,6 +1,6 @@
 <template>
   <div class="my-1">
-    <article v-for="item in cartItems" :key="item.product__id" :aria-label="item.product__name" class="border-2 border-gray-50 rounded-md pa-3 mb-2">
+    <article v-for="item in cartItems" :key="item.product__id" :aria-label="item.product__name" class="border-2 border-gray-50 rounded-md p-3 mb-2">
       <div class="flex justify-start gap-3">
         <div id="image" class="w-2/4">
           <NuxtLinkLocale  id="link-product-img" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
@@ -15,7 +15,7 @@
             </p>
 
             <div class="font-bold">
-              <!-- {{ $n(parseFloat(item.product_info?.price), 'currency') }} -->
+              {{ $n(parseFloat(item.product_info?.price), 'currency') }}
             </div>
             
             <div class="font-light mb-1 flex justify-start align-center gap-1">
@@ -29,12 +29,12 @@
             </div>
           </NuxtLinkLocale >
 
-          <div id="actions">
-            <TailButton v-if="isEditable" id="action-edit-product" class="me-2" size="sm rounded-full" @click="handleProductEdition(item)">
+          <div id="actions" class="mt-5">
+            <TailButton v-if="isEditable" id="action-edit-product" variant="light" class="me-2 rounded-full" size="sm" @click="handleProductEdition(item)">
               <Icon name="fa-solid:pen" />
             </TailButton>
 
-            <TailButton id="action-delete-product" size="sm rounded-full" @click="proxyDeleteFromCart(item)">
+            <TailButton id="action-delete-product" variant="light" class="rounded-full" size="sm" @click="proxyDeleteFromCart(item)">
               <Icon name="fa-solid:trash" />
             </TailButton>
           </div>
@@ -47,12 +47,9 @@
 <script setup lang="ts">
 import type { ProductToEdit } from '~/types'
 
-defineProps({
-  isEditable: {
-    type: Boolean,
-    default: true
-  }
-})
+defineProps<{
+  isEditable: boolean
+}>()
 
 const emit = defineEmits({
   'edit-product' (_editedProduct: ProductToEdit) {
@@ -62,7 +59,6 @@ const emit = defineEmits({
     return true
   }
 })
-
 
 // const { gtag } = useGtag()
 const cartStore = useCart()

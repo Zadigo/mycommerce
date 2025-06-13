@@ -1,5 +1,5 @@
 <template>
-  <div data-slot="footer-content" :class="cn('mx-auto w-full max-w-7xl pa-10', props.class)">
+  <div data-slot="footer-content" :class="cn('mx-auto w-full max-w-7xl p-10', props.class)">
     <slot />
   </div>
 </template>

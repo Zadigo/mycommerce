@@ -62,9 +62,8 @@ const { data } = useAsyncData('delivery-options', async () => {
        */
       await $client<NewIntentAPIResponse>('/api/v1/orders/intent', {
         method: 'POST',
-        body: {
-          session_id: cartStore.sessionId
-        },
+        baseURL: useRuntimeConfig().public.prodDomain,
+        body: { session_id: cartStore.sessionId },
         onRequestError({ error }) {
           handleError(error)
         }

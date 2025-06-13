@@ -146,4 +146,9 @@ onMounted(() => {
     shopStore.showLanguageModal = true
   }
 })
+
+useScript({
+  async: true,
+  src: 'https://js.stripe.com/v3/'
+})
 </script>

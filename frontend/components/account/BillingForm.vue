@@ -48,7 +48,7 @@
     </form>
   </TailCardContent>
 
-  <TailCardContent v-else class="bg-slate-50 cursor-pointer hover:bg-slate-100 mx-5 pa-5 rounded-md">
+  <TailCardContent v-else class="bg-slate-50 cursor-pointer hover:bg-slate-100 mx-5 p-5 rounded-md">
     <div class="flex justify-end">
       <TailButton variant="ghost" size="sm" class="rounded-full" @click="requestDelete">
         <Icon name="fa-solid:trash" />

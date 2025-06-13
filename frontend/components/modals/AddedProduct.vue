@@ -1,7 +1,7 @@
 <template>
   <TailSheet v-model:open="showAddedProductDrawer" @close="showAddedProductDrawer=false">
     <TailSheetContent>
-      <div class="px-5">
+      <div class="px-5 overflow-y-scroll">
         <div v-if="hasProducts" class="my-5">
           <div class="flex justify-start mb-5 fs-5 items-center gap-2">
             <font-awesome icon="circle-check" class="text-green-500" />
