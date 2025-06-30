@@ -1,5 +1,5 @@
 <template>
-  <TailSheet v-model="showModal" @close="showModal=false">
+  <TailSheet v-model:show="show">
     <TailSheetContent>
       <slot />
     </TailSheetContent>
@@ -7,20 +7,10 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps({
-  showModal: {
-    type: Boolean
-  }
-})
+const props = defineProps<{ modelValue: boolean }>()
+const emit = defineEmits<{ 'update:modelValue': [] }>()
 
-const emit = defineEmits({
-  modelValue (_data: boolean) {
-    return true
-  }
-})
-
-const showModal= computed({
-  get: () => props.showModal,
-  set: (value) => emit('modelValue', value)
+const show = useVModel(props, 'modelValue', emit, {
+  defaultValue: false
 })
 </script>

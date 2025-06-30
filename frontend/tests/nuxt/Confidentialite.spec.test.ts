@@ -1,7 +1,11 @@
-import { describe, expect, it } from 'vitest'
+import { renderSuspended } from '@nuxt/test-utils/runtime'
+import { describe, expect, it, vi } from 'vitest'
+import Confidentialite from '../../pages/confidentialite.vue'
 
-describe('template test', () => {
-  it('should run correctly', () => {
-    expect(1 + 1).toBe(2)
+describe('Confidentialite Page', () => {
+  it('should render correctly', async () => {
+    const component = await renderSuspended(Confidentialite, {})
+    const firstTitleEl = component.findByAltText('Utilisation des données personnelles')
+    expect(firstTitleEl).not.toBeUndefined()
   })
 })

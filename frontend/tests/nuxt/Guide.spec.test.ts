@@ -1,7 +1,11 @@
-import { describe, expect, it } from 'vitest'
+import { renderSuspended } from '@nuxt/test-utils/runtime'
+import { describe, expect, it, vi } from 'vitest'
+import Guide from '../../pages/guide.vue'
 
-describe('template test', () => {
-  it('should run correctly', () => {
-    expect(1 + 1).toBe(2)
+describe('Guide Page', () => {
+  it('should render correctly', async () => {
+    const el = await renderSuspended(Guide, {})
+    const firstTitleEl = el.findByText('Comment retourner un article ?')
+    expect(firstTitleEl).not.toBeUndefined()
   })
 })
