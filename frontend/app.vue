@@ -145,6 +145,17 @@ onMounted(() => {
   if (!shopStore.sessionCache.language.selected) {
     shopStore.showLanguageModal = true
   }
+
+  // TODO: Remove there is a bug on the positionning of devtools
+  if (import.meta.dev) {
+    const devtools: any = document.querySelector('nuxt-devtools-frame');
+
+    if (devtools) {
+      devtools.style.position = 'absolute'
+      devtools.style.left = '50%'
+      devtools.style.bottom = '2%'
+    }
+  }
 })
 
 useScript({

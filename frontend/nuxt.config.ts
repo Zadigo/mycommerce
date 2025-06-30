@@ -90,11 +90,11 @@ export default defineNuxtConfig({
     '@vesp/nuxt-fontawesome',
     '@nuxt/icon',
     '@nuxt/test-utils',
+    '@nuxt/scripts',
     'shadcn-nuxt',
     'vue-sonner/nuxt',
     'pinia-plugin-persistedstate',
-    'nuxt-schema-org',
-    '@nuxt/scripts'
+    'nuxt-schema-org'
   ],
 
   shadcn: {
@@ -108,6 +108,11 @@ export default defineNuxtConfig({
     defaultLocale: 'fr',
     lazy: true,
     vueI18n: './i18n.config.ts',
+    bundle: {
+      // TODELETE:  bundle.optimizeTranslationDirective is enabled by default, we recommend 
+      // disabling this feature as it causes issues and will be deprecated in v10.
+      optimizeTranslationDirective: false
+    },
     // customRoutes: 'config',
     locales: [
       {
