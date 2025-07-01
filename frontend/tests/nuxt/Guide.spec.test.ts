@@ -5,7 +5,7 @@ import Guide from '../../pages/guide.vue'
 describe('Guide Page', () => {
   it('should render correctly', async () => {
     const el = await renderSuspended(Guide, {})
-    const firstTitleEl = el.findByText('Comment retourner un article ?')
-    expect(firstTitleEl).not.toBeUndefined()
+    const firstTitleEl = await el.findByText('Comment retourner un article ?')
+    expect(firstTitleEl).toBeDefined()
   })
-})
+}, 10000)

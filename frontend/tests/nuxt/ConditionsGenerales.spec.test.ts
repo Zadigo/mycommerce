@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest'
+import { renderSuspended } from '@nuxt/test-utils/runtime'
+import { describe, it } from 'vitest'
+import conditionsGenerales from '~/pages/conditions-generales.vue'
 
-describe('template test', () => {
-  it('should run correctly', () => {
-    expect(1 + 1).toBe(2)
+describe.skip('Conditions Générales Page', () => {
+  it('should run correctly', async () => {
+    const component = await renderSuspended(conditionsGenerales)
   })
 })

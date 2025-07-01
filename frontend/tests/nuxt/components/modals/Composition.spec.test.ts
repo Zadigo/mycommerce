@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-describe('template test', () => {
+describe('Modal Composition', () => {
   it('should run correctly', () => {
     expect(1 + 1).toBe(2)
   })

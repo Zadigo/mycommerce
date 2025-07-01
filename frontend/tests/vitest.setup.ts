@@ -19,12 +19,24 @@ vi.mock('vue-i18n', async () => {
 
 vi.mock('#app', async () => {
   const actual = await vi.importActual<typeof import('#app')>('#app')
+
   return {
     ...actual,
     useCookie: vi.fn().mockReturnValue({
       value: 'mocked-cookie',
       set: vi.fn(),
       remove: vi.fn()
+    })
+  }
+})
+
+vi.mock('#app/composables/head', async () => {
+  const actual = await vi.importActual<typeof import('#app/composables/head')>('#app/composables/head')
+
+  return {
+    ...actual,
+    useSeoMeta: vi.fn().mockReturnValue({
+      title: 'Some Title'
     })
   }
 })
