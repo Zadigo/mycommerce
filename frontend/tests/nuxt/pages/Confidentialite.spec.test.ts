@@ -1,6 +1,6 @@
 import { renderSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
-import Confidentialite from '../../pages/confidentialite.vue'
+import Confidentialite from '~/pages/confidentialite.vue'
 
 describe.skip('Confidentialite Page', () => {
   it('should render correctly', async () => {

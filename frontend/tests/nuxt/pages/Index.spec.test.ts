@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { renderSuspended, mountSuspended } from '@nuxt/test-utils/runtime'
-import Index from '../../pages/index.vue'
+import Index from '~/pages/index.vue'
 
 describe.skip('Index Page', () => {
   it('should render correctly', async () => {
