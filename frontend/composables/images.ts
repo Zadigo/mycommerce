@@ -20,6 +20,7 @@ export function useImages () {
     /**
      * Selects an image within a group of images
      * @param image The selected image
+     * @deprecated
      */
     function handleSelectedImage (image: ProductImage) {
         selectedImage.value = image
