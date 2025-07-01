@@ -6,7 +6,6 @@ export function useDjangoUtilies() {
    * 
    * @param path The path of the image to join
    * @param altImage An alternative image to use
-   * @returns The full qualified path to the image on Django
    */
   function mediaPath(path: string | null | undefined, altImage?: string | undefined): string | undefined {
     if (path) {
