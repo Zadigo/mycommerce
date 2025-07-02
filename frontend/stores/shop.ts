@@ -43,6 +43,7 @@ export const useShop = defineStore('shop', () => {
   function closeAllModals() {
     showSearchModal.value = false
     showLanguageModal.value = false
+    showWhatsAppModal.value = false
   }
 
   /**

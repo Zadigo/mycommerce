@@ -9,10 +9,10 @@
 <script setup lang="ts">
 import { guideText } from '~/data'
 
-const { t } = useI18n()
+// const { t } = useI18n()
 
-useSeoMeta({
-  title: t('Guide'),
-  titleTemplate: '%s | E-Woman'
-})
+// useSeoMeta({
+//   title: t('Guide'),
+//   titleTemplate: '%s | E-Woman'
+// })
 </script>

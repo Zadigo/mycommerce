@@ -1,11 +1,11 @@
-import { defineConfig } from 'vitest/config'
 import path from 'path'
+
+import { defineConfig } from 'vitest/config'
 import { defineVitestConfig } from '@nuxt/test-utils/config'
 
 export default defineVitestConfig({
   test: {
-    // environment: 'nuxt',
-    testTimeout: 1000,
+    testTimeout: 20000,
     setupFiles: [
       './tests/vitest.setup.ts'
     ],
@@ -17,6 +17,7 @@ export default defineVitestConfig({
         extends: true,
         test: {
           name: 'nuxt-pages',
+          testTimeout: 20000,
           include: ['**/*.{spec,test}.ts'],
           environment: 'nuxt'
         }

@@ -143,3 +143,7 @@ logs
 .env
 .env.*
 !.env.example
+
+# Nuxt tests
+*/coverage/
+__snapshots__/
