@@ -16,11 +16,11 @@ import type { CollectionApiResponse } from '~/types'
 
 // const { gtag } = useGtag()
 const { t } = useI18n()
-const { handleError } = useErrorHandler()
+const { customHandleError } = useErrorHandler()
 
 const { data: collections, status } = await useFetch<CollectionApiResponse>('/api/collections', {
   onResponseError({ error }) {
-    handleError(error)
+    customHandleError(error)
   },
   
   // TODO: Review this code
