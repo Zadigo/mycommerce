@@ -30,6 +30,17 @@ vi.mock('#app', async () => {
   }
 })
 
+vi.mock('@vueuse/core', async () => {
+  const actual = await vi.importActual<typeof import('@vueuse/core')>('@vueuse/core')
+
+  return {
+    ...actual,
+
+    useSessionStorage: vi.fn().mockReturnValue('session-value'),
+    useLocalStorage: vi.fn().mockReturnValue([])
+  }
+})
+
 vi.mock('#app/composables/head', async () => {
   const actual = await vi.importActual<typeof import('#app/composables/head')>('#app/composables/head')
 
@@ -37,6 +48,14 @@ vi.mock('#app/composables/head', async () => {
     ...actual,
     useSeoMeta: vi.fn().mockReturnValue({
       title: 'Some Title'
+    })
+  }
+})
+
+vi.mock('~/composables/errors', async () => {
+  return {
+    useErrorHandler: vi.fn().mockReturnValue({
+      customHandleError: vi.fn((e: unknown) => e)
     })
   }
 })

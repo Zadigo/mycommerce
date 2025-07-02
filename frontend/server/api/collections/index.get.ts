@@ -1,7 +1,7 @@
 import { refreshAccessToken } from '~/utils'
 import { FetchError } from 'ofetch'
 
-import type { CollectionApiResponse } from "~/types"
+import type { CollectionApiResponse } from '~/types'
 
 export default defineCachedEventHandler(async event => {
   const access = getCookie(event, 'access')

@@ -16,16 +16,7 @@
   </NuxtLayout>
 </template>
 
-<script setup lang="ts">
-import 'animate.css'
-
-import { doc, getDoc, setDoc } from 'firebase/firestore'
-import { Toaster } from 'vue-sonner'
-import { baseSessionCacheData } from '~/data'
-
-import type { SessionCacheData } from '~/types'
-import type { ExtendedLocationQuery } from './types'
-
+<script lang="ts">
 // useSchemaOrg([
 //   defineWebSite({
 //     potentialAction: [
@@ -38,6 +29,23 @@ import type { ExtendedLocationQuery } from './types'
 //     '@type': ['CollectionPage', 'AboutPage', 'FAQPage']
 //   })
 // ])
+
+useScript({
+  async: true,
+  src: 'https://js.stripe.com/v3/'
+})
+</script>
+
+<script setup lang="ts">
+import 'animate.css'
+
+import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { Toaster } from 'vue-sonner'
+import { baseSessionCacheData } from '~/data'
+
+import type { SessionCacheData } from '~/types'
+import type { ExtendedLocationQuery } from './types'
+
 
 const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData)
 const likedProducts = useLocalStorage<number[]>('likedProducts', [])
@@ -54,7 +62,7 @@ const refreshToken = useCookie('refresh', cookieOptions)
 const cookieSessionId = useCookie('sessionId', cookieOptions)
 
 const { $client, $fireStore } = useNuxtApp()
-const { handleError } = useErrorHandler()
+const { customHandleError } = useErrorHandler()
 const isMmobile = useMediaQuery('(min-width: 320px)').value
 const { isSupported: screenOrientation } = useScreenOrientation()
 
@@ -121,10 +129,13 @@ async function requestSessionId () {
       }
     }
   } catch (e) {
-    handleError(e)
+    customHandleError(e)
   }
 }
 
+/**
+ *
+ */
 function syncSessionToStores() {
   const cache = sessionCache.value
 
@@ -156,10 +167,5 @@ onMounted(() => {
       devtools.style.bottom = '2%'
     }
   }
-})
-
-useScript({
-  async: true,
-  src: 'https://js.stripe.com/v3/'
 })
 </script>
