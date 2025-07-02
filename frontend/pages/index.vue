@@ -6,7 +6,7 @@
 
     <div v-else class="grid grid-cols-1 grid-rows-3 auto-rows-fr md:grid-cols-3 md:grid-rows-1 gap-3">
       <BaseCollectionCard custom-name="All" view-name="all" image="/img4.jpeg" />
-      <BaseCollectionCard v-for="collection in collections" :key="collection.id" :collection="collection" image="/img5.jpeg" />
+      <BaseCollectionCard v-for="collectionItem in collections" :key="collectionItem.id" :collection="collectionItem" image="/img5.jpeg" />
     </div>
   </section>
 </template>
@@ -18,25 +18,10 @@ import type { CollectionApiResponse } from '~/types'
 const { t } = useI18n()
 const { customHandleError } = useErrorHandler()
 
-const { data: collections, status } = await useFetch<CollectionApiResponse>('/api/collections', {
+const { data: collections, status } = await useFetch<CollectionApiResponse[]>('/api/collections', {
   onResponseError({ error }) {
     customHandleError(error)
-  },
-  
-  // TODO: Review this code
-  // transform (data) {
-  //   const validCollections = data.reduce<CollectionApiResponse[]>((acc, item) => {
-  //     try {
-  //       const validItem = CollectionSchema.parse(item)
-  //       acc.push(validItem)
-  //       return acc
-  //     } catch (e) {
-  //       console.log('collections.validate', e)
-  //       return acc
-  //     }
-  //   }, [])
-  //   return validCollections
-  // }
+  }
 })
 
 const title = t('Achat en ligne de vêtements')

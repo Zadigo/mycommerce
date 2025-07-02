@@ -23,24 +23,14 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue'
 import type { CollectionApiResponse } from '~/types'
 
-defineProps({
-  collection: {
-    type: Object as PropType<CollectionApiResponse>
-  },
-  customName: {
-    type: String,
-  },
-  viewName: {
-    type: String,
-  },
-  image: {
-    type: String,
-    default: '/img5.jpeg'
-  }
-})
+const { image = '/img5.jpeg' } = defineProps<{
+  customName?: string,
+  viewName?: string,
+  collection?: CollectionApiResponse,
+  image?: string
+}>()
 </script>
 
 <style lang="scss" scoped>
