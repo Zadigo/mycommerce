@@ -1,5 +1,6 @@
+import { useCookie } from '#app'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { afterAll, describe, expect, it, vi } from 'vitest'
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { testCollection } from '~/data/__fixtures__/collections'
 
 import BaseCollectionCard from '~/components/BaseCollectionCard.vue'
@@ -15,6 +16,14 @@ vi.mock('#app', () => ({
 }))
 
 describe('Index Page', () => {
+  beforeEach(() => {
+    const cookieMock = { value: 'initial-token' }
+
+    (useCookie as any).mockImplementation((name: string) => {
+      return cookieMock
+    })
+  })
+
   afterAll(() => {
     vi.resetAllMocks()
   })
@@ -25,13 +34,13 @@ describe('Index Page', () => {
     const collectionEl = component.getComponent(BaseCollectionCard)    
   })
 
-  it.skip('should have three articles', async () => {
+  it('should have three articles', async () => {
     const component = await mountSuspended(Index)
     const articles = component.findAll('article')
     expect(articles.length).toBe(3)
   })
   
-  it.skip('articles should be clickeable links', async () => {
+  it('articles should be clickeable links', async () => {
     const component = await mountSuspended(Index)
     const articles = component.findAll(`[id="link-collection-card"]`)
     articles.forEach(article => {

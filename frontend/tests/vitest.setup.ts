@@ -22,11 +22,8 @@ vi.mock('#app', async () => {
 
   return {
     ...actual,
-    useCookie: vi.fn().mockReturnValue({
-      value: 'mocked-cookie',
-      set: vi.fn(),
-      remove: vi.fn()
-    })
+    useRouter: vi.fn(() => ({ push: vi.fn() })),
+    useCookie: vi.fn()
   }
 })
 
@@ -35,15 +32,15 @@ vi.mock('@vueuse/core', async () => {
 
   return {
     ...actual,
-
-    useSessionStorage: vi.fn().mockReturnValue('session-value'),
-    useLocalStorage: vi.fn().mockReturnValue([])
+    useSessionStorage: vi.fn(),
+    useLocalStorage: vi.fn(),
+    useIntersectionObserver: vi.fn()
   }
 })
 
 vi.mock('#app/composables/head', async () => {
   const actual = await vi.importActual<typeof import('#app/composables/head')>('#app/composables/head')
-
+  
   return {
     ...actual,
     useSeoMeta: vi.fn().mockReturnValue({
@@ -53,7 +50,9 @@ vi.mock('#app/composables/head', async () => {
 })
 
 vi.mock('~/composables/errors', async () => {
+  const actual = await vi.importActual<typeof import('~/composables/errors')>('~/composables/errors')
   return {
+    ...actual,
     useErrorHandler: vi.fn().mockReturnValue({
       customHandleError: vi.fn((e: unknown) => e)
     })
