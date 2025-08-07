@@ -18,7 +18,7 @@
             </TailButton>
 
             <TailButton variant="light" class="ms-3" @click="emit('product-filters')">
-              <Icon name="sliders" class="me-2" /> {{ $t('Filtres') }}
+              <Icon name="i-fa7-solid:sliders" class="me-2" /> {{ $t('Filtres') }}
             </TailButton>
           </div>
         </div>
@@ -30,11 +30,11 @@
           </span>
 
           <TailButton :variant="gridSize === 3 ? 'light' : 'ghost'" flat @click="handleGridSize(3)">
-            <Icon name="table-cells" />
+            <Icon name="i-fa7-solid:table-cells" />
           </TailButton>
 
           <TailButton :variant="gridSize === 4 ? 'light' : 'ghost'" flat @click="handleGridSize(4)">
-            <Icon name="table-cells-large" />
+            <Icon name="i-fa7-solid:table-cells-large" />
           </TailButton>
         </div>
       </div>

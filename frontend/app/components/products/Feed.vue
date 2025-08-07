@@ -29,7 +29,7 @@
       <ClientOnly>
         <div v-if="products.length > 0" id="product-pagination" ref="intersectionTarget" class="font-bold text-uppercase flex justify-center mt-5">
           <TailButton v-if="isEndOfPage" size="lg" @click="scrollToTop">
-            <Icon name="arrow-up" class="me-2" />
+            <Icon name="i-fa7-solid:arrow-up" class="me-2" />
             {{ $t('Tu es arrivé à la fin') }}
           </TailButton>
 

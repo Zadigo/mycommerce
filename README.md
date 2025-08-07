@@ -97,8 +97,12 @@ If you plan on using Celery, start the celery backend withing the Django project
 1. Enter the `frontend` directory and run `pnpm run dev`
 2. Ensure you have a Stripe account for working/testing the cart payment process in development mode
 3. You also need an active Google Account in order to create the relevant keys for Google Authentication
-4. Create a `.env` file in the `frontend` folder with all the relevant keys
+4. Create a `.env` file in the `frontend` folder with all the relevant keys provided below.
 5. You also need to create a Google Analytics, Facebook Pixels and Microsoft Clarity account in order to use all the tracking possibilities offered within the template
+6. You might also want to create a Firebase account in order to use the Firebase features such as authentication, storage, and real-time database
+7. Finally, you can use the `nuxt.config.js` file to configure the template to your needs
+
+The Nuxt application also comes with basic fixtures that can be used to test the application out of the box. They are located in `~/data/__fixtures__/` and can be used to simulate server API calls.
 
 #### Environment variables 🎶
 
@@ -156,7 +160,7 @@ NUXT_FIREBASE_APP_ID=
 NUXT_FIREBASE_MEASUREMENT_ID=
 ```
 
-### Configuring Ionnic
+### Configuring Ionic
 
 The same process can be applied like with Nuxt. Use `ionic serve` to start the project locally.
 
@@ -167,3 +171,4 @@ The same process can be applied like with Nuxt. Use `ionic serve` to start the p
 - Inventory tracking: [https://www.zoho.com/inventory/](Zoho Inventory)
 - Accounting: [https://quickbooks.intuit.com/quickbooks-commerce/](Quickbooks)
 - Messaging: [https://www.omnisend.com/pricing/](Omnisend)
+
