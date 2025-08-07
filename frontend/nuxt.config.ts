@@ -52,22 +52,25 @@ export default defineNuxtConfig({
     }
   },
 
+  vuefire: {
+    config: {
+      apiKey: process.env.NUXT_FIREBASE_API_KEY,
+      authDomain: process.env.NUXT_FIREBASE_AUTH_DOMAIN,
+      dbUrl: process.env.NUXT_FIREBASE_DB_URL,
+      storageBucket: process.env.NUXT_FIREBASE_STORAGE_BUCKET,
+      appId: process.env.NUXT_FIREBASE_APP_ID,
+      measurementId: process.env.NUXT_FIREBASE_MEASUREMENT_ID,
+      messageSenderId: process.env.NUXT_FIREBASE_MESSAGE_SENDER_ID,
+      projectId: process.env.NUXT_FIREBASE_PROJECT_ID
+    }
+  },
+
   runtimeConfig: {
     public: {
       // Django/Quart/Flask
       quartProdUrl: process.env.NUXT_QUART_PROD_URL || 'http://127.0.0.1:5000',
       prodDomain: process.env.NUXT_DJANGO_PROD_URL || 'http://127.0.0.1:8000',
       
-      // Firebase
-      firebaseApiKey: process.env.NUXT_FIREBASE_API_KEY,
-      firebaseAuthDomain: process.env.NUXT_FIREBASE_AUTH_DOMAIN,
-      firebaseDbUrl: process.env.NUXT_FIREBASE_DB_URL,
-      firebaseStorageBucket: process.env.NUXT_FIREBASE_STORAGE_BUCKET,
-      firebaseAppId: process.env.NUXT_FIREBASE_APP_ID,
-      firebaseMeasurementId: process.env.NUXT_FIREBASE_MEASUREMENT_ID,
-      firebaseMessageSenderId: process.env.NUXT_FIREBASE_MESSAGE_SENDER_ID,
-      firebaseProjectId: process.env.NUXT_FIREBASE_PROJECT_ID,
-
       // Stripe
       stripeTestSecretKey: process.env.NUXT_STRIPE_TEST_SECRET_KEY,
       stripeTestPublishableKey: process.env.NUXT_STRIPE_TEST_PUBLISHABLE_KEY,
@@ -82,24 +85,24 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    '@nuxtjs/google-fonts',
     '@nuxtjs/sitemap',
     '@unlok-co/nuxt-stripe',
     '@nuxt/image',
     '@nuxtjs/i18n',
-    '@vesp/nuxt-fontawesome',
     '@nuxt/icon',
     '@nuxt/test-utils',
     '@nuxt/scripts',
     'shadcn-nuxt',
     'vue-sonner/nuxt',
     'pinia-plugin-persistedstate',
-    'nuxt-schema-org'
+    'nuxt-schema-org',
+    '@nuxt/fonts',
+    'nuxt-vuefire'
   ],
 
   shadcn: {
     prefix: 'Tail',
-    componentDir: './components/ui'
+    componentDir: '~/components/ui'
   },
 
   i18n: {
@@ -274,70 +277,30 @@ export default defineNuxtConfig({
     '~/assets/css/main.css',
     '~/assets/css/style.scss'
   ],
-  
-  // TODELETE
-  fontawesome: {
-    icons: {
-      solid: [
-        'angle-left',
-        'arrow-right',
-        'arrow-up',
-        'arrow-down',
-        'bell',
-        'chevron-left',
-        'caret-right',
-        'circle-check',
-        'close',
-        'clock-rotate-left',
-        'envelope',
-        'home',
-        'heart',
-        'headset',
-        'gift',
-        'map',
-        'map-location',
-        'phone',
-        'pen',
-        'plus',
-        'ruler',
-        'search',
-        'sliders',
-        'shop',
-        'tags',
-        'truck',
-        'trash',
-        'right-to-bracket',
-        'right-from-bracket',
-        'shopping-bag',
-        'table-cells',
-        'table-cells-large',
-        'user',
-      ],
-      regular: [
-        'heart'
-      ],
-      brands: [
-        'whatsapp',
-        'cc-mastercard',
-        'cc-stripe',
-        'cc-visa',
-        'google',
-        'instagram',
-        'facebook-f',
-        'twitter'
-      ]
-    }
-  },
 
-  googleFonts: {
-    display: 'swap',
-    families: {
+  fonts: {
+    families: [
       // Body
-      Inter: true,
-      Sora: true,
-      // TItle
-      Manrope: true
-    }
+      {
+        name: 'Inter',
+        weight: '100..900',
+        styles: ['normal', 'italic'],
+        preload: true
+      },
+      {
+        name: 'Sora',
+        weight: '400..700',
+        styles: ['normal', 'italic'],
+        preload: true
+      },
+      // Title
+      {
+        name: 'Manrope',
+        weight: '400..700',
+        styles: ['normal', 'italic'],
+        preload: true
+      }
+    ]
   },
 
   stripe: {
