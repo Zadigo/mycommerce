@@ -158,7 +158,8 @@ export default defineI18nLocale(async locale => {
     "Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone": "Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone",
     "Je veux recevoir les nouveautés et des communications commerciales personnalisées de BERSHKA par e-mail ou d'autres moyens": "Je veux recevoir les nouveautés et des communications commerciales personnalisées de BERSHKA par e-mail ou d'autres moyens",
     "J'ai lu et j'accepte les Conditions générales et je comprends les informations sur le traitement de mes données personnelles expliquées dans la": "J'ai lu et j'accepte les Conditions générales et je comprends les informations sur le traitement de mes données personnelles expliquées dans la",
-    "Ecris les produits à rechercher": "Ecris les produits à rechercher"
+    "Ecris les produits à rechercher": "Ecris les produits à rechercher",
+    "Erreur 500": "Erreur 500"
   }
 })
 

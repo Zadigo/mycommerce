@@ -9,7 +9,7 @@
 
           <TailButton variant="outline" as-child >
             <NuxtLink id="link-wishlist" to="/wishlist" @click="showCartDrawer = false">
-              <font-awesome :icon="['far', 'heart']" class="me-2" />
+              <Icon name="i-fa7-regular:heart" class="me-2" />
               {{ $t('Favoris') }}
             </NuxtLink>
           </TailButton>
@@ -87,7 +87,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { ProductToEdit } from '~/types';
+import type { ProductToEdit } from '~/types'
 
 const toLocalePath = useLocalePath()
 const router = useRouter()

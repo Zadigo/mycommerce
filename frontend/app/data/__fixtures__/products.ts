@@ -1,6 +1,6 @@
 import type { Product, ProductsApiResponse } from '~/types'
 
-export const testProduct: Product = {
+export const productFixture: Product = {
   id: 1,
   name: 'Some Name',
   active: true,
@@ -78,12 +78,12 @@ export const testProduct: Product = {
   ]
 }
 
-export const testProductApiResponse: ProductsApiResponse = {
+export const productApiResponseFixture: ProductsApiResponse = {
   count: 1,
   limit: 30,
   next: null,
   previous: null,
   results: [
-    testProduct
+    productFixture
   ] 
 }

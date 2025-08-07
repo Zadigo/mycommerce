@@ -159,7 +159,8 @@ export default defineI18nLocale(async locale => {
     "Je veux recevoir les nouveautés et des communications commerciales personnalisées de BERSHKA par e-mail ou d'autres moyens": "Je veux recevoir les nouveautés et des communications commerciales personnalisées de BERSHKA par e-mail ou d'autres moyens",
     "J'ai lu et j'accepte les Conditions générales et je comprends les informations sur le traitement de mes données personnelles expliquées dans la": "J'ai lu et j'accepte les Conditions générales et je comprends les informations sur le traitement de mes données personnelles expliquées dans la",
     "Policy: account": "BERSHKA prend très au sérieux le respect de votre vie privée et nous sommes engagés dans la protection de vos données personnelles. Découvrez comment nous prenons soin et comment nous traitons vos données dans notre",
-    "Ecris les produits à rechercher": "Ecris les produits à rechercher"
+    "Ecris les produits à rechercher": "Ecris les produits à rechercher",
+    "Erreur 500": "Erreur 500"
   }
 })
 
