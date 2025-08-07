@@ -22,19 +22,8 @@ import { useRefHistory } from '@vueuse/core'
 import type { ProductSizes } from '~/types'
 import type { DefaultClotheSize } from '~/data'
 
-defineProps({
-  sizes: {
-    type: Array as PropType<ProductSizes[]>,
-    required: true,
-    default: () => []
-  }
-})
-
-const emit = defineEmits({
-  'update-size' (_size: DefaultClotheSize) {
-    return true
-  }
-})
+defineProps<{ sizes: ProductSizes[] }>()
+const emit = defineEmits<{ 'update-size': [size: DefaultClotheSize] }>()
 
 const selectedSize = ref<DefaultClotheSize>()
 useRefHistory(selectedSize)

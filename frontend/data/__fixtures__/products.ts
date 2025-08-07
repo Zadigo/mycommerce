@@ -1,4 +1,4 @@
-import type { Product } from '~/types'
+import type { Product, ProductsApiResponse } from '~/types'
 
 export const testProduct: Product = {
   id: 1,
@@ -76,4 +76,14 @@ export const testProduct: Product = {
       tags: ['Skirt']
     }
   ]
+}
+
+export const testProductApiResponse: ProductsApiResponse = {
+  count: 1,
+  limit: 30,
+  next: null,
+  previous: null,
+  results: [
+    testProduct
+  ] 
 }

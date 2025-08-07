@@ -247,30 +247,15 @@ CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
-    r'(http|capacitor)://localhost:8\d00'
-    r'^https:\/\/[a-z0-9\-]+\.ngrok-free.app'
+    r'^https?\:\/\/localhost\:8080$'
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-    'http://localhost:9000',
-
-    'http://localhost:8100',
-    'http://localhost:8080',
-    'http://localhost:3000',
-    'https://*.ngrok-free.app',
-    'capacitor://localhost:8100'
+    'http://localhost:3000'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173',
-    'http://localhost:9000',
-
-    'http://localhost:8100',
-    'http://localhost:8080',
-    'http://localhost:3000',
-    'https://*.ngrok-free.app',
-    'capacitor://localhost:8100'
+    'http://localhost:3000'
 ]
 
 

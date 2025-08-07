@@ -45,30 +45,17 @@
 <script setup lang="ts">
 import type { Product } from '~/types'
 
-const props = defineProps({
-  products: {
-    type: Array as PropType<Product[]>,
-    default: () => []
-  },
-  count: {
-    type: Number,
-    default: 0
-  }
-})
+const props = defineProps<{
+  products: Product[]
+  count: number
+}>()
 
-const emit = defineEmits({
-  'update:grid-size' (size: number) {
-    return [3, 4].includes(size)
-  },
-  'update:sorting' (_value: string) {
-    return true
-  },
-  'product-filters' () {
-    return true
-  }
-})
+const emit = defineEmits<{
+  'update:grid-size': [size: number]
+  'product-filters': []
+}>()
 
-const gridSize = ref(3)
+const gridSize = ref<number>(3)
 const productsLoading = inject<boolean>('productsLoading')
 
 /**

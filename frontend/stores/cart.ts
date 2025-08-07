@@ -54,7 +54,7 @@ export const useCart = defineStore('cart', () => {
    */
   const userSelection = ref<UserSelection>({
     id: null,
-    size: null,
+    size: 'Unique',
     quantity: 1,
     product: {},
     session_id: null
@@ -168,7 +168,7 @@ export const useCart = defineStore('cart', () => {
    * 
    */
   function resetSelection() {
-    userSelection.value.size = null
+    userSelection.value.size = 'Unique'
     userSelection.value.product = {}
     console.log('resetSelection')
   }
@@ -184,7 +184,7 @@ export const useCart = defineStore('cart', () => {
    * @param callback A callback function that accepts the Api's response data
    * 
    */
-  async function addToCart(product: Product | null | undefined, size?: string | number | null, callback?: FunctionCallback) {
+  async function addToCart(product: Product | null | undefined, size?: DefaultClotheSize, callback?: FunctionCallback) {
     if (!product) {
       console.error('Product is empty')
       return

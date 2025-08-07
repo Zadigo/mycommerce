@@ -10,43 +10,24 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
-import type { Product } from '~/types';
+import type { Product } from '~/types'
 
-defineProps({
-  products: {
-    type: Array as PropType<Product[] | null | undefined>,
-    default: () => [],
-    required: true
-  },
-  columns: {
-    type: Number,
-    default: 3
-  },
-  showLikeButton: {
-    type: Boolean,
-    default: true
-  },
-  showCart: {
-    type: Boolean,
-    default: true
-  },
-  showPrices: {
-    type: Boolean,
-    default: true
-  }
-})
-
-const emit = defineEmits({
+const emit = defineEmits<{ 
   /** 
    * This emit is used to indicate to parent components
    * hosting this component that a navigation occured. This
    * is useful for Google Analytics for example
    */
-  'has-navigated'(_data: (number | Product)[]) {
-    return true
-  }
-})
+  'has-navigated': [data: (number | Product)[]]
+}>()
+
+const { showPrices = true, showCart = true, showLikeButton = true } = defineProps<{
+  products: Product[] | null | undefined
+  columns?: number
+  showLikeButton?: boolean
+  showCart?: boolean
+  showPrices?: boolean
+}>()
 
 /**
  * Function used to indicate to the parent that an

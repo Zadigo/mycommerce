@@ -51,20 +51,16 @@
 import { useIntersectionObserver, useLocalStorage  } from '@vueuse/core'
 import type { Product, ProductsApiResponse, ProductsQuery, SelectedFilters } from '~/types'
 
-const emit = defineEmits({
-  'products-loaded' (_data: Product[]) {
-    return true
-  },
-  'products-filter'() {
-    return true
-  }
-})
+const emit = defineEmits<{
+  'products-loaded': [data: Product[]]
+  'products-filter': []
+}>()
 
 const { id } = useRoute().params
 const currentGridSize = useLocalStorage('grid', 3)
 
 // const { gtag } = useGtag()
-const { handleError } = useErrorHandler()
+const { customHandleError } = useErrorHandler()
 
 const isLoadingMoreProducts = ref(false)
 const products = ref<Product[]>([])
@@ -88,7 +84,7 @@ const { data, status, error, refresh } = await useFetch<ProductsApiResponse>(`/a
     //   fatal: true, 
     //   description: error?.message
     // })
-    handleError(error)
+    customHandleError(error)
   },
   transform(data) {
     cachedResponse.value = data
@@ -110,6 +106,8 @@ const { data, status, error, refresh } = await useFetch<ProductsApiResponse>(`/a
     return data
   }
 })
+
+console.log(error.value)
 
 if (error.value) {
   throw createError({
@@ -185,6 +183,7 @@ async function requestOffsetProducts(offset: number) {
 /**
  * Main logic that loads more products into the feed once
  * the user has reached the limit of the intersection 
+ * @todo Protect by running this ONLY on client side
  */
 useIntersectionObserver(intersectionTarget, ([{ isIntersecting }]) => {
   if (isIntersecting && cachedResponse.value?.next) {

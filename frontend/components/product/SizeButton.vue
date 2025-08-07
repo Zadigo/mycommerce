@@ -15,24 +15,12 @@ const emit = defineEmits({
   }
 })
 
-const props = defineProps({
-  size: {
-    type: Object as PropType<ProductSizes>,
-    required: true
-  },
-  selectedSize: {
-    type: String as PropType<DefaultClotheSize>,
-    default: null
-  },
-  selectable: {
-    type: Boolean,
-    default: true
-  },
-  customClass: {
-    type: String,
-    default: ''
-  }
-})
+const props = defineProps<{
+  size: ProductSizes,
+  selectedSize: DefaultClotheSize,
+  selectable?: boolean,
+  customClass?: string
+}>()
 
 const isSelected = computed(() => {
   return props.size.name === props.selectedSize

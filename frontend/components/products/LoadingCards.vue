@@ -7,10 +7,5 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
-  quantity: {
-    type: Number,
-    default: 10
-  }
-})
+defineProps<{ quantity?: number }>()
 </script>

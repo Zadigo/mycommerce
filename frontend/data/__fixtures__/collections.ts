@@ -1,4 +1,4 @@
-import type { CollectionApiResponse, ProductCollection } from '~/types'
+import type { CollectionApiResponse } from '~/types'
 
 export const testCollection: CollectionApiResponse[] = [
   {

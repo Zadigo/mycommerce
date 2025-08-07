@@ -16,26 +16,6 @@
   </NuxtLayout>
 </template>
 
-<script lang="ts">
-// useSchemaOrg([
-//   defineWebSite({
-//     potentialAction: [
-//       defineSearchAction({
-//         target: '/search?q={search}'
-//       })
-//     ]
-//   }),
-//   defineWebPage({
-//     '@type': ['CollectionPage', 'AboutPage', 'FAQPage']
-//   })
-// ])
-
-useScript({
-  async: true,
-  src: 'https://js.stripe.com/v3/'
-})
-</script>
-
 <script setup lang="ts">
 import 'animate.css'
 
@@ -45,7 +25,6 @@ import { baseSessionCacheData } from '~/data'
 
 import type { SessionCacheData } from '~/types'
 import type { ExtendedLocationQuery } from './types'
-
 
 const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData)
 const likedProducts = useLocalStorage<number[]>('likedProducts', [])
@@ -57,18 +36,10 @@ const cartStore = useCart()
 
 // Use secure cookies (with sameSite strict, secure enabled)
 const cookieOptions = { sameSite: 'strict', secure: true } as const
-const accessToken = useCookie('access', cookieOptions)
-const refreshToken = useCookie('refresh', cookieOptions)
 const cookieSessionId = useCookie('sessionId', cookieOptions)
 
 const { $client, $fireStore } = useNuxtApp()
 const { customHandleError } = useErrorHandler()
-const isMmobile = useMediaQuery('(min-width: 320px)').value
-const { isSupported: screenOrientation } = useScreenOrientation()
-
-provide('isMobile', isMmobile)
-provide('screenOrientation', screenOrientation)
-provide('documentVisible', useDocumentVisibility())
 
 // Watch route query for login parameter to open login drawer
 watch((): ExtendedLocationQuery => route.query, (newValue) => {
@@ -76,6 +47,9 @@ watch((): ExtendedLocationQuery => route.query, (newValue) => {
     authenticationStore.showLoginDrawer = true
   }
 })
+
+const accessToken = useCookie('access', cookieOptions)
+const refreshToken = useCookie('refresh', cookieOptions)
 
 watch([accessToken, refreshToken], ([access, refresh]) => {
   authenticationStore.accessToken = access
@@ -167,5 +141,34 @@ onMounted(() => {
       devtools.style.bottom = '2%'
     }
   }
+})
+
+/**
+ * Provides global state to the app
+ */
+
+const isMmobile = useMediaQuery('(min-width: 320px)').value
+const { isSupported: screenOrientation } = useScreenOrientation()
+
+provide('isMobile', isMmobile)
+provide('screenOrientation', screenOrientation)
+provide('documentVisible', useDocumentVisibility())
+
+// useSchemaOrg([
+//   defineWebSite({
+//     potentialAction: [
+//       defineSearchAction({
+//         target: '/search?q={search}'
+//       })
+//     ]
+//   }),
+//   defineWebPage({
+//     '@type': ['CollectionPage', 'AboutPage', 'FAQPage']
+//   })
+// ])
+
+useScript({
+  async: true,
+  src: 'https://js.stripe.com/v3/'
 })
 </script>
