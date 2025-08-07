@@ -93,6 +93,29 @@ services:
     networks:
       - ecommerce
 
+  reviews:
+    build: ./myreviews
+    container_name: app_reviews
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.reviews.entrypoints=websecure
+      - traefik.http.routers.reviews.rule=Host(`reviews.example.com`)
+      - traefik.http.routers.reviews.tls=true
+      - traefik.http.routers.reviews.tls.certresolver=production
+      - traefik.http.services.reviews-service.loadbalancer.server.port=8000
+      - traefik.http.routers.reviews.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    env_file:
+      - ./docker/environment/django.env
+      - ./docker/environment/global.env
+      - ./docker/environment/redis.env
+    volumes:
+      - ./myreviews:/code
+      - ./myreviews/media:/code/media:rw
+    networks:
+      - ecommerce
+
   db:
     build: ./docker/database
     container_name: app_database
