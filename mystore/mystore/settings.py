@@ -69,7 +69,6 @@ INSTALLED_APPS = [
     'cart',
     'orders',
     'shipments',
-    'reviews',
     'stocks',
 
     'adminapi'

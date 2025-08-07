@@ -1,10 +1,10 @@
 export interface Text {
-    title?: string
-    content: string | string[]
+  title?: string
+  content: string | string[]
 }
 
 export interface TextBlock {
-    id?: string
-    title: string
-    items: (string | string[] | Text)[]
+  id?: string
+  title: string
+  items: (string | string[] | Text)[]
 }

@@ -4,18 +4,18 @@ import type { Profile, SessionCacheData } from '~/types'
 
 // General properties for all stores
 declare module 'pinia' {
-    export interface PiniaCustomProperties {
-        sessionCache: Ref<SessionCacheData>
-    }
-    export interface PiniaCustomStateProperties {
-        sessionCache: SessionCacheData
-    }
+  export interface PiniaCustomProperties {
+    sessionCache: Ref<SessionCacheData>
+  }
+  export interface PiniaCustomStateProperties {
+    sessionCache: SessionCacheData
+  }
 }
 
 declare module 'pinia' {
-    export interface PiniaCustomProperties {
-        profile?: ComputedRef<Profile>
-    }
+  export interface PiniaCustomProperties {
+    profile?: ComputedRef<Profile>
+  }
 }
 
 // Specific properties for the authentication store
