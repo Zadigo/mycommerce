@@ -18,18 +18,11 @@ export const defaultColors = [
 
 export type DefaultColors = (typeof defaultColors)[number] | (string & {})
 
-
-/**
- * 
- */
 export interface DefaultSizes {
   clothes: DefaultClotheSize[]
 }
 
-/**
- * TODELETE: What is the utility of this? 
- */
-export const defaultSizes: { clothes: DefaultClotheSize[] } = {
+export const defaultSizes: DefaultSizes = {
   clothes: [
     'XS',
     'S',
