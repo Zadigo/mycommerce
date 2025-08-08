@@ -28,44 +28,29 @@
       {{ $t('Me tenir informer') }}
     </TailButton>
     <TailButton v-else id="action-add-cart" class="mt-5 me-2 place-content-cetner" :disabled="false" @click="proxyAddToCart">
-      <font-awesome v-if="stockState && stockState.almost_sold_out" icon="clock" class="me-1" />
+      <Icon v-if="stockState && stockState.almost_sold_out" name="i-fa7-solid:clock" class="me-1" />
       {{ $t('Ajouter au panier') }}
     </TailButton>
 
     <TailButton id="action-add-favorite" :aria-label="$t('Ajouter au favori')" class="mt-5" variant="outline" @click="proxyHandleLike">
-      <font-awesome v-if="isLiked" icon="heart" />
-      <font-awesome v-else :icon="['far', 'heart']" />
+      <Icon v-if="isLiked" name="i-fa7-solid:heart" />
+      <Icon v-else name="i-fa7-regular:heart" />
     </TailButton>
   </div>
 </template>
 
 <script setup lang="ts">
-import { doc, updateDoc, getDoc } from 'firebase/firestore'
-import { useStorage } from '@vueuse/core'
-
-import type { PropType } from 'vue'
-import type { Product, ProductStockApiResponse } from '~/types'
 import type { DefaultClotheSize } from '~/data'
+import type { Product, ProductStockApiResponse } from '~/types'
 
-const props = defineProps({
-  product: {
-    type: Object as PropType<Product | null | undefined>,
-    required: true
-  }
-})
-
-const emit = defineEmits({
-  'show-size-guide'() {
-    return true
-  }
-})
+const props = defineProps<{ product: Product | null | undefined }>()
+const emit = defineEmits<{ 'show-size-guide': [] }>()
 
 const stockState = inject<ProductStockApiResponse>('stockState')
 
-const { $fireStore } = useNuxtApp()
 const cartStore = useCart()
 const { userSelection, showSizeSelectionWarning } = storeToRefs(cartStore)
-const { isLiked, handleLike } = useLikeComposable(props.product)
+const { isLiked, like } = useLikeComposable(props.product)
 
 const showAvailabilityModal = ref(false)
 
@@ -81,23 +66,25 @@ const sizeObject = computed(() => {
  * 
  */
 function proxyHandleLike() {
-  handleLike()
-
-  // TODO: G-Analytics
-  // gtag('event', 'add_to_wishlist', {
-  //   items: {
-  //     item_id: props.product?.id,
-  //     item_name: props.product?.name,
-  //     price: props.product?.get_price,
-  //     quantity: 1,
-  //     item_brand: null,
-  //     item_category: props.product?.category,
-  //     item_category2: props.product?.sub_category,
-  //     item_variant: props.product?.color,
-  //     index: 0,
-  //     item_reference: null
-  //   }
-  // })
+  if (like) {
+    like()
+  
+    // TODO: G-Analytics
+    // gtag('event', 'add_to_wishlist', {
+    //   items: {
+    //     item_id: props.product?.id,
+    //     item_name: props.product?.name,
+    //     price: props.product?.get_price,
+    //     quantity: 1,
+    //     item_brand: null,
+    //     item_category: props.product?.category,
+    //     item_category2: props.product?.sub_category,
+    //     item_variant: props.product?.color,
+    //     index: 0,
+    //     item_reference: null
+    //   }
+    // })
+  }
 }
 
 /**
@@ -108,7 +95,7 @@ function proxyHandleLike() {
  */
 async function proxyAddToCart() {
   if (props.product) {
-    cartStore.addToCart(props.product, null, async (data) => {
+    cartStore.addToCart(props.product, 'Unique', async (data) => {
       console.log('proxyAddToCart', data)
 
       if (cartStore.sessionCache) {

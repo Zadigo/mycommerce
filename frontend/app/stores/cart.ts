@@ -274,6 +274,10 @@ export const useCart = defineStore('cart', () => {
     handleSizeSelection,
     deleteFromCart,
     showSizeSelectionWarning,
+    /**
+     * Container used to save the user selections
+     * when trying to add a product to the cart 
+     */
     userSelection,
     addingToCartState,
     sessionCache,

@@ -1,5 +1,5 @@
 <template>
-  <article :data-id="product.id" :aria-label="product.name" class="relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
+  <article class="relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
     <div v-if="product.display_new" class="absolute right-1/16 top-1/30 z-10">
       <TailBadge>
         {{ $t('Nouveau') }}
@@ -7,7 +7,7 @@
     </div>
     
     <!-- Carousel -->
-    <ProductCardCarousel :product="product" :is-hovered="isHovered" :show-carousel="showCarousel" @has-navigated="emit('has-navigated', [index, product])" />
+    <ProductCardCarousel :product="product" :index="index" :is-hovered="isHovered" :show-carousel="showCarousel" @has-navigated="emit('has-navigated', [index, product])" />
     
     <!-- Cart -->
     <ProductCardCart :product="product" :is-hovered="isHovered" :show-cart="showCart" />
@@ -33,7 +33,7 @@
       
       <div class="flex align-center">
         <button type="button" class="bg-white rounded-full p-2" @click="proxyHandleLike">
-          <Icon v-if="isLiked" name="fa:heart" size="13" />
+          <Icon v-if="isLiked" name="i-fa7-solid:heart" size="13" />
           <Icon v-else name="i-fa7-regular:heart" size="13" />
         </button>
       </div>
@@ -42,71 +42,48 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue'
 import type { Product } from '~/types'
 
-const props = defineProps({
-  index: {
-    type: Number,
-    required: false,
-    default: null
-  },
-  product: {
-    type: Object as PropType<Product>,
-    required: true
-  },
-  showLikeButton: {
-    type: Boolean,
-    default: true
-  },
-  showCarousel: {
-    type: Boolean,
-    default: true
-  },
-  showCart: {
-    type: Boolean,
-    default: true
-  },
-  showPrices: {
-    type: Boolean,
-    default: true
-  }
-})
-
-const emit = defineEmits({
-  /** 
-   * This emit is used to indicate to parents
-   * hosting this component that a navigation occured. This
-   * is useful for Google Analytics for example or for passing
-   * information on a product on which the link was clicked
-   */
-  'has-navigated'(_data: (number | Product)[]) {
-    return true
-  }
-})
+const props = defineProps<{
+  index: number
+  product: Product
+  showLikeButton?: boolean
+  showCarousel?: boolean
+  showCart?: boolean
+  showPrices?: boolean
+}>()
+/** 
+ * This emit is used to indicate to parents
+ * hosting this component that a navigation occured. This
+ * is useful for Google Analytics for example or for passing
+ * information on a product on which the link was clicked
+ */
+const emit = defineEmits<{ 'has-navigated': [data: (number | Product)[]] }>()
 
 // const { gtag } = useGtag()
-const { handleLike, isLiked } = useLikeComposable(props.product)
+const { like, isLiked } = useLikeComposable(props.product)
 
 function proxyHandleLike () {
-  handleLike()
-
-  // TODO: G-Analytics
-  // gtag('event', 'add_to_wishlist', {
-  //   items: {
-  //     item_id: props.product?.id,
-  //     item_name: props.product?.name,
-  //     price: props.product?.get_price,
-  //     quantity: 1,
-  //     item_brand: null,
-  //     item_category: props.product?.category,
-  //     item_category2: props.product?.sub_category,
-  //     item_variant: props.product?.color,
-  //     index: 0,
-  //     item_reference: null
-  //   }
-  // })
+  if (like) {
+    like()
+    
+    // TODO: G-Analytics
+    // gtag('event', 'add_to_wishlist', {
+    //   items: {
+    //     item_id: props.product?.id,
+    //     item_name: props.product?.name,
+    //     price: props.product?.get_price,
+    //     quantity: 1,
+    //     item_brand: null,
+    //     item_category: props.product?.category,
+    //     item_category2: props.product?.sub_category,
+    //     item_variant: props.product?.color,
+    //     index: 0,
+    //     item_reference: null
+    //   }
+    // })
+  }
 }
 
-const isHovered = ref(false)
+const isHovered = ref<boolean>(false)
 </script>

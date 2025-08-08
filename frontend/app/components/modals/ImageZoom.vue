@@ -30,7 +30,7 @@ const emit = defineEmits<{
   'select-image': [image: ProductImage]
 }>()
 
-const { handleSelectedImage } = useImages()
+const { handleSelectedImage } = useImagesComposable()
 const show = useVModel(props, 'modelValue', emit, {
   passive: true,
   defaultValue: false

@@ -1,21 +1,8 @@
 <template>
   <aside v-if="product" id="product-details" class="col-span-4 px-10">
-    <h1 id="product-name" :aria-label="product.color_variant_name" class="text-lg mt-5 font-normal">
-      {{ product.name }}
-    </h1>
-    
-    <template v-if="product">
-      <div v-if="product.on_sale" class="font-bold text-lg inline-flex gap-2 mt-1">
-        <span class="text-red-400">{{ $n(parseInt(product.get_price), 'currency') }}</span>
-        <span class="text-black"><s>{{ $n(parseInt(product.unit_price), 'currency') }}</s></span>
-      </div>
+    <ProductPageAsideInfo :product="product" />
 
-      <p v-else class="font-bold text-xl mt-1">
-        {{ $n(parseInt(product.get_price), 'currency') }}
-      </p>
-    </template>
-
-    <div v-if="product.variants" id="variants" class="my-5 flex gap-2 h-auto w-full">
+    <div v-if="hasColorVariants" id="variants" class="my-5 flex gap-2 h-auto w-full">
       <NuxtLinkLocale  id="link-product-variant" v-for="variant in product.variants" :key="variant.id" :to="`/shop/${variant.id}`" aria-current="true">
         <NuxtImg :src="mediaPath(variant.get_main_image?.original, '/placeholder.svg')" alt="variant.name" width="50" class="cursor-pointer hover:opacity-80" />
       </NuxtLinkLocale >
@@ -50,30 +37,10 @@
 import type { Product } from '~/types'
 
 const props = defineProps<{ product: Product | null | undefined }>()
-
-const emit = defineEmits({
-  'show-size-guide' () {
-    return true
-  },
-  'show-delivery-guide'() {
-    return true
-  },
-  'show-composition-guide'() {
-    return true
-  }
-})
+const emit = defineEmits<{ 'show-size-guide': [], 'show-delivery-guide': [], 'show-composition-guide': [] }>()
 
 const { mediaPath } = useDjangoUtilies()
-// const { gtag } = useGtag()
+const { hasColorVariants } = useProductComposable(props.product)
 
-/**
- * Indicates if the product has other color variants
- */
-const hasColorVariants = computed(() => {
-  if (props.product) {
-    return props.product.variants.length > 0
-  } else {
-    return false
-  }
-})
+// const { gtag } = useGtag()
 </script>

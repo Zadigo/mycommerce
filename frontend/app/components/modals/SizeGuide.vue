@@ -96,7 +96,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  'update:modelValue': [_value: boolean]
+  'update:modelValue': [value: boolean]
 }>()
 
 const cartStore = useCart()

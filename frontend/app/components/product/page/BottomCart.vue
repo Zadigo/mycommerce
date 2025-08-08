@@ -17,12 +17,6 @@
       </div>
 
       <div class="flex justify-around align-center gap-2">
-        <DevOnly>
-          <span>
-            {{ y }}
-          </span>
-        </DevOnly>
-
         <TailSelect v-model="selectedSize" class="w-[200px]">
           <TailSelectTrigger>
             <TailSelectValue>
@@ -52,35 +46,17 @@
 // import { doc, updateDoc, getDoc } from 'firebase/firestore'
 import type { Product } from '~/types'
 
-const cartStore = useCart()
-const { userSelection, showSizeSelectionWarning } = storeToRefs(cartStore)
 // const { $fireStore } = useNuxtApp()
 
-const props = defineProps({
-  product: {
-    type: Object as PropType<Product>,
-    default: () => {},
-    required: true
-  },
-  showBanner: {
-    type: Boolean,
-    default: false
-  },
-  y: {
-    type: Number,
-    default: 0
-  }
-})
+const cartStore = useCart()
+const { userSelection, showSizeSelectionWarning } = storeToRefs(cartStore)
 
-const emit = defineEmits({
-  'size-selected'(_value: string) {
-    return true
-  }
-})
+const { product, showBanner = false } = defineProps<{ product: Product, showBanner?: boolean }>()
+const emit = defineEmits<{ 'size-selected': [value: string] }>()
 
 const sizeNames = computed(() => {
-  if (props.product) {
-    return props.product.sizes.map(x => x.name)
+  if (product) {
+    return product.sizes.map(x => x.name)
   } else {
     return []
   }
@@ -89,7 +65,7 @@ const sizeNames = computed(() => {
 const selectedSize = computed({
   get: () => cartStore.userSelection.size,
   set: (value: string) => {
-    cartStore.handleSizeSelection(props.product, value)
+    cartStore.handleSizeSelection(product, value)
   }
 })
 
@@ -97,7 +73,7 @@ const selectedSize = computed({
  * 
  */
 async function handleProxyAddToCart() {
-  cartStore.addToCart(props.product, null, async (data) => {
+  cartStore.addToCart(product, 'Unique', async (data) => {
     console.log(data)
 
     // TODO: Firebase

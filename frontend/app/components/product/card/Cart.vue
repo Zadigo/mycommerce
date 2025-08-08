@@ -20,31 +20,18 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue'
 import type { Product } from '~/types'
 
-const props = defineProps({
-  product: {
-    type: Object as PropType<Product>,
-    required: true
-  },
-  isHovered: {
-    type: Boolean,
-    default: false
-  },
-  showCart: {
-    type: Boolean,
-    default: true
-  }
-})
+const props = defineProps<{
+  product: Product
+  isHovered?: boolean
+  showCart?: boolean
+}>()
 
 const cartStore = useCart()
-
 const { showAddedProductDrawer } = storeToRefs(cartStore)
 
-/**
- *
- */
+
 const requiresSizeItems = computed(() => {
   if (props.product) {
     return props.product.sizes.length > 0
@@ -55,7 +42,6 @@ const requiresSizeItems = computed(() => {
 
 /**
  * Adds a new product in the cart
- * 
  * @param size The size to associate the product in the cart with
  */
 async function handleAddToCart (size?: string | number) {

@@ -54,7 +54,6 @@ const productCount = computed(() => {
 /**
  * Callback function used to set the products loaded
  * in the async component feed back to here
- * 
  * @param data The product to use
  */
 function handleLoadedProducts(data: Product[]) {
@@ -65,7 +64,6 @@ function handleLoadedProducts(data: Product[]) {
 /**
  * Returns a list of products based on the filters
  * that were provided by the user
- * 
  * @param data The filtered products
  */
 function handleUpdateProducts(data: ProductsApiResponse) {

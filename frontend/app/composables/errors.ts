@@ -15,7 +15,7 @@ interface ErrorContext {
 export function useErrorHandler() {
   if (import.meta.server) {
     return {
-      customHandleError: (error: FetchError | Error) => {
+      customHandleError: (error: FetchError | Error | unknown) => {
         console.error(error)
       },
       globalError: ref<ErrorContext | null>(null)

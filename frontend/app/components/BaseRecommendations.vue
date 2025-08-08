@@ -1,5 +1,5 @@
 <template>
-  <div :data-count="quantity" class="recommendations">
+  <div class="recommendations">
     <h2 class="text-2xl font-bold text-center mb-5">
       {{ $t(blockTitle) }}
     </h2>
@@ -25,53 +25,33 @@ interface FetchOptions {
   q: number
 }
 
-const props = defineProps({
-  blockTitle: {
-    type: String,
-    default: "Cela peut t'intéresser"
-  },
-  quantity: {
-    type: Number,
-    default: 20
-  },
-  scrollable: {
-    type: Boolean
-  },
-  columns: {
-    type: Number,
-    default: 3
-  },
-  showLikeButton: {
-    type: Boolean,
-    default: false
-  },
-  showCarousel: {
-    type: Boolean,
-    default: true
-  },
-  showCart: {
-    type: Boolean,
-    default: true
-  },
-  showPrices: {
-    type: Boolean,
-    default: true
-  },
-  loadCache: {
-    type: Boolean,
-    default: false
-  }
-})
+const {
+  blockTitle = "Cela peut t'intéresser",
+  quantity = 20,
+  scrollable,
+  columns = 3,
+  showLikeButton,
+  showCarousel = true,
+  showCart = true,
+  showPrices = true,
+  loadCache
+} = defineProps<{
+  blockTitle?: string
+  quantity?: number
+  scrollable?: boolean
+  columns?: number
+  showLikeButton?: boolean
+  showCarousel?: boolean
+  showCart?: boolean
+  showPrices?: boolean
+  loadCache?: boolean
+}>()
 
-const emit = defineEmits({
-  'has-navigated'(_product: Product) {
-    return true
-  }
-})
+const emit = defineEmits<{ 'has-navigated': [product: Product] }>()
 
 // const { gtag } = useGtag()
 const { $client } = useNuxtApp()
-const { handleError } = useErrorHandler()
+const { customHandleError } = useErrorHandler()
 const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
 const shopStore = useShop()
 
@@ -112,17 +92,17 @@ const { data: recommendations } = await useAsyncData<Product[]>(
     return await $client('/api/v1/shop/products/recommendations', {
       params: {
         p: id,
-        q: props.quantity
+        q: quantity
       } as FetchOptions,
       onRequestError({ error }) {
-        handleError(error)
+        customHandleError(error)
       }
     })
   }
 )
 
 onMounted(async () => {
-  if (props.scrollable) {
+  if (scrollable) {
     if (productsRow.value) {
       productsRow.value.classList.add('products-wrapper')
     }

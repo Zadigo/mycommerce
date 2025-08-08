@@ -1,6 +1,6 @@
 import { FetchError } from 'ofetch'
 import { refreshAccessToken } from '~/utils'
-import { testProductApiResponse } from '~/data/__fixtures__/products'
+import { productFixture } from '~/data/__fixtures__/products'
 
 import type { Product } from '~/types'
 
@@ -11,16 +11,16 @@ export default defineCachedEventHandler(async event => {
   const refresh = getCookie(event, 'refresh')
   
   try {
-    // return testProductApiResponse
-    const response = await $fetch<Product[]>(`/api/v1/shop/products/${id}`, {
-      baseURL: useRuntimeConfig().public.prodDomain,
-      method: 'GET',
-      headers: [
-        ['Authorization', access ? `Token ${access}` : '']
-      ]
-    })
+    return productFixture
+    // const response = await $fetch<Product[]>(`/api/v1/shop/products/${id}`, {
+    //   baseURL: useRuntimeConfig().public.prodDomain,
+    //   method: 'GET',
+    //   headers: [
+    //     ['Authorization', access ? `Token ${access}` : '']
+    //   ]
+    // })
 
-    return response
+    // return response
   } catch (e) {
     if (e instanceof FetchError) {
       if (e.status === 401 && refresh) {
