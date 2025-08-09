@@ -1,7 +1,9 @@
 export type ProductSizes = {
   id: number;
   name: DefaultClotheSize;
+  metric: 'Clothe' | 'Shoe';
   availability: boolean;
+  active: boolean
 };
 
 declare type ProductSet = {
@@ -58,7 +60,7 @@ export type Product = {
   on_sale: boolean;
   display_new: boolean
   collection_set: ProductCollection[] | null;
-  get_main_image: ProductImage;
+  get_main_image: ProductImage | null;
   images: ProductImage[];
   model_height: string
   model_size: string

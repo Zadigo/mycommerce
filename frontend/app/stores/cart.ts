@@ -21,11 +21,6 @@ interface RequestData {
 type FunctionCallback = (data: CartUpdateApiResponse) => void
 
 export const useCart = defineStore('cart', () => {
-  // NOTE: This is overriden the plugins.pini_plugin.ts
-  // This is explicitly referenced here because there
-  // computed properties that depend on this. Maybe we
-  // should consider building them in the plugin directly
-  // in order to create logical dependency
   const sessionCache = ref<SessionCacheData>()
 
   const requestData = ref<RequestData>({
@@ -63,7 +58,6 @@ export const useCart = defineStore('cart', () => {
   const showSizeSelectionWarning = ref<boolean>(false)
   const addingToCartState = ref<boolean>(false)
 
-  
   const sessionId = computed(() => {
     if (sessionCache.value) {
       return sessionCache.value.cart?.session_id
@@ -81,9 +75,7 @@ export const useCart = defineStore('cart', () => {
     return []
   })
 
-  const hasProducts = computed((): boolean => {
-    return products.value.length > 0;
-  })
+  const hasProducts = computed(() => products.value.length > 0)
 
   /**
    * Counts the number of products in the cart
@@ -105,21 +97,23 @@ export const useCart = defineStore('cart', () => {
    * the dialog that shows the last product
    * that was added to the cart
    */
-  const lastAddedProduct = computed((): CartItem | null => {
-    if (products.value.length > 0) {
-      // return products.value[products.value.length - 1]
-      return products.value[0]
-    } else {
-      return null
-    }
-  })
+  // const lastAddedProduct = computed(() => {
+  //   if (products.value.length > 0) {
+  //     // return products.value[products.value.length - 1]
+  //     return products.value[0]
+  //   } else {
+  //     return null
+  //   }
+  // })
+  
+  const { last: lastAddedProduct } = useRefHistory(products)
 
   /**
    * Calculate the cart total dynamically which is
    * the amount of similar products that were added
    * to the cart multiplied by their respective prices
    */
-  const cartTotal = computed((): number => {
+  const cartTotal = computed(() => {
     if (hasProducts.value) {
       if (sessionCache.value && sessionCache.value.cart) {
         return sessionCache.value.cart.statistics.map(x => x.total).reduce((a, b) => a + b, 0)
@@ -133,9 +127,9 @@ export const useCart = defineStore('cart', () => {
    * attain in order to get free
    * delivery on his cart total
    */
-  const freeDeliveryTarget = computed((): number => {
+  const freeDeliveryTarget = computed(() => {
     const difference = 50 - cartTotal.value
-    return difference < 0 ? 0 : difference;
+    return difference < 0 ? 0 : difference
   })
 
   /**
@@ -184,7 +178,7 @@ export const useCart = defineStore('cart', () => {
    * @param callback A callback function that accepts the Api's response data
    * 
    */
-  async function addToCart(product: Product | null | undefined, size?: DefaultClotheSize, callback?: FunctionCallback) {
+  async function addToCart(product: Product | null | undefined, size?: DefaultClotheSize | undefined, callback?: FunctionCallback) {
     if (!product) {
       console.error('Product is empty')
       return
@@ -206,8 +200,10 @@ export const useCart = defineStore('cart', () => {
       addingToCartState.value = false
       return
     }
-
+    
     const { $client, vueApp } = useNuxtApp()
+
+    console.log($client)
 
     const response = await $client<CartUpdateApiResponse>('/api/v1/cart/add', {
       method: 'POST',
@@ -237,14 +233,9 @@ export const useCart = defineStore('cart', () => {
    * @param callback A callback function that accepts the data of the product to edit and the Api's resposne data
    */
   async function deleteFromCart(cartItem: ProductToEdit, callback?: (deletedItem: ProductToEdit, updatedCart: CartUpdateApiResponse) => void) {
-    console.log('deleteFromCart', cartItem)
     if (sessionId.value) {
-      console.log(sessionId.value)
-
       const { payload } = useJwt<JWTData>(sessionId.value)
       const { $client } = useNuxtApp()
-
-      console.log(payload.value)
 
       if (payload.value) {
         const response = await $client<CartUpdateApiResponse>(
@@ -259,8 +250,6 @@ export const useCart = defineStore('cart', () => {
           }
         )
 
-        console.log('deleteFromCart', payload)
-        
         // if (callback && typeof callback === 'function') {
         //   callback.call(cartItem, response)
         // }
@@ -269,10 +258,34 @@ export const useCart = defineStore('cart', () => {
   }
 
   return {
+    /**
+     * Removes a product from the cart
+     * @param cartItem The data of the product to remove
+     */
     removeFromCart,
+    /**
+     * Adds a product to the cart
+     * @param product The product to add
+     * @param size The selected size for the given product
+     * @param callback A callback function that accepts the Api's response data
+     */
     addToCart,
+    /**
+     * Handles the action of selecting a size for a given product
+     * @param product The product to use
+     * @param size The selected size for the given product
+     */
     handleSizeSelection,
+    /**
+     * Handles the action of removing a product from the cart
+     * @param cartItem The data of the product to remove
+     */
     deleteFromCart,
+    /**
+     * Handles the action of showing the size selection warning
+     * when the product requires a size to be selected other
+     * than "Unique"
+     */
     showSizeSelectionWarning,
     /**
      * Container used to save the user selections

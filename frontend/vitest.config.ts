@@ -21,6 +21,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '~': path.resolve(__dirname, './app'),
       '#app': path.resolve(__dirname, './node_modules/nuxt/dist/app'),
       'firebase/firestore': path.resolve(__dirname, 'tests/__mocks__/firebase/firestore.ts'),
       'firebase/app': path.resolve(__dirname, 'tests/__mocks__/firebase/app.ts'),

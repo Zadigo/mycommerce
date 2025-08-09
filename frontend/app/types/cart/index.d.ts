@@ -25,11 +25,13 @@ export type AddToCartData = {
   session_id: string;
 };
 
+export type ProductForCart = Omit<Product, 'variants'>;
+
 export interface CartItem {
   id: number;
-  product: Product;
+  product: ProductForCart;
   size: DefaultClotheSize;
-  price: number;
+  price: string | number;
   created_on: string;
 }
 

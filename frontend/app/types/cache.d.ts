@@ -1,4 +1,5 @@
 import type { Profile } from './accounts'
+import type { CartUpdateApiResponse } from './cart'
 
 export type LanguageOptions = {
   location: string | null //TODELETE: This is now saved in the cookie
