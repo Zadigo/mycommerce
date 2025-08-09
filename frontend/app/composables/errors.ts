@@ -1,4 +1,3 @@
-import { ref } from 'vue'
 import { FetchError } from 'ofetch'
 
 interface ErrorContext {
@@ -27,7 +26,7 @@ export function useErrorHandler() {
   // Global error state (optional, can be used for error logging or global error display)
   const globalError = ref<ErrorContext | null>(null)
 
-  function displayToast(title: string, description: string) {
+  function displayToast(title: string, description: string, error: FetchError | Error | unknown) {
     $toast.error(title, {
       description,
       position: 'top-center'
@@ -38,7 +37,7 @@ export function useErrorHandler() {
   function handleBadRequest(error: FetchError) {
     const errorMessage = error.message || 'Invalid request'
 
-    displayToast('Bad Request', errorMessage)
+    displayToast('Bad Request', errorMessage, error)
 
     globalError.value = {
       message: errorMessage,
@@ -46,28 +45,28 @@ export function useErrorHandler() {
     }
   }
 
-  function handleUnauthorized(_error: FetchError) {
-    displayToast('Unauthorized', 'Please log in again')
+  function handleUnauthorized(error: FetchError) {
+    displayToast('Unauthorized', 'Please log in again', error)
   }
 
-  function handleForbidden(_error: FetchError) {
-    displayToast('Access Denied', 'You do not have permission to perform this action')
+  function handleForbidden(error: FetchError) {
+    displayToast('Access Denied', 'You do not have permission to perform this action', error)
   }
 
-  function handleNotFound(_error: FetchError) {
-    displayToast('Not Found', 'The requested resource could not be found')
+  function handleNotFound(error: FetchError) {
+    displayToast('Not Found', 'The requested resource could not be found', error)
   }
   
   function handleServerError(error: FetchError) {
-    displayToast('Server Error', 'An unexpected error occurred. Our team has been notified.')
+    displayToast('Server Error', 'An unexpected error occurred. Our team has been notified.', error)
   }
 
   function handleGenericError(error: Error) {
-    displayToast('Error', error.message)
+    displayToast('Error', error.message, error)
   }
 
   function handleUnknownError(error: unknown) {
-    displayToast('Unexpected Error', 'An unknown error occurred')
+    displayToast('Unexpected Error', 'An unknown error occurred', error)
     // Potentially log the entire error object for debugging
     console.error('Unhandled error:', error)
   }
