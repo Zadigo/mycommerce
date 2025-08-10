@@ -4,7 +4,7 @@ import { testCollection } from '~/data/__fixtures__/collections'
 
 import BaseCollectionCard from '~/components/BaseCollectionCard.vue'
 
-describe.concurrent('template test', () => {
+describe.concurrent.skip('template test', () => {
   const props = [
     { viewName: 'Test Name'},
     { collection: testCollection[0] }

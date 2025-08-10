@@ -25,7 +25,8 @@ vi.mock('#app', async () => {
       t: (key: string) => key,
       locale: 'fr',
       setLocale: vi.fn()
-    })
+    }),
+    useSchemaOrg: vi.fn()
   }
 })
 
