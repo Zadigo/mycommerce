@@ -45,15 +45,8 @@
 <script setup lang="ts">
 import type { Product } from '~/types'
 
-const props = defineProps<{
-  products: Product[]
-  count: number
-}>()
-
-const emit = defineEmits<{
-  'update:grid-size': [size: number]
-  'product-filters': []
-}>()
+const props = defineProps<{ products: Product[], count: number }>()
+const emit = defineEmits<{ 'update:grid-size': [size: number], 'product-filters': [] }>()
 
 const gridSize = ref<number>(3)
 const productsLoading = inject<boolean>('productsLoading')
@@ -62,12 +55,8 @@ const productsLoading = inject<boolean>('productsLoading')
  * Returns a set of categories that the user can use
  * to filter the products on the page 
  */
-const productCategories = computed(() => {
-  const items = props.products.map(product => {
-    return product.category
-  }).filter(x => x !== 'Not attributed')
-  return Array.from(new Set(items))
-})
+const productCategoryNames = useArrayMap(isDefined(props.products) ? props.products : [], product => product.category)
+const productCategories = useArrayFilter(productCategoryNames, category => category !== 'Not attributed')
 
 /**
  * Changes the size of the grid to

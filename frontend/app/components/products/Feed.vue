@@ -7,7 +7,7 @@
 
     <!-- Products -->
     <template v-if="totalProductCount > 0" #default>
-      <ProductsIterator :products="products" :columns="currentGridSize" @has-navigated="handleNavigation" />
+      <ProductsIterator :products="products" :columns="currentGridSize" @has-navigated="sendAnalytics" />
     </template>
     
     <template v-else #default>
@@ -51,19 +51,12 @@
 import { useIntersectionObserver, useLocalStorage  } from '@vueuse/core'
 import type { Product, ProductsApiResponse, ProductsQuery, SelectedFilters } from '~/types'
 
-const emit = defineEmits<{
-  'products-loaded': [data: Product[]]
-  'products-filter': []
-}>()
+const emit = defineEmits<{ 'products-loaded': [data: Product[]], 'products-filter': [] }>()
 
 const { id } = useRoute().params
-const currentGridSize = useLocalStorage('grid', 3)
 
 // const { gtag } = useGtag()
 const { customHandleError } = useErrorHandler()
-
-const isLoadingMoreProducts = ref<boolean>(false)
-const intersectionTarget = ref<HTMLElement | null>(null)
 
 const query = ref<ProductsQuery>({
   offset: 0
@@ -84,16 +77,10 @@ const { data: cachedResponse, status, error, refresh } = await useFetch<Products
     customHandleError(error)
   },
   transform(data) {
-    cachedResponse.value = data
     emit('products-loaded', data.results)
     return data
   }
 })
-
-const products = computed(() => cachedResponse.value?.results || [])
-const totalProductCount = computed(() => products.value.length)
-
-console.log('products', products.value, cachedResponse.value?.results)
 
 provide('productsLoading', ref<boolean>(status.value !== 'success'))
 
@@ -104,55 +91,103 @@ if (error.value) {
   })
 }
 
-const isEndOfPage = computed(() => cachedResponse.value?.next === null)
+const products = computed(() => isDefined(cachedResponse.value) ? cachedResponse.value.results : [])
+const totalProductCount = computed(() => products.value.length)
 
-/**
- *
- * @param data
- */
-function handleNavigation (data: (number | Product)[] | null | undefined) {
-  if (data) {
-    const product = data[1]
+provide('products', products)
 
-    // TODO: G-Analytics
-    // if (product && typeof product === 'object' && 'id' in product) {
-    //   gtag('event',  'select_item',  {
-    //     items: [
-    //       {
-    //         item_id: product.id,
-    //         item_name: product.name,
-    //         price: product.get_price,
-    //         item_brand: null,
-    //         item_category: product.category,
-    //         index: data[0]
-    //       }
-    //     ],
-    //     item_list_name: route.params.id,
-    //     item_list_id: route.params.id,
-    //     currency: 'EUR'
-    //   })
-    // }
+console.log('products', products.value)
+
+
+function useProductNavigationAnalytics() {
+  /**
+   * Function that handles and routes navigation events
+   * to Google Analytics
+   * @param data The product that is being navigated to
+   */
+  function sendAnalytics(data: (number | Product)[] | null | undefined) {
+    if (isDefined(data)) {
+      const [id, product] = data
+
+      if (isDefined(product)) {
+        // TODO: G-Analytics
+        // if (product && typeof product === 'object' && 'id' in product) {
+        //   gtag('event',  'select_item',  {
+        //     items: [
+        //       {
+        //         item_id: product.id,
+        //         item_name: product.name,
+        //         price: product.get_price,
+        //         item_brand: null,
+        //         item_category: product.category,
+        //         index: data[0]
+        //       }
+        //     ],
+        //     item_list_name: route.params.id,
+        //     item_list_id: route.params.id,
+        //     currency: 'EUR'
+        //   })
+        // }
+      }
+  
+    }
+  }
+
+  return {
+    sendAnalytics
   }
 }
 
+const { sendAnalytics } = useProductNavigationAnalytics()
+
 /**
- * Changes the size of the grid
+ * Grid
  */
-function handleGridSize(grid: number) {
-  currentGridSize.value = grid
+
+/**
+ * Composable to handle changes to the size of the grid
+ */
+function useHandleGridSize() {
+  if (import.meta.server) {
+    return {
+      currentGridSize: ref<number>(3),
+      handleGridSize: () => {}
+    }
+  }
+
+  const currentGridSize = useLocalStorage('grid', 3)
+  
+  function handleGridSize(grid: number) {
+    currentGridSize.value = grid
+  }
+
+  return {
+    currentGridSize,
+    handleGridSize
+  }
 }
+
+const { currentGridSize, handleGridSize } = useHandleGridSize()
 
 /**
  * This is the main pagination function that is
  * used to load more products on the page when
  * the trigger section is reached
- * 
  * @param offset The page to get
  */
 async function requestOffsetProducts(offset: number) {
   query.value.offset = offset
   refresh()
 }
+
+/**
+ * Intersection
+ */
+
+const isEndOfPage = computed(() => cachedResponse.value?.next === null)
+
+const isLoadingMoreProducts = ref<boolean>(false)
+const intersectionTarget = ref<HTMLElement | null>(null)
 
 /**
  * Main logic that loads more products into the feed once
