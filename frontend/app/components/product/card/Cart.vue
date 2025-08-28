@@ -5,14 +5,14 @@
         {{ $t("Sélectionne la taille") }}
       </p>
 
-      <div v-if="requiresSizeItems" class="flex justify-center flex-wrap gap-2">
+      <div v-if="requiresSizeSelection" class="flex justify-center flex-wrap gap-2">
         <button v-for="size in product.sizes" :key="size.id" :aria-label="size.name" type="button" class="py-1 px-1 text-sm flex gap-1 place-items-center underline-offset-4 transition-all duration-200 hover:underline hover:font-semibold" @click="handleAddToCart(size.name)">
           <Icon v-if="!size.availability" name="i-fa7-regular:clock" size="11" class="text-orange-400" />
           <span>{{ size.name }}</span>
         </button>
       </div>
 
-      <TailButton v-else variant="default" @click="handleAddToCart('Unique')">
+      <TailButton v-else variant="default" @click="() => handleAddToCart('Unique')">
         {{ $t('Ajouter au panier') }}
       </TailButton>
     </div>
@@ -20,6 +20,7 @@
 </template>
 
 <script setup lang="ts">
+import type { DefaultClotheSize } from '~/data'
 import type { Product } from '~/types'
 
 const props = defineProps<{
@@ -31,22 +32,15 @@ const props = defineProps<{
 const cartStore = useCart()
 const { showAddedProductDrawer } = storeToRefs(cartStore)
 
-
-const requiresSizeItems = computed(() => {
-  if (props.product) {
-    return props.product.sizes.length > 0
-  } else {
-    return false
-  }
-})
+const { hasSizes: requiresSizeSelection } = useProductComposable(props.product)
 
 /**
  * Adds a new product in the cart
  * @param size The size to associate the product in the cart with
  */
-async function handleAddToCart (size?: string | number) {
+async function handleAddToCart (size?: DefaultClotheSize) {
   if (props.product) {
-    await cartStore.addToCart(props.product,  size, (data) => {
+    await cartStore.addToCart(props.product, size, (data) => {
       showAddedProductDrawer.value = true
 
       if (cartStore.sessionCache) {
