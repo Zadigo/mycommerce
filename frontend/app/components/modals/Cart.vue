@@ -56,7 +56,7 @@
               </NuxtLink>
             </TailButton>
 
-            <TailButton v-else id="action-login-cart" class="w-full rounded-full" size="lg" @click="showCartDrawer=false, showLoginDrawer=true">
+            <TailButton v-else id="action-login-cart" class="w-full rounded-full" size="lg" @click="showCartDrawer=false, globalModals.showLoginDrawer.value=true">
               {{ $t('Passer commande') }}
             </TailButton>
           </div>
@@ -90,17 +90,15 @@
 import type { ProductToEdit } from '~/types'
 
 const toLocalePath = useLocalePath()
+
+const globalModals = useGlobalModals()
 const router = useRouter()
 
 const cartStore = useCart()
-const { isAuthenticated, showLoginDrawer } = storeToRefs(useAuthentication())
+const { isAuthenticated } = storeToRefs(useAuthentication())
 const { showCartDrawer, numberOfProducts, hasProducts, freeDeliveryTarget, cartTotal } = storeToRefs(cartStore)
 
-const emit = defineEmits({
-  'edit-product' (_product: ProductToEdit) {
-    return true
-  }
-})
+const emit = defineEmits<{ 'edit-product': ProductToEdit }>()
 
 /**
  * Handles the redirection to the correct page

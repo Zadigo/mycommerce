@@ -1,5 +1,5 @@
 <template>
-  <TailDrawer id="dialog-search" v-model:open="shopStore.showSearchModal">
+  <TailDrawer id="dialog-search" v-model:open="globalModals.showSearchModal.value">
     <TailDrawerContent>
       <TailDrawerHeader>
         <!-- <TailDrawerClose as-child>
@@ -27,7 +27,7 @@
         <!-- Recommendations -->
         <Suspense v-else>
           <template #default>
-            <AsyncRecommendations @has-navigated="shopStore.showSearchModal=false" />
+            <AsyncRecommendations @has-navigated="globalModals.showSearchModal.value=false" />
           </template>
           
           <template #fallback>
@@ -51,19 +51,18 @@ const AsyncRecommendations = defineAsyncComponent({
   timeout: 10000
 })
 
+const globalModals = useGlobalModals()
+
 // const { gtag } = useGtag()
-const shopStore = useShop()
 const { $client } = useNuxtApp()
-const { handleError } = useErrorHandler()
+const { customHandleError } = useErrorHandler()
 
 const searchedProducts = ref<Product[]>([])
 const search = shallowRef<string>('')
 const searchDebounced = refDebounced(search, 2000)
 const { history, last } = useDebouncedRefHistory(search, { debounce: 5000 })
 
-const canShowSearch = computed(() => {
-  return searchedProducts.value.length > 0
-})
+const canShowSearch = computed(() => searchedProducts.value.length > 0)
 
 /**
  * Function used to search the product's database
@@ -75,15 +74,12 @@ async function requestProducts (): Promise<void> {
         q: search.value
       },
       onRequestError({ error }) {
-        handleError(error)
+        customHandleError(error)
       }
     })
     searchedProducts.value = response.results
   }
 }
-
-// const { debounce } = useDebounce()
-// const proxySearchProducts = debounce(requestProducts, 1000)
 
 watch(searchDebounced, async () => {
   await requestProducts()

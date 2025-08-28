@@ -1,6 +1,6 @@
 
 <template>
-  <TailSheet v-model:open="shouldShowLoginDrawer" @close="handleReset">
+  <TailSheet v-model:open="globalModals.showLoginDrawer.value" @close="handleReset">
     <TailSheetContent>
       <TailSheetHeader>
         <TailSheetTitle />
@@ -33,24 +33,16 @@ const sessionId = useCookie('sessionId', { sameSite: 'strict', secure: true })
 
 const { debounce } = useDebounce()
 const { $client } = useNuxtApp()
-const { handleError } = useErrorHandler()
-const { showLoginDrawer } = storeToRefs(authStore)
+const { customHandleError } = useErrorHandler()
 
-const showSignup = ref(false)
+const showSignup = ref<boolean>(false)
 
 /**
  * Computed property to control the login modal visibility.
  * If the URL query parameter `login` equals '0', the modal will open.
  * Otherwise, it defaults to the store’s value
  */
-const shouldShowLoginDrawer = computed<boolean>({
-  get: () => {
-    return route.query.login === '0' || showLoginDrawer.value
-  },
-  set: (value: boolean) => {
-    showLoginDrawer.value = value
-  }
-})
+const globalModals = useGlobalModals()
 
 /**
  * Syncs the unauthenticated cart to the authenticated user's account
@@ -74,10 +66,10 @@ async function handleAuthenticateCart() {
  */
 function handleReset() {
   if (showSignup.value) {
-    showLoginDrawer.value = true
+    globalModals.showLoginDrawer.value = true
     showSignup.value = false
   } else {
-    showLoginDrawer.value = false
+    globalModals.showLoginDrawer.value = false
     
     setTimeout(() => {
       showSignup.value = false

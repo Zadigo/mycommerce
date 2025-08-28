@@ -10,9 +10,6 @@ interface JWTResponseData {
 export const useAuthentication = defineStore('authentication', () => {
   const sessionCache = ref<SessionCacheData>()
 
-  // Modals
-  const showLoginDrawer = ref<boolean>(false)
-
   const accessToken = ref<StringNull>('')
   const refreshToken = ref<StringNull>('')
 
@@ -40,7 +37,6 @@ export const useAuthentication = defineStore('authentication', () => {
     sessionCache,
     userId,
     isAuthenticated,
-    showLoginDrawer,
     accessToken,
     refreshToken
   }

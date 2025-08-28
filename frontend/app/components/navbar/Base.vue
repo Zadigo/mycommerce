@@ -11,7 +11,7 @@
         <ClientOnly>
           <ul class="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
             <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-              <TailButton id="action-search" class="ms-auto me-2 rounded-full" @click="shopStore.showSearchModal=true">
+              <TailButton id="action-search" class="ms-auto me-2 rounded-full" @click="() => { globalModals.showSearchModal.value = true }">
                 {{ $t('Rechercher') }}
               </TailButton>
             </li>
@@ -22,9 +22,9 @@
                 {{ $t("Panier") }}
               </a>
             </li>
-            
+
             <li v-if="!authStore.isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-              <a id="action-signin" href="#" class="flex items-center gap-2" @click.prevent="authStore.showLoginDrawer=true">
+              <a id="action-signin" href="#" class="flex items-center gap-2" @click.prevent="() => { globalModals.showLoginDrawer.value = true }">
                 <Icon name="i-fa7-solid:sign-in-alt" size="18" />
                 {{ $t('Se connecter') }}
               </a>
@@ -60,8 +60,9 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 
+const globalModals = useGlobalModals()
+
 // const { gtag } = useGtag()
-const shopStore = useShop()
 const authStore = useAuthentication()
 const cartStore = useCart()
 
@@ -71,7 +72,7 @@ const { showCartDrawer } = storeToRefs(cartStore)
  * 
  */
 function proxyLogout() {
-  authStore.logout()
+  // authStore.logout()
   authStore.showLoginDrawer = false
   authStore.accessToken = null
   authStore.refreshToken = null

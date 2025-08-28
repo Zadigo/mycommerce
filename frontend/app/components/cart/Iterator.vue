@@ -47,9 +47,7 @@
 <script setup lang="ts">
 import type { ProductToEdit } from '~/types'
 
-defineProps<{
-  isEditable: boolean
-}>()
+defineProps<{ isEditable?: boolean }>()
 
 const emit = defineEmits({
   'edit-product' (_editedProduct: ProductToEdit) {

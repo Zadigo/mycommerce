@@ -1,16 +1,46 @@
+import { collection, doc, addDoc } from 'firebase/firestore'
 import { baseSessionCacheData } from '~/data'
-
 import type { ExtendedLocationQuery, SessionCacheData } from '~/types'
 
 const cookieOptions = { sameSite: 'strict', secure: true } as const
 
+/**
+ * Composable used to manage the state of modals
+ * that are in the global site (login, language...)
+ * and can be accessible from anywhere in the app
+ */
+export const useGlobalModals = createGlobalState(() => {
+  const showLoginDrawer = shallowRef<boolean>(false)
+  const showSearchModal = shallowRef<boolean>(false)
+  const showLanguageModal = shallowRef<boolean>(false)
+  const showWhatsAppModal = shallowRef<boolean>(false)
+
+  return {
+    /**
+     * Login and signup
+     */
+    showLoginDrawer,
+    /** 
+     * Search items in the shop
+     */
+    showSearchModal,
+    /**
+     * Language selection
+     */
+    showLanguageModal,
+    /**
+     * WhatsApp chat
+     */
+    showWhatsAppModal
+  }
+})
 
 /**
  * Setup the storage for the user session in order to store data
  * such as liked products, session cache, etc.
  * @todo Simplify using Firesbase Realtime Database or Firestore
  */
-export function useStorageSetup() {
+export async function useStorageSetup() {
   if (import.meta.server) {
     return {
       sessionCache: baseSessionCacheData,
@@ -21,20 +51,32 @@ export function useStorageSetup() {
   // Setup the containers that we will be using locally in order to register
   // some of the user actions - This can/should be done directly into Firebase
   // but as the data is not sensitive either way is good
-  const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData)
+  // const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData)
   const likedProducts = useLocalStorage<number[]>('likedProducts', [])
 
-  const shopStore = useShop()
-  const { sessionCache: shopSessionCache } = storeToRefs(shopStore)
-  syncRef(sessionCache, shopSessionCache)
+  // const shopStore = useShop()
+  // const { sessionCache: shopSessionCache } = storeToRefs(shopStore)
+  // syncRef(sessionCache, shopSessionCache)
 
-  const authenticationStore = useAuthentication()
-  const { sessionCache: authSessionCache } = storeToRefs(authenticationStore)
-  syncRef(sessionCache, authSessionCache)
+  // const authenticationStore = useAuthentication()
+  // const { sessionCache: authSessionCache } = storeToRefs(authenticationStore)
+  // syncRef(sessionCache, authSessionCache)
 
-  const cartStore = useCart()
-  const { sessionCache: cartSessionCache } = storeToRefs(cartStore)
-  syncRef(sessionCache, cartSessionCache)
+  // const cartStore = useCart()
+  // const { sessionCache: cartSessionCache } = storeToRefs(cartStore)
+  // syncRef(sessionCache, cartSessionCache)
+
+  const fireStore = useFirestore()
+  const collectionRef = collection(fireStore, 'sessions')
+  
+  const sessionId = useCookie('sessionId', cookieOptions)
+
+  if (!isDefined(sessionId)) {
+    const docRef = await addDoc(collectionRef, baseSessionCacheData)
+    sessionId.value = docRef.id
+  }
+
+  const sessionCache = useDocument<SessionCacheData>(doc(collectionRef, sessionId.value))
 
   return {
     /**
@@ -109,21 +151,31 @@ export function useAuthenticationTokens() {
     }
   }
 
-  const authenticationStore = useAuthentication()
 
-  // Watch route query for login parameter to open login drawer
-  const query = useRoute().query as ExtendedLocationQuery
+  const globalModals = useGlobalModals()
+  const queryParams = useUrlSearchParams('history') as { login: string | undefined }
 
-  watchDebounced(() => query, (newValue) => {
-    if (newValue.login && newValue.login === '1') {
-      authenticationStore.showLoginDrawer = true
+  watchDebounced(() => queryParams.login, (newValue) => {
+    if (isDefined(newValue)) {
+      // authenticationStore.showLoginDrawer = (newValue === '1')
+      globalModals.showLoginDrawer.value = newValue === '1'
     }
-  }, {
-    immediate: true,
-    debounce: 500
   })
 
+  // Watch route query for login parameter to open login drawer
+  // const query = useRoute().query as ExtendedLocationQuery
+
+  // watchDebounced(() => query, (newValue) => {
+  //   if (newValue.login && newValue.login === '1') {
+  //     authenticationStore.showLoginDrawer = true
+  //   }
+  // }, {
+    //   immediate: true,
+    //   debounce: 500
+    // })
+    
   // Use secure cookies (with sameSite strict, secure enabled)
+  const authenticationStore = useAuthentication()
   const accessToken = useCookie('access', cookieOptions)
   const refreshToken = useCookie('refresh', cookieOptions)
 
