@@ -56,17 +56,23 @@ export const productFixture: Product = {
     {
       id: 1,
       name: 'XS',
-      availability: true
+      metric: 'Clothe',
+      availability: true,
+      active: true
     },
     {
       id: 2,
       name: 'S',
-      availability: true
+      metric: 'Clothe',
+      availability: true,
+      active: true
     },
     {
       id: 3,
       name: 'M',
-      availability: false
+      metric: 'Clothe',
+      availability: false,
+      active: false
     }
   ],
   sku: '345',

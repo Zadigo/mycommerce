@@ -2,7 +2,7 @@ export default defineNuxtPlugin(async nuxtApp => {
   const access = useCookie('access')
   const refresh = useCookie('refresh')
 
-  console.log('access/refresh', access.value, refresh.value)
+  // console.log('access/refresh', access.value, refresh.value)
 
   const client = $fetch.create({
     baseURL: useRuntimeConfig().public.prodDomain,
@@ -19,7 +19,7 @@ export default defineNuxtPlugin(async nuxtApp => {
         
         if (refresh.value) {
           const { access: newAccess } = await refreshAccessToken(refresh.value)
-          console.log('onResponseError', newAccess)
+          // console.log('onResponseError', newAccess)
           access.value = newAccess
         } else {
           refresh.value = null

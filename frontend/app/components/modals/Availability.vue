@@ -9,7 +9,7 @@
 
       <div class="p-10">
         <h2 class="text-2xl font-semibold mb-3">
-          La taille "{{ selectedSize }}" n'est plus en stock
+          La taille "{{ userSelection.size }}" n'est plus en stock
         </h2>
 
         <p class="font-light">
@@ -31,39 +31,23 @@
 </template>
 
 <script setup lang="ts">
-import type { DefaultClotheSize } from '~/data'
+import type { ExtendedRouteParamsRawGeneric } from '~/types'
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false
-  },
-  selectedSize: {
-    type: String as PropType<DefaultClotheSize>,
-    default: 'Unique'
-  }
-})
+const cartStore = useCart()
+const { userSelection } = storeToRefs(cartStore)
 
-const emit = defineEmits({
-  'update:modelValue'(_value: boolean) {
-    return true
-  }
-})
+const props = defineProps<{ modelValue: boolean }>()
+const emit = defineEmits<{ 'update:modelValue': [] }>()
+const show = useVModel(props, 'modelValue', emit)
 
+const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
 const email = ref<string>('')
-
-const show = computed({
-  get: () => props.modelValue,
-  set: (value: boolean) => {
-    emit('update:modelValue', value)
-  }
-})
 
 const { execute } = useAsyncData(() => {
   return $fetch('', {
     method: 'POST',
     body: {
-      product_id: null,
+      product_id: id,
       email: email.value
     }
   })

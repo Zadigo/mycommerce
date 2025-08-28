@@ -13,7 +13,7 @@ export const useShop = defineStore('shop', () => {
   const likedProducts = ref<number[]>([])
 
   /**
-   * This references the index of the product that
+   * @description This references the index of the product that
    * was clicked within a given list of items. This
    * is for Google Analytics tracking
    */
@@ -60,16 +60,52 @@ export const useShop = defineStore('shop', () => {
   }
 
   return {
+    /**
+     * Closes all modals
+     */
     closeAllModals,
+    /**
+     * Tracks a product that was visited by the user
+     *
+     * @param product The product to track
+     */
     trackProduct,
+    /**
+     * The session cache data
+     */
     sessionCache,
+    /**
+     * The index of the currently viewed product
+     */
     currentProductIndex,
+    /**
+     * The number of products that were visited by the user
+     */
     numberOfVisitedProducts,
+    /**
+     * Returns the unique IDs of each products that
+     * were visited by the user during his session
+     */
     uniqueVisitedProductIds,
+    /**
+     * The list of products that were visited by the user
+     */
     visitedProducts,
+    /**
+     * The list of products that were liked by the user
+     */
     likedProducts,
+    /**
+     * Whether the search modal is currently open
+     */
     showSearchModal,
+    /**
+     * Whether the WhatsApp modal is currently open
+     */
     showWhatsAppModal,
+    /**
+     * Whether the language modal is currently open
+     */
     showLanguageModal
   }
 })

@@ -6,7 +6,7 @@
     </template>
 
     <!-- Products -->
-    <template v-if="products.length > 0" #default>
+    <template v-if="totalProductCount > 0" #default>
       <ProductsIterator :products="products" :columns="currentGridSize" @has-navigated="handleNavigation" />
     </template>
     
@@ -17,9 +17,9 @@
         </p>
 
         <TailButton size="lg" as-child>
-          <NuxtLinkLocale  id="link-collections-more" to="/shop/collection/all" class="mt-8" @click="query.offset=0">
+          <NuxtLinkLocale id="link-collections-more" to="/shop/collection/all" class="mt-8" @click="query.offset=0">
             {{ $t('Voir toute la collection') }}
-          </NuxtLinkLocale >
+          </NuxtLinkLocale>
         </TailButton>
       </div>
     </template>
@@ -27,8 +27,8 @@
     <template #intersect>
       <!-- Intersect -->
       <ClientOnly>
-        <div v-if="products.length > 0" id="product-pagination" ref="intersectionTarget" class="font-bold text-uppercase flex justify-center mt-5">
-          <TailButton v-if="isEndOfPage" size="lg" @click="scrollToTop">
+        <div v-if="totalProductCount > 0" id="product-pagination" ref="intersectionTarget" class="font-bold text-uppercase flex justify-center mt-5">
+          <TailButton v-if="isEndOfPage" id="scroll-top" size="lg" @click="scrollToTop">
             <Icon name="i-fa7-solid:arrow-up" class="me-2" />
             {{ $t('Tu es arrivé à la fin') }}
           </TailButton>
@@ -36,7 +36,7 @@
           <div v-else class="flex-grow">
             <p v-if="isLoadingMoreProducts">Loading...</p>
 
-            <TailButton v-else size="lg">
+            <TailButton v-else id="load-more" size="lg">
               <Icon name="arrow-down" class="me-2" />
               {{ $t('Voir plus de produits') }}
             </TailButton>
@@ -62,10 +62,7 @@ const currentGridSize = useLocalStorage('grid', 3)
 // const { gtag } = useGtag()
 const { customHandleError } = useErrorHandler()
 
-const isLoadingMoreProducts = ref(false)
-const products = ref<Product[]>([])
-const cachedResponse = ref<ProductsApiResponse>()
-
+const isLoadingMoreProducts = ref<boolean>(false)
 const intersectionTarget = ref<HTMLElement | null>(null)
 
 const query = ref<ProductsQuery>({
@@ -75,7 +72,7 @@ const query = ref<ProductsQuery>({
 // TODO: Add a provide so that all the components have access
 // to the products from this parent component
 
-const { data, status, error, refresh } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
+const { data: cachedResponse, status, error, refresh } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
   method: 'GET',
   query: query.value,
   onResponseError({ error }) {
@@ -88,26 +85,17 @@ const { data, status, error, refresh } = await useFetch<ProductsApiResponse>(`/a
   },
   transform(data) {
     cachedResponse.value = data
-    
-    // TODO: Use the schema ValidateProduct from zod to unify the typing for Product
-    // const validItems = data.results.reduce<ValidateProduct[]>((acc, item) => {
-    //   try {
-    //     const product = ProductSchema.parse(item)
-    //     acc.push(product)
-    //     return acc
-    //   } catch (e) {
-    //     console.log('Failed to validate product:', e)
-    //     return acc
-    //   }
-    // }, [])
-        
-    products.value.push(...data.results)
-    emit('products-loaded', products.value)
+    emit('products-loaded', data.results)
     return data
   }
 })
 
-console.log(error.value)
+const products = computed(() => cachedResponse.value?.results || [])
+const totalProductCount = computed(() => products.value.length)
+
+console.log('products', products.value, cachedResponse.value?.results)
+
+provide('productsLoading', ref<boolean>(status.value !== 'success'))
 
 if (error.value) {
   throw createError({
@@ -116,21 +104,7 @@ if (error.value) {
   })
 }
 
-const isEndOfPage = computed(() => {
-  return cachedResponse.value?.next === null
-})
-
-/**
- *  Provides the total product count for all children
- * since they do not have that information on load
- */
-const totalProductCount = computed(() => {
-  if (cachedResponse.value) {
-    return cachedResponse.value.count
-  } else {
-    return 0
-  }
-})
+const isEndOfPage = computed(() => cachedResponse.value?.next === null)
 
 /**
  *
@@ -185,11 +159,13 @@ async function requestOffsetProducts(offset: number) {
  * the user has reached the limit of the intersection 
  * @todo Protect by running this ONLY on client side
  */
-useIntersectionObserver(intersectionTarget, ([{ isIntersecting }]) => {
-  if (isIntersecting && cachedResponse.value?.next) {
-    isLoadingMoreProducts.value = true
-    requestOffsetProducts(cachedResponse.value.next)
-    isLoadingMoreProducts.value = false
-  }
-}, {})
+if (import.meta.client) {
+  useIntersectionObserver(intersectionTarget, ([{ isIntersecting }]) => {
+    if (isIntersecting && cachedResponse.value?.next) {
+      isLoadingMoreProducts.value = true
+      requestOffsetProducts(cachedResponse.value.next)
+      isLoadingMoreProducts.value = false
+    }
+  }, {})
+}
 </script>

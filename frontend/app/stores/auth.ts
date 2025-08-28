@@ -1,7 +1,7 @@
 import { useJwt } from '@vueuse/integrations/useJwt'
 import { defineStore } from 'pinia'
 
-import type { Profile, SessionCacheData, StringNull, LoginApiResponse } from '~/types'
+import type { Profile, SessionCacheData, StringNull } from '~/types'
 
 interface JWTResponseData {
   user_id: number
@@ -19,16 +19,8 @@ export const useAuthentication = defineStore('authentication', () => {
   // TODELETE: Sync with firebase
   const profile = ref<Profile>()
 
-  /**
-   * 
-   */
-  const isAuthenticated = computed(() => {
-    return !isNull(accessToken.value)
-  })
+  const isAuthenticated = computed(() =>!isNull(accessToken.value))
 
-  /**
-   * 
-   */
   const userId = computed(() => {
     if (accessToken.value) {
       const result = useJwt<JWTResponseData>(accessToken.value).payload.value
@@ -41,6 +33,9 @@ export const useAuthentication = defineStore('authentication', () => {
   })
 
   return {
+    /**
+     * @deprecated
+     */
     profile,
     sessionCache,
     userId,

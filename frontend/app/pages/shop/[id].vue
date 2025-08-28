@@ -9,7 +9,7 @@
       
       <!-- Details -->
       <ClientOnly>
-        <ProductPageAsideBase :product="product" @show-size-guide="showSizeGuideDrawer=true" />
+        <ProductPageAsideBase :product="product" @size-guide="showSizeGuideDrawer=true" @availability-modal="() => showAvailabilityModal=true" @composition-guide="() => showCompositionModal=true" />
       </ClientOnly>
     </div>
 
@@ -33,17 +33,13 @@
 
       <ModalsImageZoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
       <ModalsSizeGuide v-model="showSizeGuideDrawer" :product="product" />
-      <ModalsAvailability v-model="showAvailabilityModal" :selected-size="'XS'" />
+      <ModalsAvailability v-model="showAvailabilityModal" />
       <ModalsComposition v-model="showCompositionModal" />
     </ClientOnly>
   </section>
 </template>
 
 <script setup lang="ts">
-// import { ProductSchema } from '~/utils/schemas'
-
-// import type { ExtendedRouteParamsRawGeneric, Product, ProductStockApiResponse } from '~/types'
-
 type ImageComponentMap = {[key: number]: Component}
 
 const FiveImages = defineAsyncComponent(() => import('~/components/product/page/images/Five.vue'))
@@ -75,11 +71,9 @@ const AsyncBaseRecommendationBlock = defineAsyncComponent({
 // const { customHandleError } = useErrorHandler()
 const { showModal, selectedImage, handleSelectedImage, handleCloseSelection } = useImagesComposable()
 
-const shopStore = useShop()
-
 const { product, isLoading, showBanner } = await useProductDetailComposable()
 const { stockState } = useProductStockComposable(product, isLoading) 
-
+console.log(product)
 provide('stockState', stockState)
 
 const showSizeGuideDrawer = ref<boolean>(false)

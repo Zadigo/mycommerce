@@ -19,6 +19,7 @@ export default defineCachedEventHandler(async event => {
   const refresh = getCookie(event, 'refresh')
   
   return productApiResponseFixture
+  
   // try {
   //   console.log('[collection].get.ts', query.price)
   //   const data = await $fetch<ProductsApiResponse>(`/api/v1/collection/${name}`, {

@@ -71,8 +71,6 @@ export function useProductComposable(product: Product | Ref<Product | null | und
     }
   }
 
-  console.log(currentProduct)
-
   const hasImages = computed(() => currentProduct.images && currentProduct.images.length > 0)
   const hasSizes = computed(() => currentProduct.sizes && currentProduct.sizes.length > 0)
   const hasMainImage = computed(() => currentProduct.get_main_image && currentProduct.get_main_image.original)

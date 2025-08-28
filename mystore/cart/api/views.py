@@ -49,19 +49,25 @@ class ListCartView(generics.ListAPIView):
     queryset = Cart.objects.all()
     _session_id_cache = None
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Cart]:
         queryset = super().get_queryset()
         unique_id = self.kwargs.get('unique_id')
-        user_cart = queryset.filter(session_id__icontains=unique_id)
 
+        user_cart = queryset.filter(session_id__icontains=unique_id)
         result = user_cart.values('session_id').first()
+        
+        if result is None:
+            return user_cart
+
         self._session_id_cache = result['session_id']
         return user_cart
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
+        
         if not queryset.exists():
-            return Response(data=[], code=status.HTTP_404_NOT_FOUND)
+            return Response(data=[], status=status.HTTP_404_NOT_FOUND)
+        
         data = build_cart_response(queryset, self._session_id_cache)
         self._session_id_cache = None
         return Response(data=data)
@@ -86,7 +92,7 @@ class DeleteFromCart(generics.DestroyAPIView):
 
         reevaluated_queryset = self.get_queryset()
         serializer = self.get_serializer(instance=reevaluated_queryset)
-        return Response(serializer.data, code=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
 
     def get_queryset(self):
         queryset = super().get_queryset()

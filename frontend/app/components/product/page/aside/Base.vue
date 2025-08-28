@@ -15,21 +15,10 @@
     <div class="border-t-2 border-gray-100 my-5 me-10" />
 
     <!-- Actions -->
-    <ProductPageAsideActions :product="product" @show-size-guide="emit('show-size-guide')" />
+    <ProductPageAsideActions :product="product" @size-guide="emit('size-guide')" @availability-modal="emit('availability-modal')" />
 
-    <TailList class="shadow-none border border-gray-100 mt-10">
-      <TailListItem class="border-b-2 border-gray-100 flex justify-between items-center text-sm" @click="emit('show-composition-guide')">
-        <div class="flex justify-start gap-2">
-          <span>{{ $t('Composition, soin et traçabilité') }}</span>
-        </div>
-        <Icon name="fa:chevron-right" size="10" />
-      </TailListItem>
-
-      <TailListItem class="flex justify-between text-sm" @click="emit('show-delivery-guide')">
-        {{ $t('Livraison et retours') }}
-        <Icon name="fa:chevron-right" size="10" />
-      </TailListItem>
-    </TailList>
+    <!-- Info. More -->
+    <ProductPageAsideAdditional :product="product" @delivery-guide="emit('delivery-guide')" @composition-guide="emit('composition-guide')" />
   </aside>
 </template>
 
@@ -37,7 +26,12 @@
 import type { Product } from '~/types'
 
 const props = defineProps<{ product: Product | null | undefined }>()
-const emit = defineEmits<{ 'show-size-guide': [], 'show-delivery-guide': [], 'show-composition-guide': [] }>()
+const emit = defineEmits<{ 
+  'size-guide': [], 
+  'delivery-guide': [], 
+  'composition-guide': [], 
+  'availability-modal': [] 
+}>()
 
 const { mediaPath } = useDjangoUtilies()
 const { hasColorVariants } = useProductComposable(props.product)

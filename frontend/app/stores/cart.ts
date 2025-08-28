@@ -152,7 +152,7 @@ export const useCart = defineStore('cart', () => {
    */
   function handleSizeSelection(product: Product | null | undefined, size: DefaultClotheSize) {
     if (product) {
-      console.info('handleSizeSelection', product)
+      // console.info('handleSizeSelection', product)
       userSelection.value.product = product
       userSelection.value.size = size || 'Unique'
     }
@@ -164,7 +164,7 @@ export const useCart = defineStore('cart', () => {
   function resetSelection() {
     userSelection.value.size = 'Unique'
     userSelection.value.product = {}
-    console.log('resetSelection')
+    // console.log('resetSelection')
   }
 
   /**
@@ -180,7 +180,7 @@ export const useCart = defineStore('cart', () => {
    */
   async function addToCart(product: Product | null | undefined, size?: DefaultClotheSize | undefined, callback?: FunctionCallback) {
     if (!product) {
-      console.error('Product is empty')
+      // console.error('Product is empty')
       return
     }
 
@@ -201,11 +201,9 @@ export const useCart = defineStore('cart', () => {
       return
     }
     
-    const { $client, vueApp } = useNuxtApp()
+    const { vueApp } = useNuxtApp()
 
-    console.log($client)
-
-    const response = await $client<CartUpdateApiResponse>('/api/v1/cart/add', {
+    const response = await $fetch<CartUpdateApiResponse>('/api/v1/cart/add', {
       method: 'POST',
       body: userSelection.value,
       onResponse({ response }) {
@@ -220,7 +218,7 @@ export const useCart = defineStore('cart', () => {
     if (sessionCache.value) {
       sessionCache.value.cart = response
     }
-
+    
     if (callback && typeof callback === 'function') {
       callback.call(vueApp, response)
     }
