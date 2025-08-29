@@ -21,7 +21,7 @@
         
         <div v-if="canShowSearch" class="row gx-1 gy-1">
           <!-- TODO: Gtag analytics to track product click from search @has-navigated -->
-          <ProductsIterator :products="searchedProducts" />
+          <ProductsIterator />
         </div>
         
         <!-- Recommendations -->
@@ -42,6 +42,8 @@
 </template>
 
 <script setup lang="ts">
+import { productSymbol } from '~/data/constants/symbols'
+import { doc, updateDoc } from 'firebase/firestore'
 import type { Product, ProductsApiResponse } from '~/types'
 
 const AsyncRecommendations = defineAsyncComponent({
@@ -58,18 +60,25 @@ const { $client } = useNuxtApp()
 const { customHandleError } = useErrorHandler()
 
 const searchedProducts = ref<Product[]>([])
+
 const search = shallowRef<string>('')
 const searchDebounced = refDebounced(search, 2000)
-const { history, last } = useDebouncedRefHistory(search, { debounce: 5000 })
 
 const canShowSearch = computed(() => searchedProducts.value.length > 0)
 
-/**
- * Function used to search the product's database
- */
-async function requestProducts (): Promise<void> {
+provide(productSymbol, searchedProducts)
+
+const db = useFirestore()
+const { history, last } = useDebouncedRefHistory(search, { debounce: 5000 })
+const { sessionId } = await useStorageSetup()
+
+watch(searchDebounced, async () => {
+  /**
+   * Fetch products
+   */
+
   if (search.value && search.value !== "") {
-    const response = await $client<ProductsApiResponse>('/api/v1/shop/products', {
+    const data = await $client<ProductsApiResponse>('/api/v1/shop/products', {
       params: {
         q: search.value
       },
@@ -77,14 +86,24 @@ async function requestProducts (): Promise<void> {
         customHandleError(error)
       }
     })
-    searchedProducts.value = response.results
-  }
-}
 
-watch(searchDebounced, async () => {
-  await requestProducts()
+    searchedProducts.value = data.results
+  }
+
+  /**
+   * Analytics
+   */
   
   // TODO: G-Analytics
   // gtag('event', 'search', { search_term: search.value })
+
+  /**
+   * Save search
+   */
+
+  if (isDefined(sessionId)) {
+    const docRef = doc(db, 'sessions', sessionId.value)
+    await updateDoc(docRef, { searchHistory: history.value || [] }, { merge: true })
+  }
 })
 </script>
