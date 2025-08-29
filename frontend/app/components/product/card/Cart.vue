@@ -1,12 +1,12 @@
 <template>
-  <div v-show="showCart && isHovered" class="absolute w-full flex justify-center align-middle transition-all ease-in-out z-30 invisible lg:visible lg:bottom-[3.5rem]">
+  <div v-show="showCart && isHovered" class="absolute w-full flex justify-center align-middle transition-all ease-in-out z-30 invisible md:bottom-2/20 lg:visible lg:bottom-2/20">
     <div class="bg-white rounded-md py-5 px-2 w-5/6">
       <p class="font-light text-sm text-center mb-3">
         {{ $t("Sélectionne la taille") }}
       </p>
 
       <div v-if="requiresSizeSelection" class="flex justify-center flex-wrap gap-2">
-        <button v-for="size in product.sizes" :key="size.id" :aria-label="size.name" type="button" class="py-1 px-1 text-sm flex gap-1 place-items-center underline-offset-4 transition-all duration-200 hover:underline hover:font-semibold" @click="handleAddToCart(size.name)">
+        <button v-for="size in product.sizes" :key="size.id" :aria-label="size.name" type="button" class="py-1 px-1 text-sm flex gap-1 place-items-center underline-offset-4 cursor-pointer hover:underline hover:font-semibold" @click="handleAddToCart(size.name)">
           <Icon v-if="!size.availability" name="i-fa7-regular:clock" size="11" class="text-orange-400" />
           <span>{{ size.name }}</span>
         </button>
@@ -51,4 +51,4 @@ async function handleAddToCart (size?: DefaultClotheSize) {
     console.error('Card', 'Props does not have a product')
   }
 }
-</script>>
+</script>

@@ -37,8 +37,7 @@
     </TailButton>
 
     <TailButton id="action-add-favorite" :aria-label="$t('Ajouter au favori')" class="mt-5" variant="outline" @click="proxyHandleLike">
-      <Icon v-if="isLiked" name="i-fa7-solid:heart" />
-      <Icon v-else name="i-fa7-regular:heart" />
+      <Icon :name="icon" />
     </TailButton>
   </div>
 </template>
@@ -47,14 +46,14 @@
 import type { DefaultClotheSize } from '~/data'
 import type { Product, ProductStockApiResponse } from '~/types'
 
-const props = defineProps<{ product: Product | null | undefined }>()
+const props = defineProps<{ product: Product | undefined }>()
 const emit = defineEmits<{ 'size-guide': [], 'availability-modal': [] }>()
 
 const stockState = inject<ProductStockApiResponse>('stockState')
 
 const cartStore = useCart()
 const { userSelection, showSizeSelectionWarning } = storeToRefs(cartStore)
-const { isLiked, like } = useLikeComposable(props.product)
+const { like, icon } = await useLikeComposable(props.product)
 
 const sizeObject = computed(() => {
   if (props.product) {
@@ -68,7 +67,7 @@ const sizeObject = computed(() => {
  * 
  */
 function proxyHandleLike() {
-  if (like) {
+  if (isDefined(like)) {
     like()
   
     // TODO: G-Analytics
