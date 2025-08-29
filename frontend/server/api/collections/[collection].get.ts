@@ -18,40 +18,40 @@ export default defineCachedEventHandler(async event => {
   const access = getCookie(event, 'access')
   const refresh = getCookie(event, 'refresh')
   
-  return productApiResponseFixture
+  // return productApiResponseFixture
   
-  // try {
-  //   console.log('[collection].get.ts', query.price)
-  //   const data = await $fetch<ProductsApiResponse>(`/api/v1/collection/${name}`, {
-  //     baseURL: useRuntimeConfig().public.prodDomain,
-  //     method: 'GET',
-  //     params: {
-  //       sorted_by: query.sorted_by,
-  //       offset: query.offset,
-  //       price: query.price,
-  //       sizes: query.sizes
-  //     } as CollectionFetchOptions,
-  //     headers: [
-  //       ['Authorization', access ? `Token ${access}` : '']
-  //     ]
-  //   })
-  //   return data
-  // } catch (e) {
-  //   if (e instanceof FetchError) {
-  //     if (e.status === 401 && refresh) {
-  //       const { access } = await refreshAccessToken(refresh)
-  //       setCookie(event, 'access', access)
-  //     } else {
-  //       throw createError({
-  //         statusCode: e.status || 500,
-  //         message: e.message
-  //       })
-  //     }
-  //   }
-  // }
+  try {
+    console.log('[collection].get.ts', query.price)
+    const data = await $fetch<ProductsApiResponse>(`/api/v1/collection/${name}`, {
+      baseURL: useRuntimeConfig().public.prodDomain,
+      method: 'GET',
+      params: {
+        sorted_by: query.sorted_by,
+        offset: query.offset,
+        price: query.price,
+        sizes: query.sizes
+      } as CollectionFetchOptions,
+      headers: [
+        ['Authorization', access ? `Token ${access}` : '']
+      ]
+    })
+    return data
+  } catch (e) {
+    if (e instanceof FetchError) {
+      if (e.status === 401 && refresh) {
+        const { access } = await refreshAccessToken(refresh)
+        setCookie(event, 'access', access)
+      } else {
+        throw createError({
+          statusCode: e.status || 500,
+          message: e.message
+        })
+      }
+    }
+  }
 }, {
   base: 'redis',
-  maxAge: 15*60,
+  maxAge: 1*60,
   getKey(event) {
     const collectionName = getRouterParam(event, 'collection')
     const query = getQuery<{ offset: string }>(event)

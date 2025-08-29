@@ -1,6 +1,7 @@
-import { collection, doc, addDoc } from 'firebase/firestore'
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore'
 import { baseSessionCacheData } from '~/data'
-import type { ExtendedLocationQuery, SessionCacheData } from '~/types'
+
+import type { SessionCacheData } from '~/types'
 
 const cookieOptions = { sameSite: 'strict', secure: true } as const
 
@@ -38,13 +39,12 @@ export const useGlobalModals = createGlobalState(() => {
 /**
  * Setup the storage for the user session in order to store data
  * such as liked products, session cache, etc.
- * @todo Simplify using Firesbase Realtime Database or Firestore
  */
 export async function useStorageSetup() {
   if (import.meta.server) {
     return {
       sessionCache: baseSessionCacheData,
-      likedProducts: ref([])
+      likedProducts: ref<number[]>([])
     }
   }
 
@@ -54,42 +54,41 @@ export async function useStorageSetup() {
   // const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData)
   const likedProducts = useLocalStorage<number[]>('likedProducts', [])
 
-  // const shopStore = useShop()
-  // const { sessionCache: shopSessionCache } = storeToRefs(shopStore)
-  // syncRef(sessionCache, shopSessionCache)
-
-  // const authenticationStore = useAuthentication()
-  // const { sessionCache: authSessionCache } = storeToRefs(authenticationStore)
-  // syncRef(sessionCache, authSessionCache)
-
-  // const cartStore = useCart()
-  // const { sessionCache: cartSessionCache } = storeToRefs(cartStore)
-  // syncRef(sessionCache, cartSessionCache)
-
-  const fireStore = useFirestore()
-  const collectionRef = collection(fireStore, 'sessions')
-  
   const sessionId = useCookie('sessionId', cookieOptions)
-
+  
+  const db = useFirestore()
+  const collectionRef = collection(db, 'sessions')
+  
   if (!isDefined(sessionId)) {
     const docRef = await addDoc(collectionRef, baseSessionCacheData)
     sessionId.value = docRef.id
-  }
 
-  const sessionCache = useDocument<SessionCacheData>(doc(collectionRef, sessionId.value))
+    const sessionCache = useDocument<SessionCacheData>(docRef)
 
-  return {
-    /**
-     * Session cache used to store data that is not sensitive
-     * and include elements such as the cart, recommendations,
-     * search history, etc.
-     */
-    sessionCache,
-    /**
-     * Local storage used to store the products that the user has liked
-     * This is not sensitive data and can be stored locally
-     */
-    likedProducts
+    return {
+      /**
+       * Session cache used to store data that is not sensitive
+       * and include elements such as the cart, recommendations,
+       * search history, etc.
+       */
+      sessionCache,
+      /**
+       * Local storage used to store the products that the user has liked
+       * This is not sensitive data and can be stored locally
+       */
+      likedProducts
+    }
+  } else {
+    const docRef = doc(db, 'sessions', sessionId.value)
+    const sessionCache = useDocument<SessionCacheData>(docRef)
+    
+    console.log('docRef', docRef)
+    
+    return {
+      sessionId,
+      sessionCache,
+      likedProducts
+    }
   }
 }
 
@@ -106,7 +105,7 @@ export function useUserSession() {
   }
 
   const { customHandleError } = useErrorHandler()
-  const cookieSessionId = useCookie('sessionId', cookieOptions)
+  const cookieSessionId = useCookie('shopSessionId', cookieOptions)
   
   /**
    * Request a new sessionId via the API and ensure a
@@ -114,15 +113,23 @@ export function useUserSession() {
    * TODO: Use server?
    */
   async function requestSessionId() {
+    const { sessionId } = await useStorageSetup()
+
     try {
       if (!cookieSessionId.value) {
         const { data } = await useFetch<{ token: string }>('/api/v1/cart/session-id', {
           method: 'POST',
+          baseURL: useRuntimeConfig().public.prodDomain,
           immediate: true,
         })
 
         if (data.value) {
           cookieSessionId.value = data.value.token
+          
+          if (isDefined(sessionId)) {
+            const db = useFirestore()
+            await updateDoc(doc(db, 'sessions', sessionId.value), { sessionId: data.value.token })
+          }
         }
       }
     } catch (e) {

@@ -73,8 +73,10 @@ const { showModal, selectedImage, handleSelectedImage, handleCloseSelection } = 
 
 const { product, isLoading, showBanner } = await useProductDetailComposable()
 const { stockState } = useProductStockComposable(product, isLoading) 
-console.log(product)
+
 provide('stockState', stockState)
+
+console.log(product)
 
 const showSizeGuideDrawer = ref<boolean>(false)
 const showAvailabilityModal = ref<boolean>(false)
@@ -106,7 +108,7 @@ if (product.value) {
       price: product.value.get_price,
       priceCurrency: 'EUR',
       availability: 'https://schema.org/InStock',
-      image: product.value.get_main_image.original,
+      image: isDefined(product.value.get_main_image) ? product.value.get_main_image.original : null,
       shippingDetails: {
         "@type": 'OfferShippingDetails',
         shippingDestination: [

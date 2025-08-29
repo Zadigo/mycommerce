@@ -1,5 +1,5 @@
 <template>
-  <TailSheet v-model:open="show" id="modal-product-filters">
+  <TailSheet v-model:open="showModal" id="modal-product-filters">
     <TailSheetContent>
       <TailSheetHeader>
         <div class="flex justify-between items-center">
@@ -59,15 +59,16 @@
               </TailAccordionContent>
             </TailAccordionItem>
           </TailAccordion>
+          
           <!-- Typologie, Couleur -->
         </div>
 
         <div class="border-top flex justify-around mt-10 gap-2">
-          <TailButton id="action-delete-filters" variant="default" @click="handleFiltersReset">
+          <TailButton id="action-delete-filters" variant="default" @click="resetFilters">
             {{ $t("Supprimer") }}
           </TailButton>
           
-          <TailButton id="action-filters-result" variant="default" @click="handleShowResults">
+          <TailButton id="action-filters-result" variant="default">
             {{ $t('Voir résulats', { n: count }) }}
           </TailButton>
         </div>
@@ -77,40 +78,40 @@
 </template>
 
 <script setup lang="ts">
+import { useProvideFilteringModalStore } from '~/composables/use/shop';
 import { defaultPriceFilters, defaultSizes, sortingFilterActions, type Actions, type DefaultClotheSize, type DefaultPriceFilters } from '~/data'
-import type { ProductsQuery, ProductsApiResponse, ExtendedRouteParamsRawGeneric, ExtendedLocationQuery } from '~/types'
+import type { ExtendedRouteParamsRawGeneric, ProductsApiResponse } from '~/types'
 
 const props = withDefaults(defineProps<{ modelValue: boolean, count: number }>(), { count: 0 })
 const emit = defineEmits<{ 'update-products': [products: ProductsApiResponse], 'update:modelValue': [value: boolean] }>()
 
-const show = useVModel(props, 'modelValue', emit)
+
+/**
+ * Global injection state: Products filtering
+ */
+
+const { showModal, query, resetFilters } = useProvideFilteringModalStore()!
+
 
 /**
  * Route parameters
  */
 
 const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
-const queryParams = useUrlSearchParams<ProductsQuery>('history', {
-  removeNullishValues: true
-})
 
-const query = ref<ProductsQuery>({
-  sorted_by: 'New',
-  typology: [],
-  colors: [],
-  sizes: [],
-  price: null,
-  offset: 0
-})
 
-const { data: products, execute } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
+/**
+ * Products
+ */
+
+const { data: filteredProducts, execute } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
   method: 'GET',
   immediate: false,
   query: query.value
 })
 
 /**
- * 
+ * Function that pushes or removes the value from the filter lists
  * @param items The items with which the list should be update
  * @param value The value
  */
@@ -131,7 +132,6 @@ function updateList<T extends (DefaultClotheSize | number)[]>(items: T, value: s
 
 /**
  * Receives a filter and then sorts the products
- *
  * @param action The filter action
  * @param value The value of the filter
  */
@@ -139,7 +139,6 @@ function handleFilterSelection (action: Actions, value: DefaultClotheSize | Defa
   switch (action) {
     case 'sorted by':
       query.value.sorted_by = value
-      queryParams.sorted_by = value
       break
 
     // case 'typology':
@@ -152,7 +151,6 @@ function handleFilterSelection (action: Actions, value: DefaultClotheSize | Defa
 
     case 'sizes':
       updateList<DefaultClotheSize[]>(query.value.sizes, value)
-      queryParams.size = query.value.sizes.join(',')
       break
 
     case 'price':
@@ -160,10 +158,8 @@ function handleFilterSelection (action: Actions, value: DefaultClotheSize | Defa
       // the price as null
       if (query.value.price === value) {
         query.value.price = null
-        queryParams.price = null
       } else {
         query.value.price = value
-        queryParams.price = value
       }
       break
   
@@ -171,39 +167,4 @@ function handleFilterSelection (action: Actions, value: DefaultClotheSize | Defa
       break
   }
 }
-
-/**
- * Gets the results based on the provided filters
- * from the backend
- */
-function handleShowResults() {
-  execute()
-
-  if (products.value) {
-    emit('update-products', products.value)
-  }
-}
-
-/**
- *  
- */
-function handleFiltersReset() {
-  query.value = {
-    sorted_by: 'New',
-    typology: [],
-    colors: [],
-    sizes: [],
-    price: null
-  }
-
-  queryParams.price = null
-  queryParams.size = null
-  queryParams.sorted_by = null
-}
-
-onMounted(() => {
-  // TODO: Check the filters from the url and if they
-  // not null, request the products based on the provided
-  // values - call refresh()
-})
 </script>

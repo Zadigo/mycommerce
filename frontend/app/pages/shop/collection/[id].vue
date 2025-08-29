@@ -13,7 +13,7 @@
 
     <!-- Feed -->
     <Suspense>
-      <AsyncProductsFeed @products-loaded="handleLoadedProducts" @modal:product-filters="toggleShowProductFilters" />
+      <AsyncProductsFeed @products:list="handleLoadedProducts" @modal:product-filters="toggleModal" />
 
       <template #fallback>
         <ProductsLoadingFeed />
@@ -22,12 +22,13 @@
 
     <!-- Modals -->
     <ClientOnly>
-      <ModalsProductFilters v-model="showProductFilters" :count="productCount" @update-products="handleUpdateProducts" />
+      <ModalsProductFilters v-model="showModal" :count="productsCount" @update-products="handleUpdateProducts" />
     </ClientOnly>
   </section>
 </template>
 
 <script setup lang="ts">
+import { useProvideProductsFilteringModal } from '~/composables/use/shop'
 import { useChangeCase } from '@vueuse/integrations/useChangeCase'
 import type { Product, ProductsApiResponse } from '~/types'
 
@@ -35,29 +36,25 @@ const AsyncProductsFeed = defineAsyncComponent({
   loader: async () => import('~/components/products/Feed.vue')
 })
 
-const showProductFilters = ref<boolean>(false)
-const toggleShowProductFilters = useToggle(showProductFilters)
+// const showProductFilters = ref<boolean>(false)
+// const toggleShowProductFilters = useToggle(showProductFilters)
+
+/**
+ * Products
+ */
 
 const productsLoading = ref<boolean>(true)
-const products = ref<Product[]>([])
 
 const { t } = useI18n()
 const { id } = useRoute().params
 
 provide('productsLoading', productsLoading)
 
-const productCount = computed(() => {
-  if (products.value) {
-    return products.value.length
-  } else {
-    return 0
-  }
-})
 
 /**
  * Callback function used to set the products loaded
  * in the async component feed back to here
- * @param data The product to use
+ * @param data The products to use
  */
 function handleLoadedProducts(data: Product[]) {
   productsLoading.value = false
@@ -72,6 +69,19 @@ function handleLoadedProducts(data: Product[]) {
 function handleUpdateProducts(data: ProductsApiResponse) {
   console.log(data)
 }
+
+/**
+ * Global injection state: Products filtering
+ */
+
+const { showModal, toggleModal } = useProvideProductsFilteringModal()
+
+/**
+ * Schema
+ */
+
+const products = ref<Product[]>([])
+const productsCount = computed(() => products.value.length)
 
 useSeoMeta({
   title: useChangeCase(id as string, 'capitalCase'),

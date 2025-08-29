@@ -32,5 +32,5 @@ export default defineCachedEventHandler(async event => {
 }, {
   base: 'redis',
   name: 'collections',
-  maxAge: 15 * 60
+  maxAge: 1*60
 })

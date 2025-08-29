@@ -1,47 +1,52 @@
 import { useArrayFindIndex, useStorage } from '@vueuse/core'
+import { collection } from 'firebase/firestore'
+import { useErrorHandler } from '~/composables/errors'
 
-import type { ExtendedRouteParamsRawGeneric, Product, ProductStockApiResponse } from '~/types'
+import type { ExtendedRouteParamsRawGeneric, MaybeProduct, Product, ProductsApiResponse, ProductsQuery, ProductStockApiResponse } from '~/types'
 
 /**
  * Composable for working with likes on the product
  * on a single product page 
+ * @param product - The product to handle likes for
  */
-export function useLikeComposable(product: Product | Ref<Product | undefined> | null | undefined) {
+export async function useLikeComposable(product: MaybeProduct, callback?: () => void) {
   if (import.meta.server) {
     return {
       isLiked: ref<boolean>(false),
-      handleLike: (_product?: Product | null | undefined): void => {}
+      icon: ref<string>('i-fa7-regular:heart'),
+      handleLike: (_product?: MaybeProduct): void => {}
     }
   }
-  
-  const currentProduct = unref(product)
-  const likedProducts = useStorage<number[]>('likedProducts', [])
-  
-  const isLiked = computed(() => {
-    if (currentProduct) {
-      return useArrayIncludes(likedProducts, currentProduct.id).value
-    } else {
-      return false
-    }
-  })
+
+  const currentProduct = toRef(product)
+  const { likedProducts } = await useStorageSetup()
+
+  const isLiked = useArrayIncludes(likedProducts, currentProduct.value?.id)
+  console.log('isLiked', isLiked, likedProducts)
+  // const uniqueIds = useArrayUnique(likedProducts)
+  // // Ensures only unique IDs in the storage
+  // syncRef(uniqueIds, likedProducts, { direction: 'ltr' })
 
   /**
    * Adds a product to the list of products
    * added to the user's whishlist
    */
   function like() {
-    if (currentProduct) {
+    if (isDefined(currentProduct)) {
       if (isLiked.value) {
-        const index = useArrayFindIndex<number>(likedProducts, () => currentProduct.id)
-        likedProducts.value.splice(index.value, 1)
+        likedProducts.value = likedProducts.value.filter(id => id !== currentProduct.value.id)
       } else {
-        likedProducts.value.push(currentProduct.id)
+        likedProducts.value.push(currentProduct.value.id)
       }
-      console.log('useLikeComposable', isLiked.value, likedProducts.value)
+
+      if (callback) callback()
     }
   }
 
+  const icon = computed(() => isLiked.value ? 'i-fa7-solid:heart' : 'i-fa7-regular:heart')
+
   return {
+    icon,
     /**
      * Whether the product is liked by the user
      */
@@ -53,13 +58,13 @@ export function useLikeComposable(product: Product | Ref<Product | undefined> | 
   }
 }
 
-/**
+/** 
  * Composable for checking if a product has images,
  * sizes, and a main image.
  * @param product - The product to check for images
  */
-export function useProductComposable(product: Product | Ref<Product | null | undefined> | null | undefined) {
-  const currentProduct = unref(product)
+export function useProductComposable<P extends Product | Ref<Product | null | undefined> | null | undefined>(product: P) {
+  const currentProduct = ref<P>(product)
 
   if (!currentProduct) {
     return {
@@ -71,16 +76,21 @@ export function useProductComposable(product: Product | Ref<Product | null | und
     }
   }
 
-  const hasImages = computed(() => currentProduct.images && currentProduct.images.length > 0)
-  const hasSizes = computed(() => currentProduct.sizes && currentProduct.sizes.length > 0)
-  const hasMainImage = computed(() => currentProduct.get_main_image && currentProduct.get_main_image.original)
-  const numberOfImages = computed(() => hasImages ? currentProduct.images.length : 0)
-  const hasColorVariants = computed(() => currentProduct.variants.length > 0)
+  const hasImages = computed(() => currentProduct.value.images && currentProduct.value.images.length > 0)
+  const hasSizes = computed(() => currentProduct.value.sizes && currentProduct.value.sizes.length > 0)
+  const hasMainImage = computed(() => currentProduct.value.get_main_image && currentProduct.value.get_main_image.original)
+  const numberOfImages = computed(() => hasImages ? currentProduct.value.images.length : 0)
+  const hasColorVariants = computed(() => currentProduct.value.variants.length > 0)
 
   return {
+    /**
+     * Whether the product has color variants
+     * @default false
+     */
     hasColorVariants,
     /**
      * Number of images associated with the product
+     * @default 0
      */
     numberOfImages,
     /**
@@ -123,7 +133,9 @@ export async function useProductDetailComposable() {
 
   const isLoading = computed(() => status.value !== 'success')
 
-  // Banner
+  /**
+   * Banner
+   */
 
   const showBanner = ref<boolean>(false)
 
@@ -145,7 +157,8 @@ export async function useProductDetailComposable() {
      */
     isLoading,
     /**
-     * Whether the banner should be shown based on scroll position
+     * Whether the banner at the bottom of the page
+     * should be show when the user scrolls down
      */
     showBanner
   }
@@ -164,9 +177,9 @@ export function useProductStockComposable(product: Product | Ref<Product | undef
     }
   }
 
-  const currentProduct = unref(product)
+  const currentProduct = toRef(product)
 
-  if (currentProduct === null || currentProduct === undefined) {
+  if (!isDefined(currentProduct)) {
     throw new Error('Product is required for useProductStockComposable')
   }
 
@@ -175,7 +188,7 @@ export function useProductStockComposable(product: Product | Ref<Product | undef
   const { customHandleError } = useErrorHandler()
   const stockState = ref<ProductStockApiResponse | null>(null)
 
-  const { execute, data } = useFetch<ProductStockApiResponse>(`/api/v1/stocks/products/${currentProduct.id}`, {
+  const { execute, data } = useFetch<ProductStockApiResponse>(`/api/v1/stocks/products/${currentProduct.value.id}`, {
     method: 'GET',
     baseURL: useRuntimeConfig().public.prodDomain,
     immediate: false,
@@ -211,3 +224,73 @@ export function useProductStockComposable(product: Product | Ref<Product | undef
     stockState
   }
 }
+
+/**
+ * Composable that connects to the cart API
+ * websocket and broadcasts cart updates when
+ * other customers complete orders on a product
+ */
+export function useLiveUpdates() {}
+
+/**
+ * A composable that provides global functionnalities
+ * on the products filtering modal 
+ */
+const [useProvideProductsFilteringModal, useProvideFilteringModalStore ] = createInjectionState(() => {
+  const [showModal, toggle] = useToggle()
+
+  /**
+   * Filtering
+   */
+
+  const filteredProducts = ref<ProductsApiResponse[]>([])
+
+  /**
+   * Route parameters
+   */
+
+  const queryParams = useUrlSearchParams<ProductsQuery>('history', { removeNullishValues: true }) as Partial<ProductsQuery>
+
+  const query = ref<Partial<ProductsQuery>>({
+    sorted_by: 'Nouveautés',
+    typology: [],
+    colors: [],
+    sizes: [],
+    price: null,
+    offset: 0
+  })
+
+  const { last } = useDebouncedRefHistory(query, { deep: true })
+
+  watch(query, (newQuery) => {
+    queryParams.sorted_by = newQuery.sorted_by
+    queryParams.typology = newQuery.typology
+    queryParams.colors = newQuery.colors
+    queryParams.sizes = newQuery.sizes
+    queryParams.price = newQuery.price
+  })
+
+  /**
+   * Function that resets the filters to their default values
+   */
+  function resetFilters() {
+    query.value = {
+      sorted_by: 'Nouveautés',
+      typology: [],
+      colors: [],
+      sizes: [],
+      price: null
+    }
+  }
+  
+  return {
+    history: last,
+    query,
+    showModal,
+    filteredProducts,
+    resetFilters,
+    toggleModal: toggle
+  }
+})
+
+export { useProvideProductsFilteringModal, useProvideFilteringModalStore }

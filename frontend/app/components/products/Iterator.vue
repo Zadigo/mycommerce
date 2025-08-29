@@ -10,6 +10,7 @@
 </template>
 
 <script setup lang="ts">
+import { productSymbol } from '~/data/constants/symbols'
 import type { Product } from '~/types'
 
 const emit = defineEmits<{ 
@@ -36,5 +37,5 @@ function handleNavigation(data: (number | Product)[]) {
   emit('has-navigated', data)
 }
 
-const products = inject<ComputedRef<Product[]>>('products')
+const products = inject<ComputedRef<Product[]>>(productSymbol, computed(() => []))
 </script>

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useJwt } from '@vueuse/integrations/useJwt'
 
-import type { CartItem, CartUpdateApiResponse, Product, SessionCacheData, UserSelection, ProductToEdit, JWTData } from '~/types'
+import type { CartUpdateApiResponse, Product, SessionCacheData, UserSelection, ProductToEdit, JWTData } from '~/types'
 import type { DefaultClotheSize } from '~/data'
 
 interface RequestData {
@@ -90,21 +90,6 @@ export const useCart = defineStore('cart', () => {
     }
     return 0
   })
-
-  /**
-   * The last product that was added to
-   * the user's cart. This is mainly for
-   * the dialog that shows the last product
-   * that was added to the cart
-   */
-  // const lastAddedProduct = computed(() => {
-  //   if (products.value.length > 0) {
-  //     // return products.value[products.value.length - 1]
-  //     return products.value[0]
-  //   } else {
-  //     return null
-  //   }
-  // })
   
   const { last: lastAddedProduct } = useRefHistory(products)
 
@@ -194,6 +179,8 @@ export const useCart = defineStore('cart', () => {
     if (size) {
       userSelection.value.size = size
     }
+
+    console.log('product.has_sizes && (userSelection.value.size === Unique || userSelection.value.size === null)', product.has_sizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null))
 
     if (product.has_sizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null)) {
       showSizeSelectionWarning.value = true

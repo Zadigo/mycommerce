@@ -2,7 +2,7 @@ import type { Product, ProductsApiResponse } from '~/types'
 
 export const productFixture: Product = {
   id: 1,
-  name: 'Some Name',
+  name: 'Product Fixture',
   active: true,
   category: 'Skirts',
   color: 'Pink',

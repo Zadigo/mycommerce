@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia'
-import type { Product, SessionCacheData } from '~/types'
+import type { Product } from '~/types'
 
 export const useShop = defineStore('shop', () => {
-  const sessionCache = ref<SessionCacheData>()
-
   // Modals
   const showSearchModal = ref<boolean>(false)
   const showLanguageModal = ref<boolean>(false)
@@ -70,10 +68,6 @@ export const useShop = defineStore('shop', () => {
      * @param product The product to track
      */
     trackProduct,
-    /**
-     * The session cache data
-     */
-    sessionCache,
     /**
      * The index of the currently viewed product
      */

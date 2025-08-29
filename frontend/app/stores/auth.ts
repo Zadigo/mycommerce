@@ -8,8 +8,6 @@ interface JWTResponseData {
 }
 
 export const useAuthentication = defineStore('authentication', () => {
-  const sessionCache = ref<SessionCacheData>()
-
   const accessToken = ref<StringNull>('')
   const refreshToken = ref<StringNull>('')
 
@@ -34,7 +32,6 @@ export const useAuthentication = defineStore('authentication', () => {
      * @deprecated
      */
     profile,
-    sessionCache,
     userId,
     isAuthenticated,
     accessToken,

@@ -2,7 +2,7 @@
   <ProductsFeedLayout>
     <!-- Filters -->
     <template #filtering>
-      <ProductsFeedHeader :count="totalProductCount" @product-filters="emit('products-filter')" />
+      <ProductsFeedHeader :count="totalProductCount" @modal:productFilters="emit('modal:product-filters')" />
     </template>
 
     <!-- Products -->
@@ -42,7 +42,7 @@
             </TailButton>
           </div>
         </div>
-      </ClientOnly>    
+      </ClientOnly>
     </template>
   </ProductsFeedLayout>
 </template>
@@ -54,7 +54,7 @@ import { useHandleGridSize } from '~/composables/use/grid'
 import { productSymbol } from '~/data/constants/symbols'
 import type { Product, ProductsApiResponse, ProductsQuery } from '~/types'
 
-const emit = defineEmits<{ 'products-loaded': [data: Product[]], 'products-filter': [] }>()
+const emit = defineEmits<{ 'products:list': [products: Product[]], 'modal:product-filters': [] }>()
 
 /**
  * Products
@@ -76,10 +76,6 @@ const { data: cachedResponse, status, error, refresh } = await useFetch<Products
     //   description: error?.message
     // })
     customHandleError(error)
-  },
-  transform(data) {
-    emit('products-loaded', data.results)
-    return data
   }
 })
 
@@ -95,9 +91,14 @@ if (error.value) {
 const products = computed(() => isDefined(cachedResponse.value) ? cachedResponse.value.results : [])
 const totalProductCount = computed(() => products.value.length)
 
+whenever(() => status.value === 'success', () => {
+  emit('products:list', products.value)
+})
+
 provide(productSymbol, products)
 
 console.log('products', products.value)
+
 
 /**
  * Analytics
@@ -111,6 +112,7 @@ const { sendAnalytics } = useProductNavigationAnalytics()
  */
 
 const { currentGridSize } = useHandleGridSize()
+
 
 /**
  * Intersection

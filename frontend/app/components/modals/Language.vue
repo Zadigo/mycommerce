@@ -1,7 +1,7 @@
 <template>
-  <TailSheet id="language-modal" v-model:open="shopStore.showLanguageModal">
+  <TailSheet id="language-modal" v-model:open="globalModals.showLanguageModal.value">
     <TailSheetContent side="bottom">
-      <div v-if="shopStore.sessionCache" class="mx-auto w-2/4">
+      <div class="mx-auto w-2/4">
         <div class="px-3 py-15">
           <div class="col">
             <p class="font-bold mb-4">
@@ -27,62 +27,74 @@
             </p>
 
             <div class="flex gap-1 mb-8">
-              <TailButton v-for="value in availableLanguages" :key="value" :active="shopStore.sessionCache.language.choice === value" @click="handleLanguageSelection(value)">
+              <TailButton v-for="value in availableLanguages" :key="value" :active="i18n.locale.value === value" @click="selectLanguage(value)">
                 {{ value.toUpperCase() }}
               </TailButton>
             </div>
           </div>
 
           <div class="col">
-            <TailButton id="btn-select-language" variant="default" class="rounded-full" @click="handleSelection">
+            <TailButton id="btn-select-language" variant="default" class="rounded-full" @click="saveSelection">
               {{ $t('Enregistrer mon choix') }}
             </TailButton>
           </div>
         </div>
       </div>
-
-      <TailSkeleton v-else height="100px" />
     </TailSheetContent>
   </TailSheet>
 </template>
 
 <script setup lang="ts">
+import { doc, updateDoc } from 'firebase/firestore'
 import { countries, type DefaultCountries } from '~/data'
 
 type AvailableLanguages = typeof i18n.locale.value
 
+const globalModals = useGlobalModals()
+
 const i18n = useI18n()
 const localePath = useLocalePath()
-const shopStore = useShop()
 const i18nCountry = useCookie<DefaultCountries>('i18nCountry', { sameSite: 'strict', secure: true, default: () => 'France' })
-
-const availableLanguages = ref<AvailableLanguages[]>(i18n.availableLocales)
 
 console.info('i18n', i18n.locale.value)
 
 /**
- * 
+ * Save the user's language and location preferences
  */
-async function handleSelection() {
-  if (shopStore.sessionCache) {
-    // TODELETE: Technically i18n already stores the language locally
-    shopStore.sessionCache.language.selected = true
-    // Set the language once the user has accepted in order
-    // to prevent "live" text switch
-    i18n.locale.value = shopStore.sessionCache.language.choice
-    
-  }
-
-  shopStore.showLanguageModal = false
+async function saveSelection() {
+  globalModals.showLanguageModal.value = false
   await navigateTo(localePath('/'))
 }
 
+const availableLanguages = ref<AvailableLanguages[]>(i18n.availableLocales)
+
 /**
- * 
+ * Select the user's language preference
+ * @param value The selected language
  */
-function handleLanguageSelection(value: AvailableLanguages) {
-  if (shopStore.sessionCache) {
-    shopStore.sessionCache.language.choice = value
-  }
+function selectLanguage(value: AvailableLanguages) {
+  i18n.locale.value = value
 }
+
+/**
+ * Firebase update
+ */
+
+const db = useFirestore()
+const { sessionId } = await useStorageSetup()
+
+watchDebounced([i18n.locale, i18nCountry], async ([languageValue, countryValue]) => {
+  if ((isDefined(languageValue) || isDefined(countryValue)) && isDefined(sessionId)) {
+    const docRef = doc(db, 'sessions', sessionId.value)
+    await updateDoc(docRef, {
+      language: {
+        choice: languageValue,
+        location: countryValue,
+        selected: true
+      }
+    }, {
+      merge: true
+    })
+  }
+})
 </script>

@@ -5,14 +5,14 @@ import type { DefaultColors, DefaultPriceFilters, DefaultSortingFilters } from "
  * filter products in the feed 
  */
 export interface SelectedFilters {
-  sorted_by?: DefaultSortingFilters
-  typology?: string[]
-  colors?: DefaultColors[]
-  sizes?: DefaultClotheSize[]
-  price?: DefaultPriceFilters | null
+  sorted_by: DefaultSortingFilters
+  typology: string[]
+  colors: DefaultColors[]
+  sizes: DefaultClotheSize[]
+  price: DefaultPriceFilters | null
 }
 
 export interface ProductsQuery extends SelectedFilters {
   offset: number
-  limit?: number
+  limit: number
 }

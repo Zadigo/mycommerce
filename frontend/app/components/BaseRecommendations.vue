@@ -5,7 +5,7 @@
     </h2>
 
     <div ref="productsRow" class="row">
-      <ProductsIterator :products="recommendations || []" :columns="columns" :show-carousel="showCarousel" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
+      <ProductsIterator :columns="columns" :show-carousel="showCarousel" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
     </div>
   </div>
 </template>
@@ -86,7 +86,7 @@ function handleNavigation (data: (number | Product)[]) {
   }
 }
 
-const { data: recommendations } = await useAsyncData<Product[]>(
+const { data } = await useAsyncData<Product[]>(
   `recommendations-${id}`,
   async () => {
     return await $client('/api/v1/shop/products/recommendations', {
@@ -100,6 +100,9 @@ const { data: recommendations } = await useAsyncData<Product[]>(
     })
   }
 )
+
+const recommendations = computed(() => isDefined(data) ? data : [])
+provide('products', recommendations)
 
 onMounted(async () => {
   if (scrollable) {
