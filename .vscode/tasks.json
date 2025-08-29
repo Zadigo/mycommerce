@@ -2,13 +2,30 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "type": "npm",
-            "script": "dev",
-            "path": "frontend_store",
-            "detail": "Starts the e-commerce app with NPM",
-            "label": "e-commerce: start",
-            "isBackground": true,
-            "problemMatcher": ["$eslint-stylish", "$vite"]
+            "type": "shell",
+            "command": "cd mystore && celery -A mystore.celery_app worker -E -l info",
+            "windows": {
+                "command": "cd mystore && celery -A mystore.celery_app worker -E --loglevel=INFO --pool=solo"
+            },
+            "icon": {
+                "id": "database"
+            },
+            "problemMatcher": [
+                {
+                    "owner": "celery",
+                    "fileLocation": "relative",
+                    "pattern": [
+                        {
+                            "regexp": "^\\[.*\\] celery.* ready$",
+                            "file": 1,
+                            "location": 2
+                        }
+                    ]
+                }
+            ],
+            "detail": "Starts Celery",
+            "label": "Celery: start",
+            "isBackground": true
         }
     ]
 }

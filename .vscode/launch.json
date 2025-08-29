@@ -5,13 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Django",
+            "name": "Django: My store",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}\\mystore\\manage.py",
-            "args": [
-                "runserver"
-            ],
+            "args": ["runserver"],
+            "envFile": "${workspaceFolder}/mystore/.env",
+            "preLaunchTask": "Celery: start",
             "django": true
         },
         {
@@ -20,67 +20,41 @@
             "request": "launch",
             "module": "celery",
             "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/mystore",
             "args": [
                 "-A",
                 "mystore.celery_app",
                 "worker",
-                "--loglevel",
-                "DEBUG",
-                "--pool",
-                "solo"
+                "-E",
+                "--loglevel=INFO",
+                "--pool=solo"
             ]
         },
         {
             "type": "msedge",
             "request": "launch",
-            "name": "vuejs:edge",
-            "url": "http://localhost:5173/",
-            "webRoot": "${workspaceFolder}/shop_store/",
-            "preLaunchTask": "e-commerce: start",
-            "vueComponentPaths": [
-                "${workspaceFolder}/shop_store/src/**/*.vue"
-            ],
-            "sourceMapPathOverrides": {
-                "*": "${workspaceFolder}/shop_store/src/*",
-                "/src/": "${workspaceFolder}/shop_store/src/*",
-                "webpack:/*": "${workspaceFolder}/shop_store/*",
-                // "/./*": "${workspaceFolder}/shop_store/*",
-                // "webpack:///src/compsables/*.js": "${webRoot}/src/**/*.js"
-            },
-            "skipFiles": [
-                "${workspaceFolder}/shop_store/node_modules/**/*.js",
-                "${workspaceFolder}/node_modules/*",
-                "<node_internals>/**"
-            ],
-            "env": {}
+            "name": "client: My commerce",
+            "url": "http://localhost:3000",
+            // this should point to your Nuxt `srcDir`, which is `app` by default
+            "webRoot": "${workspaceFolder}/frontend/app"
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Debug Nuxt Test Files",
-            "autoAttachChildProcesses": true,
-            "skipFiles": [
-                "<node_internals>/**",
-                "**/node_modules/**"
-            ],
-            "program": "${workspaceFolder}/frontend/node_modules/vitest/vitest.mjs",
+            "name": "server: My commerce",
+            "outputCapture": "std",
+            "program": "${workspaceFolder}/node_modules/nuxt/bin/nuxt.mjs",
             "args": [
-                "run",
-                "${relativeFile}"
+                "dev"
             ],
-            "smartStep": true,
-            "console": "integratedTerminal",
-            "env": {
-                "DJANGO_DEV_URL": "127.0.0.1:8000"
-            }
         }
     ],
     "compounds": [
         {
-            "name": "Django and Celery",
+            "name": "My commerce: nuxt",
             "configurations": [
-                "Celery",
-                "Django"
+                "server: My commerce",
+                "client: My commerce"
             ]
         }
     ]
