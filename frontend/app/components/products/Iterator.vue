@@ -2,7 +2,7 @@
   <template v-if="products && products.length > 0">
     <div id="products" class="grid grid-cols-2 gap-2 px-1 md:grid-cols-4">
       <div v-for="(product, i) in products" id="product" :key="product.id">
-        <ProductCardBase :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
+        <ProductCardBase :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" :show-carousel="true" @has-navigated="handleNavigation" />
       </div>
     </div>
   </template>
@@ -22,7 +22,6 @@ const emit = defineEmits<{
 }>()
 
 const { showPrices = true, showCart = true, showLikeButton = true } = defineProps<{
-  products: Product[] | null | undefined
   columns?: number
   showLikeButton?: boolean
   showCart?: boolean
@@ -36,4 +35,6 @@ const { showPrices = true, showCart = true, showLikeButton = true } = defineProp
 function handleNavigation(data: (number | Product)[]) {
   emit('has-navigated', data)
 }
+
+const products = inject<ComputedRef<Product[]>>('products')
 </script>
