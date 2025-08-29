@@ -32,9 +32,8 @@
       </div>
       
       <div class="flex align-center">
-        <button type="button" class="bg-white rounded-full p-2" @click="proxyHandleLike">
-          <Icon v-if="isLiked" name="i-fa7-solid:heart" size="13" />
-          <Icon v-else name="i-fa7-regular:heart" size="13" />
+        <button type="button" class="bg-white rounded-full p-2" @click="like">
+          <Icon :name="icon" size="13" />
         </button>
       </div>
     </div>
@@ -42,6 +41,8 @@
 </template>
 
 <script setup lang="ts">
+import { useAnalyticsCallback } from '~/composables/use/analytics'
+import { useLikeComposable } from '~/composables/use/shop'
 import type { Product } from '~/types'
 
 const props = defineProps<{
@@ -52,6 +53,9 @@ const props = defineProps<{
   showCart?: boolean
   showPrices?: boolean
 }>()
+
+console.log('props.product', props.product)
+
 /** 
  * This emit is used to indicate to parents
  * hosting this component that a navigation occured. This
@@ -61,29 +65,15 @@ const props = defineProps<{
 const emit = defineEmits<{ 'has-navigated': [data: (number | Product)[]] }>()
 
 // const { gtag } = useGtag()
-const { like, isLiked } = useLikeComposable(props.product)
-
-function proxyHandleLike () {
-  if (like) {
-    like()
-    
-    // TODO: G-Analytics
-    // gtag('event', 'add_to_wishlist', {
-    //   items: {
-    //     item_id: props.product?.id,
-    //     item_name: props.product?.name,
-    //     price: props.product?.get_price,
-    //     quantity: 1,
-    //     item_brand: null,
-    //     item_category: props.product?.category,
-    //     item_category2: props.product?.sub_category,
-    //     item_variant: props.product?.color,
-    //     index: 0,
-    //     item_reference: null
-    //   }
-    // })
-  }
-}
+const { triggerEvent } = useAnalyticsCallback(props.product, props.index)
+const { like, isLiked, icon } = await useLikeComposable(props.product, triggerEvent)
 
 const isHovered = ref<boolean>(false)
+
+const productEl = useTemplateRef<HTMLDivElement>('productEl')
+
+// if (import.meta.client) {
+//   const { isOutside } = useMouseInElement(productEl)
+//   isHovered.value = !isOutside.value
+// }
 </script>
