@@ -13,13 +13,14 @@
 
     <!-- Feed -->
     <Suspense>
-      <AsyncProductsFeed @products-loaded="handleLoadedProducts" @products-filter="showProductFilters=true" />
+      <AsyncProductsFeed @products-loaded="handleLoadedProducts" @modal:product-filters="toggleShowProductFilters" />
 
       <template #fallback>
         <ProductsLoadingFeed />
       </template>
     </Suspense>
 
+    <!-- Modals -->
     <ClientOnly>
       <ModalsProductFilters v-model="showProductFilters" :count="productCount" @update-products="handleUpdateProducts" />
     </ClientOnly>
@@ -35,6 +36,8 @@ const AsyncProductsFeed = defineAsyncComponent({
 })
 
 const showProductFilters = ref<boolean>(false)
+const toggleShowProductFilters = useToggle(showProductFilters)
+
 const productsLoading = ref<boolean>(true)
 const products = ref<Product[]>([])
 

@@ -80,24 +80,14 @@
 import { defaultPriceFilters, defaultSizes, sortingFilterActions, type Actions, type DefaultClotheSize, type DefaultPriceFilters } from '~/data'
 import type { ProductsQuery, ProductsApiResponse, ExtendedRouteParamsRawGeneric, ExtendedLocationQuery } from '~/types'
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean
-  },
-  count: {
-    type: Number,
-    default: 0
-  }
-})
+const props = withDefaults(defineProps<{ modelValue: boolean, count: number }>(), { count: 0 })
+const emit = defineEmits<{ 'update-products': [products: ProductsApiResponse], 'update:modelValue': [value: boolean] }>()
 
-const emit = defineEmits({
-  'update-products' (_data: ProductsApiResponse) {
-    return true
-  },
-  'update:modelValue'(_value) {
-    return true
-  }
-})
+const show = useVModel(props, 'modelValue', emit)
+
+/**
+ * Route parameters
+ */
 
 const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
 const queryParams = useUrlSearchParams<ProductsQuery>('history', {
@@ -111,13 +101,6 @@ const query = ref<ProductsQuery>({
   sizes: [],
   price: null,
   offset: 0
-})
-
-const show = computed({
-  get: () => props.modelValue,
-  set: (value) => {
-    emit('update:modelValue', value)
-  }
 })
 
 const { data: products, execute } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
