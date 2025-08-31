@@ -1,6 +1,7 @@
 <template>
   <aside id="sidebar" class="w-[var(--sidebar-width)] h-screen border-r bg-gray-100 border-gray-200 p-10 fixed top-0 left-0 shadow-sm">
     <div class="my-20">
+      {{ route.meta }}
       <nuxt-navigation-menu orientation="vertical" :items="items" class="data-[orientation=vertical]:w-48" />
     </div>
   </aside>
@@ -70,4 +71,7 @@ const items = ref<NavigationMenuItem[][]>([
     }
   ]
 ])
+
+const route = useRoute()
+const canShow = computed(() => route.meta.name !== 'Login')
 </script>

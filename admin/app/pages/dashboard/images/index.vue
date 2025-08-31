@@ -5,7 +5,7 @@
       <header>
         <nuxt-card>
           <div class="flex justify-between align-center">
-            <nuxt-input v-model="search" type="search" />
+            <nuxt-input v-model="search" type="search" class="w-full" option-label="name" option-value="id" placeholder="Select a product to use..." />
           </div>
         </nuxt-card>
 
@@ -62,7 +62,7 @@
       </template>
 
       <template #body>
-        <nuxt-select v-model="productToAssociate" :options="searched" option-label="name" option-value="id" />
+        <nuxt-input-menu v-model="productToAssociate" :items="searchedProducts" label-key="name" value-key="id" open-on-focus />
       </template>
 
       <template #footer>
@@ -79,9 +79,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Product } from '~/types';
+import type { Product, ProductImage } from '~/types';
 
-const { search, searched } = await useApiSearchEndpoint<Product[]>('/admin/v1/images')
+const { search, searched } = await useApiSearchEndpoint<ProductImage[]>('/admin/v1/images')
+const { search: searchProducts, searched: searchedProducts } = await useApiSearchEndpoint<Product[]>('/admin/v1/products')
 const { images, files, fileNames, select, showModal: uploadModal, toggle: toggleUploadModal, upload, numberOfSelectedImages } = await useImagesComposable()
 const { productToAssociate, selectedImages, showModal: imageAssociationModal, associate, toggle: toggleImageAssociation } = useImageAssociation(images)
 </script>

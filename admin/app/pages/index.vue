@@ -24,6 +24,17 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  name: 'Login',
+  // redirect() {
+  //   const user = false
+
+  //   if (user) {
+  //     return navigateTo('/dashboard')
+  //   }
+  // }
+})
+
 const email = ref<string>('')
 const password = ref<string>('')
 

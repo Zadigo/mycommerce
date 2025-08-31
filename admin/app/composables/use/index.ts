@@ -15,12 +15,11 @@ export {
  * Composable used execute a search on API endpoints
  * @param endpoint - The API endpoint to query
  */
-export async function useApiSearchEndpoint<T>(endpoint: string) {
+export async function useApiSearchEndpoint<T = Record<string, unknown> | Record<string, unknown>[]>(endpoint: string) {
   const search = ref<string>()
 
-  const { data: searched, execute, status } = await useFetch<T>(endpoint, {
+  const { data: searched, execute, status } = await useFetch(endpoint, {
     method: 'GET',
-    key: 'searchedImages',
     baseURL: useRuntimeConfig().public.prodDomain,
     immediate: false,
     query: { q: search.value }
@@ -31,5 +30,5 @@ export async function useApiSearchEndpoint<T>(endpoint: string) {
 
   const isLoading = computed(() => status.value === 'pending')
 
-  return { search, searched, isLoading }
+  return { search, searched: searched, isLoading }
 }

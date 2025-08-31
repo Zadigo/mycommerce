@@ -7,6 +7,9 @@
         <nuxt-button @click="() => { toggle() }">
           <icon name="i-lucide-file" />
         </nuxt-button>
+        <nuxt-button to="/dashboard/products/create" color="primary">
+          <icon name="i-lucide-plus" /> New product
+        </nuxt-button>
       </template>
 
       <nuxt-table :data="searched" :columns="tableColumns" loading-color="primary" loading-animation="carousel" class="flex-1" sticky />

@@ -124,12 +124,13 @@ export async function useImagesComposable() {
 
 /**
  * Composable used to associate images with products
- * @param images - The images to associate with the product
+ * @param currentImages - The images to associate with the product
  */
-export function useImageAssociation(images: ProductImage[]) {
-  const currentImages = toRef(images)
-  const productToAssociate = ref<number>()
+export function useImageAssociation(currentImages: Ref<ProductImage[]>) {
+  const images = toRef(currentImages)
   const selectedImages = ref<ProductImage[]>([])
+
+  const productToAssociate = ref<number>()
 
   async function associate() {
     await $fetch('/images/associate', {
@@ -142,6 +143,26 @@ export function useImageAssociation(images: ProductImage[]) {
     })
   }
 
+  /**
+ * Unlink the the selected image from the given
+ * product
+ */
+  async function unlink(image: ProductImage) {
+    const data = await $fetch<ProductImage[]>('admin/images/associate', {
+      method: 'PATCH',
+      baseURL: useRuntimeConfig().public.prodDomain,
+      body: {
+        product: productToAssociate.value,
+        image: image.id,
+        method: 'Dissociate'
+      }
+    })
+
+    if (data) {
+      // Do something
+    }
+  }
+
   const [showModal, toggle] = useToggle()
 
   return {
@@ -149,6 +170,7 @@ export function useImageAssociation(images: ProductImage[]) {
     productToAssociate,
     selectedImages,
     toggle,
+    unlink,
     associate
   }
 }
