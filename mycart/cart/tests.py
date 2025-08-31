@@ -8,17 +8,17 @@ from django.contrib.auth import get_user_model
 from django.test import (LiveServerTestCase, RequestFactory, TestCase,
                          TransactionTestCase, override_settings)
 from django.urls import reverse
+from orders.models import Product
 from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import status
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-from shop.models import Product
 
-from mystore.custom_utilities.tokens import (JWTGenerator, decode_jwt_token,
-                                             is_token_expired)
-from mystore.mixins import AuthenticatedTestCase
+from mycart.custom_utilities.tokens import (JWTGenerator, decode_jwt_token,
+                                            is_token_expired)
+from mycart.mixins import AuthenticatedTestCase
 
 
 class TestCartManager(TransactionTestCase):
