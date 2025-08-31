@@ -19,8 +19,14 @@ class Product(models.Model):
     changes. The price in the final order would
     then stay the same as the initial price."""
 
-    product_reference = models.IntegerField(
-        help_text=_("Reference to the product in the catalog")
+    reference = models.IntegerField(
+        help_text=_("Reference to the product in the catalog"),
+        blank=True,
+        null=True
+    )
+    serialized_data = models.JSONField(
+        help_text=_("Serialized product data"),
+        default=dict
     )
     unit_price = models.DecimalField(
         help_text=_("Price of the product at the time of order"),

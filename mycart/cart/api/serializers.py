@@ -68,6 +68,17 @@ def build_cart_response(queryset: BaseManager[Cart], session_id: str):
     return response_data
 
 
+# class StoreProductSerializer(Serializer):
+#     """A serializer used to adapt a product that comes from
+#     the store to a usable object in the cart"""
+
+#     id = fields.IntegerField()
+#     name = fields.CharField()
+#     sku = fields.CharField()
+#     main_image = fields.URLField()
+#     unit_price = fields.DecimalField(5, 2)
+
+
 class CartSerializer(Serializer):
     """Serializes the cart objects"""
 
@@ -141,11 +152,12 @@ class DeleteFromCartSerializer(Serializer):
         product_id = self.validated_data['product_id']
         size = self.validated_data['size']
         session_id = self.validated_data['session_id']
-        
-        qs = Cart.objects.items_to_remove(request, product_id, session_id, size=size)
+
+        qs = Cart.objects.items_to_remove(
+            request, product_id, session_id, size=size)
         for item in qs:
             item.delete()
-        
+
         return qs
 
 

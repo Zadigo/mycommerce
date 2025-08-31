@@ -1,11 +1,9 @@
 from cart.managers import CartManager
-from discounts.utils import calculate_discount
+from orders.models import Product
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
-from shop.choices import ClotheSizesChoices
-from shop.models import Product
 
 
 class AbstractCart(models.Model):
@@ -55,9 +53,7 @@ class AbstractCart(models.Model):
     size = models.CharField(
         max_length=100,
         blank=True,
-        null=True,
-        choices=ClotheSizesChoices.choices(),
-        default=ClotheSizesChoices.default('Unique')
+        null=True
     )
     price = models.DecimalField(
         max_digits=5,

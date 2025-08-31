@@ -1,12 +1,12 @@
 from django.contrib import admin
-from orders.models import CustomerOrder, ProductHistory
+from orders.models import CustomerOrder, Product
 
 
-@admin.register(ProductHistory)
-class ProductHistoryAdmin(admin.ModelAdmin):
-    list_display = ['product', 'unit_price']
-    search_fields = ['product__name']
-    date_hiearchy = 'created_on'
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ['reference', 'unit_price']
+    search_fields = ['reference']
+    date_hierarchy = 'created_on'
 
 
 @admin.register(CustomerOrder)

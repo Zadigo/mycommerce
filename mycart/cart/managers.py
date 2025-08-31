@@ -6,7 +6,7 @@ from django.db.models.aggregates import Sum
 from django.db.models.expressions import Q
 from rest_framework.exceptions import ValidationError
 
-from mystore.custom_utilities.tokens import JWTGenerator
+from mycart.custom_utilities.tokens import JWTGenerator
 
 
 class QuerySetDoesNotExist(Exception):
