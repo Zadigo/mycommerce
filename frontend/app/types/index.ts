@@ -2,6 +2,10 @@ import type { DeliveryOption } from './cart'
 import type { Product } from './shop'
 
 export type Nullable<T> = T | null
+/**
+ * @todo Remove `Product`
+ */
+export type MaybeProduct = Product | MaybeRef<Product | undefined> | undefined
 
 export * from './accounts'
 export * from './cache'
@@ -10,8 +14,6 @@ export * from './feed'
 export * from './other'
 export * from './shop'
 export * from './text'
-
-export type MaybeProduct = Product | MaybeRef<Product | undefined> | undefined
 
 /**
  * Token returned by the Django backend in order

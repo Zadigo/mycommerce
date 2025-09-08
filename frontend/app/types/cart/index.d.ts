@@ -1,7 +1,7 @@
 export * from './address'
 export * from './payment'
 
-import type { DefaultClotheSize } from '~/data'
+import type { DefaultClotheSize } from '~/types/constants'
 import type { Product } from "../shop"
 
 /**
@@ -12,7 +12,10 @@ export type UserSelection = {
   id: number | null
   product: Product | object
   size: DefaultClotheSize
-  quantity: number | 1
+  /**
+   * @default 1
+   */
+  quantity: number
   session_id: string | null
 }
 

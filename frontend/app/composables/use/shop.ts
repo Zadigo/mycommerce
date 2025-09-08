@@ -1,5 +1,3 @@
-import { useArrayFindIndex, useStorage } from '@vueuse/core'
-import { collection } from 'firebase/firestore'
 import { useErrorHandler } from '~/composables/errors'
 
 import type { ExtendedRouteParamsRawGeneric, MaybeProduct, Product, ProductsApiResponse, ProductsQuery, ProductStockApiResponse } from '~/types'
@@ -49,6 +47,7 @@ export async function useLikeComposable(product: MaybeProduct, callback?: () => 
     icon,
     /**
      * Whether the product is liked by the user
+     * @default false
      */
     isLiked,
     /**
