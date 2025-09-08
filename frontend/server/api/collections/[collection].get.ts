@@ -51,7 +51,7 @@ export default defineCachedEventHandler(async event => {
   }
 }, {
   base: 'redis',
-  maxAge: 1*60,
+  maxAge: 0, // disable cache for now
   getKey(event) {
     const collectionName = getRouterParam(event, 'collection')
     const query = getQuery<{ offset: string }>(event)

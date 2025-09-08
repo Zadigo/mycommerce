@@ -11,16 +11,16 @@ export default defineCachedEventHandler(async event => {
   const refresh = getCookie(event, 'refresh')
   
   try {
-    // return productFixture
-    const response = await $fetch<Product[]>(`/api/v1/shop/products/${id}`, {
-      baseURL: useRuntimeConfig().public.prodDomain,
-      method: 'GET',
-      headers: [
-        ['Authorization', access ? `Token ${access}` : '']
-      ]
-    })
+    return productFixture
+    // const response = await $fetch<Product[]>(`/api/v1/shop/products/${id}`, {
+    //   baseURL: useRuntimeConfig().public.prodDomain,
+    //   method: 'GET',
+    //   headers: [
+    //     ['Authorization', access ? `Token ${access}` : '']
+    //   ]
+    // })
 
-    return response
+    // return response
   } catch (e) {
     if (e instanceof FetchError) {
       if (e.status === 401 && refresh) {
@@ -35,8 +35,8 @@ export default defineCachedEventHandler(async event => {
     }
   }
 }, {
-  maxAge: 1*60,
   base: 'redis',
+  maxAge: 0, // disable cache for now
   getKey(event) {
     const id = getRouterParam(event, 'id')
     return `product-${id}`

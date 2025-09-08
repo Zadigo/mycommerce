@@ -32,5 +32,5 @@ export default defineCachedEventHandler(async event => {
 }, {
   base: 'redis',
   name: 'collections',
-  maxAge: 1*60
+  maxAge: 0 // disable cache for now
 })

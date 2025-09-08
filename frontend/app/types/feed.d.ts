@@ -1,4 +1,4 @@
-import type { DefaultColors, DefaultPriceFilters, DefaultSortingFilters } from "~/data"
+import type { DefaultColors, DefaultPriceFilters, DefaultSortingFilters } from '~/types/constants'
 
 /**
  * Default object containining the selections to

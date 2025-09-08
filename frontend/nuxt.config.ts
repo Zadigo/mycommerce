@@ -70,7 +70,9 @@ export default defineNuxtConfig({
       // Django/Quart/Flask
       quartProdUrl: process.env.NUXT_QUART_PROD_URL || 'http://127.0.0.1:5000',
       prodDomain: process.env.NUXT_DJANGO_PROD_URL || 'http://127.0.0.1:8000',
-      
+      cartProdDomain: process.env.NUXT_DJANGO_CART_PROD_URL || 'http://127.0.0.1:8001',
+      reviewsProdDomain: process.env.NUXT_DJANGO_REVIEWS_PROD_URL || 'http://127.0.0.1:8002',
+
       // Stripe
       stripeTestSecretKey: process.env.NUXT_STRIPE_TEST_SECRET_KEY,
       stripeTestPublishableKey: process.env.NUXT_STRIPE_TEST_PUBLISHABLE_KEY,

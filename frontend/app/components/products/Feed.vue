@@ -63,7 +63,7 @@ const emit = defineEmits<{ 'products:list': [products: Product[]], 'modal:produc
 // const { gtag } = useGtag()
 
 const { id } = useRoute().params
-const query = ref<ProductsQuery>({ offset: 0 })
+const query = ref<Partial<ProductsQuery>>({ offset: 0 })
 const { customHandleError } = useErrorHandler()
 
 const { data: cachedResponse, status, error, refresh } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
