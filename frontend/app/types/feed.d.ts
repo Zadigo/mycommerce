@@ -1,4 +1,4 @@
-import type { DefaultColors, DefaultPriceFilters, DefaultSortingFilters } from '~/types/constants'
+import type { DefaultColors, DefaultPriceFilters, DefaultSortingFilters, DefaultClotheSize } from '~/types/constants'
 
 /**
  * Default object containining the selections to

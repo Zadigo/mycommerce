@@ -1,53 +1,53 @@
 export * from './address'
 export * from './payment'
 
-import type { DefaultClotheSize } from '~/data';
-import type { Product } from "../shop";
+import type { DefaultClotheSize } from '~/data'
+import type { Product } from "../shop"
 
 /**
  * The options selected by the user for the
  * product that he wants to add to his cart 
  */
 export type UserSelection = {
-  id: number | null;
-  product: Product | object;
-  size: DefaultClotheSize;
-  quantity: number | 1;
-  session_id: string | null;
-};
+  id: number | null
+  product: Product | object
+  size: DefaultClotheSize
+  quantity: number | 1
+  session_id: string | null
+}
 
 export type AddToCartData = {
   product: {
-    id: number;
-    color: string;
-  };
-  size: DefaultClotheSize;
-  session_id: string;
-};
+    id: number
+    color: string
+  }
+  size: DefaultClotheSize
+  session_id: string
+}
 
-export type ProductForCart = Omit<Product, 'variants'>;
+export type ProductForCart = Omit<Product, 'variants'>
 
 export interface CartItem {
-  id: number;
-  product: ProductForCart;
-  size: DefaultClotheSize;
-  price: string | number;
-  created_on: string;
+  id: number
+  product: ProductForCart
+  size: DefaultClotheSize
+  price: string | number
+  created_on: string
 }
 
 interface CartStatistic {
-  product__id: number;
-  product__name: string;
+  product__id: number
+  product__name: string
   size: DefaultClotheSize
-  quantity: number;
-  total: number;
+  quantity: number
+  total: number
 }
 
 export interface CartUpdateApiResponse {
-  session_id: string;
-  results: CartItem[];
-  statistics: CartStatistic[];
-  total: number;
+  session_id: string
+  results: CartItem[]
+  statistics: CartStatistic[]
+  total: number
 }
 
 /**

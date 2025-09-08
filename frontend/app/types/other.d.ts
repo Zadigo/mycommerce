@@ -1,7 +1,5 @@
-import type { LocationQuery } from "vue-router";
-import type { DefaultClotheSize, DefaultPriceFilters, DefaultSortingFilters } from "~/data";
-import type { FetchOptions } from 'ofetch'
-import type { RouteParamsRawGeneric } from 'vue-router'
+import type { LocationQuery, RouteParamsRawGeneric } from 'vue-router'
+import type { DefaultClotheSize, DefaultPriceFilters, DefaultSortingFilters } from '~/types/constants'
 
 export interface ExtendedLocationQuery extends LocationQuery {
   login?: string

@@ -1,4 +1,5 @@
-import type { DefaultClotheSize } from "~/data"
+import type { Product } from '~/types/shop/product'
+import type { DefaultClotheSize } from '~/types/constants'
 
 export * from './product'
 
@@ -13,17 +14,17 @@ export type ProductsApiResponse = {
 export type LikedProducts = number[]
 
 export declare interface CollectionApiResponse {
-  id: number;
-  name: string;
-  category: string;
-  sub_category: string;
-  number_of_items: number;
-  illustration: string | null;
-  tags: string[] | null;
-  get_view_name: string;
+  id: number
+  name: string
+  category: string
+  sub_category: string
+  number_of_items: number
+  illustration: string | null
+  tags: string[] | null
+  get_view_name: string
 }
 
-// TODO: Renamt ProductStockApiResponse
+// TODO: Rename ProductStockApiResponse
 export interface ProductStockApiResponse {
   id: number
   variant: {

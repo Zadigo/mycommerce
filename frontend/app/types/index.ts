@@ -1,6 +1,8 @@
 import type { DeliveryOption } from './cart'
 import type { Product } from './shop'
 
+export type Nullable<T> = T | null
+
 export * from './accounts'
 export * from './cache'
 export * from './cart'
