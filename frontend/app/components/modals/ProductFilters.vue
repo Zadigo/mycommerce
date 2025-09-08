@@ -21,7 +21,7 @@
               </TailAccordionTrigger>
 
               <TailAccordionContent class="flex gap-2">
-                <TailButton v-for="sortingFilter in sortingFilterActions" id="action-sorting-direction" :key="sortingFilter[0]" :active="query.sorted_by===sortingFilter[0]" variant="outline" size="sm" @click="handleFilterSelection('sorted by', sortingFilter[0])">
+                <TailButton v-for="sortingFilter in Array.from(sortingFilterActions)" id="action-sorting-direction" :key="sortingFilter[0]" :active="query.sorted_by===sortingFilter[0]" variant="outline" size="sm" @click="handleFilterSelection('sorted by', sortingFilter[0])">
                   {{ $t(sortingFilter[0]) }}
                 </TailButton>
               </TailAccordionContent>
@@ -40,7 +40,7 @@
               </TailAccordionTrigger>
 
               <TailAccordionContent class="flex gap-2">
-                <TailButton v-for="size in defaultSizes.clothes" id="action-filter-size" :key="size" :active="query.sizes.includes(size)" size="sm" variant="outline" class="ms-2" @click="handleFilterSelection('sizes', size)">
+                <TailButton v-for="size in Array.from(defaultClotheSize)" id="action-filter-size" :key="size" :active="query.sizes.includes(size)" size="sm" variant="outline" class="ms-2" @click="handleFilterSelection('sizes', size)">
                   {{ size }}
                 </TailButton>
               </TailAccordionContent>
@@ -53,7 +53,7 @@
               </TailAccordionTrigger>
 
               <TailAccordionContent class="flex justify-start flex-wrap gap-2">
-                <TailButton v-for="priceFilter in defaultPriceFilters" id="action-filter-price"  :key="priceFilter.value" :active="priceFilter.value===query.price" variant="outline" size="sm" @click="handleFilterSelection('price', priceFilter.value)">
+                <TailButton v-for="priceFilter in Array.from(defaultPriceFilters)" id="action-filter-price"  :key="priceFilter.value" :active="priceFilter.value===query.price" variant="outline" size="sm" @click="handleFilterSelection('price', priceFilter.value)">
                   {{ priceFilter.text }}
                 </TailButton>
               </TailAccordionContent>
@@ -78,9 +78,8 @@
 </template>
 
 <script setup lang="ts">
-import { useProvideFilteringModalStore } from '~/composables/use/shop';
-import { defaultPriceFilters, defaultSizes, sortingFilterActions, type Actions, type DefaultClotheSize, type DefaultPriceFilters } from '~/data'
-import type { ExtendedRouteParamsRawGeneric, ProductsApiResponse } from '~/types'
+import { useProvideFilteringModalStore } from '~/composables/use/shop'
+import type { Actions, DefaultClotheSize, defaultPriceFilters, DefaultPriceFilters, defaultClotheSize, ExtendedRouteParamsRawGeneric, ProductsApiResponse, sortingFilterActions } from '~/types'
 
 const props = withDefaults(defineProps<{ modelValue: boolean, count: number }>(), { count: 0 })
 const emit = defineEmits<{ 'update-products': [products: ProductsApiResponse], 'update:modelValue': [value: boolean] }>()

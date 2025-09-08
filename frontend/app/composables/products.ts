@@ -1,8 +1,9 @@
-import type { DefaultClotheSize } from '~/data'
+import type { DefaultClotheSize } from '~/types'
 import type { Product, ProductSizes } from '~/types'
 
 /**
  * Composable to handle product bookmarking
+ * @todo Remove
  */
 export function useBookmarkProduct(product: Product) {}
 

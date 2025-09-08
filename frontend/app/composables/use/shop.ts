@@ -250,7 +250,7 @@ const [useProvideProductsFilteringModal, useProvideFilteringModalStore ] = creat
 
   const queryParams = useUrlSearchParams<ProductsQuery>('history', { removeNullishValues: true }) as Partial<ProductsQuery>
 
-  const query = ref<Partial<ProductsQuery>>({
+  const query = ref<ProductsQuery>({
     sorted_by: 'Nouveautés',
     typology: [],
     colors: [],
@@ -278,7 +278,9 @@ const [useProvideProductsFilteringModal, useProvideFilteringModalStore ] = creat
       typology: [],
       colors: [],
       sizes: [],
-      price: null
+      price: null,
+      offset: 0,
+      limit: 100
     }
   }
   

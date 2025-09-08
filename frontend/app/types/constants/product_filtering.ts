@@ -22,18 +22,7 @@ export interface DefaultSizes {
   clothes: DefaultClotheSize[]
 }
 
-export const defaultSizes: DefaultSizes = {
-  clothes: [
-    'XS',
-    'S',
-    'M',
-    'L',
-    'XL'
-  ]
-}
-
 export const defaultSortingFilters = ['Nouveautés', 'Prix croissant', 'Prix décroissant'] as const
-
 
 /**
  * Default options for filtering a product by price
@@ -59,7 +48,10 @@ export const priceFilter = [
  */
 export type DefaultPriceFilters = (typeof priceFilter)[number]
 
-
+/**
+ * The default price filters with their corresponding values
+ * to be used in the API queries
+ */
 export const defaultPriceFilters: { text: DefaultPriceFilters, value: string }[] = [
   {
     text: "Jusqu'à 15€",

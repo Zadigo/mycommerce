@@ -12,7 +12,9 @@ export interface SelectedFilters {
   price: DefaultPriceFilters | null
 }
 
-export interface ProductsQuery extends SelectedFilters {
+interface LimitOffset {
   offset: number
   limit: number
 }
+
+export interface ProductsQuery extends SelectedFilters, Partial<LimitOffset> { /** */ }
