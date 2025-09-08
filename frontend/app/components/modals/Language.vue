@@ -14,7 +14,7 @@
               </TailSelectTrigger>
               
               <TailSelectContent>
-                <TailSelectItem v-for="country in countries" :key="country" :value="country">
+                <TailSelectItem v-for="country in Array.from(countries)" :key="country" :value="country">
                   {{ country }}
                 </TailSelectItem>
               </TailSelectContent>
@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { doc, updateDoc } from 'firebase/firestore'
-import { countries, type DefaultCountries } from '~/data'
+import type { countries, DefaultCountries } from '~/types'
 
 type AvailableLanguages = typeof i18n.locale.value
 

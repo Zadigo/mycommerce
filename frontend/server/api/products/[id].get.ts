@@ -12,6 +12,7 @@ export default defineCachedEventHandler(async event => {
   
   try {
     return productFixture
+    
     // const response = await $fetch<Product[]>(`/api/v1/shop/products/${id}`, {
     //   baseURL: useRuntimeConfig().public.prodDomain,
     //   method: 'GET',

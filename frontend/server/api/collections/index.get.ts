@@ -8,14 +8,15 @@ export default defineCachedEventHandler(async event => {
   const refresh = getCookie(event, 'refresh')
 
   try {
-    const data = await $fetch<CollectionApiResponse>(`/api/v1/collection`, {
-      baseURL: useRuntimeConfig().public.prodDomain,
-      method: 'GET',
-      headers: [
-        ['Authorization', access ? `Token ${access}` : '']
-      ]
-    })
-    return data
+    // const data = await $fetch<CollectionApiResponse>(`/api/v1/collection`, {
+    //   baseURL: useRuntimeConfig().public.prodDomain,
+    //   method: 'GET',
+    //   headers: [
+    //     ['Authorization', access ? `Token ${access}` : '']
+    //   ]
+    // })
+    // return data
+    return []
   } catch (e) {
     if (e instanceof FetchError) {
       if (e.status === 401 && refresh) {
