@@ -87,8 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DefaultClotheSize } from '~/data'
-import type { Product } from '~/types'
+import type { DefaultClotheSize, Product } from '~/types';
 
 const props = defineProps<{
   modelValue: boolean,

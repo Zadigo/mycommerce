@@ -22,7 +22,7 @@
 
     <!-- Modals -->
     <ClientOnly>
-      <ModalsProductFilters v-model="showModal" :count="productsCount" @update-products="handleUpdateProducts" />
+      <ProductsModalsFilters v-model="showModal" :count="productsCount" @update-products="handleUpdateProducts" />
     </ClientOnly>
   </section>
 </template>

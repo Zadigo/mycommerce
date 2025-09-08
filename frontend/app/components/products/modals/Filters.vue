@@ -12,6 +12,7 @@
       <div class="flex-col justify-around px-5">    
         <div>
           {{ query }}
+          {{ sortingFilterActions }}
 
           <TailAccordion type="single" collapsible>
             <!-- Order by -->
@@ -19,7 +20,6 @@
               <TailAccordionTrigger>
                 {{ $t('Trier par') }}
               </TailAccordionTrigger>
-
               <TailAccordionContent class="flex gap-2">
                 <TailButton v-for="sortingFilter in Array.from(sortingFilterActions)" id="action-sorting-direction" :key="sortingFilter[0]" :active="query.sorted_by===sortingFilter[0]" variant="outline" size="sm" @click="handleFilterSelection('sorted by', sortingFilter[0])">
                   {{ $t(sortingFilter[0]) }}

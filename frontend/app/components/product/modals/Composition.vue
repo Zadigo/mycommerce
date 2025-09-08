@@ -21,22 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps({
-  modelValue: {
-    type: Boolean
-  }
-})
-
-const emit = defineEmits({
-  'update:modelValue'(_value: boolean) {
-    return true
-  }
-})
-
-const show = computed({
-  get: () => props.modelValue,
-  set: (value: boolean) => {
-    emit('update:modelValue', value)
-  }
-})
-</script>>
+const props = defineProps<{ modelValue: boolean }>()
+const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>()
+const show = useVModel(props, 'modelValue', emit)
+</script>

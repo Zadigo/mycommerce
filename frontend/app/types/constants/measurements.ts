@@ -40,7 +40,7 @@ export const defaultEuShoeSizes = euShoeSizes.map<ShoeSize>(x => {
     eu: x,
     footLengthCm: estimatedFootLength(x)
   }
-}) as const
+})
 
 export type FRBraSize = {
   size: DefaultClotheSize | null

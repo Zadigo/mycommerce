@@ -31,10 +31,10 @@
     <ClientOnly>
       <ProductPageBottomCart v-if="showBanner && product" :product="product" :show-banner="showBanner" />
 
-      <ModalsImageZoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
-      <ModalsSizeGuide v-model="showSizeGuideDrawer" :product="product" />
-      <ModalsAvailability v-model="showAvailabilityModal" />
-      <ModalsComposition v-model="showCompositionModal" />
+      <ProductModalsImageZoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
+      <ProductModalsSizeGuide v-model="showSizeGuideDrawer" :product="product" />
+      <ProductModalsAvailability v-model="showAvailabilityModal" />
+      <ProductModalsComposition v-model="showCompositionModal" />
     </ClientOnly>
   </section>
 </template>
