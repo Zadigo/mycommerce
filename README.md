@@ -1,30 +1,46 @@
-# Installation 🛒
+# My Commerce
 
-The project comes with three four main parts that need to be configured in order to use the template with the best conditions:
+Is a comprehensive e-commerce solution built with modern technologies:
 
-* A Django backend
-* A frontend SSR ready template (Nuxt)
-* A mobile template (Ionic)
-* A Quart API backend (async based Flask)
-* And finally, a basic Quasar admin template
+* Django
+* Nuxt 4
+* Ionic (Mobile application)
 
-# Configuring your project
+## Installation 🛒
 
-Before starting the project, ensure you have a valid [Stripe](https://stripe.com/en-fr), [Klarna](https://www.klarna.com/) and [Firebase](https://firebase.google.com/) accounts. You also might need to have valid secret and client keys on [Google Cloud Console](https://console.cloud.google.com/).
+The project is built with different micro-services that can be used independently or together to create a full-fledged e-commerce website:
+
+* Cart (Django) : Handles all cart-related functionalities
+* Reviews (Django): Manages product reviews and ratings
+* Store (Django): Manages product catalog and inventory
+* Frontend (Nuxt 4): Renders the user interface and handles client-side logic
+* Frontend Admin (Nuxt 4): User friendly admin interface as an alternative to Django's default admin
+* Frontend Mobile (Nuxt 4 + Ionic): Provides a mobile-friendly interface for the e-commerce platform
+
+## Configuring your project 🏠
+
+Before starting the project, ensure you have a valid [Stripe](https://stripe.com/en-fr), [Klarna](https://www.klarna.com/) 
+and [Firebase](https://firebase.google.com/) accounts. You also might need to have valid secret and client keys 
+on [Google Cloud Console](https://console.cloud.google.com/).
 
 The secret keys need to be available either as `.env` files at the root of each project or using global system environment variables.
 
-Finally, if you plan on using [Celery](https://docs.celeryq.dev/en/stable/) ensure you have both [Redis](https://redis.io/) and [RabbitMQ](https://www.rabbitmq.com/) on your system.
+Finally, if you plan on using [Celery](https://docs.celeryq.dev/en/stable/) ensure you have 
+both [Redis](https://redis.io/) and [RabbitMQ](https://www.rabbitmq.com/) on your system.
 
-## Configuring Django 🎶
+You will also need a valid AWS account with [S3](https://aws.amazon.com/s3/) access and finally a 
+valid [Cloudfront](https://aws.amazon.com/cloudfront/) distribution to serve your static files.
 
-Once you have downloaded the project, create super user with `python manage.py createsuperuser`, `migrate` to push all database migrations, then start the website with `runserver`.
+The project comes with a simple fixture of 85 products in `initialize/products.csv` in order to launch the website quickly.
 
-The Django backend implements all the API's for the core functionnalities of the ecommerce website while Nuxt deals with the frontend heavylifiting. To test the project out of the box, use the [products.csv](initialize/products.csv) file located at the root by using the import on the `Product` page of the Django admin.
+The fastest way to test the project in a production context is to launch Docker containers with [Docker Desktop](https://www.docker.com/products/docker-desktop).
 
-This file contains a list of 85 products that can be used to run the website quickly.
+## Using Websocket implementation 🛜
 
-Here are the base environment variables used to configure the Django project:
+The cart comes with an ASGI backend that supports WebSocket connections for real-time updates when a user adds or purchases an item in his cart.
+This is used both in the frontend (in the same way Shopify does) and in the admin interface for live updates.
+
+## Environment Variables 🌳
 
 ```env
 DEBUG=1
@@ -159,11 +175,6 @@ NUXT_FIREBASE_APP_ID=
 
 NUXT_FIREBASE_MEASUREMENT_ID=
 ```
-
-### Configuring Ionic
-
-The same process can be applied like with Nuxt. Use `ionic serve` to start the project locally.
-
 
 ## Useful e-commerce tools
 
