@@ -61,7 +61,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 
     'django_ecommerce',
-    'legal',
     'accounts',
     'collection',
     'shop',
@@ -378,7 +377,7 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': REDIS_URL,
-        'KEY_PREFIX': 'ecommerce'
+        'KEY_PREFIX': 'ecommerce-shop'
     },
     'file': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',

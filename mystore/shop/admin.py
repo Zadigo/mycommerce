@@ -98,7 +98,8 @@ class ProductAdmin(ImportExportModelAdmin):
     actions = [
         'activate', 'deactivate', 'download_csv',
         'copy_products', 'create_default_sizes',
-        'activate_products_with_images'
+        'activate_products_with_images',
+        'remove_images'
     ]
 
     def activate_products_with_images(self, request, queryset):
@@ -177,6 +178,10 @@ class ProductAdmin(ImportExportModelAdmin):
             f'Created default sizes for {len(queryset)} products',
             messages.SUCCESS
         )
+
+    def remove_images(self, request, queryset):
+        for product in queryset:
+            product.images.clear()
 
 
 @admin.register(Sale)

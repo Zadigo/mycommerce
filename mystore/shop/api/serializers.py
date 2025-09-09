@@ -19,9 +19,9 @@ class ImageSerializer(Serializer):
     id = fields.IntegerField(read_only=True)
     name = fields.CharField(read_only=True)
     product_set = ImageProductSerializer(read_only=True, many=True)
-    original = fields.FileField(read_only=True)
-    thumbnail = fields.FileField(read_only=True)
-    mid_size = fields.FileField(read_only=True)
+    original = fields.ImageField(read_only=True)
+    thumbnail = fields.ImageField(read_only=True)
+    mid_size = fields.ImageField(read_only=True)
     is_main_image = fields.BooleanField(read_only=True)
 
 

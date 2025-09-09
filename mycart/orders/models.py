@@ -12,15 +12,17 @@ from mycart.choices import CityChoices, CountryChoices
 
 class Product(models.Model):
     """A model that stores very basic information on
-     the product that was ordered by the user. This is a
-     reference model to the mycart.Product one.
+    the product that was ordered by the user.
 
     This is useful for when the product's price
     changes. The price in the final order would
     then stay the same as the initial price."""
 
     reference = models.IntegerField(
-        help_text=_("Reference to the product in the catalog"),
+        help_text=_(
+            "Active reference to the product in the catalog "
+            "and which points to myshop.shop.Product ID field"
+        ),
         blank=True,
         null=True
     )
@@ -29,7 +31,7 @@ class Product(models.Model):
         default=dict
     )
     unit_price = models.DecimalField(
-        help_text=_("Price of the product at the time of order"),
+        help_text=_("Price at the time of order"),
         max_digits=5,
         decimal_places=2,
         default=0

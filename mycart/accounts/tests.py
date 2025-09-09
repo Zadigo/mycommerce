@@ -1,9 +1,9 @@
 import unittest
+
 from accounts import tasks
 from accounts.models import Address
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from orders.payment import StripeInterfaceMixin
 from rest_framework.test import APITestCase
 
 
@@ -130,12 +130,10 @@ class TestApiEndpoints(APITestCase):
             'password1': 'touparette',
             'password2': 'touparette'
         })
-        data = response.json()
-        print(data)
-        # self.assertEqual(response.status_code, 201)
-        # self.assertIn('id', data)
 
-        # tasks.signup_workflow.apply_async(
-        #     args=[self.user.email],
-        #     countdown=1
-        # )
+        data = response.json()
+        self.assertEqual(response.status_code, 201)
+        self.assertIn('id', data)
+
+    def test_list_delivery_options(self):
+        pass

@@ -3,8 +3,7 @@ from django.conf import settings
 from django.template.context import Context
 from django.template.loader import render_to_string
 from django.utils import timezone
-
-from mystore.stocks.models import Stock, StockAlert
+from stocks.models import Stock, StockAlert
 
 
 @shared_task

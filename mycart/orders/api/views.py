@@ -1,17 +1,14 @@
-from orders import tasks
 from cart.models import Cart
-from django.core.cache import cache
 from django.db.models import F, Sum
 from django.utils.crypto import get_random_string
+from orders import tasks
 from orders.api import serializers
-from orders.models import CustomerOrder, ProductHistory
+from orders.models import CustomerOrder, Product
 from orders.payment import PaymentInterface
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
-from mystore.choices import ShipmentChoices
 
 
 class ListCustomerOrders(ListAPIView):
@@ -26,23 +23,6 @@ class ListCustomerOrders(ListAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
-
-
-class ListDeliveryOptions(ListAPIView):
-    serializer_class = serializers.DeliveryOptionsSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        if cache.has_key('delivery_options'):
-            return cache.get('delivery_options')
-
-        def map_options():
-            for i, choice in enumerate(ShipmentChoices.choices):
-                yield {'id': i + 1, 'name': choice[0]}
-
-        delivery_options = list(map_options())
-        cache.set('delivery_options', delivery_options, timeout=3600)
-        return delivery_options
 
 
 class CartMixin:
@@ -65,7 +45,7 @@ class CartMixin:
 class CreatePaymentIntent(CartMixin, CreateAPIView):
     """This view is used to indicate that the user
     intends to pay for the products that were
-    added to his cart. This endpoint is triggered
+    added to a cart. This endpoint is triggered
     on cart/shipment or cart/home"""
 
     serializer_class = serializers.ValidateCreateIntent
@@ -188,13 +168,13 @@ class CapturePaymentIntent(CartMixin, CreateAPIView):
             # prices of the given product
             items_to_create = []
             for item in queryset:
-                product_history = ProductHistory(
+                product_history = Product(
                     product=item.product,
                     unit_price=item.price
                 )
                 items_to_create.append(product_history)
 
-            created_items = ProductHistory.objects.bulk_create(items_to_create)
+            created_items = Product.objects.bulk_create(items_to_create)
             customer_order.products.add(*created_items)
 
             queryset.update(is_paid_for=~F('is_paid_for'))

@@ -1,25 +1,23 @@
-# My Commerce
+# My Commerce - E-commerce solution with Django & Nuxt 4 🛍️
 
-Is a comprehensive e-commerce solution built with modern technologies:
+Is a comprehensive e-commerce solution specialized in online retail, built with Django and Nuxt 4. 
+It offers a robust backend for managing products, orders, and customers, along with a dynamic frontend for an 
+engaging shopping experience.
 
-* Django
-* Nuxt 4
-* Ionic (Mobile application)
+## Micro-services 🛒
 
-## Installation 🛒
-
-The project is built with different micro-services that can be used independently or together to create a full-fledged e-commerce website:
-
-* Cart (Django) : Handles all cart-related functionalities
-* Reviews (Django): Manages product reviews and ratings
-* Store (Django): Manages product catalog and inventory
-* Frontend (Nuxt 4): Renders the user interface and handles client-side logic
-* Frontend Admin (Nuxt 4): User friendly admin interface as an alternative to Django's default admin
-* Frontend Mobile (Nuxt 4 + Ionic): Provides a mobile-friendly interface for the e-commerce platform
+| Service               | Language/Framework | Description                              |
+|-----------------------|--------------------|------------------------------------------|
+| Cart                  | Django             | Manages shopping cart functionalities    |
+| Reviews               | Django             | Handles product reviews and ratings      |
+| Store                 | Django             | Manages product catalog and inventory    |
+| Frontend              | Nuxt 4             | Renders the user interface               |
+| Frontend Admin        | Nuxt 4             | User-friendly admin interface            |
+| Frontend Mobile       | Nuxt 4 + Ionic     | Mobile-friendly interface                |
 
 ## Configuring your project 🏠
 
-Before starting the project, ensure you have a valid [Stripe](https://stripe.com/en-fr), [Klarna](https://www.klarna.com/) 
+Before starting, ensure you have a valid [Stripe](https://stripe.com/en-fr), [Klarna](https://www.klarna.com/) 
 and [Firebase](https://firebase.google.com/) accounts. You also might need to have valid secret and client keys 
 on [Google Cloud Console](https://console.cloud.google.com/).
 
@@ -35,10 +33,32 @@ The project comes with a simple fixture of 85 products in `initialize/products.c
 
 The fastest way to test the project in a production context is to launch Docker containers with [Docker Desktop](https://www.docker.com/products/docker-desktop).
 
-## Using Websocket implementation 🛜
+### Using Websocket implementation 🛜
 
 The cart comes with an ASGI backend that supports WebSocket connections for real-time updates when a user adds or purchases an item in his cart.
 This is used both in the frontend (in the same way Shopify does) and in the admin interface for live updates.
+
+## Technologies Used 🌳
+
+| Technology            | Purpose/Usage                  | Version   |
+|-----------------------|-------------------------------|------------|
+| Django                | Web framework                 | ✅ 3.2     |
+| Django REST Framework | API development               | ✅ 3.12    |
+| PostgreSQL            | Database                      | ✅ 13      |
+| Redis                 | Caching, message broker       | ✅ 6.2     |
+| RabbitMQ              | Message broker                | ✅ 3.8.9   |
+| Celery                | Task queue/background jobs    | ✅ 5.1.2   |
+| Docker                | Containerization              | ✅ 20.10.7 |
+| Nuxt 4                | Frontend framework            | ✅ 4.1.1   |
+| Ionic                 | Mobile application framework  | ✅ 7.0.0   |
+| Stripe                | Payment processing            | ✅ -       |
+| Klarna                | Payment processing            | ✅ -       |
+| Firebase              | Authentication, database      | ✅ -       |
+| AWS S3                | Static and media storage      | ✅ -       |
+| Cloudfront            | CDN for static files          | ✅ -       |
+| Google Analytics      | Traffic analysis              | ✅ -       |
+| Facebook Pixels       | Traffic analysis              | ✅ -       |
+| Microsoft Clarity     | Traffic analysis              | ✅ -       |
 
 ## Environment Variables 🌳
 
@@ -176,7 +196,10 @@ NUXT_FIREBASE_APP_ID=
 NUXT_FIREBASE_MEASUREMENT_ID=
 ```
 
-## Useful e-commerce tools
+## Useful e-commerce tools 🛠️
+
+Some of the internal micro-services can be replaced by third-party services. Here are some useful
+tools that can be used to enhance your e-commerce website:
 
 - Track shipping: [https://www.aftership.com/](Aftership)
 - Inventory tracking: [https://www.zoho.com/inventory/](Zoho Inventory)

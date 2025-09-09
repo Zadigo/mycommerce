@@ -43,10 +43,6 @@ urlpatterns = [
         include('collection.api.urls')
     ),
     path(
-        'legal/v1/collection/',
-        include('django_ecommerce.api.urls')
-    ),
-    path(
         'api/schema/',
         drf_views.SpectacularAPIView.as_view(),
         name='schema'
@@ -89,10 +85,6 @@ urlpatterns = [
     path(
         'admin/',
         admin.site.urls
-    ),
-    path(
-        'legal/',
-        include('legal.urls')
     ),
     re_path(
         r'^$',

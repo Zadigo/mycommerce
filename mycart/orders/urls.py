@@ -11,10 +11,6 @@ urlpatterns = [
         name='cancel'
     ),
     re_path(
-        r'^delivery-options$',
-        views.ListDeliveryOptions.as_view()
-    ),
-    re_path(
         r'^create$',
         views.CapturePaymentIntent.as_view(),
         name='create'

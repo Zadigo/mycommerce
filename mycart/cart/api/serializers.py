@@ -6,9 +6,9 @@ from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from rest_framework import fields
 from rest_framework.serializers import Serializer
-from shop.api.serializers import ProductSerializer
-from shop.choices import ClotheSizesChoices
-from shop.models import Product
+from orders.api.serializers import ProductSerializer
+# from mycart.choices import ClotheSizesChoices
+from orders.models import Product
 
 
 def cart_statistics(queryset: BaseManager[Cart]):
@@ -91,11 +91,11 @@ class CartSerializer(Serializer):
     session_id = fields.CharField(write_only=True)
 
 
-class ValidateVariants(Serializer):
-    size = fields.ChoiceField(
-        ClotheSizesChoices.sizes,
-        default=ClotheSizesChoices.default('S')
-    )
+# class ValidateVariants(Serializer):
+#     size = fields.ChoiceField(
+#         ClotheSizesChoices.sizes,
+#         default=ClotheSizesChoices.default('S')
+#     )
 
 
 class ValidateProduct(Serializer):

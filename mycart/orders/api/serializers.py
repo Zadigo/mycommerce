@@ -2,27 +2,21 @@ from orders.api.validators import validate_card_token, validate_intent_token
 from orders.models import CustomerOrder
 from rest_framework import fields
 from rest_framework.serializers import ModelSerializer, Serializer
-from shop.api.serializers import ImageSerializer
 
-from mystore.choices import ShipmentChoices
+from orders.choices import ShipmentChoices
 
 
-class SimpleProductSerializer(Serializer):
+class ProductSerializer(Serializer):
     id = fields.IntegerField()
-    images = ImageSerializer(many=True)
-    slug = fields.SlugField()
-
-
-class ProductHistorySerializer(Serializer):
-    id = fields.IntegerField()
-    product = SimpleProductSerializer()
+    product = fields.JSONField(source='serialized_data')
     unit_price = fields.DecimalField(5, 2)
+    created_on = fields.DateTimeField()
 
 
 class CustomerOrderSerializer(Serializer):
     id = fields.IntegerField()
     reference = fields.CharField()
-    products = ProductHistorySerializer(many=True)
+    products = ProductSerializer(many=True)
     total = fields.DecimalField(5, 2)
     created_on = fields.DateTimeField()
 
