@@ -7,12 +7,12 @@
             {{ $t("Adresse de livraison") }}
           </h2>
 
-          <TailInput v-model="requestData.address_line" placeholder="Addresse" autocomplete="street-address" />
-          <TailInput v-model="requestData.city" placeholder="Ville" autocomplete="address-level1" class="my-1" />
+          <TailInput v-model="newShippingInfo.address_line" placeholder="Addresse" autocomplete="street-address" />
+          <TailInput v-model="newShippingInfo.city" placeholder="Ville" autocomplete="address-level1" class="my-1" />
 
           <div class="flex justify-between gap-1">
-            <TailInput v-model="requestData.zip_code" :rules="[ rules.postalCode ]" placeholder="Zip code" autocomplete="postal-code" />
-            <TailInput v-model="requestData.country" autocomplete="country" />
+            <TailInput v-model="newShippingInfo.zip_code" placeholder="Zip code" autocomplete="postal-code" />
+            <TailInput v-model="newShippingInfo.country" autocomplete="country" />
           </div>
 
           <hr class="my-5">
@@ -22,13 +22,13 @@
           </h2>
 
           <div class="flex justify-between gap-1">
-            <TailInput v-model="requestData.firstname" placeholder="Nom" autocomplete="family-name" />
-            <TailInput v-model="requestData.lastname" placeholder="Prénom" autocomplete="given-name" />
+            <TailInput v-model="newShippingInfo.firstname" placeholder="Nom" autocomplete="family-name" />
+            <TailInput v-model="newShippingInfo.lastname" placeholder="Prénom" autocomplete="given-name" />
           </div>
 
           <div class="flex justify-between gap-2 my-2">
-            <TailInput v-model="requestData.email" type="email" placeholder="Email" autocomplete="email" />
-            <TailInput v-model="requestData.telephone" placeholder="Téléphone" autocomplete="tel" />
+            <TailInput v-model="newShippingInfo.email" type="email" placeholder="Email" autocomplete="email" />
+            <TailInput v-model="newShippingInfo.telephone" placeholder="Téléphone" autocomplete="tel" />
           </div>
 
           <div class="flex items-center space-x-2">
@@ -46,53 +46,22 @@
 
 <script lang="ts" setup>
 import { useLocalStorage } from '@vueuse/core'
-import type { NewIntentAPIResponse } from '../../types/cart/payment'
+import type { NewIntentAPIResponse } from '~/types/cart/payment'
 
 definePageMeta({
+  title: 'Cart: Shipment',
   layout: 'cart',
   middleware: ['cart']
 })
 
-useHead({
-  title: 'Options de livraison',
-  meta: [
-    {
-      key: 'description',
-      content: ''
-    }
-  ]
-})
-
-const cartStore = useCart()
-const { requestData } = storeToRefs(cartStore)
-
-const rules = {
-  /**
-   * Verifies that the postal code is correct
-   */
-  postalCode: (zipCode: string) => {
-    const regex = /\d{5}/
-    return regex.test(zipCode) || 'Zip code is not valid'
-  }
-}
+/**
+ * New Address form
+ */
 
 // const { gtag } = useGtag()
-const { handleError } = useErrorHandler()
+const { customHandleError } = useErrorHandler()
 const { $client } = useNuxtApp()
 
-const paymentIntent = useLocalStorage<NewIntentAPIResponse>('paymentIntent', null, {
-  deep: true,
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    }
-  }
-})
-
-const saveShipmentDetails = ref(false)
 
 // TODO: G-Analytics
 // gtag('event', 'add_shipping_info', {
@@ -114,23 +83,40 @@ const saveShipmentDetails = ref(false)
 //   })
 // })
 
-// $fbq('trackSingle', 'AddPaymentInfo', {})
+const saveShipmentDetails = ref(false)
+
+const { cookieSessionId } = useUserSession()
+
+const shippingStore = useShippingInfo()
+const { newShippingInfo } = storeToRefs(shippingStore)
+
+const paymentIntent = useLocalStorage<NewIntentAPIResponse>('paymentIntent', null, {
+  deep: true,
+  serializer: {
+    read(raw) {
+      return JSON.parse(raw)
+    },
+    write(value) {
+      return JSON.stringify(value)
+    }
+  }
+})
 
 /**
  * Update an existing payment intent
  */
 async function handleUpdatePaymentIntent() {
   try {
-    requestData.value.session_id = cartStore.sessionId
+    newShippingInfo.value.session_id = cookieSessionId.value
 
     await $client('/api/v1/orders/intent/update', {
       method: 'POST',
       body: {
         intent: paymentIntent.value.intent,
-        ...requestData.value
+        ...newShippingInfo.value
       },
       onRequestError({ error }) {
-        handleError(error)
+        customHandleError(error)
       }
     })
 
@@ -142,13 +128,17 @@ async function handleUpdatePaymentIntent() {
     //   shipping: 1
     // })
   } catch (e) {
-    handleError(e)
+    customHandleError(e)
   }
 }
 
+/**
+ * Create new Address
+ */
+
 const { execute } = useAsyncData(() => $fetch('/api/v1/address-set/create', {
   method: 'POST',
-  body: requestData.value,
+  body: newShippingInfo.value,
   immediate: false
 }))
 
@@ -158,5 +148,15 @@ onBeforeRouteLeave((to, from, next) => {
       console.log('Save new address set')
     }
   }
+})
+
+useHead({
+  title: 'Cart: Shipment',
+  meta: [
+    {
+      key: 'description',
+      content: ''
+    }
+  ]
 })
 </script>

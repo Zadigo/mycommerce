@@ -14,7 +14,7 @@
 
       <hr v-if="hasSelectedPaymentMethod" class="my-5">
 
-      <CartPaymentStripeBlock v-if="stripeSelected" @payment-complete="handlePaymentComplete" />
+      <CartPaymentStripeBlock v-if="stripeSelected" @payment-complete="callbackPaymentComplete" />
       <CartPaymentKlarnaBlock v-else-if="klarnaSelected" />
     </TailCardContent>
 
@@ -29,12 +29,10 @@
 import type { PaymentType } from '~/types'
 
 definePageMeta({
+  title: 'Cart: Payment',
   layout: 'cart',
   middleware: ['cart']
 })
-
-const { t } = useI18n()
-const router = useRouter()
 
 const paymentMethods = [
   {
@@ -47,13 +45,14 @@ const paymentMethods = [
   }
 ]
 
+/**
+ * Payment
+ */
+
+const router = useRouter()
 const selectedPaymentMethod = ref<string | null>(null)
 
-const hasSelectedPaymentMethod = computed(() => {
-  return selectedPaymentMethod.value !== null
-})
-
-// Stripe payment method was selected
+const hasSelectedPaymentMethod = computed(() => selectedPaymentMethod.value !== null)
 const stripeSelected = computed(() => hasSelectedPaymentMethod.value && selectedPaymentMethod.value !== 'Klarna')
 const klarnaSelected = computed(() => hasSelectedPaymentMethod.value && selectedPaymentMethod.value === 'Klarna')
 
@@ -61,14 +60,16 @@ const klarnaSelected = computed(() => hasSelectedPaymentMethod.value && selected
  * Executes card tokenization and initiates the
  * payment on the backend side
  */
-function handlePaymentType (cardType: string) {
+function handlePaymentType(cardType: string) {
   selectedPaymentMethod.value = cardType
 }
 
 /**
- * 
+ * Callback when the payment was completed
+ * successfully
+ * @param blockName The payment block that was used (e.g. Stripe, Klarna, etc.)
  */
-function handlePaymentComplete(blockName: PaymentType) {
+function callbackPaymentComplete(blockName: PaymentType) {
 // TODO: G-Analytics
 // gtag('event', 'add_payment_info', {
   //   transaction_id: cartStore.sessionId,
@@ -98,12 +99,15 @@ function handlePaymentComplete(blockName: PaymentType) {
   //   shipping: 1,
   //   value: cartStore.cartTotal
   // })
-  console.log('handlePaymentComplete', blockName)
-  // router.push('/cart/success')
+  console.log('callbackPaymentComplete', blockName)
+
+  router.push('/cart/success')
 }
 
+const { t } = useI18n()
+
 useHead({
-  title: t('Paiemnent de la commande'),
+  title: t('Paiement de la commande'),
   meta: [
     {
       key: 'description',

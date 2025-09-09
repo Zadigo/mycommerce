@@ -4,40 +4,12 @@ import { defineStore } from 'pinia'
 
 import type { CartUpdateApiResponse, JWTData, Product, ProductSizes, ProductToEdit, UserSelection } from '~/types'
 
-interface RequestData {
-  session_id: string | null | undefined
-  card_token: string
-  firstname: string
-  lastname: string
-  email: string
-  telephone: string
-  address_line: string
-  zip_code: string
-  country: string
-  city: string
-  delivery: 'Chronopost'
-}
-
 type FunctionCallback = (data: CartUpdateApiResponse) => void
 
 /**
  * Store used to manage the customer's cart
  */
 export const useCart = defineStore('cart', () => {
-  const requestData = ref<RequestData>({
-    session_id: '',
-    card_token: '',
-    firstname: '',
-    lastname: '',
-    email: '',
-    telephone: '',
-    address_line: '',
-    zip_code: '',
-    country: '',
-    city: '',
-    delivery: "Chronopost"
-  })
-
   const cache = ref<CartUpdateApiResponse | null>()
 
   // Container used to save the user selections
@@ -242,13 +214,23 @@ export const useCart = defineStore('cart', () => {
     products,
     showAddedProductDrawer,
     showEditProductDrawer,
-    showCartDrawer,
-    /**
-     * @deprecated Use useShippingInfo store instead
-     */
-    requestData
+    showCartDrawer
   }
 })
+
+interface RequestData {
+  session_id: string | null | undefined
+  card_token: string
+  firstname: string
+  lastname: string
+  email: string
+  telephone: string
+  address_line: string
+  zip_code: string
+  country: string
+  city: string
+  delivery: 'Chronopost'
+}
 
 /**
  * Store used to manage the shipping information

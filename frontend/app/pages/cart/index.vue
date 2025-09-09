@@ -1,11 +1,11 @@
 <template>
-  <TailCard class="card border-none">
+  <TailCard class="border-none">
     <TailCardContent class="card-body">
       <h2 class="font-2xl font-bold">
         {{ $t("Choisis un mode d'expédition") }}
       </h2>
 
-      <TailRadioGroup v-if="deliveryOptions.length > 0" v-model="cartStore.requestData.delivery" default-value="Relais colis">
+      <TailRadioGroup v-if="deliveryOptions.length > 0" v-model="shippingStore.newShippingInfo.delivery" default-value="Relais colis">
         <div v-for="(delivery, i) in deliveryOptions" :key="delivery.id" class="flex items-center space-x-8">
           <TailRadioGroupItem :id="`delivery-${i}`" :value="delivery.id" />
           <TailLabel :for="`delivery-${i}`">
@@ -23,21 +23,26 @@
 <script lang="ts" setup>
 import { useStorage } from '@vueuse/core'
 import type { DeliveryOption } from '~/types'
-import type { NewIntentAPIResponse } from '../../types/cart/payment'
+import type { NewIntentAPIResponse } from '~/types/cart/payment'
 
 definePageMeta({
+  title: 'Cart: Index',
   layout: 'cart',
   middleware: ['cart']
 })
 
 const { t } = useI18n()
-const { handleError } = useErrorHandler()
-const cartStore = useCart()
+const { customHandleError } = useErrorHandler()
+
+const shippingStore = useShippingInfo()
 const { $client } = useNuxtApp()
+
 // const { gtag } = useGtag()
 
 const deliveryOptions = useStorage<DeliveryOption[]>('deliveryOptions', [])
 const paymentIntent = useCookie<NewIntentAPIResponse>('paymentIntent')
+
+const { cookieSessionId } = useUserSession()
 
 /**
  * Get the delivery options from which the
@@ -63,9 +68,9 @@ const { data } = useAsyncData('delivery-options', async () => {
       await $client<NewIntentAPIResponse>('/api/v1/orders/intent', {
         method: 'POST',
         baseURL: useRuntimeConfig().public.prodDomain,
-        body: { session_id: cartStore.sessionId },
+        body: { session_id: cookieSessionId.value },
         onRequestError({ error }) {
-          handleError(error)
+          customHandleError(error)
         }
       })
     ]
