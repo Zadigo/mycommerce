@@ -257,6 +257,7 @@ CACHES = {
 # Fixtures
 
 FIXTURE_DIRS = [
+    'fixtures/user',
     'fixtures/products'
 ]
 
@@ -277,6 +278,6 @@ VAT_PERCENTAGE = os.getenv('VAT_PERCENTAGE', 0)
 
 # PYJWT
 
-PY_UTILITIES_JWT_ISSUER='ecommerce'
+PY_UTILITIES_JWT_ISSUER = 'ecommerce'
 
-PY_UTILITIES_JWT_SECRET=os.getenv('PY_UTILITIES_JWT_SECRET')
+PY_UTILITIES_JWT_SECRET = os.getenv('PY_UTILITIES_JWT_SECRET')

@@ -1,0 +1,12 @@
+[
+    {
+        "model": "auth.User",
+        "pk": 1,
+        "fields": {
+            "username": "juliette",
+            "email": "juliette@example.com",
+            "first_name": "Juliette",
+            "last_name": "Apple"
+        }
+    }
+]

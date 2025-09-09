@@ -48,33 +48,13 @@ class CartManager(QuerySet):
 
         return queryset
 
-        # logic = Q(session_id=session_id)
-        # if request.user.is_authenticated:
-        #     logic = logic & Q(user=request.user)
-
-        # if size is not None:
-        #     logic = logic & Q(size=size)
-
-        # if color is not None:
-        #     logic = logic & Q(color=color)
-
-        # queryset = self.filter(logic)
-
-        # queryset = queryset.filter(id=product_id)
-        # if not queryset.exists():
-        #     raise QuerySetDoesNotExist()
-
-        # for product in queryset:
-        #     product.delete()
-        # return self.filter(logic)
-
     def _add_to_cart(self, request, session_id, product, **kwargs):
         """The `_add_to_cart` function is a core method in the CartManager 
         class that handles adding products to a user's cart. It supports 
         both authenticated and anonymous users, ensuring that products 
         are properly managed and associated with the correct 
         session or user"""
-        if not product.active:
+        if not product['active']:
             raise ProductActiveError(
                 detail={'product': 'Product is not active'})
 
@@ -95,7 +75,7 @@ class CartManager(QuerySet):
             'session_id': session_id,
             'product': product,
             # TODO: Implement the ability to use VAT price if applicable
-            'price': product.get_price,
+            'price': product['get_price'],
             'size': None,
             'is_anonymous': not request.user.is_authenticated
         }
@@ -103,24 +83,24 @@ class CartManager(QuerySet):
         size_string = kwargs.get('size')
 
         if size_string != 'Unique':
-            message = f'Product with size {size_string} is no available'
-            sizes = product.size_set.filter(name=size_string)
+            message = f'Product with size {size_string} is not available'
+            selected_size = list(
+                filter(
+                    lambda x: x['name'] == size_string, 
+                        product['sizes']
+                )
+            )
 
-            try:
-                size = sizes.get(name=size_string)
-            except:
+            if not selected_size:
                 raise ValidationError(detail={'size': message})
-            else:
-                if not size.active or not size.availability:
-                    raise ValidationError(detail={'size': message})
 
-                params['size'] = size.name
+            params['size'] = selected_size[0]['name']
 
         # If the frontend is trying to create
         # an object with a product that requires
         # a specific size, raise a ValidationError
         if size_string == 'Unique':
-            if product.has_sizes:
+            if product['has_sizes']:
                 message = (
                     "Trying to use a 'unique' size "
                     "on a product that contains sizes"

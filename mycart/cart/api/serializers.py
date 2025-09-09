@@ -1,14 +1,11 @@
 from cart.models import Cart
 from cart.validators import validate_quantity
-from django.db.models import Count, QuerySet, Sum
+from django.db.models import Count, Sum
 from django.db.models.manager import BaseManager
-from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
+from orders.models import Product
 from rest_framework import fields
 from rest_framework.serializers import Serializer
-from orders.api.serializers import ProductSerializer
-# from mycart.choices import ClotheSizesChoices
-from orders.models import Product
 
 
 def cart_statistics(queryset: BaseManager[Cart]):
@@ -83,12 +80,11 @@ class CartSerializer(Serializer):
     """Serializes the cart objects"""
 
     id = fields.IntegerField()
-    product = ProductSerializer()
+    session_id = fields.CharField(write_only=True)
+    product = fields.JSONField()
     size = fields.CharField()
-    # color = fields.CharField()
     price = fields.DecimalField(5, 2)
     created_on = fields.DateTimeField()
-    session_id = fields.CharField(write_only=True)
 
 
 # class ValidateVariants(Serializer):
@@ -118,20 +114,17 @@ class ValidateCart(Serializer):
     """Validates the data used to create a
     new cart object in the database"""
 
-    product = ValidateProduct(write_only=True)
-    size = fields.CharField(write_only=True, default='Unique')
+    product = fields.JSONField()
     session_id = fields.CharField(allow_null=True)
+    size = fields.CharField(write_only=True, default='Unique')
+
     results = fields.JSONField(read_only=True)
     statistics = fields.JSONField(read_only=True)
     total = fields.FloatField(read_only=True)
 
     def create(self, validated_data):
         request = self._context['request']
-
-        data = validated_data.copy()
-        product_id = data.pop('product')['id']
-        product = get_object_or_404(Product, id=product_id)
-        return Cart.objects.rest_api_add_to_cart(request, product, **data)
+        return Cart.objects.rest_api_add_to_cart(request, **validated_data)
 
     def update(self, instance, validated_data):
         product_id = validated_data['product']['id']

@@ -27,7 +27,8 @@ class AbstractCart(models.Model):
         max_length=400,
         help_text=_(
             "Unique session identifier "
-            "for anonymous carts in particular"
+            "which is essentially used for identifying "
+            "an anonymous user's cart"
         )
     )
     user = models.ForeignKey(
@@ -46,9 +47,8 @@ class AbstractCart(models.Model):
         blank=True,
         null=True
     )
-    product = models.ForeignKey(
-        Product,
-        on_delete=models.CASCADE
+    product = models.JSONField(
+        default=dict
     )
     size = models.CharField(
         max_length=100,
