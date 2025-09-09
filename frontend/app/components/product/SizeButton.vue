@@ -1,19 +1,12 @@
 <template>
-  <TailButton v-if="size.availability" variant="light" :class="buttonClass" @click="handleSizeSelection(size)">
-    <font-awesome v-if="!size.availability" icon="clock-rotate-left" class="text-warning me-2" />
+  <TailButton v-if="size.availability" variant="light" :class="buttonClass" @click="() => emit('select-size', size.name)">
+    <icon v-if="!size.availability" name="i-fa7-clock-rotate-left" class="text-warning me-2" />
     {{ size.name }}
   </TailButton>
 </template>
 
 <script lang="ts" setup>
-import type { ProductSizes } from '~/types'
-import type { DefaultClotheSize } from '~/data'
-
-const emit = defineEmits({
-  'select-size' (_size: DefaultClotheSize) {
-    return true
-  }
-})
+import type { DefaultClotheSize, ProductSizes } from '~/types'
 
 const props = defineProps<{
   size: ProductSizes,
@@ -22,9 +15,9 @@ const props = defineProps<{
   customClass?: string
 }>()
 
-const isSelected = computed(() => {
-  return props.size.name === props.selectedSize
-})
+const emit = defineEmits<{ 'select-size': [size: DefaultClotheSize] }>()
+
+const isSelected = computed(() => props.size.name === props.selectedSize)
 
 const buttonClass = computed(() => {
   return [
@@ -36,11 +29,4 @@ const buttonClass = computed(() => {
     }
   ]
 })
-
-/**
- * 
- */
-function handleSizeSelection (size: ProductSizes) {
-  emit('select-size', size.name)
-}
 </script>

@@ -2,7 +2,7 @@
   <div id="actions">
     <div v-if="product" id="sizes" class="inline-flex gap-2 mb-4">
       <!-- Sizes -->
-      <button v-for="size in product.sizes" :key="size.id" type="button" :class="{'bg-gray-200': userSelection.size === size.name, 'bg-gray-50': userSelection.size !== size.name }" class="rounded-full w-10 h-10 text-sm font-normal place-content-center cursor-pointer hover:bg-gray-100 hover:border-2 hover:border-gray-100" @click="proxySelectSize(size.name)">
+      <button v-for="size in product.sizes" :key="size.id" type="button" :class="{'bg-gray-200': userSelection.size === size.name, 'bg-gray-50': userSelection.size !== size.name }" class="rounded-full w-10 h-10 text-sm font-normal place-content-center cursor-pointer hover:bg-gray-100 hover:border-2 hover:border-gray-100" @click="proxySelectSize(size)">
         <Icon v-if="!size.availability" name="i-fa7-regular:clock" size="12" class="text-orange-400" />
         {{ size.name }}
       </button>
@@ -43,8 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DefaultClotheSize } from '~/data'
-import type { Product, ProductStockApiResponse } from '~/types'
+import type { Product, ProductSizes, ProductStockApiResponse } from '~/types'
 
 const props = defineProps<{ product: Product | undefined }>()
 const emit = defineEmits<{ 'size-guide': [], 'availability-modal': [] }>()
@@ -64,7 +63,8 @@ const sizeObject = computed(() => {
 })
 
 /**
- * 
+ * Proxy function that handles the action
+ * of liking the current product
  */
 function proxyHandleLike() {
   if (isDefined(like)) {
@@ -89,27 +89,23 @@ function proxyHandleLike() {
 }
 
 /**
- * Handles the action of adding a product
- * to the current user's cart. Products that
- * require a size will force the user to
- * select a size before handling the action 
+ * Proxy function that adds the current product
+ * to the cart
  */
 async function proxyAddToCart() {
-  cartStore.addToCart(props.product, 'Unique', async (data) => {
+  cartStore.addToCart(props.product, async (data) => {
     console.log('proxyAddToCart', data)
 
-    if (cartStore.sessionCache) {
-      // if (cartStore.sessionId) {
-      //   const userRef = doc($fireStore, 'users', cartStore.sessionId)
-      //   const userSnapshot = await getDoc(userRef)
+    // if (cartStore.sessionId) {
+    //   const userRef = doc($fireStore, 'users', cartStore.sessionId)
+    //   const userSnapshot = await getDoc(userRef)
 
-      //   console.info('has user snapshot', userSnapshot.exists())
-        
-      //   if (userSnapshot.exists()) {
-      //     await updateDoc(userRef, { cart: data })
-      //   }
-      // }
-    }      
+    //   console.info('has user snapshot', userSnapshot.exists())
+      
+    //   if (userSnapshot.exists()) {
+    //     await updateDoc(userRef, { cart: data })
+    //   }
+    // }
 
     // TODO: G-Analytics
     // gtag('event', 'add_to_cart',  {
@@ -139,15 +135,12 @@ async function proxyAddToCart() {
 }
 
 /**
- * Actions where the user selects a given size 
- * for a given product
- * 
+ * Proxy function that handles the action
+ * of selecting a size for the current product
  * @param size The item's size
  */
-function proxySelectSize(size: DefaultClotheSize) {
-  if (size) {
-    showSizeSelectionWarning.value = false
-    cartStore.handleSizeSelection(props.product, size)
-  }
+function proxySelectSize(size: ProductSizes) {
+  showSizeSelectionWarning.value = false
+  cartStore.sizeSelection(props.product, size)
 }
 </script>

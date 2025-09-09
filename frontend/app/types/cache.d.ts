@@ -17,6 +17,9 @@ export interface PopularImages {
 export interface SessionCacheData {
   language: LanguageOptions
   paymentIntent: null
+  /**
+   * @deprecated Stored independently in a firebase document
+   */
   cart: CartUpdateApiResponse | null
   recommendations: Product[]
   searchHistory: string[]

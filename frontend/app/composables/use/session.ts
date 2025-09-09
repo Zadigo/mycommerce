@@ -1,4 +1,6 @@
+import { useAuthentication, useErrorHandler } from '#imports'
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore'
+import { useFirestore, useDocument } from 'vuefire'
 import { baseSessionCacheData } from '~/data'
 
 import type { SessionCacheData } from '~/types'
@@ -85,8 +87,22 @@ export async function useStorageSetup() {
     console.log('docRef', docRef)
     
     return {
+      /**
+       * Document ID in firebase under which the session cache is stored
+       * This is used to identify the user session and link it with
+       * the cart, liked products, etc.
+       */
       sessionId,
+      /**
+       * Session cache used to store data that is not sensitive
+       * and include elements such as the cart, recommendations,
+       * search history, etc.
+       */
       sessionCache,
+      /**
+       * Local storage used to store the products that the user has liked
+       * @todo Sync to Firebase
+       */
       likedProducts
     }
   }
@@ -113,22 +129,20 @@ export function useUserSession() {
    * TODO: Use server?
    */
   async function requestSessionId() {
-    const { sessionId } = await useStorageSetup()
-
     try {
       if (!cookieSessionId.value) {
         const { data } = await useFetch<{ token: string }>('/api/v1/cart/session-id', {
           method: 'POST',
           baseURL: useRuntimeConfig().public.prodDomain,
-          immediate: true,
+          immediate: true
         })
 
         if (data.value) {
           cookieSessionId.value = data.value.token
           
-          if (isDefined(sessionId)) {
+          if (isDefined(cookieSessionId)) {
             const db = useFirestore()
-            await updateDoc(doc(db, 'sessions', sessionId.value), { sessionId: data.value.token })
+            await updateDoc(doc(db, 'sessions', cookieSessionId.value), { sessionId: data.value.token })
           }
         }
       }
@@ -142,6 +156,11 @@ export function useUserSession() {
   })
 
   return {
+    /**
+     * ID used by Django to identify anonymous users when
+     * they add products to their cart
+     */
+    cookieSessionId,
     requestSessionId
   }
 }

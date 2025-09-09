@@ -5,14 +5,16 @@
         {{ $t("Sélectionne la taille") }}
       </p>
 
+      <!-- Sizes -->
       <div v-if="requiresSizeSelection" class="flex justify-center flex-wrap gap-2">
-        <button v-for="size in product.sizes" :key="size.id" :aria-label="size.name" type="button" class="py-1 px-1 text-sm flex gap-1 place-items-center underline-offset-4 cursor-pointer hover:underline hover:font-semibold" @click="handleAddToCart(size.name)">
+        <button v-for="size in product.sizes" :key="size.id" :aria-label="size.name" type="button" class="py-1 px-1 text-sm flex gap-1 place-items-center underline-offset-4 cursor-pointer hover:underline hover:font-semibold" @click="() => cartStore.sizeSelection(product, size, true)">
           <Icon v-if="!size.availability" name="i-fa7-regular:clock" size="11" class="text-orange-400" />
           <span>{{ size.name }}</span>
         </button>
       </div>
 
-      <TailButton v-else variant="default" @click="() => handleAddToCart('Unique')">
+      <!-- Add To Cart -->
+      <TailButton v-else variant="default" @click="() => uniqueAddToCart()">
         {{ $t('Ajouter au panier') }}
       </TailButton>
     </div>
@@ -20,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DefaultClotheSize } from '~/data'
+import type { DefaultClotheSize } from '~/types'
 import type { Product } from '~/types'
 
 const props = defineProps<{
@@ -35,17 +37,14 @@ const { showAddedProductDrawer } = storeToRefs(cartStore)
 const { hasSizes: requiresSizeSelection } = useProductComposable(props.product)
 
 /**
- * Adds a new product in the cart
- * @param size The size to associate the product in the cart with
+ * Proxy function that adds the product to the cart
+ * when the size is "Unique"
  */
-async function handleAddToCart (size?: DefaultClotheSize) {
+async function uniqueAddToCart () {
   if (props.product) {
-    await cartStore.addToCart(props.product, size, (data) => {
+    await cartStore.addToCart(props.product, (data) => {
       showAddedProductDrawer.value = true
-
-      if (cartStore.sessionCache) {
-        cartStore.sessionCache.cart = data
-      }
+      cartStore.cache = data
     })
   } else {
     console.error('Card', 'Props does not have a product')
