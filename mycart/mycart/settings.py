@@ -17,10 +17,8 @@ def get_debug():
     return True if debug == '1' else False
 
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-^d_)@o5el-))(u^#am9nyihdih(r@-3*le%vwv-jvj35mf3@p-'
 
@@ -47,6 +45,10 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'django_celery_beat',
 
+    'rest_framework',
+    'rest_framework.authtoken',
+
+    'accounts',
     'cart',
     'orders',
     'shipments'
@@ -166,7 +168,8 @@ CSRF_TRUSTED_ORIGINS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication'
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
+        # 'rest_framework.authentication.TokenAuthentication'
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
 }
@@ -242,10 +245,31 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': REDIS_URL,
-        'KEY_PREFIX': 'ecommerce'
+        'KEY_PREFIX': 'ecommerce-cart'
     },
     'file': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
         'LOCATION': BASE_DIR / 'cache'
     }
 }
+
+
+# Fixtures
+
+FIXTURE_DIRS = [
+    'fixtures/products'
+]
+
+
+# Stripe
+
+if DEBUG:
+    stripe.api_key = os.getenv('STRIPE_TEST_SECRET_KEY')
+else:
+    stripe.api_key = os.getenv('STRIPE_PRODUCTION_API_KEY')
+
+
+# VAT - In order to use VAT when returning
+# product price, set this value to the applicable
+# VAT for your given country
+VAT_PERCENTAGE = None

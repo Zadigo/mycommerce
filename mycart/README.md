@@ -16,6 +16,7 @@ of their cart and proceed to checkout.
 | RabbitMQ              | Message broker                | ✅ 3.8.9   |
 | Celery                | Task queue/background jobs    | ✅ 5.1.2   |
 | Docker                | Containerization              | ✅ 20.10.7 |
+| Stripe                | Payment processing            | ✅ 8.174   |
 
 ## Features ⭐
 

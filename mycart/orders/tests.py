@@ -21,8 +21,8 @@ class TestOrders(APITestCase):
         cls.user.set_password('touparet')
         cls.user.save()
 
-        cls.user.userprofile.stripe_id = os.getenv('STRIPE_TEST_CUSTOMER_ID')
-        cls.user.userprofile.save()
+        # cls.user.userprofile.stripe_id = os.getenv('STRIPE_TEST_CUSTOMER_ID')
+        # cls.user.userprofile.save()
 
     def setUp(self):
         self.client = self.client_class()
@@ -73,13 +73,13 @@ class TestOrders(APITestCase):
 
 
 class TestPaymentInterface(TestCase):
+    fixtures = ['fixtures/products']
+
     @classmethod
     def setUpClass(cls):
         settings.DEBUG = True
 
-        model = get_user_model()
-
-        cls.user = model.objects.first()
+        cls.user = get_user_model().objects.first()
         cls.user.set_password('touparet')
         cls.user.save()
 
