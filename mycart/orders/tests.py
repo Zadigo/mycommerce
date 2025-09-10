@@ -2,12 +2,11 @@ import json
 import os
 import time
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.test import RequestFactory, TestCase, override_settings, modify_settings
+from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 from orders.payment import PaymentInterface
-from rest_framework.test import APITestCase
+
 from mycart.mixins import AuthenticationMixin
 
 
