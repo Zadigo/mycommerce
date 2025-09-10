@@ -1,52 +1,43 @@
+import json
 import os
+import time
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory, TestCase, override_settings, modify_settings
 from django.urls import reverse
 from orders.payment import PaymentInterface
 from rest_framework.test import APITestCase
+from mycart.mixins import AuthenticationMixin
 
 
-class TestOrders(APITestCase):
+class TestOrdersApi(AuthenticationMixin):
     fixtures = ['orders']
 
-    @classmethod
-    def setUpTestData(cls):
-        settings.DEBUG = True
+    # @classmethod
+    # def setUpTestData(cls):
+    #     os.environ.setdefault('STRIPE_TEST_CARD', 'tok_visa')
 
-        model = get_user_model()
+    #     # settings.DEBUG = True
 
-        cls.user = model.objects.first()
-        cls.user.set_password('touparet')
-        cls.user.save()
+    #     # model = get_user_model()
 
-        # cls.user.userprofile.stripe_id = os.getenv('STRIPE_TEST_CUSTOMER_ID')
-        # cls.user.userprofile.save()
+    #     cls.user = get_user_model().objects.first()
+    #     cls.user.set_password('touparet')
+    #     cls.user.save()
+
+    #     # cls.user.userprofile.stripe_id = os.getenv('STRIPE_TEST_CUSTOMER_ID')
+    #     # cls.user.userprofile.save()
 
     def setUp(self):
         self.client = self.client_class()
         self.token = self._authenticate()
 
-    def _authenticate(self):
-        response = self.client.post(
-            reverse('token_obtain_pair'),
-            data={
-                'username': self.user.username,
-                'password': 'touparet'
-            }
-        )
-
-        self.assertEqual(response.status_code, 200, 'Authentication failed')
-
-        token = response.json().get('access')
-        self.assertIsNotNone(token, 'Token retrieval failed')
-
-        self.client.credentials(HTTP_AUTHORIZATION=f'Token {token}')
-        return token
-
     def test_create_shipping(self):
-        shipping = {
+        """
+        See: https://docs.stripe.com/testing?testing-method=tokens
+        """
+        shipping = json.dumps({
             'session_id': 'some_session',
             'email': 'juliette@test-mail.com',
             'firstname': 'Juliette',
@@ -63,28 +54,82 @@ class TestOrders(APITestCase):
             'client_ip': '1.1.1.1'
             # 'source': os.getenv('STRIPE_TEST_CARD'),
             # 'card_token': 'ca_token'
-        }
+        })
+
         response = self.client.post(
             reverse('orders_api:create'),
+            content_type='application/json',
             data=shipping
         )
-        print(response.json())
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200,
+                         f'Failed to create shipping: {response.json()}')
 
 
 class TestPaymentInterface(TestCase):
-    fixtures = ['fixtures/products']
+    fixtures = ['fixtures/user']
 
     @classmethod
-    def setUpClass(cls):
-        settings.DEBUG = True
-
+    def setUpTestData(cls):
         cls.user = get_user_model().objects.first()
-        cls.user.set_password('touparet')
-        cls.user.save()
-
         cls.user.userprofile.stripe_id = os.getenv('STRIPE_TEST_CUSTOMER_ID')
         cls.user.userprofile.save()
+
+    def test_create_new_source(self):
+        with override_settings(DEBUG=True):
+            instance = PaymentInterface()
+
+            response = instance.create_new_source(
+                customer=self.user.userprofile.stripe_id,
+                source=os.getenv('STRIPE_TEST_CARD')
+            )
+
+            self.assertTrue(
+                response,
+                f'Failed to create new source: {instance.errors}'
+            )
+
+    def test_create_modify_capture_payment_intent(self):
+        with override_settings(DEBUG=True):
+            instance = PaymentInterface()
+
+            request = RequestFactory()
+            request = request.get(reverse('orders_api:intent'))
+            setattr(request, 'user', self.user)
+
+            intent_response = instance.payment_intent(request, 16.45)
+            self.assertTrue(intent_response)
+
+            address = self.user.userprofile.address_set.create(
+                firstname='Juliette',
+                lastname='Mahut',
+                address_line='1 rue de Paris',
+                zip_code=59000,
+                city='Lille',
+                country='France',
+                telephone='0601010101'
+            )
+
+            response = instance.update_intent(
+                instance.payment_details.payment_intent_id,
+                address
+            )
+            self.assertIsNotNone(response, f'Response is None: {response}, {instance.errors}')
+
+            time.sleep(3)
+
+            source_response = instance.create_new_source(
+                request.user.userprofile.stripe_id,
+                'tok_visa'
+            )
+
+            time.sleep(3)
+
+            result = instance.capture_intent(
+                request,
+                instance.payment_details.payment_intent_id,
+                source_response['id']
+            )
+            self.assertTrue(result, f'Failed to create payment intent: {result}, {instance.errors}')
 
     def test_capture_payment_intent(self):
         instance = PaymentInterface()

@@ -34,6 +34,8 @@ class PaymentDetails:
     client_secret: str = None
 
 # TODO: Remove
+
+
 class StripeInterfaceMixin:
     def __init__(self):
         self.completed = False
@@ -180,6 +182,6 @@ class PaymentInterface(StripeInterfaceMixin):
         finally:
             if self.errors:
                 return False
-                        
+
         self.completed = True
         return response
