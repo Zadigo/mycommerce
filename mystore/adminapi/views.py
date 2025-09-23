@@ -138,46 +138,6 @@ class UploadImages(generics.GenericAPIView):
         return Response(serializer.data)
 
 
-# class UploadImages(generics.GenericAPIView):
-#     serializer_class = serializers.ImageSerializer
-
-#     def post(self, request, **kwargs):
-#         names = request.data.getlist('file_names', [])
-#         files = request.data.getlist('files', [])
-
-#         if not names:
-#             return Response([], status=status.HTTP_304_NOT_MODIFIED)
-
-#         association = []
-#         for i, name in enumerate(names):
-#             association.append((name, files[i]))
-
-#         validator = FileExtensionValidator(
-#             allowed_extensions=['jpg', 'jpeg', 'webp']
-#         )
-#         for item in association:
-#             file = item[1]
-
-#             extension = guess_extension(file.content_type)
-#             clean_name = remove_accents(item[0])
-#             file_name = f'{clean_name}{extension}'
-
-#             image = ImageFile(file, name=file_name)
-#             validator(image)
-
-#             Image.objects.create(
-#                 name=item[0],
-#                 original=image
-#             )
-
-#         images = Image.objects.all()
-#         serializer = self.get_serializer(
-#             instance=images,
-#             many=True
-#         )
-#         return Response(serializer.data)
-
-
 @extend_schema(responses={200: inline_serializer('AssociateImages', fields={'state': fields.BooleanField()})})
 class AssociateImages(generics.GenericAPIView):
     def post(self, request, **kwargs):
