@@ -8,6 +8,7 @@ export function useImageZoomComposable() {
     return {
       showModal: ref(false),
       selectedImage: ref<ProductImage | null | undefined>(),
+      toggleShowModal: () => { },
       handleCloseSelection: () => { },
       handleSelectedImage: (_image: ProductImage) => { },
       selectImage: (_image: ProductImage, _fn: () => void) => { }
@@ -16,7 +17,7 @@ export function useImageZoomComposable() {
 
   const { vueApp } = useNuxtApp()
 
-  const showModal = ref<boolean>(false)
+  const [showModal, toggleShowModal] = useToggle()
   const selectedImage = ref<ProductImage | null | undefined>()
 
   /**
@@ -50,6 +51,7 @@ export function useImageZoomComposable() {
   return {
     showModal,
     selectedImage,
+    toggleShowModal,
     handleCloseSelection,
     handleSelectedImage,
     selectImage

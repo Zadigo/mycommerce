@@ -8,7 +8,7 @@ export default defineNuxtConfig({
   ssr: true,
 
   site: {
-    url: process.env.NUXT_DJANGO_PROD_URL || 'http://localhost:3000'
+    url: process.env.NUXT_PUBLIC_DJANGO_PROD_URL || 'http://localhost:3000'
   },
 
   routeRules: {
@@ -54,33 +54,33 @@ export default defineNuxtConfig({
 
   vuefire: {
     config: {
-      apiKey: process.env.NUXT_FIREBASE_API_KEY,
-      authDomain: process.env.NUXT_FIREBASE_AUTH_DOMAIN,
-      dbUrl: process.env.NUXT_FIREBASE_DB_URL,
-      storageBucket: process.env.NUXT_FIREBASE_STORAGE_BUCKET,
-      appId: process.env.NUXT_FIREBASE_APP_ID,
-      measurementId: process.env.NUXT_FIREBASE_MEASUREMENT_ID,
-      messageSenderId: process.env.NUXT_FIREBASE_MESSAGE_SENDER_ID,
-      projectId: process.env.NUXT_FIREBASE_PROJECT_ID
+      apiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY,
+      authDomain: process.env.NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+      dbUrl: process.env.NUXT_PUBLIC_FIREBASE_DB_URL,
+      storageBucket: process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+      appId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID,
+      measurementId: process.env.NUXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+      messageSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGE_SENDER_ID,
+      projectId: process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID
     }
   },
 
   runtimeConfig: {
     public: {
       // Django/Quart/Flask
-      quartProdUrl: process.env.NUXT_QUART_PROD_URL || 'http://127.0.0.1:5000',
-      prodDomain: process.env.NUXT_DJANGO_PROD_URL || 'http://127.0.0.1:8000',
-      cartProdDomain: process.env.NUXT_DJANGO_CART_PROD_URL || 'http://127.0.0.1:8001',
-      reviewsProdDomain: process.env.NUXT_DJANGO_REVIEWS_PROD_URL || 'http://127.0.0.1:8002',
+      quartProdUrl: process.env.NUXT_PUBLIC_QUART_PROD_URL || 'http://127.0.0.1:5000',
+      prodDomain: process.env.NUXT_PUBLIC_DJANGO_PROD_URL || 'http://127.0.0.1:8000',
+      cartProdDomain: process.env.NUXT_PUBLIC_DJANGO_CART_PROD_URL || 'http://127.0.0.1:8001',
+      reviewsProdDomain: process.env.NUXT_PUBLIC_DJANGO_REVIEWS_PROD_URL || 'http://127.0.0.1:8002',
 
       // Stripe
-      stripeTestSecretKey: process.env.NUXT_STRIPE_TEST_SECRET_KEY,
-      stripeTestPublishableKey: process.env.NUXT_STRIPE_TEST_PUBLISHABLE_KEY,
+      stripeTestSecretKey: process.env.NUXT_PUBLIC_STRIPE_TEST_SECRET_KEY,
+      stripeTestPublishableKey: process.env.NUXT_PUBLIC_STRIPE_TEST_PUBLISHABLE_KEY,
       stripeApiVersion: '2024-06-20',
       stripeLocale: 'fr',
 
       // What's App
-      whatsAppUrl: process.env.NUXT_WHATS_APP_URL
+      whatsAppUrl: process.env.NUXT_PUBLIC_WHATS_APP_URL
     }
   },
 
@@ -307,10 +307,10 @@ export default defineNuxtConfig({
 
   stripe: {
     server: {
-      key: process.env.NUXT_STRIPE_PUBLISHABLE_KEY
+      key: process.env.NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
     },
     client: {
-      key: process.env.NUXT_STRIPE_PUBLISHABLE_KEY
+      key: process.env.NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
     }
   },
 
