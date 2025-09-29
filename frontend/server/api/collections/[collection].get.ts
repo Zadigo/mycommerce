@@ -20,22 +20,22 @@ export default defineCachedEventHandler(async event => {
   
   
   try {
-    return productApiResponseFixture
+    // return productApiResponseFixture
     // console.log('[collection].get.ts', query.price)
-    // const data = await $fetch<ProductsApiResponse>(`/api/v1/collection/${name}`, {
-    //   baseURL: useRuntimeConfig().public.prodDomain,
-    //   method: 'GET',
-    //   params: {
-    //     sorted_by: query.sorted_by,
-    //     offset: query.offset,
-    //     price: query.price,
-    //     sizes: query.sizes
-    //   } as CollectionFetchOptions,
-    //   headers: [
-    //     ['Authorization', access ? `Token ${access}` : '']
-    //   ]
-    // })
-    // return data
+    const data = await $fetch<ProductsApiResponse>(`/api/v1/collection/${name}`, {
+      baseURL: useRuntimeConfig().public.prodDomain,
+      method: 'GET',
+      params: {
+        sorted_by: query.sorted_by,
+        offset: query.offset,
+        price: query.price,
+        sizes: query.sizes
+      } as CollectionFetchOptions,
+      headers: [
+        ['Authorization', access ? `Token ${access}` : '']
+      ]
+    })
+    return data
   } catch (e) {
     if (e instanceof FetchError) {
       if (e.status === 401 && refresh) {
