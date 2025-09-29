@@ -66,7 +66,7 @@ const { id } = useRoute().params
 const query = ref<Partial<ProductsQuery>>({ offset: 0 })
 const { customHandleError } = useErrorHandler()
 
-const { data: cachedResponse, status, error, refresh } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
+const { data: apiResponse, status, error, refresh } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
   method: 'GET',
   query: query.value,
   onResponseError({ error }) {
@@ -88,7 +88,7 @@ if (error.value) {
   })
 }
 
-const products = computed(() => isDefined(cachedResponse.value) ? cachedResponse.value.results : [])
+const products = computed(() => isDefined(apiResponse.value) ? apiResponse.value.results : [])
 const totalProductCount = computed(() => products.value.length)
 
 whenever(() => status.value === 'success', () => {
@@ -118,7 +118,7 @@ const { currentGridSize } = useHandleGridSize()
  * Intersection
  */
 
-const isEndOfPage = computed(() => cachedResponse.value?.next === null)
+const isEndOfPage = computed(() => apiResponse.value?.next === null)
 
 const isLoadingMoreProducts = ref<boolean>(false)
 const intersectionTarget = ref<HTMLElement | null>(null)
@@ -141,11 +141,11 @@ async function requestOffsetProducts(offset: number) {
  */
 if (import.meta.client) {
   useIntersectionObserver(intersectionTarget, ([{ isIntersecting }]) => {
-    if (isIntersecting && isDefined(cachedResponse.value)) {
+    if (isIntersecting && isDefined(apiResponse.value)) {
       isLoadingMoreProducts.value = true
       
-      if (cachedResponse.value.next !== null) {
-        query.value.offset = cachedResponse.value.next
+      if (apiResponse.value.next !== null) {
+        query.value.offset = apiResponse.value.next
         refresh()
       } else {
         console.error('Intersection does not have a next page')
