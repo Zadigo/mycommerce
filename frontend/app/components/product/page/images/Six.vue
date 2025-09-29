@@ -10,18 +10,6 @@
 import type { ProductImage } from '~/types';
 
 const { mediaPath } = useDjangoUtilies()
-
-defineProps({
-  images: {
-    type: Array as PropType<ProductImage[]>,
-    required: true,
-    default: () => []
-  }
-})
-
-const emit = defineEmits({
-  'zoom-image'(image: ProductImage) {
-    return true
-  }
-})
+const { images = [] } = defineProps<{ images: ProductImage[] }>()
+const emit = defineEmits<{ 'zoom-image': [image: ProductImage] }>()
 </script>

@@ -25,20 +25,21 @@
         </div>
 
         <!-- Grid -->
-        <div class="flex justify-end gap-1 items-center">
-          <TailSkeleton v-if="productsLoading" class="w-[100px] h-[50px]" />
-          <span id="product-count" v-else class="font-semibold text-sm me-2">
-            {{ $t('Produits trouvés', { n: count }) }}
-          </span>
-
-          <TailButton :variant="threeState" flat @click="handleGridSize(3)">
-            <Icon name="i-fa7-solid:table-cells" />
-          </TailButton>
-
-          <TailButton :variant="fourState" flat @click="handleGridSize(4)">
-            <Icon name="i-fa7-solid:table-cells-large" />
-          </TailButton>
-        </div>
+        <ClientOnly>
+          <div class="flex justify-end gap-1 items-center">
+            <div id="product-count" class="font-semibold text-sm me-2">
+              {{ $t('Produits trouvés', { n: count }) }}
+            </div>
+  
+            <TailButton :variant="threeState" flat @click="handleGridSize(3)">
+              <Icon name="i-fa7-solid:table-cells" />
+            </TailButton>
+  
+            <TailButton :variant="fourState" flat @click="handleGridSize(4)">
+              <Icon name="i-fa7-solid:table-cells-large" />
+            </TailButton>
+          </div>
+        </ClientOnly>
       </div>
     </TailCardContent>
   </TailCard>

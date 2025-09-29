@@ -1,5 +1,5 @@
 <template>
-  <template v-if="products && products.length > 0">
+  <template v-if="products.length > 0">
     <div id="products" class="grid grid-cols-2 gap-2 px-1 md:grid-cols-4">
       <div v-for="(product, i) in products" id="product" :key="product.id">
         <ProductCardBase :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" :show-carousel="true" @has-navigated="handleNavigation" />
@@ -38,4 +38,6 @@ function handleNavigation(data: (number | Product)[]) {
 }
 
 const products = inject<ComputedRef<Product[]>>(productSymbol, computed(() => []))
+
+console.log('Iterator', products)
 </script>

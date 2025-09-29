@@ -1,33 +1,34 @@
 <template>
-  <div id="actions">
-    <div v-if="product" id="sizes" class="inline-flex gap-2 mb-4">
-      <!-- Sizes -->
+  <div id="actions">    
+    Actions
+    <!-- Sizes -->
+    <!-- <div v-if="product" id="sizes" class="inline-flex gap-2 mb-4">
       <button v-for="size in product.sizes" :key="size.id" type="button" :class="{'bg-gray-200': userSelection.size === size.name, 'bg-gray-50': userSelection.size !== size.name }" class="rounded-full w-10 h-10 text-sm font-normal place-content-center cursor-pointer hover:bg-gray-100 hover:border-2 hover:border-gray-100" @click="proxySelectSize(size)">
         <Icon v-if="!size.availability" name="i-fa7-regular:clock" size="12" class="text-orange-400" />
         {{ size.name }}
       </button>
     </div>
-    <TailSkeleton v-else class="h-[100px] w-2/6" />
+    <TailSkeleton v-else class="h-[100px] w-2/6" /> -->
 
-    <p v-if="product" class="font-light">
+    <!-- <p v-if="product" class="font-light">
       {{ $t('Taille et hauteur du mannequin') }} : 
       <span v-if="product.model_height">{{ product.model_size }} · {{ $n(parseInt(product.model_height), 'unit') }}</span> 
       <span v-else>N.D.</span>
-    </p>
+    </p> -->
     
-    <NuxtLinkLocale id="link-product-size-guide" to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('size-guide')">
+    <!-- <NuxtLinkLocale id="link-product-size-guide" to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('size-guide')">
       {{ $t('Guide des tailles') }}
-    </NuxtLinkLocale >
+    </NuxtLinkLocale > -->
 
-    <p v-if="showSizeSelectionWarning" class="text-red-400 mt-4">
+    <!-- <p v-if="showSizeSelectionWarning" class="text-red-400 mt-4">
       {{ $t("Choissis une taille") }}
-    </p>
+    </p> -->
 
     <!-- <DevOnly>
       {{ userSelection }} - {{ sizeObject }}
     </DevOnly> -->
 
-    <TailButton v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" id="action-inform" class="mt-5 place-content-center" @click="() => emit('availability-modal')">
+    <!-- <TailButton v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" id="action-inform" class="mt-5 place-content-center" @click="() => emit('availability-modal')">
       <Icon name="fa:envelope" size="12" class="me-1" />
       {{ $t('Me tenir informer') }}
     </TailButton>
@@ -38,24 +39,29 @@
 
     <TailButton id="action-add-favorite" :aria-label="$t('Ajouter au favori')" class="mt-5" variant="outline" @click="proxyHandleLike">
       <Icon :name="icon" />
-    </TailButton>
+    </TailButton> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Product, ProductSizes, ProductStockApiResponse } from '~/types'
+import type { Product, ProductSizes, ProductStockApiResponse, Undefineable } from '~/types'
 
-const props = defineProps<{ product: Product | undefined }>()
+const props = defineProps<{ product: Undefineable<Product> }>()
 const emit = defineEmits<{ 'size-guide': [], 'availability-modal': [] }>()
 
 const stockState = inject<ProductStockApiResponse>('stockState')
 
 const cartStore = useCart()
 const { userSelection, showSizeSelectionWarning } = storeToRefs(cartStore)
+
+/**
+ * Like
+ */
+
 const { like, icon } = await useLikeComposable(props.product)
 
 const sizeObject = computed(() => {
-  if (props.product) {
+  if (isDefined(props.product)) {
     return props.product.sizes.find(x => x.name === userSelection.value.size) || null
   } else {
     return null

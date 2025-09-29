@@ -1,10 +1,9 @@
 <template>
   <section id="product" class="relative">
-    <div class="grid grid-cols-12 grid-row-1 w-full gap-5">
+    <div class="grid grid-cols-12 grid-row-1 w-full gap-5">      
       <!-- Images -->
       <ClientOnly>
-        <component v-if="product" :is="imagesComponent" :images="product.images" :product="product" @zoom-image="handleSelectedImage" />
-        <NoImages v-else :product="product" />
+        <component :is="imagesComponent" :images="product?.images" :product="product" @zoom-image="handleSelectedImage" />
       </ClientOnly>
       
       <!-- Details -->
@@ -40,27 +39,9 @@
 </template>
 
 <script setup lang="ts">
-type ImageComponentMap = {[key: number]: Component}
-
-const FiveImages = defineAsyncComponent(() => import('~/components/product/page/images/Five.vue'))
-const SixImages = defineAsyncComponent(() => import('~/components/product/page/images/Six.vue'))
-const NoImages = defineAsyncComponent(() => import('~/components/product/page/images/Empty.vue'))
-
-const imageComponentMap: ImageComponentMap = {
-  5: FiveImages,
-  6: SixImages
-}
-
-const imagesComponent = computed((): Component => {  
-  if (!product.value) {
-    return NoImages
-  } else if (product && product.value.images.length === 0) {
-    return NoImages
-  }else {
-    const numberOfImages = product.value.images.length
-    return imageComponentMap[numberOfImages] || NoImages
-  }
-})
+/**
+ * Recommendations
+ */
 
 const AsyncBaseRecommendationBlock = defineAsyncComponent({
   loader: async () => import('~/components/BaseRecommendations.vue'),
@@ -68,13 +49,31 @@ const AsyncBaseRecommendationBlock = defineAsyncComponent({
   timeout: 5000
 })
 
-// const { customHandleError } = useErrorHandler()
-const { showModal, selectedImage, handleSelectedImage, handleCloseSelection } = useImagesComposable()
+/**
+ * Product
+ */
 
 const { product, isLoading, showBanner } = await useProductDetailComposable()
-const { stockState } = useProductStockComposable(product, isLoading) 
 
+/**
+ * Image Zoom
+ */
+
+const { showModal, selectedImage, handleSelectedImage, handleCloseSelection } = useImageZoomComposable()
+
+/**
+ * Stock
+ */
+
+const { stockState } = useProductStockComposable(product, isLoading) 
 provide('stockState', stockState)
+
+/**
+ * Images Component
+ */
+
+const { imagesComponent } = useImageComponentComposable(product)
+
 
 console.log(product)
 

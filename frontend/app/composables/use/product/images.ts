@@ -3,7 +3,7 @@ import type { ProductImage } from '~/types'
 /**
  * Composable for handling image selection and modal display
  */
-export function useImagesComposable() {
+export function useImageZoomComposable() {
   if (import.meta.server) {
     return {
       showModal: ref(false),
@@ -33,7 +33,7 @@ export function useImagesComposable() {
   /**
    * Selects an image within a group of images
    * @param image The selected image
-   * @deprecated
+   * @deprecated use `selectImage` instead
    */
   function handleSelectedImage(image: ProductImage) {
     selectedImage.value = image

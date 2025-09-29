@@ -23,9 +23,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Product } from '~/types'
+import type { Product, Undefineable } from '~/types'
 
-const props = defineProps<{ product: Product | null | undefined }>()
+const props = defineProps<{ product: Undefineable<Product>}>()
 const emit = defineEmits<{ 
   'size-guide': [], 
   'delivery-guide': [], 
