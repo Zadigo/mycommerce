@@ -1,20 +1,19 @@
-export type ProductSizes = {
-  id: number
+import type { _DatabaseObject, _DateTimes } from '..'
+
+export type ProductSizes = _DatabaseObject & {
   name: DefaultClotheSize
   metric: 'Clothe' | 'Shoe'
   availability: boolean
   active: boolean
 }
 
-declare type ProductSet = {
-  id: number
+declare type ProductSet = _DatabaseObject & {
   name: string
   color: string
   color_variant_name: string
 }
 
-export type ProductImage = {
-  id: number
+export type ProductImage = _DatabaseObject & {
   name: string
   product_set: ProductSet[]
   original: string
@@ -23,15 +22,13 @@ export type ProductImage = {
   is_main_image: boolean
 }
 
-export interface ProductVariant {
-  id: number
+export interface ProductVariant extends _DatabaseObject {
   color: string
   get_main_image: ProductImage
   active: boolean
 }
 
-export type ProductCollection = {
-  id: number
+export type ProductCollection = _DatabaseObject & {
   name: string
   category: string
   sub_category: string
@@ -45,8 +42,7 @@ export type ProductCollection = {
  * Base object representing a product in
  * for the e-commerce website 
  */
-export type Product = {
-  id: number
+export type Product = _DatabaseObject & _DateTimes & {
   name: string
   color: string
   category: string
@@ -71,6 +67,4 @@ export type Product = {
   slug: string
   sku: string
   variants: ProductVariant[]
-  modified_on: string
-  created_on: string
 }

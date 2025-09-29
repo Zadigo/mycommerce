@@ -1,4 +1,5 @@
 import type { DefaultCountries } from "~/data"
+import type { _DatabaseObject } from ".."
 
 export type DefaultGender = 'Homme' | 'Femme'
 
@@ -6,8 +7,7 @@ export type DefaultGender = 'Homme' | 'Femme'
  * Represents shipping information for a
  * given user 
  */
-export type AddressSet = {
-  id: number
+export type AddressSet = _DatabaseObject & {
   firstname: string
   lastname: string
   address_line: string

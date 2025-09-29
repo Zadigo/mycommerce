@@ -102,8 +102,10 @@ class JWTGenerator:
         return self.secret_cache
 
     def create(self):
-        return jwt.encode(self.final_payload, self.secret, PY_UTILITIES_JWT_ALGORITHM)
-
+        try:
+            return jwt.encode(self.final_payload, self.secret, PY_UTILITIES_JWT_ALGORITHM)
+        except Exception as e:
+            return ''
 
 def decode_jwt_token(token: str, secret: str = None, raise_exception: bool = False, **kwargs) -> dict[str, str] | None:
     algorithms = ['HS256', 'HS384', 'HS512']

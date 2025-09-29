@@ -1,20 +1,14 @@
 import type { Product } from '~/types/shop/product'
 import type { DefaultClotheSize } from '~/types/constants'
+import type { _DatabaseObject, BaseApiResponse } from '..'
 
 export * from './product'
 
-export type ProductsApiResponse = {
-  count: number
-  limit: number
-  next: number | null
-  previous: number | null
-  results: Product[]
-}
+export type ProductsApiResponse = BaseApiResponse<Product>
 
 export type LikedProducts = number[]
 
-export declare interface CollectionApiResponse {
-  id: number
+export declare interface CollectionApiResponse extends _DatabaseObject {
   name: string
   category: string
   sub_category: string
@@ -24,9 +18,7 @@ export declare interface CollectionApiResponse {
   get_view_name: string
 }
 
-// TODO: Rename ProductStockApiResponse
-export interface ProductStockApiResponse {
-  id: number
+export interface ProductStockApiResponse  extends _DatabaseObject {
   variant: {
     id: number
     name: string
