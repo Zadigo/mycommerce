@@ -9,7 +9,6 @@ django = "*"
 gunicorn = "*"
 stripe = "*"
 matplotlib = "*"
-jwt = "*"
 pyotp = "*"
 unidecode = "*"
 psycopg = {extras = ["pool", "binary"], version = "*"}
@@ -41,6 +40,7 @@ thefuzz = "*"
 daphne = "*"
 django-celery-beat = "*"
 flower = "*"
+pyjwt = "*"
 
 [dev-packages]
 autopep8 = "*"
