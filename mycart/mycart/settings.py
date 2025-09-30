@@ -5,6 +5,7 @@ from pathlib import Path
 import dotenv
 import stripe
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -141,7 +142,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATIC_ROOT = 'static'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
+
+MEDIA_URL = 'media/'
+
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type
@@ -299,3 +308,24 @@ VAT_PERCENTAGE = os.getenv('VAT_PERCENTAGE', 0)
 PY_UTILITIES_JWT_ISSUER = 'ecommerce'
 
 PY_UTILITIES_JWT_SECRET = os.getenv('PY_UTILITIES_JWT_SECRET')
+
+
+# CKEditor for more information on customizing
+# the editor https://pypi.org/project/django-ckeditor-5/
+
+CKEDITOR_BASEPATH = MEDIA_ROOT / 'ckeditor/ckeditor'
+
+CKEDITOR_UPLOAD_PATH = 'ck_editor/'
+
+CKEDITOR_5_ALLOW_ALL_FILE_TYPES = False
+
+CKEDITOR_5_UPLOAD_FILE_TYPES = ['jpeg']
+
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': [
+            'heading', '|', 'bold', 'italic',
+            'link', 'bulletedList'
+        ]
+    }
+}
