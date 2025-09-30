@@ -1,6 +1,6 @@
 import { useAuthentication, useErrorHandler } from '#imports'
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore'
-import { useFirestore, useDocument } from 'vuefire'
+import { useDocument, useFirestore } from 'vuefire'
 import { baseSessionCacheData } from '~/data'
 
 import type { SessionCacheData } from '~/types'
@@ -68,6 +68,7 @@ export async function useStorageSetup() {
     const sessionCache = useDocument<SessionCacheData>(docRef)
 
     return {
+      sessionId,
       /**
        * Session cache used to store data that is not sensitive
        * and include elements such as the cart, recommendations,
@@ -199,6 +200,11 @@ export function useAuthenticationTokens() {
     //   immediate: true,
     //   debounce: 500
     // })
+
+  /**
+   * TODO: Remove authenticationStore and accessToken/refreshToken
+   * and use only the cookies directly
+   */
     
   // Use secure cookies (with sameSite strict, secure enabled)
   const authenticationStore = useAuthentication()

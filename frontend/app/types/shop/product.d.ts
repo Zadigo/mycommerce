@@ -1,4 +1,5 @@
-import type { _DatabaseObject, _DateTimes } from '..'
+import type { DefaultClotheSize } from '~/types/constants'
+import type { _DatabaseObject, _DateTimes, Nullable } from '..'
 
 export type ProductSizes = _DatabaseObject & {
   name: DefaultClotheSize
@@ -33,8 +34,8 @@ export type ProductCollection = _DatabaseObject & {
   category: string
   sub_category: string
   number_of_items: number
-  illustration: string | null
-  tags: string[] | null
+  illustration: Nullable<string>
+  tags: Nullable<string[]>
   get_view_name: string
 }
 
@@ -55,8 +56,8 @@ export type Product = _DatabaseObject & _DateTimes & {
   sale_price: string
   on_sale: boolean
   display_new: boolean
-  collection_set: ProductCollection[] | null
-  get_main_image: ProductImage | null
+  collection_set: Nullable<ProductCollection[]>
+  get_main_image: Nullable<ProductImage>
   images: ProductImage[]
   model_height: string
   model_size: string

@@ -1,61 +1,4 @@
-import { useErrorHandler } from '~/composables/errors'
-
-import type { ExtendedRouteParamsRawGeneric, MaybeProduct, Product, ProductsApiResponse, ProductsQuery, ProductStockApiResponse } from '~/types'
-
-/**
- * Composable for working with likes on the product
- * on a single product page 
- * @param product - The product to handle likes for
- */
-export async function useLikeComposable(product: MaybeProduct, callback?: () => void) {
-  if (import.meta.server) {
-    return {
-      isLiked: ref<boolean>(false),
-      icon: ref<string>('i-fa7-regular:heart'),
-      handleLike: (_product?: MaybeProduct): void => {}
-    }
-  }
-
-  const currentProduct = toRef(product)
-  const { likedProducts } = await useStorageSetup()
-
-  const isLiked = useArrayIncludes(likedProducts, currentProduct.value?.id)
-  console.log('isLiked', isLiked, likedProducts)
-  // const uniqueIds = useArrayUnique(likedProducts)
-  // // Ensures only unique IDs in the storage
-  // syncRef(uniqueIds, likedProducts, { direction: 'ltr' })
-
-  /**
-   * Adds a product to the list of products
-   * added to the user's whishlist
-   */
-  function like() {
-    if (isDefined(currentProduct)) {
-      if (isLiked.value) {
-        likedProducts.value = likedProducts.value.filter(id => id !== currentProduct.value.id)
-      } else {
-        likedProducts.value.push(currentProduct.value.id)
-      }
-
-      if (callback) callback()
-    }
-  }
-
-  const icon = computed(() => isLiked.value ? 'i-fa7-solid:heart' : 'i-fa7-regular:heart')
-
-  return {
-    icon,
-    /**
-     * Whether the product is liked by the user
-     * @default false
-     */
-    isLiked,
-    /**
-     * Function to handle liking a product.
-     */
-    like
-  }
-}
+import type { ExtendedRouteParamsRawGeneric, Product, ProductsApiResponse, ProductsQuery } from '~/types'
 
 /** 
  * Composable for checking if a product has images,
@@ -164,74 +107,6 @@ export async function useProductDetailComposable() {
 }
 
 /**
- * Composable for fetching the stock state of a product.
- * This composable fetches the stock state of a product
- * from the API and returns it as a reactive state
- * @param product - The product to fetch the stock state for
- */
-export function useProductStockComposable(product: Product | Ref<Product | undefined> | undefined, canRequest: Ref<boolean>) {
-  if (import.meta.server) {
-    return {
-      stockState: ref<ProductStockApiResponse | null>(null)
-    }
-  }
-
-  const currentProduct = toRef(product)
-
-  if (!isDefined(currentProduct)) {
-    throw new Error('Product is required for useProductStockComposable')
-  }
-
-  // const { $client } = useNuxtApp()
-
-  const { customHandleError } = useErrorHandler()
-  const stockState = ref<ProductStockApiResponse | null>(null)
-
-  const { execute, data } = useFetch<ProductStockApiResponse>(`/api/v1/stocks/products/${currentProduct.value.id}`, {
-    method: 'GET',
-    baseURL: useRuntimeConfig().public.prodDomain,
-    immediate: false,
-    onResponseError({ error }) {
-      customHandleError(error)
-    }
-  })
-
-  whenever(canRequest, async (canRequestValue) => {
-    await execute()
-    if (data.value) {
-      stockState.value = data.value
-    }
-  })
-
-  // onMounted(async () => {
-  //   delay(2000)
-
-  //   const response = await $client<ProductStockApiResponse>(`/api/v1/stocks/products/${currentProduct.id}`, {
-  //     method: 'GET',
-  //     baseURL: useRuntimeConfig().public.prodDomain,
-  //     onResponseError({ error }) {
-  //       customHandleError(error)
-  //     }
-  //   })
-  //   stockState.value = response
-  // })
-
-  return {
-    /**
-     * Stock state of the product
-     */
-    stockState
-  }
-}
-
-/**
- * Composable that connects to the cart API
- * websocket and broadcasts cart updates when
- * other customers complete orders on a product
- */
-export function useLiveUpdates() {}
-
-/**
  * A composable that provides global functionnalities
  * on the products filtering modal 
  */
@@ -294,4 +169,5 @@ const [useProvideProductsFilteringModal, useProvideFilteringModalStore ] = creat
   }
 })
 
-export { useProvideProductsFilteringModal, useProvideFilteringModalStore }
+export { useProvideFilteringModalStore, useProvideProductsFilteringModal }
+
