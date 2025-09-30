@@ -79,7 +79,7 @@ export const useCart = defineStore('cart', () => {
     })
 
     cache.value = response
-    
+        
     if (callback && typeof callback === 'function') {
       callback.call(vueApp, response)
     }

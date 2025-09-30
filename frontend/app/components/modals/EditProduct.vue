@@ -79,7 +79,8 @@ const cartStore = useCart()
 const { showEditProductDrawer, showCartDrawer } = storeToRefs(cartStore)
 const { mediaPath } = useDjangoUtilies()
 
-const currentEditedProduct = inject<ProductToEdit>('currentEditedProduct')
+// const currentEditedProduct = inject<ComputedRef<ProductToEdit>>('currentEditedProduct')
+const currentEditedProduct = ref<ProductToEdit | null>(null)
 
 /**
  * Closes the modal that edits a given product

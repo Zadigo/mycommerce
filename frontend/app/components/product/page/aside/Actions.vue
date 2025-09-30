@@ -88,13 +88,12 @@ function proxyHandleLike() {
   }
 }
 
-/**
- * Proxy function that adds the current product
- * to the cart
- */
+const { sync } = await useSyncCart()
+
 async function proxyAddToCart() {
   cartStore.addToCart(props.product, async (data) => {
     console.log('proxyAddToCart', data)
+    sync(data)
 
     // if (cartStore.sessionId) {
     //   const userRef = doc($fireStore, 'users', cartStore.sessionId)
