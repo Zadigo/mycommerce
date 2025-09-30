@@ -1,5 +1,5 @@
 <template>
-  <TailSheet id="language-modal" v-model:open="globalModals.showLanguageModal.value">
+  <TailSheet id="language-modal" v-model:open="showLanguageModal">
     <TailSheetContent side="bottom">
       <div class="mx-auto w-2/4">
         <div class="px-3 py-15">
@@ -50,7 +50,7 @@ import type { countries, DefaultCountries } from '~/types'
 
 type AvailableLanguages = typeof i18n.locale.value
 
-const globalModals = useGlobalModals()
+const showLanguageModal = useState<boolean>('showLanguageModal')
 
 const i18n = useI18n()
 const localePath = useLocalePath()
@@ -62,7 +62,7 @@ console.info('i18n', i18n.locale.value)
  * Save the user's language and location preferences
  */
 async function saveSelection() {
-  globalModals.showLanguageModal.value = false
+  showLanguageModal.value = false
   await navigateTo(localePath('/'))
 }
 

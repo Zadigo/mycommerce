@@ -8,37 +8,6 @@ import type { SessionCacheData } from '~/types'
 const cookieOptions = { sameSite: 'strict', secure: true } as const
 
 /**
- * Composable used to manage the state of modals
- * that are in the global site (login, language...)
- * and can be accessible from anywhere in the app
- */
-export const useGlobalModals = createGlobalState(() => {
-  const showLoginDrawer = shallowRef<boolean>(false)
-  const showSearchModal = shallowRef<boolean>(false)
-  const showLanguageModal = shallowRef<boolean>(false)
-  const showWhatsAppModal = shallowRef<boolean>(false)
-
-  return {
-    /**
-     * Login and signup
-     */
-    showLoginDrawer,
-    /** 
-     * Search items in the shop
-     */
-    showSearchModal,
-    /**
-     * Language selection
-     */
-    showLanguageModal,
-    /**
-     * WhatsApp chat
-     */
-    showWhatsAppModal
-  }
-})
-
-/**
  * Setup the storage for the user session in order to store data
  * such as liked products, session cache, etc.
  */
@@ -167,66 +136,25 @@ export function useUserSession() {
 }
 
 /**
- * Composable used to manage authentication tokens
- * and handle the login drawer visibility
- * @deprecated use `useLogin` instead
+ * Creates a global state and watches for changes in the URL query parameters
+ * in order to update its value accordingly
+ * @param name Name of the global state
+ * @param queryValue Query parameter to watch for changes
+ * @param value Default value of the global state
  */
-export function useAuthenticationTokens() {
+export function useWatchGlobalState(name: string, queryValue: string, value: string | boolean | number) {
   if (import.meta.server) {
-    return {
-      accessToken: ref(''),
-      refreshToken: ref('')
-    }
+    return
   }
 
+  const state = useState(name, () => value)
+  const queryParams = useUrlSearchParams('history') as { [key: string]: string | undefined }
 
-  const globalModals = useGlobalModals()
-  const queryParams = useUrlSearchParams('history') as { login: string | undefined }
-
-  watchDebounced(() => queryParams.login, (newValue) => {
+  watchDebounced(() => queryParams[queryValue], (newValue) => {
     if (isDefined(newValue)) {
-      // authenticationStore.showLoginDrawer = (newValue === '1')
-      globalModals.showLoginDrawer.value = newValue === '1'
+      state.value = newValue === '1'
     }
+  }, {
+    debounce: 300
   })
-
-  // Watch route query for login parameter to open login drawer
-  // const query = useRoute().query as ExtendedLocationQuery
-
-  // watchDebounced(() => query, (newValue) => {
-  //   if (newValue.login && newValue.login === '1') {
-  //     authenticationStore.showLoginDrawer = true
-  //   }
-  // }, {
-    //   immediate: true,
-    //   debounce: 500
-    // })
-
-  /**
-   * TODO: Remove authenticationStore and accessToken/refreshToken
-   * and use only the cookies directly
-   */
-    
-  // Use secure cookies (with sameSite strict, secure enabled)
-  const authenticationStore = useAuthentication()
-  const accessToken = useCookie('access', cookieOptions)
-  const refreshToken = useCookie('refresh', cookieOptions)
-
-  watch([accessToken, refreshToken], ([access, refresh]) => {
-    authenticationStore.accessToken = access
-    authenticationStore.refreshToken = refresh
-  })
-
-  return {
-    /**
-     * Access token used for authenticated requests
-     * This is stored in a secure cookie
-     */
-    accessToken,
-    /**
-     * Refresh token used to refresh the access token
-     * This is also stored in a secure cookie
-     */
-    refreshToken
-  }
 }

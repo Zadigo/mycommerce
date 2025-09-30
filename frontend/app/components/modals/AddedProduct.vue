@@ -50,7 +50,6 @@
 
 <script setup lang="ts">
 const toLocalePath = useLocalePath()
-const authenticationStore = useAuthentication()
 const router = useRouter()
 
 const { mediaPath } = useDjangoUtilies()
@@ -60,6 +59,9 @@ const { showAddedProductDrawer, showCartDrawer } = storeToRefs(cartStore)
 
 const { lastAddedProduct, hasProducts, products } = await useCartInformation()
 
+const showLoginDrawer = useState<boolean>('showLoginDrawer')
+const { isAuthenticated } = useUser()
+
 /**
  * Handles the situation where the user tries
  * to go to the cart but is not logged in. If
@@ -67,13 +69,13 @@ const { lastAddedProduct, hasProducts, products } = await useCartInformation()
  * he is invited to login before pursuing
  */
 function handleNotAuthenticatedOrdering () {
-  if (authenticationStore.isAuthenticated) {
+  if (isAuthenticated.value) {
     showAddedProductDrawer.value = false
     router.push(toLocalePath('/cart/'))
   } else {
     showCartDrawer.value = false
     showAddedProductDrawer.value = false
-    authenticationStore.showLoginDrawer = true
+    showLoginDrawer.value = true
   }
 }
 </script>

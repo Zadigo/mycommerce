@@ -49,9 +49,6 @@ const { $fireStore, $fireApp } = useNuxtApp()
 const { customHandleError } = useErrorHandler()
 const authenticatedCart = useSessionStorage('authenticatedCart', false)
 
-const authStore = useAuthentication()
-const { showLoginDrawer } = storeToRefs(authStore)
-
 /**
  * 
  */

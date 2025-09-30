@@ -112,9 +112,6 @@ const { customHandleError } = useErrorHandler()
 const { getProfile, userId } = useUser()
 const profile = await getProfile(userId.value)
 
-// const authStore = useAuthentication()
-// const { profile } = storeToRefs(authStore)
-
 const emailPasswordRequestData = ref<EmailPasswordData>({
   email: '',
   current_password: '',

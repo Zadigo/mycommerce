@@ -1,6 +1,6 @@
 
 <template>
-  <TailSheet v-model:open="globalModals.showLoginDrawer.value" @close="handleReset">
+  <TailSheet v-model:open="showLoginDrawer" @close="handleReset">
     <TailSheetContent>
       <TailSheetHeader>
         <TailSheetTitle />
@@ -27,22 +27,12 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
 const authStore = useAuthentication()
 const sessionId = useCookie('sessionId', { sameSite: 'strict', secure: true })
 
 const { debounce } = useDebounce()
 const { $client } = useNuxtApp()
 const { customHandleError } = useErrorHandler()
-
-const showSignup = ref<boolean>(false)
-
-/**
- * Computed property to control the login modal visibility.
- * If the URL query parameter `login` equals '0', the modal will open.
- * Otherwise, it defaults to the store’s value
- */
-const globalModals = useGlobalModals()
 
 /**
  * Syncs the unauthenticated cart to the authenticated user's account
@@ -59,6 +49,9 @@ async function handleAuthenticateCart() {
   }
 }
 
+const showSignup = ref<boolean>(false)
+const showLoginDrawer = useState<boolean>('showLoginDrawer')
+
 /**
  * Resets the login modal state:
  * - Immediately hides the login drawer.
@@ -66,10 +59,10 @@ async function handleAuthenticateCart() {
  */
 function handleReset() {
   if (showSignup.value) {
-    globalModals.showLoginDrawer.value = true
+    showLoginDrawer.value = true
     showSignup.value = false
   } else {
-    globalModals.showLoginDrawer.value = false
+    showLoginDrawer.value = false
     
     setTimeout(() => {
       showSignup.value = false

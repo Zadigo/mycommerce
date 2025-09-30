@@ -1,5 +1,5 @@
 <template>
-  <TailDrawer id="dialog-search" v-model:open="globalModals.showSearchModal.value">
+  <TailDrawer id="dialog-search" v-model:open="showSearchModal">
     <TailDrawerContent>
       <TailDrawerHeader>
         <!-- <TailDrawerClose as-child>
@@ -27,7 +27,7 @@
         <!-- Recommendations -->
         <Suspense v-else>
           <template #default>
-            <AsyncRecommendations @has-navigated="globalModals.showSearchModal.value=false" />
+            <AsyncRecommendations @has-navigated="showSearchModal=false" />
           </template>
           
           <template #fallback>
@@ -53,7 +53,7 @@ const AsyncRecommendations = defineAsyncComponent({
   timeout: 10000
 })
 
-const globalModals = useGlobalModals()
+const showSearchModal = useState<boolean>('showSearchModal')
 
 // const { gtag } = useGtag()
 const { $client } = useNuxtApp()

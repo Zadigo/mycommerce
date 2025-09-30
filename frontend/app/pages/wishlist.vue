@@ -1,6 +1,6 @@
 <template>
   <section id="wishlist" class="mx-10 px-10 my-10">
-    <div v-if="!authenticationStore.isAuthenticated" class="w-full md:w-2/6">
+    <div v-if="!isAuthenticated" class="w-full md:w-2/6">
       <TailCard class="shadow-sm border-0">
         <TailCardContent class="text-center p-5 flex flex-col justify-center">
           <div class="information">
@@ -36,14 +36,16 @@ import type { Product } from '~/types'
 
 
 const { t } = useI18n()
-const { $client } = useNuxtApp()
-const { handleError } = useErrorHandler()
-const shopStore = useShop()
-const authenticationStore = useAuthentication()
+const { customHandleError } = useErrorHandler()
 
+const showLoginDrawer = useState('showLoginDrawer')
+const { isAuthenticated } = useUser()
+
+
+const shopStore = useShop()
 // const likedProducts = useStorage('likedProducts', [])
 const { likedProducts } = storeToRefs(shopStore)
-const { showLoginDrawer } = storeToRefs(authenticationStore)
+const { $client } = useNuxtApp()
 
 /**
  * 
@@ -56,7 +58,7 @@ const { data: products } = useAsyncData(async () => {
       products: likedProducts.value
     },
     onRequestError({ error }) {
-      handleError(error)
+      customHandleError(error)
     }
   })
 }, {

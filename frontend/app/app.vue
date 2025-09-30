@@ -35,6 +35,16 @@ provide('screenOrientation', screenOrientation)
 provide('documentVisible', useDocumentVisibility())
 
 /**
+ * State
+ */
+
+useState('showSearchModal', () => false)
+useState('showLanguageModal', () => false)
+useState('showWhatsAppModal', () => false)
+useState('showCartDrawer', () => false)
+useState('showLoginDrawer', () => false)
+
+/**
  * Load Stripe.js
  */
 

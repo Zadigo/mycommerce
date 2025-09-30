@@ -1,5 +1,5 @@
 <template>
-<TailDialog v-model:open="showWhatsAppModal" @close="showWhatsAppModal=false">
+<TailDialog v-model:open="showWhatsAppModal">
   <TailDialogContent>
     <TailDialogHeader>
       <TailDialogTitle>
@@ -24,6 +24,5 @@ import { useQRCode } from '@vueuse/integrations/useQRCode'
 const config = useRuntimeConfig()
 const qrCode = useQRCode(config.public.whatsAppUrl)
 
-const shopStore = useShop()
-const { showWhatsAppModal } = storeToRefs(shopStore)
+const showWhatsAppModal = useState<boolean>('showWhatsAppModal')
 </script>

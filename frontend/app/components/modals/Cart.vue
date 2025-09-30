@@ -1,5 +1,5 @@
 <template>
-  <TailSheet v-model:open="showCartDrawer" @close="showCartDrawer=false">
+  <TailSheet v-model:open="showCartDrawer">
     <TailSheetContent>
       <TailSheetHeader>
         <div class="flex justify-between items-center">
@@ -57,7 +57,7 @@
               </NuxtLink>
             </TailButton>
 
-            <TailButton v-else id="action-login-cart" class="w-full rounded-full" size="lg" @click="showCartDrawer=false, globalModals.showLoginDrawer.value=true">
+            <TailButton v-else id="action-login-cart" class="w-full rounded-full" size="lg" @click="showCartDrawer=false, showLoginDrawer=true">
               {{ $t('Passer commande') }}
             </TailButton>
           </div>
@@ -92,12 +92,12 @@ import type { ProductToEdit } from '~/types'
 
 const toLocalePath = useLocalePath()
 
-const globalModals = useGlobalModals()
 const router = useRouter()
 
-const cartStore = useCart()
-const { showCartDrawer, cartTotal } = storeToRefs(cartStore)
-const { hasProducts, freeDeliveryTarget, numberOfProducts } = await useCartInformation()
+const showCartDrawer = useState<boolean>('showCartDrawer')
+const showLoginDrawer = useState<boolean>('showLoginDrawer')
+
+const { hasProducts, freeDeliveryTarget, numberOfProducts, cartTotal } = await useCartInformation()
 
 const emit = defineEmits<{ 'edit-product': ProductToEdit }>()
 

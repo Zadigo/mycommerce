@@ -11,7 +11,7 @@
         <ClientOnly>
           <ul class="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
             <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-              <TailButton id="action-search" class="ms-auto me-2 rounded-full" @click="() => { globalModals.showSearchModal.value = true }">
+              <TailButton id="action-search" class="ms-auto me-2 rounded-full" @click="() => { showSearchModal = true }">
                 {{ $t('Rechercher') }}
               </TailButton>
             </li>
@@ -24,7 +24,7 @@
             </li>
 
             <li v-if="!isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-              <a id="action-signin" href="#" class="flex items-center gap-2" @click.prevent="() => { globalModals.showLoginDrawer.value = true }">
+              <a id="action-signin" href="#" class="flex items-center gap-2" @click.prevent="() => { showLoginDrawer = true }">
                 <Icon name="i-fa7-solid:sign-in-alt" size="18" />
                 {{ $t('Se connecter') }}
               </a>
@@ -60,7 +60,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 
-const globalModals = useGlobalModals()
+/**
+ * Global modals
+ */
+
+const showCartDrawer = useState<boolean>('showCartDrawer')
+const showLoginDrawer = useState<boolean>('showLoginDrawer')
+const showSearchModal = useState<boolean>('showSearchModal')
 
 // const { gtag } = useGtag()
 
@@ -69,9 +75,6 @@ const globalModals = useGlobalModals()
  */
 
 const { isAuthenticated } = useUser()
-
-const cartStore = useCart()
-const { showCartDrawer } = storeToRefs(cartStore)
 
 /**
  *
