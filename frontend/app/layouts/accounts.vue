@@ -35,9 +35,7 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import type { Profile } from '~/types'
 
 const { t }  = useI18n()
-const authStore = useAuthentication()
 const { customHandleError } = useErrorHandler()
-const { profile  } = storeToRefs(authStore)
 
 
 /**
@@ -45,30 +43,19 @@ const { profile  } = storeToRefs(authStore)
  */
 
 const cookieSessionId = useCookie('sessionId')
-const { $client, $fireStore } = useNuxtApp()
+const fireStore = useFirestore()
 
-async function requestUserDetails () {
-  const response = await $client<Profile>(`/api/v1/accounts/${authStore.userId}`, {
-    method: 'GET',
-    onResponse() {
+const { getProfile, userId } = useUser<Profile>()
+const profile = await getProfile(userId.value)
 
-    },
-    onRequestError({ error }) {
-      customHandleError(error)
-    }
-  })
-
-  profile.value = response
-
-  const userRef = doc($fireStore, 'users', cookieSessionId.value)
+if (isDefined(profile)) {
+  const userRef = doc(fireStore, 'users', cookieSessionId.value)
   const userSnapshot = await getDoc(userRef)
 
   if (userSnapshot.exists()) {
-    updateDoc(userRef, { profile: response })
+    updateDoc(userRef, { profile: profile })
   }
 }
-
-requestUserDetails()
 
 useHead({
   title: t("Mon compte"),

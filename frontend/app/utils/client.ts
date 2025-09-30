@@ -123,12 +123,12 @@ interface JWTResponseData {
 /**
  * Composable used to check if the user is logged in
  */
-export function useUser() {
+export function useUser<P>() {
   if (import.meta.server) {
-    return  {
-      userId: computed(() => null as Nullable<number>),
+    return {
+      userId: computed(() => null),
       isAuthenticated: ref(false),
-      getProfile: async (userId: number) => null as Nullable<Profile>
+      getProfile: async (id: Nullable<number>) => null as Nullable<P>
     }
   }
 
@@ -144,20 +144,19 @@ export function useUser() {
         return user_id
       }
     }
-    return null
+    return undefined
   })
 
-  const getProfile = useMemoize(async (userId: Nullable<number>) => {
-    if (isDefined(userId)) {
+  const getProfile = useMemoize(async (id: Nullable<number>) => {
+    if (isDefined(id)) {
       const { $client } = useNuxtApp()
 
-      const data = await $client<Profile>(`/api/v1/accounts/${userId}`, {
+      const data = await $client<P>(`/api/v1/accounts/${id}`, {
         method: 'GET'
       })
       return data
     }
-
-    return undefined
+    console.warn('User ID is not defined')
   })
 
   return {
