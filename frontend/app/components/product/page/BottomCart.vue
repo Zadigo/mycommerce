@@ -34,7 +34,7 @@
           </TailSelectContent>
         </TailSelect>
 
-        <TailButton @click="handleProxyAddToCart">
+        <TailButton @click="() => { cartStore.addToCart(product) }">
           {{ $t('Ajouter au panier') }}
         </TailButton>
       </div>
@@ -65,24 +65,7 @@ const sizeNames = computed(() => {
 const selectedSize = computed({
   get: () => cartStore.userSelection.size,
   set: (value: string) => {
-    cartStore.handleSizeSelection(product, value)
+    cartStore.sizeSelection(product, value)
   }
 })
-
-/**
- * 
- */
-async function handleProxyAddToCart() {
-  cartStore.addToCart(product, 'Unique', async (data) => {
-    console.log(data)
-
-    // TODO: Firebase
-    // const userRef = doc($fireStore, 'users', cartStore.sessionId)
-    // const userSnapshot = await getDoc(userRef)
-    
-    // if (userSnapshot.exists()) {
-    //   updateDoc(userRef, { cart: data })
-    // }
-  })
-}
 </script>
