@@ -1,4 +1,4 @@
-import { useAuthentication, useErrorHandler } from '#imports'
+import { useErrorHandler } from '#imports'
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore'
 import { useDocument, useFirestore } from 'vuefire'
 import { baseSessionCacheData } from '~/data'
@@ -7,6 +7,64 @@ import type { SessionCacheData } from '~/types'
 
 const cookieOptions = { sameSite: 'strict', secure: true } as const
 
+/**
+ * Composable used to create a unique sessionId for the user
+ * and store it in a cookie that we can use to identify anonymous users
+ * when they add products to the cart or like products
+ * @todo rename to useDjangoSession and useSerSession directly in useStorageSetup
+ */
+export function useUserSession() {
+  if (import.meta.server) {
+    return {
+      requestSessionId: () => Promise.resolve()
+    }
+  }
+
+  const { customHandleError } = useErrorHandler()
+  const cookieSessionId = useCookie('shopSessionId', cookieOptions)
+
+  /**
+   * Request a new sessionId via the API and ensure a
+   * corresponding Firestore document exists
+   * TODO: Use server?
+   */
+  async function requestSessionId() {
+    try {
+      if (!cookieSessionId.value) {
+        const { data } = await useFetch<{ token: string }>('/api/v1/cart/session-id', {
+          method: 'POST',
+          baseURL: useRuntimeConfig().public.prodDomain,
+          immediate: true
+        })
+
+        if (data.value) {
+          cookieSessionId.value = data.value.token
+
+          if (isDefined(cookieSessionId)) {
+            const db = useFirestore()
+            await updateDoc(doc(db, 'sessions', cookieSessionId.value), { sessionId: data.value.token })
+          }
+        }
+      }
+    } catch (e) {
+      customHandleError(e)
+    }
+  }
+
+  onBeforeMount(async () => {
+    await requestSessionId()
+  })
+
+  return {
+    /**
+     * ID used by Django to identify anonymous users when
+     * they add products to their cart
+     */
+    cookieSessionId,
+    requestSessionId
+  }
+}
+  
 /**
  * Setup the storage for the user session in order to store data
  * such as liked products, session cache, etc.
@@ -24,7 +82,6 @@ export async function useStorageSetup() {
   // but as the data is not sensitive either way is good
   // const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData)
   const likedProducts = useLocalStorage<number[]>('likedProducts', [])
-
   const sessionId = useCookie('sessionId', cookieOptions)
   
   const db = useFirestore()
@@ -78,62 +135,6 @@ export async function useStorageSetup() {
   }
 }
 
-/**
- * Composable used to create a unique sessionId for the user
- * and store it in a cookie that we can use to identify anonymous users
- * when they add products to the cart or like products
- */
-export function useUserSession() {
-  if (import.meta.server) {
-    return {
-      requestSessionId: () => Promise.resolve()
-    }
-  }
-
-  const { customHandleError } = useErrorHandler()
-  const cookieSessionId = useCookie('shopSessionId', cookieOptions)
-  
-  /**
-   * Request a new sessionId via the API and ensure a
-   * corresponding Firestore document exists
-   * TODO: Use server?
-   */
-  async function requestSessionId() {
-    try {
-      if (!cookieSessionId.value) {
-        const { data } = await useFetch<{ token: string }>('/api/v1/cart/session-id', {
-          method: 'POST',
-          baseURL: useRuntimeConfig().public.prodDomain,
-          immediate: true
-        })
-
-        if (data.value) {
-          cookieSessionId.value = data.value.token
-          
-          if (isDefined(cookieSessionId)) {
-            const db = useFirestore()
-            await updateDoc(doc(db, 'sessions', cookieSessionId.value), { sessionId: data.value.token })
-          }
-        }
-      }
-    } catch (e) {
-      customHandleError(e)
-    }
-  }
-
-  onBeforeMount(async () => {
-    await requestSessionId()
-  })
-
-  return {
-    /**
-     * ID used by Django to identify anonymous users when
-     * they add products to their cart
-     */
-    cookieSessionId,
-    requestSessionId
-  }
-}
 
 /**
  * Creates a global state and watches for changes in the URL query parameters
