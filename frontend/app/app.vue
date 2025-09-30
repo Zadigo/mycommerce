@@ -20,7 +20,8 @@
 import 'animate.css'
 
 useStorageSetup()
-useUserSession()
+// Initialize user session management
+// and global state
 useUser()
 
 /**
@@ -43,6 +44,7 @@ useState('showLanguageModal', () => false)
 useState('showWhatsAppModal', () => false)
 useState('showCartDrawer', () => false)
 useState('showLoginDrawer', () => false)
+useState('authenticatedCart', () => false)
 
 /**
  * Load Stripe.js

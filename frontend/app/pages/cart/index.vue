@@ -1,23 +1,23 @@
 <template>
-  <TailCard class="border-none">
-    <TailCardContent class="card-body">
+  <tail-card class="border-none">
+    <tail-card-content class="card-body">
       <h2 class="font-2xl font-bold">
         {{ $t("Choisis un mode d'expédition") }}
       </h2>
 
-      <TailRadioGroup v-if="deliveryOptions.length > 0" v-model="shippingStore.newShippingInfo.delivery" default-value="Relais colis">
+      <tail-radio-group v-if="deliveryOptions.length > 0" v-model="shippingStore.newShippingInfo.delivery" default-value="Relais colis">
         <div v-for="(delivery, i) in deliveryOptions" :key="delivery.id" class="flex items-center space-x-8">
-          <TailRadioGroupItem :id="`delivery-${i}`" :value="delivery.id" />
-          <TailLabel :for="`delivery-${i}`">
+          <tail-radio-group-item :id="`delivery-${i}`" :value="delivery.id" />
+          <tail-label :for="`delivery-${i}`">
             {{ delivery.name }}
-          </TailLabel>
+          </tail-label>
         </div>
-      </TailRadioGroup>
-      <TailSkeleton v-else class="h-[30px] mt-5 bg-gray-50" />
-    </TailCardContent>
+      </tail-radio-group>
+      <tail-skeleton v-else class="h-[30px] mt-5 bg-gray-50" />
+    </tail-card-content>
 
     <CartNavigationCardFooter next-page="/cart/shipment" />
-  </TailCard>
+  </tail-card>
 </template>
 
 <script lang="ts" setup>
@@ -42,7 +42,7 @@ const { $client } = useNuxtApp()
 const deliveryOptions = useStorage<DeliveryOption[]>('deliveryOptions', [])
 const paymentIntent = useCookie<NewIntentAPIResponse>('paymentIntent')
 
-const { cookieSessionId } = useUserSession()
+const { djangoSessionId } = useDjangoSession()
 
 /**
  * Get the delivery options from which the
@@ -59,7 +59,6 @@ const { data } = useAsyncData('delivery-options', async () => {
           console.log('TODO: Point to the Quart backend')
         }
       }),
-
       /**
        * Requests a new payment intent and returns an
        * intent ID that will be used to confirm the payment
@@ -68,7 +67,7 @@ const { data } = useAsyncData('delivery-options', async () => {
       await $client<NewIntentAPIResponse>('/api/v1/orders/intent', {
         method: 'POST',
         baseURL: useRuntimeConfig().public.prodDomain,
-        body: { session_id: cookieSessionId.value },
+        body: { session_id: djangoSessionId.value },
         onRequestError({ error }) {
           customHandleError(error)
         }

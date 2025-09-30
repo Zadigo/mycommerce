@@ -1,20 +1,20 @@
 
 <template>
-  <TailSheet v-model:open="showLoginDrawer" @close="handleReset">
-    <TailSheetContent>
-      <TailSheetHeader>
-        <TailSheetTitle />
-      </TailSheetHeader>
+  <tail-sheet v-model:open="showLoginDrawer" @close="handleReset">
+    <tail-sheet-content>
+      <tail-sheet-header>
+        <tail-sheet-title />
+      </tail-sheet-header>
 
-      <TailSheetHeader>
+      <tail-sheet-header>
        <div class="flex justify-between align-center">
-          <TailButton variant="destructive" @click="handleReset">
+          <tail-button variant="destructive" @click="handleReset">
             <Icon name="i-fa7-solid:chevron-left" />
-          </TailButton>
+          </tail-button>
 
-          <TailSheetClose />
+          <tail-sheet-close />
        </div>
-      </TailSheetHeader>
+      </tail-sheet-header>
       
       <div class="mb-10 overflow-y-scroll">
         <Transition name="opacity">
@@ -22,28 +22,35 @@
           <BlockLogin v-else @show-signup="showSignup=true" @authenticate="debouncedAuthenticateCart" />
         </Transition>
       </div>
-    </TailSheetContent>    
-  </TailSheet>
+    </tail-sheet-content>
+  </tail-sheet>
 </template>
 
 <script setup lang="ts">
-const authStore = useAuthentication()
 const sessionId = useCookie('sessionId', { sameSite: 'strict', secure: true })
 
 const { debounce } = useDebounce()
 const { $client } = useNuxtApp()
 const { customHandleError } = useErrorHandler()
 
+
+const { djangoSessionId } = useDjangoSession() // Ensure session storage is initialized
+
 /**
  * Syncs the unauthenticated cart to the authenticated user's account
  * by calling an API endpoint with the current session ID
  */
 async function handleAuthenticateCart() {
-  if (!authStore.sessionCache.authenticatedCart) {
+  const cartAuthenticated = useState<boolean>('authenticatedCart')
+
+  if (!cartAuthenticated.value && isDefined(djangoSessionId)) {
     await $client('/api/v1/cart/authenticate', {
       method: 'POST',
       body: {
-        session_id: sessionId.value
+        session_id: djangoSessionId.value
+      },
+      onRequestError: (error) => {
+        customHandleError(error)
       }
     })
   }

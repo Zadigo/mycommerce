@@ -85,7 +85,7 @@ const { $client } = useNuxtApp()
 
 const saveShipmentDetails = ref(false)
 
-const { cookieSessionId } = useUserSession()
+const { djangoSessionId } = useDjangoSession()
 
 const shippingStore = useShippingInfo()
 const { newShippingInfo } = storeToRefs(shippingStore)
@@ -107,7 +107,7 @@ const paymentIntent = useLocalStorage<NewIntentAPIResponse>('paymentIntent', nul
  */
 async function handleUpdatePaymentIntent() {
   try {
-    newShippingInfo.value.session_id = cookieSessionId.value
+    newShippingInfo.value.session_id = djangoSessionId.value
 
     await $client('/api/v1/orders/intent/update', {
       method: 'POST',

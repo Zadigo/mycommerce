@@ -1,4 +1,4 @@
-import { useUserSession } from '#imports'
+import { useDjangoSession } from '#imports'
 import { useJwt } from '@vueuse/integrations/useJwt'
 import { defineStore } from 'pinia'
 
@@ -46,12 +46,12 @@ export const useCart = defineStore('cart', () => {
       return
     }
 
-    const { cookieSessionId } = useUserSession()
+    const { djangoSessionId } = useDjangoSession()
     
     addingToCartState.value = true
     // By changing this, it updates in the underlying
     // proxy in the ref since data is that proxy
-    userSelection.value.session_id = cookieSessionId?.value || null
+    userSelection.value.session_id = djangoSessionId?.value || null
     userSelection.value.product = product
 
     console.log('product.has_sizes && (userSelection.value.size === Unique || userSelection.value.size === null)', product.has_sizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null))
@@ -109,10 +109,10 @@ export const useCart = defineStore('cart', () => {
    */
   
   async function deleteFromCart(cartItem: ProductToEdit, callback?: (deletedItem: ProductToEdit, updatedCart: CartUpdateApiResponse) => void) {
-    const { cookieSessionId } = useUserSession()
+    const { djangoSessionId } = useDjangoSession()
 
-    if (cookieSessionId && cookieSessionId.value) {
-      const { payload } = useJwt<JWTData>(cookieSessionId.value)
+    if (djangoSessionId && djangoSessionId.value) {
+      const { payload } = useJwt<JWTData>(djangoSessionId.value)
       const { $client } = useNuxtApp()
 
       if (payload.value) {
@@ -121,7 +121,7 @@ export const useCart = defineStore('cart', () => {
           {
             method: 'POST',
             body: {
-              session_id: cookieSessionId.value,
+              session_id: djangoSessionId.value,
               product_id: cartItem.product_info?.product.id,
               size: cartItem.product_info?.size
             }

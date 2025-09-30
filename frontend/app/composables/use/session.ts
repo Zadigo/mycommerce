@@ -11,9 +11,8 @@ const cookieOptions = { sameSite: 'strict', secure: true } as const
  * Composable used to create a unique sessionId for the user
  * and store it in a cookie that we can use to identify anonymous users
  * when they add products to the cart or like products
- * @todo rename to useDjangoSession and useSerSession directly in useStorageSetup
  */
-export function useUserSession() {
+export function useDjangoSession() {
   if (import.meta.server) {
     return {
       requestSessionId: () => Promise.resolve()
@@ -21,7 +20,7 @@ export function useUserSession() {
   }
 
   const { customHandleError } = useErrorHandler()
-  const cookieSessionId = useCookie('shopSessionId', cookieOptions)
+  const djangoSessionId = useCookie('shopSessionId', cookieOptions)
 
   /**
    * Request a new sessionId via the API and ensure a
@@ -30,7 +29,7 @@ export function useUserSession() {
    */
   async function requestSessionId() {
     try {
-      if (!cookieSessionId.value) {
+      if (!djangoSessionId.value) {
         const { data } = await useFetch<{ token: string }>('/api/v1/cart/session-id', {
           method: 'POST',
           baseURL: useRuntimeConfig().public.prodDomain,
@@ -38,11 +37,11 @@ export function useUserSession() {
         })
 
         if (data.value) {
-          cookieSessionId.value = data.value.token
+          djangoSessionId.value = data.value.token
 
-          if (isDefined(cookieSessionId)) {
+          if (isDefined(djangoSessionId)) {
             const db = useFirestore()
-            await updateDoc(doc(db, 'sessions', cookieSessionId.value), { sessionId: data.value.token })
+            await updateDoc(doc(db, 'sessions', djangoSessionId.value), { sessionId: data.value.token })
           }
         }
       }
@@ -60,7 +59,7 @@ export function useUserSession() {
      * ID used by Django to identify anonymous users when
      * they add products to their cart
      */
-    cookieSessionId,
+    djangoSessionId,
     requestSessionId
   }
 }
@@ -68,6 +67,7 @@ export function useUserSession() {
 /**
  * Setup the storage for the user session in order to store data
  * such as liked products, session cache, etc.
+ * @todo rename to useSessionSetup
  */
 export async function useStorageSetup() {
   if (import.meta.server) {
@@ -81,8 +81,10 @@ export async function useStorageSetup() {
   // some of the user actions - This can/should be done directly into Firebase
   // but as the data is not sensitive either way is good
   // const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData)
-  const likedProducts = useLocalStorage<number[]>('likedProducts', [])
   const sessionId = useCookie('sessionId', cookieOptions)
+  const { djangoSessionId } = useDjangoSession()
+
+  const likedProducts = useLocalStorage<number[]>('likedProducts', [])
   
   const db = useFirestore()
   const collectionRef = collection(db, 'sessions')
@@ -94,6 +96,16 @@ export async function useStorageSetup() {
     const sessionCache = useDocument<SessionCacheData>(docRef)
 
     return {
+      /**
+       * ID used by Django to identify anonymous users when
+       * they add products to their cart
+       */
+      djangoSessionId,
+      /**
+       * Document ID in firebase under which the session cache is stored
+       * This is used to identify the user session and link it with
+       * the cart, liked products, etc.
+       */
       sessionId,
       /**
        * Session cache used to store data that is not sensitive
@@ -115,6 +127,11 @@ export async function useStorageSetup() {
     
     return {
       /**
+       * ID used by Django to identify anonymous users when
+       * they add products to their cart
+       */
+      djangoSessionId,
+      /**
        * Document ID in firebase under which the session cache is stored
        * This is used to identify the user session and link it with
        * the cart, liked products, etc.
@@ -134,7 +151,6 @@ export async function useStorageSetup() {
     }
   }
 }
-
 
 /**
  * Creates a global state and watches for changes in the URL query parameters
