@@ -1,12 +1,12 @@
 <template>
   <section id="collections" class="my-5 md:my-10 mx-5">
     <div v-if="status === 'pending'" class="grid grid-cols-1 md:grid-cols-3 gap-2">
-      <TailSkeleton v-for="i in 3" :key="i" class="w-full h-full" />
+      <tail-skeleton v-for="i in 3" :key="i" class="w-full h-full" />
     </div>
 
     <div v-else class="grid grid-cols-1 grid-rows-3 auto-rows-fr md:grid-cols-3 md:grid-rows-1 gap-3">
-      <BaseCollectionCard custom-name="All" view-name="all" image="/img4.jpeg" />
-      <BaseCollectionCard v-for="collectionItem in collections" :key="collectionItem.id" :collection="collectionItem" image="/img5.jpeg" />
+      <base-collection-card custom-name="All" view-name="all" image="/img4.jpeg" />
+      <base-collection-card v-for="collectionItem in collections" :key="collectionItem.id" :collection="collectionItem" image="/img5.jpeg" />
     </div>
   </section>
 </template>
@@ -14,7 +14,6 @@
 <script setup lang="ts">
 import type { CollectionApiResponse } from '~/types'
 
-// const { gtag } = useGtag()
 const { t } = useI18n()
 const { customHandleError } = useErrorHandler()
 
@@ -36,11 +35,5 @@ useSeoMeta({
   twitterDescription: description,
   twitterImage: '/img4.jpeg',
   twitterCard: 'summary'
-})
-
-onMounted(() => {
-  // gtag('event', 'page_view', {
-  //   screen_name: 'Achat en ligne de vêtements'
-  // })
 })
 </script>
