@@ -1,42 +1,42 @@
 <template>
   <div class="my-1">
-    <article v-for="item in cartItems" :key="item.product__id" :aria-label="item.product__name" class="border-2 border-gray-50 rounded-md p-3 mb-2">
+    <article v-for="item in statistics" :key="item.product__id" class="border-2 border-gray-50 rounded-md p-3 mb-2">
       <div class="flex justify-start gap-3">
         <div id="image" class="w-2/4">
-          <NuxtLinkLocale  id="link-product-img" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
+          <nuxt-link-locale  id="link-product-img" :to="`/shop/${associatedValue(item.product__id, 'product').id}`" @click="$emit('show-cart-drawer')">
             <NuxtImg :src="mediaPath(item.product_info?.product.get_main_image.original, '/placeholder.svg')" class="w-full rounded-md" />
-          </NuxtLinkLocale >
+          </nuxt-link-locale >
         </div>
 
         <div id="infos">
-          <NuxtLinkLocale  id="link-product-body" :to="`/shop/${item.product__id}`" @click="$emit('show-cart-drawer')">
+          <nuxt-link-locale  id="link-product-body" :to="`/shop/${associatedValue(item.product__id, 'product').id}`" @click="$emit('show-cart-drawer')">
             <p class="mb-1 font-light text-sm">
-              {{ item.product__name }}
+              {{ associatedValue(item.product__id, 'product').name }}
             </p>
 
             <div class="font-bold">
-              {{ $n(parseFloat(item.product_info?.price), 'currency') }}
+              {{ $n(parseFloat(associatedValue(item.product__id, 'product').get_price), 'currency') }}
             </div>
             
             <div class="font-light mb-1 flex justify-start align-center gap-1">
-              <span v-if="item.product_info">
-                {{ item.product_info.size }}
+              <span v-if="item.size">
+                {{ item.size }}
               </span>
 
               <span>
-                {{ item.quantity }}x
+                {{ item?.quantity }}x
               </span>
             </div>
-          </NuxtLinkLocale >
+          </nuxt-link-locale >
 
           <div id="actions" class="mt-5">
-            <TailButton v-if="isEditable" id="action-edit-product" variant="light" class="me-2 rounded-full" size="sm" @click="handleProductEdition(item)">
-              <Icon name="i-fa7-solid:pen" />
-            </TailButton>
+            <tail-button v-if="isEditable" id="action-edit-product" variant="light" class="me-2 rounded-full" size="sm" @click="handleProductEdition(item)">
+              <Icon name="i-lucide:pen" />
+            </tail-button>
 
-            <TailButton id="action-delete-product" variant="light" class="rounded-full" size="sm" @click="proxyDeleteFromCart(item)">
-              <Icon name="i-fa7-solid:trash" />
-            </TailButton>
+            <tail-button id="action-delete-product" variant="light" class="rounded-full" size="sm" @click="proxyDeleteFromCart(item)">
+              <Icon name="i-lucide:trash" />
+            </tail-button>
           </div>
         </div>
       </div>
@@ -62,25 +62,25 @@ const emit = defineEmits({
 const cartStore = useCart()
 const { mediaPath } = useDjangoUtilies()
 
-const { sessionCache } = storeToRefs(cartStore)
+const { statistics, associatedValue } = await useCartInformation()
 
 /**
  * Computed property that get the items from the session
  * and iterates on each statistic object to be displayed
  */
-const cartItems = computed((): ProductToEdit[] => {
-  if (sessionCache.value) {
-    if (sessionCache.value.cart) {
-      return sessionCache.value.cart.statistics.map((item) => {
-        const productInfo = sessionCache.value.cart.results.find((cartItem) => {
-          return cartItem.product.id === item.product__id
-        })
-        return { ...item, product_info: productInfo }
-      })
-    }
-  }
-  return []
-})
+// const cartItems = computed((): ProductToEdit[] => {
+//   if (sessionCache.value) {
+//     if (sessionCache.value.cart) {
+//       return sessionCache.value.cart.statistics.map((item) => {
+//         const productInfo = sessionCache.value.cart.results.find((cartItem) => {
+//           return cartItem.product.id === item.product__id
+//         })
+//         return { ...item, product_info: productInfo }
+//       })
+//     }
+//   }
+//   return []
+// })
 
 /**
  * Function to open the product edition drawer

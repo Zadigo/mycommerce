@@ -2,6 +2,8 @@
   <TailSheet v-model:open="showAddedProductDrawer" @close="showAddedProductDrawer=false">
     <TailSheetContent>
       <div class="px-5 overflow-y-scroll">
+        {{ products }}
+
         <div v-if="hasProducts" class="my-5">
           <div class="flex justify-start mb-5 fs-5 items-center gap-2">
             <Icon name="circle-check" class="text-green-500" />
@@ -48,13 +50,15 @@
 
 <script setup lang="ts">
 const toLocalePath = useLocalePath()
-const cartStore = useCart()
 const authenticationStore = useAuthentication()
 const router = useRouter()
 
 const { mediaPath } = useDjangoUtilies()
 
-const { lastAddedProduct, showAddedProductDrawer, showCartDrawer, hasProducts } = storeToRefs(cartStore)
+const cartStore = useCart()
+const { showAddedProductDrawer, showCartDrawer } = storeToRefs(cartStore)
+
+const { lastAddedProduct, hasProducts, products } = await useCartInformation()
 
 /**
  * Handles the situation where the user tries

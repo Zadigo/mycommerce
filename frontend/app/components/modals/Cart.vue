@@ -20,7 +20,6 @@
         <div v-if="hasProducts" class="flex flex-col my-10">
           <div class="p-5 shadow-sm rounded-md bg-green-100">
             <div v-if="freeDeliveryTarget > 0">
-              {{ cartTotal }}
               {{ $t('Livraison gratuite offerte', { n: $n(freeDeliveryTarget, 'currency') }) }}
               
               <!-- Il te manque 19,02 € pour profiter de la -->
@@ -94,9 +93,11 @@ const toLocalePath = useLocalePath()
 const globalModals = useGlobalModals()
 const router = useRouter()
 
-const cartStore = useCart()
 const { isAuthenticated } = storeToRefs(useAuthentication())
-const { showCartDrawer, numberOfProducts, hasProducts, freeDeliveryTarget, cartTotal } = storeToRefs(cartStore)
+
+const cartStore = useCart()
+const { showCartDrawer, cartTotal } = storeToRefs(cartStore)
+const { hasProducts, freeDeliveryTarget, numberOfProducts } = await useCartInformation()
 
 const emit = defineEmits<{ 'edit-product': ProductToEdit }>()
 

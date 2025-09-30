@@ -60,7 +60,7 @@
               <div class="flex flex-col w-full">
                 <div class="price flex justify-between w-full">
                   <div class="w-full">{{ $t('Sous-total') }}</div>
-                  <div class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</div>
+                  <div class="font-bold">{{ $n(cartTotal, 'currency') }}</div>
                 </div>
 
                 <div class="delivery flex justify-between my-2 w-full">
@@ -73,7 +73,7 @@
 
                 <div class="total flex justify-between w-full">
                   <div class="p-5">{{ $t('Total (TVA comprise)') }}</div>
-                  <div class="font-bold">{{ $n(cartStore.cartTotal, 'currency') }}</div>
+                  <div class="font-bold">{{ $n(cartTotal, 'currency') }}</div>
                 </div>
               </div>
             </TailCardFooter>
@@ -123,12 +123,14 @@ const paymentLinks = computed(() => {
 })
 
 /**
- * Calculate the individual price for the given
- * product with price and quantity variables
+ * Cart
  */
-function calculateItemTotalCost (price: number, quantity: number) {
-  return price * quantity
-}
+
+const { cartTotal } = await useCartInformation()
+
+/**
+ * SEO
+ */
 
 useHead({
   title: t('Cart'),

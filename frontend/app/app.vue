@@ -21,18 +21,28 @@ import 'animate.css'
 
 useStorageSetup()
 useUserSession()
-useAuthenticationTokens()
+const { accessToken  } = useAuthenticationTokens()
 
 /**
  * Provides global state to the app
  */
 
-const isMmobile = useMediaQuery('(min-width: 320px)').value
+const isMobile = useMediaQuery('(min-width: 320px)').value
 const { isSupported: screenOrientation } = useScreenOrientation()
 
-provide('isMobile', isMmobile)
+provide('isMobile', isMobile)
 provide('screenOrientation', screenOrientation)
 provide('documentVisible', useDocumentVisibility())
+
+/**
+ * Global state
+ */
+
+useState('isAuthenticated', () => isDefined(accessToken.value) && accessToken.value !== '')
+
+/**
+ * Load Stripe.js
+ */
 
 useScript({
   async: true,

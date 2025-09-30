@@ -203,15 +203,29 @@ export const useCart = defineStore('cart', () => {
      * attain in order to get free
      * delivery on his cart total
      * @default 50
+     * @deprecated Use `useStorageSetup` instead
      */
     freeDeliveryTarget,
+    /**
+     * @deprecated Use `useStorageSetup` instead
+     */
     hasProducts,
+    /**
+     * @deprecated Use `useStorageSetup` instead
+     */
     numberOfProducts,
+    /**
+     * @deprecated Use `useStorageSetup` instead
+     */
     lastAddedProduct,
     /**
      * Contains updated cart information
+     * @deprecated Use `useStorageSetup` instead
      */
     cache,
+    /**
+     * @deprecated Use `useStorageSetup` instead
+     */
     products,
     showAddedProductDrawer,
     showEditProductDrawer,

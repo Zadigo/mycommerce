@@ -19,6 +19,30 @@ export async function refreshAccessToken(refresh: string) {
 }
 
 /**
+ * Function used to refresh the access token
+ * on the client side
+ */
+export async function refreshAccessTokenClient() {
+  if (import.meta.server) {
+    return {
+      access: null
+    }
+  }
+
+  const refreshToken = useCookie('refresh')
+  if (isDefined(refreshToken)) {
+    const response = await refreshAccessToken(refreshToken.value)
+    if (response.access) {
+      useCookie('access').value = response.access
+    }
+
+    return response
+  }
+
+  return { access: null }
+}
+
+/**
  * Function used to login the user in the frontend 
  */
 export async function login(email: string, password: string) {
@@ -50,6 +74,9 @@ export async function login(email: string, password: string) {
   }
 }
 
+/**
+ * Function used to logout the user
+ */
 export async function logout() {
   if (import.meta.server) {
     return
