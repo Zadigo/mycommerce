@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'import_export',
     'storages',
+    'django_ckeditor_5',
     'django_celery_beat',
 
     'rest_framework',

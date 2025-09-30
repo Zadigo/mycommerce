@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt import views as jwt_views
 from drf_spectacular import views as drf_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
      path(
@@ -61,3 +63,7 @@ urlpatterns = [
         admin.site.urls
     )
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
