@@ -114,10 +114,8 @@ const { currentGridSize } = useHandleGridSize()
 const isLoadingMoreProducts = ref<boolean>(false)
 const intersectionTarget = ref<HTMLElement | null>(null)
 
-/**
- * Main logic that loads more products into the feed once
- * the user has reached the limit of the intersection 
- */
+// Main logic that loads more products into the feed once
+// the user has reached the limit of the intersection
 if (import.meta.client) {
   useIntersectionObserver(intersectionTarget, ([{ isIntersecting }]) => {
     if (isIntersecting && isDefined(apiResponse.value)) {
