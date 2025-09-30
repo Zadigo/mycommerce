@@ -1,6 +1,6 @@
 <template>
-  <div v-if="sizes.length > 0" id="sizes" class="flex justify-start gap-1" aria-label="Product sizes">
-    <ProductSizeButton v-for="size in sizes" :key="size.id" :size="size" :selected-size="selectedSize" @select-size="handleSizeSelection" />
+  <div v-if="product.sizes.length > 0" id="sizes" class="flex justify-start gap-1" aria-label="Product sizes">
+    <product-size-button v-for="size in product.sizes" :key="size.id" :size="size" :selected-size="userSelection.size" @select-size="(size) => { cartStore.sizeSelection(product, size) }" />
   </div>
 
   <div v-else>
@@ -17,33 +17,11 @@
  * the model that is carrying clothing
  */
 
-import { useRefHistory } from '@vueuse/core'
+import type { DefaultClotheSize, Product } from '~/types'
 
-import type { ProductSizes } from '~/types'
-import type { DefaultClotheSize } from '~/data'
-
-defineProps<{ sizes: ProductSizes[] }>()
+defineProps<{ product: Product }>()
 const emit = defineEmits<{ 'update-size': [size: DefaultClotheSize] }>()
 
-const selectedSize = ref<DefaultClotheSize>()
-useRefHistory(selectedSize)
-
-/**
- * 
- */
-function handleSizeSelection (size: DefaultClotheSize) {
-  selectedSize.value = size
-  emit('update-size', selectedSize.value)
-}
-
-/**
- *
- */
-function resetSize () {
-  selectedSize.value = undefined
-}
-
-defineExpose({
-  resetSize
-})
+const cartStore = useCart()
+const { userSelection } = storeToRefs(cartStore)
 </script>

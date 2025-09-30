@@ -1,32 +1,33 @@
 <template>
-  <TailButton v-if="size.availability" variant="light" :class="buttonClass" @click="() => emit('select-size', size.name)">
-    <icon v-if="!size.availability" name="i-fa7-clock-rotate-left" class="text-warning me-2" />
+  <tail-button :variant="buttonStyle === 'button' ? 'light' : 'link'" :class="buttonClass" @click="() => emit('select-size', size)">
+    <icon v-if="!size.availability" name="i-lucide:clock-fading" class="text-yellow-500 me-2" />
     {{ size.name }}
-  </TailButton>
+  </tail-button>
 </template>
 
 <script lang="ts" setup>
 import type { DefaultClotheSize, ProductSizes } from '~/types'
 
-const props = defineProps<{
+const { size, selectedSize, selectable = true, customClass, buttonStyle = 'button' } = defineProps<{
   size: ProductSizes,
   selectedSize: DefaultClotheSize,
   selectable?: boolean,
-  customClass?: string
+  customClass?: string,
+  buttonStyle?: 'button' | 'link'
 }>()
 
-const emit = defineEmits<{ 'select-size': [size: DefaultClotheSize] }>()
+const emit = defineEmits<{ 'select-size': [size: ProductSizes] }>()
 
-const isSelected = computed(() => props.size.name === props.selectedSize)
+const isSelected = computed(() => size.name === selectedSize)
 
 const buttonClass = computed(() => {
   return [
-    'rounded-full border',
-    props.customClass,
-    { 
-      '': !isSelected.value,
-      'bg-primary': isSelected.value && props.selectable
-    }
+    {
+      'rounded-full border': buttonStyle === 'button',
+      'bg-gray-200 hover:bg-gray-300': isSelected.value && buttonStyle === 'button',
+      'underline': isSelected.value && buttonStyle === 'link'
+    },
+    customClass
   ]
 })
 </script>

@@ -42,7 +42,7 @@ export const useCart = defineStore('cart', () => {
 
   async function addToCart(product: Product | null | undefined, callback?: FunctionCallback) {
     if (!product) {
-      // console.error('Product is empty')
+      console.error('Product is empty')
       return
     }
 
@@ -68,6 +68,7 @@ export const useCart = defineStore('cart', () => {
     const response = await $fetch<CartUpdateApiResponse>('/api/v1/cart/add', {
       method: 'POST',
       body: userSelection.value,
+      baseURL: useRuntimeConfig().public.prodDomain,
       onResponse({ response }) {
         if (response.status === 201) {
           addingToCartState.value = false
@@ -98,7 +99,7 @@ export const useCart = defineStore('cart', () => {
       // selects a size from a products list page
       // where there is no "Add to Cart" button
       if (doAddToCart) {
-        await addToCart(product, size.name)
+        await addToCart(product)
       }
     }
   }

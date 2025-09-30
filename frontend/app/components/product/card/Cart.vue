@@ -22,7 +22,6 @@
 </template>
 
 <script setup lang="ts">
-import type { DefaultClotheSize } from '~/types'
 import type { Product } from '~/types'
 
 const props = defineProps<{

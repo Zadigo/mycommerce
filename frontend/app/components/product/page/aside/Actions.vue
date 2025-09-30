@@ -1,23 +1,18 @@
 <template>
   <div id="actions">    
     <!-- Sizes -->
-    <div v-if="product" id="sizes" class="inline-flex gap-2 mb-4">
-      <button v-for="size in product.sizes" :key="size.id" type="button" :class="{'bg-gray-200': userSelection.size === size.name, 'bg-gray-50': userSelection.size !== size.name }" class="rounded-full w-10 h-10 text-sm font-normal place-content-center cursor-pointer hover:bg-gray-100 hover:border-2 hover:border-gray-100" @click="proxySelectSize(size)">
-        <Icon v-if="!size.availability" name="i-fa7-regular:clock" size="12" class="text-orange-400" />
-        {{ size.name }}
-      </button>
-    </div>
-    <TailSkeleton v-else class="h-[100px] w-2/6" />
+    <product-size-block v-if="product" :product="product" class="mb-4" />
+    <tail-skeleton v-else class="h-[100px] w-2/6" />
 
     <p v-if="product" class="font-light">
       {{ $t('Taille et hauteur du mannequin') }} : 
       <span v-if="product.model_height">{{ product.model_size }} · {{ $n(parseInt(product.model_height), 'unit') }}</span> 
       <span v-else>N.D.</span>
     </p>
-    
-    <NuxtLinkLocale id="link-product-size-guide" to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('size-guide')">
+
+    <nuxt-link-locale id="link-product-size-guide" to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('size-guide')">
       {{ $t('Guide des tailles') }}
-    </NuxtLinkLocale >
+    </nuxt-link-locale>
 
     <p v-if="showSizeSelectionWarning" class="text-red-400 mt-4">
       {{ $t("Choissis une taille") }}
@@ -27,18 +22,18 @@
       {{ userSelection }} - {{ sizeObject }}
     </DevOnly> -->
 
-    <TailButton v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" id="action-inform" class="mt-5 place-content-center" @click="() => emit('availability-modal')">
+    <tail-button v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" id="action-inform" class="mt-5 place-content-center" @click="() => emit('availability-modal')">
       <Icon name="fa:envelope" size="12" class="me-1" />
       {{ $t('Me tenir informer') }}
-    </TailButton>
-    <TailButton v-else id="action-add-cart" class="mt-5 me-2 place-content-center" :disabled="false" @click="proxyAddToCart">
+    </tail-button>
+    <tail-button v-else id="action-add-cart" class="mt-5 me-2 place-content-center" :disabled="false" @click="proxyAddToCart">
       <Icon v-if="stockState && stockState.almost_sold_out" name="i-fa7-solid:clock" class="me-1" />
       {{ $t('Ajouter au panier') }}
-    </TailButton>
+    </tail-button>
 
-    <TailButton id="action-add-favorite" :aria-label="$t('Ajouter au favori')" class="mt-5" variant="outline" @click="proxyHandleLike">
+    <tail-button id="action-add-favorite" :aria-label="$t('Ajouter au favori')" class="mt-5" variant="outline" @click="proxyHandleLike">
       <Icon :name="icon" />
-    </TailButton>
+    </tail-button>
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 export * from './session'
-export * from './shop'
 export * from './product'
+export * from './size'
 
 /**
  * Composable for managing global modals state

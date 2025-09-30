@@ -35,18 +35,18 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import type { Profile } from '~/types'
 
 const { t }  = useI18n()
-const cookieSessionId = useCookie('sessionId')
 const authStore = useAuthentication()
-const { $client, $fireStore } = useNuxtApp()
-const { handleError } = useErrorHandler()
+const { customHandleError } = useErrorHandler()
 const { profile  } = storeToRefs(authStore)
 
-// const citiesClient = createAxiosSimpleClient('/api/v1/', useRuntimeConfig().public.quartProdUrl, false, 5000)
 
 /**
- * Returns details on the profile for
- * the currently authenticated user 
+ * Profile
  */
+
+const cookieSessionId = useCookie('sessionId')
+const { $client, $fireStore } = useNuxtApp()
+
 async function requestUserDetails () {
   const response = await $client<Profile>(`/api/v1/accounts/${authStore.userId}`, {
     method: 'GET',
@@ -54,7 +54,7 @@ async function requestUserDetails () {
 
     },
     onRequestError({ error }) {
-      handleError(error)
+      customHandleError(error)
     }
   })
 

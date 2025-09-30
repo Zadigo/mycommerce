@@ -1,50 +1,22 @@
-import type { DefaultClotheSize } from '~/types'
-import type { Product, ProductSizes } from '~/types'
+import type { DefaultClotheSize, Product, ProductSizes } from '~/types'
 
 /**
- * Composable to handle product bookmarking
- * @todo Remove
- */
-export function useBookmarkProduct(product: Product) {}
-
-/**
- * Composable to handle the grid size for displaying products
- */
-export function useHandleGridSize() {
-  if (import.meta.client) {
-    const gridSize = useLocalStorage('grid', 3)
-
-    function update(size: number) {
-      gridSize.value = size
-    }
-
-    return {
-      /**
-       * The current grid size for displaying products
-       * @default 3
-       */
-      gridSize,
-      /**
-       * Updates the grid size for displaying products
-       */
-      update
-    }
-  } else {
-    return {
-      gridSize: 3,
-      update: (size: number) => {
-        // No-op on server-side
-      }
-    }
-  }
-}
-
-/**
- * Composable to handle size selection for products. Itwill emit an 
+ * Composable to handle size selection for products. It will emit an 
  * event when the size is updated
  * @param product - The current product to select size for
  */
 export function useSizeSelection<T extends Product = Product>(product: T) {
+  if (import.meta.server) {
+    return {
+      availableSizes: ref<DefaultClotheSize[]>([]),
+      selectedSize: ref<DefaultClotheSize>('Unique'),
+      history: ref<DefaultClotheSize[]>([]),
+      hasSizes: ref(false),
+      selectSize: () => {},
+      reset: () => {}
+    }
+  }
+
   const currentProduct = reactive<T>(product)
   const availableSizes = ref<DefaultClotheSize[]>(product.sizes.map(item => item.name))
 

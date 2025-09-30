@@ -42,7 +42,6 @@
 
 <script setup lang="ts">
 import { useAnalyticsCallback } from '~/composables/use/analytics'
-import { useLikeComposable } from '~/composables/use/shop'
 import type { Product } from '~/types'
 
 const props = defineProps<{
@@ -66,10 +65,14 @@ const emit = defineEmits<{ 'has-navigated': [data: (number | Product)[]] }>()
 
 // const { gtag } = useGtag()
 const { triggerEvent } = useAnalyticsCallback(props.product, props.index)
+
+/**
+ * Like/Wishlist
+ */
+
 const { like, isLiked, icon } = await useLikeComposable(props.product, triggerEvent)
 
 const isHovered = ref<boolean>(false)
-
 const productEl = useTemplateRef<HTMLDivElement>('productEl')
 
 // if (import.meta.client) {

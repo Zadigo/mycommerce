@@ -28,28 +28,25 @@
 </template>
 
 <script setup lang="ts">
-import { useProvideProductsFilteringModal } from '~/composables/use/shop'
 import { useChangeCase } from '@vueuse/integrations/useChangeCase'
+import { useProvideProductsFilteringModal } from '~/composables/use'
 import type { Product, ProductsApiResponse } from '~/types'
 
 const AsyncProductsFeed = defineAsyncComponent({
   loader: async () => import('~/components/products/Feed.vue')
 })
 
-// const showProductFilters = ref<boolean>(false)
-// const toggleShowProductFilters = useToggle(showProductFilters)
-
 /**
  * Products
  */
 
+const products = ref<Product[]>([])
 const productsLoading = ref<boolean>(true)
 
 const { t } = useI18n()
 const { id } = useRoute().params
 
 provide('productsLoading', productsLoading)
-
 
 /**
  * Callback function used to set the products loaded
@@ -80,7 +77,6 @@ const { showModal, toggleModal } = useProvideProductsFilteringModal()
  * Schema
  */
 
-const products = ref<Product[]>([])
 const productsCount = computed(() => products.value.length)
 
 useSeoMeta({

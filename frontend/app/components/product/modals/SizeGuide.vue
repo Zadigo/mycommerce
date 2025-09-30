@@ -13,7 +13,7 @@
             {{ $t("Sélectionne une taille") }}
           </p>
           
-          <ProductSizeBlock v-if="product" :sizes="product.sizes" @update-size="handleSizeSelection" @show-size-guide-drawer="show=false" />
+          <ProductSizeBlock v-if="product" :product="product" @show-size-guide-drawer="show=false" />
           <TailSkeleton v-else class="w-[60px] h-[20px]" />
 
           <p class="text-1xl font-semibold mt-4 mb-1">
@@ -87,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DefaultClotheSize, Product } from '~/types';
+import type { Product } from '~/types';
 
 const props = defineProps<{
   modelValue: boolean,
@@ -105,12 +105,4 @@ const show = useVModel(props, 'modelValue', emit, {
   defaultValue: false
 })
 
-/**
- * TODO: Write documentation
- */
-function handleSizeSelection(value: DefaultClotheSize) {
-  if (props.product) {
-    cartStore.handleSizeSelection(props.product, value)
-  }
-}
 </script>
