@@ -1,4 +1,4 @@
-from channels.generic import AsyncJsonWebsocketConsumer
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 
 class LiveOrdersConsumer(AsyncJsonWebsocketConsumer):

@@ -7,6 +7,8 @@ from django.core.asgi import get_asgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mycart.settings')
 
+from orders import routing
+
 django_asgi_application = get_asgi_application()
 
 # This loads the user model before apps
@@ -14,7 +16,6 @@ django_asgi_application = get_asgi_application()
 # at this level after the "get_asgi_application". See:
 # https://github.com/django/daphne/issues/347
 # https://channels.readthedocs.io/en/stable/deploying.html#configuring-the-asgi-application
-from orders import routing
 
 application = ProtocolTypeRouter({
     'http': django_asgi_application,

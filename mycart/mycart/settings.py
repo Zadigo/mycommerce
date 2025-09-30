@@ -23,7 +23,7 @@ def get_debug():
 SECRET_KEY = 'django-insecure-^d_)@o5el-))(u^#am9nyihdih(r@-3*le%vwv-jvj35mf3@p-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
@@ -43,6 +43,8 @@ INSTALLED_APPS = [
 
     'corsheaders',
     'drf_spectacular',
+    'import_export',
+    'storages',
     'django_celery_beat',
 
     'rest_framework',
@@ -70,7 +72,9 @@ ROOT_URLCONF = 'mycart.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -136,6 +140,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = 'static'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -260,6 +267,17 @@ FIXTURE_DIRS = [
     'fixtures/user',
     'fixtures/products'
 ]
+
+
+# JWT Generator
+
+PY_UTILITIES_JWT_ISSUER = 'ecommerce'
+
+# PY_UTILITIES_JWT_AUDIENCE = 'cart'
+
+# PY_UTILITIES_JWT_SUBJECT = 'cart'
+
+PY_UTILITIES_JWT_SECRET = os.getenv('PY_UTILITIES_JWT_SECRET')
 
 
 # Stripe

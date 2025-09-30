@@ -1,16 +1,16 @@
 import os
-import stripe
 from datetime import timedelta
 from pathlib import Path
 
 import dotenv
+import stripe
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ENV_FILE = BASE_DIR / '.env'
-if ENV_FILE.exists():
-    dotenv.load_dotenv(ENV_FILE)
+if BASE_DIR.joinpath('.env').exists():
+    dotenv.load_dotenv(BASE_DIR / '.env')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -21,12 +21,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
-    'capacitor://localhost',
-    '.ngrok-free.app'
-]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
