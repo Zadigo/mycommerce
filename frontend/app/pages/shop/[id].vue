@@ -8,7 +8,7 @@
       
       <!-- Details -->
       <ClientOnly>
-        <ProductPageAsideBase :product="product" @size-guide="showSizeGuideDrawer=true" @availability-modal="() => showAvailabilityModal=true" @composition-guide="() => showCompositionModal=true" />
+        <product-page-aside-base :product="product" @size-guide="showSizeGuideDrawer=true" @availability-modal="() => showAvailabilityModal=true" @composition-guide="() => showCompositionModal=true" />
       </ClientOnly>
     </div>
 
@@ -16,24 +16,24 @@
     <div id="recommendations" class="mt-10">
       <Suspense>
         <template #default>
-          <AsyncBaseRecommendationBlock />
+          <async-base-recommendation-block />
         </template>
 
         <template #fallback>
           <div class="grid grid-cols-4 gap-2">
-            <ProductsLoadingCards :quantity="8" />
+            <products-loading-cards :quantity="8" />
           </div>
         </template>
       </Suspense>
     </div>
 
     <ClientOnly>
-      <ProductPageBottomCart v-if="showBanner && product" :product="product" :show-banner="showBanner" />
+      <product-page-bottom-cart v-if="showBanner && product" :product="product" :show-banner="showBanner" />
 
-      <ProductModalsImageZoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
-      <ProductModalsSizeGuide v-model="showSizeGuideDrawer" :product="product" />
-      <ProductModalsAvailability v-model="showAvailabilityModal" />
-      <ProductModalsComposition v-model="showCompositionModal" />
+      <product-modals-image-zoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
+      <product-modals-size-guide v-model="showSizeGuideDrawer" :product="product" />
+      <product-modals-availability v-model="showAvailabilityModal" />
+      <product-modals-composition v-model="showCompositionModal" />
     </ClientOnly>
   </section>
 </template>
@@ -77,9 +77,17 @@ const { imagesComponent } = useImageComponentComposable(product)
 
 console.log(product)
 
+/**
+ * Modals
+ */
+
 const showSizeGuideDrawer = ref<boolean>(false)
 const showAvailabilityModal = ref<boolean>(false)
 const showCompositionModal = ref<boolean>(false)
+
+/**
+ * SEO
+ */
 
 const name = product.value?.name ?? '...'
 
