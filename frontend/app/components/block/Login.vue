@@ -5,21 +5,21 @@
         {{ $t('Connecte-toi ou crée un compte') }}
       </h3>
 
-      <TailButton id="signin-google" variant="outline" size="lg" class="mt-3 mb-5 rounded-full w-full" @click="handleGoogle">
+      <tail-button id="signin-google" variant="outline" size="lg" class="mt-3 mb-5 rounded-full w-full" @click="handleGoogle">
         <Icon name="i-fa7-brands:google" />
-      </TailButton>
+      </tail-button>
 
       <p class="font-light mt-1 mb-8 text-center">
         {{ $t('Login: Privacy Policy') }} <NuxtLinkLocale  id="link-legal-login-modal" to="/confidentialite" class="text-blue-600 underline">{{ $t('politique de confidentialité') }}</NuxtLinkLocale >
       </p>
 
       <form id="form-login" @submit.prevent>
-        <TailInput v-model="email" :placeholder="$t(`Nom d'utilisateur ou email`)" type="text" autocomplete="email" />
-        <TailInput v-model="password" :placeholder="$t('Mot de passe')" class="my-2" type="password" autocomplete="current-password" />
+        <tail-input v-model="email" :placeholder="$t(`Nom d'utilisateur ou email`)" type="text" autocomplete="email" />
+        <tail-input v-model="password" :placeholder="$t('Mot de passe')" class="my-2" type="password" autocomplete="current-password" />
 
-        <TailButton id="signin-email" class="rounded-full w-full mt-5" size="lg" @click="handleLogin">
+        <tail-button id="signin-email" class="rounded-full w-full mt-5" size="lg" @click="login">
           {{ $t('Se connecter') }}
-        </TailButton>
+        </tail-button>
       </form>
 
       <p class="flex-grow font-light text-center mt-3">
@@ -46,13 +46,11 @@ const emit = defineEmits({
 })
 
 const { $fireStore, $fireApp } = useNuxtApp()
-const { handleError } = useErrorHandler()
+const { customHandleError } = useErrorHandler()
 const authenticatedCart = useSessionStorage('authenticatedCart', false)
+
 const authStore = useAuthentication()
 const { showLoginDrawer } = storeToRefs(authStore)
-
-const email = ref<string>('')
-const password = ref<string>('')
 
 /**
  * 
@@ -81,37 +79,13 @@ async function handleGoogle () {
     }
   } catch (e) {
     console.log(e)
-    handleError(e)
+    customHandleError(e)
   }
 }
 
 /**
- * Proxy that handles the main login process
- * to the backend
+ * Login
  */
-async function handleLogin () {
-  const accessToken = useCookie('access', { sameSite: 'strict', secure: true })
-  const refreshToken = useCookie('refresh', { sameSite: 'strict', secure: true })
 
-  const { access, refresh } = await login(email.value, password.value)
-
-  accessToken.value = access
-  refreshToken.value = refresh
-
-  if (!authenticatedCart.value) {
-    // When the user logs, we know from the start that the
-    // items in the cart were not authenticated
-    authenticatedCart.value = true
-  }
-
-  email.value = ''
-  email.value = ''
-  showLoginDrawer.value = false
-
-  // useTrackEvent('login', {
-  //   method: 'Email'
-  // })
-
-  emit('authenticate')
-}
+const { login, email, password } = useLogin()
 </script>

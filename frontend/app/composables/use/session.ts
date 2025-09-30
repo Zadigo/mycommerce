@@ -169,6 +169,7 @@ export function useUserSession() {
 /**
  * Composable used to manage authentication tokens
  * and handle the login drawer visibility
+ * @deprecated use `useLogin` instead
  */
 export function useAuthenticationTokens() {
   if (import.meta.server) {

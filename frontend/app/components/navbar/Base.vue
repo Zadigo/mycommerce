@@ -23,14 +23,14 @@
               </a>
             </li>
 
-            <li v-if="!authStore.isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
+            <li v-if="!isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
               <a id="action-signin" href="#" class="flex items-center gap-2" @click.prevent="() => { globalModals.showLoginDrawer.value = true }">
                 <Icon name="i-fa7-solid:sign-in-alt" size="18" />
                 {{ $t('Se connecter') }}
               </a>
             </li>
             <li v-else class="flex items-center p-1 text-sm gap-2 text-slate-600">
-              <a id="action-signout" href="#" class="flex items-center" @click.prevent="proxyLogout">
+              <a id="action-signout" href="#" class="flex items-center" @click.prevent="useLogout">
                 <Icon name="i-fa7-solid:sign-out-alt" size="18" />
                 {{ $t('Se déconnecter') }}
               </a>
@@ -63,20 +63,15 @@ import { storeToRefs } from 'pinia'
 const globalModals = useGlobalModals()
 
 // const { gtag } = useGtag()
-const authStore = useAuthentication()
-const cartStore = useCart()
-
-const { showCartDrawer } = storeToRefs(cartStore)
 
 /**
- * 
+ * Authentication
  */
-function proxyLogout() {
-  // authStore.logout()
-  authStore.showLoginDrawer = false
-  authStore.accessToken = null
-  authStore.refreshToken = null
-}
+
+const { isAuthenticated } = useUser()
+
+const cartStore = useCart()
+const { showCartDrawer } = storeToRefs(cartStore)
 
 /**
  *

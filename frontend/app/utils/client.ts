@@ -1,4 +1,5 @@
-import type { LoginApiResponse, TokenRefreshApiResponse } from '~/types'
+import { useJwt } from '@vueuse/integrations/useJwt'
+import type { LoginApiResponse, Nullable, Profile, TokenRefreshApiResponse } from '~/types'
 
 /**
  * Helper function used to ask for a new access
@@ -45,9 +46,13 @@ export async function refreshAccessTokenClient() {
 /**
  * Function used to login the user in the frontend 
  */
-export async function login(email: string, password: string) {
+export function useLogin() {
   if (import.meta.server) {
     return {
+      login: async () => { },
+      email: ref(''),
+      password: ref(''),
+      failureCount: ref(0),
       access: '',
       refresh: ''
     }
@@ -55,29 +60,47 @@ export async function login(email: string, password: string) {
 
   const failureCount = ref(0)
 
-  const response = await $fetch<LoginApiResponse>('/auth/v1/token/', {
-    baseURL: useRuntimeConfig().public.prodDomain,
-    method: 'POST',
-    body: {
-      username: email,
-      password
-    },
-    onRequestError() {
-      failureCount.value += 1
+  const email = ref<string>('')
+  const password = ref<string>('')
+
+
+  const accessToken = useCookie('access', { sameSite: 'strict', secure: true })
+  const refreshToken = useCookie('refresh', { sameSite: 'strict', secure: true })
+
+  async function login() {
+    const data = await $fetch<LoginApiResponse>('/auth/v1/token/', {
+      baseURL: useRuntimeConfig().public.prodDomain,
+      method: 'POST',
+      body: {
+        username: email.value,
+        password: password.value
+      },
+      onRequestError() {
+        failureCount.value += 1
+      }
+    })
+
+    if (data) {
+      accessToken.value = data.access
+      refreshToken.value = data.refresh
+      useState('isAuthenticated').value = true
     }
-  })
+  }
 
   return {
+    login,
+    email,
+    password,
     failureCount,
-    access: response.access,
-    refresh: response.refresh
+    accessToken,
+    refreshToken
   }
 }
 
 /**
  * Function used to logout the user
  */
-export async function logout() {
+export async function useLogout() {
   if (import.meta.server) {
     return
   }
@@ -88,5 +111,58 @@ export async function logout() {
   accessToken.value = null
   refreshToken.value = null
 
+  useState('isAuthenticated').value = false
+
   // router.push('/')
+}
+
+interface JWTResponseData {
+  user_id: number
+}
+
+/**
+ * Composable used to check if the user is logged in
+ */
+export function useUser() {
+  if (import.meta.server) {
+    return  {
+      userId: computed(() => null as Nullable<number>),
+      isAuthenticated: ref(false),
+      getProfile: async (userId: number) => null as Nullable<Profile>
+    }
+  }
+
+  const accessToken = useCookie('access')
+  const isAuthenticated = useState('isAuthenticated', () => isDefined(accessToken) && accessToken.value !== '')
+
+  const userId = computed(() => {
+    if (accessToken.value) {
+      const result = useJwt<JWTResponseData>(accessToken.value).payload.value
+
+      if (result) {
+        const { user_id } = result
+        return user_id
+      }
+    }
+    return null
+  })
+
+  const getProfile = useMemoize(async (userId: Nullable<number>) => {
+    if (isDefined(userId)) {
+      const { $client } = useNuxtApp()
+
+      const data = await $client<Profile>(`/api/v1/accounts/${userId}`, {
+        method: 'GET'
+      })
+      return data
+    }
+
+    return undefined
+  })
+
+  return {
+    userId,
+    isAuthenticated,
+    getProfile
+  }
 }

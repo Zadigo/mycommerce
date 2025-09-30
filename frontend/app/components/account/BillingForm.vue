@@ -99,9 +99,9 @@ const emit = defineEmits({
   }
 })
 
-const authStore = useAuthentication()
-const { profile } = storeToRefs(authStore)
-const { handleError } = useErrorHandler()
+const { getProfile, userId} = useUser()
+const profile = await getProfile(userId.value)
+
 const { $dayjs, $client } = useNuxtApp()
 
 const showBillingForm = ref<boolean>(false)

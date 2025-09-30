@@ -7,6 +7,9 @@ interface JWTResponseData {
   user_id: number
 }
 
+/**
+ * @deprecated use `useUser` instead
+ */
 export const useAuthentication = defineStore('authentication', () => {
   const accessToken = ref<StringNull>('')
   const refreshToken = ref<StringNull>('')

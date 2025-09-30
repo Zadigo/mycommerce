@@ -7,7 +7,7 @@
             {{ $t('Cart quantity', { n: numberOfProducts }) }}
           </TailSheetTitle>
 
-          <TailButton variant="outline" as-child >
+          <TailButton variant="outline" as-child>
             <NuxtLink id="link-wishlist" to="/wishlist" @click="showCartDrawer = false">
               <Icon name="i-fa7-regular:heart" class="me-2" />
               {{ $t('Favoris') }}
@@ -21,9 +21,9 @@
           <div class="p-5 shadow-sm rounded-md bg-green-100">
             <div v-if="freeDeliveryTarget > 0">
               {{ $t('Livraison gratuite offerte', { n: $n(freeDeliveryTarget, 'currency') }) }}
-              
+
               <!-- Il te manque 19,02 € pour profiter de la -->
-              
+
               <span class="font-bold text-green-900 uppercase">
                 {{ $t('livraison standard gratuite') }}
               </span>
@@ -39,7 +39,7 @@
               </p>
             </div>
           </div>
-          
+
           <!-- Products -->
           <CartIterator class="mt-2 mb-5" @edit-product="handleOpenProductEdition" />
 
@@ -47,8 +47,10 @@
             <span class="font-light">{{ $t('Total (TVA comprise)') }}</span>
             <span class="font-bold">{{ $n(cartTotal, 'currency') }}</span>
           </div>
-          
+
           <div class="place-self-baseline">
+            isAuthenticated: {{ isAuthenticated }}
+            
             <TailButton v-if="isAuthenticated">
               <NuxtLink od="link-start-checkout" to="/cart">
                 {{ $t('Passer commande') }}
@@ -64,15 +66,15 @@
         <div v-else class="px-1">
           <div class="flex flex-col items-center justify-center text-center h-screen">
             <Icon name="i-fa7-solid:shopping-bag" size="100" class="mb-5 text-dark" />
-            
+
             <h3 class="text-2xl font-bold mb-3">
               {{ $t('Panier vide') }}
             </h3>
-            
+
             <p class="font-light mb-10">
               {{ $t('Empty cart text') }}
             </p>
-            
+
             <TailButton size="lg" class="rounded-full" as-child @click.prevent="handleCartButtonRedirection">
               <NuxtLink id="link-collections-cart" to="/collections/all">
                 {{ $t('Découvrir') }}
@@ -93,13 +95,17 @@ const toLocalePath = useLocalePath()
 const globalModals = useGlobalModals()
 const router = useRouter()
 
-const { isAuthenticated } = storeToRefs(useAuthentication())
-
 const cartStore = useCart()
 const { showCartDrawer, cartTotal } = storeToRefs(cartStore)
 const { hasProducts, freeDeliveryTarget, numberOfProducts } = await useCartInformation()
 
 const emit = defineEmits<{ 'edit-product': ProductToEdit }>()
+
+/**
+ * Authentication
+ */
+
+const { isAuthenticated } = useUser()
 
 /**
  * Handles the redirection to the correct page

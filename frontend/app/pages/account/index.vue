@@ -106,10 +106,14 @@ definePageMeta({
 })
 
 const { t } = useI18n()
-const authStore = useAuthentication()
 const { $client } = useNuxtApp() 
-const { handleError } = useErrorHandler()
-const { profile } = storeToRefs(authStore)
+const { customHandleError } = useErrorHandler()
+
+const { getProfile, userId } = useUser()
+const profile = await getProfile(userId.value)
+
+// const authStore = useAuthentication()
+// const { profile } = storeToRefs(authStore)
 
 const emailPasswordRequestData = ref<EmailPasswordData>({
   email: '',
@@ -141,8 +145,8 @@ function resetEmailPasswordData () {
  * user to modify his email
  */
 function handleEditEmail() {
-  if (profile.value) {
-    emailPasswordRequestData.value.email = profile.value.email
+  if (profile) {
+    emailPasswordRequestData.value.email = profile.email
     showEditEmail.value = true
   }
 }
@@ -151,8 +155,8 @@ function handleEditEmail() {
  * @param data The addresse set to be created
  */
 function handleCreation(data: AddressSet) {
-  if (profile.value) {
-    profile.value.userprofile.address_set.push(data)
+  if (profile) {
+    profile.userprofile.address_set.push(data)
   }
 }
 
@@ -162,9 +166,9 @@ function handleCreation(data: AddressSet) {
  * @param id The id of the address set to delete
  */
 function handleDelete(id: number) {
-  if (profile.value) {
-    const index = profile.value.userprofile.address_set.findIndex(x => x.id === id)
-    profile.value.userprofile.address_set.splice(index, 1)
+  if (profile) {
+    const index = profile.userprofile.address_set.findIndex(x => x.id === id)
+    profile.userprofile.address_set.splice(index, 1)
   }
 }
 
@@ -173,7 +177,7 @@ function handleDelete(id: number) {
  * the email address by the user 
  */
 async function requestUpdate() {
-  await $client(`/api/v1/accounts/${authStore.userId}`, {
+  await $client(`/api/v1/accounts/${userId.value}`, {
     method: 'PATCH',
     body: emailPasswordRequestData.value,
     onResponse() {
@@ -181,7 +185,7 @@ async function requestUpdate() {
     },
     onRequestError({ error }) {
       resetEmailPasswordData()
-      handleError(error)
+      customHandleError(error)
     }
   })
 }
