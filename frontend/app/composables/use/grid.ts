@@ -11,11 +11,6 @@ export function useHandleGridSize() {
 
   const currentGridSize = useLocalStorage('grid', 3)
 
-  /**
-   * Changes the size of the grid to
-   * reduce or increase the amount of
-   * products displayed on the screen
-   */
   function handleGridSize(grid: number, callback?: () => void) {
     currentGridSize.value = grid
     if (callback) callback()

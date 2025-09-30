@@ -1,26 +1,26 @@
 <template>
-  <TailCard id="feed-header" ref="headerEl" class="shadow-none border-none mb-3 px-1">
-    <TailCardContent class="pt-1 text-center">
+  <tail-card id="feed-header" ref="headerEl" class="shadow-none border-none mb-3 px-1">
+    <tail-card-content class="pt-1 text-center">
       <div class="flex justify-between align-center">
         <!-- Collections. Filters -->
         <div class="flex justify-content-left gap-1">
           <div class="flex justify-between items-center me-3 gap-1">
-            <TailButton variant="light" as-child>
-              <NuxtLinkLocale id="link-collections-feed-header" to="/shop/collection/all">
+            <tail-button variant="light" as-child>
+              <nuxt-link-locale id="link-collections-feed-header" to="/shop/collection/all">
                 {{ $t('Afficher tout') }}
-              </NuxtLinkLocale>
-            </TailButton>
+              </nuxt-link-locale>
+            </tail-button>
 
             <!-- Categories -->
-            <TailButton v-for="category in productCategories" :key="category" variant="light" as-child>
-              <NuxtLinkLocale :id="`link-collection-${category.toLowerCase()}`" :to="`/shop/collection/${category.toLowerCase()}`">
+            <tail-button v-for="category in productCategories" :key="category" variant="light" as-child>
+              <nuxt-link-locale :id="`link-collection-${category.toLowerCase()}`" :to="`/shop/collection/${category.toLowerCase()}`">
                 {{ category }}
-              </NuxtLinkLocale>
-            </TailButton>
+              </nuxt-link-locale>
+            </tail-button>
 
-            <TailButton variant="light" class="ms-3" @click="emit('modal:product-filters')">
-              <Icon name="i-fa7-solid:sliders" class="me-2" /> {{ $t('Filtres') }}
-            </TailButton>
+            <tail-button variant="light" class="ms-3" @click="emit('modal:product-filters')">
+              <icon name="i-fa7-solid:sliders" class="me-2" /> {{ $t('Filtres') }}
+            </tail-button>
           </div>
         </div>
 
@@ -31,18 +31,18 @@
               {{ $t('Produits trouvés', { n: count }) }}
             </div>
   
-            <TailButton :variant="threeState" flat @click="handleGridSize(3)">
-              <Icon name="i-fa7-solid:table-cells" />
-            </TailButton>
+            <tail-button :variant="threeState" flat @click="handleGridSize(3)">
+              <icon name="i-fa7-solid:table-cells" />
+            </tail-button>
   
-            <TailButton :variant="fourState" flat @click="handleGridSize(4)">
-              <Icon name="i-fa7-solid:table-cells-large" />
-            </TailButton>
+            <tail-button :variant="fourState" flat @click="handleGridSize(4)">
+              <icon name="i-fa7-solid:table-cells-large" />
+            </tail-button>
           </div>
         </ClientOnly>
       </div>
-    </TailCardContent>
-  </TailCard>
+    </tail-card-content>
+  </tail-card>
 </template>
 
 <script setup lang="ts">
@@ -53,18 +53,16 @@ import type { Product } from '~/types'
 defineProps<{ count: number }>()
 const emit = defineEmits<{ 'modal:product-filters': [] }>()
 
-const productsLoading = inject<boolean>('productsLoading')
-
 /**
  * Products
-*/
+ */
 
 const products = inject<ComputedRef<Product[]>>(productSymbol, computed(() => []))
 
 /**
- * Returns a set of categories that the user can use
- * to filter the products on the page 
+ * Produts categories
  */
+
 const productCategoryNames = useArrayMap(isDefined(products) ? products.value : [], product => product.category)
 const productCategories = useArrayUnique(useArrayFilter(productCategoryNames, category => category !== 'Not attributed'))
 

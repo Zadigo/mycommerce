@@ -1,8 +1,8 @@
 <template>
-  <ProductsFeedLayout>
+  <products-feed-layout>
     <!-- Filters -->
     <template #filtering>
-      <ProductsFeedHeader :count="totalProductCount" @modal:productFilters="emit('modal:product-filters')" />
+      <products-feed-header :count="totalProductCount" @modal:productFilters="emit('modal:product-filters')" />
     </template>
 
     <!-- Products -->
@@ -16,11 +16,11 @@
           {{ $t('Page not available text') }}
         </p>
 
-        <TailButton size="lg" as-child>
-          <NuxtLinkLocale id="link-collections-more" to="/shop/collection/all" class="mt-8" @click="query.offset=0">
+        <tail-button size="lg" as-child>
+          <nuxt-link-locale id="link-collections-more" to="/shop/collection/all" class="mt-8" @click="query.offset=0">
             {{ $t('Voir toute la collection') }}
-          </NuxtLinkLocale>
-        </TailButton>
+          </nuxt-link-locale>
+        </tail-button>
       </div>
     </template>
 
@@ -28,23 +28,23 @@
       <!-- Intersect -->
       <ClientOnly>
         <div v-if="totalProductCount > 0" id="product-pagination" ref="intersectionTarget" class="font-bold text-uppercase flex justify-center mt-5">
-          <TailButton v-if="isEndOfPage" id="scroll-top" size="lg" @click="scrollToTop">
+          <tail-button v-if="isEndOfPage" id="scroll-top" size="lg" @click="scrollToTop">
             <Icon name="i-fa7-solid:arrow-up" class="me-2" />
             {{ $t('Tu es arrivé à la fin') }}
-          </TailButton>
+          </tail-button>
 
           <div v-else class="flex-grow">
             <p v-if="isLoadingMoreProducts">Loading...</p>
 
-            <TailButton v-else id="load-more" size="lg">
+            <tail-button v-else id="load-more" size="lg">
               <Icon name="arrow-down" class="me-2" />
               {{ $t('Voir plus de produits') }}
-            </TailButton>
+            </tail-button>
           </div>
         </div>
       </ClientOnly>
     </template>
-  </ProductsFeedLayout>
+  </products-feed-layout>
 </template>
 
 <script setup lang="ts">
@@ -59,8 +59,6 @@ const emit = defineEmits<{ 'products:list': [products: Product[]], 'modal:produc
 /**
  * Products
  */
-
-// const { gtag } = useGtag()
 
 const { id } = useRoute().params
 const query = ref<Partial<ProductsQuery>>({ offset: 0 })
@@ -97,15 +95,11 @@ whenever(() => status.value === 'success', () => {
 
 provide(productSymbol, products)
 
-console.log('products', products.value)
-
-
 /**
  * Analytics
  */
 
 const { sendAnalytics } = useProductNavigationAnalytics()
-
 
 /**
  * Grid
@@ -113,27 +107,12 @@ const { sendAnalytics } = useProductNavigationAnalytics()
 
 const { currentGridSize } = useHandleGridSize()
 
-
 /**
  * Intersection
  */
 
-const isEndOfPage = computed(() => apiResponse.value?.next === null)
-
 const isLoadingMoreProducts = ref<boolean>(false)
 const intersectionTarget = ref<HTMLElement | null>(null)
-
-/**
- * This is the main pagination function that is
- * used to load more products on the page when
- * the trigger section is reached
- * @param offset The page to get
- * @todo No need to create this function. Run the logic directly inside useIntersectionObserver
- */
-async function requestOffsetProducts(offset: number) {
-  query.value.offset = offset
-  refresh()
-}
 
 /**
  * Main logic that loads more products into the feed once
@@ -155,4 +134,12 @@ if (import.meta.client) {
     }
   }, {})
 }
+
+/**
+ * Other
+ */
+
+const isEndOfPage = computed(() => apiResponse.value?.next === null)
+
+console.log('products', products.value)
 </script>
