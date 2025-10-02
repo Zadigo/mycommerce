@@ -1,24 +1,24 @@
 <template>
   <section id="complete-size-guide" class="mx-auto px-10">
-    <TailTabs default-value="account" class="w-[400px]">
-      <TailTabsList>
-        <TailTabsTrigger value="account">
+    <tail-tabs default-value="account" class="w-[400px]">
+      <tail-tabs-list>
+        <tail-tabs-trigger value="account">
           Account
-        </TailTabsTrigger>
+        </tail-tabs-trigger>
 
-        <TailTabsTrigger value="password">
+        <tail-tabs-trigger value="password">
           Password
-        </TailTabsTrigger>
-      </TailTabsList>
+        </tail-tabs-trigger>
+      </tail-tabs-list>
       
-      <TailTabsContent value="account">
+      <tail-tabs-content value="account">
         Make changes to your account here.
-      </TailTabsContent>
+      </tail-tabs-content>
 
-      <TailTabsContent value="password">
+      <tail-tabs-content value="password">
         Change your password here.
-      </TailTabsContent>
-    </TailTabs>
+      </tail-tabs-content>
+    </tail-tabs>
   </section>
 </template>
 

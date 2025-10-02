@@ -5,12 +5,12 @@
         {{ $t('Choississez votre mode de paiement') }}
       </p>
 
-      <TailList>
-        <TailListItem v-for="paymentMethod in paymentMethods" :key="paymentMethod.name" :active="selectedPaymentMethod === paymentMethod.name" @click.prevent="handlePaymentType(paymentMethod.name)">
+      <tail-list>
+        <tail-list-item v-for="paymentMethod in paymentMethods" :key="paymentMethod.name" :active="selectedPaymentMethod === paymentMethod.name" @click.prevent="handlePaymentType(paymentMethod.name)">
           <Icon :name="`fa-brands:${paymentMethod.icon}`" class="me-3" />
           {{ paymentMethod.name }}
-        </TailListItem>
-      </TailList>
+        </tail-list-item>
+      </tail-list>
 
       <hr v-if="hasSelectedPaymentMethod" class="my-5">
 
