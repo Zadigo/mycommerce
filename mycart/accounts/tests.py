@@ -137,3 +137,36 @@ class TestApiEndpoints(APITestCase):
 
     def test_list_delivery_options(self):
         pass
+
+
+class TestApiAccounts(APITestCase):
+    fixtures = ['accounts']
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.first()
+        cls.user.set_password('touparet')
+        cls.user.save()
+
+    def _authenticate(self):
+        credentials = {'email': self.user.email, 'password': 'touparet'}
+        path = reverse('accounts_api:login')
+        response = self.client.post(
+            path,
+            data=credentials,
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 201, response.content)
+        return response.json()
+
+    def test_login(self):
+        data = self._authenticate()
+        self.assertIn('access', data)
+
+    def test_logout(self):
+        access = self._authenticate().get('access')
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {access}')
+
+        path = reverse('accounts_api:logout')
+        response = self.client.post(path)
+        self.assertEqual(response.status_code, 200, response.content)

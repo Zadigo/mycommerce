@@ -1,16 +1,21 @@
 from datetime import timedelta
 
+import requests
+
 from accounts import tasks
 from accounts.api import serializers
 from accounts.models import Address
 from accounts.permissions import CustomIsAuthenticated
-from django.contrib.auth import get_user_model
-from django.db.models import F
+from django.contrib.auth import authenticate, get_user_model
+from django.db.models import F, Q
 from django.utils import timezone
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import User
 
 
 class UserInfo(generics.RetrieveUpdateAPIView):
@@ -93,41 +98,40 @@ class Signup(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 
-class FirebaseAuthView(generics.GenericAPIView):
-    """Endpoint used to authenticate both on
-    Firebase and Django"""
-
-    def create_token_for_user(user):
-        """Creates JWT tokens for the given user"""
-        refresh = RefreshToken.for_user(user)
-        return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }
-
-    def post(self, request):
-        # Get the ID token from the request
-        id_token = request.data.get('idToken')
+class Login(generics.GenericAPIView):
+    def post(self, request, *args, **kwargs):
+        email = request.data.get('email', '')
+        username = request.data.get('username', '')
+        password = request.data.get('password', '')
 
         try:
-            # Verify the token
-            decoded_token = auth.verify_id_token(id_token)
-            firebase_uid = decoded_token['uid']
-
-            # Find or create user
-            user, created = get_user_model().objects.get_or_create(
-                firebase_uid=firebase_uid,
-                defaults={
-                    'email': decoded_token.get('email', ''),
-                    'username': decoded_token.get('email', '').split('@')[0],
-                    # Set other fields
-                }
-            )
-
-            # Return user data and Django auth token
-            return Response({
-                'user': serializers.UserSerializer(user).data,
-                'token': self.create_token_for_user(user)
-            })
+            logic = Q(username=username) | Q(email=email)
+            user = get_user_model().objects.get(logic)
         except Exception as e:
-            return Response({'error': str(e)}, status=400)
+            print(e)
+            raise ValidationError('Account not recognized')
+        else:
+            if email != '':
+                credentials = {'email': email}
+            else:
+                credentials = {'username': username}
+
+            state = user.check_password(password)
+            if not state:
+                raise ValidationError(
+                    'Combination of email or password not correct')
+
+            if not user.is_active:
+                raise ValidationError('Account not active')
+
+            instance = Token.objects.create(user=user)
+            return Response({'access': instance.key}, status=status.HTTP_201_CREATED)
+
+
+
+class Logout(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, *args, **kwargs):
+        self.request.user.token.delete()
+        return Response({}, status=status.HTTP_200_OK)

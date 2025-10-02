@@ -1,7 +1,9 @@
 import stripe
+import requests
 from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 logger = get_task_logger(__name__)
@@ -52,6 +54,35 @@ def signup_workflow(email):
     user.userprofile.save()
 
     return {'email': email, 'token': user.userprofile.stripe_id}
+
+
+@shared_task
+def signup_cart_api(email: str, password: str):
+    try:
+        credentials = {'email': email, 'password': password}
+        headers = {'content-type': 'application/json'}
+        response = requests.post(settings.CART_API_URL, data=credentials, headers=headers)
+    except:
+        pass
+    else:
+        if response.ok:
+            return response.json()
+        return False
+    
+
+@shared_task
+def signup_reviews_api(credentials_response: dict | bool, email: str, password: str):
+    try:
+        credentials = {'email': email, 'password': password}
+        headers = {'content-type': 'application/json'}
+        response = requests.post(settings.REVIEWS_API_URL, data=credentials, headers=headers)
+    except:
+        pass
+    else:
+        if response.ok:
+            data = response.json()
+            return {'cart': credentials_response, 'reviews': data}
+        return False
 
 
 @shared_task

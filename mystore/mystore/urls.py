@@ -69,7 +69,6 @@ urlpatterns = [
     ),
     path(
         'auth/v1/token/',
-        # EmailTokenObtainPairView.as_view(),
         jwt_views.TokenObtainPairView.as_view(),
         name='token_obtain_pair'
     ),

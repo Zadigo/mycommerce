@@ -253,7 +253,6 @@ CSRF_TRUSTED_ORIGINS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication'
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
@@ -413,3 +412,10 @@ PY_UTILITIES_JWT_ISSUER = 'ecommerce'
 # PY_UTILITIES_JWT_SUBJECT = 'cart'
 
 PY_UTILITIES_JWT_SECRET = os.getenv('PY_UTILITIES_JWT_SECRET')
+
+
+# APi urls
+
+CART_API_URL = os.getenv('CART_API_URL', 'http://127.0.0.1:8001')
+
+REVIEWS_API_URL = os.getenv('REVIEWS_API_URL', 'http://127.0.0.1:8002')

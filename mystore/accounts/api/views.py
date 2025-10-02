@@ -7,10 +7,13 @@ from accounts.permissions import CustomIsAuthenticated
 from django.contrib.auth import get_user_model
 from django.db.models import F
 from django.utils import timezone
+from celery import chain
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt import views as jwt_views
+
 
 
 class UserInfo(generics.RetrieveUpdateAPIView):
@@ -100,41 +103,18 @@ class Signup(generics.CreateAPIView):
         # )
 
 
-class FirebaseAuthView(generics.GenericAPIView):
-    """Endpoint used to authenticate both on
-    Firebase and Django"""
-
-    def create_token_for_user(user):
-        """Creates JWT tokens for the given user"""
-        refresh = RefreshToken.for_user(user)
-        return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }
-
-    def post(self, request):
-        # Get the ID token from the request
-        id_token = request.data.get('idToken')
+class TokenObtainPair(jwt_views.TokenObtainPairView):
+    def post(self, request, *args, **kwargs) -> Response:
+        serializer = self.get_serializer(data=request.data)
 
         try:
-            # Verify the token
-            decoded_token = auth.verify_id_token(id_token)
-            firebase_uid = decoded_token['uid']
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+        
+        chain(
+            tasks.signup_cart_api.apply_async(kwargs=request.data),
+            tasks.signup_reviews_api.apply_async(kwargs=request.data)
+        )
 
-            # Find or create user
-            user, created = get_user_model().objects.get_or_create(
-                firebase_uid=firebase_uid,
-                defaults={
-                    'email': decoded_token.get('email', ''),
-                    'username': decoded_token.get('email', '').split('@')[0],
-                    # Set other fields
-                }
-            )
-
-            # Return user data and Django auth token
-            return Response({
-                'user': serializers.UserSerializer(user).data,
-                'token': self.create_token_for_user(user)
-            })
-        except Exception as e:
-            return Response({'error': str(e)}, status=400)
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
