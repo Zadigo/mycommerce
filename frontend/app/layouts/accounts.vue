@@ -6,19 +6,19 @@
     <div class="mx-auto px-10">
       <div class="grid grid-cols-12 grid-rows-1 gap-2 my-10">
         <aside class="col-span-3 col-start-3">
-          <TailCard class="card border-none">
-            <TailCardContent>
+          <volt-card class="card border-none">
+            <template #content>
               <div class="rounde-md border-gray-50  border-2 rounded-md border-b-2 border-b-gray-50">
                 <NuxtLinkLocale id="link-account-aside"  to="/account/" class="p-5 block hover:bg-gray-50">
                   {{ $t("Mon compte") }}
                 </NuxtLinkLocale >
-
+  
                 <NuxtLinkLocale id="link-orders-aside"  to="/account/orders/" class="p-5 block hover:bg-gray-50">
                   {{ $t("Mes commandes") }}
                 </NuxtLinkLocale >
               </div>
-            </TailCardContent>
-          </TailCard>
+            </template>
+          </volt-card>
         </aside>
         
         <div class="col-span-5">

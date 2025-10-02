@@ -27,7 +27,7 @@
       <volt-input-text v-model="requestData.telephone" type="tel" variant="outlined" placeholder="Telephone" autocomplete="tel" />
 
       <volt-card class="card shadow-none border">
-        <template>
+        <template #content>
           <p class="font-bold">
             {{ $t("Sexe") }}
           </p>
@@ -50,9 +50,9 @@
 
   <div v-else class="bg-slate-50 cursor-pointer hover:bg-slate-100 mx-5 p-5 rounded-md">
     <div class="flex justify-end">
-      <tail-button variant="ghost" size="sm" class="rounded-full" @click="requestDelete">
+      <volt-button variant="ghost" size="sm" class="rounded-full" @click="requestDelete">
         <Icon name="i-fa7-solid:trash" />
-      </tail-button>
+      </volt-button>
     </div>
     
     <div class="p-1" @click="handleShowBillingForm">

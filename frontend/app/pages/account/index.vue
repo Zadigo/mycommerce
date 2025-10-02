@@ -8,55 +8,59 @@
           {{ $t('Mot de passe') }}
         </p>
 
-        <Transition mode="out-in">
-          <form v-if="showEditPassword" class="my-3" @submit.prevent>
-            <volt-input-text id="current-password" v-model="emailPasswordRequestData.current_password" :placeholder="$t('Mot de passe actuel')" type="password" autocomplete="false" />
-            <volt-input-text id="password1" v-model="emailPasswordRequestData.password1" :placeholder="$t('Nouveau mot de passe')" class="my-2" type="password" autocomplete="new-password" />
-            <volt-input-text id="password2" v-model="emailPasswordRequestData.password2" :placeholder="$t('Taper le mot de passe à nouveau')" autocomplete="new-password" type="password" />
-
-            <div class="flex gap-1 mt-5">
-              <volt-button class="rounded-full" @click="requestUpdate">
-                {{ $t('Changer le mot de passe') }}
-              </volt-button>
-
-              <volt-button class="flex justify-between items-center rounded-full" rounded flat @click="showEditPassword=false">
-                {{ $t("Annuler") }}
-              </volt-button>
-            </div>
-          </form>
-
-          <volt-button v-else class="my-3 flex items-center rounded-full" variant="light" @click="showEditPassword=true">
+        <volt-inplace v-model:active="showEditPassword">
+          <template #display>
             <span class="me-2">*************</span>
             <Icon name="i-fa7-solid:pen" />
-          </volt-button>
-        </Transition>
+          </template>
+
+          <template #content>
+            <form class="space-y-2" @submit.prevent>
+              <volt-input-text id="current-password" v-model="emailPasswordRequestData.current_password" :placeholder="$t('Mot de passe actuel')" class="w-full" type="password" autocomplete="false" />
+              <volt-input-text id="password1" v-model="emailPasswordRequestData.password1" :placeholder="$t('Nouveau mot de passe')" class="w-full" type="password" autocomplete="new-password" />
+              <volt-input-text id="password2" v-model="emailPasswordRequestData.password2" :placeholder="$t('Taper le mot de passe à nouveau')" class="w-full" type="password" autocomplete="new-password" />
+
+              <div class="flex gap-1 mt-5">
+                <volt-contrast-button class="flex justify-between items-center" rounded @click="showEditPassword = false">
+                  {{ $t("Annuler") }}
+                </volt-contrast-button>
+
+                <volt-contrast-button rounded @click="requestUpdate">
+                  {{ $t('Changer le mot de passe') }}
+                </volt-contrast-button>
+
+              </div>
+            </form>
+          </template>
+        </volt-inplace>
 
         <!-- Email -->
         <p class="font-semibold mt-4">
           {{ $t("Email") }}
         </p>
 
-        <form v-if="showEditEmail" class="my-3" @submit.prevent>
-          <volt-input-text v-model="emailPasswordRequestData.email" placeholder="Email" type="email" aria-label="Email" flat />
+        <volt-inplace v-model:active="showEditEmail">
+          <template #display>
+            <span class="me-2">{{ profile?.email }}</span>
+            <Icon name="i-fa7-solid:pen" />
+          </template>
 
-          <div class="flex gap-1 mt-5">
-            <volt-button class="rounded-full" @click="requestUpdate">
-              {{ $t("Changer l'email") }}
-            </volt-button>
+          <template #content>
+            <form class="my-3" @submit.prevent>
+              <volt-input-text v-model="emailPasswordRequestData.email" placeholder="Email" type="email" aria-label="Email" flat />
 
-            <volt-button class="rounded-full" @click="showEditEmail=false">
-              {{ $t("Annuler") }}
-            </volt-button>
-          </div>
-        </form>
+              <div class="flex gap-1 mt-5">
+                <volt-contrast-button @click="showEditEmail=false">
+                  {{ $t("Annuler") }}
+                </volt-contrast-button>
 
-        <volt-button v-else class="my-3 rounded-full lowercase" variant="light" @click="handleEditEmail">
-          <span class="me-2">
-            {{ profile?.email }}
-          </span>
-
-          <Icon name="i-fa7-solid:pen" />
-        </volt-button>
+                <volt-contrast-button @click="requestUpdate">
+                  {{ $t("Changer l'email") }}
+                </volt-contrast-button>
+              </div>
+            </form>
+          </template>
+        </volt-inplace>
 
         <p class="font-light mt-4">
           {{ $t("Policy: account") }} <NuxtLinkLocale to="/privacy">{{ $t("politique de confidentialité") }}</NuxtLinkLocale>
@@ -65,22 +69,20 @@
     </volt-card>
 
     <!-- Billing -->
-    <volt-card v-if="profile" id="billing" class="card border-none mt-2">
-      <volt-card-header>
-        <volt-card-title>
-          {{ $t('Information pour la facturation') }}
-        </volt-card-title>
-      </volt-card-header>
+    <volt-card v-if="profile" id="billing" class="border-none mt-2">
+      <template #title>
+        {{ $t('Adresses de facturation') }}
+      </template>
 
       <AccountBillingForm v-for="address in profile.userprofile.address_set" :key="address.id" :address="address" @delete-complete="handleDelete" />
       <AccountBillingForm v-if="showNewAddressForm" @create-complete="handleCreation" @close="showNewAddressForm=false" />
 
       <template #content>
         <div class="flex justify-end">
-          <volt-button class="rounded-full" @click="showNewAddressForm=!showNewAddressForm">
+          <volt-secondary-button rounded @click="showNewAddressForm=!showNewAddressForm">
             <Icon name="i-fa7-solid:plus" />
             {{ $t('Ajouter') }}
-          </volt-button>
+          </volt-secondary-button>
         </div>
       </template>
     </volt-card>

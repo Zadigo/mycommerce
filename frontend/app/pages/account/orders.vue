@@ -1,10 +1,8 @@
 <template>
   <volt-card v-if="showFindOrder" class="border-none">
-    <volt-card-header>
-      <volt-card-title>
-        {{ $t("Tu as réalisé des commandes sans être inscrit ?") }}
-      </volt-card-title>
-    </volt-card-header>
+    <template #title>
+      {{ $t("Tu as réalisé des commandes sans être inscrit ?") }}
+    </template>
     
     <template #content>
       <p class="my-4 font-light">
@@ -23,11 +21,9 @@
   </volt-card>
 
   <volt-card v-else class="border-none">
-    <volt-card-header>
-      <volt-card-title>
-        {{ $t('Mes achats') }}
-      </volt-card-title>
-    </volt-card-header>
+    <template #title>
+      {{ $t('Mes achats') }}
+    </template>
 
     <template v-if="hasOrders" #content>
       {{ $t("Commandes") }}

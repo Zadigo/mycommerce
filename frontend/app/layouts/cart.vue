@@ -17,25 +17,23 @@
 
       <div v-else class="my-5 grid grid-cols-12 gap-4">
         <div class="col-span-12">
-          <TailCard class="shadow-none border-none">
-            <TailCardContent>
-              <TailBreadcrumb>
-                <TailBreadcrumbList>
-                  <template v-for="(link, i) in paymentLinks" :key="link.title">
-                    <TailBreadcrumbItem>
-                      <TailBreadcrumbLink id="link-breadcrumb-cart" :to="link.href">
-                        {{ link.title }}
-                      </TailBreadcrumbLink>
-                    </TailBreadcrumbItem>
+          <volt-card class="shadow-none border-none">
+            <TailBreadcrumb>
+              <TailBreadcrumbList>
+                <template v-for="(link, i) in paymentLinks" :key="link.title">
+                  <TailBreadcrumbItem>
+                    <TailBreadcrumbLink id="link-breadcrumb-cart" :to="link.href">
+                      {{ link.title }}
+                    </TailBreadcrumbLink>
+                  </TailBreadcrumbItem>
 
-                    <TailBreadcrumbSeparator v-if="i < 2">
-                      <Slash />
-                    </TailBreadcrumbSeparator>
-                  </template>
-                </TailBreadcrumbList>
-              </TailBreadcrumb>
-            </TailCardContent>
-          </TailCard>
+                  <TailBreadcrumbSeparator v-if="i < 2">
+                    <Slash />
+                  </TailBreadcrumbSeparator>
+                </template>
+              </TailBreadcrumbList>
+            </TailBreadcrumb>
+          </volt-card>
         </div>
 
         <div class="col-span-6">
@@ -43,20 +41,16 @@
         </div>
 
         <div class="col-span-6">
-          <TailCard class="card border-none bg-gray-50">
-            <TailCardHeader>
-              <TailCardTitle>
-                {{ $t('Résumé', { n: cartStore.numberOfProducts }) }}
-              </TailCardTitle>
-            </TailCardHeader>
+          <volt-card class="card border-none bg-gray-50">
+            <template #title>
+              {{ $t('Résumé', { n: cartStore.numberOfProducts }) }}
+            </template>
 
-            <TailCardContent id="products" class="card-body">
-              <div class="list-group">
-                <CartIterator :is-editable="false" />
-              </div>
-            </TailCardContent>
+            <div class="list-group">
+              <CartIterator :is-editable="false" />
+            </div>
 
-            <TailCardFooter>
+            <template #footer>
               <div class="flex flex-col w-full">
                 <div class="price flex justify-between w-full">
                   <div class="w-full">{{ $t('Sous-total') }}</div>
@@ -76,8 +70,8 @@
                   <div class="font-bold">{{ $n(cartTotal, 'currency') }}</div>
                 </div>
               </div>
-            </TailCardFooter>
-          </TailCard>
+            </template>
+          </volt-card>
         </div>
       </div>
     </div>

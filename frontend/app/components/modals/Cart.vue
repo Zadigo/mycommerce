@@ -5,7 +5,7 @@
         {{ $t('Cart quantity', { n: numberOfProducts }) }}
       </h2>
 
-      <volt-button variant="outline" as-child>
+      <volt-button variant="outlined">
         <NuxtLink id="link-wishlist" to="/wishlist" @click="showCartDrawer = false">
           <Icon name="i-fa7-regular:heart" class="me-2" />
           {{ $t('Favoris') }}
@@ -13,6 +13,8 @@
       </volt-button>
     </div>
 
+    <volt-divider />
+    
     <div class="px-5">
       <div v-if="hasProducts" class="flex flex-col my-10">
         <div class="p-5 shadow-sm rounded-md bg-green-100">
@@ -54,7 +56,7 @@
             </NuxtLink>
           </volt-button>
 
-          <volt-button v-else id="action-login-cart" class="w-full rounded-full" size="lg" @click="showCartDrawer=false, showLoginDrawer=true">
+          <volt-button v-else id="action-login-cart" rounded @click="showCartDrawer=false, showLoginDrawer=true">
             {{ $t('Passer commande') }}
           </volt-button>
         </div>
@@ -72,7 +74,7 @@
             {{ $t('Empty cart text') }}
           </p>
 
-          <volt-button size="lg" class="rounded-full" as-child @click.prevent="handleCartButtonRedirection">
+          <volt-button @click.prevent="handleCartButtonRedirection">
             <NuxtLink id="link-collections-cart" to="/collections/all">
               {{ $t('Découvrir') }}
             </NuxtLink>

@@ -30,8 +30,8 @@
                 {{ $t('Se connecter') }}
               </a>
             </li>
-            <li v-else class="flex items-center p-1 text-sm gap-2 text-slate-600">
-              <a id="action-signout" href="#" class="flex items-center" @click.prevent="useLogout">
+            <li v-else class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
+              <a id="action-signout" href="#" class="flex items-center gap-2" @click.prevent="useLogout">
                 <Icon name="i-fa7-solid:sign-out-alt" size="18" />
                 {{ $t('Se déconnecter') }}
               </a>
