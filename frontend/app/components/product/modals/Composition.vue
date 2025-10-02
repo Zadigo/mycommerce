@@ -1,6 +1,6 @@
 <template>
-  <TailSheet id="composition" v-model:open="show" @close="show=false">
-    <TailSheetContent>
+  <tail-sheet id="composition" v-model:open="show" @close="show=false">
+    <tail-sheet-content>
       <TailSheetHeader>
         <TailSheetTitle>
           <h4>
@@ -16,8 +16,8 @@
           <li>3% élasthanne</li>
         </ul>
       </div>
-    </TailSheetContent>
-  </TailSheet>
+    </tail-sheet-content>
+  </tail-sheet>
 </template>
 
 <script lang="ts" setup>

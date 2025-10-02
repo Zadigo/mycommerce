@@ -1,7 +1,7 @@
 <template>
   <section>
-    <TailCard v-for="(block, x) in blocks" :key="x" :class="{ 'mt-2': x > 0 }" class="border-none shadow-sm">
-      <TailCardContent>
+    <tail-card v-for="(block, x) in blocks" :key="x" :class="{ 'mt-2': x > 0 }" class="border-none shadow-sm">
+      <tail-card-content>
         <h2 v-if="block.title" class="font-bold text-2xl mb-2">
           {{ block.title }}
         </h2>
@@ -14,8 +14,8 @@
           <IteratorsTextParagraph v-if="item.type === 'text'" :item="item.content" />
           <IteratorsTextList v-else-if="item.type === 'points'" :item="item.content" />
         </template>
-      </TailCardContent>
-    </TailCard>
+      </tail-card-content>
+    </tail-card>
   </section>
 </template>
 

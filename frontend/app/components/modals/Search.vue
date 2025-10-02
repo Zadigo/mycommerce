@@ -3,9 +3,9 @@
     <TailDrawerContent>
       <TailDrawerHeader>
         <!-- <TailDrawerClose as-child>
-          <TailButton variant="outline" @click="shopStore.showSearchModal=false">
+          <tail-button variant="outline" @click="shopStore.showSearchModal=false">
             <Icon name="i-fa7-solid:window-close" />
-          </TailButton>
+          </tail-button>
         </TailDrawerClose> -->
       </TailDrawerHeader>
       

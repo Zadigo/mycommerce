@@ -31,9 +31,9 @@
         </div>
       </div>
 
-      <TailButton id="action-signup-email" :disabled="!acceptPrivacy" size="lg" class="w-full" @click="handleSignup">
+      <tail-button id="action-signup-email" :disabled="!acceptPrivacy" size="lg" class="w-full" @click="handleSignup">
         {{ $t('Créer un compte') }}
-      </TailButton>
+      </tail-button>
     </form>
   </div>
 </template>

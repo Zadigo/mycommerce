@@ -1,6 +1,6 @@
 <template>
-  <TailSheet v-model:open="show">
-    <TailSheetContent class="overflow-y-scroll">
+  <tail-sheet v-model:open="show">
+    <tail-sheet-content class="overflow-y-scroll">
       <TailSheetHeader>
         <TailSheetTitle>
           {{ $t("Guide des tailles") }}
@@ -14,7 +14,7 @@
           </p>
           
           <ProductSizeBlock v-if="product" :product="product" @show-size-guide-drawer="show=false" />
-          <TailSkeleton v-else class="w-[60px] h-[20px]" />
+          <tail-skeleton v-else class="w-[60px] h-[20px]" />
 
           <p class="text-1xl font-semibold mt-4 mb-1">
             {{ $t("Mensurations") }}
@@ -38,9 +38,9 @@
         </div>
 
         <div class="col mt-4 mb-10">
-          <TailButton class="w-full" @click="cartStore.addToCart(product)">
+          <tail-button class="w-full" @click="cartStore.addToCart(product)">
             {{ $t('Ajouter au panier') }}
-          </TailButton>
+          </tail-button>
         </div>
 
         <div class="col">
@@ -75,15 +75,15 @@
           </p>  
         </div>
 
-        <TailButton variant="link">
+        <tail-button variant="link">
           <NuxtLinkLocale id="link-size-guide" to="/">
             <Icon name="i-fa7-solid:link" />
             {{ $t('Notre guide complet') }}
           </NuxtLinkLocale>
-        </TailButton>
+        </tail-button>
       </div>
-    </TailSheetContent>
-  </TailSheet>
+    </tail-sheet-content>
+  </tail-sheet>
 </template>
 
 <script setup lang="ts">

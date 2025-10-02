@@ -1,9 +1,9 @@
 <template>
-  <TailSheet v-model:show="show">
-    <TailSheetContent>
+  <tail-sheet v-model:show="show">
+    <tail-sheet-content>
       <slot />
-    </TailSheetContent>
-  </TailSheet>
+    </tail-sheet-content>
+  </tail-sheet>
 </template>
 
 <script lang="ts" setup>

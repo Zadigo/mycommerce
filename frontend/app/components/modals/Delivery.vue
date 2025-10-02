@@ -1,14 +1,14 @@
 <template>
-  <TailSheet id="delivery" v-model="show" @close="show=false">
-    <TailSheetContent>
+  <tail-sheet id="delivery" v-model="show" @close="show=false">
+    <tail-sheet-content>
       <TailSheetHeder>
         <TailSheetTitle class="font-bold">
           {{ $t("Livraison") }}
         </TailSheetTitle>
 
-        <TailButton class="mb-2" @click="show=false">
+        <tail-button class="mb-2" @click="show=false">
           <Icon name="i-fa7-solid:x-mark" />
-        </TailButton>
+        </tail-button>
       </TailSheetHeder>
 
       <div class="row">
@@ -108,8 +108,8 @@
           pour les retours et les échanges
         </a>
       </div>
-    </TailSheetContent>
-  </TailSheet>
+    </tail-sheet-content>
+  </tail-sheet>
 </template>
 
 <script lang="ts" setup>

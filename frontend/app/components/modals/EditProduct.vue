@@ -1,11 +1,11 @@
 <template>
-  <TailSheet id="dialog-edit-product" v-model:open="showEditProductDrawer">
+  <tail-sheet id="dialog-edit-product" v-model:open="showEditProductDrawer">
 
-    <TailSheetContent v-if="currentEditedProduct">
+    <tail-sheet-content v-if="currentEditedProduct">
       <TailSheetHeader class="border-bottom" color="white">
-        <TailButton class="mb-2" @click="handleCloseProductEdition">
+        <tail-button class="mb-2" @click="handleCloseProductEdition">
           <Icon name="i-fa7-solid:angle-left" />
-        </TailButton>
+        </tail-button>
 
         <TailSheetTitle>{{ $t('Modifier') }}</TailSheetTitle>
       </TailSheetHeader>
@@ -57,19 +57,19 @@
             <TailInput v-model="currentEditedProduct.quantity" type="number" class="w-[2/4]" min="1" max="999" />
           </div>
 
-          <TailButton class="w-full" @click="handleCloseProductEdition">
+          <tail-button class="w-full" @click="handleCloseProductEdition">
             {{ $t('Enregistrer') }}
-          </TailButton>
+          </tail-button>
         </div>
       </div>
 
       <ModalsSkeletonLoader v-else class="mt-4" />
-    </TailSheetContent>
+    </tail-sheet-content>
     
-    <TailSheetContent v-else>
+    <tail-sheet-content v-else>
       <ModalsSkeletonLoader class="mt-4" />
-    </TailSheetContent>
-  </TailSheet>
+    </tail-sheet-content>
+  </tail-sheet>
 </template>
 
 <script setup lang="ts">

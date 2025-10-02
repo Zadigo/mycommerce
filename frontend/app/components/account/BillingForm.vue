@@ -1,10 +1,10 @@
 <template>
-  <TailCardContent v-if="showBillingForm || forCreation">
+  <tail-card-content v-if="showBillingForm || forCreation">
     <form id="user-information" class="space-y-3" @submit.prevent>
       <div class="flex justify-end">
-        <TailButton variant="light" class="mb-2 rounded-full" @click="handleClose">
+        <tail-button variant="light" class="mb-2 rounded-full" @click="handleClose">
           <Icon name="i-fa7-solid:xmark" />
-        </TailButton>
+        </tail-button>
       </div>
       
       <div class="flex justify-between gap-1">
@@ -26,33 +26,33 @@
       
       <TailInput v-model="requestData.telephone" type="tel" variant="outlined" placeholder="Telephone" autocomplete="tel" />          
 
-      <TailCard class="card shadow-none border">
-        <TailCardContent>
+      <tail-card class="card shadow-none border">
+        <tail-card-content>
           <p class="font-bold">
             {{ $t("Sexe") }}
           </p>
-        </TailCardContent>
-      </TailCard>
+        </tail-card-content>
+      </tail-card>
 
       <p class="font-bold mt-4">
         {{ $t("Date d'anniversaire") }}
       </p>
 
-      <TailButton  v-if="forCreation" class="mt-4 rounded-full" @click="requestCreate">
+      <tail-button  v-if="forCreation" class="mt-4 rounded-full" @click="requestCreate">
         {{ $t("Ajouter l'addresse") }}
-      </TailButton>
+      </tail-button>
 
-      <TailButton v-else class="mt-4 rounded-full" @click="requestUpdate">
+      <tail-button v-else class="mt-4 rounded-full" @click="requestUpdate">
         {{ $t("Mettre à jour") }}
-      </TailButton>
+      </tail-button>
     </form>
-  </TailCardContent>
+  </tail-card-content>
 
-  <TailCardContent v-else class="bg-slate-50 cursor-pointer hover:bg-slate-100 mx-5 p-5 rounded-md">
+  <tail-card-content v-else class="bg-slate-50 cursor-pointer hover:bg-slate-100 mx-5 p-5 rounded-md">
     <div class="flex justify-end">
-      <TailButton variant="ghost" size="sm" class="rounded-full" @click="requestDelete">
+      <tail-button variant="ghost" size="sm" class="rounded-full" @click="requestDelete">
         <Icon name="i-fa7-solid:trash" />
-      </TailButton>
+      </tail-button>
     </div>
     
     <div class="p-1" @click="handleShowBillingForm">
@@ -68,7 +68,7 @@
       
       <p><Icon name="i-fa7-solid:phone" class="me-1" /> {{ address.telephone }}</p>
     </div>
-  </TailCardContent>
+  </tail-card-content>
 </template>
 
 <script setup lang="ts">

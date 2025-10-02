@@ -3,7 +3,7 @@
     <div v-if="product" class="flex justify-between">
       <div class="flex justify-start gap-3 items-center self-center">
         <NuxtImg v-if="product.get_main_image" :src="product.get_main_image.original" :alt="product.color_variant_name" class="w-10 rounded-md" />
-        <TailSkeleton v-else class="h-[50px] w-[50px]" />
+        <tail-skeleton v-else class="h-[50px] w-[50px]" />
         
         <div class="flex flex-col">
           <p class="font-normal text-sm">
@@ -34,9 +34,9 @@
           </TailSelectContent>
         </TailSelect>
 
-        <TailButton @click="() => { cartStore.addToCart(product) }">
+        <tail-button @click="() => { cartStore.addToCart(product) }">
           {{ $t('Ajouter au panier') }}
-        </TailButton>
+        </tail-button>
       </div>
     </div>
   </div>

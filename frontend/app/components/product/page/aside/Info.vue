@@ -4,7 +4,7 @@
       {{ product.name }}
     </h1>
 
-    <TailSkeleton v-else height="20px" />
+    <tail-skeleton v-else height="20px" />
     
     <template v-if="product">
       <div v-if="product.on_sale" class="font-bold text-lg inline-flex gap-2 mt-1">
@@ -17,7 +17,7 @@
       </p>
     </template>
 
-    <TailSkeleton v-else height="20px" />
+    <tail-skeleton v-else height="20px" />
   </div>
 </template>
 

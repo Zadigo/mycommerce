@@ -1,6 +1,6 @@
 <template>
-  <TailSheet id="language-modal" v-model:open="showLanguageModal">
-    <TailSheetContent side="bottom">
+  <tail-sheet id="language-modal" v-model:open="showLanguageModal">
+    <tail-sheet-content side="bottom">
       <div class="mx-auto w-2/4">
         <div class="px-3 py-15">
           <div class="col">
@@ -27,21 +27,21 @@
             </p>
 
             <div class="flex gap-1 mb-8">
-              <TailButton v-for="value in availableLanguages" :key="value" :active="i18n.locale.value === value" @click="selectLanguage(value)">
+              <tail-button v-for="value in availableLanguages" :key="value" :active="i18n.locale.value === value" @click="selectLanguage(value)">
                 {{ value.toUpperCase() }}
-              </TailButton>
+              </tail-button>
             </div>
           </div>
 
           <div class="col">
-            <TailButton id="btn-select-language" variant="default" class="rounded-full" @click="saveSelection">
+            <tail-button id="btn-select-language" variant="default" class="rounded-full" @click="saveSelection">
               {{ $t('Enregistrer mon choix') }}
-            </TailButton>
+            </tail-button>
           </div>
         </div>
       </div>
-    </TailSheetContent>
-  </TailSheet>
+    </tail-sheet-content>
+  </tail-sheet>
 </template>
 
 <script setup lang="ts">

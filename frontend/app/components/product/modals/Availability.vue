@@ -1,11 +1,11 @@
 <template>
-  <TailDialog v-model:open="show">
-    <TailDialogContent>
-      <TailDialogHeader>
-        <TailDialogTitle>
+  <tail-dialog v-model:open="show">
+    <tail-dialog-content>
+      <tail-dialog-header>
+        <tail-dialog-title>
           Alerte inventaire
-        </TailDialogTitle>
-      </TailDialogHeader>
+        </tail-dialog-title>
+      </tail-dialog-header>
 
       <div class="p-10">
         <h2 class="text-2xl font-semibold mb-3">
@@ -21,13 +21,13 @@
         <form class="mt-4" @submit.prevent>
           <TailInput v-model="email" :placeholer="$t('Addresse email')" type="email" class="w-full block" />
     
-          <TailButton class="w-full block mt-5" size="lg" @click="execute">
+          <tail-button class="w-full block mt-5" size="lg" @click="execute">
             S'inscrire
-          </TailButton>
+          </tail-button>
         </form>
       </div>
-    </TailDialogContent>
-  </TailDialog>
+    </tail-dialog-content>
+  </tail-dialog>
 </template>
 
 <script setup lang="ts">

@@ -1,6 +1,6 @@
 <template>
-  <TailSheet v-model:open="showAddedProductDrawer" @close="showAddedProductDrawer=false">
-    <TailSheetContent>
+  <tail-sheet v-model:open="showAddedProductDrawer" @close="showAddedProductDrawer=false">
+    <tail-sheet-content>
       <div class="px-5 overflow-y-scroll">
         {{ products }}
 
@@ -26,17 +26,17 @@
             </p>
 
             <div class="my-5">
-              <TailButton class="w-full" @click="handleNotAuthenticatedOrdering">
+              <tail-button class="w-full" @click="handleNotAuthenticatedOrdering">
                 {{ $t('Passer commande') }}
-              </TailButton>
+              </tail-button>
 
-              <TailButton class="mt-2 w-full" @click="showAddedProductDrawer = false, showCartDrawer = true">
+              <tail-button class="mt-2 w-full" @click="showAddedProductDrawer = false, showCartDrawer = true">
                 {{ $t('Voir le panier') }}
-              </TailButton>
+              </tail-button>
             </div>
           </div>
 
-          <TailSkeleton v-else class="w-full h-[300px] mb-10" />
+          <tail-skeleton v-else class="w-full h-[300px] mb-10" />
 
           <!-- Recommendations -->
           <BaseRecommendations :quantity="20" :columns="3" :load-cache="true" :show-carousel="false" :show-like-button="false" :show-cart="false" :show-prices="false" />
@@ -44,8 +44,8 @@
 
         <ModalsSkeletonLoader v-else />
       </div>
-    </TailSheetContent>
-  </TailSheet>
+    </tail-sheet-content>
+  </tail-sheet>
 </template>
 
 <script setup lang="ts">

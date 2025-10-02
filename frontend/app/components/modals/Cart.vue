@@ -1,18 +1,18 @@
 <template>
-  <TailSheet v-model:open="showCartDrawer">
-    <TailSheetContent>
+  <tail-sheet v-model:open="showCartDrawer">
+    <tail-sheet-content>
       <TailSheetHeader>
         <div class="flex justify-between items-center">
           <TailSheetTitle class="font-bold">
             {{ $t('Cart quantity', { n: numberOfProducts }) }}
           </TailSheetTitle>
 
-          <TailButton variant="outline" as-child>
+          <tail-button variant="outline" as-child>
             <NuxtLink id="link-wishlist" to="/wishlist" @click="showCartDrawer = false">
               <Icon name="i-fa7-regular:heart" class="me-2" />
               {{ $t('Favoris') }}
             </NuxtLink>
-          </TailButton>
+          </tail-button>
         </div>
       </TailSheetHeader>
 
@@ -51,15 +51,15 @@
           <div class="place-self-baseline">
             isAuthenticated: {{ isAuthenticated }}
             
-            <TailButton v-if="isAuthenticated">
+            <tail-button v-if="isAuthenticated">
               <NuxtLink od="link-start-checkout" to="/cart">
                 {{ $t('Passer commande') }}
               </NuxtLink>
-            </TailButton>
+            </tail-button>
 
-            <TailButton v-else id="action-login-cart" class="w-full rounded-full" size="lg" @click="showCartDrawer=false, showLoginDrawer=true">
+            <tail-button v-else id="action-login-cart" class="w-full rounded-full" size="lg" @click="showCartDrawer=false, showLoginDrawer=true">
               {{ $t('Passer commande') }}
-            </TailButton>
+            </tail-button>
           </div>
         </div>
 
@@ -75,16 +75,16 @@
               {{ $t('Empty cart text') }}
             </p>
 
-            <TailButton size="lg" class="rounded-full" as-child @click.prevent="handleCartButtonRedirection">
+            <tail-button size="lg" class="rounded-full" as-child @click.prevent="handleCartButtonRedirection">
               <NuxtLink id="link-collections-cart" to="/collections/all">
                 {{ $t('Découvrir') }}
               </NuxtLink>
-            </TailButton>
+            </tail-button>
           </div>
         </div>
       </div>
-    </TailSheetContent>
-  </TailSheet>
+    </tail-sheet-content>
+  </tail-sheet>
 </template>
 
 <script lang="ts" setup>

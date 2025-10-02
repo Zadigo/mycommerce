@@ -1,6 +1,6 @@
 <template>
-  <TailCard v-for="(block, x) in blocks" :key="x" :class="{ 'mt-2': x > 0 }" class="border-none shadow-sm">
-    <TailCardContent>
+  <tail-card v-for="(block, x) in blocks" :key="x" :class="{ 'mt-2': x > 0 }" class="border-none shadow-sm">
+    <tail-card-content>
       <h5 v-if="block.title" class="font-bold font-title text-2xl mb-2">
         {{ block.title }}
       </h5>
@@ -20,8 +20,8 @@
           </ul>
         </template>
       </template>
-    </TailCardContent>
-  </TailCard>
+    </tail-card-content>
+  </tail-card>
 </template>
 
 <script setup lang="ts">

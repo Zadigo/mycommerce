@@ -1,11 +1,11 @@
 <template>
-<TailDialog v-model:open="showWhatsAppModal">
-  <TailDialogContent>
-    <TailDialogHeader>
-      <TailDialogTitle>
+<tail-dialog v-model:open="showWhatsAppModal">
+  <tail-dialog-content>
+    <tail-dialog-header>
+      <tail-dialog-title>
         WhatsApp
-      </TailDialogTitle>
-    </TailDialogHeader>
+      </tail-dialog-title>
+    </tail-dialog-header>
     
     <div class="text-center">      
       <NuxtImg :src="qrCode" />
@@ -14,8 +14,8 @@
         {{ $t('Scanne ce code QR pour accéder à whatsapp à partir de ton téléphone') }}
       </p>
     </div>
-  </TailDialogContent>
-</TailDialog>
+  </tail-dialog-content>
+</tail-dialog>
 </template>
 
 <script setup lang="ts">
