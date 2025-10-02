@@ -1,18 +1,18 @@
 <template>
-  <TailCard class="card border-none">
-    <TailCardContent>
+  <tail-card class="card border-none">
+    <tail-card-content>
       <KeepAlive>
         <form @submit.prevent>
           <h2 class="font-bold text-2xl">
             {{ $t("Adresse de livraison") }}
           </h2>
 
-          <TailInput v-model="newShippingInfo.address_line" placeholder="Addresse" autocomplete="street-address" />
-          <TailInput v-model="newShippingInfo.city" placeholder="Ville" autocomplete="address-level1" class="my-1" />
+          <tail-input v-model="newShippingInfo.address_line" placeholder="Addresse" autocomplete="street-address" />
+          <tail-input v-model="newShippingInfo.city" placeholder="Ville" autocomplete="address-level1" class="my-1" />
 
           <div class="flex justify-between gap-1">
-            <TailInput v-model="newShippingInfo.zip_code" placeholder="Zip code" autocomplete="postal-code" />
-            <TailInput v-model="newShippingInfo.country" autocomplete="country" />
+            <tail-input v-model="newShippingInfo.zip_code" placeholder="Zip code" autocomplete="postal-code" />
+            <tail-input v-model="newShippingInfo.country" autocomplete="country" />
           </div>
 
           <hr class="my-5">
@@ -22,13 +22,13 @@
           </h2>
 
           <div class="flex justify-between gap-1">
-            <TailInput v-model="newShippingInfo.firstname" placeholder="Nom" autocomplete="family-name" />
-            <TailInput v-model="newShippingInfo.lastname" placeholder="Prénom" autocomplete="given-name" />
+            <tail-input v-model="newShippingInfo.firstname" placeholder="Nom" autocomplete="family-name" />
+            <tail-input v-model="newShippingInfo.lastname" placeholder="Prénom" autocomplete="given-name" />
           </div>
 
           <div class="flex justify-between gap-2 my-2">
-            <TailInput v-model="newShippingInfo.email" type="email" placeholder="Email" autocomplete="email" />
-            <TailInput v-model="newShippingInfo.telephone" placeholder="Téléphone" autocomplete="tel" />
+            <tail-input v-model="newShippingInfo.email" type="email" placeholder="Email" autocomplete="email" />
+            <tail-input v-model="newShippingInfo.telephone" placeholder="Téléphone" autocomplete="tel" />
           </div>
 
           <div class="flex items-center space-x-2">
@@ -37,11 +37,11 @@
           </div>
         </form>
       </KeepAlive>
-    </TailCardContent>
+    </tail-card-content>
 
     <!-- @navigate:next-page="handleNewPaymentIntent" -->
     <CartNavigationCardFooter next-page="/cart/payment" @navigate:next-page="handleUpdatePaymentIntent" />
-  </TailCard>
+  </tail-card>
 </template>
 
 <script lang="ts" setup>

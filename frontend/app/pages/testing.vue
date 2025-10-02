@@ -1,8 +1,8 @@
 <template>
   <div class="mx-auto px-10 my-10">
-    <TailButton variant="outline" class="">
+    <tail-button variant="outline" class="">
       Test
-    </TailButton>
+    </tail-button>
 
     <div class="mx-auto px-5">
       <TailFooter variant="light">

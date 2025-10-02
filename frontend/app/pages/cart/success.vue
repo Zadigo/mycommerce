@@ -1,8 +1,8 @@
 <template>
   <section id="success" class="px-10 my-10">
     <div class="w-10/12 mx-auto">
-      <TailCard class="card border-none">
-        <TailCardContent class="text-center">
+      <tail-card class="card border-none">
+        <tail-card-content class="text-center">
           <h1 class="text-3xl font-bold mb-5">
             {{ $t('Récapitualif de la commande') }}
           </h1>
@@ -17,8 +17,8 @@
           <NuxtLinkLocale id="link-home" to="/" class="mt-5">
             {{ $t('Boutique') }}
           </NuxtLinkLocale >
-        </TailCardContent>
-      </TailCard>
+        </tail-card-content>
+      </tail-card>
     </div>
 
     <div class="w-10/12 mx-auto mt-5">

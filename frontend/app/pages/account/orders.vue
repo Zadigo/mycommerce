@@ -1,39 +1,39 @@
 <template>
-  <TailCard v-if="showFindOrder" class="card border-none">
-    <TailCardHeader>
-      <TailCardTitle>
+  <tail-card v-if="showFindOrder" class="card border-none">
+    <tail-card-header>
+      <tail-card-title>
         {{ $t("Tu as réalisé des commandes sans être inscrit ?") }}
-      </TailCardTitle>
-    </TailCardHeader>
+      </tail-card-title>
+    </tail-card-header>
     
-    <TailCardContent class="card-body">
+    <tail-card-content class="card-body">
       <p class="my-4 font-light">
         {{ $t("Saisis ton e-mail et ton téléphone pour recevoir un SMS avec le code d'accès à tes commandes *") }}
       </p>
 
       <form @submit.prevent>
-        <TailInput type="email" :placeholder="$t('Email')" autocomplete="email" />
-        <TailInput type="tel" :placeholder="$t('Téléphone')" autocomplete="tel" />
+        <tail-input type="email" :placeholder="$t('Email')" autocomplete="email" />
+        <tail-input type="tel" :placeholder="$t('Téléphone')" autocomplete="tel" />
       
-        <TailButton id="action-newsletter=product" class="w-full">
+        <tail-button id="action-newsletter=product" class="w-full">
           {{ $t("Envoyer") }}
-        </TailButton>
+        </tail-button>
       </form>
-    </TailCardContent>
-  </TailCard>
+    </tail-card-content>
+  </tail-card>
 
-  <TailCard v-else class="border-none">
-    <TailCardHeader>
-      <TailCardTitle>
+  <tail-card v-else class="border-none">
+    <tail-card-header>
+      <tail-card-title>
         {{ $t('Mes achats') }}
-      </TailCardTitle>
-    </TailCardHeader>
+      </tail-card-title>
+    </tail-card-header>
 
-    <TailCardContent v-if="hasOrders">
+    <tail-card-content v-if="hasOrders">
       {{ $t("Commandes") }}
-    </TailCardContent>
+    </tail-card-content>
 
-    <TailCardContent v-else class="text-center">
+    <tail-card-content v-else class="text-center">
       <p class="font-bold">
         {{ $t("Tu n'as encore aucun achat en ligne") }}
       </p>
@@ -42,12 +42,12 @@
         {{ $t("Si tu ne trouves pas ton achat, tu as peut-être passé commande sans être inscrit(e)") }}
       </p>
 
-      <TailButton @click="showFindOrder = true">
+      <tail-button @click="showFindOrder = true">
         {{ $t('Trouver ma commande') }}
         <Icon name="arrow-right" class="ms-2" />
-      </TailButton>
-    </TailCardContent>
-  </TailCard>
+      </tail-button>
+    </tail-card-content>
+  </tail-card>
 </template>
 
 <script setup lang="ts">

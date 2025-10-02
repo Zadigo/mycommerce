@@ -1,14 +1,14 @@
 <template>
   <section id="user-page">
     <!-- Email / Password -->
-    <TailCard v-if="profile" id="email-password">
-      <TailCardHeader>
-        <TailCardTitle class="font-title">
+    <tail-card v-if="profile" id="email-password">
+      <tail-card-header>
+        <tail-card-title class="font-title">
           {{ $t("Accédez à votre compte") }}
-        </TailCardTitle>
-      </TailCardHeader>
+        </tail-card-title>
+      </tail-card-header>
 
-      <TailCardContent>
+      <tail-card-content>
         <!-- Password -->
         <p class="font-semibold">
           {{ $t('Mot de passe') }}
@@ -16,25 +16,25 @@
 
         <Transition mode="out-in">
           <form v-if="showEditPassword" class="my-3" @submit.prevent>
-            <TailInput id="current-password" v-model="emailPasswordRequestData.current_password" :placeholder="$t('Mot de passe actuel')" type="password" autocomplete="false" />
-            <TailInput id="password1" v-model="emailPasswordRequestData.password1" :placeholder="$t('Nouveau mot de passe')" class="my-2" type="password" autocomplete="new-password" />
-            <TailInput id="password2" v-model="emailPasswordRequestData.password2" :placeholder="$t('Taper le mot de passe à nouveau')" autocomplete="new-password" type="password" />
+            <tail-input id="current-password" v-model="emailPasswordRequestData.current_password" :placeholder="$t('Mot de passe actuel')" type="password" autocomplete="false" />
+            <tail-input id="password1" v-model="emailPasswordRequestData.password1" :placeholder="$t('Nouveau mot de passe')" class="my-2" type="password" autocomplete="new-password" />
+            <tail-input id="password2" v-model="emailPasswordRequestData.password2" :placeholder="$t('Taper le mot de passe à nouveau')" autocomplete="new-password" type="password" />
             
             <div class="flex gap-1 mt-5">
-              <TailButton class="rounded-full" @click="requestUpdate">
+              <tail-button class="rounded-full" @click="requestUpdate">
                 {{ $t('Changer le mot de passe') }}
-              </TailButton>
+              </tail-button>
 
-              <TailButton class="flex justify-between items-center rounded-full" rounded flat @click="showEditPassword=false">
+              <tail-button class="flex justify-between items-center rounded-full" rounded flat @click="showEditPassword=false">
                 {{ $t("Annuler") }}
-              </TailButton>
+              </tail-button>
             </div>
           </form>
           
-          <TailButton v-else class="my-3 flex items-center rounded-full" variant="light" @click="showEditPassword=true">
+          <tail-button v-else class="my-3 flex items-center rounded-full" variant="light" @click="showEditPassword=true">
             <span class="me-2">*************</span>
             <Icon name="i-fa7-solid:pen" />
-          </TailButton>
+          </tail-button>
         </Transition>
 
         <!-- Email -->
@@ -43,51 +43,51 @@
         </p>
 
         <form v-if="showEditEmail" class="my-3" @submit.prevent>
-          <TailInput v-model="emailPasswordRequestData.email" placeholder="Email" type="email" aria-label="Email" flat />        
+          <tail-input v-model="emailPasswordRequestData.email" placeholder="Email" type="email" aria-label="Email" flat />        
           
           <div class="flex gap-1 mt-5">
-            <TailButton class="rounded-full" @click="requestUpdate">
+            <tail-button class="rounded-full" @click="requestUpdate">
               {{ $t("Changer l'email") }}
-            </TailButton>
+            </tail-button>
             
-            <TailButton class="rounded-full" @click="showEditEmail=false">
+            <tail-button class="rounded-full" @click="showEditEmail=false">
               {{ $t("Annuler") }}
-            </TailButton>
+            </tail-button>
           </div>
         </form>
 
-        <TailButton v-else class="my-3 rounded-full lowercase" variant="light" @click="handleEditEmail">
+        <tail-button v-else class="my-3 rounded-full lowercase" variant="light" @click="handleEditEmail">
           <span class="me-2">
             {{ profile?.email }}
           </span>
 
           <Icon name="i-fa7-solid:pen" />
-        </TailButton>
+        </tail-button>
 
         <p class="font-light mt-4">
           {{ $t("Policy: account") }} <NuxtLinkLocale to="/privacy">{{ $t("politique de confidentialité") }}</NuxtLinkLocale>
         </p>
-      </TailCardContent>
-    </TailCard>
+      </tail-card-content>
+    </tail-card>
 
     <!-- Billing -->
-    <TailCard v-if="profile" id="billing" class="card border-none mt-2">
-      <TailCardHeader>
-        <TailCardTitle>
+    <tail-card v-if="profile" id="billing" class="card border-none mt-2">
+      <tail-card-header>
+        <tail-card-title>
           {{ $t('Information pour la facturation') }}
-        </TailCardTitle>
-      </TailCardHeader>
+        </tail-card-title>
+      </tail-card-header>
 
       <AccountBillingForm v-for="address in profile.userprofile.address_set" :key="address.id" :address="address" @delete-complete="handleDelete" />
       <AccountBillingForm v-if="showNewAddressForm" @create-complete="handleCreation"  @close="showNewAddressForm=false" />
 
-      <TailCardContent class="flex justify-end">
-        <TailButton class="rounded-full" @click="showNewAddressForm=!showNewAddressForm">
+      <tail-card-content class="flex justify-end">
+        <tail-button class="rounded-full" @click="showNewAddressForm=!showNewAddressForm">
           <Icon name="i-fa7-solid:plus" />
           {{ $t('Ajouter') }}
-        </TailButton>
-      </TailCardContent>
-    </TailCard>
+        </tail-button>
+      </tail-card-content>
+    </tail-card>
   </section>
 </template>
 

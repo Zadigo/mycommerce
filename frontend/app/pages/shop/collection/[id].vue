@@ -2,13 +2,13 @@
   <section id="products-feed" class="my-10">
     <!-- Page Title -->
     <div id="feed-title" class="px-10">
-      <TailCard class="shadow-none border-none p-1">
-        <TailCardContent class="flex flex-row justify-start">
+      <tail-card class="shadow-none border-none p-1">
+        <tail-card-content class="flex flex-row justify-start">
           <h1 class="uppercase font-bold text-2xl">
             {{ id }}
           </h1>
-        </TailCardContent>
-      </TailCard>
+        </tail-card-content>
+      </tail-card>
     </div>
 
     <!-- Feed -->
