@@ -38,9 +38,9 @@
         </div>
 
         <div class="col mt-4 mb-10">
-          <tail-button class="w-full" @click="cartStore.addToCart(product)">
+          <volt-button class="w-full" @click="cartStore.addToCart(product)">
             {{ $t('Ajouter au panier') }}
-          </tail-button>
+          </volt-button>
         </div>
 
         <div class="col">
@@ -75,12 +75,12 @@
           </p>  
         </div>
 
-        <tail-button variant="link">
+        <volt-button variant="link">
           <NuxtLinkLocale id="link-size-guide" to="/">
             <Icon name="i-fa7-solid:link" />
             {{ $t('Notre guide complet') }}
           </NuxtLinkLocale>
-        </tail-button>
+        </volt-button>
       </div>
     </tail-sheet-content>
   </tail-sheet>

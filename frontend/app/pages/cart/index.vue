@@ -1,6 +1,6 @@
 <template>
-  <tail-card class="border-none">
-    <tail-card-content class="card-body">
+  <volt-card class="border-none">
+    <template >
       <h2 class="font-2xl font-bold">
         {{ $t("Choisis un mode d'expédition") }}
       </h2>
@@ -14,10 +14,10 @@
         </div>
       </tail-radio-group>
       <tail-skeleton v-else class="h-[30px] mt-5 bg-gray-50" />
-    </tail-card-content>
+    </template>
 
     <CartNavigationCardFooter next-page="/cart/shipment" />
-  </tail-card>
+  </volt-card>
 </template>
 
 <script lang="ts" setup>

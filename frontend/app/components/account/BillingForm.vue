@@ -2,11 +2,11 @@
   <tail-card-content v-if="showBillingForm || forCreation">
     <form id="user-information" class="space-y-3" @submit.prevent>
       <div class="flex justify-end">
-        <tail-button variant="light" class="mb-2 rounded-full" @click="handleClose">
+        <volt-button variant="light" class="mb-2 rounded-full" @click="handleClose">
           <Icon name="i-fa7-solid:xmark" />
-        </tail-button>
+        </volt-button>
       </div>
-      
+
       <div class="flex justify-between gap-1">
         <TailInput v-model="requestData.firstname" variant="outlined" placeholder="Firstname" autocomplete="given-name " />
         <TailInput v-model="requestData.lastname" variant="outlined" placeholder="Lastname" autocomplete="family-name " />
@@ -23,28 +23,28 @@
       <!-- <v-autocomplete v-model="requestData.city" :items="['Lille', 'Paris']" variant="outlined">
         <v-text-field />
       </v-autocomplete> -->
-      
-      <TailInput v-model="requestData.telephone" type="tel" variant="outlined" placeholder="Telephone" autocomplete="tel" />          
 
-      <tail-card class="card shadow-none border">
-        <tail-card-content>
+      <TailInput v-model="requestData.telephone" type="tel" variant="outlined" placeholder="Telephone" autocomplete="tel" />
+
+      <volt-card class="card shadow-none border">
+        <template>
           <p class="font-bold">
             {{ $t("Sexe") }}
           </p>
-        </tail-card-content>
-      </tail-card>
+        </template>
+      </volt-card>
 
       <p class="font-bold mt-4">
         {{ $t("Date d'anniversaire") }}
       </p>
 
-      <tail-button  v-if="forCreation" class="mt-4 rounded-full" @click="requestCreate">
+      <volt-button v-if="forCreation" class="mt-4 rounded-full" @click="requestCreate">
         {{ $t("Ajouter l'addresse") }}
-      </tail-button>
+      </volt-button>
 
-      <tail-button v-else class="mt-4 rounded-full" @click="requestUpdate">
+      <volt-button v-else class="mt-4 rounded-full" @click="requestUpdate">
         {{ $t("Mettre à jour") }}
-      </tail-button>
+      </volt-button>
     </form>
   </tail-card-content>
 

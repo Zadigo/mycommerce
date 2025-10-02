@@ -8,9 +8,9 @@
 
       <tail-sheet-header>
        <div class="flex justify-between align-center">
-          <tail-button variant="destructive" @click="handleReset">
+          <volt-button variant="destructive" @click="handleReset">
             <Icon name="i-fa7-solid:chevron-left" />
-          </tail-button>
+          </volt-button>
 
           <tail-sheet-close />
        </div>

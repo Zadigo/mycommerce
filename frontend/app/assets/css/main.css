@@ -28,6 +28,9 @@
     --p-surface-900: #18181b;
     --p-surface-950: #09090b;
     --p-content-border-radius: 6px;
+
+    --font-sans: 'Inter', sans-serif;
+    --font-title: 'Manrope' sans-serif;
 }
 
 /* Light */

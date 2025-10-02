@@ -1,18 +1,18 @@
 <template>
-  <tail-card class="card border-none">
-    <tail-card-content>
+  <volt-card class="card border-none">
+    <template #content>
       <KeepAlive>
         <form @submit.prevent>
           <h2 class="font-bold text-2xl">
             {{ $t("Adresse de livraison") }}
           </h2>
 
-          <tail-input v-model="newShippingInfo.address_line" placeholder="Addresse" autocomplete="street-address" />
-          <tail-input v-model="newShippingInfo.city" placeholder="Ville" autocomplete="address-level1" class="my-1" />
+          <volt-input-text v-model="newShippingInfo.address_line" placeholder="Addresse" autocomplete="street-address" />
+          <volt-input-text v-model="newShippingInfo.city" placeholder="Ville" autocomplete="address-level1" class="my-1" />
 
           <div class="flex justify-between gap-1">
-            <tail-input v-model="newShippingInfo.zip_code" placeholder="Zip code" autocomplete="postal-code" />
-            <tail-input v-model="newShippingInfo.country" autocomplete="country" />
+            <volt-input-text v-model="newShippingInfo.zip_code" placeholder="Zip code" autocomplete="postal-code" />
+            <volt-input-text v-model="newShippingInfo.country" autocomplete="country" />
           </div>
 
           <hr class="my-5">
@@ -22,13 +22,13 @@
           </h2>
 
           <div class="flex justify-between gap-1">
-            <tail-input v-model="newShippingInfo.firstname" placeholder="Nom" autocomplete="family-name" />
-            <tail-input v-model="newShippingInfo.lastname" placeholder="Prénom" autocomplete="given-name" />
+            <volt-input-text v-model="newShippingInfo.firstname" placeholder="Nom" autocomplete="family-name" />
+            <volt-input-text v-model="newShippingInfo.lastname" placeholder="Prénom" autocomplete="given-name" />
           </div>
 
           <div class="flex justify-between gap-2 my-2">
-            <tail-input v-model="newShippingInfo.email" type="email" placeholder="Email" autocomplete="email" />
-            <tail-input v-model="newShippingInfo.telephone" placeholder="Téléphone" autocomplete="tel" />
+            <volt-input-text v-model="newShippingInfo.email" type="email" placeholder="Email" autocomplete="email" />
+            <volt-input-text v-model="newShippingInfo.telephone" placeholder="Téléphone" autocomplete="tel" />
           </div>
 
           <div class="flex items-center space-x-2">
@@ -37,11 +37,11 @@
           </div>
         </form>
       </KeepAlive>
-    </tail-card-content>
+    </template>
 
     <!-- @navigate:next-page="handleNewPaymentIntent" -->
     <CartNavigationCardFooter next-page="/cart/payment" @navigate:next-page="handleUpdatePaymentIntent" />
-  </tail-card>
+  </volt-card>
 </template>
 
 <script lang="ts" setup>

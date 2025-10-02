@@ -1,6 +1,6 @@
 <template>
-  <tail-card class="card shadow-sm border-none">
-    <tail-card-content>
+  <volt-card class="shadow-sm border-none">
+    <template #content>
       <p class="font-light mb-5">
         {{ $t('Choississez votre mode de paiement') }}
       </p>
@@ -16,13 +16,13 @@
 
       <CartPaymentStripeBlock v-if="stripeSelected" @payment-complete="callbackPaymentComplete" />
       <CartPaymentKlarnaBlock v-else-if="klarnaSelected" />
-    </tail-card-content>
 
-    <tail-card-content class="flex gap-1 items-center justify-center">
-      <NuxtImg src="/cards/mastercard.svg" height="30" width="30" />
-      <NuxtImg src="/cards/visa.png" height="30" width="30" />
-    </tail-card-content>
-  </tail-card>
+      <div class="flex gap-1 items-center justify-center">
+        <NuxtImg src="/cards/mastercard.svg" height="30" width="30" />
+        <NuxtImg src="/cards/visa.png" height="30" width="30" />
+      </div>
+    </template>
+  </volt-card>
 </template>
 
 <script lang="ts" setup>

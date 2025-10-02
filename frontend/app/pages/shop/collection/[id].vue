@@ -2,13 +2,15 @@
   <section id="products-feed" class="my-10">
     <!-- Page Title -->
     <div id="feed-title" class="px-10">
-      <tail-card class="shadow-none border-none p-1">
-        <tail-card-content class="flex flex-row justify-start">
-          <h1 class="uppercase font-bold text-2xl">
-            {{ id }}
-          </h1>
-        </tail-card-content>
-      </tail-card>
+      <volt-card class="shadow-none border-none p-1">
+        <template #content>
+          <div class="flex flex-row justify-start">
+            <h1 class="uppercase font-bold text-2xl">
+              {{ id }}
+            </h1>
+          </div>
+        </template>
+      </volt-card>
     </div>
 
     <!-- Feed -->

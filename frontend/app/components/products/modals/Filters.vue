@@ -21,9 +21,9 @@
                 {{ $t('Trier par') }}
               </TailAccordionTrigger>
               <TailAccordionContent class="flex gap-2">
-                <tail-button v-for="sortingFilter in Array.from(sortingFilterActions)" id="action-sorting-direction" :key="sortingFilter[0]" :active="query.sorted_by===sortingFilter[0]" variant="outline" size="sm" @click="handleFilterSelection('sorted by', sortingFilter[0])">
+                <volt-button v-for="sortingFilter in Array.from(sortingFilterActions)" id="action-sorting-direction" :key="sortingFilter[0]" :active="query.sorted_by===sortingFilter[0]" variant="outline" size="sm" @click="handleFilterSelection('sorted by', sortingFilter[0])">
                   {{ $t(sortingFilter[0]) }}
-                </tail-button>
+                </volt-button>
               </TailAccordionContent>
             </TailAccordionItem>
             
@@ -40,9 +40,9 @@
               </TailAccordionTrigger>
 
               <TailAccordionContent class="flex gap-2">
-                <tail-button v-for="size in Array.from(defaultClotheSize)" id="action-filter-size" :key="size" :active="query.sizes.includes(size)" size="sm" variant="outline" class="ms-2" @click="handleFilterSelection('sizes', size)">
+                <volt-button v-for="size in Array.from(defaultClotheSize)" id="action-filter-size" :key="size" :active="query.sizes.includes(size)" size="sm" variant="outline" class="ms-2" @click="handleFilterSelection('sizes', size)">
                   {{ size }}
-                </tail-button>
+                </volt-button>
               </TailAccordionContent>
             </TailAccordionItem>
 
@@ -53,9 +53,9 @@
               </TailAccordionTrigger>
 
               <TailAccordionContent class="flex justify-start flex-wrap gap-2">
-                <tail-button v-for="priceFilter in Array.from(defaultPriceFilters)" id="action-filter-price"  :key="priceFilter.value" :active="priceFilter.value===query.price" variant="outline" size="sm" @click="handleFilterSelection('price', priceFilter.value)">
+                <volt-button v-for="priceFilter in Array.from(defaultPriceFilters)" id="action-filter-price"  :key="priceFilter.value" :active="priceFilter.value===query.price" variant="outline" size="sm" @click="handleFilterSelection('price', priceFilter.value)">
                   {{ priceFilter.text }}
-                </tail-button>
+                </volt-button>
               </TailAccordionContent>
             </TailAccordionItem>
           </TailAccordion>
@@ -64,13 +64,13 @@
         </div>
 
         <div class="border-top flex justify-around mt-10 gap-2">
-          <tail-button id="action-delete-filters" variant="default" @click="resetFilters">
+          <volt-button id="action-delete-filters" variant="default" @click="resetFilters">
             {{ $t("Supprimer") }}
-          </tail-button>
+          </volt-button>
           
-          <tail-button id="action-filters-result" variant="default">
+          <volt-button id="action-filters-result" variant="default">
             {{ $t('Voir résulats', { n: count }) }}
-          </tail-button>
+          </volt-button>
         </div>
       </div>
     </tail-sheet-content>

@@ -6,10 +6,10 @@
       </StripeElements>
     </form>
 
-    <tail-button @click="handleStripe">
+    <volt-button @click="handleStripe">
       <v-progress-circular v-if="isLoading" indeterminate />
       {{ $t('Payer somme', { n: $n(cartStore.cartTotal, 'currency') }) }}
-    </tail-button>
+    </volt-button>
   </div>
 </template>
 

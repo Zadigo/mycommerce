@@ -21,9 +21,9 @@
         <form class="mt-4" @submit.prevent>
           <TailInput v-model="email" :placeholer="$t('Addresse email')" type="email" class="w-full block" />
     
-          <tail-button class="w-full block mt-5" size="lg" @click="execute">
+          <volt-button class="w-full block mt-5" size="lg" @click="execute">
             S'inscrire
-          </tail-button>
+          </volt-button>
         </form>
       </div>
     </tail-dialog-content>

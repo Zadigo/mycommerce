@@ -26,13 +26,13 @@
             </p>
 
             <div class="my-5">
-              <tail-button class="w-full" @click="handleNotAuthenticatedOrdering">
+              <volt-button class="w-full" @click="handleNotAuthenticatedOrdering">
                 {{ $t('Passer commande') }}
-              </tail-button>
+              </volt-button>
 
-              <tail-button class="mt-2 w-full" @click="showAddedProductDrawer = false, showCartDrawer = true">
+              <volt-button class="mt-2 w-full" @click="showAddedProductDrawer = false, showCartDrawer = true">
                 {{ $t('Voir le panier') }}
-              </tail-button>
+              </volt-button>
             </div>
           </div>
 

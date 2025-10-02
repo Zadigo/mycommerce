@@ -1,26 +1,28 @@
 <template>
   <section id="wishlist" class="mx-10 px-10 my-10">
     <div v-if="!isAuthenticated" class="w-full md:w-2/6">
-      <tail-card class="shadow-sm border-0">
-        <tail-card-content class="text-center p-5 flex flex-col justify-center">
-          <div class="information">
-            <Icon name="i-fa7-solid:star" class="text-warning mb-4" size="120" />
-            
-            <h1 class="font-bold mt-4 mb-3 text-3xl">
-              {{ $t('Conservation des favoris') }}
-            </h1>
-
-            <p class="font-light">
-              {{ $t('Keep favorites text') }}
-            </p>
-
-            <tail-button id="action-start-login" class="mt-10" @click="showLoginDrawer=true">
-              <Icon name="i-fa7-solid:right-to-bracket" class="me-2" />
-              {{ $t('Se connecter') }}
-            </tail-button>
+      <volt-card class="shadow-sm border-0">
+        <template #content>
+          <div class="text-center p-5 flex flex-col justify-center">
+            <div class="information">
+              <Icon name="i-fa7-solid:star" class="text-warning mb-4" size="120" />
+  
+              <h1 class="font-bold mt-4 mb-3 text-3xl">
+                {{ $t('Conservation des favoris') }}
+              </h1>
+  
+              <p class="font-light">
+                {{ $t('Keep favorites text') }}
+              </p>
+  
+              <volt-button id="action-start-login" class="mt-10" @click="showLoginDrawer=true">
+                <Icon name="i-fa7-solid:right-to-bracket" class="me-2" />
+                {{ $t('Se connecter') }}
+              </volt-button>
+            </div>
           </div>
-        </tail-card-content>
-      </tail-card>
+        </template>
+      </volt-card>
     </div>
 
     <div v-if="likedProducts.length > 0">

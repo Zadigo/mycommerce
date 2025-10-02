@@ -1,24 +1,26 @@
 <template>
   <section id="success" class="px-10 my-10">
     <div class="w-10/12 mx-auto">
-      <tail-card class="card border-none">
-        <tail-card-content class="text-center">
-          <h1 class="text-3xl font-bold mb-5">
-            {{ $t('Récapitualif de la commande') }}
-          </h1>
-
-          <p class="font-light">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-            Sed ipsa, aspernatur rerum magni voluptas aut molestiae ducimus 
-            voluptates, corrupti quaerat, ut quisquam doloribus. Inventore, 
-            deleniti est quae nesciunt repellat non.
-          </p>
-
-          <NuxtLinkLocale id="link-home" to="/" class="mt-5">
-            {{ $t('Boutique') }}
-          </NuxtLinkLocale >
-        </tail-card-content>
-      </tail-card>
+      <volt-card class="card border-none">
+        <template #content>
+          <div class="text-center">
+            <h1 class="text-3xl font-bold mb-5">
+              {{ $t('Récapitualif de la commande') }}
+            </h1>
+  
+            <p class="font-light">
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+              Sed ipsa, aspernatur rerum magni voluptas aut molestiae ducimus
+              voluptates, corrupti quaerat, ut quisquam doloribus. Inventore,
+              deleniti est quae nesciunt repellat non.
+            </p>
+  
+            <NuxtLinkLocale id="link-home" to="/" class="mt-5">
+              {{ $t('Boutique') }}
+            </NuxtLinkLocale>
+          </div>
+        </template>
+      </volt-card>
     </div>
 
     <div class="w-10/12 mx-auto mt-5">

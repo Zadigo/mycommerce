@@ -34,9 +34,9 @@
           </TailSelectContent>
         </TailSelect>
 
-        <tail-button @click="() => { cartStore.addToCart(product) }">
+        <volt-button @click="() => { cartStore.addToCart(product) }">
           {{ $t('Ajouter au panier') }}
-        </tail-button>
+        </volt-button>
       </div>
     </div>
   </div>

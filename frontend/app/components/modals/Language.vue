@@ -27,16 +27,16 @@
             </p>
 
             <div class="flex gap-1 mb-8">
-              <tail-button v-for="value in availableLanguages" :key="value" :active="i18n.locale.value === value" @click="selectLanguage(value)">
+              <volt-button v-for="value in availableLanguages" :key="value" :active="i18n.locale.value === value" @click="selectLanguage(value)">
                 {{ value.toUpperCase() }}
-              </tail-button>
+              </volt-button>
             </div>
           </div>
 
           <div class="col">
-            <tail-button id="btn-select-language" variant="default" class="rounded-full" @click="saveSelection">
+            <volt-button id="btn-select-language" variant="default" class="rounded-full" @click="saveSelection">
               {{ $t('Enregistrer mon choix') }}
-            </tail-button>
+            </volt-button>
           </div>
         </div>
       </div>

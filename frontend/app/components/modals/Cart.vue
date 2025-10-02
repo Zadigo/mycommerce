@@ -7,12 +7,12 @@
             {{ $t('Cart quantity', { n: numberOfProducts }) }}
           </TailSheetTitle>
 
-          <tail-button variant="outline" as-child>
+          <volt-button variant="outline" as-child>
             <NuxtLink id="link-wishlist" to="/wishlist" @click="showCartDrawer = false">
               <Icon name="i-fa7-regular:heart" class="me-2" />
               {{ $t('Favoris') }}
             </NuxtLink>
-          </tail-button>
+          </volt-button>
         </div>
       </TailSheetHeader>
 
@@ -51,15 +51,15 @@
           <div class="place-self-baseline">
             isAuthenticated: {{ isAuthenticated }}
             
-            <tail-button v-if="isAuthenticated">
+            <volt-button v-if="isAuthenticated">
               <NuxtLink od="link-start-checkout" to="/cart">
                 {{ $t('Passer commande') }}
               </NuxtLink>
-            </tail-button>
+            </volt-button>
 
-            <tail-button v-else id="action-login-cart" class="w-full rounded-full" size="lg" @click="showCartDrawer=false, showLoginDrawer=true">
+            <volt-button v-else id="action-login-cart" class="w-full rounded-full" size="lg" @click="showCartDrawer=false, showLoginDrawer=true">
               {{ $t('Passer commande') }}
-            </tail-button>
+            </volt-button>
           </div>
         </div>
 
@@ -75,11 +75,11 @@
               {{ $t('Empty cart text') }}
             </p>
 
-            <tail-button size="lg" class="rounded-full" as-child @click.prevent="handleCartButtonRedirection">
+            <volt-button size="lg" class="rounded-full" as-child @click.prevent="handleCartButtonRedirection">
               <NuxtLink id="link-collections-cart" to="/collections/all">
                 {{ $t('Découvrir') }}
               </NuxtLink>
-            </tail-button>
+            </volt-button>
           </div>
         </div>
       </div>

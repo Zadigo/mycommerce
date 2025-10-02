@@ -3,9 +3,9 @@
 
     <tail-sheet-content v-if="currentEditedProduct">
       <TailSheetHeader class="border-bottom" color="white">
-        <tail-button class="mb-2" @click="handleCloseProductEdition">
+        <volt-button class="mb-2" @click="handleCloseProductEdition">
           <Icon name="i-fa7-solid:angle-left" />
-        </tail-button>
+        </volt-button>
 
         <TailSheetTitle>{{ $t('Modifier') }}</TailSheetTitle>
       </TailSheetHeader>
@@ -57,9 +57,9 @@
             <TailInput v-model="currentEditedProduct.quantity" type="number" class="w-[2/4]" min="1" max="999" />
           </div>
 
-          <tail-button class="w-full" @click="handleCloseProductEdition">
+          <volt-button class="w-full" @click="handleCloseProductEdition">
             {{ $t('Enregistrer') }}
-          </tail-button>
+          </volt-button>
         </div>
       </div>
 

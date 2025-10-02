@@ -6,9 +6,9 @@
           {{ $t("Livraison") }}
         </TailSheetTitle>
 
-        <tail-button class="mb-2" @click="show=false">
+        <volt-button class="mb-2" @click="show=false">
           <Icon name="i-fa7-solid:x-mark" />
-        </tail-button>
+        </volt-button>
       </TailSheetHeder>
 
       <div class="row">
