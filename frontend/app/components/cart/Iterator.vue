@@ -48,21 +48,15 @@
 import type { ProductToEdit } from '~/types'
 
 defineProps<{ isEditable?: boolean }>()
-
-const emit = defineEmits({
-  'edit-product' (_editedProduct: ProductToEdit) {
-    return true
-  },
-  'show-cart-drawer' () {
-    return true
-  }
-})
+const emit = defineEmits<{ 'edit-product': [editedProduct: ProductToEdit], 'show-cart-drawer': [] }>()
 
 // const { gtag } = useGtag()
 const cartStore = useCart()
 const { mediaPath } = useDjangoUtilies()
 
 const { statistics, associatedValue } = await useCartInformation()
+
+console.log('iterator.statistics', statistics)
 
 /**
  * Computed property that get the items from the session

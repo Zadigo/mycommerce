@@ -1,12 +1,12 @@
 <template>
   <section id="payment">
-    <header>
+    <header class="py-5">
       <nav class="flex justify-center uppercase pa-5">
-        <NuxtLinkLocale id="link-home-cart-navbar" to="/">
+        <nuxt-link-locale id="link-home-cart-navbar" to="/">
           <h1 class="font-2xl font-bold">
             {{ $t('Boutique') }}
           </h1>
-        </NuxtLinkLocale >
+        </nuxt-link-locale>
       </nav>
     </header>
 
@@ -18,21 +18,16 @@
       <div v-else class="my-5 grid grid-cols-12 gap-4">
         <div class="col-span-12">
           <volt-card class="shadow-none border-none">
-            <TailBreadcrumb>
-              <TailBreadcrumbList>
-                <template v-for="(link, i) in paymentLinks" :key="link.title">
-                  <TailBreadcrumbItem>
-                    <TailBreadcrumbLink id="link-breadcrumb-cart" :to="link.href">
-                      {{ link.title }}
-                    </TailBreadcrumbLink>
-                  </TailBreadcrumbItem>
-
-                  <TailBreadcrumbSeparator v-if="i < 2">
-                    <Slash />
-                  </TailBreadcrumbSeparator>
-                </template>
-              </TailBreadcrumbList>
-            </TailBreadcrumb>
+            <volt-breadcrumb :model="paymentLinks">
+              <template #item="{ item }">
+                <nuxt-link-locale v-if="!item.disabled" :to="item.href" class="text-gray-500 hover:text-gray-700">
+                  {{ $t(item.label) }}
+                </nuxt-link-locale>
+                <span v-else class="text-gray-300">
+                  {{ $t(item.label) }}
+                </span>
+              </template>
+            </volt-breadcrumb>
           </volt-card>
         </div>
 
@@ -40,15 +35,16 @@
           <slot />
         </div>
 
-        <div class="col-span-6">
-          <volt-card class="card border-none bg-gray-50">
-            <template #title>
-              {{ $t('Résumé', { n: cartStore.numberOfProducts }) }}
-            </template>
 
-            <div class="list-group">
+        <div class="col-span-6">
+          <volt-card class="border-none bg-gray-50">
+            <template #title>
+              {{ $t('Résumé', { n: numberOfProducts }) }}
+            </template>
+            
+            <template #content>
               <CartIterator :is-editable="false" />
-            </div>
+            </template>
 
             <template #footer>
               <div class="flex flex-col w-full">
@@ -79,8 +75,6 @@
 </template>
 
 <script setup lang="ts">
-import { Slash } from 'lucide-vue-next'
-
 const { t } = useI18n()
 const cartStore = useCart()
 const route = useRoute()
@@ -93,17 +87,17 @@ const isSuccessPage = computed(() => {
 const paymentLinks = computed(() => {
   const links = [
     {
-      title: 'Delivery',
+      label: 'Delivery',
       disabled: false,
       href: '/cart',
     },
     {
-      title: 'Shipment',
+      label: 'Shipment',
       disabled: true,
       href: '/cart/shipment',
     },
     {
-      title: 'Payment',
+      label: 'Payment',
       disabled: true,
       href: '/cart/payment',
     }
@@ -120,7 +114,7 @@ const paymentLinks = computed(() => {
  * Cart
  */
 
-const { cartTotal } = await useCartInformation()
+const { cartTotal, numberOfProducts } = await useCartInformation()
 
 /**
  * SEO

@@ -13,10 +13,12 @@
           </tail-label>
         </div>
       </tail-radio-group>
-      <tail-skeleton v-else class="h-[30px] mt-5 bg-gray-50" />
+      <volt-skeleton v-else height="30px" class="mt-5" />
     </template>
 
-    <CartNavigationCardFooter next-page="/cart/shipment" />
+    <template #footer>
+      <CartNavigationCardFooter next-page="/cart/shipment" />
+    </template>
   </volt-card>
 </template>
 

@@ -82,6 +82,7 @@ export async function useCartInformation() {
   const { sessionCache } = await useStorageSetup()
 
   console.log('sessionCache', sessionCache)
+  
   const cart = ref<CartUpdateApiResponse | null>(sessionCache.value?.cart)
   const products = computed(() => isDefined(cart) ? cart.value.results : [])
   const statistics = computed(() => isDefined(cart) ? cart.value.statistics : [])
@@ -94,7 +95,7 @@ export async function useCartInformation() {
 
   const numberOfProducts = computed(() => {
     if (isDefined(cart)) {
-      return cart.value.statistics.reduce((acc, item) => acc + item.quantity, 0)
+      return cart.value.statistics.reduce((acc, item) => acc += item.quantity, 0)
     } else {
       return 0
     }

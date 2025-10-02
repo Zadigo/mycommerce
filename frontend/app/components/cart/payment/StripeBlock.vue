@@ -27,14 +27,11 @@ interface TokenData {
   client_ip: string | null
 }
 
-const emit = defineEmits({
-  'payment-complete'(_blockName: PaymentType) {
-    return true
-  }
-})
+const { customHandleError } = useErrorHandler()
+
+const emit = defineEmits<{ 'payment-complete': [blockName: PaymentType] }>()
 
 const cartStore = useCart()
-const { $client } = useNuxtApp()
 
 const paymentResponse = useSessionStorage('paymentResponse', null, {
   serializer: {
@@ -108,6 +105,8 @@ const stripeKey = computed(() => {
 
 console.log(stripeKey)
 
+const { djangoSessionId } = await useStorageSetup()
+
 /**
  * @link https://github.com/ectoflow/vue-stripe-js 
  */
@@ -120,7 +119,7 @@ async function handleStripe () {
   const result = await stripeElementsEl.value.instance.createToken(cardEl.value.stripeElement) as StripeTokenResponse
 
   if (paymentIntent.value) {
-    tokenData.value.session_id = cartStore.sessionId
+    tokenData.value.session_id = djangoSessionId.value
     tokenData.value.card = result.token.card.id
     tokenData.value.intent = paymentIntent.value.intent
     tokenData.value.token = result.token.id
@@ -131,15 +130,17 @@ async function handleStripe () {
   }
 }
 
-const { handleError } = useErrorHandler()
-
 /**
- * 
+ * Payment
  */
+
+const { $client } = useNuxtApp()
+
 async function handlePayment () {
   try {
     const response = await $client('/api/v1/orders/create', {
       method: 'POST',
+      baseURL: useRuntimeConfig().public.prodDomain,
       body: tokenData.value
     })
 
@@ -150,7 +151,7 @@ async function handlePayment () {
     emit('payment-complete', 'Stripe')
   } catch (e) {
     console.log(e)
-    handleError(e)
+    customHandleError(e)
   }
 }
 </script>

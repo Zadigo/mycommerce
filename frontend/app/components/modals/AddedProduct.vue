@@ -1,5 +1,5 @@
 <template>
-  <volt-drawer v-model:visible="showAddedProductDrawer" @close="showAddedProductDrawer=false">
+  <volt-drawer v-model:visible="showAddedProductDrawer" position="right">
     <div class="px-5 overflow-y-scroll">
       {{ products }}
 
@@ -35,7 +35,7 @@
           </div>
         </div>
 
-        <tail-skeleton v-else class="w-full h-[300px] mb-10" />
+        <volt-skeleton v-else height="300px" class="w-full mb-10" />
 
         <!-- Recommendations -->
         <BaseRecommendations :quantity="20" :columns="3" :load-cache="true" :show-carousel="false" :show-like-button="false" :show-cart="false" :show-prices="false" />
