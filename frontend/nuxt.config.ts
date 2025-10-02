@@ -276,7 +276,8 @@ export default defineNuxtConfig({
   },
 
   css: [
-    '~/assets/css/main.css',
+    // '~/assets/css/main.css',
+    '~/assets/css/shadcn.css', // Keep until we transition to primevue
     '~/assets/css/style.scss'
   ],
 
