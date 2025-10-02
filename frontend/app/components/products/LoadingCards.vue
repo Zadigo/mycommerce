@@ -1,8 +1,8 @@
 <template>
   <div v-for="i in quantity" :key="i" id="product">
-    <tail-skeleton class="h-[427px] w-full bg-gray-100" />
-    <tail-skeleton class="h-[15px] w-[200px] mt-1 bg-gray-100" />
-    <tail-skeleton class="h-[15px] w-[100px] mt-1 bg-gray-100" />
+    <volt-skeleton class="h-[427px] w-full bg-gray-100" />
+    <volt-skeleton class="h-[15px] w-[200px] mt-1 bg-gray-100" />
+    <volt-skeleton class="h-[15px] w-[100px] mt-1 bg-gray-100" />
   </div>
 </template>
 

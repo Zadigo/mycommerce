@@ -4,7 +4,7 @@
       {{ history }} {{ last }}
 
       <div class="relative w-full items-center mb-10">
-        <TailInput id="search" v-model="search" :placeholder="$t('Ecris les produits à rechercher')" type="search" class="pl-10" />
+        <volt-input-text id="search" v-model="search" :placeholder="$t('Ecris les produits à rechercher')" type="search" class="pl-10 w-full" />
         <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
           <Icon name="i-fa7-solid:search" />
         </span>

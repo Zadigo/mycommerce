@@ -11,9 +11,10 @@
         <ClientOnly>
           <ul class="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
             <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-              <volt-button id="action-search" class="ms-auto me-2 rounded-full" @click="() => { showSearchModal = true }">
+              <volt-secondary-button id="action-search" class="ms-auto me-2" rounded @click="() => { showSearchModal = true }">
+                <icon name="i-lucide-search" />
                 {{ $t('Rechercher') }}
-              </volt-button>
+              </volt-secondary-button>
             </li>
 
             <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">

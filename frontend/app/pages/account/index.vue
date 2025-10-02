@@ -1,13 +1,7 @@
 <template>
   <section id="user-page">
     <!-- Email / Password -->
-    <volt-card v-if="profile" id="email-password">
-      <volt-card-header>
-        <volt-card-title class="font-title">
-          {{ $t("Accédez à votre compte") }}
-        </volt-card-title>
-      </volt-card-header>
-
+    <volt-card v-if="profile" id="email-password" :header="$t('Accédez à votre compte')">
       <template #content>
         <!-- Password -->
         <p class="font-semibold">

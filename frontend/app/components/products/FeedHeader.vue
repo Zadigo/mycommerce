@@ -6,22 +6,22 @@
           <!-- Collections. Filters -->
           <div class="flex justify-content-left gap-1">
             <div class="flex justify-between items-center me-3 gap-1">
-              <volt-button variant="light">
+              <volt-secondary-button>
                 <nuxt-link-locale id="link-collections-feed-header" to="/shop/collection/all">
                   {{ $t('Afficher tout') }}
                 </nuxt-link-locale>
-              </volt-button>
+              </volt-secondary-button>
   
               <!-- Categories -->
-              <volt-button v-for="category in productCategories" :key="category" variant="light">
+              <volt-secondary-button v-for="category in productCategories" :key="category">
                 <nuxt-link-locale :id="`link-collection-${category.toLowerCase()}`" :to="`/shop/collection/${category.toLowerCase()}`">
                   {{ category }}
                 </nuxt-link-locale>
-              </volt-button>
-  
-              <volt-button variant="light" class="ms-3" @click="emit('modal:product-filters')">
+              </volt-secondary-button>
+
+              <volt-secondary-button class="ms-3" @click="emit('modal:product-filters')">
                 <icon name="i-fa7-solid:sliders" class="me-2" /> {{ $t('Filtres') }}
-              </volt-button>
+              </volt-secondary-button>
             </div>
           </div>
   
@@ -32,13 +32,13 @@
                 {{ $t('Produits trouvés', { n: count }) }}
               </div>
   
-              <volt-button :variant="threeState" flat @click="handleGridSize(3)">
+              <volt-secondary-button :variant="threeState" flat @click="handleGridSize(3)">
                 <icon name="i-fa7-solid:table-cells" />
-              </volt-button>
-  
-              <volt-button :variant="fourState" flat @click="handleGridSize(4)">
+              </volt-secondary-button>
+
+              <volt-secondary-button :variant="fourState" flat @click="handleGridSize(4)">
                 <icon name="i-fa7-solid:table-cells-large" />
-              </volt-button>
+              </volt-secondary-button>
             </div>
           </ClientOnly>
         </div>

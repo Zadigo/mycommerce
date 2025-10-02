@@ -1,9 +1,9 @@
 <template>
   <div class="grid grid-cols-4 gap-2">
-    <div v-for="i in quantity" :key="i" id="product">
-      <tail-skeleton class="h-[427px] w-full bg-gray-100" />
-      <tail-skeleton class="h-[15px] w-[200px] mt-1 bg-gray-100" />
-      <tail-skeleton class="h-[15px] w-[100px] mt-1 bg-gray-100" />
+    <div v-for="i in quantity" :key="i" id="product" class="space-y-1">
+      <volt-skeleton height="427px" />
+      <volt-skeleton height="15px" width="240px" />
+      <volt-skeleton height="15px" width="100px" />
     </div>
   </div>
 </template>
