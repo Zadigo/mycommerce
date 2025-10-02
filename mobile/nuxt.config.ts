@@ -12,13 +12,14 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@nuxt/test-utils',
     '@nuxt/ui',
-    '@nuxtjs/ionic', // FIXME: Not working with Nuxt 4.1.0
+    '@nuxtjs/ionic',
     '@pinia/nuxt',
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
+    '@nuxt/icon'
   ],
 
   css: [
-    '~/assets/css/tailwind.css'
+    '~/assets/css/main.css'
   ],
 
   vite: {

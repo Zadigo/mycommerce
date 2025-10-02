@@ -5,13 +5,13 @@
     <volt-skeleton v-else height="100px" class="w-2/6" />
 
     <!-- Model information -->
-    <p v-if="product" class="font-light">
+    <div v-if="product" class="font-light">
       <div class="border rounded-md py-3 px-4 text-sm font-light bg-gray-50 my-5">
         {{ $t('Taille et hauteur du mannequin') }} : 
         <span v-if="product.model_height">{{ product.model_size }} · {{ $n(parseInt(product.model_height), 'unit') }}</span> 
         <span v-else>N.D.</span>
       </div>
-    </p>
+    </div>
 
     <nuxt-link-locale id="link-product-size-guide" to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('size-guide')">
       {{ $t('Guide des tailles') }}

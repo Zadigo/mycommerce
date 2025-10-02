@@ -41,23 +41,16 @@ const { $client } = useNuxtApp()
 const deliveryOptions = useStorage<DeliveryOption[]>('deliveryOptions', [])
 const paymentIntent = useCookie<NewIntentAPIResponse>('paymentIntent')
 
-const { djangoSessionId } = useDjangoSession()
+const { djangoSessionId } = await useStorageSetup()
 
 /**
  * Get the delivery options from which the
  * user can choose from in order to deliver
  * the products 
  */
-const { data } = useAsyncData('delivery-options', async () => {
+const { data } = await useAsyncData('delivery-options', async () => {
   return await Promise.all(
     [
-      await $client<DeliveryOption[]>('/api/v1/orders/delivery-options', {
-        method: 'GET',
-        baseURL: useRuntimeConfig().public.quartProdUrl,
-        onRequestError() {
-          console.log('TODO: Point to the Quart backend')
-        }
-      }),
       /**
        * Requests a new payment intent and returns an
        * intent ID that will be used to confirm the payment
@@ -70,14 +63,21 @@ const { data } = useAsyncData('delivery-options', async () => {
         onRequestError({ error }) {
           customHandleError(error)
         }
+      }),
+      await $client<DeliveryOption[]>('/api/v1/orders/delivery-options', {
+        method: 'GET',
+        baseURL: useRuntimeConfig().public.quartProdUrl,
+        onRequestError() {
+          console.log('TODO: Point to the Quart backend')
+        }
       })
     ]
   )
 })
 
 if (data.value) {
-  deliveryOptions.value = data.value[0]
-  paymentIntent.value = data.value[1]
+  paymentIntent.value = data.value[0]
+  deliveryOptions.value = data.value[1]
 }
 
 onMounted(async () => {

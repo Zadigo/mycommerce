@@ -14,15 +14,18 @@
 
 # Nuxt
 
-- [ ] Check caching with Redis
-- [ ] Change all the links to point to the localized version of the page when the user changes language
+- [x] Check caching with Redis
+- [x] Change all the links to point to the localized version of the page when the user changes language
 - [x] Implement and test Firebase to Pinia
 - [x] Implement and test FireAuth for Google authentication
-- [ ] Use Iconify the global icon library for the app / uninstall fontaweme [see](https://iconify.design/getting-started/)
-- [ ] Add Redis connection in order to cache certain server requests
-- [ ] Add caching features to certain requests in the server API
+- [x] Use Iconify the global icon library for the app / uninstall fontaweme [see](https://iconify.design/getting-started/)
+- [x] Add Redis connection in order to cache certain server requests
+- [x] Add caching features to certain requests in the server API
 - [x] Create a large session and localstorage file that encompasses all the elements we need into one unique json space. This avoids us from having to spread the data everywhere
 - [ ] When the user scrolls on the `/shop/collection/collectionName` page, place the page header to fixed
+- [ ] When adding a product to the cart, there is no products in the cart drawer which forces the user to refresh the page to see the items added
+- [ ] When adding a product the the cart, the last product added shows nothing
+- [ ] Remove the effects of dark mode on the website
 
 // Hydration errors: 
 // https://www.lichter.io/articles/vue-hydration-error/

@@ -5,7 +5,7 @@
       
       <ion-tab-bar slot="bottom">
         <ion-tab-button tab="home" href="/">
-          <ion-icon :icon="playCircle" />
+          <ion-icon :icon="home" />
           <ion-label>Home</ion-label>
         </ion-tab-button>
 
@@ -29,5 +29,5 @@
 </template>
 
 <script setup lang="ts">
-import { playCircle, radio, library, search } from 'ionicons/icons'
+import { home, radio, library, search } from 'ionicons/icons'
 </script>
