@@ -1,5 +1,5 @@
 <template>
-  <tail-drawer v-model:visible="showAddedProductDrawer" @close="showAddedProductDrawer=false">
+  <volt-drawer v-model:visible="showAddedProductDrawer" @close="showAddedProductDrawer=false">
     <div class="px-5 overflow-y-scroll">
       {{ products }}
 
@@ -43,7 +43,7 @@
 
       <ModalsSkeletonLoader v-else />
     </div>
-  </tail-drawer>
+  </volt-drawer>
 </template>
 
 <script setup lang="ts">
