@@ -6,14 +6,14 @@
           <!-- Collections. Filters -->
           <div class="flex justify-content-left gap-1">
             <div class="flex justify-between items-center me-3 gap-1">
-              <volt-button variant="light" as-child>
+              <volt-button variant="light">
                 <nuxt-link-locale id="link-collections-feed-header" to="/shop/collection/all">
                   {{ $t('Afficher tout') }}
                 </nuxt-link-locale>
               </volt-button>
   
               <!-- Categories -->
-              <volt-button v-for="category in productCategories" :key="category" variant="light" as-child>
+              <volt-button v-for="category in productCategories" :key="category" variant="light">
                 <nuxt-link-locale :id="`link-collection-${category.toLowerCase()}`" :to="`/shop/collection/${category.toLowerCase()}`">
                   {{ category }}
                 </nuxt-link-locale>

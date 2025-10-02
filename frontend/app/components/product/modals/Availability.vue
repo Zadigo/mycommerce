@@ -1,33 +1,25 @@
 <template>
-  <tail-dialog v-model:open="show">
-    <tail-dialog-content>
-      <tail-dialog-header>
-        <tail-dialog-title>
-          Alerte inventaire
-        </tail-dialog-title>
-      </tail-dialog-header>
+  <volt-dialog v-model:visible="show" header="Alerte inventaire" modal style="width: 500px;">
+    <div class="p-10">
+      <h2 class="font-semibold mb-3">
+        La taille "{{ userSelection.size }}" n'est plus en stock
+      </h2>
 
-      <div class="p-10">
-        <h2 class="text-2xl font-semibold mb-3">
-          La taille "{{ userSelection.size }}" n'est plus en stock
-        </h2>
+      <p class="font-light">
+        Renseignes ton adresse e-mail dans le champ
+        ci-dessous pour être averti lorsque cet article est
+        de retour en stock
+      </p>
 
-        <p class="font-light">
-          Renseignes ton adresse e-mail dans le champ 
-          ci-dessous pour être averti lorsque cet article est 
-          de retour en stock
-        </p>
+      <form class="mt-4" @submit.prevent>
+        <volt-input-text v-model="email" :placeholer="$t('Addresse email')" type="email" class="w-full block" />
 
-        <form class="mt-4" @submit.prevent>
-          <TailInput v-model="email" :placeholer="$t('Addresse email')" type="email" class="w-full block" />
-    
-          <volt-button class="w-full block mt-5" size="lg" @click="execute">
-            S'inscrire
-          </volt-button>
-        </form>
-      </div>
-    </tail-dialog-content>
-  </tail-dialog>
+        <volt-button class="w-full block mt-5" size="lg" @click="execute">
+          S'inscrire
+        </volt-button>
+      </form>
+    </div>
+  </volt-dialog>
 </template>
 
 <script setup lang="ts">

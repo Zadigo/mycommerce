@@ -17,23 +17,7 @@
       </div>
 
       <div class="flex justify-around align-center gap-2">
-        <TailSelect v-model="selectedSize" class="w-[200px]">
-          <TailSelectTrigger>
-            <TailSelectValue>
-              {{ userSelection.size }}
-            </TailSelectValue>
-          </TailSelectTrigger>
-
-          <TailSelectContent>
-            <TailSelectGroup>
-              <TailSelectLabel>Sizes</TailSelectLabel>
-              <TailSelectItem v-for="sizeName in sizeNames" :key="sizeName" :value="sizeName">
-                {{ sizeName }}
-              </TailSelectItem>
-            </TailSelectGroup>
-          </TailSelectContent>
-        </TailSelect>
-
+        <volt-select v-model="userSelection.size" :options="product.sizes" option-label="name" option-name="name" />
         <volt-button @click="() => { cartStore.addToCart(product) }">
           {{ $t('Ajouter au panier') }}
         </volt-button>
@@ -43,29 +27,11 @@
 </template>
 
 <script setup lang="ts">
-// import { doc, updateDoc, getDoc } from 'firebase/firestore'
 import type { Product } from '~/types'
 
-// const { $fireStore } = useNuxtApp()
-
 const cartStore = useCart()
-const { userSelection, showSizeSelectionWarning } = storeToRefs(cartStore)
+const { userSelection } = storeToRefs(cartStore)
 
 const { product, showBanner = false } = defineProps<{ product: Product, showBanner?: boolean }>()
 const emit = defineEmits<{ 'size-selected': [value: string] }>()
-
-const sizeNames = computed(() => {
-  if (product) {
-    return product.sizes.map(x => x.name)
-  } else {
-    return []
-  }
-})
-
-const selectedSize = computed({
-  get: () => cartStore.userSelection.size,
-  set: (value: string) => {
-    cartStore.sizeSelection(product, value)
-  }
-})
 </script>

@@ -1,9 +1,7 @@
 <template>
-  <tail-sheet v-model:show="show">
-    <tail-sheet-content>
-      <slot />
-    </tail-sheet-content>
-  </tail-sheet>
+  <volt-drawer v-model:visible="show">
+    <slot />
+  </volt-drawer>
 </template>
 
 <script lang="ts" setup>

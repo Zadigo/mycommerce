@@ -287,21 +287,21 @@ export default defineNuxtConfig({
       {
         name: 'Inter',
         weight: '100..900',
-        styles: ['normal', 'italic'],
-        preload: true
+        // styles: ['normal', 'italic'],
+        // preload: true
       },
       {
         name: 'Sora',
         weight: '400..700',
-        styles: ['normal', 'italic'],
-        preload: true
+        // styles: ['normal', 'italic'],
+        // preload: true
       },
       // Title
       {
         name: 'Manrope',
         weight: '400..700',
-        styles: ['normal', 'italic'],
-        preload: true
+        // styles: ['normal', 'italic'],
+        // preload: true
       }
     ]
   },

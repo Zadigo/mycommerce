@@ -1,9 +1,9 @@
 <template>
   <article class="relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
     <div v-if="product.display_new" class="absolute right-1/16 top-1/30 z-10">
-      <TailBadge>
+      <volt-badge>
         {{ $t('Nouveau') }}
-      </TailBadge>
+      </volt-badge>
     </div>
     
     <!-- Carousel -->

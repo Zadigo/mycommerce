@@ -1,14 +1,11 @@
 <template>
-  <tail-sheet id="dialog-edit-product" v-model:open="showEditProductDrawer">
+  <volt-drawer id="dialog-edit-product" v-model:open="showEditProductDrawer">
+    <div v-if="currentEditedProduct">
+      <volt-button class="mb-2" @click="handleCloseProductEdition">
+        <Icon name="i-fa7-solid:angle-left" />
+      </volt-button>
 
-    <tail-sheet-content v-if="currentEditedProduct">
-      <TailSheetHeader class="border-bottom" color="white">
-        <volt-button class="mb-2" @click="handleCloseProductEdition">
-          <Icon name="i-fa7-solid:angle-left" />
-        </volt-button>
-
-        <TailSheetTitle>{{ $t('Modifier') }}</TailSheetTitle>
-      </TailSheetHeader>
+      <h2 class="font-bold">{{ $t('Modifier') }}</h2>
       
       <div v-if="currentEditedProduct.product_info" class="row">
         <div class="col-12">
@@ -64,12 +61,12 @@
       </div>
 
       <ModalsSkeletonLoader v-else class="mt-4" />
-    </tail-sheet-content>
+    </div>
     
-    <tail-sheet-content v-else>
+    <div v-else>
       <ModalsSkeletonLoader class="mt-4" />
-    </tail-sheet-content>
-  </tail-sheet>
+    </div>
+  </volt-drawer>
 </template>
 
 <script setup lang="ts">

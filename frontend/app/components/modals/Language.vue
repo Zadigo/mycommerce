@@ -1,47 +1,45 @@
 <template>
-  <tail-sheet id="language-modal" v-model:open="showLanguageModal">
-    <tail-sheet-content side="bottom">
-      <div class="mx-auto w-2/4">
-        <div class="px-3 py-15">
-          <div class="col">
-            <p class="font-bold mb-4">
-              {{ $t('Sélectionnez votre emplacement') }}
-            </p>
+  <volt-drawer id="language-modal" v-model:visible="showLanguageModal" position="bottom" style="height:auto;">
+    <div class="mx-auto w-2/4">
+      <div class="px-3 py-15">
+        <div class="col">
+          <p class="font-bold mb-4">
+            {{ $t('Sélectionnez votre emplacement') }}
+          </p>
 
-            <TailSelect v-model="i18nCountry">
-              <TailSelectTrigger>
-                <TailSelectValue placeholder="Sélectionnez votre pays" />
-              </TailSelectTrigger>
-              
-              <TailSelectContent>
-                <TailSelectItem v-for="country in Array.from(countries)" :key="country" :value="country">
-                  {{ country }}
-                </TailSelectItem>
-              </TailSelectContent>
-            </TailSelect>
-          </div>
-          
-          <div class="col">
-            <p class="font-bold mb-2">
-              {{ $t('Sélectionnez votre langue') }}
-            </p>
+          <TailSelect v-model="i18nCountry">
+            <TailSelectTrigger>
+              <TailSelectValue placeholder="Sélectionnez votre pays" />
+            </TailSelectTrigger>
+            
+            <TailSelectContent>
+              <TailSelectItem v-for="country in Array.from(countries)" :key="country" :value="country">
+                {{ country }}
+              </TailSelectItem>
+            </TailSelectContent>
+          </TailSelect>
+        </div>
+        
+        <div class="col">
+          <p class="font-bold mb-2">
+            {{ $t('Sélectionnez votre langue') }}
+          </p>
 
-            <div class="flex gap-1 mb-8">
-              <volt-button v-for="value in availableLanguages" :key="value" :active="i18n.locale.value === value" @click="selectLanguage(value)">
-                {{ value.toUpperCase() }}
-              </volt-button>
-            </div>
-          </div>
-
-          <div class="col">
-            <volt-button id="btn-select-language" variant="default" class="rounded-full" @click="saveSelection">
-              {{ $t('Enregistrer mon choix') }}
+          <div class="flex gap-1 mb-8">
+            <volt-button v-for="value in availableLanguages" :key="value" :active="i18n.locale.value === value" @click="selectLanguage(value)">
+              {{ value.toUpperCase() }}
             </volt-button>
           </div>
         </div>
+
+        <div class="col">
+          <volt-button id="btn-select-language" variant="default" class="rounded-full" @click="saveSelection">
+            {{ $t('Enregistrer mon choix') }}
+          </volt-button>
+        </div>
       </div>
-    </tail-sheet-content>
-  </tail-sheet>
+    </div>
+  </volt-drawer>
 </template>
 
 <script setup lang="ts">

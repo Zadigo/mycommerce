@@ -1,19 +1,13 @@
 <template>
-  <tail-sheet id="image-zoom" v-model:open="show">
-    <tail-sheet-content aria-describedby="Product image details" class="max-h-[600px]" side="bottom">
-      <tail-sheet-title>
-        Product
-      </tail-sheet-title>
+  <volt-drawer id="image-zoom" v-model:visible="show" position="full" :modal="false">
+    <div class="px-20 my-2 relative overflow-y-scroll">
+      <div v-if="image" :style="`background-image: url('${image.original}');`" class="zoomed-image z-30" @click="show=false" />
 
-      <div class="px-20 my-2 relative overflow-y-scroll">
-        <div v-if="image" :style="`background-image: url('${image.original}');`" class="zoomed-image z-30" @click="show=false" />
-
-        <div v-if="product && image" id="image-choices" class="flex flex-col gap-3 absolute top-1/12 right-1/12">
-          <nuxt-img v-for="otherImage in product.images" :key="otherImage.id" :class="{ 'selected': otherImage.id === image.id }" :src="otherImage.thumbnail" class="aspect-square object-fill w-[100px] z-50"  @click="handleSelectedImage(image)" />
-        </div>
+      <div v-if="product && image" id="image-choices" class="flex flex-col gap-3 absolute top-1/12 right-1/12">
+        <nuxt-img v-for="otherImage in product.images" :key="otherImage.id" :class="{ 'selected': otherImage.id === image.id }" :src="otherImage.thumbnail" class="aspect-square object-fill w-[100px] z-50"  @click="handleSelectedImage(image)" />
       </div>
-    </tail-sheet-content>
-  </tail-sheet>
+    </div>
+  </volt-drawer>
 </template>
 
 <script setup lang="ts">
