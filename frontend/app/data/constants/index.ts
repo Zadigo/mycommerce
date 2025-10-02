@@ -18,3 +18,10 @@ export const baseSessionCacheData: SessionCacheData = {
   profile: null,
   popularImages: []
 }
+
+export const countries = [
+  "France",
+  "Guadeloupe",
+  "Martinique",
+  "Réunion"
+] as const

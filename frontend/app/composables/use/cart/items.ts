@@ -8,7 +8,7 @@ import type { CartItem, CartUpdateApiResponse } from '~/types'
 export async function useSyncCart() {
   if (import.meta.server) {
     return {
-      sync: async () => {}
+      sync: async () => { }
     }
   }
 
@@ -82,7 +82,7 @@ export async function useCartInformation() {
   const { sessionCache } = await useStorageSetup()
 
   console.log('sessionCache', sessionCache)
-  
+
   const cart = ref<CartUpdateApiResponse | null>(sessionCache.value?.cart)
   const products = computed(() => isDefined(cart) ? cart.value.results : [])
   const statistics = computed(() => isDefined(cart) ? cart.value.statistics : [])
@@ -109,7 +109,7 @@ export async function useCartInformation() {
     const item = associatedItem(productId)
     return isDefined(item) ? item.value[key] : null
   }
- 
+
   return {
     /**
      * Contains products added to the cart

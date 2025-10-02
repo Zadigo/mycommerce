@@ -1,18 +1,15 @@
 <template>
   <volt-card class="border-none">
-    <template >
+    <template>
       <h2 class="font-2xl font-bold">
         {{ $t("Choisis un mode d'expédition") }}
       </h2>
 
-      <tail-radio-group v-if="deliveryOptions.length > 0" v-model="shippingStore.newShippingInfo.delivery" default-value="Relais colis">
-        <div v-for="(delivery, i) in deliveryOptions" :key="delivery.id" class="flex items-center space-x-8">
-          <tail-radio-group-item :id="`delivery-${i}`" :value="delivery.id" />
-          <tail-label :for="`delivery-${i}`">
-            {{ delivery.name }}
-          </tail-label>
-        </div>
-      </tail-radio-group>
+      <template v-if="deliveryOptions.length > 0">
+        <volt-label v-for="(delivery, i) in deliveryOptions" :key="delivery.id" :for="`delivery-${i}`">
+          <volt-radio-button v-model="shippingStore.newShippingInfo.delivery" :value="delivery.id" />
+        </volt-label>
+      </template>
       <volt-skeleton v-else height="30px" class="mt-5" />
     </template>
 

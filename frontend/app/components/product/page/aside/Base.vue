@@ -12,13 +12,13 @@
       {{ $t(product.color) }} · {{ $t('Product: Sku', { sku: product.sku }) }}
     </p>
     
-    <div class="border-t-2 border-gray-100 my-5 me-10" />
+    <volt-divider />
 
     <!-- Actions -->
     <ProductPageAsideActions :product="product" @size-guide="emit('size-guide')" @availability-modal="emit('availability-modal')" />
 
     <!-- Info. More -->
-    <ProductPageAsideAdditional :product="product" @delivery-guide="emit('delivery-guide')" @composition-guide="emit('composition-guide')" />
+    <volt-list-group :items="items" class="my-5" />
   </aside>
 </template>
 
@@ -37,4 +37,31 @@ const { mediaPath } = useDjangoUtilies()
 const { hasColorVariants } = useProductComposable(props.product)
 
 // const { gtag } = useGtag()
+
+/**
+ * 
+ */
+
+/**
+ * List group items
+ */
+
+const items = [
+  {
+    label: 'Composition, soin et traçabilité',
+    icon: 'i-lucide:info',
+    action: () => emit('composition-guide')
+  },
+  {
+    label: 'Livraison et retours',
+    icon: 'i-lucide:truck',
+    action: () => emit('delivery-guide')
+  }
+]
 </script>
+
+<style scoped>
+.router-link-exact-active img {
+  opacity: .5;
+}
+</style>

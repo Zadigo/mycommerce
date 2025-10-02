@@ -6,7 +6,7 @@
       </volt-button>
 
       <h2 class="font-bold">{{ $t('Modifier') }}</h2>
-      
+
       <div v-if="currentEditedProduct.product_info" class="row">
         <div class="col-12">
           <NuxtImg :src="mediaPath(currentEditedProduct.product_info.product.get_main_image.original)" />
@@ -50,8 +50,8 @@
             <p class="font-bold">
               {{ $t('Quantité') }}
             </p>
-            
-            <TailInput v-model="currentEditedProduct.quantity" type="number" class="w-[2/4]" min="1" max="999" />
+
+            <volt-input-number v-model="currentEditedProduct.quantity" :min="1" :max="999" class="w-[2/4]" />
           </div>
 
           <volt-button class="w-full" @click="handleCloseProductEdition">
@@ -62,7 +62,7 @@
 
       <ModalsSkeletonLoader v-else class="mt-4" />
     </div>
-    
+
     <div v-else>
       <ModalsSkeletonLoader class="mt-4" />
     </div>

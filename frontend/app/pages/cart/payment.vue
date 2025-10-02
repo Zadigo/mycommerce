@@ -5,14 +5,9 @@
         {{ $t('Choississez votre mode de paiement') }}
       </p>
 
-      <tail-list>
-        <tail-list-item v-for="paymentMethod in paymentMethods" :key="paymentMethod.name" :active="selectedPaymentMethod === paymentMethod.name" @click.prevent="handlePaymentType(paymentMethod.name)">
-          <Icon :name="`fa-brands:${paymentMethod.icon}`" class="me-3" />
-          {{ paymentMethod.name }}
-        </tail-list-item>
-      </tail-list>
+      <volt-list-group :items="paymentMethods" variant="flush" />
 
-      <hr v-if="hasSelectedPaymentMethod" class="my-5">
+      <volt-divider v-if="hasSelectedPaymentMethod" class="my-5" />
 
       <CartPaymentStripeBlock v-if="stripeSelected" @payment-complete="callbackPaymentComplete" />
       <CartPaymentKlarnaBlock v-else-if="klarnaSelected" />
@@ -33,17 +28,6 @@ definePageMeta({
   layout: 'cart',
   middleware: ['cart']
 })
-
-const paymentMethods = [
-  {
-    name: 'Visa / Mastercard',
-    icon: 'cc-mastercard'
-  },
-  {
-    name: 'Klarna',
-    icon: 'klarna'
-  }
-]
 
 /**
  * Payment
@@ -103,6 +87,31 @@ function callbackPaymentComplete(blockName: PaymentType) {
 
   router.push('/cart/success')
 }
+
+/**
+ * Other
+ */
+
+const paymentMethods = [
+  {
+    label: 'Visa / Mastercard',
+    icon: 'i-lucide-credit-card',
+    action: (item) => {
+      selectedPaymentMethod.value = item.label
+    }
+  },
+  {
+    label: 'Klarna',
+    icon: 'i-lucide-credit-card',
+    action: (item) => {
+      selectedPaymentMethod.value = item.label
+    }
+  }
+]
+
+/**
+ * SEO
+ */
 
 const { t } = useI18n()
 

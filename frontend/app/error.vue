@@ -2,18 +2,16 @@
   <NuxtLayout>
     <section class="error-page my-20">
       <div class="mx-auto md:max-w-2xl">
-        <TailCard class="card border-none shadow-sm">
-          <TailCardContent>
-            <h1 class="text-8xl font-title font-bold">{{ error?.statusCode }}</h1>
-            <p class="text-wrap font-light text-3xl">{{ error?.message }}</p>
-            
-            <TailButton class="mt-10" as-child>
-              <NuxtLinkLocale id="link-home-error-page" href="/" @click="handleError">
-                {{ $t('Accueil') }}
-              </NuxtLinkLocale >
-            </TailButton>
-          </TailCardContent>
-        </TailCard>
+        <volt-card class="card border-none shadow-sm">
+          <h1 class="text-8xl font-title font-bold">{{ error?.statusCode }}</h1>
+          <p class="text-wrap font-light text-3xl">{{ error?.message }}</p>
+          
+          <volt-button class="mt-10" as-child>
+            <NuxtLinkLocale id="link-home-error-page" href="/" @click="handleError">
+              {{ $t('Accueil') }}
+            </NuxtLinkLocale >
+          </volt-button>
+        </volt-card>
 
         <DevOnly>
           <div class="text-wrap p-10 rounded-3xl bg-destructive mt-10">

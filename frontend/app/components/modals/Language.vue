@@ -1,5 +1,5 @@
 <template>
-  <volt-drawer id="language-modal" v-model:visible="showLanguageModal" position="bottom" style="height:auto;">
+  <volt-drawer id="language-modal" v-model:visible="showLanguageModal" position="bottom" style="height:500px;">
     <div class="mx-auto w-2/4">
       <div class="px-3 py-15">
         <div class="col">
@@ -7,28 +7,18 @@
             {{ $t('Sélectionnez votre emplacement') }}
           </p>
 
-          <TailSelect v-model="i18nCountry">
-            <TailSelectTrigger>
-              <TailSelectValue placeholder="Sélectionnez votre pays" />
-            </TailSelectTrigger>
-            
-            <TailSelectContent>
-              <TailSelectItem v-for="country in Array.from(countries)" :key="country" :value="country">
-                {{ country }}
-              </TailSelectItem>
-            </TailSelectContent>
-          </TailSelect>
+          <volt-select v-model="i18nCountry" :options="Array.from(countries)" />
         </div>
-        
+
         <div class="col">
           <p class="font-bold mb-2">
             {{ $t('Sélectionnez votre langue') }}
           </p>
 
           <div class="flex gap-1 mb-8">
-            <volt-button v-for="value in availableLanguages" :key="value" :active="i18n.locale.value === value" @click="selectLanguage(value)">
+            <volt-secondary-button v-for="value in availableLanguages" :key="value" :active="i18n.locale.value === value" @click="selectLanguage(value)">
               {{ value.toUpperCase() }}
-            </volt-button>
+            </volt-secondary-button>
           </div>
         </div>
 
@@ -44,7 +34,8 @@
 
 <script setup lang="ts">
 import { doc, updateDoc } from 'firebase/firestore'
-import type { countries, DefaultCountries } from '~/types'
+import { countries } from '~/data/constants'
+import type { DefaultCountries } from '~/types'
 
 type AvailableLanguages = typeof i18n.locale.value
 
@@ -56,9 +47,7 @@ const i18nCountry = useCookie<DefaultCountries>('i18nCountry', { sameSite: 'stri
 
 console.info('i18n', i18n.locale.value)
 
-/**
- * Save the user's language and location preferences
- */
+// Save the user's language and location preferences
 async function saveSelection() {
   showLanguageModal.value = false
   await navigateTo(localePath('/'))

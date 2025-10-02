@@ -5,8 +5,6 @@
        <volt-button variant="destructive" @click="handleReset">
          <Icon name="i-fa7-solid:chevron-left" />
        </volt-button>
-
-       <tail-sheet-close />
     </div>
     
     <div class="mb-10 overflow-y-scroll">

@@ -7,7 +7,7 @@
         </p>
 
         <ProductSizeBlock v-if="product" :product="product" @show-size-guide-drawer="show=false" />
-        <tail-skeleton v-else class="w-[60px] h-[20px]" />
+        <volt-skeleton v-else height="20px" width="60px" />
 
         <p class="text-1xl font-semibold mt-4 mb-1">
           {{ $t("Mensurations") }}
