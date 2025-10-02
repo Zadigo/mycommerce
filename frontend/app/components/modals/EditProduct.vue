@@ -1,15 +1,12 @@
 <template>
-  <TailSheet id="dialog-edit-product" v-model:open="showEditProductDrawer">
+  <volt-drawer id="dialog-edit-product" v-model:open="showEditProductDrawer">
+    <div v-if="currentEditedProduct">
+      <volt-button class="mb-2" @click="handleCloseProductEdition">
+        <Icon name="i-fa7-solid:angle-left" />
+      </volt-button>
 
-    <TailSheetContent v-if="currentEditedProduct">
-      <TailSheetHeader class="border-bottom" color="white">
-        <TailButton class="mb-2" @click="handleCloseProductEdition">
-          <Icon name="i-fa7-solid:angle-left" />
-        </TailButton>
+      <h2 class="font-bold">{{ $t('Modifier') }}</h2>
 
-        <TailSheetTitle>{{ $t('Modifier') }}</TailSheetTitle>
-      </TailSheetHeader>
-      
       <div v-if="currentEditedProduct.product_info" class="row">
         <div class="col-12">
           <NuxtImg :src="mediaPath(currentEditedProduct.product_info.product.get_main_image.original)" />
@@ -53,23 +50,23 @@
             <p class="font-bold">
               {{ $t('Quantité') }}
             </p>
-            
-            <TailInput v-model="currentEditedProduct.quantity" type="number" class="w-[2/4]" min="1" max="999" />
+
+            <volt-input-number v-model="currentEditedProduct.quantity" :min="1" :max="999" class="w-[2/4]" />
           </div>
 
-          <TailButton class="w-full" @click="handleCloseProductEdition">
+          <volt-button class="w-full" @click="handleCloseProductEdition">
             {{ $t('Enregistrer') }}
-          </TailButton>
+          </volt-button>
         </div>
       </div>
 
       <ModalsSkeletonLoader v-else class="mt-4" />
-    </TailSheetContent>
-    
-    <TailSheetContent v-else>
+    </div>
+
+    <div v-else>
       <ModalsSkeletonLoader class="mt-4" />
-    </TailSheetContent>
-  </TailSheet>
+    </div>
+  </volt-drawer>
 </template>
 
 <script setup lang="ts">

@@ -5,21 +5,21 @@
         {{ $t('Connecte-toi ou crée un compte') }}
       </h3>
 
-      <tail-button id="signin-google" variant="outline" size="lg" class="mt-3 mb-5 rounded-full w-full" @click="handleGoogle">
+      <volt-button id="signin-google" variant="outline" size="lg" class="mt-3 mb-5 rounded-full w-full" @click="handleGoogle">
         <Icon name="i-fa7-brands:google" />
-      </tail-button>
+      </volt-button>
 
       <p class="font-light mt-1 mb-8 text-center">
         {{ $t('Login: Privacy Policy') }} <NuxtLinkLocale  id="link-legal-login-modal" to="/confidentialite" class="text-blue-600 underline">{{ $t('politique de confidentialité') }}</NuxtLinkLocale >
       </p>
 
       <form id="form-login" @submit.prevent>
-        <tail-input v-model="email" :placeholder="$t(`Nom d'utilisateur ou email`)" type="text" autocomplete="email" />
-        <tail-input v-model="password" :placeholder="$t('Mot de passe')" class="my-2" type="password" autocomplete="current-password" />
+        <volt-input-text v-model="email" :placeholder="$t(`Nom d'utilisateur ou email`)" type="text" autocomplete="email" />
+        <volt-input-text v-model="password" :placeholder="$t('Mot de passe')" class="my-2" type="password" autocomplete="current-password" />
 
-        <tail-button id="signin-email" class="rounded-full w-full mt-5" size="lg" @click="login">
+        <volt-button id="signin-email" class="rounded-full w-full mt-5" size="lg" @click="login">
           {{ $t('Se connecter') }}
-        </tail-button>
+        </volt-button>
       </form>
 
       <p class="flex-grow font-light text-center mt-3">

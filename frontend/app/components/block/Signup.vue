@@ -5,9 +5,9 @@
     </h3>
     
     <form @submit.prevent>
-      <TailInput v-model="requestData.email" :placeholder="$t('Email')" type="email" autocomplete="email" />
-      <TailInput v-model="requestData.password1" :placeholder="$t('Mot de passe')" type="password" class="my-2" autocomplete="new-password" />
-      <TailInput v-model="requestData.password2" :placeholder="$t('Mot de passe')" type="password" class="mb-5" autocomplete="new-password" />
+      <volt-input-text v-model="requestData.email" :placeholder="$t('Email')" type="email" autocomplete="email" />
+      <volt-input-text v-model="requestData.password1" :placeholder="$t('Mot de passe')" type="password" class="my-2" autocomplete="new-password" />
+      <volt-input-text v-model="requestData.password2" :placeholder="$t('Mot de passe')" type="password" class="mb-5" autocomplete="new-password" />
       
       <p class="font-light text-slate-500 text-sm">
         {{ $t('Signup: Password constraints') }}
@@ -31,9 +31,9 @@
         </div>
       </div>
 
-      <TailButton id="action-signup-email" :disabled="!acceptPrivacy" size="lg" class="w-full" @click="handleSignup">
+      <volt-button id="action-signup-email" :disabled="!acceptPrivacy" size="lg" class="w-full" @click="handleSignup">
         {{ $t('Créer un compte') }}
-      </TailButton>
+      </volt-button>
     </form>
   </div>
 </template>

@@ -1,8 +1,8 @@
 <template>
-  <tail-button :variant="buttonStyle === 'button' ? 'light' : 'link'" :class="buttonClass" @click="() => emit('select-size', size)">
-    <icon v-if="!size.availability" name="i-lucide:clock-fading" class="text-yellow-500 me-2" />
+  <volt-button :variant="buttonStyle === 'button' ? 'outlined' : 'text'" :class="buttonClass" size="small" @click="() => emit('select-size', size)">
+    <icon v-if="!size.availability" name="i-lucide:clock-fading" class="text-warning-500 me-2" />
     {{ size.name }}
-  </tail-button>
+  </volt-button>
 </template>
 
 <script lang="ts" setup>

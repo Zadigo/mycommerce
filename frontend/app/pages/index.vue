@@ -1,7 +1,7 @@
 <template>
   <section id="collections" class="my-5 md:my-10 mx-5">
     <div v-if="status === 'pending'" class="grid grid-cols-1 md:grid-cols-3 gap-2">
-      <tail-skeleton v-for="i in 3" :key="i" class="w-full h-full" />
+      <volt-skeleton v-for="i in 3" :key="i" class="w-full h-full" />
     </div>
 
     <div v-else class="grid grid-cols-1 grid-rows-3 auto-rows-fr md:grid-cols-3 md:grid-rows-1 gap-3">

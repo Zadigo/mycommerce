@@ -1,28 +1,23 @@
 <template>
-  <TailCard class="card shadow-sm border-none">
-    <TailCardContent>
+  <volt-card>
+    <template #content>
       <p class="font-light mb-5">
         {{ $t('Choississez votre mode de paiement') }}
       </p>
 
-      <TailList>
-        <TailListItem v-for="paymentMethod in paymentMethods" :key="paymentMethod.name" :active="selectedPaymentMethod === paymentMethod.name" @click.prevent="handlePaymentType(paymentMethod.name)">
-          <Icon :name="`fa-brands:${paymentMethod.icon}`" class="me-3" />
-          {{ paymentMethod.name }}
-        </TailListItem>
-      </TailList>
+      <volt-list-group :items="paymentMethods" variant="flush" />
 
-      <hr v-if="hasSelectedPaymentMethod" class="my-5">
+      <volt-divider v-if="hasSelectedPaymentMethod" class="my-5" />
 
       <CartPaymentStripeBlock v-if="stripeSelected" @payment-complete="callbackPaymentComplete" />
       <CartPaymentKlarnaBlock v-else-if="klarnaSelected" />
-    </TailCardContent>
 
-    <TailCardContent class="flex gap-1 items-center justify-center">
-      <NuxtImg src="/cards/mastercard.svg" height="30" width="30" />
-      <NuxtImg src="/cards/visa.png" height="30" width="30" />
-    </TailCardContent>
-  </TailCard>
+      <div class="flex gap-1 items-center justify-center mt-10">
+        <NuxtImg src="/cards/mastercard.svg" height="30" width="30" />
+        <NuxtImg src="/cards/visa.png" height="30" width="30" />
+      </div>
+    </template>
+  </volt-card>
 </template>
 
 <script lang="ts" setup>
@@ -33,17 +28,6 @@ definePageMeta({
   layout: 'cart',
   middleware: ['cart']
 })
-
-const paymentMethods = [
-  {
-    name: 'Visa / Mastercard',
-    icon: 'cc-mastercard'
-  },
-  {
-    name: 'Klarna',
-    icon: 'klarna'
-  }
-]
 
 /**
  * Payment
@@ -103,6 +87,31 @@ function callbackPaymentComplete(blockName: PaymentType) {
 
   router.push('/cart/success')
 }
+
+/**
+ * Other
+ */
+
+const paymentMethods = [
+  {
+    label: 'Visa / Mastercard',
+    icon: 'i-lucide-credit-card',
+    action: (item) => {
+      selectedPaymentMethod.value = item.label
+    }
+  },
+  {
+    label: 'Klarna',
+    icon: 'i-lucide-credit-card',
+    action: (item) => {
+      selectedPaymentMethod.value = item.label
+    }
+  }
+]
+
+/**
+ * SEO
+ */
 
 const { t } = useI18n()
 

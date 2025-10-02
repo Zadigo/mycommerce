@@ -2,12 +2,15 @@
   <div id="actions">    
     <!-- Sizes -->
     <product-size-block v-if="product" :product="product" class="mb-4" />
-    <tail-skeleton v-else class="h-[100px] w-2/6" />
+    <volt-skeleton v-else height="100px" class="w-2/6" />
 
+    <!-- Model information -->
     <p v-if="product" class="font-light">
-      {{ $t('Taille et hauteur du mannequin') }} : 
-      <span v-if="product.model_height">{{ product.model_size }} · {{ $n(parseInt(product.model_height), 'unit') }}</span> 
-      <span v-else>N.D.</span>
+      <div class="border rounded-md py-3 px-4 text-sm font-light bg-gray-50 my-5">
+        {{ $t('Taille et hauteur du mannequin') }} : 
+        <span v-if="product.model_height">{{ product.model_size }} · {{ $n(parseInt(product.model_height), 'unit') }}</span> 
+        <span v-else>N.D.</span>
+      </div>
     </p>
 
     <nuxt-link-locale id="link-product-size-guide" to="#" class="text-sm font-semibold underline underline-offset-2 block mt-2" @click="emit('size-guide')">
@@ -22,18 +25,18 @@
       {{ userSelection }} - {{ sizeObject }}
     </DevOnly> -->
 
-    <tail-button v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" id="action-inform" class="mt-5 place-content-center" @click="() => emit('availability-modal')">
+    <volt-button v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" id="action-inform" class="mt-5 place-content-center" @click="() => emit('availability-modal')">
       <Icon name="fa:envelope" size="12" class="me-1" />
       {{ $t('Me tenir informer') }}
-    </tail-button>
-    <tail-button v-else id="action-add-cart" class="mt-5 me-2 place-content-center" :disabled="false" @click="proxyAddToCart">
+    </volt-button>
+    <volt-button v-else id="action-add-cart" class="mt-5 me-2 place-content-center" :disabled="false" @click="proxyAddToCart">
       <Icon v-if="stockState && stockState.almost_sold_out" name="i-fa7-solid:clock" class="me-1" />
       {{ $t('Ajouter au panier') }}
-    </tail-button>
+    </volt-button>
 
-    <tail-button id="action-add-favorite" :aria-label="$t('Ajouter au favori')" class="mt-5" variant="outline" @click="proxyHandleLike">
+    <volt-button id="action-add-favorite" :aria-label="$t('Ajouter au favori')" class="mt-5" variant="outline" @click="proxyHandleLike">
       <Icon :name="icon" />
-    </tail-button>
+    </volt-button>
   </div>
 </template>
 

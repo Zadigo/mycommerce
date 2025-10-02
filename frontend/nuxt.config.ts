@@ -276,29 +276,22 @@ export default defineNuxtConfig({
   },
 
   css: [
-    '~/assets/css/main.css',
-    '~/assets/css/style.scss'
+    '~/assets/css/main.css'
   ],
 
   fonts: {
     families: [
       // Body
       {
-        name: 'Inter',
-        weight: '100..900',
-        styles: ['normal', 'italic'],
-        preload: true
-      },
-      {
         name: 'Sora',
-        weight: '400..700',
+        weight: [100, 800],
         styles: ['normal', 'italic'],
         preload: true
       },
       // Title
       {
         name: 'Manrope',
-        weight: '400..700',
+        weight: [200, 800],
         styles: ['normal', 'italic'],
         preload: true
       }

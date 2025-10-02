@@ -6,7 +6,7 @@
 
     <nuxt-link-locale id="link-product-carousel" :to="`/shop/${product.id}`" @click="emit('has-navigated', [index, product])">
       <img v-if="!isLoading && isReady" :src="state.original" :alt="state.name" class="self-center aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-full">
-      <tail-skeleton v-else class="w-full h-full min-h-100 bg-gray-100 rounded-md" />
+      <volt-skeleton v-else class="min-h-100 rounded-md" />
     </nuxt-link-locale>
 
     <button v-if="showCarousel && isHovered" type="button" class="absolute top-2/5 right-3 py-5 rounded-full z-10 w-5 place-content-center hover:opacity-60" @click="() => { next() }">

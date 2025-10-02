@@ -1,8 +1,6 @@
 <template>
   <div :class="cnClass" data-slot="megamenu" role="menu">
     <slot />
-    <!-- <ul class="grid grid-cols-3 gap-y-2 outline-none outline-0" role="menuitem">
-    </ul> -->
   </div>
 </template>
 

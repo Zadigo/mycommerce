@@ -1,39 +1,35 @@
 <template>
-  <TailCard v-if="showFindOrder" class="card border-none">
-    <TailCardHeader>
-      <TailCardTitle>
-        {{ $t("Tu as réalisé des commandes sans être inscrit ?") }}
-      </TailCardTitle>
-    </TailCardHeader>
+  <volt-card v-if="showFindOrder" class="border-none">
+    <template #title>
+      {{ $t("Tu as réalisé des commandes sans être inscrit ?") }}
+    </template>
     
-    <TailCardContent class="card-body">
+    <template #content>
       <p class="my-4 font-light">
         {{ $t("Saisis ton e-mail et ton téléphone pour recevoir un SMS avec le code d'accès à tes commandes *") }}
       </p>
 
       <form @submit.prevent>
-        <TailInput type="email" :placeholder="$t('Email')" autocomplete="email" />
-        <TailInput type="tel" :placeholder="$t('Téléphone')" autocomplete="tel" />
+        <volt-input-text type="email" :placeholder="$t('Email')" autocomplete="email" />
+        <volt-input-text type="tel" :placeholder="$t('Téléphone')" autocomplete="tel" />
       
-        <TailButton id="action-newsletter=product" class="w-full">
+        <volt-button id="action-newsletter=product" class="w-full">
           {{ $t("Envoyer") }}
-        </TailButton>
+        </volt-button>
       </form>
-    </TailCardContent>
-  </TailCard>
+    </template>
+  </volt-card>
 
-  <TailCard v-else class="border-none">
-    <TailCardHeader>
-      <TailCardTitle>
-        {{ $t('Mes achats') }}
-      </TailCardTitle>
-    </TailCardHeader>
+  <volt-card v-else class="border-none">
+    <template #title>
+      {{ $t('Mes achats') }}
+    </template>
 
-    <TailCardContent v-if="hasOrders">
+    <template v-if="hasOrders" #content>
       {{ $t("Commandes") }}
-    </TailCardContent>
+    </template>
 
-    <TailCardContent v-else class="text-center">
+    <template v-else class="text-center" #content>
       <p class="font-bold">
         {{ $t("Tu n'as encore aucun achat en ligne") }}
       </p>
@@ -42,12 +38,12 @@
         {{ $t("Si tu ne trouves pas ton achat, tu as peut-être passé commande sans être inscrit(e)") }}
       </p>
 
-      <TailButton @click="showFindOrder = true">
+      <volt-button @click="showFindOrder = true">
         {{ $t('Trouver ma commande') }}
         <Icon name="arrow-right" class="ms-2" />
-      </TailButton>
-    </TailCardContent>
-  </TailCard>
+      </volt-button>
+    </template>
+  </volt-card>
 </template>
 
 <script setup lang="ts">

@@ -1,80 +1,70 @@
 <template>
-  <TailSheet v-model:open="showModal" id="modal-product-filters">
-    <TailSheetContent>
-      <TailSheetHeader>
-        <div class="flex justify-between items-center">
-          <h4 class="m-0">
-            {{ $t("Filtrer") }}
-          </h4>
-        </div>
-      </TailSheetHeader>
+  <volt-drawer v-model:visible="showModal" id="modal-product-filters" :header="$t('Filtrer')" position="right" style="width: 400px;">
+    <div class="flex-col justify-around px-5">    
+      <div>
+        {{ query }}
 
-      <div class="flex-col justify-around px-5">    
-        <div>
-          {{ query }}
-          {{ sortingFilterActions }}
+        <volt-accordion type="single" collapsible>
+          <!-- Order by -->
+          <volt-accordion-panel value="sort by">
+            <volt-accordion-header>
+              {{ $t('Trier par') }}
+            </volt-accordion-header>
 
-          <TailAccordion type="single" collapsible>
-            <!-- Order by -->
-            <TailAccordionItem value="sort by">
-              <TailAccordionTrigger>
-                {{ $t('Trier par') }}
-              </TailAccordionTrigger>
-              <TailAccordionContent class="flex gap-2">
-                <TailButton v-for="sortingFilter in Array.from(sortingFilterActions)" id="action-sorting-direction" :key="sortingFilter[0]" :active="query.sorted_by===sortingFilter[0]" variant="outline" size="sm" @click="handleFilterSelection('sorted by', sortingFilter[0])">
-                  {{ $t(sortingFilter[0]) }}
-                </TailButton>
-              </TailAccordionContent>
-            </TailAccordionItem>
-            
-            <!-- Size -->
-            <TailAccordionItem value="size">
-              <TailAccordionTrigger>
-                <div class="flex gap-2 items-center">
-                  {{ $t('Taille') }}
-
-                  <TailBadge>
-                    {{ query.sizes.length }}
-                  </TailBadge>
-                </div>
-              </TailAccordionTrigger>
-
-              <TailAccordionContent class="flex gap-2">
-                <TailButton v-for="size in Array.from(defaultClotheSize)" id="action-filter-size" :key="size" :active="query.sizes.includes(size)" size="sm" variant="outline" class="ms-2" @click="handleFilterSelection('sizes', size)">
-                  {{ size }}
-                </TailButton>
-              </TailAccordionContent>
-            </TailAccordionItem>
-
-            <!-- Price -->
-            <TailAccordionItem value="size">
-              <TailAccordionTrigger>
-                {{ $t("Prix") }}
-              </TailAccordionTrigger>
-
-              <TailAccordionContent class="flex justify-start flex-wrap gap-2">
-                <TailButton v-for="priceFilter in Array.from(defaultPriceFilters)" id="action-filter-price"  :key="priceFilter.value" :active="priceFilter.value===query.price" variant="outline" size="sm" @click="handleFilterSelection('price', priceFilter.value)">
-                  {{ priceFilter.text }}
-                </TailButton>
-              </TailAccordionContent>
-            </TailAccordionItem>
-          </TailAccordion>
+            <volt-accordion-content class="flex gap-2">
+              <volt-button v-for="sortingFilter in Array.from(sortingFilterActions)" id="action-sorting-direction" :key="sortingFilter[0]" :active="query.sorted_by===sortingFilter[0]" variant="outline" size="sm" @click="handleFilterSelection('sorted by', sortingFilter[0])">
+                {{ $t(sortingFilter[0]) }}
+              </volt-button>
+            </volt-accordion-content>
+          </volt-accordion-panel>
           
-          <!-- Typologie, Couleur -->
-        </div>
+          <!-- Size -->
+          <volt-accordion-panel value="size">
+            <volt-accordion-header>
+              <div class="flex gap-2 items-center">
+                {{ $t('Taille') }}
 
-        <div class="border-top flex justify-around mt-10 gap-2">
-          <TailButton id="action-delete-filters" variant="default" @click="resetFilters">
-            {{ $t("Supprimer") }}
-          </TailButton>
-          
-          <TailButton id="action-filters-result" variant="default">
-            {{ $t('Voir résulats', { n: count }) }}
-          </TailButton>
-        </div>
+                <volt-badge>
+                  {{ query.sizes.length }}
+                </volt-badge>
+              </div>
+            </volt-accordion-header>
+
+            <volt-accordion-content class="flex gap-2">
+              <volt-button v-for="size in Array.from(defaultClotheSize)" id="action-filter-size" :key="size" :active="query.sizes.includes(size)" size="sm" variant="outline" class="ms-2" @click="handleFilterSelection('sizes', size)">
+                {{ size }}
+              </volt-button>
+            </volt-accordion-content>
+          </volt-accordion-panel>
+
+          <!-- Price -->
+          <volt-accordion-panel value="size">
+            <volt-accordion-header>
+              {{ $t("Prix") }}
+            </volt-accordion-header>
+
+            <volt-accordion-content class="flex justify-start flex-wrap gap-2">
+              <volt-button v-for="priceFilter in Array.from(defaultPriceFilters)" id="action-filter-price"  :key="priceFilter.value" :active="priceFilter.value===query.price" variant="outline" size="sm" @click="handleFilterSelection('price', priceFilter.value)">
+                {{ priceFilter.text }}
+              </volt-button>
+            </volt-accordion-content>
+          </volt-accordion-panel>
+        </volt-accordion>
+        
+        <!-- Typologie, Couleur -->
       </div>
-    </TailSheetContent>
-  </TailSheet>
+
+      <div class="border-top flex justify-around mt-10 gap-2">
+        <volt-button id="action-delete-filters" variant="default" @click="resetFilters">
+          {{ $t("Supprimer") }}
+        </volt-button>
+        
+        <volt-button id="action-filters-result" variant="default">
+          {{ $t('Voir résulats', { n: count }) }}
+        </volt-button>
+      </div>
+    </div>
+  </volt-drawer>
 </template>
 
 <script setup lang="ts">

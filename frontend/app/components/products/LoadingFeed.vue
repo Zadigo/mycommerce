@@ -1,19 +1,21 @@
 <template>
   <ProductsFeedLayout>
     <template #filtering>
-      <TailCard class="card shadow-none mb-3 border-none">
-        <TailCardContent class="pt-1 pb-1 px-2 flex justify-between">
-          <div class="flex justify-start gap-1">
-            <TailSkeleton class="w-[100px] h-[37px] bg-gray-100" />
-            <TailSkeleton class="w-[100px] h-[37px] bg-gray-100" />
-            <TailSkeleton class="w-[100px] h-[37px] bg-gray-100" />
+      <volt-card class="shadow-none mb-3 border-none">
+        <template #content>
+          <div class="pt-1 pb-1 px-2 flex justify-between">
+            <div class="flex justify-start gap-1">
+              <volt-skeleton class="w-[100px] h-[37px] bg-gray-100" />
+              <volt-skeleton class="w-[100px] h-[37px] bg-gray-100" />
+              <volt-skeleton class="w-[100px] h-[37px] bg-gray-100" />
+            </div>
+  
+            <div class="flex justify-content-start gap-1">
+              <volt-skeleton class="w-[270px] h-[37px] bg-gray-100" />
+            </div>
           </div>
-
-          <div class="flex justify-content-start gap-1">
-            <TailSkeleton class="w-[270px] h-[37px] bg-gray-100" />
-          </div>
-        </TailCardContent>
-      </TailCard>
+        </template>
+      </volt-card>
     </template>
 
     <template #default>

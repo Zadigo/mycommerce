@@ -1,58 +1,58 @@
 <template>
-  <TailCardContent v-if="showBillingForm || forCreation">
+  <div v-if="showBillingForm || forCreation">
     <form id="user-information" class="space-y-3" @submit.prevent>
       <div class="flex justify-end">
-        <TailButton variant="light" class="mb-2 rounded-full" @click="handleClose">
+        <volt-button variant="light" class="mb-2 rounded-full" @click="handleClose">
           <Icon name="i-fa7-solid:xmark" />
-        </TailButton>
-      </div>
-      
-      <div class="flex justify-between gap-1">
-        <TailInput v-model="requestData.firstname" variant="outlined" placeholder="Firstname" autocomplete="given-name " />
-        <TailInput v-model="requestData.lastname" variant="outlined" placeholder="Lastname" autocomplete="family-name " />
+        </volt-button>
       </div>
 
-      <TailInput v-model="requestData.address_line" variant="outlined" placeholder="Address line" autocomplete="street-address" />
+      <div class="flex justify-between gap-1">
+        <volt-input-text v-model="requestData.firstname" variant="outlined" placeholder="Firstname" autocomplete="given-name " />
+        <volt-input-text v-model="requestData.lastname" variant="outlined" placeholder="Lastname" autocomplete="family-name " />
+      </div>
+
+      <volt-input-text v-model="requestData.address_line" variant="outlined" placeholder="Address line" autocomplete="street-address" />
 
       <div class="flex justify-between gap-1">
-        <TailInput v-model="requestData.zip_code" variant="outlined" placeholder="Zip code" autocomplete="postal-code" />
-        <TailInput v-model="requestData.country" variant="outlined" placeholder="Country" autocomplete="country" />
+        <volt-input-text v-model="requestData.zip_code" variant="outlined" placeholder="Zip code" autocomplete="postal-code" />
+        <volt-input-text v-model="requestData.country" variant="outlined" placeholder="Country" autocomplete="country" />
       </div>
 
       <!-- TODO: Get data from quart -->
       <!-- <v-autocomplete v-model="requestData.city" :items="['Lille', 'Paris']" variant="outlined">
         <v-text-field />
       </v-autocomplete> -->
-      
-      <TailInput v-model="requestData.telephone" type="tel" variant="outlined" placeholder="Telephone" autocomplete="tel" />          
 
-      <TailCard class="card shadow-none border">
-        <TailCardContent>
+      <volt-input-text v-model="requestData.telephone" type="tel" variant="outlined" placeholder="Telephone" autocomplete="tel" />
+
+      <volt-card class="card shadow-none border">
+        <template #content>
           <p class="font-bold">
             {{ $t("Sexe") }}
           </p>
-        </TailCardContent>
-      </TailCard>
+        </template>
+      </volt-card>
 
       <p class="font-bold mt-4">
         {{ $t("Date d'anniversaire") }}
       </p>
 
-      <TailButton  v-if="forCreation" class="mt-4 rounded-full" @click="requestCreate">
+      <volt-button v-if="forCreation" class="mt-4 rounded-full" @click="requestCreate">
         {{ $t("Ajouter l'addresse") }}
-      </TailButton>
+      </volt-button>
 
-      <TailButton v-else class="mt-4 rounded-full" @click="requestUpdate">
+      <volt-button v-else class="mt-4 rounded-full" @click="requestUpdate">
         {{ $t("Mettre à jour") }}
-      </TailButton>
+      </volt-button>
     </form>
-  </TailCardContent>
+  </div>
 
-  <TailCardContent v-else class="bg-slate-50 cursor-pointer hover:bg-slate-100 mx-5 p-5 rounded-md">
+  <div v-else class="bg-slate-50 cursor-pointer hover:bg-slate-100 mx-5 p-5 rounded-md">
     <div class="flex justify-end">
-      <TailButton variant="ghost" size="sm" class="rounded-full" @click="requestDelete">
+      <volt-button variant="ghost" size="sm" class="rounded-full" @click="requestDelete">
         <Icon name="i-fa7-solid:trash" />
-      </TailButton>
+      </volt-button>
     </div>
     
     <div class="p-1" @click="handleShowBillingForm">
@@ -68,7 +68,7 @@
       
       <p><Icon name="i-fa7-solid:phone" class="me-1" /> {{ address.telephone }}</p>
     </div>
-  </TailCardContent>
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -30,13 +30,13 @@
           </nuxt-link-locale >
 
           <div id="actions" class="mt-5">
-            <tail-button v-if="isEditable" id="action-edit-product" variant="light" class="me-2 rounded-full" size="sm" @click="handleProductEdition(item)">
+            <volt-button v-if="isEditable" id="action-edit-product" variant="light" class="me-2 rounded-full" size="sm" @click="handleProductEdition(item)">
               <Icon name="i-lucide:pen" />
-            </tail-button>
+            </volt-button>
 
-            <tail-button id="action-delete-product" variant="light" class="rounded-full" size="sm" @click="proxyDeleteFromCart(item)">
+            <volt-button id="action-delete-product" variant="light" class="rounded-full" size="sm" @click="proxyDeleteFromCart(item)">
               <Icon name="i-lucide:trash" />
-            </tail-button>
+            </volt-button>
           </div>
         </div>
       </div>
@@ -48,21 +48,15 @@
 import type { ProductToEdit } from '~/types'
 
 defineProps<{ isEditable?: boolean }>()
-
-const emit = defineEmits({
-  'edit-product' (_editedProduct: ProductToEdit) {
-    return true
-  },
-  'show-cart-drawer' () {
-    return true
-  }
-})
+const emit = defineEmits<{ 'edit-product': [editedProduct: ProductToEdit], 'show-cart-drawer': [] }>()
 
 // const { gtag } = useGtag()
 const cartStore = useCart()
 const { mediaPath } = useDjangoUtilies()
 
 const { statistics, associatedValue } = await useCartInformation()
+
+console.log('iterator.statistics', statistics)
 
 /**
  * Computed property that get the items from the session

@@ -1,9 +1,9 @@
 import type { DeliveryOption } from './cart'
 import type { Product } from './shop'
 
-export type Undefineable <T> = T | undefined
-
 export type Arrayable<T> = T[]
+
+export type Undefineable <T> = T | undefined
 
 export type Nullable<T> = T | null
 

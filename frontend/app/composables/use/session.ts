@@ -95,6 +95,8 @@ export async function useStorageSetup() {
 
     const sessionCache = useDocument<SessionCacheData>(docRef)
 
+    console.log('useStorageSetup.sessionCache', sessionCache)
+
     return {
       /**
        * ID used by Django to identify anonymous users when

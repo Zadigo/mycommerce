@@ -14,9 +14,9 @@
       </div>
 
       <!-- Add To Cart -->
-      <TailButton v-else variant="default" @click="() => uniqueAddToCart()">
+      <volt-button v-else variant="default" @click="() => uniqueAddToCart()">
         {{ $t('Ajouter au panier') }}
-      </TailButton>
+      </volt-button>
     </div>
   </div>
 </template>
