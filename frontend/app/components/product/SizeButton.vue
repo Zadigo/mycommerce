@@ -1,6 +1,6 @@
 <template>
   <volt-button :variant="buttonStyle === 'button' ? 'outlined' : 'text'" :class="buttonClass" size="small" @click="() => emit('select-size', size)">
-    <icon v-if="!size.availability" name="i-lucide:clock-fading" class="text-yellow-500 me-2" />
+    <icon v-if="!size.availability" name="i-lucide:clock-fading" class="text-warning-500 me-2" />
     {{ size.name }}
   </volt-button>
 </template>
