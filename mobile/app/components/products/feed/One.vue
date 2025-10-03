@@ -1,11 +1,13 @@
 <template>
   <div class="grid grid-cols-1 gap-1">
-    <ion-img v-for="i in 100" :key="i" src="img1.jpg" @click="setProduct(products[i])" />
+    <products-feed-image v-for="product in products" :key="product.id" :image-src="product.get_main_image?.original" @click="setProduct" />
   </div>
 </template>
 
 <script lang="ts" setup>
-const products = inject('products', () => [])
+import type { Product } from '~/types'
+
+const products = inject<Product[]>('products', [])
 const { setProduct } = useProductStore()!
 
 console.log(products)

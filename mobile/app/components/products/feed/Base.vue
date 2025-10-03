@@ -3,7 +3,7 @@
     <ion-row>
       <!-- Grid -->
       <ion-col size="10">
-        <products-feed-grid />
+        <products-feed-grid-buttons />
       </ion-col>
 
       <!-- Filter -->
@@ -41,7 +41,7 @@ const grid = useState('grid')
 const { fetch } = useProductsFeed()
 provideLocal('products', await fetch())
 
-const products = inject<Product[]>('products', () => [])
+const products = inject<Product[]>('products', [])
 console.log(products)
 useProviderProduct(products)
 
