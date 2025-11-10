@@ -1,5 +1,5 @@
-import type { DefaultCountries } from "~/data"
-import type { _DatabaseObject } from ".."
+import type { DefaultCountries } from '~/types/constants'
+import type { _DatabaseObject } from '..'
 
 export type DefaultGender = 'Homme' | 'Femme'
 

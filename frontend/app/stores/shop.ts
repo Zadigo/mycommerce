@@ -8,8 +8,7 @@ export const useShop = defineStore('shop', () => {
   const showWhatsAppModal = ref<boolean>(false)
 
   const visitedProducts = ref<number[]>([])
-  const likedProducts = ref<number[]>([])
-
+  
   /**
    * @description This references the index of the product that
    * was clicked within a given list of items. This
@@ -85,10 +84,6 @@ export const useShop = defineStore('shop', () => {
      * The list of products that were visited by the user
      */
     visitedProducts,
-    /**
-     * The list of products that were liked by the user
-     */
-    likedProducts,
     /**
      * Whether the search modal is currently open
      */

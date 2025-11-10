@@ -2,28 +2,26 @@ export * from './address'
 export * from './payment'
 
 import type { DefaultClotheSize } from '~/types/constants'
-import type { Product } from "../shop"
+import type { Nullable } from '..'
+import type { Product } from '../shop'
 
 /**
  * The options selected by the user for the
  * product that he wants to add to his cart 
  */
 export type UserSelection = {
-  id: number | null
+  id: Nullable<number>
   product: Product | object
   size: DefaultClotheSize
   /**
    * @default 1
    */
   quantity: number
-  session_id: string | null
+  session_id: Nullable<string>
 }
 
 export type AddToCartData = {
-  product: {
-    id: number
-    color: string
-  }
+  product: Pick<Product, 'id' | 'color'>
   size: DefaultClotheSize
   session_id: string
 }

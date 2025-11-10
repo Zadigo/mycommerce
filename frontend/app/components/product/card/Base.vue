@@ -33,7 +33,7 @@
       
       <div class="flex align-center">
         <button type="button" class="bg-white rounded-full p-2" @click="like">
-          <Icon :name="icon" size="13" />
+          <icon :name="icon" size="13" />
         </button>
       </div>
     </div>

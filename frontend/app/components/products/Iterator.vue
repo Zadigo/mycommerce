@@ -6,11 +6,11 @@
       </div>
     </div>
   </template>
-  <ProductSkeletonLoader v-else :quantity="8" />
+  <product-skeleton-loader v-else :quantity="quantity" />
 </template>
 
 <script setup lang="ts">
-import { useHandleGridSize } from '~/composables/use/grid';
+import { useHandleGridSize } from '~/composables/use/grid'
 import { productSymbol } from '~/data/constants/symbols'
 import type { Product } from '~/types'
 
@@ -21,11 +21,12 @@ const emit = defineEmits<{
   'has-navigated': [data: (number | Product)[]]
 }>()
 
-const { showPrices = true, showCart = true, showLikeButton = true } = defineProps<{
+const { showPrices = true, showCart = true, showLikeButton = true, quantity = 8 } = defineProps<{
   columns?: number
   showLikeButton?: boolean
   showCart?: boolean
-  showPrices?: boolean
+  showPrices?: boolean,
+  quantity?: number
 }>()
 
 // Function used to indicate to the parent that an
