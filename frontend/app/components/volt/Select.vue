@@ -1,5 +1,5 @@
 <template>
-  <Select unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <Select unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <template #dropdownicon>
       <ChevronDownIcon />
     </template>

@@ -1,17 +1,14 @@
 <template>
-  <Button unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
-    <template v-for="(_, slotName) in $slots" #[slotName]="slotProps">
-      <slot :name="slotName" v-bind="slotProps ?? {}" />
-    </template>
-  </Button>
+  <a :href="href" :class="theme.root">
+    <slot />
+  </a>
 </template>
 
 <script setup lang="ts">
-import Button, { type ButtonPassThroughOptions, type ButtonProps } from 'primevue/button'
-import { ref } from 'vue'
-import { ptViewMerge } from './utils'
+import type { ButtonPassThroughOptions } from 'primevue/button'
+import type { LinkHTMLAttributes } from 'vue'
 
-interface Props extends /* @vue-ignore */ ButtonProps { }
+interface Props extends /* @vue-ignore */ LinkHTMLAttributes { }
 defineProps<Props>()
 
 const theme = ref<ButtonPassThroughOptions>({
@@ -41,8 +38,7 @@ const theme = ref<ButtonPassThroughOptions>({
     `,
   loadingIcon: `animate-spin`,
   icon: `p-right:order-1 p-bottom:order-2`,
-  label: `font-medium p-icon-only:invisible p-icon-only:w-0
-        p-small:text-sm p-large:text-[1.125rem]`,
+  label: `font-medium p-icon-only:invisible p-icon-only:w-0 p-small:text-sm p-large:text-[1.125rem]`,
   pcBadge: {
     root: `min-w-4 h-4 leading-4 bg-primary-contrast rounded-full text-primary text-xs font-bold`
   }

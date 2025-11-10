@@ -1,11 +1,5 @@
 <template>
-    <InputMask
-        unstyled
-        :pt="theme"
-        :ptOptions="{
-            mergeProps: ptViewMerge
-        }"
-    />
+  <InputMask unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }" />
 </template>
 
 <script setup lang="ts">
@@ -13,11 +7,11 @@ import InputMask, { type InputMaskPassThroughOptions, type InputMaskProps } from
 import { ref } from 'vue'
 import { ptViewMerge } from './utils'
 
-interface Props extends /* @vue-ignore */ InputMaskProps {}
+interface Props extends /* @vue-ignore */ InputMaskProps { }
 defineProps<Props>()
 
 const theme = ref<InputMaskPassThroughOptions>({
-    root: `appearance-none rounded-md outline-hidden
+  root: `appearance-none rounded-md outline-hidden
         bg-surface-0 dark:bg-surface-950
         p-filled:bg-surface-50 dark:p-filled:bg-surface-800
         text-surface-700 dark:text-surface-0

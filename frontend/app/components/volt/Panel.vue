@@ -1,5 +1,5 @@
 <template>
-  <Panel unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <Panel unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <template #togglebutton="{ collapsed, toggleCallback, keydownCallback }">
       <SecondaryButton variant="text" rounded @click="toggleCallback" @keydown="keydownCallback">
         <template #icon>

@@ -1,5 +1,5 @@
 <template>
-  <TabPanel :value="props.value" unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <TabPanel :value="props.value" unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <slot />
   </TabPanel>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <AccordionContent unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <AccordionContent unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <slot />
   </AccordionContent>
 </template>

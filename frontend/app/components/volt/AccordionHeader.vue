@@ -1,17 +1,11 @@
 <template>
-    <AccordionHeader
-        unstyled
-        :pt="theme"
-        :ptOptions="{
-            mergeProps: ptViewMerge
-        }"
-    >
-        <template #toggleicon="{ active }">
-            <ChevronDownIcon v-if="active" />
-            <ChevronUpIcon v-else />
-        </template>
-        <slot />
-    </AccordionHeader>
+  <AccordionHeader unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
+    <template #toggleicon="{ active }">
+      <ChevronDownIcon v-if="active" />
+      <ChevronUpIcon v-else />
+    </template>
+    <slot />
+  </AccordionHeader>
 </template>
 
 <script setup lang="ts">
@@ -21,11 +15,11 @@ import AccordionHeader, { type AccordionHeaderPassThroughOptions, type Accordion
 import { ref } from 'vue'
 import { ptViewMerge } from './utils'
 
-interface Props extends /* @vue-ignore */ AccordionHeaderProps {}
+interface Props extends /* @vue-ignore */ AccordionHeaderProps { }
 defineProps<Props>()
 
 const theme = ref<AccordionHeaderPassThroughOptions>({
-    root: `cursor-pointer disabled:pointer-events-none disabled:opacity-60 flex items-center justify-between p-[1.125rem] font-semibold
+  root: `cursor-pointer disabled:pointer-events-none disabled:opacity-60 flex items-center justify-between p-[1.125rem] font-semibold
         bg-surface-0 dark:bg-surface-900
         text-surface-500 dark:text-surface-400
         hover:text-surface-700 dark:hover:text-surface-0

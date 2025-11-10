@@ -1,5 +1,5 @@
 <template>
-  <TabList unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <TabList unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <slot />
   </TabList>
 </template>

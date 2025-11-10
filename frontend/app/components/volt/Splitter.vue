@@ -1,5 +1,5 @@
 <template>
-  <Splitter unstyled :gutterSize="1" :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <Splitter unstyled :gutterSize="1" :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <slot />
   </Splitter>
 </template>

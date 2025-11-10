@@ -1,5 +1,5 @@
 <template>
-  <Paginator unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <Paginator unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <template #container="{ page, pageCount, pageLinks, changePageCallback, firstPageCallback, lastPageCallback, prevPageCallback, nextPageCallback }">
       <div class="flex flex-wrap gap-2 items-center justify-center">
         <SecondaryButton text rounded @click="firstPageCallback" :disabled="page === 0">

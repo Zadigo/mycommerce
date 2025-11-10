@@ -1,5 +1,5 @@
 <template>
-  <InputText unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }" />
+  <InputText unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }" />
 </template>
 
 <script setup lang="ts">

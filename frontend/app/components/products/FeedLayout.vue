@@ -1,5 +1,5 @@
 <template>
-  <section id="feed-structure" class="relative">
+  <section id="feed" class="relative">
     <!-- Filtering -->
     <div id="feed-header">
       <slot name="filtering" />

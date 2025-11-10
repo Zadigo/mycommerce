@@ -1,5 +1,5 @@
 <template>
-  <Toast unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <Toast unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <template #closeicon>
       <TimesIcon />
     </template>

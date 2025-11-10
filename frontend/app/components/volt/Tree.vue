@@ -1,5 +1,5 @@
 <template>
-  <Tree unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <Tree unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <template #togglericon="{ expanded }">
       <ChevronDownIcon v-if="expanded" />
       <ChevronRightIcon v-else />

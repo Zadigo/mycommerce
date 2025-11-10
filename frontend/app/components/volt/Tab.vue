@@ -1,5 +1,5 @@
 <template>
-  <Tab :value="props.value" unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <Tab :value="props.value" unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <slot />
   </Tab>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <Stepper unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <Stepper unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <slot />
   </Stepper>
 </template>

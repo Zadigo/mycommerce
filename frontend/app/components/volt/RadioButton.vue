@@ -1,5 +1,5 @@
 <template>
-  <RadioButton unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }" />
+  <RadioButton unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }" />
 </template>
 
 <script setup lang="ts">

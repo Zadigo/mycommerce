@@ -1,5 +1,5 @@
 <template>
-  <Rating unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <Rating unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <template #onicon="{ toggleCallback }">
       <StarFillIcon @click="toggleCallback" class="text-base w-4 h-4 transition-colors duration-200 text-primary" />
     </template>

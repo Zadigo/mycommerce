@@ -1,5 +1,5 @@
 <template>
-  <Listbox unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <Listbox unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <template #filtericon>
       <SearchIcon class="text-surface-400" />
     </template>

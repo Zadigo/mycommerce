@@ -1,5 +1,5 @@
 <template>
-  <MeterGroup unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <MeterGroup unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <template v-for="(_, slotName) in $slots" #[slotName]="slotProps">
       <slot :name="slotName" v-bind="slotProps ?? {}" />
     </template>

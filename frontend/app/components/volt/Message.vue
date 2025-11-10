@@ -1,5 +1,5 @@
 <template>
-  <Message unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <Message unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <template #closeicon>
       <TimesIcon />
     </template>

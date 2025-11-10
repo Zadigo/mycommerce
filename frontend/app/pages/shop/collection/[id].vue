@@ -15,17 +15,17 @@
 
     <!-- Feed -->
     <suspense>
-      <AsyncProductsFeed @products:list="handleLoadedProducts" @modal:product-filters="toggleModal" />
+      <async-products-feed @products:list="handleLoadedProducts" @modal:product-filters="toggleModal" />
 
       <template #fallback>
-        <ProductsLoadingFeed />
+        <products-loading-feed />
       </template>
     </suspense>
 
     <!-- Modals -->
-    <ClientOnly>
-      <ProductsModalsFilters v-model="showModal" :count="productsCount" @update-products="handleUpdateProducts" />
-    </ClientOnly>
+    <client-only>
+      <products-modals-filters v-model="showModal" :count="productsCount" @update-products="handleUpdateProducts" />
+    </client-only >
   </section>
 </template>
 

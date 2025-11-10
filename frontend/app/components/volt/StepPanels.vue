@@ -1,5 +1,5 @@
 <template>
-  <StepPanels unstyled :pt="theme" :ptOptions="{ mergeProps: ptViewMerge }">
+  <StepPanels unstyled :pt="theme" :pt-options="{ mergeProps: ptViewMerge }">
     <slot />
   </StepPanels>
 </template>

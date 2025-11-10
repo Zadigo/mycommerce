@@ -1,11 +1,11 @@
 <template>
-  <div v-for="i in quantity" :key="i" id="product">
-    <volt-skeleton class="h-[427px] w-full bg-gray-100" />
-    <volt-skeleton class="h-[15px] w-[200px] mt-1 bg-gray-100" />
-    <volt-skeleton class="h-[15px] w-[100px] mt-1 bg-gray-100" />
+  <div v-for="i in quantity" :key="i" id="product" class="card">    
+    <volt-skeleton height="427px" class="bg-gray-100" />
+    <volt-skeleton height="15px" width="200px" class="mt-1 bg-gray-100" />
+    <volt-skeleton height="15px" width="200px" class="mt-1 bg-gray-100" />
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{ quantity?: number }>()
+const { quantity = 20 } = defineProps<{ quantity?: number }>()
 </script>
