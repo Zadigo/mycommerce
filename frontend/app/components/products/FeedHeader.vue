@@ -26,7 +26,7 @@
           </div>
   
           <!-- Grid -->
-          <ClientOnly>
+          <client-only>
             <div class="flex justify-end gap-1 items-center">
               <div id="product-count" class="font-semibold text-sm me-2">
                 {{ $t('Produits trouvés', { n: count }) }}
@@ -40,7 +40,7 @@
                 <icon name="i-fa7-solid:table-cells-large" />
               </volt-secondary-button>
             </div>
-          </ClientOnly>
+          </client-only>
         </div>
       </div>
     </template>

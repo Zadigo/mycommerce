@@ -1,4 +1,5 @@
 import type { DefaultColors, DefaultPriceFilters, DefaultSortingFilters, DefaultClotheSize } from '~/types/constants'
+import type { Empty } from '.'
 
 /**
  * Default object containining the selections to
@@ -13,8 +14,8 @@ export interface SelectedFilters {
 }
 
 interface LimitOffset {
-  offset: number
-  limit: number
+  offset: Empty<number>
+  limit: Empty<number>
 }
 
-export interface ProductsQuery extends SelectedFilters, Partial<LimitOffset> { /** */ }
+export type ProductsQuery = Partial<SelectedFilters> & Partial<LimitOffset>

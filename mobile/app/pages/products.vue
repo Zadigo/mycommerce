@@ -3,7 +3,7 @@
     <ion-header>
       <ion-toolbar>
         <ion-buttons>
-          <ion-back-button :icon="arrowBackOutline" :text="null" default-href="/" />
+          <ion-back-button :icon="arrowBackOutline" :text="''" default-href="/" />
         </ion-buttons>
       </ion-toolbar>
     </ion-header>

@@ -9,6 +9,8 @@ export type Nullable<T> = T | null
 
 export type Refable<T> = Ref<T>
 
+export type Empty<T> = Undefineable<T> | Nullable<T>
+
 export interface BaseApiResponse<T> {
   count: number
   next: Nullable<number>

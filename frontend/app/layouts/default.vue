@@ -6,24 +6,23 @@
     <slot />
 
     <!-- Modals -->
-    <ClientOnly>
+    <client-only>
       <ModalsLogin />
-      <ModalsCart @edit-product="handleProductEdition" />
+      <ModalsCart />
       <ModalsAddedProduct />
       <ModalsEditProduct />
       <ModalsSearch />
       <ModalsWhatsApp v-model="showWhatsAppModal" />
-    </ClientOnly>
+    </client-only>
 
     <!-- Footer -->
-    <ClientOnly>
-      <BaseFooter :items="footerLinks" class="mt-40" @show-whatsapp="showWhatsAppModal=true" />
-    </ClientOnly>
+    <client-only>
+      <base-footer class="mt-40" @show-whatsapp="showWhatsAppModal=true" />
+    </client-only>
   </section>
 </template>
 
 <script setup lang="ts">
-import { footerLinks } from '~/data'
 import type { ProductToEdit } from '~/types'
 
 const cartStore = useCart()

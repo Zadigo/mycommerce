@@ -11,6 +11,7 @@ type FunctionCallback = (data: CartUpdateApiResponse) => void
  */
 export const useCart = defineStore('cart', () => {
   const cache = ref<CartUpdateApiResponse | null>()
+  const currentEditedProduct = ref<ProductToEdit>()
 
   // Container used to save the user selections
   // when trying to add a product to the cart 
@@ -227,8 +228,27 @@ export const useCart = defineStore('cart', () => {
      * @deprecated Use `useStorageSetup` instead
      */
     products,
+    /**
+     * Shows the drawer/modal
+     * that notifies the user that
+     * a product has been added to the cart
+     */
     showAddedProductDrawer,
+    /**
+     * The product that is currently
+     * being edited in the cart
+     * @default false
+     */
+    currentEditedProduct,
+    /**
+     * Show the edit product drawer/modal
+     * @default false
+     */
     showEditProductDrawer,
+    /**
+     * Show the cart drawer/modal
+     * @default false
+     */
     showCartDrawer
   }
 })

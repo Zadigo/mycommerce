@@ -1,6 +1,7 @@
 import type { SessionCacheData } from '~/types'
 
 export * from './footer'
+export * from './symbols'
 
 export const baseSessionCacheData: SessionCacheData = {
   language: {

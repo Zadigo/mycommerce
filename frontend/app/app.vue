@@ -1,19 +1,22 @@
 <template>
-  <NuxtLayout>
+  <nuxt-layout>
     <!-- Loader -->
-    <NuxtLoadingIndicator />
+    <nuxt-loading-indicator />
     
-    <ClientOnly>
-      <Toaster />
-    </ClientOnly>
-  
-    <NuxtPage />
+    <!-- Toaster -->
+    <client-only>
+      <toaster />
+    </client-only>
+    
+    <!-- Main -->
+    <nuxt-page />
 
-    <ClientOnly>
-      <ModalsLanguage />
-      <ModalsWhatsApp />
-    </ClientOnly>
-  </NuxtLayout>
+    <!-- Modals -->
+    <client-only>
+      <modals-language />
+      <modals-whats-app />
+    </client-only>
+  </nuxt-layout>
 </template>
 
 <script setup lang="ts">

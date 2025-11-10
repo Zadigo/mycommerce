@@ -115,13 +115,17 @@ function handleCartButtonRedirection () {
   router.push(toLocalePath('/shop/collection/novelties'))
 }
 
+const cartStore = useCart()
+const { currentEditedProduct, showEditProductDrawer } = storeToRefs(cartStore)
+
 /**
  * Handle the opening or the closing of 
  * the product edition dialog by ensuring
  * that cartDrawer is closed
- * TODO: Refactor this function
  */
 function handleOpenProductEdition (editedProduct: ProductToEdit) {
-  emit('edit-product', editedProduct)
+  currentEditedProduct.value = editedProduct
+  showCartDrawer.value = false
+  showEditProductDrawer.value = true
 }
 </script>

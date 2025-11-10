@@ -14,13 +14,13 @@
     </div>
 
     <!-- Feed -->
-    <Suspense>
+    <suspense>
       <AsyncProductsFeed @products:list="handleLoadedProducts" @modal:product-filters="toggleModal" />
 
       <template #fallback>
         <ProductsLoadingFeed />
       </template>
-    </Suspense>
+    </suspense>
 
     <!-- Modals -->
     <ClientOnly>

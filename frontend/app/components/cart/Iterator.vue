@@ -4,7 +4,7 @@
       <div class="flex justify-start gap-3">
         <div id="image" class="w-2/4">
           <nuxt-link-locale  id="link-product-img" :to="`/shop/${associatedValue(item.product__id, 'product').id}`" @click="$emit('show-cart-drawer')">
-            <NuxtImg :src="mediaPath(item.product_info?.product.get_main_image.original, '/placeholder.svg')" class="w-full rounded-md" />
+            <nuxt-img :src="mediaPath(item.product_info?.product.get_main_image.original, '/placeholder.svg')" class="w-full rounded-md" />
           </nuxt-link-locale >
         </div>
 
@@ -31,11 +31,11 @@
 
           <div id="actions" class="mt-5">
             <volt-button v-if="isEditable" id="action-edit-product" variant="light" class="me-2 rounded-full" size="sm" @click="handleProductEdition(item)">
-              <Icon name="i-lucide:pen" />
+              <icon name="i-lucide:pen" />
             </volt-button>
 
             <volt-button id="action-delete-product" variant="light" class="rounded-full" size="sm" @click="proxyDeleteFromCart(item)">
-              <Icon name="i-lucide:trash" />
+              <icon name="i-lucide:trash" />
             </volt-button>
           </div>
         </div>

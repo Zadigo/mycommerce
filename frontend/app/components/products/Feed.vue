@@ -60,36 +60,38 @@ const emit = defineEmits<{ 'products:list': [products: Product[]], 'modal:produc
  * Products
  */
 
-const { id } = useRoute().params
-const query = ref<Partial<ProductsQuery>>({ offset: 0 })
-const { customHandleError } = useErrorHandler()
+// const { id } = useRoute().params
+// const query = ref<Partial<ProductsQuery>>({ offset: 0 })
+// const { customHandleError } = useErrorHandler()
 
-const { data: apiResponse, status, error, refresh } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
-  method: 'GET',
-  query: query.value,
-  onResponseError({ error }) {
-    // TODO: G-Analytics
-    // gtag('event', 'exception', {
-    //   fatal: true, 
-    //   description: error?.message
-    // })
-    customHandleError(error)
-  }
-})
+// const { data: apiResponse, status, error, refresh } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
+//   method: 'GET',
+//   query: query.value,
+//   onResponseError({ error }) {
+//     // TODO: G-Analytics
+//     // gtag('event', 'exception', {
+//     //   fatal: true, 
+//     //   description: error?.message
+//     // })
+//     customHandleError(error)
+//   }
+// })
 
-provide('productsLoading', ref<boolean>(status.value !== 'success'))
+const { query, products, apiResponse, isLoading, refreshProducts, totalProductCount } = await useProductsComposable()
 
-if (error.value) {
-  throw createError({
-    statusCode: 500,
-    statusText: error.value.message
-  })
-}
+provide('productsLoading', isLoading)
 
-const products = computed(() => isDefined(apiResponse.value) ? apiResponse.value.results : [])
-const totalProductCount = computed(() => products.value.length)
+// if (error.value) {
+//   throw createError({
+//     statusCode: 500,
+//     statusText: error.value.message
+//   })
+// }
 
-whenever(() => status.value === 'success', () => {
+// const products = computed(() => isDefined(apiResponse.value) ? apiResponse.value.results : [])
+// const totalProductCount = computed(() => products.value.length)
+
+whenever(isLoading, () => {
   emit('products:list', products.value)
 })
 
@@ -118,12 +120,12 @@ const intersectionTarget = ref<HTMLElement | null>(null)
 // the user has reached the limit of the intersection
 if (import.meta.client) {
   useIntersectionObserver(intersectionTarget, ([{ isIntersecting }]) => {
-    if (isIntersecting && isDefined(apiResponse.value)) {
+    if (isIntersecting && isDefined(products)) {
       isLoadingMoreProducts.value = true
       
-      if (apiResponse.value.next !== null) {
+      if (isDefined(apiResponse)) {
         query.value.offset = apiResponse.value.next
-        refresh()
+        refreshProducts()
       } else {
         console.error('Intersection does not have a next page')
       }

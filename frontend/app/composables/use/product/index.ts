@@ -5,6 +5,7 @@ export * from './images'
 export * from './stock'
 export * from './ws_manager'
 export * from './utils'
+export * from './items'
 
 type ImageComponentMap = Record<number, Component>
 

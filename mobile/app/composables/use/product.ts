@@ -1,18 +1,18 @@
-import type { Nullable, Product } from "~/types"
+// import type { Nullable, Product } from "~/types"
 
-const [useProviderProduct, useProductStore] = createInjectionState((products: Product[]) => {
-  const router = useRouter()
-  const _products = ref<Product[]>(products || [])
-  const currentProduct = ref<Nullable<Product>>(null)
-  function setProduct(product: Product) {
-    currentProduct.value = product
-    router.push('/product')
-  }
+// const [useProviderProduct, useProductStore] = createInjectionState((products: Product[]) => {
+//   const router = useRouter()
+//   const _products = ref<Product[]>(products || [])
+//   const currentProduct = ref<Nullable<Product>>(null)
+//   function setProduct(product: Product) {
+//     currentProduct.value = product
+//     router.push('/product')
+//   }
 
-  return {
-    currentProduct,
-    setProduct
-  }
-})
+//   return {
+//     currentProduct,
+//     setProduct
+//   }
+// })
 
-export { useProductStore, useProviderProduct }
+// export { useProductStore, useProviderProduct }

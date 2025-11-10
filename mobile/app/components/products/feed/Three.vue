@@ -6,7 +6,7 @@
 import type { Product } from '~/types'
 
 const products = inject<Product[]>('products', [])
-const { setProduct } = useProductStore()!
+const { setProduct } = useProductStore()
 
 console.log(products)
 </script>

@@ -42,8 +42,8 @@ const { fetch } = useProductsFeed()
 provideLocal('products', await fetch())
 
 const products = inject<Product[]>('products', [])
-console.log(products)
-useProviderProduct(products)
+// console.log(products)
+// useProviderProduct(products)
 
 /**
  * Modals

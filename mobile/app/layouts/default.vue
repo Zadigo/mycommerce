@@ -2,26 +2,23 @@
   <ion-page>
     <ion-tabs>
       <ion-router-outlet />
-      
+
       <ion-tab-bar slot="bottom">
         <ion-tab-button tab="home" href="/">
-          <ion-icon :icon="home" />
-          <ion-label>Home</ion-label>
+          <ion-icon :icon="homeOutline" />
         </ion-tab-button>
 
-        <ion-tab-button tab="radio" href="/search">
-          <ion-icon :icon="radio" />
-          <ion-label>Search</ion-label>
+        <ion-tab-button tab="search" href="/search">
+          <ion-icon :icon="searchOutline" />
         </ion-tab-button>
 
-        <ion-tab-button tab="library" href="/cart">
-          <ion-icon :icon="library" />
-          <ion-label>Cart</ion-label>
+        <!-- href="/cart" -->
+        <ion-tab-button>
+          <ion-icon :icon="cartOutline" />
         </ion-tab-button>
 
-        <ion-tab-button tab="search" href="/account">
-          <ion-icon :icon="search" />
-          <ion-label>Profile</ion-label>
+        <ion-tab-button tab="account" href="/account">
+          <ion-icon :icon="personCircleOutline" />
         </ion-tab-button>
       </ion-tab-bar>
     </ion-tabs>
@@ -29,5 +26,5 @@
 </template>
 
 <script setup lang="ts">
-import { home, radio, library, search } from 'ionicons/icons'
+import { homeOutline, personCircleOutline, cartOutline, searchOutline } from 'ionicons/icons'
 </script>
