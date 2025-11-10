@@ -41,9 +41,8 @@ const { hasSizes: requiresSizeSelection } = useProductComposable(props.product)
  */
 async function uniqueAddToCart () {
   if (props.product) {
-    await cartStore.addToCart(props.product, (data) => {
+    await cartStore.addToCart(props.product, () => {
       showAddedProductDrawer.value = true
-      cartStore.cache = data
     })
   } else {
     console.error('Card', 'Props does not have a product')

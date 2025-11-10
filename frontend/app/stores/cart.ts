@@ -66,7 +66,7 @@ export const useCart = defineStore('cart', () => {
     
     const { vueApp } = useNuxtApp()
 
-    const response = await $fetch<CartUpdateApiResponse>('/api/v1/cart/add', {
+    const data = await $fetch<CartUpdateApiResponse>('/api/v1/cart/add', {
       method: 'POST',
       body: userSelection.value,
       baseURL: useRuntimeConfig().public.prodDomain,
@@ -79,10 +79,10 @@ export const useCart = defineStore('cart', () => {
       }
     })
 
-    cache.value = response
+    cache.value = data
         
     if (callback && typeof callback === 'function') {
-      callback.call(vueApp, response)
+      callback.call(vueApp, data)
     }
   }
 

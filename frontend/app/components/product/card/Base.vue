@@ -7,10 +7,10 @@
     </div>
     
     <!-- Carousel -->
-    <ProductCardCarousel :product="product" :index="index" :is-hovered="isHovered" :show-carousel="showCarousel" @has-navigated="emit('has-navigated', [index, product])" />
+    <product-card-carousel :product="product" :index="index" :is-hovered="isHovered" :show-carousel="showCarousel" @has-navigated="emit('has-navigated', [index, product])" />
     
     <!-- Cart -->
-    <ProductCardCart :product="product" :is-hovered="isHovered" :show-cart="showCart" />
+    <product-card-cart :product="product" :is-hovered="isHovered" :show-cart="showCart" />
 
     <!-- Price -->
     <div v-if="showPrices" class="mt-4 flex justify-between align-top gap-5">

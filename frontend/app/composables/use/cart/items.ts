@@ -83,26 +83,28 @@ export async function useCartInformation() {
 
   console.log('sessionCache', sessionCache)
 
-  const cart = ref<CartUpdateApiResponse | null>(sessionCache.value?.cart)
-  const products = computed(() => isDefined(cart) ? cart.value.results : [])
-  const statistics = computed(() => isDefined(cart) ? cart.value.statistics : [])
+  // const cart = ref<CartUpdateApiResponse | null>(sessionCache.value?.cart)
+  const cartStore = useCart()
+  const { cache } = storeToRefs(cartStore)
+  const products = computed(() => isDefined(cache) ? cache.value.results : [])
+  const statistics = computed(() => isDefined(cache) ? cache.value.statistics : [])
   const hasProducts = computed(() => products.value.length > 0)
 
   const lastAddedProduct = computed(() => products.value.at(-1))
-  const cartTotal = computed(() => isDefined(cart) ? cart.value.total : 0)
+  const cartTotal = computed(() => isDefined(cache) ? cache.value.total : 0)
 
   const freeDeliveryTarget = computed(() => (50 - cartTotal.value) < 0 ? 0 : (50 - cartTotal.value))
 
   const numberOfProducts = computed(() => {
-    if (isDefined(cart)) {
-      return cart.value.statistics.reduce((acc, item) => acc += item.quantity, 0)
+    if (isDefined(cache)) {
+      return cache.value.statistics.reduce((acc, item) => acc += item.quantity, 0)
     } else {
       return 0
     }
   })
 
   function associatedItem(productId: number) {
-    return useArrayFind(cart.value?.results || [], (item) => item.product.id === productId)
+    return useArrayFind(cache.value?.results || [], (item) => item.product.id === productId)
   }
 
   function associatedValue(productId: number, key: keyof CartItem) {
