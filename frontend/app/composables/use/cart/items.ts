@@ -4,6 +4,7 @@ import type { CartItem, CartUpdateApiResponse } from '~/types'
 /**
  * Syncs the cart data received from Django
  *  with the Firestore
+ * @deprecated Maybe use one source of truth either Django -> Pinia -> Nuxt or Firestore -> Nuxt
  */
 export async function useSyncCart() {
   if (import.meta.server) {
@@ -86,6 +87,7 @@ export async function useCartInformation() {
   // const cart = ref<CartUpdateApiResponse | null>(sessionCache.value?.cart)
   const cartStore = useCart()
   const { cache } = storeToRefs(cartStore)
+  
   const products = computed(() => isDefined(cache) ? cache.value.results : [])
   const statistics = computed(() => isDefined(cache) ? cache.value.statistics : [])
   const hasProducts = computed(() => products.value.length > 0)

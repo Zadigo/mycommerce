@@ -109,7 +109,7 @@ export const useCart = defineStore('cart', () => {
    * Remove
    */
   
-  async function deleteFromCart(cartItem: ProductToEdit, callback?: (deletedItem: ProductToEdit, updatedCart: CartUpdateApiResponse) => void) {
+  async function deleteFromCart(cartItem: CartUpdateApiResponse['statistics'][number], callback?: (deletedItem: CartUpdateApiResponse['statistics'][number], updatedCart: CartUpdateApiResponse) => void) {
     const { djangoSessionId } = useDjangoSession()
 
     if (djangoSessionId && djangoSessionId.value) {
@@ -123,12 +123,15 @@ export const useCart = defineStore('cart', () => {
             method: 'POST',
             body: {
               session_id: djangoSessionId.value,
-              product_id: cartItem.product_info?.product.id,
-              size: cartItem.product_info?.size
+              product_id: cartItem.product__id,
+              size: cartItem.size
             }
           }
-        )
 
+        )
+        
+        cache.value = response
+        
         if (callback && typeof callback === 'function') {
           callback(cartItem, response)
         }
@@ -197,7 +200,16 @@ export const useCart = defineStore('cart', () => {
      * when trying to add a product to the cart 
      */
     userSelection,
+    /**
+     * Indicates if a product is being added to the cart
+     * @default false
+     */
     addingToCartState,
+    /**
+     * Total price of the cart
+     * @default 0
+     * @deprecated Use `useStorageSetup` instead
+     */
     cartTotal,
     /**
      * Target that the customer must
@@ -250,6 +262,10 @@ export const useCart = defineStore('cart', () => {
      * @default false
      */
     showCartDrawer
+  }
+}, {
+  persist: {
+    pick: ['cache']
   }
 })
 

@@ -6,16 +6,18 @@
       </h2>
 
       <volt-button variant="outlined">
-        <NuxtLink id="link-wishlist" to="/wishlist" @click="showCartDrawer = false">
-          <Icon name="i-fa7-regular:heart" class="me-2" />
+        <nuxt-link-locale id="link-wishlist" to="/wishlist" @click="showCartDrawer = false">
+          <icon name="i-fa7-regular:heart" class="me-2" />
           {{ $t('Favoris') }}
-        </NuxtLink>
+        </nuxt-link-locale>
       </volt-button>
     </div>
 
     <volt-divider />
     
     <div class="px-5">
+      {{ hasProducts }}
+      
       <div v-if="hasProducts" class="flex flex-col my-10">
         <div class="p-5 shadow-sm rounded-md bg-green-100">
           <div v-if="freeDeliveryTarget > 0">
@@ -40,7 +42,7 @@
         </div>
 
         <!-- Products -->
-        <CartIterator class="mt-2 mb-5" @edit-product="handleOpenProductEdition" />
+        <cart-iterator class="mt-2 mb-5" @edit-product="handleOpenProductEdition" />
 
         <div class="flex justify-between align-center py-4">
           <span class="font-light">{{ $t('Total (TVA comprise)') }}</span>
@@ -51,9 +53,9 @@
           isAuthenticated: {{ isAuthenticated }}
 
           <volt-button v-if="isAuthenticated">
-            <NuxtLink od="link-start-checkout" to="/cart">
+            <nuxt-link-locale od="link-start-checkout" to="/cart">
               {{ $t('Passer commande') }}
-            </NuxtLink>
+            </nuxt-link-locale>
           </volt-button>
 
           <volt-button v-else id="action-login-cart" rounded @click="showCartDrawer=false, showLoginDrawer=true">
@@ -75,9 +77,9 @@
           </p>
 
           <volt-button @click.prevent="handleCartButtonRedirection">
-            <NuxtLink id="link-collections-cart" to="/collections/all">
+            <nuxt-link-locale id="link-collections-cart" to="/collections/all">
               {{ $t('Découvrir') }}
-            </NuxtLink>
+            </nuxt-link-locale>
           </volt-button>
         </div>
       </div>

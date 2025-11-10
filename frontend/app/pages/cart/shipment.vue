@@ -1,7 +1,7 @@
 <template>
   <volt-card>
     <template #content>
-      <KeepAlive>
+      <keep-alive>
         <form @submit.prevent>
           <h2 class="font-bold text-2xl mb-5">
             {{ $t("Adresse de livraison") }}
@@ -31,14 +31,14 @@
             <volt-input-text v-model="newShippingInfo.telephone" class="w-full" placeholder="Téléphone" autocomplete="tel" />
           </div>
 
-          <volt-label for="create-address-set" class="mt-2">
+          <volt-label label-for="create-address-set" class="mt-2">
             <volt-toggle-switch id="create-address-set" v-model="saveShipmentDetails" />
             <template #label>
               {{ $t('Sauvegarder mes données') }}
             </template> 
           </volt-label>
         </form>
-      </KeepAlive>
+      </keep-alive>
     </template>
 
     <template #footer>

@@ -1,8 +1,6 @@
 <template>
   <volt-drawer v-model:visible="showAddedProductDrawer" position="right">
     <div class="px-5 overflow-y-scroll">
-      {{ products }}
-
       <div v-if="hasProducts" class="my-5">
         <div class="flex justify-start mb-5 fs-5 items-center gap-2">
           <Icon name="circle-check" class="text-green-500" />

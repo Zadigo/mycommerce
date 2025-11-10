@@ -50,10 +50,6 @@ export function useDjangoSession() {
     }
   }
 
-  onBeforeMount(async () => {
-    await requestSessionId()
-  })
-
   return {
     /**
      * ID used by Django to identify anonymous users when
@@ -82,7 +78,9 @@ export async function useStorageSetup() {
   // but as the data is not sensitive either way is good
   // const sessionCache = useSessionStorage<SessionCacheData>('cache', baseSessionCacheData)
   const sessionId = useCookie('sessionId', cookieOptions)
-  const { djangoSessionId } = useDjangoSession()
+  const { djangoSessionId, requestSessionId } = useDjangoSession()
+  
+  onBeforeMount(async () => { await requestSessionId() })
 
   const likedProducts = useLocalStorage<number[]>('likedProducts', [])
   

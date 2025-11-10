@@ -34,7 +34,7 @@
               <icon name="i-lucide:pen" />
             </volt-button>
 
-            <volt-button id="action-delete-product" variant="light" class="rounded-full" size="sm" @click="proxyDeleteFromCart(item)">
+            <volt-button id="action-delete-product" variant="light" class="rounded-full" size="sm" @click="() => cartStore.deleteFromCart(item)">
               <icon name="i-lucide:trash" />
             </volt-button>
           </div>
@@ -121,9 +121,7 @@ function handleProductEdition (item: ProductToEdit) {
 /**
  * @param cartItem The item t odelete from the cart
  */
-function proxyDeleteFromCart(cartItem: ProductToEdit) {
-  cartStore.deleteFromCart(cartItem, () => {
-
-  })
-}
+// function proxyDeleteFromCart(cartItem: ProductToEdit) {
+//   cartStore.deleteFromCart(cartItem)
+// }
 </script>
