@@ -20,8 +20,6 @@
 </template>
 
 <script setup lang="ts">
-import 'animate.css'
-
 useStorageSetup()
 // Initialize user session management
 // and global state

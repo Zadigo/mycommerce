@@ -81,45 +81,41 @@ export default defineNuxtConfig({
 
       // What's App
       whatsAppUrl: process.env.NUXT_PUBLIC_WHATS_APP_URL
-    }
-  },
+        }
+      },
 
-  modules: [
-    '@pinia/nuxt',
-    '@vueuse/nuxt',
-    '@nuxtjs/sitemap',
-    '@unlok-co/nuxt-stripe',
-    '@nuxt/image',
-    '@nuxtjs/i18n',
-    '@nuxt/icon',
-    '@nuxt/test-utils',
-    '@nuxt/scripts',
-    'shadcn-nuxt',
-    'vue-sonner/nuxt',
-    'pinia-plugin-persistedstate',
-    'nuxt-schema-org',
-    '@nuxt/fonts',
-    'nuxt-vuefire'
-  ],
+      modules: [
+        '@nuxt/fonts',
+        '@nuxt/hints',
+        '@nuxt/icon',
+        '@nuxt/image',
+        '@nuxt/scripts',
+        '@nuxt/test-utils',
+        '@nuxtjs/i18n',
+        '@nuxtjs/sitemap',
+        '@pinia/nuxt',
+        '@unlok-co/nuxt-stripe',
+        '@vueuse/motion',
+        '@vueuse/nuxt',
+        'nuxt-authentication',
+        'nuxt-schema-org',
+        'nuxt-vuefire',
+        'pinia-plugin-persistedstate',
+        'shadcn-nuxt',
+        'vue-sonner/nuxt'
+      ],
 
-  shadcn: {
-    prefix: 'Tail',
-    componentDir: '~/components/ui'
-  },
+      shadcn: {
+        prefix: 'Tail',
+        componentDir: '~/components/ui'
+      },
 
-  i18n: {
-    baseUrl: './',
-    langDir: './locales',
-    defaultLocale: 'fr',
-    lazy: true,
-    vueI18n: './i18n.config.ts',
-    bundle: {
-      // TODELETE:  bundle.optimizeTranslationDirective is enabled by default, we recommend 
-      // disabling this feature as it causes issues and will be deprecated in v10.
-      optimizeTranslationDirective: false
-    },
-    // customRoutes: 'config',
-    locales: [
+      i18n: {
+        baseUrl: './',
+        langDir: './locales',
+        defaultLocale: 'fr',
+        vueI18n: './i18n.config.ts',
+        locales: [
       {
         code: 'en',
         language: 'en-US',
@@ -141,7 +137,7 @@ export default defineNuxtConfig({
         dir: 'ltr',
         name: 'Français'
       }
-    ],
+        ],
     // pages: {
     //   'guide': { fr: '/guide-achat', en: '/guide-achat', es: '/guide-achat' },
     //   'wishlist': { fr: '/liste-souhait', en: '/wishlist', es: '/wishlist' },
@@ -314,30 +310,30 @@ export default defineNuxtConfig({
     provider: 'none'
   },
 
-  nitro: {
-    prerender: {
-      routes: [
-        '/mentions-legales',
-        '/confidentialite'
-      ]
-    },
-    storage: {
-      redis: {
-        driver: 'redis',
-        host: process.env.NUXT_PUBLIC_REDIS_HOST,
-        port: 6379,
-        username: process.env.NUXT_PUBLIC_REDIS_USER,
-        password: process.env.NUXT_PUBLIC_REDIS_PASSWORD
-      }
-    },
-    devStorage: {
-      redis: {
-        driver: 'redis',
-        host: '127.0.0.1',
-        port: 6379,
-        username: '',
-        password: ''
-      }
-    }
-  }
+  // nitro: {
+  //   prerender: {
+  //     routes: [
+  //       '/mentions-legales',
+  //       '/confidentialite'
+  //     ]
+  //   },
+  //   storage: {
+  //     redis: {
+  //       driver: 'redis',
+  //       host: process.env.NUXT_PUBLIC_REDIS_HOST,
+  //       port: 6379,
+  //       username: process.env.NUXT_PUBLIC_REDIS_USER,
+  //       password: process.env.NUXT_PUBLIC_REDIS_PASSWORD
+  //     }
+  //   },
+  //   devStorage: {
+  //     redis: {
+  //       driver: 'redis',
+  //       host: '127.0.0.1',
+  //       port: 6379,
+  //       username: '',
+  //       password: ''
+  //     }
+  //   }
+  // }
 })

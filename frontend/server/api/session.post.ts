@@ -1,15 +1,19 @@
-export default defineEventHandler(async event => {
-  const access = getCookie(event, 'access')
+// export default defineEventHandler(async event => {
+//   const access = getCookie(event, 'access')
 
-  const response = await $fetch<{ token: string }>('/api/v1/cart/session-id', {
-    baseURL: useRuntimeConfig().public.prodDomain,
-    method: 'POST',
-    headers: [
-      ['Authorization', access ? `Token ${access}` : '']
-    ]
-  })
+//   const response = await $fetch<{ token: string }>('/api/v1/cart/session-id', {
+//     baseURL: useRuntimeConfig().public.prodDomain,
+//     method: 'POST',
+//     headers: [
+//       ['Authorization', access ? `Token ${access}` : '']
+//     ]
+//   })
 
-  return {
-    token: response.token
-  }
+//   return {
+//     token: response.token
+//   }
+// })
+
+export default defineCachedEventHandler(_event => {
+  return 'tok_en12345'
 })
