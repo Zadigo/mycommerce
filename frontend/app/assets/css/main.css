@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 @import "tailwindcss-primeui";
 
+@custom-variant dark (&:where(.p-dark, .p-dark *, .dark));
+
 @theme {
     --p-warning-color-500: #ffc667;
 }

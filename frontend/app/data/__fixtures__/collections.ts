@@ -1,6 +1,6 @@
-import type { CollectionApiResponse } from '~/types'
+import type { Arrayable, CollectionApiResponse } from '~/types'
 
-export const collectionApiResponseFixture: CollectionApiResponse[] = [
+export const collectionRestApiFixture: Arrayable<CollectionApiResponse> = [
   {
     id: 1,
     name: "Mini-Jupes",

@@ -11,6 +11,13 @@ export default defineNuxtConfig({
     url: process.env.NUXT_PUBLIC_DJANGO_PROD_URL || 'http://localhost:3000'
   },
 
+  app: {
+    pageTransition: {
+      name: 'page',
+      mode: 'out-in'
+    }
+  },
+
   routeRules: {
     '/': {
       swr: true,

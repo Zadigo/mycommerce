@@ -1,15 +1,15 @@
 <template>
   <nav class="block w-full px-4 py-2 mx-auto text-white bg-white shadow-md lg:px-8 lg:py-3 sticky top-0 z-50">
     <div class="container flex flex-wrap items-center justify-between mx-auto text-slate-800">
-      <NuxtLinkLocale  id="link-home-navbar" to="/" class="mr-4 block cursor-pointer py-1.5 text-base text-slate-800 font-semibold">
+      <nuxt-link-locale  id="link-home-navbar" to="/" class="mr-4 block cursor-pointer py-1.5 text-base text-slate-800 font-semibold">
         Ecommerce
-      </NuxtLinkLocale >
+      </nuxt-link-locale >
 
       <NavbarDropdownCollections />
 
       <div class="hidden lg:block">
         <client-only>
-          <ul class="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+          <ul class="hidden gap-2 mt-2 mb-4 lg:mb-0 lg:flex lg:items-center lg:gap-6 lg:mt-0">
             <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
               <volt-secondary-button id="action-search" class="ms-auto me-2" rounded @click="() => { showSearchModal = true }">
                 <icon name="i-lucide-search" />
@@ -19,48 +19,42 @@
 
             <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
               <a id="action-cart-navbar" href="#" class="flex items-center gap-2" @click.prevent="handleShowCartDrawer">
-                <Icon name="i-fa7-solid:shopping-bag" size="18" />
+                <icon name="i-fa7-solid:shopping-bag" size="18" />
                 {{ $t("Panier") }}
               </a>
             </li>
 
             <li v-if="!isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
               <a id="action-signin" href="#" class="flex items-center gap-2" @click.prevent="() => { showLoginDrawer = true }">
-                <Icon name="i-fa7-solid:sign-in-alt" size="18" />
+                <icon name="i-fa7-solid:sign-in-alt" size="18" />
                 {{ $t('Se connecter') }}
               </a>
             </li>
             <li v-else class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
               <a id="action-signout" href="#" class="flex items-center gap-2" @click.prevent="useLogout">
-                <Icon name="i-fa7-solid:sign-out-alt" size="18" />
+                <icon name="i-fa7-solid:sign-out-alt" size="18" />
                 {{ $t('Se déconnecter') }}
               </a>
             </li>
             
             <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-              <NuxtLinkLocale id="link-account-navbar" to="/account/" class="flex items-center gap-2">
-                <Icon name="i-fa7-solid:user" size="18" />
+              <nuxt-link-locale id="link-account-navbar" to="/account/" class="flex items-center gap-2">
+                <icon name="i-fa7-solid:user" size="18" />
                 {{ $t('Compte') }}
-              </NuxtLinkLocale >
+              </nuxt-link-locale >
             </li>
           </ul>
         </client-only>
       </div>
 
-      <button id="action-menu" class="relative ml-auto h-6 max-h-[40px] w-6 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-inherit transition-all hover:bg-transparent focus:bg-transparent active:bg-transparent disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:hidden" type="button">
-        <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg>
-        </span>
+      <button id="action-menu" class="relative ml-auto h-6 max-h-10 w-6 select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-inherit transition-all hover:bg-transparent focus:bg-transparent active:bg-transparent disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:hidden" type="button">
+       <icon name="i-fa7-solid:bars" size="18" />
       </button>
     </div>
   </nav>
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
-
 /**
  * Global modals
  */

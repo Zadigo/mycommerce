@@ -1,12 +1,18 @@
 <template>
-  <section id="collections" class="my-5 md:my-10 mx-5">
-    <div v-if="status === 'pending'" class="grid grid-cols-1 md:grid-cols-3 gap-2">
-      <volt-skeleton v-for="i in 3" :key="i" class="w-full h-full" />
+  <section id="collections" class="my-5 max-w-7xl mx-auto md:my-10 md:px-5">
+    <div class="my-10 w-full h-[40vh] bg-center bg-no-repeat bg-cover rounded-lg text-white p-10" :style="{ backgroundImage: 'url(/images/img6.jpeg )' }">
+      Something
     </div>
 
-    <div v-else class="grid grid-cols-1 grid-rows-3 auto-rows-fr md:grid-cols-3 md:grid-rows-1 gap-3">
-      <base-collection-card custom-name="All" view-name="all" image="/img4.jpeg" />
-      <base-collection-card v-for="collectionItem in collections" :key="collectionItem.id" :collection="collectionItem" image="/img5.jpeg" />
+    <div class="grid grid-cols-1 xl:grid-cols-3 w-full gap-3">
+      <template v-if="status === 'pending'">
+        <volt-skeleton v-for="i in 3" :key="i" class="w-full h-full" />
+      </template>
+
+      <template v-else>
+        <base-collection-card custom-name="All" view-name="all" image="/images/img4.jpeg" v-motion-slide-bottom />
+        <base-collection-card v-for="collectionItem in collections" :key="collectionItem.id" :collection="collectionItem" image="/images/img5.jpeg" v-motion-slide-bottom />
+      </template>
     </div>
   </section>
 </template>

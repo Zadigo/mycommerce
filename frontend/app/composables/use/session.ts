@@ -11,6 +11,7 @@ const cookieOptions = { sameSite: 'strict', secure: true } as const
  * Composable used to create a unique sessionId for the user
  * and store it in a cookie that we can use to identify anonymous users
  * when they add products to the cart or like products
+ * @deprecated
  */
 export function useDjangoSession() {
   if (import.meta.server) {
@@ -64,6 +65,7 @@ export function useDjangoSession() {
  * Setup the storage for the user session in order to store data
  * such as liked products, session cache, etc.
  * @todo rename to useSessionSetup
+ * @deprecated
  */
 export async function useStorageSetup() {
   if (import.meta.server) {

@@ -21,9 +21,8 @@
 
 <script setup lang="ts">
 useStorageSetup()
-// Initialize user session management
-// and global state
-useUser()
+
+useNuxtAuthentication()
 
 /**
  * Provides global state to the app
