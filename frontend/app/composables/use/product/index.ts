@@ -15,11 +15,14 @@ type ImageComponentMap = Record<number, Component>
  * @param product - The product to determine the image component for
  */
 export function useImageComponentComposable(product: Refable<Undefineable<Product>>) {
+  const DefaultImage = defineAsyncComponent(() => import('~/components/product/page/images/Default.vue'))
   const FiveImages = defineAsyncComponent(() => import('~/components/product/page/images/Five.vue'))
   const SixImages = defineAsyncComponent(() => import('~/components/product/page/images/Six.vue'))
   const NoImages = defineAsyncComponent(() => import('~/components/product/page/images/Empty.vue'))
 
   const imageComponentMap: ImageComponentMap = {
+    3: DefaultImage,
+    4: DefaultImage,
     5: FiveImages,
     6: SixImages
   }

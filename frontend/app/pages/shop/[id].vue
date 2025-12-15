@@ -50,7 +50,7 @@ const AsyncBaseRecommendationBlock = defineAsyncComponent({
 })
 
 /**
- * Product
+ * Get Product
  */
 
 const { product, isLoading, showBanner } = await useProductDetailComposable()

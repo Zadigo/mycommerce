@@ -95,7 +95,7 @@ export async function useStorageSetup() {
 
     const sessionCache = useDocument<SessionCacheData>(docRef)
 
-    console.log('useStorageSetup.sessionCache', sessionCache)
+    // console.log('useStorageSetup.sessionCache', sessionCache)
 
     return {
       /**
@@ -125,7 +125,7 @@ export async function useStorageSetup() {
     const docRef = doc(db, 'sessions', sessionId.value)
     const sessionCache = useDocument<SessionCacheData>(docRef)
     
-    console.log('docRef', docRef)
+    // console.log('docRef', docRef)
     
     return {
       /**

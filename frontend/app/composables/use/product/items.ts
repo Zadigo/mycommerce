@@ -21,6 +21,10 @@ export async function useProductsComposable() {
     }
   })
 
+
+  console.log(data.value)
+
+
   if (error.value) {
     throw createError({
       statusCode: 500,
@@ -28,7 +32,7 @@ export async function useProductsComposable() {
     })
   }
 
-  const products = computed(() => isDefined(data.value) ? data.value.results : [])
+  const products = computed(() => isDefined(data) ? data.value.results : [])
   const totalProductCount = computed(() => products.value.length)
   const isLoading = computed(() => status.value === 'pending')
 

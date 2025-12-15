@@ -119,7 +119,7 @@ const intersectionTarget = ref<HTMLElement | null>(null)
 // Main logic that loads more products into the feed once
 // the user has reached the limit of the intersection
 if (import.meta.client) {
-  useIntersectionObserver(intersectionTarget, ([{ isIntersecting }]) => {
+  useIntersectionObserver(intersectionTarget, ([ { isIntersecting }]) => {
     if (isIntersecting && isDefined(products)) {
       isLoadingMoreProducts.value = true
       

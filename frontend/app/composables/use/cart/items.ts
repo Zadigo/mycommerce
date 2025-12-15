@@ -82,7 +82,7 @@ export async function useCartInformation() {
 
   const { sessionCache } = await useStorageSetup()
 
-  console.log('sessionCache', sessionCache)
+  // console.log('sessionCache', sessionCache)
 
   // const cart = ref<CartUpdateApiResponse | null>(sessionCache.value?.cart)
   const cartStore = useCart()

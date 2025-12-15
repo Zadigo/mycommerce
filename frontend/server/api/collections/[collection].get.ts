@@ -61,7 +61,14 @@
 //   }
 // })
 
+import { productsApiResponseFixture } from '~/data/__fixtures__'
 
 export default defineCachedEventHandler(_event => {
-  return {}
+  return productsApiResponseFixture
+}, {
+  base: 'redis',
+  maxAge: 0, // disable cache for now,
+  getKey() {
+    return 'collection-custom-key'  
+  },
 })

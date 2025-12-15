@@ -17,7 +17,7 @@ export async function useLikeComposable(product: MaybeProduct, callback?: (event
   const { likedProducts } = await useStorageSetup()
 
   const isLiked = useArrayIncludes(likedProducts, currentProduct.value?.id)
-  console.log('isLiked', isLiked, likedProducts)
+  // console.log('isLiked', isLiked, likedProducts)
   // const uniqueIds = useArrayUnique(likedProducts)
   // // Ensures only unique IDs in the storage
   // syncRef(uniqueIds, likedProducts, { direction: 'ltr' })
@@ -123,6 +123,8 @@ export async function useProductDetailComposable() {
       })
     }
   })
+
+  console.log('Fetched product:', product.value)
 
   const isLoading = computed(() => status.value !== 'success')
 

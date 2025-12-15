@@ -15,7 +15,9 @@
 
     <!-- Feed -->
     <suspense>
-      <async-products-feed @products:list="handleLoadedProducts" @modal:product-filters="toggleModal" />
+      <template #default>
+        <async-products-feed @products:list="handleLoadedProducts" @modal:product-filters="toggleModal" />
+      </template>
 
       <template #fallback>
         <products-loading-feed />
@@ -35,7 +37,9 @@ import { useProvideProductsFilteringModal } from '~/composables/use'
 import type { Product, ProductsApiResponse } from '~/types'
 
 const AsyncProductsFeed = defineAsyncComponent({
-  loader: async () => import('~/components/products/Feed.vue')
+  loader: async () => import('~/components/products/Feed.vue'),
+  delay: 1000,
+  timeout: 3000,
 })
 
 /**

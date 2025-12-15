@@ -5,7 +5,7 @@
     </h2>
 
     <div ref="productsRow" class="row">
-      <ProductsIterator :columns="columns" :show-carousel="showCarousel" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
+      <products-iterator :columns="columns" :show-carousel="showCarousel" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" @has-navigated="handleNavigation" />
     </div>
   </div>
 </template>
@@ -86,29 +86,33 @@ function handleNavigation (data: (number | Product)[]) {
   }
 }
 
-const { data } = await useAsyncData<Product[]>(
-  `recommendations-${id}`,
-  async () => {
-    return await $client('/api/v1/shop/products/recommendations', {
-      params: {
-        p: id,
-        q: quantity
-      } as FetchOptions,
-      onRequestError({ error }) {
-        customHandleError(error)
-      }
-    })
-  }
-)
-
-const recommendations = computed(() => isDefined(data) ? data : [])
-provide('products', recommendations)
-
-onMounted(async () => {
-  if (scrollable) {
-    if (productsRow.value) {
-      productsRow.value.classList.add('products-wrapper')
+try {
+  const { data } = await useAsyncData<Product[]>(
+    `recommendations-${id}`,
+    async () => {
+      return await $client('/api/v1/shop/products/recommendations', {
+        params: {
+          p: id,
+          q: quantity
+        } as FetchOptions,
+        onRequestError({ error }) {
+          customHandleError(error)
+        }
+      })
     }
-  }
-})
+  )
+
+  const recommendations = computed(() => isDefined(data) ? data : [])
+  provide('products', recommendations)
+  
+  onMounted(async () => {
+    if (scrollable) {
+      if (productsRow.value) {
+        productsRow.value.classList.add('products-wrapper')
+      }
+    }
+  })
+} catch (e) {
+  // Ignore errors
+}
 </script>

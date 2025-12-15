@@ -1,6 +1,6 @@
 <template>
   <section id="collections" class="my-5 max-w-7xl mx-auto md:my-10 md:px-5">
-    <div class="my-10 w-full h-[40vh] bg-center bg-no-repeat bg-cover rounded-lg text-white p-10" :style="{ backgroundImage: 'url(/images/img6.jpeg )' }">
+    <div class="my-10 w-full h-[40vh] bg-center bg-no-repeat bg-cover rounded-lg text-white p-10" :style="{ backgroundImage: 'url(/images/group2/img1.jpg )' }">
       Something
     </div>
 
@@ -10,8 +10,8 @@
       </template>
 
       <template v-else>
-        <base-collection-card custom-name="All" view-name="all" image="/images/img4.jpeg" v-motion-slide-bottom />
-        <base-collection-card v-for="collectionItem in collections" :key="collectionItem.id" :collection="collectionItem" image="/images/img5.jpeg" v-motion-slide-bottom />
+        <base-collection-card custom-name="All" view-name="all" image="/images/group2/img1.jpg" v-motion-slide-bottom />
+        <base-collection-card v-for="collectionItem in collections" :key="collectionItem.id" :collection="collectionItem" image="/images/group2/img2.jpg" v-motion-slide-bottom />
       </template>
     </div>
   </section>

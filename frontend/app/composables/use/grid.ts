@@ -1,7 +1,7 @@
 /**
  * Composable to handle changes to the size of the grid
  */
-export function useHandleGridSize() {
+export const useHandleGridSize = createGlobalState(() => {
   if (import.meta.server) {
     return {
       currentGridSize: ref<number>(3),
@@ -23,8 +23,8 @@ export function useHandleGridSize() {
     return [
       'grid gap-2 px-1',
       {
-        'grid-cols-2 md:grid-cols-4': currentGridSize.value === 3,
-        'grid-cols-3 md:grid-cols-3': currentGridSize.value === 4
+        'grid-cols-1 md:grid-cols-1 md:grid-cols-2 xl:grid-cols-3': currentGridSize.value === 3,
+        'grid-cols-2 md:grid-cols-2 md:grid-cols-3 xl:grid-cols-4': currentGridSize.value === 4
       }
     ]
   })
@@ -43,4 +43,4 @@ export function useHandleGridSize() {
      */
     handleGridSize
   }
-}
+})

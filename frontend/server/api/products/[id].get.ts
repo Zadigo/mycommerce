@@ -2,6 +2,7 @@
 // import { refreshAccessToken } from '~/utils'
 // import { productFixture } from '~/data/__fixtures__/products'
 
+
 // import type { Product } from '~/types'
 
 // export default defineCachedEventHandler(async event => {
@@ -44,6 +45,16 @@
 //   }
 // })
 
+import { productsApiResponseFixture } from '~/data/__fixtures__'
+
 export default defineCachedEventHandler(_event => {
-  return {}
+  const randomIndex = Math.floor(Math.random() * productsApiResponseFixture.results.length) 
+  return productsApiResponseFixture.results[randomIndex]
+}, {
+  base: 'redis',
+  maxAge: 0, // disable cache for now
+  getKey(event) {
+    const id = getRouterParam(event, 'id')
+    return `product-${id}`
+  }
 })

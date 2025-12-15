@@ -35,14 +35,17 @@ const { index, product, isHovered, showCarousel = false } = defineProps<{
 const emit = defineEmits<{ 'has-navigated': [data: (number | Product)[]] }>()
 
 const cleanImages = useArrayMap(product.images, (image) => {
-  if (image.original.startsWith('/')) {
-    image.original = `${useRuntimeConfig().public.prodDomain}${image.original}`
-  }
+  // if (image.original.startsWith('/')) {
+  //   image.original = `${useRuntimeConfig().public.prodDomain}${image.original}`
+  // }
 
   return image
 })
+
 const { state, index: cycleIndex, next, prev } = useCycleList(cleanImages)
 const { isLoading, isReady } = useImage({ src: isDefined(state) ? state.value.original : '' })
 
-console.log('Img', isLoading.value, isReady.value)
+// console.log('Img', isLoading.value, isReady.value)
+
+const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 </script>

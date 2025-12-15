@@ -2,7 +2,15 @@
   <template v-if="products.length > 0">
     <div id="products" :class="gridClass">
       <div v-for="(product, i) in products" id="product" :key="product.id">
-        <product-card-base :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" :show-carousel="true" @has-navigated="handleNavigation" />
+        <client-only>
+          <template #default>
+            <product-card-base :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" :show-carousel="true" :delay="300" v-motion-slide-bottom @has-navigated="handleNavigation" />
+          </template>
+
+          <template #fallback>
+            <product-skeleton-loader :quantity="1" />
+          </template>
+        </client-only>
       </div>
     </div>
   </template>
