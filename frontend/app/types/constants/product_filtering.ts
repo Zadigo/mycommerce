@@ -13,7 +13,7 @@ export const defaultColors = [
   'Kaki',
   'Blanc',
   'Jaune',
-  'Violt'
+  'Violet'
 ] as const
 
 export type DefaultColors = (typeof defaultColors)[number] | (string & {})
@@ -27,11 +27,11 @@ export const defaultSortingFilters = ['Nouveautés', 'Prix croissant', 'Prix dé
 /**
  * Default options for filtering a product by price
 */
-export type DefaultSortingFilters = (typeof defaultSortingFilters)[number]
+// export type DefaultSortingFilters = (typeof defaultSortingFilters)[number]
 
-export const defaultSortingFilterActions = ['New', 'Price up', 'Price down'] as const
+// export const defaultSortingFilterActions = ['New', 'Price up', 'Price down'] as const
 
-export type DefaultSortingFilterActions = (typeof defaultSortingFilterActions)[number]
+// export type DefaultSortingFilterActions = (typeof defaultSortingFilterActions)[number]
 
 export const priceFilter = [
   "Jusqu'à 15€",
@@ -71,7 +71,7 @@ export const defaultPriceFilters: { text: DefaultPriceFilters, value: string }[]
   },
   {
     text: "Jusqu'à 35€",
-    value: 'Up to 40',
+    value: 'Up to 35',
   },
   {
     text: "Jusqu'à 50€",
@@ -79,10 +79,14 @@ export const defaultPriceFilters: { text: DefaultPriceFilters, value: string }[]
   }
 ] as const
 
-export const sortingFilterActions: (DefaultSortingFilterActions | DefaultSortingFilters)[][] = [
+export const sortingFilterActions = [
   ['New', 'Nouveautés'],
   ['Price up', 'Prix croissant'],
   ['Price down', 'Prix décroissant']
 ] as const
+
+export type DefaultSortingFilterActions = typeof sortingFilterActions[number][0]
+
+export type DefaultSortingFilters = typeof sortingFilterActions[number][1]
 
 export type Actions = 'sorted by' | 'typology' | 'colors' | 'sizes' | 'price'

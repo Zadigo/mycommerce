@@ -16,7 +16,7 @@
       </div>
       
       <!-- Recommendations -->
-      <Suspense v-else>
+      <suspense v-else>
         <template #default>
           <AsyncRecommendations @has-navigated="showSearchModal=false" />
         </template>
@@ -26,7 +26,7 @@
             <ProductsLoadingCards :quantity="8" />
           </div>
         </template>
-      </Suspense>
+      </suspense>
     </div>
   </volt-drawer>
 </template>

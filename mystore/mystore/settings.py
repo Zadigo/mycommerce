@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'django_ckeditor_5',
     'storages',
     'django_celery_beat',
-
+    'django_filter',
     'rest_framework',
     'rest_framework.authtoken',
 
@@ -367,10 +367,6 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': REDIS_URL,
         'KEY_PREFIX': 'ecommerce-shop'
-    },
-    'file': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': BASE_DIR / 'cache'
     }
 }
 

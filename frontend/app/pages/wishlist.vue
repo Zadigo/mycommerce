@@ -1,7 +1,7 @@
 <template>
   <section id="wishlist" class="mx-10 px-10 my-10">
     <div class="grid grid-cols-2">
-      <div class="w-full md:w-2/6">
+      <div v-if="!isAuthenticated" class="w-full md:w-2/6">
         <volt-card class="shadow-sm border-0">
           <template #content>
             <div class="text-center p-5 flex flex-col justify-center">

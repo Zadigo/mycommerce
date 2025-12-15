@@ -6,10 +6,17 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
 from drf_spectacular import views as drf_views
 from rest_framework_simplejwt import views as jwt_views
+from graphene_django.views import GraphQLView
+from django.views.decorators.csrf import csrf_exempt
 
 from mystore import views
 
 urlpatterns = [
+    path(
+        'v1/graphql/',
+        csrf_exempt(GraphQLView.as_view(graphiql=True)),
+        name='graphql'
+    ),
     path(
         '__debug__/',
         include('debug_toolbar.urls')

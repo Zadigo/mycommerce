@@ -16,8 +16,8 @@
           {{ $t('Page not available text') }}
         </p>
 
-        <volt-button size="lg" as-child>
-          <nuxt-link-locale id="link-collections-more" to="/shop/collection/all" class="mt-8" @click="query.offset=0">
+        <volt-button size="lg">
+          <nuxt-link-locale id="link-collections-more" to="/shop/collection/all" @click="query.offset=0">
             {{ $t('Voir toute la collection') }}
           </nuxt-link-locale>
         </volt-button>
@@ -26,14 +26,14 @@
 
     <template #intersect>
       <!-- Intersect -->
-      <ClientOnly>
+      <client-only>
         <div v-if="totalProductCount > 0" id="product-pagination" ref="intersectionTarget" class="font-bold text-uppercase flex justify-center mt-5">
           <volt-button v-if="isEndOfPage" id="scroll-top" size="lg" @click="scrollToTop">
             <Icon name="i-fa7-solid:arrow-up" class="me-2" />
             {{ $t('Tu es arrivé à la fin') }}
           </volt-button>
 
-          <div v-else class="flex-grow">
+          <div v-else class="grow">
             <p v-if="isLoadingMoreProducts">Loading...</p>
 
             <volt-button v-else id="load-more" size="lg">
@@ -42,7 +42,7 @@
             </volt-button>
           </div>
         </div>
-      </ClientOnly>
+      </client-only>
     </template>
   </products-feed-layout>
 </template>

@@ -2,19 +2,19 @@
   <section id="product" class="relative">
     <div class="grid grid-cols-12 grid-row-1 w-full gap-5">      
       <!-- Images -->
-      <ClientOnly>
+      <client-only>
         <component :is="imagesComponent" :images="product?.images" :product="product" @zoom-image="handleSelectedImage" />
-      </ClientOnly>
+      </client-only>
       
       <!-- Details -->
-      <ClientOnly>
+      <client-only>
         <product-page-aside-base :product="product" @size-guide="showSizeGuideDrawer=true" @availability-modal="() => showAvailabilityModal=true" @composition-guide="() => showCompositionModal=true" />
-      </ClientOnly>
+      </client-only>
     </div>
 
     <!-- Recommendations -->
     <div id="recommendations" class="mt-10">
-      <Suspense>
+      <suspense>
         <template #default>
           <async-base-recommendation-block />
         </template>
@@ -24,17 +24,17 @@
             <products-loading-cards :quantity="8" />
           </div>
         </template>
-      </Suspense>
+      </suspense>
     </div>
 
-    <ClientOnly>
+    <client-only>
       <product-page-bottom-cart v-if="showBanner && product" :product="product" :show-banner="showBanner" />
 
       <product-modals-image-zoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
       <product-modals-size-guide v-model="showSizeGuideDrawer" :product="product" />
       <product-modals-availability v-model="showAvailabilityModal" />
       <product-modals-composition v-model="showCompositionModal" />
-    </ClientOnly>
+    </client-only>
   </section>
 </template>
 

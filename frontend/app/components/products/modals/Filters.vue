@@ -68,8 +68,9 @@
 </template>
 
 <script setup lang="ts">
-import { useProvideFilteringModalStore } from '~/composables/use';
-import type { Actions, DefaultClotheSize, defaultClotheSize, defaultPriceFilters, DefaultPriceFilters, ExtendedRouteParamsRawGeneric, ProductsApiResponse, sortingFilterActions } from '~/types';
+import { useProvideFilteringModalStore } from '~/composables/use'
+
+import type { Actions, DefaultClotheSize, defaultClotheSize, DefaultPriceFilters, ExtendedRouteParamsRawGeneric, ProductsApiResponse, sortingFilterActions } from '~/types'
 
 const props = withDefaults(defineProps<{ modelValue: boolean, count: number }>(), { count: 0 })
 const emit = defineEmits<{ 'update-products': [products: ProductsApiResponse], 'update:modelValue': [value: boolean] }>()

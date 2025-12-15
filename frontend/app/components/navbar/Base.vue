@@ -8,7 +8,7 @@
       <NavbarDropdownCollections />
 
       <div class="hidden lg:block">
-        <ClientOnly>
+        <client-only>
           <ul class="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
             <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
               <volt-secondary-button id="action-search" class="ms-auto me-2" rounded @click="() => { showSearchModal = true }">
@@ -44,7 +44,7 @@
               </NuxtLinkLocale >
             </li>
           </ul>
-        </ClientOnly>
+        </client-only>
       </div>
 
       <button id="action-menu" class="relative ml-auto h-6 max-h-[40px] w-6 max-w-[40px] select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-inherit transition-all hover:bg-transparent focus:bg-transparent active:bg-transparent disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:hidden" type="button">
