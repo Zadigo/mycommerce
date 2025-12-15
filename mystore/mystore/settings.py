@@ -46,9 +46,10 @@ INSTALLED_APPS = [
     'django_ckeditor_5',
     'storages',
     'django_celery_beat',
-    'django_filter',
+    'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
+    'graphene_django',
 
     'django_ecommerce',
     'accounts',
@@ -415,3 +416,10 @@ PY_UTILITIES_JWT_SECRET = os.getenv('PY_UTILITIES_JWT_SECRET')
 CART_API_URL = os.getenv('CART_API_URL', 'http://127.0.0.1:8001')
 
 REVIEWS_API_URL = os.getenv('REVIEWS_API_URL', 'http://127.0.0.1:8002')
+
+
+# Graphene
+
+GRAPHENE = {
+    'SCHEMA': 'mystore.schema.schema'
+}

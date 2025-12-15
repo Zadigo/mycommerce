@@ -256,7 +256,7 @@ class AbstractProduct(models.Model):
             #     name='unique_name_with_color'
             # ),
             CheckConstraint(
-                check=Q(unit_price__gt=0),
+                condition=Q(unit_price__gt=0),
                 name='unit_price_over_zero'
             )
         ]
