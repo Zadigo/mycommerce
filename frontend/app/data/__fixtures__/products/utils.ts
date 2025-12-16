@@ -1,6 +1,6 @@
 import type { Arrayable } from '~/types'
-import type { BaseImage, Product } from '~/types/graphql'
-import { productGraphqlFixture } from '~/data/__fixtures__'
+import type { BaseImage, Product, ProductNode } from '~/types/graphql'
+import { productFixture, productGraphqlFixture } from '~/data/__fixtures__'
 
 export const IMAGE_GROUPS = [
   [
@@ -60,19 +60,36 @@ export function generateMainImage<T extends BaseImage>(group: Arrayable<string>)
   } as T
 }
 
-export function generateProducts(count = 3): Product[] {
-  return Array.from({ length: count }, (_, i) => {
+export function generateProducts(count = 3): Product {
+  const container = { ...productGraphqlFixture }
+  
+  container.data.allProducts.edges = Array.from({ length: count }, (_, i) => {
     const randomGroup = getRandomGroup()
+    const product: ProductNode = { ...productFixture }
 
-    const product = {
-      ...productGraphqlFixture,
+    product.node.name = `Product Fixture ${i + 1}`
+    product.node.mainImage = generateMainImage(randomGroup)
+    product.node.productImages = generateImages(randomGroup)
 
-      id: i + 1,
-      name: `Product Fixture ${i + 1}`,
-      get_main_image: generateMainImage(randomGroup),
-      images: generateImages(randomGroup)
-    }
+    product.node.sizeSet = [
+      {
+        active: true,
+        availability: true,
+        metric: 'cm',
+        name: 'S',
+        variantPrice: 0
+      },
+      {
+        active: true,
+        availability: false,
+        metric: 'cm',
+        name: 'M',
+        variantPrice: 5
+      }
+    ]
 
     return product
   })
+
+  return container
 }

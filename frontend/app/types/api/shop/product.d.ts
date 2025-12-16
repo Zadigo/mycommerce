@@ -1,4 +1,4 @@
-import type { DefaultClotheSize } from '~/types/constants'
+import type { DefaultClotheSize } from '~/data/constants/constants'
 import type { _DatabaseObject, _DateTimes, Nullable } from '../..'
 
 /**

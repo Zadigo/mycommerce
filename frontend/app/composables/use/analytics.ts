@@ -1,8 +1,6 @@
-import type { Product } from '~/types'
+import type { ProductNode } from '~/types'
 
-type MaybeProduct = MaybeRef<Product | undefined>
-
-export function useAnalyticsCallback(product: MaybeProduct, index?: number) {
+export function useAnalyticsCallback(product: MaybeRef<ProductNode>, index?: number) {
   const currentProduct = toRef(product)
 
   function triggerEvent(eventName: string) {
@@ -27,16 +25,16 @@ export function useAnalyticsCallback(product: MaybeProduct, index?: number) {
     }
   }
 
-  function triggerEventList(products: Product[]) {
-    const items = useArrayMap(products, (prod, idx) => ({
-      item_id: prod.id,
-      item_name: prod.name,
-      price: prod.get_price,
+  function triggerEventList(products: ProductNode[]) {
+    const items = useArrayMap(products, (product, idx) => ({
+      item_id:  product.node.id,
+      item_name: product.node.name,
+      price: product.node.price,
       quantity: 1,
       item_brand: null,
-      item_category: prod.category,
-      item_category2: prod.sub_category,
-      item_variant: prod.color,
+      item_category: product.node.category,
+      item_category2: product.node.subCategory,
+      item_variant: product.node.color,
       index: idx,
       item_reference: null
     }))
@@ -59,7 +57,7 @@ export function useProductNavigationAnalytics() {
    * to Google Analytics
    * @param data The product that is being navigated to
    */
-  function sendAnalytics(data: (number | Product)[] | null | undefined) {
+  function sendAnalytics(data: (number | ProductNode)[] | null | undefined) {
     if (isDefined(data)) {
       const [id, product] = data
 

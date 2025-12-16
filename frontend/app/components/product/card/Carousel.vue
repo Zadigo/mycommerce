@@ -4,7 +4,7 @@
       <Icon name="i-fa7-solid:caret-left" />
     </button>
 
-    <nuxt-link-locale id="link-product-carousel" :to="`/shop/${product.id}`" @click="emit('has-navigated', [index, product])">
+    <nuxt-link-locale id="link-product-carousel" :to="`/shop/${product.node.id}`" @click="emit('has-navigated', [index, product])">
       <img v-if="!isLoading && isReady" :src="state.original" :alt="state.name" class="self-center aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-full">
       <volt-skeleton v-else class="min-h-100 rounded-md" />
     </nuxt-link-locale>
@@ -17,11 +17,11 @@
 
 <script setup lang="ts">
 import { useImage } from '@vueuse/core'
-import type { Product } from '~/types'
+import type { ProductNode } from '~/types'
 
 const { index, product, isHovered, showCarousel = false } = defineProps<{
   index: number
-  product: Product
+  product: ProductNode
   isHovered?: boolean
   showCarousel?: boolean
 }>()
@@ -32,9 +32,9 @@ const { index, product, isHovered, showCarousel = false } = defineProps<{
  * is useful for Google Analytics for example or for passing
  * information on a product on which the link was clicked
  */
-const emit = defineEmits<{ 'has-navigated': [data: (number | Product)[]] }>()
+const emit = defineEmits<{ 'has-navigated': [data: (number | ProductNode)[]] }>()
 
-const cleanImages = useArrayMap(product.images, (image) => {
+const cleanImages = useArrayMap(product.node.productImages, (image) => {
   // if (image.original.startsWith('/')) {
   //   image.original = `${useRuntimeConfig().public.prodDomain}${image.original}`
   // }

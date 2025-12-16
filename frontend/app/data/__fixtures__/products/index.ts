@@ -88,76 +88,88 @@
 // }
 
 
-import type { Product } from '~/types/graphql'
+import type { Product, ProductNode } from '~/types/graphql'
+
+export const productFixture: ProductNode = {
+  node: {
+    id: '1',
+    name: 'Product GraphQL Fixture',
+    category: 'Skirts',
+    color: 'Pink',
+    createdOn: '2025-1-1',
+    genderCategory: 'Woman',
+    ageGroupCategory: 'Adult',
+    displayNew: true,
+    hasSizes: true,
+    isNew: true,
+    modelHeight: null,
+    modelSize: null,
+    modifiedOn: '2025-1-1',
+    onSale: true,
+    unitPrice: 100,
+    subCategory: 'some',
+    slug: 'slug',
+    sku: '345',
+    salePrice: 80,
+    price: 100,
+    saleValue: 20,
+    mainImage: {
+      createdOn: '2025-1-1',
+      isMainImage: true,
+      name: 'main-image.jpg',
+      original: '/images/main-image.jpg',
+      thumbnail: '/images/main-image-thumb.jpg',
+      variant: 'pink-something'
+    },
+    productImages: [
+      {
+        createdOn: '2025-1-1',
+        isMainImage: true,
+        name: 'main-image.jpg',
+        original: '/images/main-image.jpg',
+        thumbnail: '/images/main-image-thumb.jpg',
+        variant: 'pink-something'
+      }
+    ],
+    collectionSet: {
+      edges: []
+    },
+    sizeSet: [
+      {
+        active: true,
+        availability: true,
+        metric: 'Clothe',
+        name: 'XS',
+        variantPrice: 80
+      },
+      {
+        active: true,
+        availability: true,
+        metric: 'Clothe',
+        name: 'S',
+        variantPrice: 80
+      }
+    ],
+    video: null,
+    colorVariants: [
+      {
+        id: '2',
+        name: 'Variant Pink',
+        mainImage: {
+          thumbnail: '/images/group1/img1.jpg'
+        }
+      }
+    ]
+  }
+}
+
 
 
 export const productGraphqlFixture: Product = {
   data: {
     allProducts: {
       edges: [
-        {
-          node: {
-            id: '1',
-            name: 'Product GraphQL Fixture',
-            category: 'Skirts',
-            color: 'Pink',
-            createdOn: '2025-1-1',
-            genderCategory: 'Woman',
-            ageGroupCategory: 'Adult',
-            displayNew: true,
-            hasSizes: true,
-            isNew: true,
-            modelHeight: null,
-            modelSize: null,
-            modifiedOn: '2025-1-1',
-            onSale: true,
-            unitPrice: 100,
-            subCategory: 'some',
-            slug: 'slug',
-            sku: '345',
-            salePrice: 80,
-            price: 100,
-            saleValue: 20,
-            mainImage: {
-              createdOn: '2025-1-1',
-              isMainImage: true,
-              name: 'main-image.jpg',
-              original: '/images/main-image.jpg',
-              thumbnail: '/images/main-image-thumb.jpg',
-              variant: 'pink-something'
-            },
-            productImages: [
-              {
-                createdOn: '2025-1-1',
-                isMainImage: true,
-                name: 'main-image.jpg',
-                original: '/images/main-image.jpg',
-                thumbnail: '/images/main-image-thumb.jpg',
-                variant: 'pink-something'
-              }
-            ],
-            collectionSet: {
-              edges: []
-            },
-            sizeSet: [
-              {
-                active: true,
-                availability: true,
-                metric: 'Clothe',
-                name: 'XS',
-                variantPrice: 80
-              },
-              {
-                active: true,
-                availability: true,
-                metric: 'Clothe',
-                name: 'S',
-                variantPrice: 80
-              }
-            ],
-            video: null
-          }
-        }
+        productFixture
       ]
     }
   }

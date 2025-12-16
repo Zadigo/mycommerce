@@ -45,6 +45,7 @@ class ProductType(DjangoObjectType):
     unit_price = graphene.Float()
     sale_price = graphene.Float()
     model_height = graphene.Int()
+    color_variants = graphene.List(lambda: ProductType)
 
     class Meta:
         model = Product
@@ -70,6 +71,9 @@ class ProductType(DjangoObjectType):
     @classmethod
     def get_queryset(cls, queryset, info):
         return queryset.filter(active=True)
+
+    def resolve_color_variants(self, info):
+        return Product.objects.filter(name=self.name).exclude(id=self.id)
 
 
 class ProductNoveltyType(DjangoObjectType):
@@ -114,7 +118,8 @@ class ProductQuery(graphene.ObjectType):
         name=graphene.String(),
         sku=graphene.String(),
         color=graphene.String(),
-        unit_price=graphene.Float(),
+        min_price=graphene.Float(),
+        max_price=graphene.Float(),
         sale_value=graphene.Float(),
         slug=graphene.String()
     )
@@ -122,6 +127,9 @@ class ProductQuery(graphene.ObjectType):
     products_by_category = relay.ConnectionField(
         ProductConnection,
         name=graphene.String(required=True),
+        color=graphene.String(),
+        size=graphene.String(),
+        order_by=graphene.String(),
         min_price=graphene.Float(required=False),
         max_price=graphene.Float(required=False)
     )
@@ -135,7 +143,8 @@ class ProductQuery(graphene.ObjectType):
     def resolve_all_products(self, info, **kwargs):
         qs = cache.get('allProducts')
         if not qs:
-            qs = Product.objects.prefetch_related('product_images', 'video').all()
+            qs = Product.objects.prefetch_related(
+                'product_images', 'video').all()
             cache.set('allProducts', qs, 60*15)  # Cache for 15 minutes
         return qs
 
@@ -188,7 +197,8 @@ class ProductQuery(graphene.ObjectType):
         qs = cache.get(cache_key)
 
         if qs is None:
-            qs = Product.objects.prefetch_related('product_images', 'video').filter(category__iexact=name)
+            qs = Product.objects.prefetch_related(
+                'product_images', 'video').filter(category__iexact=name)
             cache.set(cache_key, qs, 60*10)  # Cache for 10 minutes
 
         if min_price is not None:

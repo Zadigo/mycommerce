@@ -1,7 +1,7 @@
 import { useErrorHandler } from '#imports'
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore'
 import { useDocument, useFirestore } from 'vuefire'
-import { baseSessionCacheData } from '~/data'
+import { baseSessionCacheData } from '~/data/constants'
 
 import type { SessionCacheData } from '~/types'
 

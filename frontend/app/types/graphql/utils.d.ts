@@ -3,12 +3,12 @@
  * Type for GraphQL pagination info using Relay-style pagination
  */
 export interface GraphQlPaginationInfo {
-  pageInfo: {
+  pageInfo: Partial<{
     startCursor: string
     endCursor: string
     hasNextPage: boolean
     hasPreviousPage: boolean
-  }
+  }>
 }
 
 /**
@@ -22,11 +22,7 @@ export type RelayNode<N> = {
   node: N
 }
 
-export type RelayEdge<E> = {
-  edges: Array<RelayNode<E>>
-}
-
-export type RelayNodeWithPagination<E> = RelayEdge<E> & GraphQlPaginationInfo
+export type RelayEdge<E> = { edges: Array<RelayNode<E>> } & Partial<GraphQlPaginationInfo>
 
 /**
  * Type for GraphQL response data

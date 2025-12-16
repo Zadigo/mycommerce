@@ -1,5 +1,5 @@
 import type { LocationQuery, RouteParamsRawGeneric } from 'vue-router'
-import type { DefaultClotheSize, DefaultPriceFilters, DefaultSortingFilters } from '~/types/constants'
+import type { DefaultClotheSize, DefaultPriceFilters, DefaultSortingFilters } from '~/data/constants/constants'
 
 export interface CollectionFetchOptions {
   sorted_by: DefaultSortingFilters

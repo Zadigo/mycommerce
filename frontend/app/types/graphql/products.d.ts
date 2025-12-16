@@ -1,4 +1,4 @@
-import type { Nullable, Arrayable } from '.'
+import type { Nullable, Arrayable } from '..'
 import type { GraphQlData, RelayEdge, RelayNode } from '.'
 
 export type GenderCategory = 'Man' | 'Woman' | 'Kid' | 'Unisex'
@@ -46,13 +46,21 @@ export type BaseMainImage = BaseImage
 
 export type BaseVideo = Pick<BaseImage, 'name'> & { content: string }
 
+export type ClotheSizes = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL'
+
+export type ShoeSizes = '36' | '37' | '38' | '39' | '40' | '41' | '42' | '43' | '44' | '45' | '46'
+
+export type BraSizes = '70A' | '70B' | '70C' | '70D' | '75A' | '75B' | '75C' | '75D' | '80A' | '80B' | '80C' | '80D' | '85A' | '85B' | '85C' | '85D'
+
 export interface BaseSizeSet {
 	active: boolean
 	availability: boolean
 	metric: string
-	name: string
+	name: (ClotheSizes | ShoeSizes | BraSizes | 'Unique') & (string | {})
 	variantPrice: number
 }
+
+export type BaseColorVariant = Pick<_BaseProduct, 'id' | 'name'> & { mainImage: Pick<BaseMainImage, 'thumbnail'> }
 
 interface _BaseProduct {
 	id: string
@@ -77,6 +85,7 @@ interface _BaseProduct {
 	salePrice: number
 	price: number
 	saleValue: number
+	colorVariants: Arrayable<BaseColorVariant>
 }
 
 export type BaseProduct = _BaseProduct & {
@@ -86,6 +95,8 @@ export type BaseProduct = _BaseProduct & {
   sizeSet: Arrayable<BaseSizeSet>
   video: Nullable<BaseVideo>
 }
+
+export type ProductNode = RelayNode<BaseProduct>
 
 export type Product = GraphQlData<'allProducts', RelayEdge<BaseProduct>>
 

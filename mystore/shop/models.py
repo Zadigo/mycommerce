@@ -292,14 +292,25 @@ class AbstractProduct(models.Model):
         ]
         constraints = [
             CheckConstraint(
-                condition=Q(unit_price__gt=0),
                 name='unit_price_over_zero',
+                condition=Q(unit_price__gt=0),
                 violation_error_code=_(
-                    'The unit price must be greater than zero')
+                    'The unit price must be greater than zero'
+                )
             ),
             CheckConstraint(
+                name='sale_price_lower_than_unit',
                 condition=Q(sale_price__lt=models.F('unit_price')),
-                name="sale_price_lower_than_unit"
+                violation_error_code=_(
+                    'The sale price must be lower than the unit price'
+                )
+            ),
+            models.UniqueConstraint(
+                name='unique_name_color_product',
+                fields=['name', 'color'],
+                violation_error_message=_(
+                    'A product with the same name and color already exists'
+                )
             )
         ]
 

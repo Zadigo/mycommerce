@@ -1,8 +1,7 @@
 import { useDjangoSession } from '#imports'
 import { useJwt } from '@vueuse/integrations/useJwt'
-import { defineStore } from 'pinia'
 
-import type { CartUpdateApiResponse, JWTData, Product, ProductSizes, ProductToEdit, UserSelection } from '~/types'
+import type { BaseSizeSet, CartUpdateApiResponse, JWTData, MaybeEmpty, ProductNode, ProductToEdit, UserSelection } from '~/types'
 
 type FunctionCallback = (data: CartUpdateApiResponse) => void
 
@@ -41,7 +40,7 @@ export const useCart = defineStore('cart', () => {
  
   const showAddedProductDrawer = ref<boolean>(false)
 
-  async function addToCart(product: Product | null | undefined, callback?: FunctionCallback) {
+  async function addToCart(product: ProductNode | null | undefined, callback?: FunctionCallback) {
     if (!product) {
       console.error('Product is empty')
       return
@@ -55,10 +54,10 @@ export const useCart = defineStore('cart', () => {
     userSelection.value.session_id = djangoSessionId?.value || null
     userSelection.value.product = product
 
-    console.log('product.has_sizes && (userSelection.value.size === Unique || userSelection.value.size === null)', product.has_sizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null))
-    console.log('product.has_sizes', product.has_sizes, userSelection.value.size)
+    console.log('product.has_sizes && (userSelection.value.size === Unique || userSelection.value.size === null)', product.node.hasSizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null))
+    console.log('product.has_sizes', product.node.hasSizes, userSelection.value.size)
 
-    if (product.has_sizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null)) {
+    if (product.node.hasSizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null)) {
       showSizeSelectionWarning.value = true
       addingToCartState.value = false
       return
@@ -86,7 +85,7 @@ export const useCart = defineStore('cart', () => {
     }
   }
 
-  async function sizeSelection(product: Product | null | undefined, size: ProductSizes, doAddToCart?: boolean) {
+  async function sizeSelection(product: MaybeEmpty<ProductNode>, size: BaseSizeSet, doAddToCart?: boolean) {
     if (product) {
       console.info('useCart.handleSizeSelection', product, size)
 

@@ -1,10 +1,11 @@
-import type { ExtendedRouteParamsRawGeneric, MaybeProduct, Product, ProductsApiResponse, ProductsQuery } from '~/types'
+import type { ExtendedRouteParamsRawGeneric, MaybeGrapQlNode, MaybeProduct, Product, ProductNode, ProductsQuery, SearchedProducts } from '~/types'
+
 /**
  * Composable for working with likes on the product
  * on a single product page 
  * @param product - The product to handle likes for
  */
-export async function useLikeComposable(product: MaybeProduct, callback?: (eventName: string) => void) {
+export async function useLikeComposable(product: MaybeGrapQlNode<ProductNode>, callback?: (eventName: string) => void) {
   if (import.meta.server) {
     return {
       isLiked: ref<boolean>(false),
@@ -13,10 +14,10 @@ export async function useLikeComposable(product: MaybeProduct, callback?: (event
     }
   }
 
-  const currentProduct = toRef(product)
+  const currentProduct = toValue(product)
   const { likedProducts } = await useStorageSetup()
 
-  const isLiked = useArrayIncludes(likedProducts, currentProduct.value?.id)
+  const isLiked = useArrayIncludes(likedProducts, currentProduct.node.id)
   // console.log('isLiked', isLiked, likedProducts)
   // const uniqueIds = useArrayUnique(likedProducts)
   // // Ensures only unique IDs in the storage
@@ -25,9 +26,9 @@ export async function useLikeComposable(product: MaybeProduct, callback?: (event
   function like() {
     if (isDefined(currentProduct)) {
       if (isLiked.value) {
-        likedProducts.value = likedProducts.value.filter(id => id !== currentProduct.value.id)
+        likedProducts.value = likedProducts.value.filter(id => id !== currentProduct.node.id)
       } else {
-        likedProducts.value.push(currentProduct.value.id)
+        likedProducts.value.push(currentProduct.node.id)
       }
 
       if (callback) callback('like')
@@ -56,10 +57,10 @@ export async function useLikeComposable(product: MaybeProduct, callback?: (event
  * sizes, and a main image.
  * @param product - The product to check for images
  */
-export function useProductComposable<P extends Product | Ref<Product | null | undefined> | null | undefined>(product: P) {
-  const currentProduct = ref<P>(product)
-
-  if (!currentProduct) {
+export function useProductComposable<P extends MaybeGrapQlNode<ProductNode>>(product: P) {
+  const currentProduct = toValue(product)
+  
+  if (!isDefined(product)) {
     return {
       hasImage: ref<boolean>(false),
       hasSizes: ref<boolean>(false),
@@ -67,40 +68,40 @@ export function useProductComposable<P extends Product | Ref<Product | null | un
       numberOfImages: ref<number>(0),
       hasColorVariants: ref<boolean>(false)
     }
-  }
-
-  const hasImages = computed(() => currentProduct.value.images && currentProduct.value.images.length > 0)
-  const hasSizes = computed(() => currentProduct.value.sizes && currentProduct.value.sizes.length > 0)
-  const hasMainImage = computed(() => currentProduct.value.get_main_image && currentProduct.value.get_main_image.original)
-  const numberOfImages = computed(() => hasImages ? currentProduct.value.images.length : 0)
-  const hasColorVariants = computed(() => currentProduct.value.variants.length > 0)
-
-  return {
-    /**
-     * Whether the product has color variants
-     * @default false
-     */
-    hasColorVariants,
-    /**
-     * Number of images associated with the product
-     * @default 0
-     */
-    numberOfImages,
-    /**
-     * Whether the product has images
-     * @default false
-     */
-    hasImages,
-    /**
-     * Whether the product has sizes
-     * @default false
-     */
-    hasSizes,
-    /**
-     * Whether the product has a main image
-     * @default false
-     */
-    hasMainImage
+  } else {
+    const hasImages = computed(() => currentProduct.node.productImages.length > 0)
+    const hasSizes = computed(() => currentProduct.node.sizeSet.length > 0)
+    const hasMainImage = computed(() => isDefined(currentProduct.node.mainImage))
+    const numberOfImages = computed(() => currentProduct.node.productImages.length)
+    const hasColorVariants = computed(() => currentProduct.node.colorVariants.length > 0)
+  
+    return {
+      /**
+       * Whether the product has color variants
+       * @default false
+       */
+      hasColorVariants,
+      /**
+       * Number of images associated with the product
+       * @default 0
+       */
+      numberOfImages,
+      /**
+       * Whether the product has images
+       * @default false
+       */
+      hasImages,
+      /**
+       * Whether the product has sizes
+       * @default false
+       */
+      hasSizes,
+      /**
+       * Whether the product has a main image
+       * @default false
+       */
+      hasMainImage
+    }
   }
 }
 
@@ -158,69 +159,3 @@ export async function useProductDetailComposable() {
     showBanner
   }
 }
-
-/**
- * A composable that provides global functionnalities
- * on the products filtering modal 
- */
-const [useProvideProductsFilteringModal, useProvideFilteringModalStore] = createInjectionState(() => {
-  const [showModal, toggle] = useToggle()
-
-  /**
-   * Filtering
-   */
-
-  const filteredProducts = ref<ProductsApiResponse[]>([])
-
-  /**
-   * Route parameters
-   */
-
-  const queryParams = useUrlSearchParams<ProductsQuery>('history', { removeNullishValues: true }) as Partial<ProductsQuery>
-
-  const query = ref<ProductsQuery>({
-    sorted_by: 'Nouveautés',
-    typology: [],
-    colors: [],
-    sizes: [],
-    price: null,
-    offset: 0
-  })
-
-  const { last } = useDebouncedRefHistory(query, { deep: true })
-
-  watch(query, (newQuery) => {
-    queryParams.sorted_by = newQuery.sorted_by
-    queryParams.typology = newQuery.typology
-    queryParams.colors = newQuery.colors
-    queryParams.sizes = newQuery.sizes
-    queryParams.price = newQuery.price
-  })
-
-  /**
-   * Function that resets the filters to their default values
-   */
-  function resetFilters() {
-    query.value = {
-      sorted_by: 'Nouveautés',
-      typology: [],
-      colors: [],
-      sizes: [],
-      price: null,
-      offset: 0,
-      limit: 100
-    }
-  }
-
-  return {
-    history: last,
-    query,
-    showModal,
-    filteredProducts,
-    resetFilters,
-    toggleModal: toggle
-  }
-})
-
-export { useProvideProductsFilteringModal, useProvideFilteringModalStore }
-

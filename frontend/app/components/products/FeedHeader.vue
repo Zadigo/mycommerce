@@ -50,7 +50,7 @@
 <script setup lang="ts">
 import { productSymbol } from '~/data/constants/symbols'
 import { useHandleGridSize } from '~/composables/use/grid'
-import type { Product } from '~/types'
+import type { ProductNode } from '~/types'
 
 defineProps<{ count: number }>()
 const emit = defineEmits<{ 'modal:product-filters': [] }>()
@@ -59,13 +59,13 @@ const emit = defineEmits<{ 'modal:product-filters': [] }>()
  * Products
  */
 
-const products = inject<ComputedRef<Product[]>>(productSymbol, computed(() => []))
+const products = inject<ComputedRef<ProductNode[]>>(productSymbol, computed(() => []))
 
 /**
  * Produts categories
  */
 
-const productCategoryNames = useArrayMap(isDefined(products) ? products.value : [], product => product.category)
+const productCategoryNames = useArrayMap(isDefined(products) ? products.value : [], product => product.node.category)
 const productCategories = useArrayUnique(useArrayFilter(productCategoryNames, category => category !== 'Not attributed'))
 
 /**

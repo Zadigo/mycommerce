@@ -1,6 +1,6 @@
 <template>
   <article class="relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
-    <div v-if="product.display_new" class="absolute right-1/16 top-1/30 z-10">
+    <div v-if="product.node.displayNew" class="absolute right-1/16 top-1/30 z-10">
       <volt-badge>
         {{ $t('Nouveau') }}
       </volt-badge>
@@ -16,18 +16,18 @@
     <div v-if="showPrices" class="mt-4 flex justify-between align-top gap-5">
       <div id="price">
         <h3 class="text-sm text-gray-700">
-          <nuxt-link-locale  id="link-product-card-info" :to="`/shop/${product.id}`" @click="emit('has-navigated', [index, product])">
+          <nuxt-link-locale  id="link-product-card-info" :to="`/shop/${product.node.id}`" @click="emit('has-navigated', [index, product])">
             <span aria-hidden="true" class="absolute inset-0" />
-            {{ product.name }}
+            {{ product.node.name }}
           </nuxt-link-locale >
         </h3>
         
-        <p v-if="typeof product.get_price === 'number'" class="font-semibold text-sm">
-          {{ $n(product.get_price, 'currency') }}
+        <p v-if="typeof product.node.price === 'number'" class="font-semibold text-sm">
+          {{ $n(product.node.price, 'currency') }}
         </p>
 
         <p v-else class="font-semibold text-sm">
-          {{ $n(parseFloat(product.get_price), 'currency') }}
+          {{ $n(parseFloat(product.node.price), 'currency') }}
         </p>
       </div>
       
@@ -42,11 +42,11 @@
 
 <script setup lang="ts">
 import { useAnalyticsCallback } from '~/composables/use/analytics'
-import type { Product } from '~/types'
+import type { ProductNode } from '~/types'
 
 const props = defineProps<{
   index: number
-  product: Product
+  product: ProductNode
   showLikeButton?: boolean
   showCarousel?: boolean
   showCart?: boolean
@@ -61,7 +61,7 @@ console.log('props.product', props.product)
  * is useful for Google Analytics for example or for passing
  * information on a product on which the link was clicked
  */
-const emit = defineEmits<{ 'has-navigated': [data: (number | Product)[]] }>()
+const emit = defineEmits<{ 'has-navigated': [data: (number | ProductNode)[]] }>()
 
 // const { gtag } = useGtag()
 const { triggerEvent } = useAnalyticsCallback(props.product, props.index)

@@ -1,4 +1,4 @@
-import type { DefaultColors, DefaultPriceFilters, DefaultSortingFilters, DefaultClotheSize } from '~/types/constants'
+import type { DefaultColors, DefaultPriceFilters, DefaultSortingFilters, DefaultClotheSize } from '~/data/constants/constants'
 import type { Empty } from '..'
 
 /**

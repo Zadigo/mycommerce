@@ -12,7 +12,7 @@
             </volt-accordion-header>
 
             <volt-accordion-content class="flex gap-2">
-              <volt-button v-for="sortingFilter in Array.from(sortingFilterActions)" id="action-sorting-direction" :key="sortingFilter[0]" :active="query.sorted_by===sortingFilter[0]" variant="outline" size="sm" @click="handleFilterSelection('sorted by', sortingFilter[0])">
+              <volt-button v-for="sortingFilter in filterBySorting" id="action-sorting-direction" :key="sortingFilter[0]" :active="query.sorted_by===sortingFilter[0]" variant="outline" size="sm" @click="handleFilterSelection('sorted by', sortingFilter[0])">
                 {{ $t(sortingFilter[0]) }}
               </volt-button>
             </volt-accordion-content>
@@ -31,7 +31,7 @@
             </volt-accordion-header>
 
             <volt-accordion-content class="flex gap-2">
-              <volt-button v-for="size in Array.from(defaultClotheSize)" id="action-filter-size" :key="size" :active="query.sizes.includes(size)" size="sm" variant="outline" class="ms-2" @click="handleFilterSelection('sizes', size)">
+              <volt-button v-for="size in filterByClotheSize" id="action-filter-size" :key="size" :active="query.sizes.includes(size)" size="sm" variant="outline" class="ms-2" @click="handleFilterSelection('sizes', size)">
                 {{ size }}
               </volt-button>
             </volt-accordion-content>
@@ -44,7 +44,7 @@
             </volt-accordion-header>
 
             <volt-accordion-content class="flex justify-start flex-wrap gap-2">
-              <volt-button v-for="priceFilter in Array.from(defaultPriceFilters)" id="action-filter-price"  :key="priceFilter.value" :active="priceFilter.value===query.price" variant="outline" size="sm" @click="handleFilterSelection('price', priceFilter.value)">
+              <volt-button v-for="priceFilter in filterByPrice" id="action-filter-price"  :key="priceFilter.value" :active="priceFilter.value===query.price" variant="outline" size="sm" @click="handleFilterSelection('price', priceFilter.value)">
                 {{ priceFilter.text }}
               </volt-button>
             </volt-accordion-content>
@@ -68,36 +68,32 @@
 </template>
 
 <script setup lang="ts">
-import { useProvideFilteringModalStore } from '~/composables/use'
+import { filterByClotheSize, filterBySorting, filterByPrice, type FilterActions, type PriceFilter } from '~/data/constants'
+import type { ClotheSizes, SearchedProducts } from '~/types'
 
-import type { Actions, DefaultClotheSize, defaultClotheSize, DefaultPriceFilters, ExtendedRouteParamsRawGeneric, ProductsApiResponse, sortingFilterActions } from '~/types'
-
-const props = withDefaults(defineProps<{ modelValue: boolean, count: number }>(), { count: 0 })
-const emit = defineEmits<{ 'update-products': [products: ProductsApiResponse], 'update:modelValue': [value: boolean] }>()
-
+const props = withDefaults(defineProps<{ count: number }>(), { count: 0 })
+const emit = defineEmits<{ 'update-products': [products: SearchedProducts], 'update:modelValue': [value: boolean] }>()
 
 /**
- * Global injection state: Products filtering
+ * Products
  */
 
-const { showModal, query, resetFilters } = useProvideFilteringModalStore()!
-
+const { showModal, query, resetFilters } = await useProductsStore()
 
 /**
  * Route parameters
  */
 
-const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
+const { id } = useRoute().params as { id: string }
 
 
 /**
  * Products
  */
 
-const { data: filteredProducts, execute } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
+const { data: filteredProducts, execute } = await useFetch<SearchedProducts>(`/api/collections/${id}`, {
   method: 'GET',
   immediate: false,
-  query: query.value
 })
 
 /**
@@ -105,7 +101,7 @@ const { data: filteredProducts, execute } = await useFetch<ProductsApiResponse>(
  * @param items The items with which the list should be update
  * @param value The value
  */
-function updateList<T extends (DefaultClotheSize | number)[]>(items: T, value: string | number) {  
+function updateList<T extends (ClotheSizes | number)[]>(items: T, value: string | number) {  
   if (items.includes(value)) {
     const index = items.findIndex(x => {
       if (typeof x === 'number' || typeof x === 'string') {
@@ -125,7 +121,7 @@ function updateList<T extends (DefaultClotheSize | number)[]>(items: T, value: s
  * @param action The filter action
  * @param value The value of the filter
  */
-function handleFilterSelection (action: Actions, value: DefaultClotheSize | DefaultPriceFilters) {
+function handleFilterSelection (action: FilterActions, value: ClotheSizes | PriceFilter) {
   switch (action) {
     case 'sorted by':
       query.value.sorted_by = value
@@ -140,7 +136,7 @@ function handleFilterSelection (action: Actions, value: DefaultClotheSize | Defa
     //   break
 
     case 'sizes':
-      updateList<DefaultClotheSize[]>(query.value.sizes, value)
+      updateList<ClotheSizes[]>(query.value.sizes, value)
       break
 
     case 'price':

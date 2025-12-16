@@ -1,6 +1,8 @@
+import type { Languages } from '.'
 import type { Profile } from './api/accounts'
-import type { CartUpdateApiResponse } from './cart'
 import type { Product } from './api/shop'
+import type { CartUpdateApiResponse } from './cart'
+
 
 export type LanguageOptions = {
   location: string | null //TODELETE: This is now saved in the cookie

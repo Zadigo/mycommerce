@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import { doc, updateDoc } from 'firebase/firestore'
 import { countries } from '~/data/constants'
-import type { DefaultCountries } from '~/types'
+import type { BaseCountries } from '~/types'
 
 type AvailableLanguages = typeof i18n.locale.value
 
@@ -43,7 +43,7 @@ const showLanguageModal = useState<boolean>('showLanguageModal')
 
 const i18n = useI18n()
 const localePath = useLocalePath()
-const i18nCountry = useCookie<DefaultCountries>('i18nCountry', { sameSite: 'strict', secure: true, default: () => 'France' })
+const i18nCountry = useCookie<BaseCountries>('i18nCountry', { sameSite: 'strict', secure: true, default: () => 'France' })
 
 console.info('i18n', i18n.locale.value)
 

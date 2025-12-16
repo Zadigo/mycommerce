@@ -8,9 +8,10 @@ export type Nullable<T> = T | null
 
 export type Refable<T> = Ref<T>
 
-export type Empty<T> = Undefineable<T> | Nullable<T>
+export type MaybeEmpty<T> = Undefineable<T> | Nullable<T>
 
-export type * from './constants'
+export type StringNull = string | null | undefined
+
 export type * from './api/accounts'
 export type * from './cache'
 export type * from './cart'
@@ -19,6 +20,7 @@ export type * from './other'
 export type * from './api/shop'
 export type * from './text'
 export type * from './api'
+export type * from './graphql'
 
 /**
  * Token returned by the Django backend in order
@@ -38,11 +40,6 @@ export interface JWTData {
    */
   cart_id: string
 }
-
-export type StringNull = string | null | undefined
-
-const availableLocales = ['fr', 'en', 'es'] as const;
-export type Languages = (typeof availableLocales)[number];
 
 export interface LocalstorageCacheData {
   cities: Record<string, string>[]
@@ -68,3 +65,7 @@ export interface GuideText {
 export interface ExtendedLocationQuery {
   login?: string | null
 }
+
+export type Languages = 'fr' | 'en' | 'es'
+
+export type BaseCountries = 'France' | 'Guadeloupe' | 'Martinique' | 'Réunion'

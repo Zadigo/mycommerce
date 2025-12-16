@@ -2,11 +2,11 @@
   <products-feed-layout>
     <!-- Filters -->
     <template #filtering>
-      <products-feed-header :count="totalProductCount" @modal:productFilters="emit('modal:product-filters')" />
+      <products-feed-header :count="productsCount" @modal:productFilters="emit('modal:product-filters')" />
     </template>
 
     <!-- Products -->
-    <template v-if="totalProductCount > 0" #default>
+    <template v-if="productsCount > 0" #default>
       <products-iterator :columns="currentGridSize" @has-navigated="sendAnalytics" />
     </template>
 
@@ -27,7 +27,7 @@
     <template #intersect>
       <!-- Intersect -->
       <client-only>
-        <div v-if="totalProductCount > 0" id="product-pagination" ref="intersectionTarget" class="font-bold text-uppercase flex justify-center mt-5">
+        <div v-if="productsCount > 0" id="product-pagination" ref="intersectionTarget" class="font-bold text-uppercase flex justify-center mt-5">
           <volt-button v-if="isEndOfPage" id="scroll-top" size="lg" @click="scrollToTop">
             <Icon name="i-fa7-solid:arrow-up" class="me-2" />
             {{ $t('Tu es arrivé à la fin') }}
@@ -52,7 +52,7 @@ import { useIntersectionObserver } from '@vueuse/core'
 import { useProductNavigationAnalytics } from '~/composables/use/analytics'
 import { useHandleGridSize } from '~/composables/use/grid'
 import { productSymbol } from '~/data/constants/symbols'
-import type { Product, ProductsApiResponse, ProductsQuery } from '~/types'
+import type { Product } from '~/types'
 
 const emit = defineEmits<{ 'products:list': [products: Product[]], 'modal:product-filters': [] }>()
 
@@ -60,41 +60,10 @@ const emit = defineEmits<{ 'products:list': [products: Product[]], 'modal:produc
  * Products
  */
 
-// const { id } = useRoute().params
-// const query = ref<Partial<ProductsQuery>>({ offset: 0 })
-// const { customHandleError } = useErrorHandler()
-
-// const { data: apiResponse, status, error, refresh } = await useFetch<ProductsApiResponse>(`/api/collections/${id}`, {
-//   method: 'GET',
-//   query: query.value,
-//   onResponseError({ error }) {
-//     // TODO: G-Analytics
-//     // gtag('event', 'exception', {
-//     //   fatal: true, 
-//     //   description: error?.message
-//     // })
-//     customHandleError(error)
-//   }
-// })
-
-const { query, products, apiResponse, isLoading, refreshProducts, totalProductCount } = await useProductsComposable()
+const { products, getProducts, isLoading, productsCount, cursor, query } = await useProductsComposable()
+await getProducts()
 
 provide('productsLoading', isLoading)
-
-// if (error.value) {
-//   throw createError({
-//     statusCode: 500,
-//     statusText: error.value.message
-//   })
-// }
-
-// const products = computed(() => isDefined(apiResponse.value) ? apiResponse.value.results : [])
-// const totalProductCount = computed(() => products.value.length)
-
-whenever(isLoading, () => {
-  emit('products:list', products.value)
-})
-
 provide(productSymbol, products)
 
 /**
@@ -116,19 +85,21 @@ const { currentGridSize } = useHandleGridSize()
 const isLoadingMoreProducts = ref<boolean>(false)
 const intersectionTarget = ref<HTMLElement | null>(null)
 
-// Main logic that loads more products into the feed once
-// the user has reached the limit of the intersection
+/**
+ * Scrolling
+ */
+
 if (import.meta.client) {
   useIntersectionObserver(intersectionTarget, ([ { isIntersecting }]) => {
     if (isIntersecting && isDefined(products)) {
       isLoadingMoreProducts.value = true
       
-      if (isDefined(apiResponse)) {
-        query.value.offset = apiResponse.value.next
-        refreshProducts()
-      } else {
-        console.error('Intersection does not have a next page')
-      }
+      // if (isDefined(apiResponse)) {
+      //   query.value.offset = apiResponse.value.next
+      //   refreshProducts()
+      // } else {
+      //   console.error('Intersection does not have a next page')
+      // }
 
       isLoadingMoreProducts.value = false
     }
@@ -139,7 +110,5 @@ if (import.meta.client) {
  * Other
  */
 
-const isEndOfPage = computed(() => apiResponse.value?.next === null)
-
-console.log('products', products.value)
+const isEndOfPage = computed(() => isDefined(cursor) && cursor.value.hasNextPage === false)
 </script>

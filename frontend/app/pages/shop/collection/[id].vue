@@ -16,7 +16,7 @@
     <!-- Feed -->
     <suspense>
       <template #default>
-        <async-products-feed @products:list="handleLoadedProducts" @modal:product-filters="toggleModal" />
+        <async-products-feed @modal:product-filters="toggleModal" />
       </template>
 
       <template #fallback>
@@ -26,15 +26,13 @@
 
     <!-- Modals -->
     <client-only>
-      <products-modals-filters v-model="showModal" :count="productsCount" @update-products="handleUpdateProducts" />
+      <products-modals-filters :count="productsCount" />
     </client-only >
   </section>
 </template>
 
 <script setup lang="ts">
 import { useChangeCase } from '@vueuse/integrations/useChangeCase'
-import { useProvideProductsFilteringModal } from '~/composables/use'
-import type { Product, ProductsApiResponse } from '~/types'
 
 const AsyncProductsFeed = defineAsyncComponent({
   loader: async () => import('~/components/products/Feed.vue'),
@@ -42,48 +40,18 @@ const AsyncProductsFeed = defineAsyncComponent({
   timeout: 3000,
 })
 
+const { t } = useI18n()
+const { id } = useRoute().params
+
 /**
  * Products
  */
 
-const products = ref<Product[]>([])
-const productsLoading = ref<boolean>(true)
-
-const { t } = useI18n()
-const { id } = useRoute().params
-
-provide('productsLoading', productsLoading)
-
-/**
- * Callback function used to set the products loaded
- * in the async component feed back to here
- * @param data The products to use
- */
-function handleLoadedProducts(data: Product[]) {
-  productsLoading.value = false
-  products.value = data
-}
-
-/**
- * Returns a list of products based on the filters
- * that were provided by the user
- * @param data The filtered products
- */
-function handleUpdateProducts(data: ProductsApiResponse) {
-  console.log(data)
-}
-
-/**
- * Global injection state: Products filtering
- */
-
-const { showModal, toggleModal } = useProvideProductsFilteringModal()
+const { products, productsCount, toggleModal } = await useProductsComposable()
 
 /**
  * Schema
  */
-
-const productsCount = computed(() => products.value.length)
 
 useSeoMeta({
   title: useChangeCase(id as string, 'capitalCase'),
@@ -93,11 +61,11 @@ useSeoMeta({
 
 useSchemaOrg(products.value.map(x => defineProduct({
   "@type": 'Product',
-  "@id": `https://example.com/products/${x.slug}`,
-  name: x.name,
-  sku: x.sku,
-  image: x.images?.map(image => image.original) ?? [],
-  url: `https://example.com/products/${x.slug}`,
+  "@id": `https://example.com/products/${x.node.slug}`,
+  name: x.node.name,
+  sku: x.node.sku,
+  image: x.node.productImages.map(image => image.original),
+  url: `https://example.com/products/${x.node.slug}`,
   itemCondition: "https://schema.org/NewCondition",
   brand: {
     "@type": 'Brand',
@@ -105,10 +73,10 @@ useSchemaOrg(products.value.map(x => defineProduct({
     logo: 'https://example.com/image.png',
   },
   offers: {
-    price: x.get_price,
+    price: x.node.price,
     priceCurrency: 'EUR',
     availability: 'https://schema.org/InStock',
-    image: x.get_main_image,
+    image: x.node.mainImage.original,
     shippingDetails: {
       "@type": 'OfferShippingDetails',
       shippingDestination: [
