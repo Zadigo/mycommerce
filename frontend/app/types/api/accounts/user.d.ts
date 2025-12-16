@@ -1,4 +1,4 @@
-import type { _DatabaseObject } from '..'
+import type { _DatabaseObject } from '../..'
 import type { AddressSet } from './shipping'
 
 export type UserProfile = _DatabaseObject & {

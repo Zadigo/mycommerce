@@ -1,5 +1,4 @@
 import type { DeliveryOption } from './cart'
-import type { Product } from './shop'
 
 export type Arrayable<T> = T[]
 
@@ -11,36 +10,16 @@ export type Refable<T> = Ref<T>
 
 export type Empty<T> = Undefineable<T> | Nullable<T>
 
-export interface BaseApiResponse<T> {
-  count: number
-  next: Nullable<number>
-  previous: Nullable<number>
-  results: T[]
-}
-
-export interface _DateTimes {
-  modified_on: string
-  created_on: string
-}
-
-export interface _DatabaseObject {
-  id: number
-}
 
 export type * from './constants'
-
-/**
- * @todo Remove `Product`
- */
-export type MaybeProduct = Product | MaybeRef<Product | undefined> | undefined
-
-export * from './accounts'
-export * from './cache'
-export * from './cart'
-export * from './feed'
-export * from './other'
-export * from './shop'
-export * from './text'
+export type * from './api/accounts'
+export type * from './cache'
+export type * from './cart'
+export type * from './api/feed'
+export type * from './other'
+export type * from './api/shop'
+export type * from './text'
+export type * from './api'
 
 /**
  * Token returned by the Django backend in order

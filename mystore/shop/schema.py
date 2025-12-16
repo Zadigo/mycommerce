@@ -37,6 +37,7 @@ class VideoType(DjangoObjectType):
 
 
 class ProductType(DjangoObjectType):
+    category = graphene.String()
     is_new = graphene.Boolean()
     has_sizes = graphene.Boolean()
     main_image = graphene.Field(ImageType, source='get_main_image')
@@ -118,6 +119,13 @@ class ProductQuery(graphene.ObjectType):
         slug=graphene.String()
     )
 
+    products_by_category = relay.ConnectionField(
+        ProductConnection,
+        name=graphene.String(required=True),
+        min_price=graphene.Float(required=False),
+        max_price=graphene.Float(required=False)
+    )
+
     all_images = graphene.List(ImageType)
     all_videos = graphene.List(VideoType)
 
@@ -174,3 +182,17 @@ class ProductQuery(graphene.ObjectType):
 
     def resolve_all_images(self, info, **kwargs):
         return Image.objects.all()
+
+    def resolve_products_by_category(self, info, name, min_price=None, max_price=None, **kwargs):
+        cache_key = f'productsByCategory_{name}'
+        qs = cache.get(cache_key)
+
+        if qs is None:
+            qs = Product.objects.prefetch_related(
+                'images', 'video').filter(category__iexact=name)
+            cache.set(cache_key, qs, 60*10)  # Cache for 10 minutes
+
+        if min_price is not None:
+            qs = qs.filter(unit_price__gte=min_price)
+
+        return qs

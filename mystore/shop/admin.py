@@ -32,7 +32,7 @@ class ProductResource(ModelResource):
         model = Product
         # fields = [
         #     'name', 'color', 'unit_price', 'active',
-        #     'display_new', 'slug', 'category', 
+        #     'display_new', 'slug', 'category',
         #     'on_sale', 'sale_value'
         # ]
         # exclude = ['id']  # Exclude the ID field on import/export
@@ -63,7 +63,8 @@ class ProductAdmin(ImportExportModelAdmin):
             {
                 'fields': [
                     'color', 'category',
-                    'sub_category', 'gender_category'
+                    'sub_category', 'gender_category',
+                    'age_group_category'
                 ]
             }
         ],

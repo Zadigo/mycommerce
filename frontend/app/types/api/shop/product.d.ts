@@ -1,6 +1,9 @@
 import type { DefaultClotheSize } from '~/types/constants'
-import type { _DatabaseObject, _DateTimes, Nullable } from '..'
+import type { _DatabaseObject, _DateTimes, Nullable } from '../..'
 
+/**
+ * @deprecated
+ */
 export type ProductSizes = _DatabaseObject & {
   name: DefaultClotheSize
   metric: 'Clothe' | 'Shoe'
@@ -8,12 +11,18 @@ export type ProductSizes = _DatabaseObject & {
   active: boolean
 }
 
+/**
+ * @deprecated
+ */
 declare type ProductSet = _DatabaseObject & {
   name: string
   color: string
   color_variant_name: string
 }
 
+/**
+ * @deprecated
+ */
 export type ProductImage = _DatabaseObject & {
   name: string
   product_set: ProductSet[]
@@ -23,12 +32,18 @@ export type ProductImage = _DatabaseObject & {
   is_main_image: boolean
 }
 
+/**
+ * @deprecated
+ */
 export interface ProductVariant extends _DatabaseObject {
   color: string
   get_main_image: ProductImage
   active: boolean
 }
 
+/**
+ * @deprecated
+ */
 export type ProductCollection = _DatabaseObject & {
   name: string
   category: string
@@ -41,9 +56,10 @@ export type ProductCollection = _DatabaseObject & {
 
 /**
  * Base object representing a product in
- * for the e-commerce website 
+ * for the e-commerce website
+ * @deprecated
  */
-export type Product = _DatabaseObject & _DateTimes & {
+export type ProductApi = _DatabaseObject & _DateTimes & {
   name: string
   color: string
   category: string

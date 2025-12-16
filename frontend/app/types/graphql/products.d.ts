@@ -1,5 +1,25 @@
 import type { Nullable, Arrayable } from '.'
-import type { GraphQlData, RelayEdge, RelayNode } from './graphql'
+import type { GraphQlData, RelayEdge, RelayNode } from '.'
+
+export type GenderCategory = 'Man' | 'Woman' | 'Kid' | 'Unisex'
+
+export type AgeGroupCategory = 'Kid' | 'Adult'
+
+export type MainCategory = 'Accessories' 
+	| 'Activewear'
+	| 'Bags'
+	| 'Bras'
+	| 'Denim'
+	| 'Dresses'
+	| 'Pants'
+	| 'Panties'
+	| 'Shoes'
+	| 'Skirts'
+	| 'Shorts'
+	| 'Suits'
+	| 'Tops'
+	| 'Other'
+	| 'Not attributed'
 
 export interface BaseCollectionSet {
 	id: string
@@ -34,7 +54,7 @@ export interface BaseSizeSet {
 	variantPrice: number
 }
 
-export interface BaseProduct {
+interface _BaseProduct {
 	id: string
 	name: string
 	category: string
@@ -42,13 +62,15 @@ export interface BaseProduct {
 	createdOn: string
 	displayNew: boolean
 	hasSizes: boolean
-	genderCategory: string
+	genderCategory: GenderCategory
+	ageGroupCategory: AgeGroupCategory
 	isNew: boolean
 	modelHeight: Nullable<number>
 	modelSize: Nullable<string>
 	modifiedOn: string
 	onSale: boolean
 	unitPrice: number
+	category: MainCategory
 	subCategory: string
 	slug: string
 	sku: string
@@ -57,7 +79,7 @@ export interface BaseProduct {
 	saleValue: number
 }
 
-export type ProductNode = RelayNode<BaseProduct> & {
+export type BaseProduct = _BaseProduct & {
   mainImage: BaseMainImage
   images: Arrayable<BaseImage>
   collectionSet: CollectionSetNodes
@@ -65,6 +87,8 @@ export type ProductNode = RelayNode<BaseProduct> & {
   video: Nullable<BaseVideo>
 }
 
-export type Product = GraphQlData<'allProducts', ProductNode>
+export type Product = GraphQlData<'allProducts', RelayEdge<BaseProduct>>
 
-export type SearchedProducts = GraphQlData<'searchProducts', ProductNode>
+export type SearchedProducts = GraphQlData<'searchProducts', RelayEdge<BaseProduct>>
+
+export type ProductsByCategory = GraphQlData<'productsByCategory', RelayEdge<BaseProduct>>

@@ -1,3 +1,4 @@
+
 /**
  * Type for GraphQL pagination info using Relay-style pagination
  */
@@ -13,8 +14,8 @@ export interface GraphQlPaginationInfo {
 /**
  * Type for Relay Node structure
  * @example
- * ```tags
- * const relayNode: RelayNode<Video> = { edges: [ { node: Video }, ... ] }
+ * ```ts
+ * const relayNode: RelayNode<Video> = { node: Video }
  * ```
  */
 export type RelayNode<N> = {

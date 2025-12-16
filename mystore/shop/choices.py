@@ -63,5 +63,9 @@ class ColorChoices(Choices):
 class GenderChoices(Choices):
     MAN = 'Man'
     WOMAN = 'Woman'
+    UNISEX = 'Unisex'
+
+
+class AgeGroupChoices(Choices):
     KID = 'Kid'
-    NOT_ATTRIBUTED = 'Not attributed'
+    ADULT = 'Adult'

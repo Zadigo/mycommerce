@@ -1,5 +1,5 @@
 import type { DefaultColors, DefaultPriceFilters, DefaultSortingFilters, DefaultClotheSize } from '~/types/constants'
-import type { Empty } from '.'
+import type { Empty } from '..'
 
 /**
  * Default object containining the selections to

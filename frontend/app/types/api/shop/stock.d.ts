@@ -1,5 +1,8 @@
-import type { _DatabaseObject } from '..'
+import type { _DatabaseObject } from '../..'
 
+/**
+ * @deprecated
+ */
 export interface ProductStockApiResponse extends _DatabaseObject {
   variant: {
     id: number

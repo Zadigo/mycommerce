@@ -3,7 +3,7 @@ export * from './payment'
 
 import type { DefaultClotheSize } from '~/types/constants'
 import type { Nullable } from '..'
-import type { Product } from '../shop'
+import type { Product } from '../api/shop'
 
 /**
  * The options selected by the user for the

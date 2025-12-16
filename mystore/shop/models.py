@@ -16,7 +16,7 @@ from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from shop import managers, validators
-from shop.choices import ColorChoices, GenderChoices
+from shop.choices import ColorChoices, GenderChoices, AgeGroupChoices
 from shop.utils import calculate_sale, create_slug, image_path, video_path
 
 from mystore.choices import CategoryChoices, SubCategoryChoices
@@ -60,6 +60,9 @@ class Image(models.Model):
     )
     is_main_image = models.BooleanField(
         default=False
+    )
+    active = models.BooleanField(
+        default=True
     )
     created_on = models.DateField(
         auto_now_add=True
@@ -144,10 +147,19 @@ class AbstractProduct(models.Model):
         blank=True,
         null=True
     )
+    age_group_category = models.CharField(
+        max_length=100,
+        choices=AgeGroupChoices.choices,
+        default=AgeGroupChoices.ADULT,
+        help_text=_(
+            "Additional category in order to classify "
+            "products by age group"
+        )
+    )
     gender_category = models.CharField(
         max_length=100,
         choices=GenderChoices.choices,
-        default=GenderChoices.NOT_ATTRIBUTED,
+        default=GenderChoices.UNISEX,
         help_text=_(
             "Additional category in order to classify "
             "products by gender"
@@ -160,8 +172,8 @@ class AbstractProduct(models.Model):
         default=CategoryChoices.NOT_ATTRIBUTED,
         help_text=_(
             "The main category under which the product "
-            "can be grouped. This allows the grouping of "
-            "products that fit under the given category"
+            "can be grouped. This allows dynamic product "
+            "grouping given its category"
         )
     )
     # sub_category_en = None
@@ -257,7 +269,8 @@ class AbstractProduct(models.Model):
             # ),
             CheckConstraint(
                 condition=Q(unit_price__gt=0),
-                name='unit_price_over_zero'
+                name='unit_price_over_zero',
+                violation_error_code=_('The unit price must be greater than zero')
             )
         ]
 
@@ -535,7 +548,7 @@ def delete_image_on_update(sender, instance, **kwargs):
 # picture assets when a product is deleted
 
 @receiver(pre_delete, sender=Product)
-def delete_images(sender, instance, **kwargs):
+def delete_images(sender, instance: Product, **kwargs):
     """Signal that delets all the images related to the
     given product when it is deleted from the database"""
     is_s3_backend = getattr(settings, 'USE_S3', False)
@@ -548,3 +561,19 @@ def delete_images(sender, instance, **kwargs):
                     path.unlink()
             else:
                 image.original.delete(save=False)
+
+@receiver(pre_save, sender=Product)
+def validate_image_count(sender, instance: Product, **kwargs):
+    """Signal that validates that a product has at least
+    one image associated before being saved as active"""
+    if instance.active:
+        if instance.images.count() == 0:
+            raise ValidationError(
+                {
+                    'images': _(
+                        "A product cannot be marked as active "
+                        "if it does not have at least one image "
+                        "associated"
+                    )
+                }
+            )
