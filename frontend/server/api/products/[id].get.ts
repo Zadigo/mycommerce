@@ -45,11 +45,10 @@
 //   }
 // })
 
-import { productsApiResponseFixture } from '~/data/__fixtures__'
+import { generateProducts } from '~/data/__fixtures__/products/utils'
 
 export default defineCachedEventHandler(_event => {
-  const randomIndex = Math.floor(Math.random() * productsApiResponseFixture.results.length) 
-  return productsApiResponseFixture.results[randomIndex]
+  return generateProducts(1).at(0)
 }, {
   base: 'redis',
   maxAge: 0, // disable cache for now
