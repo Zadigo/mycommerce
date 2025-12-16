@@ -10,7 +10,6 @@ export type Refable<T> = Ref<T>
 
 export type Empty<T> = Undefineable<T> | Nullable<T>
 
-
 export type * from './constants'
 export type * from './api/accounts'
 export type * from './cache'

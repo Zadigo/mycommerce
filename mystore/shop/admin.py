@@ -47,15 +47,15 @@ class ProductAdmin(ImportExportModelAdmin):
         'active'
     ]
     list_per_page = 20
-    filter_horizontal = ['images']
     list_filter = ['active']
     date_hiearchy = 'created_on'
     search_fields = ['name', 'id', 'slug']
+    readonly_fields = ['sku', 'slug', 'sale_price', 'validity_score']
     fieldsets = [
         [
             'General',
             {
-                'fields': ['name', 'sku']
+                'fields': ['name', 'sku', 'validity_score']
             }
         ],
         [
@@ -71,7 +71,7 @@ class ProductAdmin(ImportExportModelAdmin):
         [
             'Media',
             {
-                'fields': ['images', 'video']
+                'fields': ['video']
             }
         ],
         [
@@ -189,7 +189,6 @@ class ProductAdmin(ImportExportModelAdmin):
 class SaleAdmin(ImportExportModelAdmin):
     resource_classes = [ProductResource]
     list_display = ['name', 'color', 'category', 'unit_price', 'active']
-    filter_horizontal = ['images']
     date_hiearchy = 'created_on'
     search_fields = ['name', 'id', 'slug']
 
@@ -198,7 +197,6 @@ class SaleAdmin(ImportExportModelAdmin):
 class NoveltyAdmin(ImportExportModelAdmin):
     resource_classes = [ProductResource]
     list_display = ['name', 'color', 'category', 'unit_price', 'active']
-    filter_horizontal = ['images']
     date_hiearchy = 'created_on'
     search_fields = ['name', 'id', 'slug']
 

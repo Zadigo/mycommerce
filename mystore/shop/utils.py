@@ -1,5 +1,6 @@
 import random
 import re
+import secrets
 import unicodedata
 from decimal import ROUND_DOWN, Decimal
 from urllib.parse import unquote
@@ -146,3 +147,10 @@ def video_path(instance, filename):
 def image_path(instance, filename):
     new_name = product_media_path(filename)
     return f"images/{new_name}"
+
+
+def generate_sku(color: str, length: int = 8) -> str:
+    """Function that generates a SKU based on
+    the color and a random hexadecimal string"""
+    prefix = color[:3].upper()
+    return f"{prefix}{secrets.token_hex(length).upper()}"

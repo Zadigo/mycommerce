@@ -126,7 +126,7 @@ export const productGraphqlFixture: Product = {
               thumbnail: '/images/main-image-thumb.jpg',
               variant: 'pink-something'
             },
-            images: [
+            productImages: [
               {
                 createdOn: '2025-1-1',
                 isMainImage: true,

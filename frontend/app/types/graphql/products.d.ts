@@ -81,7 +81,7 @@ interface _BaseProduct {
 
 export type BaseProduct = _BaseProduct & {
   mainImage: BaseMainImage
-  images: Arrayable<BaseImage>
+  productImages: Arrayable<BaseImage>
   collectionSet: CollectionSetNodes
   sizeSet: Arrayable<BaseSizeSet>
   video: Nullable<BaseVideo>

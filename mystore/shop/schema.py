@@ -38,7 +38,7 @@ class VideoType(DjangoObjectType):
 
 class ProductType(DjangoObjectType):
     category = graphene.String()
-    is_new = graphene.Boolean()
+    # is_new = graphene.Boolean()
     has_sizes = graphene.Boolean()
     main_image = graphene.Field(ImageType, source='get_main_image')
     price = graphene.Float(source='get_price')
@@ -62,7 +62,7 @@ class ProductType(DjangoObjectType):
             'on_sale': ['exact'],
             'display_new': ['exact'],
             'slug': ['exact'],
-            'is_new': ['exact'],
+            # 'is_new': ['exact'],
             'get_price': ['exact', 'lt', 'gt'],
             'has_sizes': ['exact'],
         }
@@ -135,7 +135,7 @@ class ProductQuery(graphene.ObjectType):
     def resolve_all_products(self, info, **kwargs):
         qs = cache.get('allProducts')
         if not qs:
-            qs = Product.objects.prefetch_related('images', 'video').all()
+            qs = Product.objects.prefetch_related('product_images', 'video').all()
             cache.set('allProducts', qs, 60*15)  # Cache for 15 minutes
         return qs
 
@@ -188,8 +188,7 @@ class ProductQuery(graphene.ObjectType):
         qs = cache.get(cache_key)
 
         if qs is None:
-            qs = Product.objects.prefetch_related(
-                'images', 'video').filter(category__iexact=name)
+            qs = Product.objects.prefetch_related('product_images', 'video').filter(category__iexact=name)
             cache.set(cache_key, qs, 60*10)  # Cache for 10 minutes
 
         if min_price is not None:

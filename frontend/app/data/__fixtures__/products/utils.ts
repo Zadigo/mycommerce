@@ -1,4 +1,6 @@
-import type { Arrayable, Product, ProductsApiResponse } from '~/types'
+import type { Arrayable } from '~/types'
+import type { BaseImage, Product } from '~/types/graphql'
+import { productGraphqlFixture } from '~/data/__fixtures__'
 
 export const IMAGE_GROUPS = [
   [
@@ -30,68 +32,45 @@ export const IMAGE_GROUPS = [
   ]
 ]
 
-export function generateImages(group: Arrayable<string>): Product['images'] {
+function getRandomGroup() {
+  const index = Math.floor(Math.random() * IMAGE_GROUPS.length)
+  return IMAGE_GROUPS[index] as Arrayable<string>
+}
+
+export function generateImages(group: Arrayable<string>): Arrayable<BaseImage> {
   return group.map((imageUrl, i) => ({
-    id: i + 1,
+    createdOn: '2025-01-01',
+    isMainImage: i === 0,
     name: `Image ${i + 1}`,
-    is_main_image: i === 0,
-    mid_size: imageUrl,
     original: imageUrl,
     thumbnail: imageUrl,
-    product_set: [
-      {
-        id: 1,
-        color: 'Pink',
-        color_variant_name: 'Pink',
-        name: 'Pink'
-      }
-    ]
+    variant: 'default'
   }))
 }
 
-export function generateMainImage() {
-  const group = IMAGE_GROUPS[Math.floor(Math.random() * IMAGE_GROUPS.length)]
-
-  if (group) {
-    const imageUrl = group[0]
-
-    if (imageUrl) {
-      const item = {
-        id: 1,
-        name: 'Image',
-        is_main_image: true,
-        mid_size: imageUrl,
-        original: imageUrl,
-        thumbnail: imageUrl,
-        product_set: [
-          {
-            id: 1,
-            color: 'Pink',
-            color_variant_name: 'Pink',
-            name: 'Pink'
-          }
-        ]
-      }
-
-      return [group, item]
-    }
-  }
-
-  return [null, null]
+export function generateMainImage<T extends BaseImage>(group: Arrayable<string>): T {
+  const imageUrl = group[0] as string
+  return {
+    createdOn: '2025-01-01',
+    isMainImage: true,
+    name: 'Main Image',
+    original: imageUrl,
+    thumbnail: imageUrl,
+    variant: 'default'
+  } as T
 }
 
 export function generateProducts(count = 3): Product[] {
-
   return Array.from({ length: count }, (_, i) => {
-    const [selectedGroup, mainImage] = generateMainImage()
+    const randomGroup = getRandomGroup()
 
     const product = {
-      ...productFixture,
+      ...productGraphqlFixture,
 
       id: i + 1,
       name: `Product Fixture ${i + 1}`,
-      get_main_image: mainImage,
-      images: generateImages(selectedGroup)
+      get_main_image: generateMainImage(randomGroup),
+      images: generateImages(randomGroup)
     }
 
     return product

@@ -4,9 +4,10 @@ import string
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db import models
+from django.db import IntegrityError, models, transaction
 from django.db.models import CheckConstraint, Choices, Q, UniqueConstraint
-from django.db.models.signals import post_delete, pre_delete, pre_save
+from django.db.models.signals import (post_delete, post_save, pre_delete,
+                                      pre_save)
 from django.dispatch import receiver
 from django.forms import ValidationError
 from django.urls import reverse
@@ -16,8 +17,9 @@ from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from shop import managers, validators
-from shop.choices import ColorChoices, GenderChoices, AgeGroupChoices
-from shop.utils import calculate_sale, create_slug, image_path, video_path
+from shop.choices import AgeGroupChoices, ColorChoices, GenderChoices
+from shop.utils import (calculate_sale, create_slug, generate_sku, image_path,
+                        video_path)
 
 from mystore.choices import CategoryChoices, SubCategoryChoices
 
@@ -37,6 +39,12 @@ class Image(models.Model):
             "Used for the image's "
             "alt attribute"
         )
+    )
+    product = models.ForeignKey(
+        'shop.Product',
+        models.CASCADE,
+        related_name='product_images',
+        db_index=True
     )
     variant = models.CharField(
         max_length=100,
@@ -75,6 +83,13 @@ class Image(models.Model):
                 condition=Q(is_main_image=True),
                 fields=['is_main_image'],
                 name='main_image_images'
+            )
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['product'],
+                condition=Q(is_main_image=True),
+                name='unique_main_image_per_product'
             )
         ]
 
@@ -187,10 +202,6 @@ class AbstractProduct(models.Model):
             "better classify the product in the database"
         )
     )
-    images = models.ManyToManyField(
-        Image,
-        blank=True
-    )
     video = models.ForeignKey(
         Video,
         on_delete=models.CASCADE,
@@ -221,25 +232,30 @@ class AbstractProduct(models.Model):
     )
     display_new = models.BooleanField(
         default=False,
-        help_text=_(
-            "Manual way of showing a product "
-            "as new in addition to the auto aggregation "
-            "in done in Novelty"
-        )
+        help_text=_("Show a product as new")
     )
     slug = models.SlugField(
         max_length=200,
         unique=True,
         blank=True
     )
+    validity_score = models.CharField(
+        max_length=10,
+        blank=True,
+        help_text=_(
+            "Indicates whether the product fulfills "
+            "all the requirements in order to be "
+            "displayed on Nuxt without any fundamental issues"
+        )
+    )
     active = models.BooleanField(
         default=False
     )
-    modified_on = models.DateField(
-        auto_now_add=True
-    )
     created_on = models.DateField(
         auto_now=True
+    )
+    modified_on = models.DateField(
+        auto_now_add=True
     )
 
     class Meta:
@@ -247,7 +263,7 @@ class AbstractProduct(models.Model):
         ordering = ['-created_on']
         indexes = [
             models.Index(
-                condition=Q(on_sale=True),
+                condition=Q(on_sale=True) & Q(active=True),
                 fields=['on_sale'],
                 name='on_sale_products'
             ),
@@ -260,31 +276,44 @@ class AbstractProduct(models.Model):
                 condition=Q(active=True),
                 fields=['active'],
                 name='active_products'
+            ),
+            models.Index(
+                fields=['slug'],
+                name='slug_products'
+            ),
+            models.Index(
+                fields=['created_on'],
+                name='created_on_products'
+            ),
+            models.Index(
+                fields=['category', 'active', '-created_on'],
+                name='category_active_products'
             )
         ]
         constraints = [
-            # UniqueConstraint(
-            #     fields=['name', 'color', 'sku'],
-            #     name='unique_name_with_color'
-            # ),
             CheckConstraint(
                 condition=Q(unit_price__gt=0),
                 name='unit_price_over_zero',
-                violation_error_code=_('The unit price must be greater than zero')
+                violation_error_code=_(
+                    'The unit price must be greater than zero')
+            ),
+            CheckConstraint(
+                condition=Q(sale_price__lt=models.F('unit_price')),
+                name="sale_price_lower_than_unit"
             )
         ]
 
     def __str__(self):
         return f'{self.pk}: {self.name}'
 
-    @property
-    def is_new(self):
-        """The `is_new` property is a read-only attribute 
-        that determines whether a product is considered new. 
-        A product is classified as new if it has been created 
-        within the last five days."""
-        difference = (now() - timedelta(days=5))
-        return self.created_on <= difference.date()
+    # @property
+    # def is_new(self):
+    #     """The `is_new` property is a read-only attribute
+    #     that determines whether a product is considered new.
+    #     A product is classified as new if it has been created
+    #     within the last five days."""
+    #     difference = (now() - timedelta(days=5))
+    #     return self.created_on <= difference.date()
 
     @property
     def get_main_image(self):
@@ -292,14 +321,17 @@ class AbstractProduct(models.Model):
         that retrieves the main image for a product. If the product 
         has a designated main image, it returns that image; otherwise, 
         it returns the first image from the product's image collection."""
-        queryset = self.images.filter(is_main_image=True)
-        if queryset.exists():
-            return queryset.first()
-        return self.images.first()
+        return next(
+            (
+                img for img in self.product_images.all()
+                if img.is_main_image
+            ),
+            self.product_images.first()
+        )
 
     @property
     def has_multiple_images(self):
-        return self.images.all().count() > 1
+        return len(self.product_images.all()) > 1
 
     @property
     def get_price(self):
@@ -351,41 +383,6 @@ class AbstractProduct(models.Model):
     def color_variant_name(self):
         return f'{self.name} {self.color}'
 
-    @cached_property
-    def validity_score(self):
-        """Indicates whether the product fulfills all
-        the follwing requirements in order to be displayed
-        on Nuxt without any fundamental issues"""
-        score_map = {
-            'number_of_images': 5,
-            'has_sizes': 3,
-            'has_category': 2,
-            'has_subcategory': 1,
-            'model': 1
-        }
-
-        score = 0
-        total_score = sum(list(score_map.values()))
-
-        if self.has_sizes:
-            score += score_map['has_sizes']
-
-        if self.has_multiple_images:
-            score += score_map['number_of_images']
-
-        if self.category != 'Not attributed':
-            score += score_map['has_category']
-
-        logic = [
-            self.model_height is not None,
-            self.model_size is not None,
-        ]
-
-        if all(logic):
-            score += score_map['model']
-
-        return f"{score}/{total_score}"
-
     @property
     def sale_percentage(self):
         if self.on_sale:
@@ -402,10 +399,27 @@ class AbstractProduct(models.Model):
                 )
             self.sale_price = calculate_sale(self.unit_price, self.sale_value)
 
-        if not self.sku:
-            color = self.color[:3]
-            numbers = map(lambda _: random.choice(string.digits), range(10))
-            self.sku = f"{color.upper()}{''.join(numbers)}"
+        # if not self.sku:
+        #     color = self.color[:3]
+        #     numbers = map(lambda _: random.choice(string.digits), range(10))
+        #     self.sku = f"{color.upper()}{''.join(numbers)}"
+
+    def save(self, *args, **kwargs):
+        if self.sku:
+            return super().save(*args, **kwargs)
+
+        MAX_SKU_RETRIES = 3
+
+        for attempt in range(MAX_SKU_RETRIES):
+            self.sku = generate_sku(self.color)
+
+            try:
+                with transaction.atomic():
+                    return super().save(*args, **kwargs)
+
+            except IntegrityError:
+                if attempt == MAX_SKU_RETRIES - 1:
+                    raise
 
 
 class Product(AbstractProduct):
@@ -498,7 +512,7 @@ class Wishlist(AbstractUserList):
     class Meta:
         verbose_name = _('Wishlist')
         constraints = [
-            UniqueConstraint(
+            models.UniqueConstraint(
                 fields=['name', 'user'],
                 name='unique_list_name_per_user'
             )
@@ -513,67 +527,116 @@ def create_product_slug(instance, **kwargs):
     instance.slug = create_slug(instance.name, color)
 
 
-@receiver(post_delete, sender=Image)
-def delete_image(sender, instance, **kwargs):
-    is_s3_backend = getattr(settings, 'USE_S3', False)
-    if not is_s3_backend:
-        if instance.original:
-            path = pathlib.Path(instance.original.path)
-            if path.is_file():
-                path.unlink()
-    else:
-        instance.url.delete(save=False)
+# @receiver(post_delete, sender=Image)
+# def delete_image(sender, instance, **kwargs):
+#     is_s3_backend = getattr(settings, 'USE_S3', False)
+#     if not is_s3_backend:
+#         if instance.original:
+#             path = pathlib.Path(instance.original.path)
+#             if path.is_file():
+#                 path.unlink()
+#     else:
+#         instance.url.delete(save=False)
 
 
-@receiver(pre_save, sender=Image)
-def delete_image_on_update(sender, instance, **kwargs):
-    is_s3_backend = getattr(settings, 'USE_S3', False)
-    if not is_s3_backend:
-        if instance.pk:
-            try:
-                old_image = Image.objects.get(pk=instance.pk)
-            except:
-                return
-            else:
-                new_image = instance.original
-                if old_image and old_image != new_image:
-                    path = pathlib.Path(old_image.original.path)
-                    if path.is_file():
-                        path.unlink()
-    else:
-        instance.original.delete(save=False)
+# @receiver(pre_save, sender=Image)
+# def delete_image_on_update(sender, instance, **kwargs):
+#     is_s3_backend = getattr(settings, 'USE_S3', False)
+#     if not is_s3_backend:
+#         if instance.pk:
+#             try:
+#                 old_image = Image.objects.get(pk=instance.pk)
+#             except:
+#                 return
+#             else:
+#                 new_image = instance.original
+#                 if old_image and old_image != new_image:
+#                     path = pathlib.Path(old_image.original.path)
+#                     if path.is_file():
+#                         path.unlink()
+#     else:
+#         instance.original.delete(save=False)
 
 
-# OPTIONAL: Signal that can be used to clean up the
-# picture assets when a product is deleted
+# # OPTIONAL: Signal that can be used to clean up the
+# # picture assets when a product is deleted
 
-@receiver(pre_delete, sender=Product)
-def delete_images(sender, instance: Product, **kwargs):
-    """Signal that delets all the images related to the
-    given product when it is deleted from the database"""
-    is_s3_backend = getattr(settings, 'USE_S3', False)
-    images = instance.images.all()
-    for image in images:
-        if image.original:
-            if not is_s3_backend:
-                path = pathlib.Path(image.original.path)
-                if path.is_file():
-                    path.unlink()
-            else:
-                image.original.delete(save=False)
+# @receiver(pre_delete, sender=Product)
+# def delete_images(sender, instance: Product, **kwargs):
+#     """Signal that delets all the images related to the
+#     given product when it is deleted from the database"""
+#     is_s3_backend = getattr(settings, 'USE_S3', False)
+#     images = instance.images.all()
+#     for image in images:
+#         if image.original:
+#             if not is_s3_backend:
+#                 path = pathlib.Path(image.original.path)
+#                 if path.is_file():
+#                     path.unlink()
+#             else:
+#                 image.original.delete(save=False)
 
-@receiver(pre_save, sender=Product)
-def validate_image_count(sender, instance: Product, **kwargs):
-    """Signal that validates that a product has at least
-    one image associated before being saved as active"""
-    if instance.active:
-        if instance.images.count() == 0:
-            raise ValidationError(
-                {
-                    'images': _(
-                        "A product cannot be marked as active "
-                        "if it does not have at least one image "
-                        "associated"
-                    )
-                }
-            )
+
+# @receiver(pre_save, sender=Product)
+# def validate_image_count(sender, instance: Product, **kwargs):
+#     """Signal that validates that a product has at least
+#     one image associated before being saved as active"""
+#     if instance.active:
+#         if instance.product_images.count() == 0:
+#             raise ValidationError(
+#                 {
+#                     'images': _(
+#                         "A product cannot be marked as active "
+#                         "if it does not have at least one image "
+#                         "associated"
+#                     )
+#                 }
+#             )
+
+
+@receiver(post_save, sender=Product)
+def check_is_new(instance: Product, created, **kwargs):
+    """Signal that checks whether a product is new
+    and marks it as display_new automatically"""
+    if created:
+        difference = (now() - timedelta(days=5))
+        instance.display_new = (instance.created_on <= difference.date())
+        instance.save()
+
+
+@receiver(post_save, sender=Product)
+def calculate_validity_score(instance: Product, created: bool, **kwargs):
+    """Indicates whether the product fulfills all
+    the follwing requirements in order to be displayed
+    on Nuxt without any fundamental issues"""
+    if created:
+        score_map = {
+            'number_of_images': 5,
+            'has_sizes': 3,
+            'has_category': 2,
+            'has_subcategory': 1,
+            'model': 1
+        }
+
+        score = 0
+        total_score = sum(list(score_map.values()))
+
+        if instance.has_sizes:
+            score += score_map['has_sizes']
+
+        if instance.has_multiple_images:
+            score += score_map['number_of_images']
+
+        if instance.category != 'Not attributed':
+            score += score_map['has_category']
+
+        logic = [
+            instance.model_height is not None,
+            instance.model_size is not None,
+        ]
+
+        if all(logic):
+            score += score_map['model']
+
+        instance.validity_score = f"{score}/{total_score}"
+        instance.save()
