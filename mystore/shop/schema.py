@@ -2,7 +2,7 @@ import graphene
 from django.core.cache import cache
 from graphene import relay
 from graphene_django import DjangoObjectType
-from shop.models import Novelty, Product, Sale, Image, Video
+from shop.models import Image, Novelty, Product, Sale, Video
 
 
 class ImageType(DjangoObjectType):
@@ -41,7 +41,9 @@ class ProductType(DjangoObjectType):
     has_sizes = graphene.Boolean()
     main_image = graphene.Field(ImageType, source='get_main_image')
     price = graphene.Float(source='get_price')
+    unit_price = graphene.Float()
     sale_price = graphene.Float()
+    model_height = graphene.Int()
 
     class Meta:
         model = Product
@@ -125,7 +127,7 @@ class ProductQuery(graphene.ObjectType):
     def resolve_all_products(self, info, **kwargs):
         qs = cache.get('allProducts')
         if not qs:
-            qs = Product.objects.prefetch_related('images', 'videos').all()
+            qs = Product.objects.prefetch_related('images', 'video').all()
             cache.set('allProducts', qs, 60*15)  # Cache for 15 minutes
         return qs
 

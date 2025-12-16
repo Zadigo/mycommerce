@@ -1,9 +1,11 @@
 import graphene
 from shop.schema import ProductQuery
+from variants.schema import VariantQuery
+from collection.schema import CollectionsQuery
 
 
-class StoreQuery(ProductQuery, graphene.ObjectType):
+class Query(CollectionsQuery, VariantQuery, ProductQuery, graphene.ObjectType):
     pass
 
 
-schema = graphene.Schema(query=StoreQuery)
+schema = graphene.Schema(query=Query)
