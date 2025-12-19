@@ -1,7 +1,7 @@
 import { useDjangoSession } from '#imports'
 import { useJwt } from '@vueuse/integrations/useJwt'
 
-import type { BaseSizeSet, CartUpdateApiResponse, JWTData, MaybeEmpty, ProductNode, ProductToEdit, UserSelection } from '~/types'
+import type { BaseSizeSet, CartUpdateApiResponse, JWTData, MaybeType, ProductNode, ProductToEdit, UserSelection } from '~/types'
 
 type FunctionCallback = (data: CartUpdateApiResponse) => void
 
@@ -85,7 +85,7 @@ export const useCart = defineStore('cart', () => {
     }
   }
 
-  async function sizeSelection(product: MaybeEmpty<ProductNode>, size: BaseSizeSet, doAddToCart?: boolean) {
+  async function sizeSelection(product: MaybeType<ProductNode>, size: BaseSizeSet, doAddToCart?: boolean) {
     if (product) {
       console.info('useCart.handleSizeSelection', product, size)
 

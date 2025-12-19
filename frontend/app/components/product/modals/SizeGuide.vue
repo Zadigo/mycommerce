@@ -6,7 +6,7 @@
           {{ $t("Sélectionne une taille") }}
         </p>
 
-        <ProductSizeBlock v-if="product" :product="product" @show-size-guide-drawer="show=false" />
+        <product-size-block v-if="product" :product="product" @show-size-guide-drawer="show=false" />
         <volt-skeleton v-else height="20px" width="60px" />
 
         <p class="text-1xl font-semibold mt-4 mb-1">
@@ -41,7 +41,7 @@
           {{ $t("Comprendre tes mesures ?") }}
         </p>
 
-        <NuxtImg src="img1.jpeg" class="mt-3 rounded-md aspect-square object-cover object-center" />
+        <nuxt-img src="img1.jpeg" class="mt-3 rounded-md aspect-square object-cover object-center" />
       </div>
 
       <!-- Steps -->
@@ -69,32 +69,21 @@
       </div>
 
       <volt-button variant="link">
-        <NuxtLinkLocale id="link-size-guide" to="/">
-          <Icon name="i-fa7-solid:link" />
+        <nuxt-link-locale id="link-size-guide" to="/">
+          <icon name="i-fa7-solid:link" />
           {{ $t('Notre guide complet') }}
-        </NuxtLinkLocale>
+        </nuxt-link-locale>
       </volt-button>
     </div>
   </volt-drawer>
 </template>
 
 <script setup lang="ts">
-import type { Product } from '~/types';
+import type { ProductNode, Undefineable } from '~/types';
 
-const props = defineProps<{
-  modelValue: boolean,
-  product: Product | null | undefined
-}>()
+const props = defineProps<{ product: Undefineable<ProductNode> }>()
 
-const emit = defineEmits<{
-  'update:modelValue': [value: boolean]
-}>()
+const show = defineModel<boolean>('show', { type: Boolean, default: false })
 
 const cartStore = useCart()
-
-const show = useVModel(props, 'modelValue', emit, {
-  passive: true,
-  defaultValue: false
-})
-
 </script>

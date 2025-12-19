@@ -1,4 +1,4 @@
-import type { Nullable, Arrayable } from '..'
+import type { Nullable, Arrayable, MaybeEmpty } from '..'
 import type { GraphQlData, RelayEdge, RelayNode } from '.'
 
 export type GenderCategory = 'Man' | 'Woman' | 'Kid' | 'Unisex'
@@ -34,12 +34,13 @@ export type CollectionSetNodes = RelayEdge<BaseCollectionSet>
 export type CollectionSetNode = RelayNode<BaseCollectionSet>
 
 export interface BaseImage {
-	createdOn: string
-	isMainImage: boolean
+	id: string
 	name: string
 	original: string
 	thumbnail: string
 	variant: string
+	isMainImage: boolean
+	createdOn: string
 }
 
 export type BaseMainImage = BaseImage

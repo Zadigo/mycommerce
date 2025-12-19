@@ -1,54 +1,23 @@
 <template>
-  <volt-drawer id="image-zoom" v-model:visible="show" position="full" :modal="false">
+  <volt-drawer id="image-zoom" v-model:visible="showModal" position="full" :modal="false">
     <div class="px-20 my-2 relative overflow-y-scroll">
-      <div v-if="image" :style="`background-image: url('${image.original}');`" class="zoomed-image z-30" @click="show=false" />
+      <div v-if="selectedImage" :style="{ backgroundImage: `url(${selectedImage.original})` }" class="w-full h-full bg-center bg-no-repeat bg-cover cursor-zoom-out z-30" @click="() => { toggleShowModal() }" />
 
-      <div v-if="product && image" id="image-choices" class="flex flex-col gap-3 absolute top-1/12 right-1/12">
-        <nuxt-img v-for="otherImage in product.images" :key="otherImage.id" :class="{ 'selected': otherImage.id === image.id }" :src="otherImage.thumbnail" class="aspect-square object-fill w-[100px] z-50"  @click="handleSelectedImage(image)" />
+      <div v-if="product && selectedImage" id="image-choices" class="flex flex-col gap-3 absolute top-1/12 right-1/12">
+        <nuxt-img v-for="(otherImage, idx) in product.node.productImages" :key="idx" :class="{ 'selected': otherImage.id ===  selectedImage.id }" :src="otherImage.thumbnail" class="aspect-square object-fill w-25 z-50"  @click="selectImage(otherImage, () => $emit('select-image', otherImage))" />
       </div>
     </div>
   </volt-drawer>
 </template>
 
 <script setup lang="ts">
-import type { Product, ProductImage } from '~/types'
+import type { ProductNode, Undefineable } from '~/types';
 
-const props = defineProps<{
-  modelValue: boolean
-  product: Product | null | undefined
-  image: ProductImage | null | undefined
-}>()
+const props = defineProps<{ product: Undefineable<ProductNode> }>()
 
-const emit = defineEmits<{
-  'update:modelValue': [value: boolean]
-  'select-image': [image: ProductImage]
-}>()
+/**
+ * Store
+ */
 
-const { handleSelectedImage } = useImageZoomComposable()
-const show = useVModel(props, 'modelValue', emit, {
-  passive: true,
-  defaultValue: false
-})
+const { selectedImage, showModal, toggleShowModal, selectImage } = useImageZoomComposableStore()
 </script>
-
-<style lang="scss" scoped>
-.zoomed-image {
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  width: 100%;
-  height: 1000px;
-  min-height: 1300px;
-  cursor: zoom-out;
-}
-
-#image-choices {
-  .selected {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  img {
-    cursor: pointer;
-  }
-}
-</style>

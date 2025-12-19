@@ -28,9 +28,7 @@ import type { ExtendedRouteParamsRawGeneric } from '~/types'
 const cartStore = useCart()
 const { userSelection } = storeToRefs(cartStore)
 
-const props = defineProps<{ modelValue: boolean }>()
-const emit = defineEmits<{ 'update:modelValue': [] }>()
-const show = useVModel(props, 'modelValue', emit)
+const show = defineModel<boolean>('show')
 
 const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
 const email = ref<string>('')

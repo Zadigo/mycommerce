@@ -1,44 +1,34 @@
-import type { ProductImage } from '~/types'
+import type { BaseImage } from '~/types'
 
 /**
  * Composable for handling image selection and modal display
  */
-export function useImageZoomComposable() {
+const [useImageZoomComposable, _useImageZoomComposableStore] = createInjectionState(() => {
   if (import.meta.server) {
     return {
       showModal: ref(false),
-      selectedImage: ref<ProductImage | null | undefined>(),
+      selectedImage: ref<BaseImage | null | undefined>(),
       toggleShowModal: () => { },
       handleCloseSelection: () => { },
-      handleSelectedImage: (_image: ProductImage) => { },
-      selectImage: (_image: ProductImage, _fn: () => void) => { }
+      handleSelectedImage: (_image: BaseImage) => { },
+      selectImage: (_image: BaseImage, _fn: () => void) => { }
     }
   }
 
   const { vueApp } = useNuxtApp()
 
   const [showModal, toggleShowModal] = useToggle()
-  const selectedImage = ref<ProductImage | null | undefined>()
+  const selectedImage = ref<BaseImage | null | undefined>()
 
   /**
    * Selects and image and opens the images modal
    * @param image The image to select
    * @param fn Callback function to be used
    */
-  function selectImage(image: ProductImage, fn: () => void) {
+  function selectImage(image: BaseImage, fn: () => void) {
     showModal.value = true
     selectedImage.value = image
     fn.call(vueApp)
-  }
-
-  /**
-   * Selects an image within a group of images
-   * @param image The selected image
-   * @deprecated use `selectImage` instead
-   */
-  function handleSelectedImage(image: ProductImage) {
-    selectedImage.value = image
-    showModal.value = true
   }
 
   /**
@@ -53,7 +43,14 @@ export function useImageZoomComposable() {
     selectedImage,
     toggleShowModal,
     handleCloseSelection,
-    handleSelectedImage,
     selectImage
   }
+})
+
+export { useImageZoomComposable }
+
+export function useImageZoomComposableStore() {
+  const store = _useImageZoomComposableStore()
+  if (!store) throw new Error('useImageZoomComposableStore must be used after useImageZoomComposable')
+  return store
 }

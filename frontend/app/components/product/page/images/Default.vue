@@ -7,9 +7,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { ProductImage } from '~/types';
+import type { BaseImage } from '~/types';
 
 const { mediaPath } = useDjangoUtilies()
-const { images = [] } = defineProps<{ images: ProductImage[] }>()
-const emit = defineEmits<{ 'zoom-image': [image: ProductImage] }>()
+const { images = [] } = defineProps<{ images: BaseImage[] }>()
+const emit = defineEmits<{ 'zoom-image': [image: BaseImage] }>()
 </script>

@@ -38,7 +38,7 @@
           </volt-accordion-panel>
 
           <!-- Price -->
-          <volt-accordion-panel value="size">
+          <volt-accordion-panel value="price">
             <volt-accordion-header>
               {{ $t("Prix") }}
             </volt-accordion-header>

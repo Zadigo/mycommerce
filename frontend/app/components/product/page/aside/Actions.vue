@@ -8,7 +8,7 @@
     <div v-if="product" class="font-light">
       <div class="border rounded-md py-3 px-4 text-sm font-light bg-gray-50 my-5">
         {{ $t('Taille et hauteur du mannequin') }} : 
-        <span v-if="product.model_height">{{ product.model_size }} · {{ $n(parseInt(product.model_height), 'unit') }}</span> 
+        <span v-if="product.node.modelHeight">{{ product.node.modelSize }} · {{ $n(parseInt(product.node.modelHeight.toString()), 'unit') }}</span> 
         <span v-else>N.D.</span>
       </div>
     </div>
@@ -41,9 +41,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Product, ProductSizes, ProductStockApiResponse, Undefineable } from '~/types'
+import type { BaseSizeSet, ClotheSizes, Product, ProductNode, Undefineable } from '~/types'
 
-const props = defineProps<{ product: Undefineable<Product> }>()
+const props = defineProps<{ product: ProductNode }>()
 const emit = defineEmits<{ 'size-guide': [], 'availability-modal': [] }>()
 
 const stockState = inject<ProductStockApiResponse>('stockState')
@@ -59,7 +59,7 @@ const { like, icon } = await useLikeComposable(props.product)
 
 const sizeObject = computed(() => {
   if (isDefined(props.product)) {
-    return props.product.sizes.find(x => x.name === userSelection.value.size) || null
+    return props.product.node.sizeSet.find(x => x.name === userSelection.value.size) || null
   } else {
     return null
   }
@@ -141,7 +141,7 @@ async function proxyAddToCart() {
  * of selecting a size for the current product
  * @param size The item's size
  */
-function proxySelectSize(size: ProductSizes) {
+function proxySelectSize(size: BaseSizeSet) {
   showSizeSelectionWarning.value = false
   cartStore.sizeSelection(props.product, size)
 }

@@ -14,10 +14,10 @@
       </p>
 
       <form id="form-login" @submit.prevent>
-        <volt-input-text v-model="email" :placeholder="$t(`Nom d'utilisateur ou email`)" type="text" autocomplete="email" />
+        <volt-input-text v-model="usernameField" :placeholder="$t(`Nom d'utilisateur ou email`)" type="text" autocomplete="email" />
         <volt-input-text v-model="password" :placeholder="$t('Mot de passe')" class="my-2" type="password" autocomplete="current-password" />
 
-        <volt-button id="signin-email" class="rounded-full w-full mt-5" size="lg" @click="login">
+        <volt-button id="signin-email" class="rounded-full w-full mt-5" size="lg" @click="async () => { await login() }">
           {{ $t('Se connecter') }}
         </volt-button>
       </form>
@@ -33,19 +33,12 @@
 </template>
 
 <script setup lang="ts">
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth"
+import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { useSessionStorage } from '@vueuse/core'
 
-const emit = defineEmits({
-  'show-signup' () {
-    return true
-  },
-  authenticate () {
-    return true
-  }
-})
+const emit = defineEmits<{ 'show-signup': [], authenticate: [] }>()
 
-const { $fireStore, $fireApp } = useNuxtApp()
+const { $firebaseApp } = useNuxtApp()
 const { customHandleError } = useErrorHandler()
 const authenticatedCart = useSessionStorage('authenticatedCart', false)
 
@@ -54,7 +47,7 @@ const authenticatedCart = useSessionStorage('authenticatedCart', false)
  */
 async function handleGoogle () {
   try {
-    const auth = getAuth($fireApp)
+    const auth = getAuth($firebaseApp)
     const provider = new GoogleAuthProvider()
     
     provider.addScope('email')
@@ -84,5 +77,5 @@ async function handleGoogle () {
  * Login
  */
 
-const { login, email, password } = useLogin()
+const { login, usernameField, password } = useLogin()
 </script>

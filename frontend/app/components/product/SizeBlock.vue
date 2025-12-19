@@ -1,6 +1,6 @@
 <template>
-  <div v-if="product.sizes.length > 0" id="sizes" class="flex justify-start gap-1" aria-label="Product sizes">
-    <product-size-button v-for="size in product.sizes" :key="size.id" :size="size" :selected-size="userSelection.size" @select-size="(size) => { cartStore.sizeSelection(product, size) }" />
+  <div v-if="product.node.hasSizes" id="sizes" class="flex justify-start gap-1" aria-label="Product sizes">
+    <product-size-button v-for="size in product.node.sizeSet" :key="size.name" :size="size" :selected-size="userSelection.size" @select-size="(size) => { cartStore.sizeSelection(product, size) }" />
   </div>
 
   <div v-else>
@@ -17,10 +17,10 @@
  * the model that is carrying clothing
  */
 
-import type { DefaultClotheSize, Product } from '~/types'
+import type { ClotheSizes, ProductNode } from '~/types'
 
-defineProps<{ product: Product }>()
-const emit = defineEmits<{ 'update-size': [size: DefaultClotheSize] }>()
+defineProps<{ product: ProductNode }>()
+const emit = defineEmits<{ 'update-size': [size: ClotheSizes] }>()
 
 const cartStore = useCart()
 const { userSelection } = storeToRefs(cartStore)

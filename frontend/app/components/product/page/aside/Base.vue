@@ -3,13 +3,13 @@
     <product-page-aside-info :product="product" />
 
     <div v-if="hasColorVariants" id="variants" class="my-5 flex gap-2 h-auto w-full">
-      <nuxt-link-locale  id="link-product-variant" v-for="variant in product.variants" :key="variant.id" :to="`/shop/${variant.id}`" aria-current="true">
-        <nuxt-img :src="mediaPath(variant.get_main_image?.original, '/placeholder.svg')" alt="variant.name" width="50" class="cursor-pointer hover:opacity-80" />
+      <nuxt-link-locale  id="link-product-variant" v-for="variant in product.node.colorVariants" :key="variant.id" :to="`/shop/${variant.id}`" aria-current="true">
+        <nuxt-img :src="mediaPath(variant.mainImage.thumbnail, '/placeholder.svg')" alt="variant.name" width="50" class="cursor-pointer hover:opacity-80" />
       </nuxt-link-locale >
     </div>
 
     <p v-if="product" id="product-reference" class="font-light text-sm my-5">
-      {{ $t(product.color) }} · {{ $t('Product: Sku', { sku: product.sku }) }}
+      {{ $t(product.node.color) }} · {{ $t('Product: Sku', { sku: product.node.sku }) }}
     </p>
     
     <volt-divider />
@@ -23,9 +23,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Product, Undefineable } from '~/types'
+import type { ProductNode, Undefineable } from '~/types'
 
-const props = defineProps<{ product: Undefineable<Product>}>()
+const props = defineProps<{ product: Undefineable<ProductNode>}>()
 const emit = defineEmits<{ 
   'size-guide': [], 
   'delivery-guide': [], 

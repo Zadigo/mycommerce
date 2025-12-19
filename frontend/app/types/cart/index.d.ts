@@ -2,7 +2,7 @@ export * from './address'
 export * from './payment'
 
 import type { DefaultClotheSize } from '~/data/constants/constants'
-import type { Nullable } from '..'
+import type { Nullable, ProductNode } from '..'
 import type { Product } from '../api/shop'
 
 /**
@@ -11,7 +11,7 @@ import type { Product } from '../api/shop'
  */
 export type UserSelection = {
   id: Nullable<number>
-  product: Product | object
+  product: ProductNode | object
   size: DefaultClotheSize
   /**
    * @default 1

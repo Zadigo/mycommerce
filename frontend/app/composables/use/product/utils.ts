@@ -1,11 +1,11 @@
-import type { ExtendedRouteParamsRawGeneric, MaybeGrapQlNode, MaybeProduct, Product, ProductNode, ProductsQuery, SearchedProducts } from '~/types'
+import type { ExtendedRouteParamsRawGeneric, MaybeProduct, MaybeType, ProductNode } from '~/types'
 
 /**
  * Composable for working with likes on the product
  * on a single product page 
  * @param product - The product to handle likes for
  */
-export async function useLikeComposable(product: MaybeGrapQlNode<ProductNode>, callback?: (eventName: string) => void) {
+export async function useLikeComposable(product: MaybeType<ProductNode>, callback?: (eventName: string) => void) {
   if (import.meta.server) {
     return {
       isLiked: ref<boolean>(false),
@@ -14,21 +14,21 @@ export async function useLikeComposable(product: MaybeGrapQlNode<ProductNode>, c
     }
   }
 
-  const currentProduct = toValue(product)
+  const _product = toValue(product)
   const { likedProducts } = await useStorageSetup()
 
-  const isLiked = useArrayIncludes(likedProducts, currentProduct.node.id)
+  const isLiked = useArrayIncludes(likedProducts, isDefined(_product) ? _product.node.id : false)
   // console.log('isLiked', isLiked, likedProducts)
   // const uniqueIds = useArrayUnique(likedProducts)
   // // Ensures only unique IDs in the storage
   // syncRef(uniqueIds, likedProducts, { direction: 'ltr' })
 
   function like() {
-    if (isDefined(currentProduct)) {
+    if (isDefined(_product)) {
       if (isLiked.value) {
-        likedProducts.value = likedProducts.value.filter(id => id !== currentProduct.node.id)
+        likedProducts.value = likedProducts.value.filter(id => id !== _product.node.id)
       } else {
-        likedProducts.value.push(currentProduct.node.id)
+        likedProducts.value.push(_product.node.id)
       }
 
       if (callback) callback('like')
@@ -57,8 +57,8 @@ export async function useLikeComposable(product: MaybeGrapQlNode<ProductNode>, c
  * sizes, and a main image.
  * @param product - The product to check for images
  */
-export function useProductComposable<P extends MaybeGrapQlNode<ProductNode>>(product: P) {
-  const currentProduct = toValue(product)
+export function useProductComposable<P extends MaybeType<ProductNode>>(product: P) {
+  const _product = toValue(product)
   
   if (!isDefined(product)) {
     return {
@@ -69,11 +69,11 @@ export function useProductComposable<P extends MaybeGrapQlNode<ProductNode>>(pro
       hasColorVariants: ref<boolean>(false)
     }
   } else {
-    const hasImages = computed(() => currentProduct.node.productImages.length > 0)
-    const hasSizes = computed(() => currentProduct.node.sizeSet.length > 0)
-    const hasMainImage = computed(() => isDefined(currentProduct.node.mainImage))
-    const numberOfImages = computed(() => currentProduct.node.productImages.length)
-    const hasColorVariants = computed(() => currentProduct.node.colorVariants.length > 0)
+    const hasImages = computed(() => isDefined(_product) ? _product.node.productImages.length > 0 : false)
+    const hasSizes = computed(() => isDefined(_product) ? _product.node.sizeSet.length > 0 : false)
+    const hasMainImage = computed(() => isDefined(_product) ? isDefined(_product.node.mainImage) : false)
+    const numberOfImages = computed(() => isDefined(_product) ? _product.node.productImages.length : 0)
+    const hasColorVariants = computed(() => isDefined(_product) ? _product.node.colorVariants.length > 0 : false)
   
     return {
       /**
@@ -113,10 +113,17 @@ export function useProductComposable<P extends MaybeGrapQlNode<ProductNode>>(pro
 export async function useProductDetailComposable() {
   const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
 
-  const { data: product, status } = await useFetch<Product>(`/api/products/${id}`, {
-    method: 'GET',
+  const { data: product, status } = await useFetch<ProductNode>(`/api/products/${id}`, {
+    method: 'POST',
     immediate: true,
-    server: true,
+    body: `
+    query {
+      product(id: "UHJvZHVjdFR5cGU6Mg==") {
+        id
+        name
+      }
+    }
+    `,
     onResponseError({ error }) {
       createError({
         statusMessage: error?.message,
@@ -129,19 +136,6 @@ export async function useProductDetailComposable() {
 
   const isLoading = computed(() => status.value !== 'success')
 
-  /**
-   * Banner
-   */
-
-  const showBanner = ref<boolean>(false)
-
-  if (import.meta.client) {
-    const { y } = useScroll(window)
-
-    watch(y, (newY) => {
-      showBanner.value = newY >= 1200 && newY <= 7000
-    })
-  }
 
   return {
     /**
@@ -151,11 +145,6 @@ export async function useProductDetailComposable() {
     /**
      * Whether the product is currently being loaded
      */
-    isLoading,
-    /**
-     * Whether the banner at the bottom of the page
-     * should be show when the user scrolls down
-     */
-    showBanner
+    isLoading
   }
 }

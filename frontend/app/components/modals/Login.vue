@@ -2,15 +2,15 @@
 <template>
   <volt-drawer v-model:visible="showLoginDrawer" position="right" @close="handleReset">
     <div class="flex justify-between align-center">
-       <volt-button variant="destructive" @click="handleReset">
-         <Icon name="i-fa7-solid:chevron-left" />
-       </volt-button>
+      <volt-button variant="destructive" @click="handleReset">
+        <icon name="i-fa7-solid:chevron-left" />
+      </volt-button>
     </div>
     
     <div class="mb-10 overflow-y-scroll">
       <Transition name="opacity">
-        <BlockSignup v-if="showSignup" @authenticate="debouncedAuthenticateCart" />
-        <BlockLogin v-else @show-signup="showSignup=true" @authenticate="debouncedAuthenticateCart" />
+        <block-signup v-if="showSignup" @authenticate="debouncedAuthenticateCart" />
+        <block-login v-else @show-signup="showSignup=true" @authenticate="debouncedAuthenticateCart" />
       </Transition>
     </div>
   </volt-drawer>
@@ -19,32 +19,7 @@
 <script setup lang="ts">
 const sessionId = useCookie('sessionId', { sameSite: 'strict', secure: true })
 
-const { debounce } = useDebounce()
-const { $client } = useNuxtApp()
-const { customHandleError } = useErrorHandler()
-
-
 const { djangoSessionId } = useDjangoSession() // Ensure session storage is initialized
-
-/**
- * Syncs the unauthenticated cart to the authenticated user's account
- * by calling an API endpoint with the current session ID
- */
-async function handleAuthenticateCart() {
-  const cartAuthenticated = useState<boolean>('authenticatedCart')
-
-  if (!cartAuthenticated.value && isDefined(djangoSessionId)) {
-    await $client('/api/v1/cart/authenticate', {
-      method: 'POST',
-      body: {
-        session_id: djangoSessionId.value
-      },
-      onRequestError: (error) => {
-        customHandleError(error)
-      }
-    })
-  }
-}
 
 const showSignup = ref<boolean>(false)
 const showLoginDrawer = useState<boolean>('showLoginDrawer')
@@ -67,5 +42,30 @@ function handleReset() {
   }
 }
 
-const debouncedAuthenticateCart = debounce(handleAuthenticateCart, 5000)
+/**
+ * Syncing
+ */
+
+const { customHandleError } = useErrorHandler()
+const { $client } = useNuxtApp()
+
+// Syncs the unauthenticated cart to the authenticated user's account
+// by calling an API endpoint with the current session ID
+async function _handleAuthenticateCart() {
+  const cartAuthenticated = useState<boolean>('authenticatedCart')
+
+  if (!cartAuthenticated.value && isDefined(djangoSessionId)) {
+    await $client('/api/v1/cart/authenticate', {
+      method: 'POST',
+      body: {
+        session_id: djangoSessionId.value
+      },
+      onRequestError: (error) => {
+        customHandleError(error)
+      }
+    })
+  }
+}
+
+const debouncedAuthenticateCart = useDebounceFn(_handleAuthenticateCart, 5000)
 </script>

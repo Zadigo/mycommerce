@@ -1,9 +1,9 @@
 <template>
   <section id="product" class="relative">
-    <div class="grid grid-cols-12 grid-row-1 w-full gap-5">      
+    <div class="grid grid-cols-12 grid-row-1 w-full gap-5">
       <!-- Images -->
       <client-only>
-        <component :is="imagesComponent" :images="product?.images" :product="product" @zoom-image="handleSelectedImage" />
+        <component :is="imagesComponent" :images="product?.node.productImages" :product="product" @zoom-image="selectImage" />
       </client-only>
       
       <!-- Details -->
@@ -28,12 +28,20 @@
     </div>
 
     <client-only>
-      <product-page-bottom-cart v-if="showBanner && product" :product="product" :show-banner="showBanner" />
+      <!-- Cart -->
+      <product-page-bottom-cart v-if="product" :product="product" />
 
-      <product-modals-image-zoom v-model="showModal" :product="product" :image="selectedImage" @select-image="handleSelectedImage" />
-      <product-modals-size-guide v-model="showSizeGuideDrawer" :product="product" />
-      <product-modals-availability v-model="showAvailabilityModal" />
-      <product-modals-composition v-model="showCompositionModal" />
+      <!-- Zoom -->
+      <product-modals-image-zoom :product="product" />
+      
+      <!-- Size Guide -->
+      <product-modals-size-guide v-model:show="showSizeGuideDrawer" :product="product" />
+      
+      <!-- Availability & Composition -->
+      <product-modals-availability v-model:show="showAvailabilityModal" />
+      
+      <!-- Composition -->
+      <product-modals-composition v-model:show="showCompositionModal" />
     </client-only>
   </section>
 </template>
@@ -53,13 +61,13 @@ const AsyncBaseRecommendationBlock = defineAsyncComponent({
  * Get Product
  */
 
-const { product, isLoading, showBanner } = await useProductDetailComposable()
+const { product, isLoading } = await useProductDetailComposable()
 
 /**
  * Image Zoom
  */
 
-const { showModal, selectedImage, handleSelectedImage, handleCloseSelection } = useImageZoomComposable()
+const { selectImage } = useImageZoomComposable()
 
 /**
  * Stock
@@ -89,7 +97,7 @@ const showCompositionModal = ref<boolean>(false)
  * SEO
  */
 
-const name = product.value?.name ?? '...'
+const name = product.value?.node.name || '...'
 
 useSeoMeta({
   title: name,
@@ -100,11 +108,11 @@ useSeoMeta({
 if (product.value) {
   useSchemaOrg(defineProduct({
     "@type": 'Product',
-    "@id": `https://example.com/products/${product.value.slug}`,
+    "@id": `https://example.com/products/${product.value.node.slug}`,
     name,
-    sku: product.value.sku,
-    image: product.value.images?.map(image => image.original) ?? [],
-    url: `https://example.com/products/${product.value.slug}`,
+    sku: product.value.node.sku,
+    image: product.value.node.productImages?.map(image => image.original) ?? [],
+    url: `https://example.com/products/${product.value.node.slug}`,
     itemCondition: "https://schema.org/NewCondition",
     brand: {
       "@type": 'Brand',
@@ -112,10 +120,10 @@ if (product.value) {
       logo: 'https://example.com/image.png',
     },
     offers: {
-      price: product.value.get_price,
+      price: product.value.node.price,
       priceCurrency: 'EUR',
       availability: 'https://schema.org/InStock',
-      image: isDefined(product.value.get_main_image) ? product.value.get_main_image.original : null,
+      image: product.value.node.mainImage.original,
       shippingDetails: {
         "@type": 'OfferShippingDetails',
         shippingDestination: [

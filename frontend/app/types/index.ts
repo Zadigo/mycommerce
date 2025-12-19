@@ -69,3 +69,5 @@ export interface ExtendedLocationQuery {
 export type Languages = 'fr' | 'en' | 'es'
 
 export type BaseCountries = 'France' | 'Guadeloupe' | 'Martinique' | 'Réunion'
+
+export type MaybeType<T> = MaybeRef<MaybeEmpty<T>> | MaybeEmpty<T>

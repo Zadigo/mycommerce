@@ -11,11 +11,7 @@ class ImageType(DjangoObjectType):
 
     class Meta:
         model = Image
-        fields = [
-            'name', 'variant', 'original',
-            'mid_size', 'thumbnail', 'is_main_image',
-            'created_on'
-        ]
+        fields = '__all__'
 
     def resolve_original(self, info):
         print(self.original.url)

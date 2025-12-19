@@ -1,42 +1,32 @@
-import type { Product } from '~/types'
-import type { Refable, Undefineable } from '~/types'
+import type { MaybeType } from '~/types'
+import type { ProductNode } from '~/types/graphql'
 
 export * from './images'
-export * from './stock'
-export * from './ws_manager'
-export * from './utils'
 export * from './items'
-
-type ImageComponentMap = Record<number, Component>
+export * from './stock'
+export * from './utils'
+export * from './ws_manager'
 
 /**
  * Composable for selecting the appropriate image component
  * based on the number of images a product has.
  * @param product - The product to determine the image component for
  */
-export function useImageComponentComposable(product: Refable<Undefineable<Product>>) {
+export function useImageComponentComposable(product: MaybeType<ProductNode>) {
   const DefaultImage = defineAsyncComponent(() => import('~/components/product/page/images/Default.vue'))
   const FiveImages = defineAsyncComponent(() => import('~/components/product/page/images/Five.vue'))
   const SixImages = defineAsyncComponent(() => import('~/components/product/page/images/Six.vue'))
   const NoImages = defineAsyncComponent(() => import('~/components/product/page/images/Empty.vue'))
 
-  const imageComponentMap: ImageComponentMap = {
+  const imageComponentMap: Record<number, Component> = {
     3: DefaultImage,
     4: DefaultImage,
     5: FiveImages,
     6: SixImages
   }
 
-  const imagesComponent = computed((): Component => {
-    if (!isDefined(product)) {
-      return NoImages
-    } else if (product && product.value.images.length === 0) {
-      return NoImages
-    } else {
-      const numberOfImages = product.value.images.length
-      return imageComponentMap[numberOfImages] || NoImages
-    }
-  })
+  const _product = toValue(product)
+  const imagesComponent = computed((): Component => isDefined(_product) ? imageComponentMap[_product.node.productImages.length] || NoImages : NoImages)
 
   return {
     /**
