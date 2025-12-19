@@ -47,7 +47,7 @@ export type BaseMainImage = BaseImage
 
 export type BaseVideo = Pick<BaseImage, 'name'> & { content: string }
 
-export type ClotheSizes = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL'
+export type ClotheSizes = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL' | 'Unique'
 
 export type ShoeSizes = '36' | '37' | '38' | '39' | '40' | '41' | '42' | '43' | '44' | '45' | '46'
 

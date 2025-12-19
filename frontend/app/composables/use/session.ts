@@ -5,6 +5,14 @@ import { baseSessionCacheData } from '~/data/constants'
 
 import type { SessionCacheData } from '~/types'
 
+/**
+ * A composable to manage user sessions using Firestore and cookies.
+ * It creates a new session if one does not exist and keeps the session data
+ * synchronized with Firestore.
+ *
+ * @param name - The name of the cookie to store the session ID. Defaults to 'sessionId'.
+ * @returns An object containing the sessionId cookie and a reactive session object.
+ */
 export const useSession = createGlobalState((name: string = 'sessionId') => {
   if (import.meta.server) {
     return {

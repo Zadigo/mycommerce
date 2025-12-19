@@ -1,28 +1,26 @@
-import type { DefaultClotheSize, Product, ProductSizes } from '~/types'
+import type { BaseSizeSet, ProductNode } from '~/types'
 
 /**
  * Composable to handle size selection for products. It will emit an 
  * event when the size is updated
  * @param product - The current product to select size for
  */
-export function useSizeSelection<T extends Product = Product>(product: T) {
+export function useSizeSelection<P extends ProductNode = ProductNode, S extends BaseSizeSet = BaseSizeSet>(product: P) {
   if (import.meta.server) {
     return {
-      availableSizes: ref<DefaultClotheSize[]>([]),
-      selectedSize: ref<DefaultClotheSize>('Unique'),
-      history: ref<DefaultClotheSize[]>([]),
+      availableSizes: ref<S[]>([]),
+      selectedSize: ref<S>(),
+      history: ref<S[]>([]),
       hasSizes: ref(false),
       selectSize: () => {},
       reset: () => {}
     }
   }
+  
+  const _product = toValue(product)
+  const availableSizes = computed(() => _product.node.sizeSet)
 
-  const currentProduct = reactive<T>(product)
-  const availableSizes = ref<DefaultClotheSize[]>(product.sizes.map(item => item.name))
-
-  const emit = defineEmits<{ 'update-size': [size: DefaultClotheSize] }>()
-
-  const selectedSize = ref<DefaultClotheSize>('Unique')
+  const selectedSize = ref<BaseSizeSet>()
   const { history } = useRefHistory(selectedSize)
 
   /**
@@ -30,23 +28,22 @@ export function useSizeSelection<T extends Product = Product>(product: T) {
    * and allows the user to select it
    * @param size - The size to select
    */
-  function selectSize(size: ProductSizes) {
-    const canBeSelected = currentProduct.has_sizes && size.availability
+  function _selectSize(size: S) {
+    const canBeSelected = _product.node.hasSizes && size.availability
 
-    selectedSize.value = size.name
-    emit('update-size', size.name)
+    if (canBeSelected) {
+      selectedSize.value = size
+    } else {
+      console.warn(`Size ${size.name} is not available for selection.`)
+    }
   }
 
-  function reset() {
-    selectedSize.value = 'Unique'
-    emit('update-size', 'Unique')
+  function _reset() {
+    selectedSize.value = undefined
   }
 
-  const hasSizes = computed(() => currentProduct.has_sizes)
-
-  // watchDebounced(selectedSize, (newSize) => {
-  //   emit('update-size', newSize)
-  // }, 500)
+  const selectSize = useThrottleFn(_selectSize, 200)
+  const reset = useThrottleFn(_reset, 200)
 
   return {
     /**
@@ -63,10 +60,6 @@ export function useSizeSelection<T extends Product = Product>(product: T) {
      */
     history,
     /**
-     * Indicates if the product has sizes available
-     */
-    hasSizes,
-    /**
      * Updates the selected size
      * @param size - The size to select
      */
@@ -80,12 +73,12 @@ export function useSizeSelection<T extends Product = Product>(product: T) {
 
 /**
  * Composable to check if a specific size is selected for a product
- * @param sizeName - The name of the size to check
+ * @param size -  The size to check
  * @param product - The current product
  */
-export function useSizeSelected(sizeName: DefaultClotheSize, product: Product) {
+export function useSizeSelected(size: BaseSizeSet, product: ProductNode) {
   const { selectedSize } = useSizeSelection(product)
-  const isSelected = computed(() => selectedSize.value === sizeName)
+  const isSelected = computed(() => isDefined(selectedSize) ? selectedSize.value.name === size.name : false)
 
   return {
     isSelected
