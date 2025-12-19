@@ -9,7 +9,6 @@
 <script lang="ts" setup>
 import type { BaseImage } from '~/types'
 
-const { mediaPath } = useDjangoUtilies()
 const { images = [] } = defineProps<{ images: BaseImage[] }>()
 const emit = defineEmits<{ 'zoom-image': [image: BaseImage] }>()
 </script>

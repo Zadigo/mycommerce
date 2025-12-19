@@ -4,7 +4,7 @@
 
     <div v-if="hasColorVariants" id="variants" class="my-5 flex gap-2 h-auto w-full">
       <nuxt-link-locale  id="link-product-variant" v-for="variant in product.node.colorVariants" :key="variant.id" :to="`/shop/${variant.id}`" aria-current="true">
-        <nuxt-img :src="mediaPath(variant.mainImage.thumbnail, '/placeholder.svg')" alt="variant.name" width="50" class="cursor-pointer hover:opacity-80" />
+        <nuxt-img :src="variant.mainImage.thumbnail" alt="variant.name" width="50" class="cursor-pointer hover:opacity-80" />
       </nuxt-link-locale >
     </div>
 
@@ -33,7 +33,6 @@ const emit = defineEmits<{
   'availability-modal': [] 
 }>()
 
-const { mediaPath } = useDjangoUtilies()
 const { hasColorVariants } = useProductComposable(props.product)
 
 // const { gtag } = useGtag()
