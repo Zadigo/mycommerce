@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { BaseImage } from '~/types';
+import type { BaseImage } from '~/types'
 
 const { mediaPath } = useDjangoUtilies()
 const { images = [] } = defineProps<{ images: BaseImage[] }>()

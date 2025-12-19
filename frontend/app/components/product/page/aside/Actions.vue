@@ -26,16 +26,16 @@
     </DevOnly> -->
 
     <volt-button v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" id="action-inform" class="mt-5 place-content-center" @click="() => emit('availability-modal')">
-      <Icon name="fa:envelope" size="12" class="me-1" />
+      <icon name="fa:envelope" size="12" class="me-1" />
       {{ $t('Me tenir informer') }}
     </volt-button>
     <volt-button v-else id="action-add-cart" class="mt-5 me-2 place-content-center" :disabled="false" @click="proxyAddToCart">
-      <Icon v-if="stockState && stockState.almost_sold_out" name="i-fa7-solid:clock" class="me-1" />
+      <icon v-if="stockState && stockState.almost_sold_out" name="i-fa7-solid:clock" class="me-1" />
       {{ $t('Ajouter au panier') }}
     </volt-button>
 
     <volt-button id="action-add-favorite" :aria-label="$t('Ajouter au favori')" class="mt-5" variant="outline" @click="proxyHandleLike">
-      <Icon :name="icon" />
+      <icon :name="icon" />
     </volt-button>
   </div>
 </template>

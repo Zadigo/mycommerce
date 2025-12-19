@@ -48,7 +48,28 @@
 import { generateProducts } from '~/data/__fixtures__/products/utils'
 
 export default defineCachedEventHandler(_event => {
-  return generateProducts(1).at(0)
+  $fetch('/v1/graphql', {
+    method: 'POST',
+    baseURL: useRuntimeConfig().public.prodDomain,
+    body: {
+      query: `
+        query {
+          allProducts {
+            edges {
+              node {
+                id
+                name
+                description
+                price
+              }
+            }
+          }
+        }
+      `
+    }
+  })
+
+  return generateProducts(1).data.allProducts.edges.at(0)
 }, {
   base: 'redis',
   maxAge: 0, // disable cache for now

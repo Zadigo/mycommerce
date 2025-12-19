@@ -82,9 +82,6 @@ provide('stockState', stockState)
 
 const { imagesComponent } = useImageComponentComposable(product)
 
-
-console.log(product)
-
 /**
  * Modals
  */

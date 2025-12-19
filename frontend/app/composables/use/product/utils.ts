@@ -114,16 +114,8 @@ export async function useProductDetailComposable() {
   const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
 
   const { data: product, status } = await useFetch<ProductNode>(`/api/products/${id}`, {
-    method: 'POST',
+    method: 'GET',
     immediate: true,
-    body: `
-    query {
-      product(id: "UHJvZHVjdFR5cGU6Mg==") {
-        id
-        name
-      }
-    }
-    `,
     onResponseError({ error }) {
       createError({
         statusMessage: error?.message,
@@ -135,7 +127,6 @@ export async function useProductDetailComposable() {
   console.log('Fetched product:', product.value)
 
   const isLoading = computed(() => status.value !== 'success')
-
 
   return {
     /**

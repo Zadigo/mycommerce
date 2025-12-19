@@ -60,7 +60,7 @@ export function generateMainImage<T extends BaseImage>(group: Arrayable<string>)
   } as T
 }
 
-export function generateProducts(count = 3): Product {
+export function generateProducts(count = 3) {
   const container = { ...productGraphqlFixture }
   
   container.data.allProducts.edges = Array.from({ length: count }, (_, i) => {
