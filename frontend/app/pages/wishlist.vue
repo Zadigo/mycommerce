@@ -49,13 +49,13 @@ const likeProductsIds = useLocalStorage<number[]>('likedProducts', [])
  */
 
 const { $client } = useNuxtApp()
-const { djangoSessionId } = await useStorageSetup()
+const { sessionId } = await useSession()
 
 const { data } = useAsyncData(async () => {
   return $client<Product[]>('/api/v1/shop/wishlist', {
     method: 'POST',
     body: {
-      session_id: djangoSessionId?.value,
+      session_id: sessionId?.value,
       products: likeProductsIds.value
     },
     onRequestError({ error }) {

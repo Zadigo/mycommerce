@@ -104,3 +104,5 @@ export type Product = GraphQlData<'allProducts', RelayEdge<BaseProduct>>
 export type SearchedProducts = GraphQlData<'searchProducts', RelayEdge<BaseProduct>>
 
 export type ProductsByCategory = GraphQlData<'productsByCategory', RelayEdge<BaseProduct>>
+
+export type ProductRecommendations = GraphQlData<'recommendations', Arrayable<BaseProduct>>

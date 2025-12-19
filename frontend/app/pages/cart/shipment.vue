@@ -123,12 +123,12 @@ const { execute } = useAsyncData('intent', () => $fetch('/api/v1/address-set/cre
  */
 
 const { customHandleError } = useErrorHandler()
-const { djangoSessionId } = await useStorageSetup()
+const { sessionId } = await useSession()
 
 async function handleUpdatePaymentIntent() {
   
-  if (isDefined(djangoSessionId)) {
-    newShippingInfo.value.session_id = djangoSessionId.value
+  if (isDefined(sessionId)) {
+    newShippingInfo.value.session_id = sessionId.value
 
     await $client('/api/v1/orders/intent/update', {
       method: 'POST',

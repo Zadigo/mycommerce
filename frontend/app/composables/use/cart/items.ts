@@ -13,7 +13,7 @@ export async function useSyncCart() {
     }
   }
 
-  const storage = await useStorageSetup()
+  const storage = useSession()
   const docRef = doc(useFirestore(), 'sessions', storage.sessionId?.value)
 
   async function sync(response: CartUpdateApiResponse) {
@@ -79,8 +79,6 @@ export async function useCartInformation() {
       associatedValue: (productId: number, key: keyof CartUpdateApiResponse['results'][0]) => null
     }
   }
-
-  const { sessionCache } = await useStorageSetup()
 
   // console.log('sessionCache', sessionCache)
 

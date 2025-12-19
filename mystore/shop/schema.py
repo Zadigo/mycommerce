@@ -1,8 +1,11 @@
 import graphene
 from django.core.cache import cache
 from graphene import relay
+import random
 from graphene_django import DjangoObjectType
 from shop.models import Image, Novelty, Product, Sale, Video
+
+from mystore.custom_utilities.word_processor import FuzzyMatcher
 
 
 class ImageType(DjangoObjectType):
@@ -95,6 +98,22 @@ class ProductNoveltyType(DjangoObjectType):
         }
 
 
+class RecommendationsType(DjangoObjectType):
+    category = graphene.String()
+    # is_new = graphene.Boolean()
+    has_sizes = graphene.Boolean()
+    main_image = graphene.Field(ImageType, source='get_main_image')
+    price = graphene.Float(source='get_price')
+    unit_price = graphene.Float()
+    sale_price = graphene.Float()
+    model_height = graphene.Int()
+    color_variants = graphene.List(lambda: ProductType)
+
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+
 class ProductConnection(relay.Connection):
     class Meta:
         node = ProductType
@@ -135,6 +154,13 @@ class ProductQuery(graphene.ObjectType):
 
     product_novelty = relay.Node.Field(ProductNoveltyType)
     all_product_novelties = relay.ConnectionField(ProductNoveltyConnection)
+
+    recommendations = graphene.List(
+        RecommendationsType,
+        product_name=graphene.String(required=False),
+        product_category=graphene.String(required=False),
+        quantity=graphene.Int(required=False, default_value=10)
+    )
 
     def resolve_all_products(self, info, **kwargs):
         qs = cache.get('allProducts')
@@ -201,3 +227,33 @@ class ProductQuery(graphene.ObjectType):
             qs = qs.filter(unit_price__gte=min_price)
 
         return qs
+
+    def resolve_recommendations(self, info, product_name=None, product_category=None, quantity=10, **kwargs):
+        cache_key = 'productsForRecommendations'
+        qs = cache.get(cache_key)
+
+        if not qs:
+            qs = Product.objects.prefetch_related(
+                'product_images',
+                'video'
+            ).all()
+            cache.set(cache_key, qs, 60*60)  # Cache for 60 minutes
+
+        matcher = FuzzyMatcher(threshold=0.6)
+
+        if product_category is not None:
+            qs = qs.filter(category__iexact=product_category)
+
+        product_ids = []
+        if product_name is not None:
+            matched_products = list(
+                filter(
+                    lambda p: matcher.is_match(p.name, product_name),
+                    qs
+                )
+            )
+
+            product_ids.extend([product.id for product in matched_products])
+            random.shuffle(product_ids)
+            return qs.filter(id__in=product_ids)
+        return qs[:quantity]

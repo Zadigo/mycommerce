@@ -1,10 +1,9 @@
+import { promiseTimeout } from '@vueuse/core'
 import { addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore'
 import { useDocument, useFirestore } from 'vuefire'
 import { baseSessionCacheData } from '~/data/constants'
 
 import type { SessionCacheData } from '~/types'
-
-const cookieOptions = { sameSite: 'strict', secure: true } as const
 
 export const useSession = createGlobalState((name: string = 'sessionId') => {
   if (import.meta.server) {
@@ -15,7 +14,7 @@ export const useSession = createGlobalState((name: string = 'sessionId') => {
   }
 
   const fireStore = useFirestore()
-  const sessionId = useCookie(name, cookieOptions)
+  const sessionId = useCookie(name, { sameSite: 'strict', secure: true, expires: undefined })
 
   async function createSession() {
     if (isDefined(sessionId)) {
@@ -31,6 +30,8 @@ export const useSession = createGlobalState((name: string = 'sessionId') => {
     const collectionRef = collection(fireStore, 'sessions')
     const result = await addDoc(collectionRef, baseSessionCacheData)
     sessionId.value = result.id
+
+    await promiseTimeout(1000) // Wait for Firestore to propagate
   }
 
   createSession()
@@ -39,11 +40,16 @@ export const useSession = createGlobalState((name: string = 'sessionId') => {
 
   const docRef = doc(fireStore, 'sessions', sessionId.value)
   const _session = useDocument<SessionCacheData>(docRef)
+
+  if (!isDefined(_session)) console.error('Session document is undefined.')
   
   const session = computed({
     get: () => _session.value,
-    set: async (val: SessionCacheData) => {
-      await updateDoc(docRef, val, { merge: true })
+    set: (val: SessionCacheData) => {
+      console.log('Updated', val)
+      if (isDefined(val) && isDefined(sessionId)) {
+        useDebounceFn(async () => { await updateDoc(docRef, val, { merge: true }) }, 500)()
+      }
     }
   })
 

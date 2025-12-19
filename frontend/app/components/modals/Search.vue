@@ -60,7 +60,7 @@ provide(productSymbol, searchedProducts)
 
 const db = useFirestore()
 const { history, last } = useDebouncedRefHistory(search, { debounce: 5000 })
-const { sessionId } = await useStorageSetup()
+const { sessionId } = useSession()
 
 watch(searchDebounced, async () => {
   /**

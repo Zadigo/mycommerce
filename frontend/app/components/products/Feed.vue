@@ -51,7 +51,7 @@
 import { useIntersectionObserver } from '@vueuse/core'
 import { useProductNavigationAnalytics } from '~/composables/use/analytics'
 import { useHandleGridSize } from '~/composables/use/grid'
-import { productSymbol } from '~/data/constants/symbols'
+import { productsSymbol } from '~/data/constants/symbols'
 import type { Product } from '~/types'
 
 const emit = defineEmits<{ 'products:list': [products: Product[]], 'modal:product-filters': [] }>()
@@ -64,7 +64,7 @@ const { products, getProducts, isLoading, productsCount, cursor, query } = await
 await getProducts()
 
 provide('productsLoading', isLoading)
-provide(productSymbol, products)
+provide(productsSymbol, products)
 
 /**
  * Analytics

@@ -2,24 +2,19 @@
   <template v-if="products.length > 0">
     <div id="products" :class="gridClass">
       <div v-for="(product, i) in products" id="product" :key="product.node.id">
-        <client-only>
-          <template #default>
-            <product-card-base :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" :show-carousel="true" :delay="300" v-motion-slide-bottom @has-navigated="handleNavigation" />
-          </template>
-
-          <template #fallback>
-            <product-skeleton-loader :quantity="1" />
-          </template>
-        </client-only>
+        <product-card-base :index="i" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" :show-carousel="true" :delay="300" v-motion-slide-bottom @has-navigated="handleNavigation" />
       </div>
     </div>
   </template>
-  <product-skeleton-loader v-else :quantity="quantity" />
+
+  <div v-else>
+    <p>Aucun produit à afficher.</p>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { useHandleGridSize } from '~/composables/use/grid'
-import { productSymbol } from '~/data/constants/symbols'
+import { productsSymbol } from '~/data/constants/symbols'
 import type { ProductNode } from '~/types'
 
 const emit = defineEmits<{
@@ -43,7 +38,7 @@ function handleNavigation(data: (number | ProductNode)[]) {
   emit('has-navigated', data)
 }
 
-const products = inject<ComputedRef<ProductNode[]>>(productSymbol, computed(() => []))
+const products = inject<MaybeRef<ProductNode[]>>(productsSymbol, [])
 
 console.log('Iterator', products)
 

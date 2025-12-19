@@ -11,7 +11,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { ExtendedRouteParamsRawGeneric, Product } from '~/types'
+import { productsSymbol } from '~/data'
+import type { ExtendedRouteParamsRawGeneric, ProductNode, ProductRecommendations } from '~/types'
 
 interface FetchOptions {
   /**
@@ -47,7 +48,7 @@ const {
   loadCache?: boolean
 }>()
 
-const emit = defineEmits<{ 'has-navigated': [product: Product] }>()
+const emit = defineEmits<{ 'has-navigated': [product: ProductNode] }>()
 
 // const { gtag } = useGtag()
 const { $client } = useNuxtApp()
@@ -57,7 +58,7 @@ const shopStore = useShop()
 
 const productsRow = ref<HTMLElement>()
 
-function handleNavigation (data: (number | Product)[]) {
+function handleNavigation (data: (number | ProductNode)[]) {
   if (data) {
     const product = data[1]
     
@@ -87,14 +88,36 @@ function handleNavigation (data: (number | Product)[]) {
 }
 
 try {
-  const { data } = await useAsyncData<Product[]>(
+  const { data } = await useAsyncData<ProductRecommendations>(
     `recommendations-${id}`,
     async () => {
-      return await $client('/api/v1/shop/products/recommendations', {
-        params: {
-          p: id,
-          q: quantity
-        } as FetchOptions,
+      return await $client('/v1/graphql/', {
+        method: 'post',
+        body: {
+          query: `
+            query {
+              recommendations(productName: "Trapèze", quantity: ${quantity}) {
+                id
+                name
+                price
+                salePrice
+                unitPrice
+                mainImage {
+                  id
+                  name
+                  original
+                  thumbnail
+                }
+                productImages {
+                  id
+                  name
+                  original
+                  isMainImage
+                }
+              }
+            }
+        `
+        },
         onRequestError({ error }) {
           customHandleError(error)
         }
@@ -102,8 +125,7 @@ try {
     }
   )
 
-  const recommendations = computed(() => isDefined(data) ? data : [])
-  provide('products', recommendations)
+  provideLocal(productsSymbol, isDefined(data) ? data.value.data.recommendations.map(x => ({ node: x })) : [])
   
   onMounted(async () => {
     if (scrollable) {

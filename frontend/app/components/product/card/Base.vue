@@ -1,10 +1,12 @@
 <template>
   <article class="relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
-    <div v-if="product.node.displayNew" class="absolute right-1/16 top-1/30 z-10">
-      <volt-badge>
-        {{ $t('Nouveau') }}
-      </volt-badge>
-    </div>
+    <client-only>
+      <div v-if="product.node.displayNew" class="absolute right-1/16 top-1/30 z-10">
+        <volt-badge>
+          {{ $t('Nouveau') }}
+        </volt-badge>
+      </div>
+    </client-only>
     
     <!-- Carousel -->
     <product-card-carousel :product="product" :index="index" :is-hovered="isHovered" :show-carousel="showCarousel" @has-navigated="emit('has-navigated', [index, product])" />

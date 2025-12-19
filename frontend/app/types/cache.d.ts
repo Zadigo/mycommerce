@@ -1,4 +1,4 @@
-import type { Languages } from '.'
+import type { Languages, Nullable } from '.'
 import type { Profile } from './api/accounts'
 import type { Product } from './api/shop'
 import type { CartUpdateApiResponse } from './cart'
@@ -17,7 +17,7 @@ export interface PopularImages {
 
 export interface SessionCacheData {
   language: LanguageOptions
-  paymentIntent: null
+  paymentIntent: Nullable<string>
 
   /**
    * @deprecated Stored independently in a firebase document
@@ -28,8 +28,8 @@ export interface SessionCacheData {
   searchHistory: string[]
   authenticatedCart: boolean
   cartViewCount: number
-  profile: Profile | null
-  sessionId: string | null
+  profile: Nullable<Profile>
+  sessionId: Nullable<string>
   likedProducts: Product[]
   popularImages: PopularImages[]
 }

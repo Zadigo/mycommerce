@@ -68,7 +68,7 @@ function selectLanguage(value: AvailableLanguages) {
  */
 
 const db = useFirestore()
-const { sessionId } = await useStorageSetup()
+const { sessionId } = useSession()
 
 watchDebounced([i18n.locale, i18nCountry], async ([languageValue, countryValue]) => {
   if ((isDefined(languageValue) || isDefined(countryValue)) && isDefined(sessionId)) {

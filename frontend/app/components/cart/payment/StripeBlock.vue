@@ -105,7 +105,7 @@ const stripeKey = computed(() => {
 
 console.log(stripeKey)
 
-const { djangoSessionId } = await useStorageSetup()
+const { sessionId } = await useSession()
 
 /**
  * @link https://github.com/ectoflow/vue-stripe-js 
@@ -119,7 +119,7 @@ async function handleStripe () {
   const result = await stripeElementsEl.value.instance.createToken(cardEl.value.stripeElement) as StripeTokenResponse
 
   if (paymentIntent.value) {
-    tokenData.value.session_id = djangoSessionId.value
+    tokenData.value.session_id = sessionId.value
     tokenData.value.card = result.token.card.id
     tokenData.value.intent = paymentIntent.value.intent
     tokenData.value.token = result.token.id

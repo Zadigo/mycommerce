@@ -2,9 +2,9 @@
   <footer class="relative w-full md-5 mt-5 md:mt-10 border-t border-gray-50">
     <div class="mx-auto w-full max-w-7xl p-10">
       <div class="grid grid-cols-1 justify-between gap-4 md:grid-cols-2">
-        <NuxtLinkLocale id="link-home-footer" to="/" class="font-bold font-title text-3xl mb-6">
+        <nuxt-link-locale id="link-home-footer" to="/" class="font-bold font-title text-3xl mb-6">
           Material Tailwind
-        </NuxtLinkLocale >
+        </nuxt-link-locale >
 
         <div :class="`grid grid-cols-${numberOfSections}`" class="justify-between gap-4">
           <ul v-for="(section, x) in footerLinks.sections" :key="section.name">
@@ -13,9 +13,9 @@
             </h5>
             
             <li v-for="(item, y) in section.links" :key="item.name">
-              <NuxtLinkLocale :id="`link-footer-${x}-${y}`" :to="item.to" class="py-1.5 font-normal transition-colors hover:text-blue-gray-900">
+              <nuxt-link-locale :id="`link-footer-${x}-${y}`" :to="item.to" class="py-1.5 font-normal transition-colors hover:text-blue-gray-900">
                 {{ $t(item.name) }}
-              </NuxtLinkLocale >
+              </nuxt-link-locale >
             </li>
           </ul>
         </div>
@@ -23,7 +23,9 @@
 
       <div class="mt-12 flex w-full flex-col items-center justify-center border-t border-blue-gray-50 py-4 md:flex-row md:justify-between">
         <div class="mb-4 text-center font-normal text-blue-gray-900 md:mb-0">
-          &copy; {{ currentYear }} <a href="#" @click.prevent="showLanguageModal=true">{{ languageLocation }}|{{ languageChoice }}</a> <NuxtLinkLocale  to="/">Material Tailwind</NuxtLinkLocale >. All Rights Reserved.
+          <client-only>
+            &copy; {{ currentYear }} <a href="#" @click.prevent="showLanguageModal=true">{{ languageLocation }}|{{ languageChoice }}</a> <nuxt-link-locale  to="/">Material Tailwind</nuxt-link-locale >. All Rights Reserved.
+          </client-only>
         </div>
 
         <div class="flex gap-4 text-blue-gray-900 sm:justify-center">
@@ -40,13 +42,13 @@
 import { socialLinks, footerLinks } from '~/data'
 
 const { $dayjs } = useNuxtApp()
-const { sessionCache } = await useStorageSetup()
+const { session } = await useSession()
 
 const emit = defineEmits<{ 'show-whatsapp': [] }>()
 
 const numberOfSections = computed(() => footerLinks.sections.length)
-const languageLocation = computed(() => isDefined(sessionCache) ? sessionCache.value.language.location : 'France')
-const languageChoice = computed(() => isDefined(sessionCache) ? sessionCache.value.language.choice : 'fr')
+const languageLocation = computed(() => isDefined(session) ? session.value.language.location : 'France')
+const languageChoice = computed(() => isDefined(session) ? session.value.language.choice : 'fr')
 const currentYear = computed(() => $dayjs().year())
 
 const showLanguageModal = useState<boolean>('showLanguageModal')

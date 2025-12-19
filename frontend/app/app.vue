@@ -20,8 +20,13 @@
 </template>
 
 <script setup lang="ts">
-await useSession()
+import { provideSSRWidth } from '@vueuse/core'
+
+useSession()
 useNuxtAuthentication()
+
+const { vueApp } = useNuxtApp()
+provideSSRWidth(1280, vueApp)
 
 /**
  * Provides global state to the app

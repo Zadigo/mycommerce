@@ -41,7 +41,7 @@ const { $client } = useNuxtApp()
 const deliveryOptions = useStorage<DeliveryOption[]>('deliveryOptions', [])
 const paymentIntent = useCookie<NewIntentAPIResponse>('paymentIntent')
 
-const { djangoSessionId } = await useStorageSetup()
+const { sessionId } = useSession()
 
 /**
  * Get the delivery options from which the
@@ -59,7 +59,7 @@ const { data } = await useAsyncData('delivery-options', async () => {
       await $client<NewIntentAPIResponse>('/api/v1/orders/intent', {
         method: 'POST',
         baseURL: useRuntimeConfig().public.prodDomain,
-        body: { session_id: djangoSessionId.value },
+        body: { session_id: sessionId.value },
         onRequestError({ error }) {
           customHandleError(error)
         }

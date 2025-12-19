@@ -15,9 +15,9 @@ export async function useLikeComposable(product: MaybeType<ProductNode>, callbac
   }
 
   const _product = toValue(product)
-  const { likedProducts } = await useStorageSetup()
+  const { session } = await useSession()
 
-  const isLiked = useArrayIncludes(likedProducts, isDefined(_product) ? _product.node.id : false)
+  const isLiked = useArrayIncludes(session.value.likedProducts, isDefined(_product) ? _product.node.id : false)
   // console.log('isLiked', isLiked, likedProducts)
   // const uniqueIds = useArrayUnique(likedProducts)
   // // Ensures only unique IDs in the storage
@@ -26,9 +26,9 @@ export async function useLikeComposable(product: MaybeType<ProductNode>, callbac
   function like() {
     if (isDefined(_product)) {
       if (isLiked.value) {
-        likedProducts.value = likedProducts.value.filter(id => id !== _product.node.id)
+        session.value.likedProducts.value = session.value.likedProducts.value.filter(id => id !== _product.node.id)
       } else {
-        likedProducts.value.push(_product.node.id)
+        session.value.likedProducts.push(_product.node.id)
       }
 
       if (callback) callback('like')
