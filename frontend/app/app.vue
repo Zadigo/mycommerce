@@ -20,8 +20,7 @@
 </template>
 
 <script setup lang="ts">
-useStorageSetup()
-
+await useSession()
 useNuxtAuthentication()
 
 /**

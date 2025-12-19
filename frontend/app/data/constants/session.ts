@@ -3,7 +3,6 @@ import type { SessionCacheData } from '~/types'
 export const baseSessionCacheData: SessionCacheData = {
   language: {
     choice: 'fr',
-    location: 'France',
     selected: false
   },
   sessionId: null,
@@ -14,5 +13,6 @@ export const baseSessionCacheData: SessionCacheData = {
   authenticatedCart: false,
   cartViewCount: 0,
   profile: null,
-  popularImages: []
+  popularImages: [],
+  likedProducts: []
 }

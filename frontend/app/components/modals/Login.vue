@@ -17,10 +17,6 @@
 </template>
 
 <script setup lang="ts">
-const sessionId = useCookie('sessionId', { sameSite: 'strict', secure: true })
-
-const { djangoSessionId } = useDjangoSession() // Ensure session storage is initialized
-
 const showSignup = ref<boolean>(false)
 const showLoginDrawer = useState<boolean>('showLoginDrawer')
 
@@ -46,6 +42,7 @@ function handleReset() {
  * Syncing
  */
 
+const {  sessionId } = await useSession()
 const { customHandleError } = useErrorHandler()
 const { $client } = useNuxtApp()
 
@@ -54,11 +51,11 @@ const { $client } = useNuxtApp()
 async function _handleAuthenticateCart() {
   const cartAuthenticated = useState<boolean>('authenticatedCart')
 
-  if (!cartAuthenticated.value && isDefined(djangoSessionId)) {
+  if (!cartAuthenticated.value && isDefined(sessionId)) {
     await $client('/api/v1/cart/authenticate', {
       method: 'POST',
       body: {
-        session_id: djangoSessionId.value
+        session_id: sessionId.value
       },
       onRequestError: (error) => {
         customHandleError(error)

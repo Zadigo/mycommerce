@@ -1,4 +1,3 @@
-import { useDjangoSession } from '#imports'
 import { useJwt } from '@vueuse/integrations/useJwt'
 
 import type { BaseSizeSet, CartUpdateApiResponse, JWTData, MaybeType, ProductNode, ProductToEdit, UserSelection } from '~/types'
@@ -46,12 +45,12 @@ export const useCart = defineStore('cart', () => {
       return
     }
 
-    const { djangoSessionId } = useDjangoSession()
+    const { sessionId } = useSession()
     
     addingToCartState.value = true
     // By changing this, it updates in the underlying
     // proxy in the ref since data is that proxy
-    userSelection.value.session_id = djangoSessionId?.value || null
+    userSelection.value.session_id = sessionId?.value || null
     userSelection.value.product = product
 
     console.log('product.has_sizes && (userSelection.value.size === Unique || userSelection.value.size === null)', product.node.hasSizes && (userSelection.value.size === 'Unique' || userSelection.value.size === null))
@@ -109,10 +108,10 @@ export const useCart = defineStore('cart', () => {
    */
   
   async function deleteFromCart(cartItem: CartUpdateApiResponse['statistics'][number], callback?: (deletedItem: CartUpdateApiResponse['statistics'][number], updatedCart: CartUpdateApiResponse) => void) {
-    const { djangoSessionId } = useDjangoSession()
+    const { sessionId } = useSession()
 
-    if (djangoSessionId && djangoSessionId.value) {
-      const { payload } = useJwt<JWTData>(djangoSessionId.value)
+    if (sessionId && sessionId.value) {
+      const { payload } = useJwt<JWTData>(sessionId.value)
       const { $client } = useNuxtApp()
 
       if (payload.value) {
@@ -121,7 +120,7 @@ export const useCart = defineStore('cart', () => {
           {
             method: 'POST',
             body: {
-              session_id: djangoSessionId.value,
+              session_id: sessionId.value,
               product_id: cartItem.product__id,
               size: cartItem.size
             }
