@@ -70,8 +70,6 @@
 </template>
 
 <script setup lang="ts">
-import type { ProductToEdit } from '~/types'
-
 const cartStore = useCart()
 const { showEditProductDrawer, showCartDrawer, currentEditedProduct } = storeToRefs(cartStore)
 const { mediaPath } = useDjangoUtilies()

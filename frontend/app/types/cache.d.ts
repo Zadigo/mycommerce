@@ -1,7 +1,7 @@
-import type { Languages, Nullable } from '.'
+import type { Arrayable, Languages, Nullable } from '.'
 import type { Profile } from './api/accounts'
 import type { Product } from './api/shop'
-import type { CartUpdateApiResponse } from './cart'
+import type { CartUpdateApiResponse } from './api/cart'
 
 
 export type LanguageOptions = {
@@ -22,7 +22,7 @@ export interface SessionCacheData {
   /**
    * @deprecated Stored independently in a firebase document
    */
-  cart: CartUpdateApiResponse | null
+  cart: Arrayable<CartItem>
 
   recommendations: Product[]
   searchHistory: string[]

@@ -1,40 +1,35 @@
 <template>
-  <div class="my-1">
-    <article v-for="item in statistics" :key="item.product__id" class="border-2 border-gray-50 rounded-md p-3 mb-2">
+  <div v-if="cart" class="my-1">
+    <article v-for="cartItem in cart" :key="cartItem.product.id" class="border-2 border-gray-50 rounded-md p-3 mb-2">
       <div class="flex justify-start gap-3">
         <div id="image" class="w-2/4">
-          <nuxt-link-locale  id="link-product-img" :to="`/shop/${associatedValue(item.product__id, 'product').id}`" @click="$emit('show-cart-drawer')">
-            <nuxt-img :src="mediaPath(item.product_info?.product.get_main_image.original, '/placeholder.svg')" class="w-full rounded-md" />
+          <nuxt-link-locale  id="link-product-img" :to="`/shop/${cartItem.product.id}`" @click="$emit('show-cart-drawer')">
+            <nuxt-img :src="cartItem.product.mainImage.original" class="w-full rounded-md" />
           </nuxt-link-locale >
         </div>
 
         <div id="infos">
-          <nuxt-link-locale  id="link-product-body" :to="`/shop/${associatedValue(item.product__id, 'product').id}`" @click="$emit('show-cart-drawer')">
+          <nuxt-link-locale  id="link-product-body" :to="`/shop/${cartItem.product.id}`" @click="$emit('show-cart-drawer')">
             <p class="mb-1 font-light text-sm">
-              {{ associatedValue(item.product__id, 'product').name }}
+              {{ cartItem.product.name }}
             </p>
 
             <div class="font-bold">
-              {{ $n(parseFloat(associatedValue(item.product__id, 'product').get_price), 'currency') }}
+              {{ $n(cartItem.product.price.toString(), 'currency') }}
             </div>
             
             <div class="font-light mb-1 flex justify-start align-center gap-1">
-              <span v-if="item.size">
-                {{ item.size }}
-              </span>
-
-              <span>
-                {{ item?.quantity }}x
-              </span>
+              <span>{{ cartItem.size }}</span>
+              <span>{{ cartItem.quantity }}x</span>
             </div>
           </nuxt-link-locale >
 
           <div id="actions" class="mt-5">
-            <volt-button v-if="isEditable" id="action-edit-product" variant="light" class="me-2 rounded-full" size="sm" @click="handleProductEdition(item)">
+            <volt-button v-if="isEditable" id="action-edit-product" variant="light" class="me-2 rounded-full" size="sm" @click="handleProductEdition(cartItem)">
               <icon name="i-lucide:pen" />
             </volt-button>
 
-            <volt-button id="action-delete-product" variant="light" class="rounded-full" size="sm" @click="() => cartStore.deleteFromCart(item)">
+            <volt-button id="action-delete-product" variant="light" class="rounded-full" size="sm" @click="async () => await removeProduct(cartItem)">
               <icon name="i-lucide:trash" />
             </volt-button>
           </div>
@@ -45,18 +40,16 @@
 </template>
 
 <script setup lang="ts">
-import type { ProductToEdit } from '~/types'
+import type { CartItem } from '~/types'
 
-defineProps<{ isEditable?: boolean }>()
-const emit = defineEmits<{ 'edit-product': [editedProduct: ProductToEdit], 'show-cart-drawer': [] }>()
+const props = defineProps<{ isEditable?: boolean }>()
+const emit = defineEmits<{ 'edit-product': [editedProduct: CartItem], 'show-cart-drawer': [] }>()
 
 // const { gtag } = useGtag()
-const cartStore = useCart()
-const { mediaPath } = useDjangoUtilies()
 
-const { statistics, associatedValue } = await useCartInformation()
+const { cart, reduceQuantity, removeProduct } = useCartComposable()
 
-console.log('iterator.statistics', statistics)
+console.log('iterator.statistics', cart?.value)
 
 /**
  * Computed property that get the items from the session
@@ -81,7 +74,7 @@ console.log('iterator.statistics', statistics)
  * 
  * @param item The item to edit
  */
-function handleProductEdition (item: ProductToEdit) {
+function handleProductEdition (item: CartItem) {
   emit('edit-product', item)
 }
 

@@ -5,7 +5,7 @@ import type { BaseSizeSet, ProductNode } from '~/types'
  * event when the size is updated
  * @param product - The current product to select size for
  */
-export function useSizeSelection<P extends ProductNode = ProductNode, S extends BaseSizeSet = BaseSizeSet>(product: P) {
+export const useSizeSelection = createGlobalState(<P extends ProductNode = ProductNode, S extends BaseSizeSet = BaseSizeSet>(product: P) => {
   if (import.meta.server) {
     return {
       availableSizes: ref<S[]>([]),
@@ -69,7 +69,7 @@ export function useSizeSelection<P extends ProductNode = ProductNode, S extends 
      */
     reset
   }
-}
+})
 
 /**
  * Composable to check if a specific size is selected for a product

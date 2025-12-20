@@ -1,162 +1,133 @@
-import { doc, updateDoc } from 'firebase/firestore'
-import type { CartItem, CartUpdateApiResponse } from '~/types'
+import { arrayUnion, doc, updateDoc } from 'firebase/firestore'
+import type { BaseSizeSet, CartItem, CartSessionData, ProductNode, Undefineable, Arrayable } from '~/types'
 
-/**
- * Syncs the cart data received from Django
- *  with the Firestore
- * @deprecated Maybe use one source of truth either Django -> Pinia -> Nuxt or Firestore -> Nuxt
- */
-export async function useSyncCart() {
+export const useCartComposable = createGlobalState(() => {
   if (import.meta.server) {
     return {
-      sync: async () => { }
+      cartSession: null,
+      cart: ref<Arrayable<CartItem>>([]),
+      lastProduct: ref<CartItem | null>(null),
+      add: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { },
+      removeProduct: async (_product: Undefineable<ProductNode>): Promise<void> => { },
+      reduceQuantity: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { }
     }
   }
 
-  const storage = useSession()
-  const docRef = doc(useFirestore(), 'sessions', storage.sessionId?.value)
+  const fireStore = useFirestore()
 
-  async function sync(response: CartUpdateApiResponse) {
-    await updateDoc(docRef, { cart: response }, { merge: true })
-  }
-
-  return {
-    sync
-  }
-}
-
-/**
- * Provides information about the cart stored in the session cache
- * on Firebase
- */
-export async function useCartInformation() {
-  if (import.meta.server) {
-    return {
-      /**
-       * Contains products added to the cart
-       */
-      products: ref([]),
-      /**
-       * Contains aggregated statistics about products in the cart
-       * (e.g. quantity per product)
-       */
-      statistics: ref([]),
-      /**
-       * Indicates if there are products in the cart
-       */
-      hasProducts: ref(false),
-      /**
-       * Contains the last product added to the cart
-       * or null if there are no products
-       */
-      lastAddedProduct: ref(null),
-      /**
-       * Contains the total number of products in the cart
-       */
-      numberOfProducts: ref(0),
-      /**
-       * Contains the total price of the cart
-       * @default 0
-       */
-      cartTotal: ref(0),
-      /**
-       * Contains the free delivery target
-       * @default 50
-       */
-      freeDeliveryTarget: ref(0),
-      /**
-       * Finds an item in the `cart.results` associated with
-       * `cart.statistics` by product ID
-       * @param productId Product ID to search for
-       */
-      associatedItem: (productId: number) => null,
-      /**
-     * Finds a value in an item in the `cart.results` associated with
-     * `cart.statistics` by product ID
-     * @param productId Product ID to search for
-     * @param key Key of the value to return
-     */
-      associatedValue: (productId: number, key: keyof CartUpdateApiResponse['results'][0]) => null
-    }
-  }
-
-  // console.log('sessionCache', sessionCache)
-
-  // const cart = ref<CartUpdateApiResponse | null>(sessionCache.value?.cart)
-  const cartStore = useCart()
-  const { cache } = storeToRefs(cartStore)
+  const cartSessionId = useCookie<CartSessionData>('cart-session')
   
-  const products = computed(() => isDefined(cache) ? cache.value.results : [])
-  const statistics = computed(() => isDefined(cache) ? cache.value.statistics : [])
-  const hasProducts = computed(() => products.value.length > 0)
+  const docRef = doc(fireStore, 'carts', cartSessionId.value)
+  const cartSession = useDocument<CartSessionData>(docRef)
 
-  const lastAddedProduct = computed(() => products.value.at(-1))
-  const cartTotal = computed(() => isDefined(cache) ? cache.value.total : 0)
+  console.log('Cart session data loaded:', cartSession.data.value)
 
-  const freeDeliveryTarget = computed(() => (50 - cartTotal.value) < 0 ? 0 : (50 - cartTotal.value))
+  const _cart = ref<CartItem[]>([])
+  const cart = computed(() => isDefined(cartSession.data) ? cartSession.data.value.items : [])
 
-  const numberOfProducts = computed(() => {
-    if (isDefined(cache)) {
-      return cache.value.statistics.reduce((acc, item) => acc += item.quantity, 0)
-    } else {
-      return 0
+  watchArray(_cart, (newCart, _oldCart, _added, _removed) => {
+    console.log('Updating cart in Firestore:', newCart)
+
+    // Calculate total for each item
+    _cart.value.forEach(item => { item.total = item.quantity * item.product.price })
+
+    // Calculate overall total and number of items
+    const total = _cart.value.reduce((sum, item) => sum + item.total, 0)
+    const numberOfItems = _cart.value.reduce((sum, item) => sum + item.quantity, 0)
+
+    // Update Firestore document
+    const executeUpdate = async () => {
+      try {
+        await updateDoc(docRef, { items: newCart, total, numberOfItems })
+      } catch (error) {
+        console.error('Error updating cart document:', error)
+      }
     }
+
+    executeUpdate()
   })
 
-  function associatedItem(productId: number) {
-    return useArrayFind(cache.value?.results || [], (item) => item.product.id === productId)
+  function _hasSize(product: ProductNode, size: Undefineable<BaseSizeSet>) {
+    if (!isDefined(size)) return ref(false)
+    return useArrayIncludes(product.node.sizeSet, size, (a, b) => a.name === b.name)
   }
 
-  function associatedValue(productId: number, key: keyof CartItem) {
-    const item = associatedItem(productId)
-    return isDefined(item) ? item.value[key] : null
+  function _hasProduct(product: ProductNode) {
+    return useArrayIncludes<CartItem, ProductNode>(_cart, product, (a, b) => a.product.id === b.node.id)
   }
+
+  async function _add(product: ProductNode, size: Undefineable<BaseSizeSet>) {
+    const hasSize = _hasSize(product, size)
+
+    if (hasSize.value) {
+      const item: CartItem = {
+        product: {
+          id: product.node.id,
+          name: product.node.name,
+          price: useToNumber(product.node.price).value,
+          salePrice: useToNumber(product.node.salePrice).value,
+          unitPrice: useToNumber(product.node.unitPrice).value,
+          mainImage: product.node.mainImage
+        },
+        size,
+        quantity: 1,
+        total: 0
+      }
+
+      const hasProduct = _hasProduct(product)
+
+      if (hasProduct.value) {
+        console.log(_cart.value)
+        const selectedProduct = useArrayFind(_cart, (item) => (item.product.id === product.node.id) && (item.size.name === size.name))
+
+        if (isDefined(selectedProduct)) {
+          console.log('Product already in cart, updating quantity')
+          selectedProduct.value.quantity += 1
+          selectedProduct.value.total = selectedProduct.value.quantity * selectedProduct.value.product.price
+        }
+      } else {
+        console.log('Adding new product to cart')
+        _cart.value.push(item)
+      }
+    }
+  }
+
+  const add = useThrottleFn(_add, 500)
+
+  async function _reduceQuantity(product: ProductNode, size: BaseSizeSet) {
+    const selectedProduct = useArrayFind(_cart, (item) => (item.product.id === product.node.id) && (item.size.name === size.name))
+    
+    if (isDefined(selectedProduct)) {
+      console.log('Reducing product quantity in cart')
+      selectedProduct.value.quantity -= 1
+      selectedProduct.value.total = selectedProduct.value.quantity * selectedProduct.value.product.price
+    }
+  }
+
+  const reduceQuantity = useThrottleFn(_reduceQuantity, 500)
+
+  async function _removeProduct(product: ProductNode) {
+
+  }
+
+  const removeProduct = useThrottleFn(_removeProduct, 500)
+  // async function _removeProduct(product: ProductNode, size: BaseSizeSet) {
+  //   const selectedProductIndex = useArrayFindIndex(_cart, (item) => (item.product.id === product.node.id) && (item.size.name === size.name))
+    
+  //   if (selectedProductIndex.value !== -1) {
+  //     console.log('Removing product from cart')
+  //     _cart.value.splice(selectedProductIndex.value, 1)
+  //   }
+  // }
+
+  const lastProduct = computed(() => _cart.value[_cart.value.length - 1] || null)
 
   return {
-    /**
-     * Contains products added to the cart
-     */
-    products,
-    /**
-     * Contains aggregated statistics about products in the cart
-     * (e.g. quantity per product)
-     */
-    statistics,
-    /**
-     * Indicates if there are products in the cart
-     */
-    hasProducts,
-    /**
-     * Contains the last product added to the cart
-     * or null if there are no products
-     */
-    lastAddedProduct,
-    /**
-     * Contains the total number of products in the cart
-     */
-    numberOfProducts,
-    /**
-     * Contains the total price of the cart
-     * @default 0
-     */
-    cartTotal,
-    /**
-     * Contains the free delivery target
-     * @default 50
-     */
-    freeDeliveryTarget,
-    /**
-     * Finds an item in the `cart.results` associated with
-     * `cart.statistics` by product ID
-     * @param productId Product ID to search for
-     */
-    associatedItem,
-    /**
-     * Finds a value in an item in the `cart.results` associated with
-     * `cart.statistics` by product ID
-     * @param productId Product ID to search for
-     * @param key Key of the value to return
-     */
-    associatedValue
+    cartSession,
+    cart,
+    lastProduct,
+    add,
+    removeProduct,
+    reduceQuantity
   }
-}
+})

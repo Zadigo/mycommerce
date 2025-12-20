@@ -25,8 +25,7 @@ import { provideSSRWidth } from '@vueuse/core'
 useSession()
 useNuxtAuthentication()
 
-const { vueApp } = useNuxtApp()
-provideSSRWidth(1280, vueApp)
+provideSSRWidth(1280)
 
 /**
  * Provides global state to the app

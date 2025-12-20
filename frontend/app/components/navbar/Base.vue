@@ -1,52 +1,46 @@
 <template>
   <nav class="block w-full px-4 py-2 mx-auto text-white bg-white shadow-md lg:px-8 lg:py-3 sticky top-0 z-50">
-    <div class="container flex flex-wrap items-center justify-between mx-auto text-slate-800">
-      <nuxt-link-locale  id="link-home-navbar" to="/" class="mr-4 block cursor-pointer py-1.5 text-base text-slate-800 font-semibold">
-        Ecommerce
-      </nuxt-link-locale >
+    <div class="container flex flex-wrap items-center justify-between mx-auto text-primary-800">
+      <nuxt-link-locale  id="link-home-navbar" to="/" class="mr-4 block py-1.5 text-base text-primary-800 font-semibold uppercase">
+        {{ getKey('legalName') }}
+      </nuxt-link-locale>
 
-      <NavbarDropdownCollections />
+      <ul class="hidden lg:flex lg:items-center lg:mb-0 lg:gap-6 lg:mt-0 gap-2 mt-2 mb-4">
+        <li class="flex items-center p-1 text-sm gap-x-2 text-primary-600">
+          <volt-secondary-button id="action-search" class="ms-auto me-2" rounded @click="() => { showSearchModal = true }">
+            <icon name="i-lucide-search" />
+            {{ $t('Rechercher') }}
+          </volt-secondary-button>
+        </li>
 
-      <div class="hidden lg:block">
-        <client-only>
-          <ul class="hidden gap-2 mt-2 mb-4 lg:mb-0 lg:flex lg:items-center lg:gap-6 lg:mt-0">
-            <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-              <volt-secondary-button id="action-search" class="ms-auto me-2" rounded @click="() => { showSearchModal = true }">
-                <icon name="i-lucide-search" />
-                {{ $t('Rechercher') }}
-              </volt-secondary-button>
-            </li>
+        <li class="flex items-center p-1 text-sm gap-x-2 text-primary-600">
+          <a id="action-cart-navbar" href="#" class="flex items-center gap-2" @click.prevent="handleShowCartDrawer">
+            <icon name="i-fa7-solid:shopping-bag" size="18" />
+            {{ $t("Panier") }}
+          </a>
+        </li>
 
-            <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-              <a id="action-cart-navbar" href="#" class="flex items-center gap-2" @click.prevent="handleShowCartDrawer">
-                <icon name="i-fa7-solid:shopping-bag" size="18" />
-                {{ $t("Panier") }}
-              </a>
-            </li>
-
-            <li v-if="!isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-              <a id="action-signin" href="#" class="flex items-center gap-2" @click.prevent="() => { showLoginDrawer = true }">
-                <icon name="i-fa7-solid:sign-in-alt" size="18" />
-                {{ $t('Se connecter') }}
-              </a>
-            </li>
-            <li v-else class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-              <a id="action-signout" href="#" class="flex items-center gap-2" @click.prevent="useLogout">
-                <icon name="i-fa7-solid:sign-out-alt" size="18" />
-                {{ $t('Se déconnecter') }}
-              </a>
-            </li>
-            
-            <li class="flex items-center p-1 text-sm gap-x-2 text-slate-600">
-              <nuxt-link-locale id="link-account-navbar" to="/account/" class="flex items-center gap-2">
-                <icon name="i-fa7-solid:user" size="18" />
-                {{ $t('Compte') }}
-              </nuxt-link-locale >
-            </li>
-          </ul>
-        </client-only>
-      </div>
-
+        <li v-if="!isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-primary-600">
+          <a id="action-signin" href="#" class="flex items-center gap-2" @click.prevent="() => { showLoginDrawer = true }">
+            <icon name="i-fa7-solid:sign-in-alt" size="18" />
+            {{ $t('Se connecter') }}
+          </a>
+        </li>
+        <li v-else class="flex items-center p-1 text-sm gap-x-2 text-primary-600">
+          <a id="action-signout" href="#" class="flex items-center gap-2" @click.prevent="async () => { await useLogout() }">
+            <icon name="i-fa7-solid:sign-out-alt" size="18" />
+            {{ $t('Se déconnecter') }}
+          </a>
+        </li>
+        
+        <li class="flex items-center p-1 text-sm gap-x-2 text-primary-600">
+          <nuxt-link-locale id="link-account-navbar" to="/account/" class="flex items-center gap-2">
+            <icon name="i-fa7-solid:user" size="18" />
+            {{ $t('Compte') }}
+          </nuxt-link-locale >
+        </li>
+      </ul>
+      
       <button id="action-menu" class="relative ml-auto h-6 max-h-10 w-6 select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-inherit transition-all hover:bg-transparent focus:bg-transparent active:bg-transparent disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:hidden" type="button">
        <icon name="i-fa7-solid:bars" size="18" />
       </button>
@@ -55,6 +49,8 @@
 </template>
 
 <script setup lang="ts">
+import { useBusinessDetails } from '~/data'
+
 /**
  * Global modals
  */
@@ -63,7 +59,11 @@ const showCartDrawer = useState<boolean>('showCartDrawer')
 const showLoginDrawer = useState<boolean>('showLoginDrawer')
 const showSearchModal = useState<boolean>('showSearchModal')
 
-// const { gtag } = useGtag()
+/**
+ * Business
+ */
+
+const { getKey } = await useBusinessDetails()
 
 /**
  * Authentication
@@ -72,8 +72,11 @@ const showSearchModal = useState<boolean>('showSearchModal')
 const { isAuthenticated } = useUser()
 
 /**
- *
+ * Cart
  */
+
+// const { gtag } = useGtag()
+
 function handleShowCartDrawer() {
   showCartDrawer.value = true
 

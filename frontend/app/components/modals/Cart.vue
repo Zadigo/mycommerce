@@ -1,8 +1,8 @@
 <template>
   <volt-drawer v-model:visible="showCartDrawer" position="right">
     <div class="flex justify-between items-center">
-      <h2 class="font-bold">
-        {{ $t('Cart quantity', { n: numberOfProducts }) }}
+      <h2 v-if="cartSession" class="font-bold">
+        {{ $t('Cart quantity', { n: cartSession.numberOfItems }) }}
       </h2>
 
       <volt-button variant="outlined">
@@ -15,10 +15,8 @@
 
     <volt-divider />
     
-    <div class="px-5">
-      {{ hasProducts }}
-      
-      <div v-if="hasProducts" class="flex flex-col my-10">
+    <div class="px-5">      
+      <div v-if="cartSession" class="flex flex-col my-10">
         <div class="p-5 shadow-sm rounded-md bg-green-100">
           <div v-if="freeDeliveryTarget > 0">
             {{ $t('Livraison gratuite offerte', { n: $n(freeDeliveryTarget, 'currency') }) }}
@@ -46,14 +44,14 @@
 
         <div class="flex justify-between align-center py-4">
           <span class="font-light">{{ $t('Total (TVA comprise)') }}</span>
-          <span class="font-bold">{{ $n(cartTotal, 'currency') }}</span>
+          <span class="font-bold">{{ $n(cartSession.total, 'currency') }}</span>
         </div>
 
         <div class="place-self-baseline">
           isAuthenticated: {{ isAuthenticated }}
 
           <volt-button v-if="isAuthenticated">
-            <nuxt-link-locale od="link-start-checkout" to="/cart">
+            <nuxt-link-locale id="link-start-checkout" to="/cart">
               {{ $t('Passer commande') }}
             </nuxt-link-locale>
           </volt-button>
@@ -88,18 +86,16 @@
 </template>
 
 <script lang="ts" setup>
-import type { ProductToEdit } from '~/types'
+import type { CartItem } from '~/types'
 
 const toLocalePath = useLocalePath()
-
-const router = useRouter()
 
 const showCartDrawer = useState<boolean>('showCartDrawer')
 const showLoginDrawer = useState<boolean>('showLoginDrawer')
 
-const { hasProducts, freeDeliveryTarget, numberOfProducts, cartTotal } = await useCartInformation()
+const { cartSession } = useCartComposable()
 
-const emit = defineEmits<{ 'edit-product': ProductToEdit }>()
+const emit = defineEmits<{ 'edit-product': CartItem }>()
 
 /**
  * Authentication
@@ -107,11 +103,11 @@ const emit = defineEmits<{ 'edit-product': ProductToEdit }>()
 
 const { isAuthenticated } = useUser()
 
-/**
- * Handles the redirection to the correct page
- * if the user clicks on the discover button
- * in the cart modal
- */
+const router = useRouter()
+
+// Handles the redirection to the correct page
+// if the user clicks on the discover button
+// in the cart modal
 function handleCartButtonRedirection () {
   showCartDrawer.value = false
   router.push(toLocalePath('/shop/collection/novelties'))
@@ -120,12 +116,10 @@ function handleCartButtonRedirection () {
 const cartStore = useCart()
 const { currentEditedProduct, showEditProductDrawer } = storeToRefs(cartStore)
 
-/**
- * Handle the opening or the closing of 
- * the product edition dialog by ensuring
- * that cartDrawer is closed
- */
-function handleOpenProductEdition (editedProduct: ProductToEdit) {
+// Handle the opening or the closing of
+// the product edition dialog by ensuring
+// that cartDrawer is closed
+function handleOpenProductEdition (editedProduct: CartItem) {
   currentEditedProduct.value = editedProduct
   showCartDrawer.value = false
   showEditProductDrawer.value = true

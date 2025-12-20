@@ -16,28 +16,40 @@ import type { SessionCacheData } from '~/types'
 export const useSession = createGlobalState((name: string = 'sessionId') => {
   if (import.meta.server) {
     return {
-      sessionId: null,
+      sessionId: ref<string | null>(null),
       session: null
     }
   }
 
   const fireStore = useFirestore()
   const sessionId = useCookie(name, { sameSite: 'strict', secure: true, expires: undefined })
+  const cartSessionId = useCookie('cart-session', { sameSite: 'strict', secure: true, expires: undefined })
 
   async function createSession() {
     if (isDefined(sessionId)) {
-      const docRef = doc(fireStore, 'sessions', sessionId.value)
-      const result = await getDoc(docRef) // Ensure document exists
-      if (result.exists()) {
-        return
-      } else {
-        sessionId.value = '' // Invalidate cookie if session does not exist
-      }
-    }
+      try {
+        console.log('Checking existing session in Firestore (createSession):', sessionId.value)
+        const docRef = doc(fireStore, 'sessions', sessionId.value)
+        const result = await getDoc(docRef) // Ensure document exists
 
-    const collectionRef = collection(fireStore, 'sessions')
-    const result = await addDoc(collectionRef, baseSessionCacheData)
-    sessionId.value = result.id
+        if (result.exists()) {
+          return
+        } else {
+          sessionId.value = '' // Invalidate cookie if session does not exist
+          cartSessionId.value = ''
+        }
+      } catch (error) {
+        console.error('Error fetching session document:', error)
+      }
+    } else {
+      const collectionRef = collection(fireStore, 'sessions')
+      const result = await addDoc(collectionRef, baseSessionCacheData)
+      sessionId.value = result.id
+
+      const cartCollectionRef = collection(fireStore, 'carts')
+      const cartResult = await addDoc(cartCollectionRef, { items: [], sessionId: result.id })
+      cartSessionId.value = cartResult.id
+    }
 
     await promiseTimeout(1000) // Wait for Firestore to propagate
   }

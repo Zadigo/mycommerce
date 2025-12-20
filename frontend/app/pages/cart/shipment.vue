@@ -50,7 +50,7 @@
 
 <script lang="ts" setup>
 import { useLocalStorage } from '@vueuse/core'
-import type { NewIntentAPIResponse } from '~/types/cart/payment'
+import type { NewIntentAPIResponse } from '~/types/api/cart/payment'
 
 definePageMeta({
   title: 'Cart: Shipment',

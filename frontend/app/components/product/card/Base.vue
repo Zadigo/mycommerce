@@ -1,5 +1,5 @@
 <template>
-  <article class="relative" @mouseover="isHovered=true" @mouseleave="isHovered=false">
+  <article ref="articleEl" class="relative">
     <client-only>
       <div v-if="product.node.displayNew" class="absolute right-1/16 top-1/30 z-10">
         <volt-badge>
@@ -55,30 +55,31 @@ const props = defineProps<{
   showPrices?: boolean
 }>()
 
-console.log('props.product', props.product)
-
-/** 
- * This emit is used to indicate to parents
- * hosting this component that a navigation occured. This
- * is useful for Google Analytics for example or for passing
- * information on a product on which the link was clicked
- */
+// This emit is used to indicate to parents
+// hosting this component that a navigation occured. This
+// is useful for Google Analytics for example or for passing
+// information on a product on which the link was clicked
 const emit = defineEmits<{ 'has-navigated': [data: (number | ProductNode)[]] }>()
 
+
 // const { gtag } = useGtag()
-const { triggerEvent } = useAnalyticsCallback(props.product, props.index)
+// const { triggerEvent } = useAnalyticsCallback(props.product, props.index)
 
 /**
  * Like/Wishlist
  */
 
-const { like, isLiked, icon } = await useLikeComposable(props.product, triggerEvent)
+const { like, isLiked, icon } = await useLikeComposable(props.product)
 
-const isHovered = ref<boolean>(false)
-const productEl = useTemplateRef<HTMLDivElement>('productEl')
+/**
+ * Hover state
+ */
 
-// if (import.meta.client) {
-//   const { isOutside } = useMouseInElement(productEl)
-//   isHovered.value = !isOutside.value
-// }
+const isHovered = ref(false)
+const articleEl = useTemplateRef<HTMLElement>('articleEl')
+ 
+if (import.meta.client) {
+  const _isHovered = useElementHover(articleEl)
+  syncRefs(_isHovered, isHovered)
+}
 </script>

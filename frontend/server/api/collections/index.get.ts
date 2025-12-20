@@ -40,4 +40,8 @@ import { collectionRestApiFixture } from '~/data/__fixtures__'
 
 export default defineCachedEventHandler(_event => {
   return collectionRestApiFixture
+}, {
+  base: 'redis',
+  name: 'collections',
+  maxAge: 0 // disable cache for now
 })

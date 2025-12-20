@@ -1,4 +1,4 @@
-import type { DeliveryOption } from './cart'
+import type { DeliveryOption } from './delivery'
 
 export type Arrayable<T> = T[]
 
@@ -15,9 +15,7 @@ export type StringNull = string | null | undefined
 export type * from './api/accounts'
 export type * from './cache'
 export type * from './cart'
-export type * from './api/feed'
 export type * from './other'
-export type * from './api/shop'
 export type * from './text'
 export type * from './api'
 export type * from './graphql'

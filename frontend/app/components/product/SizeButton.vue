@@ -6,11 +6,11 @@
 </template>
 
 <script lang="ts" setup>
-import type { BaseSizeSet, ClotheSizes, ProductNode } from '~/types';
+import type { BaseSizeSet, Undefineable } from '~/types';
 
 const { size, selectedSize, selectable = true, customClass, buttonStyle = 'button' } = defineProps<{
   size: BaseSizeSet,
-  selectedSize: ClotheSizes,
+  selectedSize: Undefineable<BaseSizeSet>,
   selectable?: boolean,
   customClass?: string,
   buttonStyle?: 'button' | 'link'
@@ -18,7 +18,7 @@ const { size, selectedSize, selectable = true, customClass, buttonStyle = 'butto
 
 const emit = defineEmits<{ 'select-size': [size: BaseSizeSet] }>()
 
-const isSelected = computed(() => size.name === selectedSize)
+const isSelected = computed(() => isDefined(selectedSize) ? size.name === selectedSize.name : false)
 
 const buttonClass = computed(() => {
   return [

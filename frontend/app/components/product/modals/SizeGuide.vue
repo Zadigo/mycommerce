@@ -6,7 +6,7 @@
           {{ $t("Sélectionne une taille") }}
         </p>
 
-        <product-size-block v-if="product" :product="product" @show-size-guide-drawer="show=false" />
+        <product-size-block v-if="product" :product="product" :selected-size="selectedSize" @show-size-guide-drawer="show=false" />
         <volt-skeleton v-else height="20px" width="60px" />
 
         <p class="text-1xl font-semibold mt-4 mb-1">
@@ -31,7 +31,7 @@
       </div>
 
       <div class="col mt-4 mb-10">
-        <volt-button class="w-full" @click="cartStore.addToCart(product)">
+        <volt-button class="w-full" @click="() => { add(product, selectedSize) }">
           {{ $t('Ajouter au panier') }}
         </volt-button>
       </div>
@@ -85,5 +85,10 @@ const props = defineProps<{ product: Undefineable<ProductNode> }>()
 
 const show = defineModel<boolean>('show', { type: Boolean, default: false })
 
-const cartStore = useCart()
+/**
+ * Cart
+ */
+
+const { selectedSize, selectSize } = useSizeSelection(props.product)
+const { add } = useCartComposable()
 </script>

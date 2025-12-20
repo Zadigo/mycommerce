@@ -8,7 +8,7 @@
       
       <!-- Details -->
       <client-only>
-        <product-page-aside-base :product="product" @size-guide="showSizeGuideDrawer=true" @availability-modal="() => showAvailabilityModal=true" @composition-guide="() => showCompositionModal=true" />
+        <product-page-aside-base :product="product" @size-guide="toggleSizeGuideDrawer()" @availability-modal="toggleAvailabilityModal()" @composition-guide="toggleCompositionModal()" />
       </client-only>
     </div>
 
@@ -38,7 +38,7 @@
       <product-modals-size-guide v-model:show="showSizeGuideDrawer" :product="product" />
       
       <!-- Availability & Composition -->
-      <product-modals-availability v-model:show="showAvailabilityModal" />
+      <product-modals-availability v-model:show="showAvailabilityModal" :product="product" />
       
       <!-- Composition -->
       <product-modals-composition v-model:show="showCompositionModal" />
@@ -86,9 +86,9 @@ const { imagesComponent } = useImageComponentComposable(product)
  * Modals
  */
 
-const showSizeGuideDrawer = ref<boolean>(false)
-const showAvailabilityModal = ref<boolean>(false)
-const showCompositionModal = ref<boolean>(false)
+const [showSizeGuideDrawer, toggleSizeGuideDrawer] = useToggle<boolean>(false)
+const [showAvailabilityModal, toggleAvailabilityModal] = useToggle<boolean>(false)
+const [showCompositionModal, toggleCompositionModal] = useToggle<boolean>(false)
 
 /**
  * SEO

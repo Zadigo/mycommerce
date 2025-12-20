@@ -1,25 +1,25 @@
 <template>
   <volt-drawer v-model:visible="showAddedProductDrawer" position="right">
     <div class="px-5 overflow-y-scroll">
-      <div v-if="hasProducts" class="my-5">
+      <div v-if="cart" class="my-5">
         <div class="flex justify-start mb-5 fs-5 items-center gap-2">
           <Icon name="circle-check" class="text-green-500" />
           <span>{{ $t('Ajouté au panier') }}</span>
         </div>
 
-        <div v-if="lastAddedProduct" class="my-2">
-          <NuxtImg :src="mediaPath(lastAddedProduct.product.get_main_image?.original, '/placeholder.svg')" :alt="lastAddedProduct.product.name" format="webp" class="rounded-md" />
+        <div v-if="lastProduct" class="my-2">
+          <NuxtImg :src="lastProduct.product.mainImage.original" :alt="lastProduct.product.mainImage.name" format="webp" class="rounded-md" />
 
           <p class="font-bold mt-5">
-            {{ $n(parseFloat(lastAddedProduct.product.get_price.toString()), 'currency') }}
+            {{ $n(parseFloat(lastProduct.product.price.toString()), 'currency') }}
           </p>
 
           <p class="font-normal">
-            {{ lastAddedProduct.product.name }}
+            {{ lastProduct.product.name }}
           </p>
 
           <p class="text-slate-500">
-            Taille: {{ lastAddedProduct.size }}
+            Taille: {{ lastProduct.size }}
           </p>
 
           <div class="my-5">
@@ -36,7 +36,7 @@
         <volt-skeleton v-else height="300px" class="w-full mb-10" />
 
         <!-- Recommendations -->
-        <BaseRecommendations :quantity="20" :columns="3" :load-cache="true" :show-carousel="false" :show-like-button="false" :show-cart="false" :show-prices="false" />
+        <base-recommendations :quantity="20" :columns="3" :load-cache="true" :show-carousel="false" :show-like-button="false" :show-cart="false" :show-prices="false" />
       </div>
 
       <ModalsSkeletonLoader v-else />
@@ -48,12 +48,10 @@
 const toLocalePath = useLocalePath()
 const router = useRouter()
 
-const { mediaPath } = useDjangoUtilies()
-
 const cartStore = useCart()
 const { showAddedProductDrawer, showCartDrawer } = storeToRefs(cartStore)
 
-const { lastAddedProduct, hasProducts, products } = await useCartInformation()
+const { cart, lastProduct } = useCartComposable()
 
 const showLoginDrawer = useState<boolean>('showLoginDrawer')
 const { isAuthenticated } = useUser()

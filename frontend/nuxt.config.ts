@@ -88,41 +88,35 @@ export default defineNuxtConfig({
 
       // What's App
       whatsAppUrl: process.env.NUXT_PUBLIC_WHATS_APP_URL
-        }
-      },
+    }
+  },
 
-      modules: [
-        '@nuxt/fonts',
-        '@nuxt/hints',
-        '@nuxt/icon',
-        '@nuxt/image',
-        '@nuxt/scripts',
-        '@nuxt/test-utils',
-        '@nuxtjs/i18n',
-        '@nuxtjs/sitemap',
-        '@pinia/nuxt',
-        '@unlok-co/nuxt-stripe',
-        '@vueuse/motion',
-        '@vueuse/nuxt',
-        'nuxt-authentication',
-        'nuxt-schema-org',
-        'nuxt-vuefire',
-        'pinia-plugin-persistedstate',
-        'shadcn-nuxt',
-        'vue-sonner/nuxt'
-      ],
+  modules: [
+    '@nuxt/fonts',
+    '@nuxt/hints',
+    '@nuxt/icon',
+    '@nuxt/image',
+    '@nuxt/scripts',
+    '@nuxt/test-utils',
+    '@nuxtjs/i18n',
+    '@nuxtjs/sitemap',
+    '@pinia/nuxt',
+    '@unlok-co/nuxt-stripe',
+    '@vueuse/motion',
+    '@vueuse/nuxt',
+    'nuxt-authentication',
+    'nuxt-schema-org',
+    'nuxt-vuefire',
+    'pinia-plugin-persistedstate',
+    'vue-sonner/nuxt'
+  ],
 
-      shadcn: {
-        prefix: 'Tail',
-        componentDir: '~/components/ui'
-      },
-
-      i18n: {
-        baseUrl: './',
-        langDir: './locales',
-        defaultLocale: 'fr',
-        vueI18n: './i18n.config.ts',
-        locales: [
+  i18n: {
+    baseUrl: './',
+    langDir: './locales',
+    defaultLocale: 'fr',
+    vueI18n: './i18n.config.ts',
+    locales: [
       {
         code: 'en',
         language: 'en-US',
@@ -144,7 +138,7 @@ export default defineNuxtConfig({
         dir: 'ltr',
         name: 'Français'
       }
-        ],
+    ],
     // pages: {
     //   'guide': { fr: '/guide-achat', en: '/guide-achat', es: '/guide-achat' },
     //   'wishlist': { fr: '/liste-souhait', en: '/wishlist', es: '/wishlist' },
@@ -167,7 +161,7 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [
-      tailwindcss(),
+      tailwindcss()
     ]
   },
 
@@ -318,12 +312,6 @@ export default defineNuxtConfig({
   },
 
   // nitro: {
-  //   prerender: {
-  //     routes: [
-  //       '/mentions-legales',
-  //       '/confidentialite'
-  //     ]
-  //   },
   //   storage: {
   //     redis: {
   //       driver: 'redis',
@@ -331,15 +319,6 @@ export default defineNuxtConfig({
   //       port: 6379,
   //       username: process.env.NUXT_PUBLIC_REDIS_USER,
   //       password: process.env.NUXT_PUBLIC_REDIS_PASSWORD
-  //     }
-  //   },
-  //   devStorage: {
-  //     redis: {
-  //       driver: 'redis',
-  //       host: '127.0.0.1',
-  //       port: 6379,
-  //       username: '',
-  //       password: ''
   //     }
   //   }
   // }

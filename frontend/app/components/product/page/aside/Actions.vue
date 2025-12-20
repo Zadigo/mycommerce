@@ -1,8 +1,10 @@
 <template>
   <div id="actions">    
     <!-- Sizes -->
-    <product-size-block v-if="product" :product="product" class="mb-4" />
+    <product-size-block v-if="product" :selected-size="selectedSize" :product="product" class="mb-4" @select-size="(size) => { selectSize(size) }" />
     <volt-skeleton v-else height="100px" class="w-2/6" />
+
+    {{ selectedSize }}
 
     <!-- Model information -->
     <div v-if="product" class="font-light">
@@ -29,7 +31,7 @@
       <icon name="fa:envelope" size="12" class="me-1" />
       {{ $t('Me tenir informer') }}
     </volt-button>
-    <volt-button v-else id="action-add-cart" class="mt-5 me-2 place-content-center" :disabled="false" @click="proxyAddToCart">
+    <volt-button v-else id="action-add-cart" class="mt-5 me-2 place-content-center" :disabled="false" @click="() => add(product, selectedSize)">
       <icon v-if="stockState && stockState.almost_sold_out" name="i-fa7-solid:clock" class="me-1" />
       {{ $t('Ajouter au panier') }}
     </volt-button>
@@ -91,58 +93,61 @@ function proxyHandleLike() {
   }
 }
 
-const { sync } = await useSyncCart()
+const { selectedSize, selectSize } = useSizeSelection(props.product)
+const { add } = useCartComposable()
 
-async function proxyAddToCart() {
-  cartStore.addToCart(props.product, async (data) => {
-    console.log('proxyAddToCart', data)
-    sync(data)
+// const { sync } = await useSyncCart()
 
-    // if (cartStore.sessionId) {
-    //   const userRef = doc($fireStore, 'users', cartStore.sessionId)
-    //   const userSnapshot = await getDoc(userRef)
+// async function proxyAddToCart() {
+//   cartStore.addToCart(props.product, async (data) => {
+//     console.log('proxyAddToCart', data)
+//     sync(data)
 
-    //   console.info('has user snapshot', userSnapshot.exists())
+//     // if (cartStore.sessionId) {
+//     //   const userRef = doc($fireStore, 'users', cartStore.sessionId)
+//     //   const userSnapshot = await getDoc(userRef)
+
+//     //   console.info('has user snapshot', userSnapshot.exists())
       
-    //   if (userSnapshot.exists()) {
-    //     await updateDoc(userRef, { cart: data })
-    //   }
-    // }
+//     //   if (userSnapshot.exists()) {
+//     //     await updateDoc(userRef, { cart: data })
+//     //   }
+//     // }
 
-    // TODO: G-Analytics
-    // gtag('event', 'add_to_cart',  {
-    //   currency: 'EUR',
-    //   value: props.product?.get_price,
-    //   items: [
-    //     {
-    //       item_id: props.product?.id,
-    //       item_name: props.product?.name,
-    //       price: props.product?.get_price,
-    //       quantity: 1,
-    //       item_brand: null,
-    //       item_category: props.product?.category,
-    //       item_category2: props.product?.sub_category,
-    //       item_variant: props.product?.color,
-    //       index: 0,
-    //       item_reference: null,
-    //       size: userSelection.value.size
-    //     }
-    //   ]
-    // })
+//     // TODO: G-Analytics
+//     // gtag('event', 'add_to_cart',  {
+//     //   currency: 'EUR',
+//     //   value: props.product?.get_price,
+//     //   items: [
+//     //     {
+//     //       item_id: props.product?.id,
+//     //       item_name: props.product?.name,
+//     //       price: props.product?.get_price,
+//     //       quantity: 1,
+//     //       item_brand: null,
+//     //       item_category: props.product?.category,
+//     //       item_category2: props.product?.sub_category,
+//     //       item_variant: props.product?.color,
+//     //       index: 0,
+//     //       item_reference: null,
+//     //       size: userSelection.value.size
+//     //     }
+//     //   ]
+//     // })
 
-    // if (sizeEl.value) {
-    //   sizeEl.value.resetSize()
-    // }
-  })
-}
+//     // if (sizeEl.value) {
+//     //   sizeEl.value.resetSize()
+//     // }
+//   })
+// }
 
 /**
  * Proxy function that handles the action
  * of selecting a size for the current product
  * @param size The item's size
  */
-function proxySelectSize(size: BaseSizeSet) {
-  showSizeSelectionWarning.value = false
-  cartStore.sizeSelection(props.product, size)
-}
+// function proxySelectSize(size: BaseSizeSet) {
+//   showSizeSelectionWarning.value = false
+//   cartStore.sizeSelection(props.product, size)
+// }
 </script>

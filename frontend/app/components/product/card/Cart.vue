@@ -1,6 +1,6 @@
 <template>  
-  <div class="bg-transparent absolute bottom-4/20 md:bottom-3/20 lg:bottom-2/20 left-0 p-5 w-full flex justify-center gap-2">
-    <volt-contrast-button v-for="size in product.node.sizeSet" :key="size.name" size="small" class="min-w-2">
+  <div class="bg-transparent absolute bottom-4/20 md:bottom-3/20 lg:bottom-2/20 left-0 p-5 w-full flex justify-center gap-2 z-30">
+    <volt-contrast-button v-for="size in product.node.sizeSet" :key="size.name" size="small" class="min-w-2" @click="() => add(product, size)">
       {{ size.name }}
     </volt-contrast-button>
   </div>
@@ -18,19 +18,5 @@ const props = defineProps<{
 const cartStore = useCart()
 const { showAddedProductDrawer } = storeToRefs(cartStore)
 
-const { hasSizes: requiresSizeSelection } = useProductComposable(props.product)
-
-/**
- * Proxy function that adds the product to the cart
- * when the size is "Unique"
- */
-async function uniqueAddToCart () {
-  if (props.product) {
-    await cartStore.addToCart(props.product, () => {
-      showAddedProductDrawer.value = true
-    })
-  } else {
-    console.error('Card', 'Props does not have a product')
-  }
-}
+const { add } = useCartComposable()
 </script>
