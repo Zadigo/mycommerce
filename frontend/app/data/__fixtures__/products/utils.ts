@@ -1,6 +1,6 @@
-import type { Arrayable } from '~/types'
-import type { BaseImage, Product, ProductNode } from '~/types/graphql'
 import { productFixture, productGraphqlFixture } from '~/data/__fixtures__'
+import type { Arrayable } from '~/types'
+import type { BaseImage, ProductNode } from '~/types/graphql'
 
 export const IMAGE_GROUPS = [
   [
@@ -32,13 +32,15 @@ export const IMAGE_GROUPS = [
   ]
 ]
 
-function getRandomGroup() {
+async function getRandomGroup() {
   const index = Math.floor(Math.random() * IMAGE_GROUPS.length)
+  console.log('Selected image group index:', index)
   return IMAGE_GROUPS[index] as Arrayable<string>
 }
 
-export function generateImages(group: Arrayable<string>): Arrayable<BaseImage> {
+export async function generateImages(group: Arrayable<string>): Promise<Arrayable<BaseImage>> {
   return group.map((imageUrl, i) => ({
+    id: (i + 1).toString(),
     createdOn: '2025-01-01',
     isMainImage: i === 0,
     name: `Image ${i + 1}`,
@@ -48,7 +50,7 @@ export function generateImages(group: Arrayable<string>): Arrayable<BaseImage> {
   }))
 }
 
-export function generateMainImage<T extends BaseImage>(group: Arrayable<string>): T {
+export async function generateMainImage<T extends BaseImage>(group: Arrayable<string>): Promise<T> {
   const imageUrl = group[0] as string
   return {
     createdOn: '2025-01-01',
@@ -60,18 +62,24 @@ export function generateMainImage<T extends BaseImage>(group: Arrayable<string>)
   } as T
 }
 
-export function generateProducts(count = 3) {
+export async function generateProducts(count = 3) {
   const container = { ...productGraphqlFixture }
-  
-  container.data.allProducts.edges = Array.from({ length: count }, (_, i) => {
-    const randomGroup = getRandomGroup()
-    const product: ProductNode = { ...productFixture }
 
-    product.node.name = `Product Fixture ${i + 1}`
-    product.node.mainImage = generateMainImage(randomGroup)
-    product.node.productImages = generateImages(randomGroup)
+  const items: ProductNode[] = []
 
-    product.node.sizeSet = [
+  for (let i = 0; i < count; i++) {
+    const randomGroup = await getRandomGroup()
+    const newItem: ProductNode = { ...productFixture }
+
+    newItem.node.id = (i + 1).toString()
+    newItem.node.name = `Product Fixture ${i + 1}`
+    newItem.node.mainImage = await generateMainImage(randomGroup)
+    newItem.node.productImages = await generateImages(randomGroup)
+    newItem.node.unitPrice = 50 + i * 10
+    newItem.node.price = newItem.node.unitPrice
+    newItem.node.saleValue = newItem.node.salePrice ? newItem.node.unitPrice - (newItem.node.salePrice) : 0
+
+    newItem.node.sizeSet = [
       {
         active: true,
         availability: true,
@@ -88,8 +96,9 @@ export function generateProducts(count = 3) {
       }
     ]
 
-    return product
-  })
+    items.push(newItem)
+  }
 
+  container.data.allProducts.edges = items
   return container
 }

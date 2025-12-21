@@ -1,7 +1,7 @@
 import type { Arrayable } from '@vueuse/core'
 import type { BaseProduct, BaseSizeSet } from '../graphql'
 
-export type CartItem = {
+export interface CartItem {
   product: Pick<BaseProduct, 'id' | 'name' | 'price' | 'salePrice' | 'unitPrice' | 'mainImage'>
   size: BaseSizeSet
   quantity: number

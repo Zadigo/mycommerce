@@ -20,10 +20,12 @@ export function useSetupSession() {
 
   const fireStore = useFirestore()
 
-  const sessionId = useCookie(SESSIONNAME, { sameSite: 'strict', secure: true, expires: undefined })
+  const _sessionId = useCookie(SESSIONNAME, { sameSite: 'strict', secure: true, expires: undefined })
+  const sessionId = refDefault(_sessionId, '')
   const hasKey = computed(() => isDefined(sessionId) && sessionId.value !== '')
 
-  const cartSessionId = useCookie(CARTSESSIONNAME, { sameSite: 'strict', secure: true, expires: undefined })
+  const _cartSessionId = useCookie(CARTSESSIONNAME, { sameSite: 'strict', secure: true, expires: undefined })
+  const cartSessionId = refDefault(_cartSessionId, '')
 
   async function _createSession() {
     if (isDefined(sessionId)) {
@@ -50,7 +52,7 @@ export function useSetupSession() {
 
     const collectionRef = collection(fireStore, 'sessions')
     const result = await addDoc(collectionRef, baseSessionCacheData)
-    sessionId.value = result.id
+    _sessionId.value = result.id
     
     await promiseTimeout(500) // Wait for Firestore to propagate
 

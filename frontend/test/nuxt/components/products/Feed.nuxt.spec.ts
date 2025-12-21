@@ -1,6 +1,6 @@
 import { ProductsFeed, ProductsFeedHeader, ProductsIterator } from '#components'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
-import { afterAll, assert, describe, expect, it, vi } from 'vitest'
+import { afterAll, describe, expect, it, vi } from 'vitest'
 import { ref } from 'vue'
 import { productFixture } from '~/data/__fixtures__'
 

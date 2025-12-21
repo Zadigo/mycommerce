@@ -114,6 +114,7 @@ export const productFixture: ProductNode = {
     price: 100,
     saleValue: 20,
     mainImage: {
+      id: '1',
       createdOn: '2025-1-1',
       isMainImage: true,
       name: 'main-image.jpg',
@@ -123,6 +124,7 @@ export const productFixture: ProductNode = {
     },
     productImages: [
       {
+        id: '1',
         createdOn: '2025-1-1',
         isMainImage: true,
         name: 'main-image.jpg',
@@ -168,9 +170,7 @@ export const productFixture: ProductNode = {
 export const productGraphqlFixture: Product = {
   data: {
     allProducts: {
-      edges: [
-        productFixture
-      ]
+      edges: []
     }
   }
 }

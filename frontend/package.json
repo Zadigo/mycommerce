@@ -10,8 +10,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "test": "vitest run",
-    "test:vi": "vitest watch --coverage",
-    "test:co": "vitest run --coverage",
+    "test:watch": "vitest watch --coverage",
+    "test:coverage": "vitest run --coverage",
     "test:nuxt": "vitest run --project nuxt",
     "test:unit": "vitest run --project unit",
     "cleanup": "nuxt cleanup && rm -rf .nuxt .output dist node_modules/.cache"

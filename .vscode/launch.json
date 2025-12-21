@@ -59,7 +59,7 @@
             "request": "launch",
             "name": "client: My commerce",
             "url": "http://localhost:3000",
-            "webRoot": "${workspaceFolder}/frontend/app"
+            "webRoot": "${workspaceFolder}/frontend/app",
         },
         {
             "type": "node",
@@ -68,6 +68,7 @@
             "outputCapture": "std",
             "cwd": "${workspaceFolder}/frontend",
             "program": "${workspaceFolder}/frontend/node_modules/nuxt/bin/nuxt.mjs",
+            "envFile": "${workspaceFolder}/frontend/.env",
             "args": [
                 "dev"
             ]

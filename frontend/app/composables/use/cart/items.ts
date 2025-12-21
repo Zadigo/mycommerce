@@ -1,13 +1,17 @@
-import { doc, updateDoc, increment } from 'firebase/firestore'
+import { doc, updateDoc } from 'firebase/firestore'
 import { CARTSESSIONNAME } from '~/composables/use'
 import type { Arrayable, BaseSizeSet, CartItem, CartSessionData, ProductNode, Undefineable } from '~/types'
 
 export const useCartComposable = createGlobalState(() => {
+  const _cart = ref<Arrayable<CartItem>>([])
+  const lastProduct = computed(() => _cart.value[_cart.value.length - 1] || null)
+
   const defaultReturn = {
+    cartSessionId: ref(''),
     cartSession: null,
-    cart: ref<Arrayable<CartItem>>([]),
-    lastProduct: ref<CartItem | null>(null),
-    add: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { },
+    cart: _cart,
+    lastProduct,
+    createItem: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { },
     removeProduct: async (_product: Undefineable<ProductNode>): Promise<void> => { },
     reduceQuantity: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { }
   }
@@ -16,25 +20,28 @@ export const useCartComposable = createGlobalState(() => {
     return defaultReturn
   }
 
-  const cartSessionId = useCookie<CartSessionData>(CARTSESSIONNAME)
+  const cartSessionId = useCookie<string>(CARTSESSIONNAME, { default: () => '' })
   
-  if (!isDefined(cartSessionId)) {
-    console.error('Cart session ID cookie is undefined.')
-    return defaultReturn
-  }
+  // if (!isDefined(cartSessionId)) {
+  //   return defaultReturn
+  // }
   
   const fireStore = useFirestore()
-  const docRef = doc(fireStore, 'carts', cartSessionId.value)
-  const cartSession = useDocument<CartSessionData>(docRef)
+  const db = doc(fireStore, 'carts', cartSessionId.value)
+  const cartSession = useDocument<CartSessionData>(db)
 
-  console.log('Cart session data loaded:', cartSession.data.value)
+  watchArray(_cart, async (newCart, _oldCart, _added, _removed) => {
+    console.log('For testing', _cart)
 
-  const _cart = ref<CartItem[]>([])
-  const cart = computed(() => isDefined(cartSession.data) ? cartSession.data.value.items : [])
+    // Update Firestore document
+    try {
+      await updateDoc(db, { items: newCart })
+    } catch (error) {
+      console.error('Error updating cart document:', error)
+    }
+  })
 
-  watchArray(_cart, (newCart, _oldCart, _added, _removed) => {
-    console.log('Updating cart in Firestore:', newCart)
-
+  watchDebounced(_cart, async () => {
     // Calculate total for each item
     _cart.value.forEach(item => { item.total = item.quantity * item.product.price })
 
@@ -43,17 +50,17 @@ export const useCartComposable = createGlobalState(() => {
     const numberOfItems = _cart.value.reduce((sum, item) => sum + item.quantity, 0)
 
     // Update Firestore document
-    const executeUpdate = async () => {
-      try {
-        await updateDoc(docRef, { items: newCart, total, numberOfItems })
-      } catch (error) {
-        console.error('Error updating cart document:', error)
-      }
+    try {
+      await updateDoc(db, { total, numberOfItems })
+    } catch (error) {
+      console.error('Error updating cart document:', error)
     }
-
-    executeUpdate()
+  }, {
+    debounce: 3000
   })
-
+  
+  const cart = computed(() => cartSession?.data?.value?.items || [])
+  
   function _hasSize(product: ProductNode, size: Undefineable<BaseSizeSet>) {
     if (!isDefined(size)) return ref(false)
     return useArrayIncludes(product.node.sizeSet, size, (a, b) => a.name === b.name)
@@ -63,9 +70,9 @@ export const useCartComposable = createGlobalState(() => {
     return useArrayIncludes<CartItem, ProductNode>(_cart, product, (a, b) => a.product.id === b.node.id)
   }
 
-  async function _add(product: ProductNode, size: Undefineable<BaseSizeSet>) {
+  async function _createItem(product: ProductNode, size: Undefineable<BaseSizeSet>, callback?: (item: CartItem) => void) {
     const hasSize = _hasSize(product, size)
-
+    
     if (hasSize.value) {
       const item: CartItem = {
         product: {
@@ -80,32 +87,32 @@ export const useCartComposable = createGlobalState(() => {
         quantity: 1,
         total: 0
       }
-
+      
       const hasProduct = _hasProduct(product)
 
       if (hasProduct.value) {
-        console.log(_cart.value)
         const selectedProduct = useArrayFind(_cart, (item) => (item.product.id === product.node.id) && (item.size.name === size.name))
 
         if (isDefined(selectedProduct)) {
-          console.log('Product already in cart, updating quantity')
           selectedProduct.value.quantity += 1
           selectedProduct.value.total = selectedProduct.value.quantity * selectedProduct.value.product.price
         }
       } else {
-        console.log('Adding new product to cart')
         _cart.value.push(item)
+      }
+
+      if (isDefined(callback)) {
+        callback(item)
       }
     }
   }
 
-  const add = useThrottleFn(_add, 500)
+  const createItem = useThrottleFn(_createItem, 500)
 
   async function _reduceQuantity(product: ProductNode, size: BaseSizeSet) {
     const selectedProduct = useArrayFind(_cart, (item) => (item.product.id === product.node.id) && (item.size.name === size.name))
     
     if (isDefined(selectedProduct)) {
-      console.log('Reducing product quantity in cart')
       selectedProduct.value.quantity -= 1
       selectedProduct.value.total = selectedProduct.value.quantity * selectedProduct.value.product.price
     }
@@ -128,13 +135,12 @@ export const useCartComposable = createGlobalState(() => {
   //   }
   // }
 
-  const lastProduct = computed(() => _cart.value[_cart.value.length - 1] || null)
-
   return {
+    cartSessionId,
     cartSession,
     cart,
     lastProduct,
-    add,
+    createItem,
     removeProduct,
     reduceQuantity
   }

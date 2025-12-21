@@ -1,7 +1,10 @@
 import type { Product, SearchedProducts } from '~/types'
 import type { ProductsQuery } from '~/types'
 
-export function useProductsFilteringComposable() {
+/**
+ * Function that adds filtering capabilities to the products composable
+ */
+function _useProductsFilteringComposable() {
   const [showModal, toggle] = useToggle()
 
   /**
@@ -67,51 +70,37 @@ const [ useProductsComposable, _useProductsStore ] =  createInjectionState(async
   const { id } = useRoute().params as { id: string}
   const { customHandleError } = useErrorHandler()
 
-  const { data, status, error, execute: getProducts, refresh } = await useFetch<Product>(`/api/collections/${id}`, {
-    method: 'GET',
-    immediate: false,
-    onResponseError({ error }) {
-      // TODO: G-Analytics
-      // gtag('event', 'exception', {
-      //   fatal: true, 
-      //   description: error?.message
-      // })
-      customHandleError(error)
-    }
-  })
+  const _products = ref<Product>()
+  const products = computed(() => _products.value?.data.allProducts.edges || [])
 
-  console.log('Products Fetch Status:', data.value)
-
-  if (error.value) {
-    throw createError({
-      statusCode: 500,
-      statusText: error.value.message
+  async function getProducts() {
+    _products.value = await $fetch<Product>(`/api/collections/${id}`, {
+      method: 'GET',
+      onResponseError({ error }) {
+        customHandleError(error)
+      }
     })
   }
 
-  const products = computed(() => isDefined(data) ? data.value.data.allProducts.edges : [])
-  const totalProductCount = computed(() => products.value.length)
-  const isLoading = computed(() => status.value === 'pending')
-  const cursor = computed(() => data.value?.data.allProducts.pageInfo)
-
+  
   /**
    * Other
-   */
-
+  */
+ 
+  const isLoading = computed(() => !isDefined(_products))
+  const cursor = computed(() => _products.value?.data.allProducts.pageInfo)
   const productsCount = computed(() => products.value.length)
 
   /**
    * Filtering
    */
 
-  const { filteredProducts, resetFilters, toggleModal, showModal, query, history } = useProductsFilteringComposable()
+  const { filteredProducts, showModal, query, history, resetFilters, toggleModal } = _useProductsFilteringComposable()
 
   return {
     query,
-    apiResponse: data,
     products,
     cursor,
-    totalProductCount,
     isLoading,
     productsCount,
     filteredProducts,
@@ -119,8 +108,7 @@ const [ useProductsComposable, _useProductsStore ] =  createInjectionState(async
     history,
     resetFilters,
     toggleModal,
-    getProducts,
-    refreshProducts: refresh
+    getProducts
   }
 })
 

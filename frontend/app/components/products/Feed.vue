@@ -1,16 +1,17 @@
 <template>
   <products-feed-layout>
     <!-- Filters -->
-    <template #filtering>
+    <!-- <template #filtering>
       <products-feed-header :count="productsCount" @modal:productFilters="emit('modal:product-filters')" />
-    </template>
+    </template> -->
 
     <!-- Products -->
     <template v-if="productsCount > 0" #default>
+      {{ products }}
       <products-iterator :columns="currentGridSize" @has-navigated="sendAnalytics" />
     </template>
 
-    <template v-else #default>
+    <!-- <template v-else #default>
       <div class="mx-auto text-center font-light text-2xl max-w-3xl p-10 my-10">
         <p class="font-light">
           {{ $t('Page not available text') }}
@@ -22,10 +23,10 @@
           </nuxt-link-locale>
         </volt-button>
       </div>
-    </template>
+    </template> -->
 
-    <template #intersect>
-      <!-- Intersect -->
+    <!-- Intersect -->
+    <!-- <template #intersect>
       <client-only>
         <div v-if="productsCount > 0" id="product-pagination" ref="intersectionTarget" class="font-bold text-uppercase flex justify-center mt-5">
           <volt-button v-if="isEndOfPage" id="scroll-top" size="lg" @click="scrollToTop">
@@ -43,7 +44,7 @@
           </div>
         </div>
       </client-only>
-    </template>
+    </template> -->
   </products-feed-layout>
 </template>
 
@@ -60,7 +61,7 @@ const emit = defineEmits<{ 'products:list': [products: Product[]], 'modal:produc
  * Products
  */
 
-const { products, getProducts, isLoading, productsCount, cursor, query } = await useProductsComposable()
+const { products, isLoading, productsCount, cursor, query, getProducts } = await useProductsComposable()
 await getProducts()
 
 provide('productsLoading', isLoading)

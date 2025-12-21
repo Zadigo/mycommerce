@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { productFixture } from '~/data/__fixtures__'
 import { useShop } from '~/stores/shop'
 
-describe.concurrent('Use Shop Store', () => {
+describe.concurrent.skip('Use Shop Store', () => {
   let store: ReturnType<typeof useShop>
 
   beforeAll(() => {

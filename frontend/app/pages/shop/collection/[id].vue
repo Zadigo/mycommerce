@@ -1,7 +1,7 @@
 <template>
   <section id="products-feed" class="my-10">
     <!-- Page Title -->
-    <div id="feed-title" class="px-10">
+    <!-- <div id="feed-title" class="px-10">
       <volt-card class="shadow-none border-none p-1">
         <template #content>
           <div class="flex flex-row justify-start">
@@ -11,7 +11,7 @@
           </div>
         </template>
       </volt-card>
-    </div>
+    </div> -->
 
     <!-- Feed -->
     <suspense>
@@ -25,9 +25,9 @@
     </suspense>
 
     <!-- Modals -->
-    <client-only>
+    <!-- <client-only>
       <products-modals-filters :count="productsCount" />
-    </client-only >
+    </client-only > -->
   </section>
 </template>
 

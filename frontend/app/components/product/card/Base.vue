@@ -42,7 +42,7 @@
   </article>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useAnalyticsCallback } from '~/composables/use/analytics'
 import type { ProductNode } from '~/types'
 
