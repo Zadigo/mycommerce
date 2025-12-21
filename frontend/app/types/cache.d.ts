@@ -17,19 +17,27 @@ export interface PopularImages {
 
 export interface SessionCacheData {
   language: LanguageOptions
-  paymentIntent: Nullable<string>
 
   /**
    * @deprecated Stored independently in a firebase document
    */
+  paymentIntent: Nullable<string>
+  /**
+   * @deprecated Stored independently in a firebase document
+   */
   cart: Arrayable<CartItem>
+  /**
+   * @deprecated
+   */
+  authenticatedCart: boolean
+  /**
+   * @deprecated
+   */
+  cartViewCount: number
 
   recommendations: Product[]
   searchHistory: string[]
-  authenticatedCart: boolean
-  cartViewCount: number
   profile: Nullable<Profile>
-  sessionId: Nullable<string>
   likedProducts: Product[]
   popularImages: PopularImages[]
 }

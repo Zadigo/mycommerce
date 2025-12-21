@@ -10,19 +10,18 @@
             "icon": {
                 "id": "database"
             },
-            "problemMatcher": [
-                {
-                    "owner": "celery",
-                    "fileLocation": "relative",
-                    "pattern": [
-                        {
-                            "regexp": "^\\[.*\\] celery.* ready$",
-                            "file": 1,
-                            "location": 2
-                        }
-                    ]
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^$",
+                    "file": 1,
+                    "message": 2
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^celery@.*starting",
+                    "endsPattern": "ready\\.$"
                 }
-            ],
+            },
             "detail": "Starts Celery",
             "label": "Celery: start",
             "isBackground": true

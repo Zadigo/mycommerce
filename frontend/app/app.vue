@@ -22,8 +22,22 @@
 <script setup lang="ts">
 import { provideSSRWidth } from '@vueuse/core'
 
-useSession()
+/**
+ * Session
+ */
+
+const { createSession } = useSetupSession()
+await createSession()
+
+/**
+ * Authentication
+ */
+
 useNuxtAuthentication()
+
+/**
+ * SSR
+ */
 
 provideSSRWidth(1280)
 
@@ -39,7 +53,7 @@ provide('screenOrientation', screenOrientation)
 provide('documentVisible', useDocumentVisibility())
 
 /**
- * State
+ * State: Modals
  */
 
 useState('showSearchModal', () => false)

@@ -117,6 +117,9 @@ importers:
       '@nuxt/image':
         specifier: ^2.0.0
         version: 2.0.0(db0@0.3.4)(ioredis@5.8.2)(magicast@0.5.1)
+      '@nuxt/kit':
+        specifier: ^4.2.2
+        version: 4.2.2(magicast@0.5.1)
       '@nuxt/scripts':
         specifier: ^0.13.2
         version: 0.13.2(@stripe/stripe-js@7.9.0)(@unhead/vue@2.0.19(vue@3.5.26(typescript@5.9.3)))(db0@0.3.4)(ioredis@5.8.2)(magicast@0.5.1)(typescript@5.9.3)(vue@3.5.26(typescript@5.9.3))

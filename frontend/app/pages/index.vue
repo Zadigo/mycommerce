@@ -4,14 +4,19 @@
       Something
     </div> -->
 
-    <div class="grid grid-cols-1 xl:grid-cols-3 w-full gap-3">
+    <div class="grid grid-cols-1 xl:grid-cols-3 w-full gap-3 overflow-hidden">
       <template v-if="status === 'pending'">
         <volt-skeleton v-for="i in 3" :key="i" class="w-full h-full" />
       </template>
 
       <template v-else>
-        <!-- <base-collection-card custom-name="All" view-name="all" image="/images/group2/img2.jpg" v-motion-slide-bottom />
-        <base-collection-card v-for="collectionItem in collections?.data.allCollections" :key="collectionItem.slug" :collection="collectionItem" image="/images/group2/img2.jpg" v-motion-slide-bottom /> -->
+        <client-only>
+          <base-collection-card custom-name="All" view-name="all" image="/images/group2/img2.jpg" v-motion-slide-bottom />
+        </client-only>
+
+        <client-only>
+          <base-collection-card v-for="collectionItem in collections?.data.allCollections" :key="collectionItem.slug" :collection="collectionItem" image="/images/group2/img2.jpg" v-motion-slide-bottom />
+        </client-only>
       </template>
     </div>
   </section>

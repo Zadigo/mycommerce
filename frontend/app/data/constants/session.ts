@@ -5,13 +5,26 @@ export const baseSessionCacheData: SessionCacheData = {
     choice: 'fr',
     selected: false
   },
-  sessionId: null,
+
+  /**
+   * @deprecated
+   */
   paymentIntent: null,
+  /**
+   * @deprecated
+   */
   cart: null,
+  /**
+   * @deprecated
+   */
+  cartViewCount: 0,
+  /**
+   * @deprecated
+   */
+  authenticatedCart: false,
+
   recommendations: [],
   searchHistory: [],
-  authenticatedCart: false,
-  cartViewCount: 0,
   profile: null,
   popularImages: [],
   likedProducts: []

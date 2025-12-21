@@ -41,6 +41,11 @@ type AvailableLanguages = typeof i18n.locale.value
 
 const showLanguageModal = useState<boolean>('showLanguageModal')
 
+/**
+ * TODO: Create a global state composable that will be shared between
+ * this modal and the footer component (or other components for global language selection)
+ */
+
 const i18n = useI18n()
 const localePath = useLocalePath()
 const i18nCountry = useCookie<BaseCountries>('i18nCountry', { sameSite: 'strict', secure: true, default: () => 'France' })
@@ -68,20 +73,26 @@ function selectLanguage(value: AvailableLanguages) {
  */
 
 const db = useFirestore()
-const { sessionId } = useSession()
+const { sessionId, writeableSession } = useSession()
 
 watchDebounced([i18n.locale, i18nCountry], async ([languageValue, countryValue]) => {
+  // if (isDefined(writeableSession)) {
+  //   writeableSession.value.language.choice = languageValue
+  //   writeableSession.value.language.selected = true
+  //   i18nCountry.value = countryValue  
+  // }
+
   if ((isDefined(languageValue) || isDefined(countryValue)) && isDefined(sessionId)) {
     const docRef = doc(db, 'sessions', sessionId.value)
+    i18nCountry.value = countryValue
     await updateDoc(docRef, {
       language: {
         choice: languageValue,
-        location: countryValue,
         selected: true
       }
     }, {
       merge: true
     })
   }
-})
+}, { debounce: 500 })
 </script>

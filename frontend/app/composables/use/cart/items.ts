@@ -1,22 +1,29 @@
-import { arrayUnion, doc, updateDoc } from 'firebase/firestore'
-import type { BaseSizeSet, CartItem, CartSessionData, ProductNode, Undefineable, Arrayable } from '~/types'
+import { doc, updateDoc, increment } from 'firebase/firestore'
+import { CARTSESSIONNAME } from '~/composables/use'
+import type { Arrayable, BaseSizeSet, CartItem, CartSessionData, ProductNode, Undefineable } from '~/types'
 
 export const useCartComposable = createGlobalState(() => {
-  if (import.meta.server) {
-    return {
-      cartSession: null,
-      cart: ref<Arrayable<CartItem>>([]),
-      lastProduct: ref<CartItem | null>(null),
-      add: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { },
-      removeProduct: async (_product: Undefineable<ProductNode>): Promise<void> => { },
-      reduceQuantity: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { }
-    }
+  const defaultReturn = {
+    cartSession: null,
+    cart: ref<Arrayable<CartItem>>([]),
+    lastProduct: ref<CartItem | null>(null),
+    add: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { },
+    removeProduct: async (_product: Undefineable<ProductNode>): Promise<void> => { },
+    reduceQuantity: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { }
   }
 
-  const fireStore = useFirestore()
+  if (import.meta.server) {
+    return defaultReturn
+  }
 
-  const cartSessionId = useCookie<CartSessionData>('cart-session')
+  const cartSessionId = useCookie<CartSessionData>(CARTSESSIONNAME)
   
+  if (!isDefined(cartSessionId)) {
+    console.error('Cart session ID cookie is undefined.')
+    return defaultReturn
+  }
+  
+  const fireStore = useFirestore()
   const docRef = doc(fireStore, 'carts', cartSessionId.value)
   const cartSession = useDocument<CartSessionData>(docRef)
 
@@ -111,6 +118,7 @@ export const useCartComposable = createGlobalState(() => {
   }
 
   const removeProduct = useThrottleFn(_removeProduct, 500)
+  
   // async function _removeProduct(product: ProductNode, size: BaseSizeSet) {
   //   const selectedProductIndex = useArrayFindIndex(_cart, (item) => (item.product.id === product.node.id) && (item.size.name === size.name))
     

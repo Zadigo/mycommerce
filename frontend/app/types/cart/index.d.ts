@@ -13,4 +13,7 @@ export type CartSessionData = {
   items: Arrayable<CartItem>
   total: number
   numberOfItems: number
+  paymentIntent: Nullable<string>
+  authenticated: boolean
+  viewCount: number
 }

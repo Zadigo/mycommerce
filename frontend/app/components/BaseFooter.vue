@@ -17,7 +17,7 @@
 
         <client-only>
           <template #default>
-            <a href="#" @click.prevent="showLanguageModal = true">{{ languageLocation }}|{{ languageChoice }}</a>
+            <a href="#" @click.prevent="showLanguageModal = true">{{ i18nCountry }}|{{ languageChoice }}</a>
           </template>
           
           <template #placeholder>
@@ -51,16 +51,18 @@
 
 <script lang="ts" setup>
 import { socialLinks, footerLinks, useBusinessDetails } from '~/data'
+import type { BaseCountries } from '~/types'
+
+const i18nCountry = useCookie<BaseCountries>('i18nCountry')
 
 const { $dayjs } = useNuxtApp()
-const { session } = useSession()
+const { writeableSession } = useSession()
 const { getKey } = await useBusinessDetails()
 
 const emit = defineEmits<{ 'show-whatsapp': [] }>()
 
 const numberOfSections = computed(() => footerLinks.sections.length)
-const languageLocation = computed(() => isDefined(session) ? session.value.language.location : 'France')
-const languageChoice = computed(() => isDefined(session) ? session.value.language.choice : 'fr')
+const languageChoice = computed(() => isDefined(writeableSession) ? writeableSession.value.language.choice : 'fr')
 const currentYear = computed(() => $dayjs().year())
 
 const showLanguageModal = useState<boolean>('showLanguageModal')

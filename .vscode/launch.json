@@ -8,7 +8,7 @@
             "name": "Django: Shop",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}\\mystore\\manage.py",
+            "program": "${workspaceFolder}/mystore/manage.py",
             "args": ["runserver"],
             "envFile": "${workspaceFolder}/mystore/.env",
             "preLaunchTask": "Celery: start",
@@ -18,7 +18,7 @@
             "name": "Django: Cart",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}\\mycart\\manage.py",
+            "program": "${workspaceFolder}/mycart/manage.py",
             "args": [
                 "runserver"
             ],
@@ -30,7 +30,7 @@
             "name": "Django: Reviews",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}\\myreviews\\manage.py",
+            "program": "${workspaceFolder}/myreviews/manage.py",
             "args": [
                 "runserver"
             ],
@@ -53,12 +53,12 @@
                 "--pool=solo"
             ]
         },
+
         {
-            "type": "msedge",
+            "type": "chrome",
             "request": "launch",
             "name": "client: My commerce",
             "url": "http://localhost:3000",
-            // this should point to your Nuxt `srcDir`, which is `app` by default
             "webRoot": "${workspaceFolder}/frontend/app"
         },
         {
@@ -66,10 +66,11 @@
             "request": "launch",
             "name": "server: My commerce",
             "outputCapture": "std",
-            "program": "${workspaceFolder}/node_modules/nuxt/bin/nuxt.mjs",
+            "cwd": "${workspaceFolder}/frontend",
+            "program": "${workspaceFolder}/frontend/node_modules/nuxt/bin/nuxt.mjs",
             "args": [
                 "dev"
-            ],
+            ]
         }
     ],
     "compounds": [

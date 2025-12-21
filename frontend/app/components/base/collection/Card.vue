@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import type { BaseProductCollection } from '~/types'
 
-const { image = '/images/img5.jpeg' } = defineProps<{
+const { image = '/images/group1/img2.jpeg' } = defineProps<{
   customName?: string,
   viewName?: string,
   collection?: BaseProductCollection,

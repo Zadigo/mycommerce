@@ -5,6 +5,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "inspect": "nuxt dev --inspect",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -54,6 +55,7 @@
     "@nuxt/hints": "1.0.0-alpha.4",
     "@nuxt/icon": "^2.1.1",
     "@nuxt/image": "^2.0.0",
+    "@nuxt/kit": "^4.2.2",
     "@nuxt/scripts": "^0.13.2",
     "@nuxt/test-utils": "^3.21.0",
     "@nuxtjs/i18n": "^10.2.1",
