@@ -24,8 +24,11 @@
         <p>{{ writeableSession }}</p>
         <p>{{ cartSession }}</p>
         <p>Cart: {{ cart }}</p>
-        <p>session: {{ sessionId }}</p>
+        <p>session: {{ sessionId }} ({{ isInitialized }})</p>
         <p>Cart session: {{ cartSessionId }}</p>
+        <volt-button @click="writeToSession">
+          Write to session
+        </volt-button>
       </div>
     </dev-only>
   </section>
@@ -34,6 +37,12 @@
 <script lang="ts" setup>
 const showWhatsAppModal = ref<boolean>(false)
 
-const { writeableSession, sessionId } = useSession()
+const { writeableSession, sessionId, isInitialized } = useSession()
 const { cartSession, cart, cartSessionId } = useCartComposable()
+
+function writeToSession() {
+  if (isDefined(writeableSession)) {
+    writeableSession.value.profile = 'Hello from the frontend!'
+  }
+}
 </script>

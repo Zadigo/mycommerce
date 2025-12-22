@@ -1,5 +1,5 @@
 import { promiseTimeout } from '@vueuse/core'
-import { addDoc, collection, doc, getDoc, setDoc, increment } from 'firebase/firestore'
+import { addDoc, collection, doc } from 'firebase/firestore'
 import { useDocument, useFirestore } from 'vuefire'
 import { baseSessionCacheData } from '~/data/constants'
 
@@ -10,11 +10,17 @@ export const SESSIONNAME = 'sessionId'
 export const CARTSESSIONNAME = 'cart-session'
 
 export function useSetupSession() {
+  const errors = ref<string[]>([])
+  const [isInitialized, toggleInitialized] = useToggle(false)
+  const [isWriting, toggleWriting] = useToggle(false)
+
   if (import.meta.server) {
     return {
+      errors,
+      isWriting,
+      isInitialized,
       hasKey: ref(false),
-      sessionId: ref<string | undefined>(undefined),
-      createSession: async () => {}
+      sessionId: ref<string | undefined>(undefined)
     }
   }
 
@@ -22,61 +28,101 @@ export function useSetupSession() {
 
   const _sessionId = useCookie(SESSIONNAME, { sameSite: 'strict', secure: true, expires: undefined })
   const sessionId = refDefault(_sessionId, '')
-  const hasKey = computed(() => isDefined(sessionId) && sessionId.value !== '')
 
   const _cartSessionId = useCookie(CARTSESSIONNAME, { sameSite: 'strict', secure: true, expires: undefined })
   const cartSessionId = refDefault(_cartSessionId, '')
 
+  // Creates a new global session key
   async function _createSession() {
-    if (isDefined(sessionId)) {
-      await promiseTimeout(500)
-      return 
-    }
-    // if (isDefined(sessionId)) {
-    //   try {
-    //     console.log('Checking existing session in Firestore (createSession):', sessionId.value)
+    return new Promise<string>((resolve) => {
+      toggleWriting(true)
 
-    //     const docRef = doc(fireStore, 'sessions', sessionId.value)
-    //     const result = await getDoc(docRef) // Ensure document exists
+      // If session already exists, return it
+      if (isDefined(sessionId) && sessionId.value !== '') {
+        toggleWriting(false)
+        resolve(sessionId.value)
+        return
+      }
 
-    //     if (result.exists()) {
-    //       return
-    //     } else {
-    //       sessionId.value = '' // Invalidate cookie if session does not exist
-    //       cartSessionId.value = ''
-    //     }
-    //   } catch (error) {
-    //     console.error('Error fetching session document:', error)
-    //   }
-    // }
+      const wrapper = async () => {
+        try {
+          const collectionRef = collection(fireStore, 'sessions')
+          const result = await addDoc(collectionRef, baseSessionCacheData)
+          _sessionId.value = result.id
+        } catch (error) {
+          console.log('Error creating session document:', error)
+          errors.value.push((error as Error).message)
+        } finally {
+          toggleWriting(false)
+        }
+      }
 
-    const collectionRef = collection(fireStore, 'sessions')
-    const result = await addDoc(collectionRef, baseSessionCacheData)
-    _sessionId.value = result.id
-    
-    await promiseTimeout(500) // Wait for Firestore to propagate
-
-    const cartCollectionRef = collection(fireStore, 'carts')
-    const cartResult = await addDoc(cartCollectionRef, {
-      items: [],
-      sessionId: sessionId.value,
-      numberOfItems: 0,
-      total: 0,
-      paymentIntent: null,
-      authenticated: false,
-      viewCount: 0
-    } as CartSessionData
-    )
-    cartSessionId.value = cartResult.id
-    await promiseTimeout(500)
+      wrapper().then(() => {
+        promiseTimeout(500).then(() => {
+          resolve(sessionId.value)
+        })
+      })
+    })
   }
 
-  const createSession = useThrottleFn(_createSession, 10000)
+  // Creates a new cart session linked to the global session
+  async function _createCartSession(id: string) {
+    return new Promise<string[]>((resolve) => {
+      const wrapper = async () => {
+        toggleWriting(true)
+
+        if (!isDefined(sessionId) || sessionId.value === '') {
+          sessionId.value = id
+        }
+
+        if (isDefined(cartSessionId) && cartSessionId.value !== '') {
+          toggleWriting(false)
+          resolve([sessionId.value, cartSessionId.value])
+          return
+        }
+
+        try {
+          const cartCollectionRef = collection(fireStore, 'carts')
+          const cartResult = await addDoc(cartCollectionRef, {
+              items: [],
+              sessionId: sessionId.value,
+              numberOfItems: 0,
+              total: 0,
+              paymentIntent: null,
+              authenticated: false,
+              viewCount: 0
+            } as CartSessionData
+          )
+          cartSessionId.value = cartResult.id
+        } catch (error) {
+          console.log('Error creating cart session document:', error)
+          errors.value.push((error as Error).message)
+        } finally {
+          toggleWriting(false)
+          toggleInitialized(true)
+        }
+      }
+
+      wrapper().then(() => {
+        if (isWriting.value) {
+          promiseTimeout(1000)
+        }
+
+        resolve([sessionId.value, cartSessionId.value])
+      })
+    })
+  }
+
+  useAsyncQueue([_createSession, _createCartSession])
+
+  const hasKey = computed(() => isDefined(sessionId) && sessionId.value !== '')
 
   return {
+    errors,
+    isWriting,
+    isInitialized,
     hasKey,
-    sessionId,
-    createSession
+    sessionId
   }
 }
 
@@ -89,6 +135,8 @@ export function useSetupSession() {
  * @returns An object containing the sessionId cookie and a reactive session object.
  */
 export const useSession = createGlobalState(() => {
+  const [isInitialized, toggleInitialized] = useToggle(false)
+
   if (import.meta.server) {
     return {
       session: readonly(ref(null)),
@@ -104,26 +152,17 @@ export const useSession = createGlobalState(() => {
     throw new Error('Session ID cookie is undefined.')
   }
         
-  const db = doc(fireStore, 'sessions', sessionId.value)
-  const session = useDocument<SessionCacheData>(db)
+  const docRef = doc(fireStore, 'sessions', sessionId.value)
+  const session = useDocument<SessionCacheData>(docRef)
 
-  console.log('Initialized session document binding:', session.value)
-
-  if (!isDefined(session)) console.error('Session document is undefined.')
-
-  const writeableSession = computed({
-    get: () => session.value,
-    set: async (val: SessionCacheData) => {
-      await setDoc(db, toValue(val), { merge: true })
-      console.log('Updated', val)
-      if (isDefined(val) && isDefined(sessionId)) {
-      }
-    }
+  whenever(() => isDefined(session), () => {
+    toggleInitialized(true)
   })
 
   return {
+    docRef,
+    isInitialized,
     session,
-    sessionId: readonly(sessionId),
-    writeableSession
+    sessionId: readonly(sessionId)
   }
 })

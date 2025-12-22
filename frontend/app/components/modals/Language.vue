@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { doc, updateDoc } from 'firebase/firestore'
+import { doc, setDoc } from 'firebase/firestore'
 import { countries } from '~/data/constants'
 import type { BaseCountries } from '~/types'
 
@@ -72,20 +72,13 @@ function selectLanguage(value: AvailableLanguages) {
  * Firebase update
  */
 
-const db = useFirestore()
-const { sessionId, writeableSession } = useSession()
+const { docRef, sessionId } = useSession()
 
 watchDebounced([i18n.locale, i18nCountry], async ([languageValue, countryValue]) => {
-  // if (isDefined(writeableSession)) {
-  //   writeableSession.value.language.choice = languageValue
-  //   writeableSession.value.language.selected = true
-  //   i18nCountry.value = countryValue  
-  // }
-
-  if ((isDefined(languageValue) || isDefined(countryValue)) && isDefined(sessionId)) {
-    const docRef = doc(db, 'sessions', sessionId.value)
+  if ((isDefined(languageValue) || isDefined(countryValue)) && isDefined(sessionId) && isDefined(docRef)) {
     i18nCountry.value = countryValue
-    await updateDoc(docRef, {
+    
+    await setDoc(docRef, {
       language: {
         choice: languageValue,
         selected: true

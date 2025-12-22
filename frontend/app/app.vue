@@ -26,8 +26,7 @@ import { provideSSRWidth } from '@vueuse/core'
  * Session
  */
 
-const { createSession } = useSetupSession()
-await createSession()
+useSetupSession()
 
 /**
  * Authentication
