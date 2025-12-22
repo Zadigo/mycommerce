@@ -1,5 +1,5 @@
 <template>
-  <volt-drawer v-model:visible="showCartDrawer" position="right">
+  <volt-drawer v-model:visible="showCartDrawer" position="right" :style="{ width: '500px' }">
     <div class="flex justify-between items-center">
       <h2 v-if="cartSession" class="font-bold">
         {{ $t('Cart quantity', { n: cartSession.numberOfItems }) }}
@@ -18,10 +18,8 @@
     <div class="px-5">      
       <div v-if="cartSession" class="flex flex-col my-10">
         <div class="p-5 shadow-sm rounded-md bg-green-100">
-          <div v-if="freeDeliveryTarget > 0">
-            {{ $t('Livraison gratuite offerte', { n: $n(freeDeliveryTarget, 'currency') }) }}
-
-            <!-- Il te manque 19,02 € pour profiter de la -->
+          <div v-if="remainingForFreeDelivery > 0">
+            {{ $t('Livraison gratuite offerte', { n: $n(remainingForFreeDelivery, 'currency') }) }}
 
             <span class="font-bold text-green-900 uppercase">
               {{ $t('livraison standard gratuite') }}
@@ -48,8 +46,6 @@
         </div>
 
         <div class="place-self-baseline">
-          isAuthenticated: {{ isAuthenticated }}
-
           <volt-button v-if="isAuthenticated">
             <nuxt-link-locale id="link-start-checkout" to="/cart">
               {{ $t('Passer commande') }}
@@ -88,14 +84,21 @@
 <script lang="ts" setup>
 import type { CartItem } from '~/types'
 
+const emit = defineEmits<{ 'edit-product': CartItem }>()
+
 const toLocalePath = useLocalePath()
 
 const showCartDrawer = useState<boolean>('showCartDrawer')
 const showLoginDrawer = useState<boolean>('showLoginDrawer')
 
-const { cartSession } = useCartComposable()
+const { cartSession, freeDeliveryTarget } = useCartComposable()
 
-const emit = defineEmits<{ 'edit-product': CartItem }>()
+/**
+ * Free delivery target
+ */
+
+const deliveryTarget = ref(100)
+const remainingForFreeDelivery = freeDeliveryTarget(cartSession?.data.value?.total, deliveryTarget)
 
 /**
  * Authentication

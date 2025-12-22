@@ -15,11 +15,11 @@
             </p>
 
             <div class="font-bold">
-              {{ $n(cartItem.product.price.toString(), 'currency') }}
+              {{ $n(cartItem.product.price, 'currency') }}
             </div>
             
             <div class="font-light mb-1 flex justify-start align-center gap-1">
-              <span>{{ cartItem.size }}</span>
+              <span>{{ cartItem.size.name }}</span>
               <span>{{ cartItem.quantity }}x</span>
             </div>
           </nuxt-link-locale >

@@ -8,7 +8,7 @@
   </template>
 
   <div v-else>
-    <p>Aucun produit à afficher.</p>
+    <p class="text-center">Aucun produit à afficher.</p>
   </div>
 </template>
 
@@ -39,8 +39,6 @@ function handleNavigation(data: (number | ProductNode)[]) {
 }
 
 const products = inject<MaybeRef<ProductNode[]>>(productsSymbol, [])
-
-console.log('Iterator', products)
 
 /**
  * Grid

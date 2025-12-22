@@ -8,6 +8,9 @@ export const useCartComposable = createGlobalState(() => {
   const isInitialized = ref(false)
   const isSyncing = ref(false)
   const syncError = ref<string | null>(null)
+  const freeDeliveryTarget = reactify((total: number = 0, threshold: number = 50.00) => {
+    return total >= threshold ? 0 : threshold - total
+  })
 
   const defaultReturn = {
     docRef: null,
@@ -18,6 +21,7 @@ export const useCartComposable = createGlobalState(() => {
     isInitialized,
     isSyncing,
     syncError,
+    freeDeliveryTarget,
     createItem: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { },
     removeProduct: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { },
     reduceQuantity: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { },
@@ -211,6 +215,7 @@ export const useCartComposable = createGlobalState(() => {
     isInitialized,
     isSyncing,
     syncError,
+    freeDeliveryTarget,
     createItem,
     removeProduct,
     reduceQuantity,

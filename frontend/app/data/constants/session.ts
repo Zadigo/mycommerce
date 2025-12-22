@@ -25,6 +25,9 @@ export const baseSessionCacheData: SessionCacheData = {
 
   recommendations: [],
   searchHistory: [],
+  /**
+   * @deprecated
+   */
   profile: null,
   popularImages: [],
   likedProducts: []

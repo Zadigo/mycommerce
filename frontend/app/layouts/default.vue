@@ -7,12 +7,12 @@
 
     <!-- Modals -->
     <client-only>
-      <!-- <ModalsLogin />
-      <ModalsCart />
-      <ModalsAddedProduct />
-      <ModalsEditProduct />
-      <ModalsSearch />
-      <ModalsWhatsApp v-model="showWhatsAppModal" /> -->
+      <modals-login />
+      <modals-cart />
+      <modals-added-product />
+      <modals-edit-product />
+      <modals-search />
+      <modals-whats-app v-model="showWhatsAppModal" />
     </client-only>
 
     <!-- Footer -->

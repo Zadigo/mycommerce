@@ -7,8 +7,9 @@
           <span>{{ $t('Ajouté au panier') }}</span>
         </div>
 
+        <!-- Product -->
         <div v-if="lastProduct" class="my-2">
-          <NuxtImg :src="lastProduct.product.mainImage.original" :alt="lastProduct.product.mainImage.name" format="webp" class="rounded-md" />
+          <nuxt-img :src="lastProduct.product.mainImage.original" :alt="lastProduct.product.mainImage.name" format="webp" class="rounded-md" />
 
           <p class="font-bold mt-5">
             {{ $n(parseFloat(lastProduct.product.price.toString()), 'currency') }}
@@ -19,7 +20,7 @@
           </p>
 
           <p class="text-slate-500">
-            Taille: {{ lastProduct.size }}
+            Taille: {{ lastProduct.size.name }}
           </p>
 
           <div class="my-5">
@@ -27,7 +28,7 @@
               {{ $t('Passer commande') }}
             </volt-button>
 
-            <volt-button class="mt-2 w-full" @click="showAddedProductDrawer = false, showCartDrawer = true">
+            <volt-button class="mt-2 w-full" @click="() => { toggleShowAddedProductDrawer(false), toggleShowcartDrawer(true) }">
               {{ $t('Voir le panier') }}
             </volt-button>
           </div>
@@ -48,28 +49,31 @@
 const toLocalePath = useLocalePath()
 const router = useRouter()
 
-const cartStore = useCart()
-const { showAddedProductDrawer, showCartDrawer } = storeToRefs(cartStore)
-
 const { cart, lastProduct } = useCartComposable()
 
 const showLoginDrawer = useState<boolean>('showLoginDrawer')
+const toggleLoginDrawer = useToggle(showLoginDrawer)
+
+const showAddedProductDrawer = useState<boolean>('showAddedProductDrawer')
+const toggleShowAddedProductDrawer = useToggle(showAddedProductDrawer)
+
+const showcartDrawer = useState<boolean>('showCartDrawer')
+const toggleShowcartDrawer = useToggle(showcartDrawer)
+
 const { isAuthenticated } = useUser()
 
-/**
- * Handles the situation where the user tries
- * to go to the cart but is not logged in. If
- * he tries to access the cart while anonymous,
- * he is invited to login before pursuing
- */
+// Handles the situation where the user tries
+// to go to the cart but is not logged in. If
+// he tries to access the cart while anonymous,
+// he is invited to login before pursuing
 function handleNotAuthenticatedOrdering () {
   if (isAuthenticated.value) {
-    showAddedProductDrawer.value = false
+    toggleShowAddedProductDrawer(false)
     router.push(toLocalePath('/cart/'))
   } else {
-    showCartDrawer.value = false
-    showAddedProductDrawer.value = false
-    showLoginDrawer.value = true
+    toggleShowcartDrawer(false)
+    toggleShowAddedProductDrawer(false)
+    toggleLoginDrawer(true)
   }
 }
 </script>

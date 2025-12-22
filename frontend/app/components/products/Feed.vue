@@ -7,7 +7,6 @@
 
     <!-- Products -->
     <template v-if="productsCount > 0" #default>
-      {{ products }}
       <products-iterator :columns="currentGridSize" @has-navigated="sendAnalytics" />
     </template>
 

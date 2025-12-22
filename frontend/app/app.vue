@@ -61,6 +61,7 @@ useState('showWhatsAppModal', () => false)
 useState('showCartDrawer', () => false)
 useState('showLoginDrawer', () => false)
 useState('authenticatedCart', () => false)
+useState('showAddedProductDrawer', () => false)
 
 /**
  * Load Stripe.js
