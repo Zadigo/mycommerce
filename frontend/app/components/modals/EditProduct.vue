@@ -1,78 +1,69 @@
 <template>
   <volt-drawer id="dialog-edit-product" v-model:open="showEditProductDrawer">
-    <div v-if="currentEditedProduct">
+    <div v-if="editedCartItem">
       <volt-button class="mb-2" @click="handleCloseProductEdition">
-        <Icon name="i-fa7-solid:angle-left" />
+        <icon name="i-fa7-solid:angle-left" />
       </volt-button>
 
       <h2 class="font-bold">{{ $t('Modifier') }}</h2>
 
-      <div v-if="currentEditedProduct.product_info" class="row">
-        <div class="col-12">
-          <NuxtImg :src="mediaPath(currentEditedProduct.product_info.product.get_main_image.original)" />
+      <div>
+        <nuxt-img :src="editedCartItem.product.mainImage.original" :alt="editedCartItem.product.name" />
+
+        <div class="my-4">
+          <p class="font-bold mb-1">
+            {{ editedCartItem.product.price }}
+          </p>
+          <p>
+            {{ editedCartItem.product.name }}
+          </p>
         </div>
 
-        <div class="col-12">
-          <div class="my-4">
-            <p class="font-bold mb-1">
-              {{ currentEditedProduct.product_info.price }}
-              <!-- {{ $n(currentEditedProduct.product_info.price, 'currency') }} -->
-            </p>
-            <p>
-              {{ currentEditedProduct.product_info.product.name }}
-            </p>
-          </div>
-
-          <div class="my-4">
-            <p class="font-bold">
-              {{ $t('Couleur') }}
-            </p>
-            <p>
-              {{ currentEditedProduct.product_info.product.color }}
-            </p>
-          </div>
-
-          <div class="my-4">
-            <p class="font-bold">
-              {{ $t('Taille') }}
-            </p>
-
-            <div v-if="currentEditedProduct.product_info.product.has_sizes" class="flex gap-2">
-              <ProductSizeButton v-for="size in currentEditedProduct.product_info.product.sizes" :key="size.id" :size="size" />
-            </div>
-
-            <p v-else class="font-light">
-              {{ $t("Taille unique") }}
-            </p>
-          </div>
-
-          <div class="my-4">
-            <p class="font-bold">
-              {{ $t('Quantité') }}
-            </p>
-
-            <volt-input-number v-model="currentEditedProduct.quantity" :min="1" :max="999" class="w-[2/4]" />
-          </div>
-
-          <volt-button class="w-full" @click="handleCloseProductEdition">
-            {{ $t('Enregistrer') }}
-          </volt-button>
+        <div class="my-4">
+          <p class="font-bold">
+            {{ $t('Couleur') }}
+          </p>
+          <p>
+            {{ editedCartItem.product.variant.name }}
+          </p>
         </div>
+
+        <div class="my-4">
+          <p class="font-bold">
+            {{ $t('Taille') }}
+          </p>
+
+          <div class="flex gap-2">
+            <product-size-button v-for="size in editedCartItem.product.sizesSet" :key="size.id" :size="size" @select-size="handleSizeSelection" />
+          </div>
+        </div>
+
+        <div class="my-4">
+          <p class="font-bold">
+            {{ $t('Quantité') }}
+          </p>
+
+          <volt-input-number v-model="editedCartItem.quantity" :min="1" :max="999" class="w-[2/4]" />
+        </div>
+
+        <volt-button class="w-full" @click="handleCloseProductEdition">
+          {{ $t('Enregistrer') }}
+        </volt-button>
       </div>
-
-      <ModalsSkeletonLoader v-else class="mt-4" />
     </div>
 
     <div v-else>
-      <ModalsSkeletonLoader class="mt-4" />
+      <modals-skeleton-loader class="mt-4" />
     </div>
   </volt-drawer>
 </template>
 
 <script setup lang="ts">
-const cartStore = useCart()
-const { showEditProductDrawer, showCartDrawer, currentEditedProduct } = storeToRefs(cartStore)
-const { mediaPath } = useDjangoUtilies()
+import type { BaseSizeSet } from '~/types'
+
+const { editedCartItem, addQuantity, decreaseQuantity } = useEditCartItemStore()
+
+const showEditProductDrawer = useState<boolean>('showEditProductDrawer')
 
 /**
  * Closes the modal that edits a given product
@@ -80,5 +71,11 @@ const { mediaPath } = useDjangoUtilies()
 function handleCloseProductEdition() {
   showEditProductDrawer.value = false
   showCartDrawer.value = true
+}
+
+function handleSizeSelection(size: BaseSizeSet) {
+  if (isDefined(editedCartItem)) {
+    editedCartItem.value.size = size
+  }
 }
 </script>

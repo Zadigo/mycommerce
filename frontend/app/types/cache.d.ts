@@ -1,4 +1,4 @@
-import type { Arrayable, Languages, Nullable } from '.'
+import type { Arrayable, Languages, Nullable, ProductNode } from '.'
 import type { Profile } from './api/accounts'
 import type { Product } from './api/shop'
 import type { CartUpdateApiResponse } from './api/cart'
@@ -35,9 +35,12 @@ export interface SessionCacheData {
    */
   cartViewCount: number
 
-  recommendations: Product[]
+  recommendations: number[]
   searchHistory: string[]
+  /**
+   * @deprecated
+   */
   profile: Nullable<Profile>
-  likedProducts: Product[]
+  likedProducts: number[]
   popularImages: PopularImages[]
 }

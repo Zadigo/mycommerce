@@ -1,53 +1,43 @@
-import type { ExtendedRouteParamsRawGeneric, MaybeProduct, MaybeType, ProductNode } from '~/types'
+import { arrayRemove, arrayUnion, updateDoc } from 'firebase/firestore'
+import type { ExtendedRouteParamsRawGeneric, MaybeType, ProductNode } from '~/types'
 
 /**
  * Composable for working with likes on the product
  * on a single product page 
  * @param product - The product to handle likes for
  */
-export async function useLikeComposable(product: MaybeType<ProductNode>, callback?: (eventName: string) => void) {
-  if (import.meta.server) {
-    return {
-      isLiked: ref<boolean>(false),
-      icon: ref<string>('i-fa7-regular:heart'),
-      handleLike: (_product?: MaybeProduct): void => { }
-    }
-  }
-
+export async function useLikeComposable(product: MaybeType<ProductNode>, callback?: (actionName: 'like' | 'unlike') => void) {
+  const { docRef, session } = useSession()
+    
   const _product = toValue(product)
-  const { session } = await useSession()
-
-  const isLiked = useArrayIncludes(session.value.likedProducts, isDefined(_product) ? _product.node.id : false)
-  // console.log('isLiked', isLiked, likedProducts)
-  // const uniqueIds = useArrayUnique(likedProducts)
-  // // Ensures only unique IDs in the storage
-  // syncRef(uniqueIds, likedProducts, { direction: 'ltr' })
-
-  function like() {
+  const productId = useToNumber(isDefined(_product) ? _product.node.id : '')
+  const likedProducts = computed(() => isDefined(session) ? session.value.likedProducts : [])
+  
+  const isLiked = useArrayIncludes(likedProducts, productId.value)
+  const icon = computed(() => isLiked.value ? 'i-fa7-solid:heart' : 'i-fa7-regular:heart')
+  
+  async function like() {
     if (isDefined(_product)) {
-      if (isLiked.value) {
-        session.value.likedProducts.value = session.value.likedProducts.value.filter(id => id !== _product.node.id)
-      } else {
-        session.value.likedProducts.push(_product.node.id)
-      }
+      if (isDefined(docRef)) {
+        if (isLiked.value) {
+          await updateDoc(docRef, { likedProducts: arrayRemove(productId.value) })
+        } else {
+          await updateDoc(docRef, { likedProducts: arrayUnion(productId.value) })
+        }
+        
+        // const uniqueIds = useArrayUnique(session.value.likedProducts)
+        // await updateDoc(docRef, { likedProducts: toValue(uniqueIds) })
 
-      if (callback) callback('like')
+        if (callback) {
+          callback(isLiked.value ? 'unlike' : 'like')
+        }
+      }
     }
   }
-
-  const icon = computed(() => isLiked.value ? 'i-fa7-solid:heart' : 'i-fa7-regular:heart')
 
   return {
-    icon,
-    /**
-     * Whether the product is liked by the user
-     * @default false
-     */
     isLiked,
-    /**
-     * Adds a product to the list of products
-     * added to the user's whishlist
-     */
+    icon,
     like
   }
 }

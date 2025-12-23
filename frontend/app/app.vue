@@ -14,7 +14,7 @@
     <!-- Modals -->
     <client-only>
       <modals-language />
-      <modals-whats-app />
+      <lazy-modals-whats-app />
     </client-only>
   </nuxt-layout>
 </template>
@@ -62,6 +62,7 @@ useState('showCartDrawer', () => false)
 useState('showLoginDrawer', () => false)
 useState('authenticatedCart', () => false)
 useState('showAddedProductDrawer', () => false)
+useState('showEditProductDrawer', () => false)
 
 /**
  * Load Stripe.js

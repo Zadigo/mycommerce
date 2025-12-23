@@ -36,4 +36,10 @@ const showWhatsAppModal = ref<boolean>(false)
 
 const { writeableSession, sessionId, isInitialized } = useSession()
 const { cartSession, cart, cartSessionId } = useCartComposable()
+
+/**
+ * Modify Cart Item
+ */
+
+useEditCartItemComposable()
 </script>

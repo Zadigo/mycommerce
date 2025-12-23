@@ -32,16 +32,16 @@
       <product-page-bottom-cart v-if="product" :product="product" />
 
       <!-- Zoom -->
-      <product-modals-image-zoom :product="product" />
+      <lazy-product-modals-image-zoom :product="product" />
       
       <!-- Size Guide -->
-      <product-modals-size-guide v-model:show="showSizeGuideDrawer" :product="product" />
+      <lazy-product-modals-size-guide v-model:show="showSizeGuideDrawer" :product="product" />
       
       <!-- Availability & Composition -->
-      <product-modals-availability v-model:show="showAvailabilityModal" :product="product" />
+      <lazy-product-modals-availability v-model:show="showAvailabilityModal" :product="product" />
       
       <!-- Composition -->
-      <product-modals-composition v-model:show="showCompositionModal" />
+      <lazy-product-modals-composition v-model:show="showCompositionModal" />
     </client-only>
   </section>
 </template>

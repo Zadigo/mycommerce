@@ -20,44 +20,15 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/': {
-      swr: true,
-      cache: {
-        swr: true,
-        base: 'redis',
-        maxAge: 1,
-      }
-    },
-    'shop/**': {
-      swr: true,
-      cache: {
-        swr: true,
-        base: 'redis',
-        maxAge: 1
-      }
-    },
-    'wishlist': {
-      ssr: false
-    },
-    'account/**': {
-      ssr: false
-    },
-    'cart/**': {
-      ssr: false
-    },
-    'complete-size-guide': {
-      isr: true
-    },
-    'guide': {
-      isr: true
-    },
-    'confidentialite': {
-      ssr: true,
-      cache: {
-        base: 'redis',
-        maxAge: 3600
-      }
-    }
+    '/': { swr: true, cache: { swr: true, base: 'redis', maxAge: 1 } },
+    'shop/**': { swr: true, cache: { swr: true, base: 'redis', maxAge: 1 } },
+    'wishlist': { ssr: false },
+    'account/**': { ssr: false },
+    'cart/**': { ssr: false },
+    'guide': { prerender: true },
+    'confidentialite': { prerender: true },
+    'conditions-generales': { prerender: true },
+    'complete-size-guide': { prerender: true }
   },
 
   vuefire: {

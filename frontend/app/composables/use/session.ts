@@ -139,9 +139,10 @@ export const useSession = createGlobalState(() => {
 
   if (import.meta.server) {
     return {
+      docRef: null,
+      isInitialized,
       session: readonly(ref(null)),
-      sessionId: ref<string | null>(null),
-      writeableSession: ref<SessionCacheData | null>(null)
+      sessionId: ref<string | null>(null)
     }
   }
 
