@@ -1,0 +1,10 @@
+{
+    "papers": [
+        {
+            "title": "Sample Paper 1",
+            "author": "Author A",
+            "year": 2021,
+            "abstract": "This is a sample abstract for Paper 1."
+        }
+    ]
+}

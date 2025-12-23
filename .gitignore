@@ -147,3 +147,7 @@ logs
 # Nuxt tests
 */coverage/
 __snapshots__/
+
+# Other
+
+.coverage
