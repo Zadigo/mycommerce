@@ -1,7 +1,8 @@
-## Shop micro-service 💳
+## Ecommerce MCP Micro-service 🌪️
 
-This micro-service is responsible for managing functionalities for the shop which are
-mainly related to storing product details, categories, collections, and product images.
+This Ecommerce MCP (Microservice Control Plane) micro-service is responsible for orchestrating and managing
+various e-commerce related micro-services such as cart, shop, reviews, and more. It provides a centralized
+control plane for clients to interact with these services in a unified manner.
 
 ## Technologies Used 🌳
 

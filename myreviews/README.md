@@ -1,7 +1,7 @@
-## Shop micro-service 💳
+## Reviews micro-service 💳
 
-This micro-service is responsible for managing functionalities for the shop which are
-mainly related to storing product details, categories, collections, and product images.
+This micro-service is responsible for managing functionalities for customer reviews,
+mainly related to storing and retrieving product reviews and ratings.
 
 ## Technologies Used 🌳
 

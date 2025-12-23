@@ -1,6 +1,6 @@
 # My Commerce - E-commerce solution with Django & Nuxt 4 🛍️
 
-Is a comprehensive e-commerce solution specialized in online retail, built with Django and Nuxt 4. 
+My Commerce is a comprehensive e-commerce solution specialized for online retail, built with Django and Nuxt 4. 
 It offers a robust backend for managing products, orders, and customers, along with a dynamic frontend for an 
 engaging shopping experience.
 
@@ -11,32 +11,13 @@ engaging shopping experience.
 | Cart                  | Django             | Manages shopping cart functionalities    |
 | Reviews               | Django             | Handles product reviews and ratings      |
 | Store                 | Django             | Manages product catalog and inventory    |
-| Frontend              | Nuxt 4             | Renders the user interface               |
+| Frontend              | Nuxt 4             | Renders the desktop user interface       |
 | Frontend Admin        | Nuxt 4             | User-friendly admin interface            |
 | Frontend Mobile       | Nuxt 4 + Ionic     | Mobile-friendly interface                |
+| Ecommece MCP          | Python             | MCP client for tools and services        |
 
-## Configuring your project 🏠
-
-Before starting, ensure you have a valid [Stripe](https://stripe.com/en-fr), [Klarna](https://www.klarna.com/) 
-and [Firebase](https://firebase.google.com/) accounts. You also might need to have valid secret and client keys 
-on [Google Cloud Console](https://console.cloud.google.com/).
-
-The secret keys need to be available either as `.env` files at the root of each project or using global system environment variables.
-
-Finally, if you plan on using [Celery](https://docs.celeryq.dev/en/stable/) ensure you have 
-both [Redis](https://redis.io/) and [RabbitMQ](https://www.rabbitmq.com/) on your system.
-
-You will also need a valid AWS account with [S3](https://aws.amazon.com/s3/) access and finally a 
-valid [Cloudfront](https://aws.amazon.com/cloudfront/) distribution to serve your static files.
-
-The project comes with a simple fixture of 85 products in `initialize/products.csv` in order to launch the website quickly.
-
-The fastest way to test the project in a production context is to launch Docker containers with [Docker Desktop](https://www.docker.com/products/docker-desktop).
-
-### Using Websocket implementation 🛜
-
-The cart comes with an ASGI backend that supports WebSocket connections for real-time updates when a user adds or purchases an item in his cart.
-This is used both in the frontend (in the same way Shopify does) and in the admin interface for live updates.
+The project was built with scalability in mind, allowing for easy addition of new micro-services as needed. For instance, the cart
+management system can be swapped out for a third-party solution if desired.
 
 ## Technologies Used 🌳
 
@@ -59,78 +40,45 @@ This is used both in the frontend (in the same way Shopify does) and in the admi
 | Google Analytics      | Traffic analysis              | ✅ -       |
 | Facebook Pixels       | Traffic analysis              | ✅ -       |
 | Microsoft Clarity     | Traffic analysis              | ✅ -       |
+| Celery Beat           | Periodic tasks scheduling     | ✅ 2.2.1   |
+| Daphne                | ASGI server                   | ✅ 3.0.4   |
+| Graphene-Django       | GraphQL API                   | ✅ 3.0.0   |
+| MCP cli               | Micro-service communication   | ✅ 0.3.0   |
 
-## Environment Variables 🌳
+## Configuring your project 🏠
 
-```env
-DEBUG=1
+Before starting, ensure you have a valid [Stripe](https://stripe.com/en-fr), [Klarna](https://www.klarna.com/) 
+and [Firebase](https://firebase.google.com/) accounts. You also will need to have valid secret and client keys 
+create on [Google Cloud Console](https://console.cloud.google.com/).
 
-SECRET_KEY=123
+The secret keys need to be available either as `.env` files at the root of each project or using global system environment variables.
 
-STRIPE_PUBLIC_KEY=123
+Finally, if you plan on using [Celery](https://docs.celeryq.dev/en/stable/) ensure you have 
+both [Redis](https://redis.io/) and [RabbitMQ](https://www.rabbitmq.com/) on your system.
 
-STRIPE_TEST_SECRET_KEY=sk_test_1
+You will also need a valid AWS account with [S3](https://aws.amazon.com/s3/) access and finally a 
+valid [Cloudfront](https://aws.amazon.com/cloudfront/) distribution to serve your static files.
 
-STRIPE_TEST_PUBLIC_KEY=pk_test_1
+The project comes with a simple fixture of 85 products in `initialize/products.csv` in order to launch the website quickly.
 
-STRIPE_TEST_CUSTOMER_ID=cus_1
+The fastest way to test the project in a production context is to launch Docker containers with [Docker Desktop](https://www.docker.com/products/docker-desktop)
+and then integrate the fixtures by importing the CSV file.
 
-STRIPE_TEST_CARD=card_1
+### Websocket implementation 🛜
 
-EMAIL_HOST=smtp.gmail.com
+The cart comes with an ASGI backend that supports WebSocket connections for real-time updates when a user adds or purchases an item in his cart.
+This is used both in the frontend (in the same way Shopify does) and in the admin interface for live updates.
 
-EMAIL_HOST_USER=example@gmail.com
+### Starting Celery 🎶
 
-EMAIL_HOST_PASSWORD=123
-
-DB_NAME=mycommerce
-
-DB_USER=test_user
-
-DB_PASSWORD=test_user
-
-DB_HOST=localhost
-
-AWS_S3_ACCESS_KEY_ID=ABC 
-
-AWS_S3_SECRET_ACCESS_KEY=ABC
-
-AWS_STORAGE_BUCKET_NAME=ecommerce
-
-AWS_S3_REGION_NAME=us-east-1
-
-```
-
-### Using S3 storage
-
-```
-[
-    {
-        "AllowedHeaders": [
-            "*"
-        ],
-        "AllowedMethods": [
-            "GET",
-            "HEAD"
-        ],
-        "AllowedOrigins": [
-            "http://127.0.0.1:8000",
-            "http://localhost:8000"
-        ],
-        "ExposeHeaders": [],
-        "MaxAgeSeconds": 3000
-    }
-]
-```
-
-### Using Celery 🎶
-
-If you plan on using Celery, start the celery backend withing the Django project by doing `celery -A mystore.celery_app worder -E` (on Windows `celery -A mystore.celery_app worker -E --pool=solo`). Ensure both Redis and RabbitMQ are running on your system otherwise you will not be able to execute the provided tasks correctly.
+If you plan on using Celery, start the celery backend withing the Django project by typing `celery -A mystore.celery_app worker -E` 
+(on Windows `celery -A mystore.celery_app worker -E --pool=solo`). Ensure both Redis and RabbitMQ are running on your system otherwise 
+you will not be able to execute the provided tasks correctly.
 
 
 ### Configuring Nuxt 🎶
 
-1. Enter the `frontend` directory and run `pnpm run dev`
+1. Enter in the `frontend` directory and run `pnpm run dev`
 2. Ensure you have a Stripe account for working/testing the cart payment process in development mode
 3. You also need an active Google Account in order to create the relevant keys for Google Authentication
 4. Create a `.env` file in the `frontend` folder with all the relevant keys provided below.
@@ -140,7 +88,7 @@ If you plan on using Celery, start the celery backend withing the Django project
 
 The Nuxt application also comes with basic fixtures that can be used to test the application out of the box. They are located in `~/data/__fixtures__/` and can be used to simulate server API calls.
 
-#### Environment variables 🎶
+#### Environment variables for Nuxt 🎶
 
 These are the environment variables that are used to configure your Nuxt application
 
@@ -171,11 +119,11 @@ GOOGLE_CLIENT_SECRET=GOCSPX-123
 
 # Facebook Pixels
 
-NUXT_PUBLIC_METAPIXEL_DEFAULT_ID=123
+NUXT_METAPIXEL_DEFAULT_ID=123
 
-NUXT_PUBLIC_METAPIXEL_ADS01_ID=123
+NUXT_METAPIXEL_ADS01_ID=123
 
-NUXT_PUBLIC_METAPIXEL_ADS02_ID=123
+NUXT_METAPIXEL_ADS02_ID=123
 
 # Firebase
 

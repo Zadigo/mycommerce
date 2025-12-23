@@ -21,7 +21,6 @@
     <dev-only>
       <div class="fixed top-1/12 right-5 bg-white rounded-lg shadow-lg p-4 z-50 w-100 space-y-5">
         <p class="font-bold">Website data</p>
-        <p>{{ writeableSession }}</p>
         <p>{{ cartSession }}</p>
         <p>Cart: {{ cart }}</p>
         <p>session: {{ sessionId }} ({{ isInitialized }})</p>
@@ -34,7 +33,7 @@
 <script lang="ts" setup>
 const showWhatsAppModal = ref<boolean>(false)
 
-const { writeableSession, sessionId, isInitialized } = useSession()
+const { sessionId, isInitialized } = useSession()
 const { cartSession, cart, cartSessionId } = useCartComposable()
 
 /**

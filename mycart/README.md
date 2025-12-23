@@ -52,5 +52,5 @@ of their cart and proceed to checkout (see [How it works](#how-it-works)).
 
 When the user is about to pay, Nuxt will require the user to be either logged in or to create an account.
 
-Nuxt will then call for a [payment intent](https://docs.stripe.com/api/payment_intents) to Stripe. THe payment intent will get 
+Nuxt will then call for a [payment intent](https://docs.stripe.com/api/payment_intents) to Stripe. The payment intent will get 
 updated all throughout the payment process (with shipment information for example).

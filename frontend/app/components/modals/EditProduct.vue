@@ -61,7 +61,7 @@
 <script setup lang="ts">
 import type { BaseSizeSet } from '~/types'
 
-const { editedCartItem, addQuantity, decreaseQuantity } = useEditCartItemStore()
+const { editedCartItem } = useEditCartItemStore()
 
 const showEditProductDrawer = useState<boolean>('showEditProductDrawer')
 
