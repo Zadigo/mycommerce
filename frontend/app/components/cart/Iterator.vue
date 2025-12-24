@@ -29,7 +29,7 @@
               <icon name="i-lucide:pen" />
             </volt-button>
 
-            <volt-button id="action-delete-product" variant="light" class="rounded-full" size="sm" @click="async () => await removeProduct(cartItem)">
+            <volt-button id="action-delete-product" variant="light" class="rounded-full" size="sm" @click="async () => { removeProduct(cartItem) }">
               <icon name="i-lucide:trash" />
             </volt-button>
           </div>

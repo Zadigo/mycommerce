@@ -43,8 +43,10 @@ const { customHandleError } = useErrorHandler()
 const authenticatedCart = useSessionStorage('authenticatedCart', false)
 
 /**
- * 
+ * Login
  */
+
+// Google Login
 async function handleGoogle () {
   try {
     const auth = getAuth($firebaseApp)
@@ -73,9 +75,6 @@ async function handleGoogle () {
   }
 }
 
-/**
- * Login
- */
-
-const { login, usernameField, password } = useLogin()
+// Email/Password Login
+const { login, usernameField, password } = useLogin('username')
 </script>

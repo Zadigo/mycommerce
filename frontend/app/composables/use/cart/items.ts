@@ -174,7 +174,7 @@ export const useCartComposable = createGlobalState(() => {
         existingItem.quantity -= 1
       } else {
         // Remove item if quantity would be 0
-        await _removeProduct(product, size)
+        await removeProduct(existingItem)
       }
     }
   }
@@ -182,19 +182,25 @@ export const useCartComposable = createGlobalState(() => {
   const reduceQuantity = useThrottleFn(_reduceQuantity, 300)
 
   // Remove product from cart
-  async function _removeProduct(product: Undefineable<ProductNode>, size: Undefineable<BaseSizeSet>): Promise<void> {
-    if (!isDefined(product) || !isDefined(size)) {
+  async function _removeProduct(cartItem: CartItem): Promise<void> {
+    if (!isDefined(cartItem)) {
       console.warn('Product or size is undefined')
       return
     }
 
-    const itemIndex = _cart.value.findIndex(
-      item => item.product.id === product.node.id && item.size?.name === size.name
-    )
+    const filteredItems = _cart.value.filter(item => {
+      const logic = (
+        item.product.id === cartItem.product.id &&
+        item.size.name === cartItem.size.name
+      )
+      
+      console.log(`${item.product.id} vs. ${cartItem.product.id}`, `${item.size.name} vs. ${cartItem.size.name}`, logic)
 
-    if (itemIndex !== -1) {
-      _cart.value.splice(itemIndex, 1)
-    }
+      if (logic) return false
+      return true
+    })
+    _cart.value = filteredItems
+    console.log('Filtered Items:', filteredItems)
   }
 
   const removeProduct = useThrottleFn(_removeProduct, 300)
@@ -217,6 +223,9 @@ export const useCartComposable = createGlobalState(() => {
     syncError,
     freeDeliveryTarget,
     createItem,
+    /**
+     * Removes a product entirely from the cart
+     */
     removeProduct,
     reduceQuantity,
     clearCart
