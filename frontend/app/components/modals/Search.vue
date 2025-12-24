@@ -32,9 +32,10 @@
 </template>
 
 <script setup lang="ts">
-import { productSymbol } from '~/data/constants/symbols'
+import { productsSymbol } from '~/data/constants/symbols'
 import { doc, updateDoc } from 'firebase/firestore'
-import type { Product, ProductsApiResponse } from '~/types'
+import type { SearchedProducts } from '~/types'
+import { baseProductGraph } from '~/data/constants/graphs'
 
 const AsyncRecommendations = defineAsyncComponent({
   loader: async () => import('~/components/BaseRecommendations.vue'),
@@ -49,18 +50,26 @@ const showSearchModal = useState<boolean>('showSearchModal')
 const { $client } = useNuxtApp()
 const { customHandleError } = useErrorHandler()
 
-const searchedProducts = ref<Product[]>([])
+/**
+ * Search state
+ */
 
 const search = shallowRef<string>('')
 const searchDebounced = refDebounced(search, 2000)
 
-const canShowSearch = computed(() => searchedProducts.value.length > 0)
+const _cache = ref<SearchedProducts>()
+const products = computed(() => isDefined(_cache) ? _cache.value.data.searchProducts.edges || [] : [])
+const canShowSearch = computed(() => products.value.length > 0)
 
-provide(productSymbol, searchedProducts)
+provide(productsSymbol, products)
+
+/**
+ * Search watcher
+ */
 
 const db = useFirestore()
 const { history, last } = useDebouncedRefHistory(search, { debounce: 5000 })
-const { sessionId } = useSession()
+const { docRef, session } = useSession()
 
 watch(searchDebounced, async () => {
   /**
@@ -68,16 +77,34 @@ watch(searchDebounced, async () => {
    */
 
   if (search.value && search.value !== "") {
-    const data = await $client<ProductsApiResponse>('/api/v1/shop/products', {
-      params: {
-        q: search.value
-      },
-      onRequestError({ error }) {
-        customHandleError(error)
-      }
-    })
+    try {
+      const data = await $client<SearchedProducts>('/v1/graphql/', {
+        method: 'POST',
+        body: {
+          query: `
+            query($name: String!) {
+              searchProducts(name: $name, first: 20) {
+                edges {
+                  node {
+                    ${baseProductGraph}
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            name: search.value
+          }
+        },
+        onRequestError({ error }) {
+          customHandleError(error)
+        }
+      })
 
-    searchedProducts.value = data.results
+      _cache.value = data
+    } catch (error) {
+      customHandleError(error)
+    } 
   }
 
   /**
@@ -91,9 +118,13 @@ watch(searchDebounced, async () => {
    * Save search
    */
 
-  if (isDefined(sessionId)) {
-    const docRef = doc(db, 'sessions', sessionId.value)
-    await updateDoc(docRef, { searchHistory: history.value || [] }, { merge: true })
+  if (isDefined(session)) {
+    await updateDoc(docRef, {
+      searchHistory: history.value.map(item => ({
+        term: item.snapshot,
+        searchedOn: item.timestamp
+      })) 
+    })
   }
 })
 </script>

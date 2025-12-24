@@ -12,19 +12,8 @@
 
 <script lang="ts" setup>
 import { productsSymbol } from '~/data'
+import { baseProductGraph } from '~/data/constants/graphs';
 import type { ExtendedRouteParamsRawGeneric, ProductNode, ProductRecommendations } from '~/types'
-
-interface FetchOptions {
-  /**
-   * The product's ID used for the Fuzzy
-   * matcher in Django
-   */
-  p: string | number
-  /**
-   * The amount of products to get 
-   */
-  q: number
-}
 
 const {
   blockTitle = "Cela peut t'intéresser",
@@ -95,28 +84,16 @@ try {
         method: 'post',
         body: {
           query: `
-            query {
-              recommendations(productName: "Trapèze", quantity: ${quantity}) {
-                id
-                name
-                price
-                salePrice
-                unitPrice
-                mainImage {
-                  id
-                  name
-                  original
-                  thumbnail
-                }
-                productImages {
-                  id
-                  name
-                  original
-                  isMainImage
-                }
-              }
+          query($name: String!, $quantity: Int!) {
+            recommendations(productName: $name, quantity: $quantity) {
+              ${baseProductGraph}
             }
-        `
+          }
+          `,
+          variables: {
+            name: 'Trapèze',
+            quantity: quantity
+          }
         },
         onRequestError({ error }) {
           customHandleError(error)
