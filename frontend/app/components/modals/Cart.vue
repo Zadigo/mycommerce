@@ -113,4 +113,18 @@ const showCartDrawer = useState<boolean>('showCartDrawer')
 const { routerLink } = useModalStateNavigation(showCartDrawer)
 
 const { closeAllModals } = useModalsState()
+
+/**
+ * Analytics
+ */
+
+const { viewCartEvent } = useGoogleAnalyticsCallbacks()
+
+watchDebounced(showCartDrawer, (visible) => {
+  if (visible) {
+    if (isDefined(cartSession) && isDefined(cartSession.data.value)) {
+      viewCartEvent(cartSession.data.value.items)
+    }
+  }
+}, { debounce: 500 })
 </script>
