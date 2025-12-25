@@ -1,6 +1,6 @@
 <template>
   <div id="actions">    
-    <!-- Sizes -->
+    <!-- Size selection -->
     <product-size-block v-if="product" :selected-size="selectedSize" :product="product" class="mb-4" @select-size="(size) => { selectSize(size) }" />
     <volt-skeleton v-else height="100px" class="w-2/6" />
 
@@ -23,35 +23,31 @@
       {{ $t("Choissis une taille") }}
     </p>
 
-    <!-- <DevOnly>
-      {{ userSelection }} - {{ sizeObject }}
-    </DevOnly> -->
-
-    <volt-button v-if="userSelection.size !== '' && sizeObject && !sizeObject.availability" id="action-inform" class="mt-5 place-content-center" @click="() => emit('availability-modal')">
+    <volt-button v-if="isDefined(selectedSize) && !selectedSize.availability" id="action-inform" class="mt-5 place-content-center" @click="() => emit('availability-modal')">
       <icon name="fa:envelope" size="12" class="me-1" />
       {{ $t('Me tenir informer') }}
     </volt-button>
-    <volt-button v-else id="action-add-cart" class="mt-5 me-2 place-content-center" :disabled="false" @click="() => add(product, selectedSize)">
-      <icon v-if="stockState && stockState.almost_sold_out" name="i-fa7-solid:clock" class="me-1" />
+    <volt-button v-else id="action-add-cart" class="mt-5 me-2 place-content-center" :disabled="false" @click="() => { createItem(product, selectedSize, successCallback, () => { toggleSizeSelectionWarning(true) }) }">
+      <!-- <icon v-if="stockState && stockState.almost_sold_out" name="i-fa7-solid:clock" class="me-1" /> -->
       {{ $t('Ajouter au panier') }}
     </volt-button>
 
-    <volt-button id="action-add-favorite" :aria-label="$t('Ajouter au favori')" class="mt-5" variant="outline" @click="proxyHandleLike">
+    <volt-button id="action-add-favorite" :aria-label="$t('Ajouter au favori')" class="mt-5" variant="outline" @click="async () => { await like() }">
       <icon :name="icon" />
     </volt-button>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { BaseSizeSet, ClotheSizes, Product, ProductNode, Undefineable } from '~/types'
+import type { ProductNode } from '~/types';
 
 const props = defineProps<{ product: ProductNode }>()
 const emit = defineEmits<{ 'size-guide': [], 'availability-modal': [] }>()
 
-const stockState = inject<ProductStockApiResponse>('stockState')
+// const stockState = inject<ProductStockApiResponse>('stockState')
 
-const cartStore = useCart()
-const { userSelection, showSizeSelectionWarning } = storeToRefs(cartStore)
+// const cartStore = useCart()
+// const { userSelection, showSizeSelectionWarning } = storeToRefs(cartStore)
 
 /**
  * Like
@@ -59,95 +55,19 @@ const { userSelection, showSizeSelectionWarning } = storeToRefs(cartStore)
 
 const { like, icon } = await useLikeComposable(props.product)
 
-const sizeObject = computed(() => {
-  if (isDefined(props.product)) {
-    return props.product.node.sizeSet.find(x => x.name === userSelection.value.size) || null
-  } else {
-    return null
-  }
-})
+/**
+ * Size Selection
+ */
+
+const { selectedSize, hasSelection, selectSize } = useSizeSelection(props.product)
 
 /**
- * Proxy function that handles the action
- * of liking the current product
+ * Cart
  */
-function proxyHandleLike() {
-  if (isDefined(like)) {
-    like()
-  
-    // TODO: G-Analytics
-    // gtag('event', 'add_to_wishlist', {
-    //   items: {
-    //     item_id: props.product?.id,
-    //     item_name: props.product?.name,
-    //     price: props.product?.get_price,
-    //     quantity: 1,
-    //     item_brand: null,
-    //     item_category: props.product?.category,
-    //     item_category2: props.product?.sub_category,
-    //     item_variant: props.product?.color,
-    //     index: 0,
-    //     item_reference: null
-    //   }
-    // })
-  }
-}
 
-const { selectedSize, selectSize } = useSizeSelection(props.product)
-const { add } = useCartComposable()
+const [showSizeSelectionWarning, toggleSizeSelectionWarning] = useToggle(false)
+const { createItem } = useCartComposable(hasSelection)
 
-// const { sync } = await useSyncCart()
-
-// async function proxyAddToCart() {
-//   cartStore.addToCart(props.product, async (data) => {
-//     console.log('proxyAddToCart', data)
-//     sync(data)
-
-//     // if (cartStore.sessionId) {
-//     //   const userRef = doc($fireStore, 'users', cartStore.sessionId)
-//     //   const userSnapshot = await getDoc(userRef)
-
-//     //   console.info('has user snapshot', userSnapshot.exists())
-      
-//     //   if (userSnapshot.exists()) {
-//     //     await updateDoc(userRef, { cart: data })
-//     //   }
-//     // }
-
-//     // TODO: G-Analytics
-//     // gtag('event', 'add_to_cart',  {
-//     //   currency: 'EUR',
-//     //   value: props.product?.get_price,
-//     //   items: [
-//     //     {
-//     //       item_id: props.product?.id,
-//     //       item_name: props.product?.name,
-//     //       price: props.product?.get_price,
-//     //       quantity: 1,
-//     //       item_brand: null,
-//     //       item_category: props.product?.category,
-//     //       item_category2: props.product?.sub_category,
-//     //       item_variant: props.product?.color,
-//     //       index: 0,
-//     //       item_reference: null,
-//     //       size: userSelection.value.size
-//     //     }
-//     //   ]
-//     // })
-
-//     // if (sizeEl.value) {
-//     //   sizeEl.value.resetSize()
-//     // }
-//   })
-// }
-
-/**
- * Proxy function that handles the action
- * of selecting a size for the current product
- * @param size The item's size
- */
-// function proxySelectSize(size: BaseSizeSet) {
-//   showSizeSelectionWarning.value = false
-//   cartStore.sizeSelection(props.product, size)
-// }
+const showAddedProductDrawer = useState<boolean>('showAddedProductDrawer')
+const successCallback = () => { showAddedProductDrawer.value = true }
 </script>

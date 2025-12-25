@@ -1,5 +1,5 @@
 import { arrayRemove, arrayUnion, updateDoc } from 'firebase/firestore'
-import type { ExtendedRouteParamsRawGeneric, MaybeType, ProductNode } from '~/types'
+import type { MaybeType, ProductNode } from '~/types'
 
 /**
  * Composable for working with likes on the product
@@ -42,90 +42,111 @@ export async function useLikeComposable(product: MaybeType<ProductNode>, callbac
   }
 }
 
-/** 
- * Composable for checking if a product has images,
- * sizes, and a main image.
- * @param product - The product to check for images
+/**
+ * A simple composable to handle modal state when a
+ * route navigation is attempted
+ * @param state 
+ * @param routePath 
  */
-export function useProductComposable<P extends MaybeType<ProductNode>>(product: P) {
-  const _product = toValue(product)
-  
-  if (!isDefined(product)) {
+export function useModalStateNavigation(state: Ref<boolean>) {
+  if (import.meta.server) {
     return {
-      hasImage: ref<boolean>(false),
-      hasSizes: ref<boolean>(false),
-      hasMainImage: ref<boolean>(false),
-      numberOfImages: ref<number>(0),
-      hasColorVariants: ref<boolean>(false)
-    }
-  } else {
-    const hasImages = computed(() => isDefined(_product) ? _product.node.productImages.length > 0 : false)
-    const hasSizes = computed(() => isDefined(_product) ? _product.node.sizeSet.length > 0 : false)
-    const hasMainImage = computed(() => isDefined(_product) ? isDefined(_product.node.mainImage) : false)
-    const numberOfImages = computed(() => isDefined(_product) ? _product.node.productImages.length : 0)
-    const hasColorVariants = computed(() => isDefined(_product) ? _product.node.colorVariants.length > 0 : false)
-  
-    return {
-      /**
-       * Whether the product has color variants
-       * @default false
-       */
-      hasColorVariants,
-      /**
-       * Number of images associated with the product
-       * @default 0
-       */
-      numberOfImages,
-      /**
-       * Whether the product has images
-       * @default false
-       */
-      hasImages,
-      /**
-       * Whether the product has sizes
-       * @default false
-       */
-      hasSizes,
-      /**
-       * Whether the product has a main image
-       * @default false
-       */
-      hasMainImage
+      routerLink: (_path: string) => {}
     }
   }
-}
+  
+  const toggleState = useToggle(state)
+  const router = useRouter()
+  const toLocalePath = useLocalePath()
 
-/**
- * Composable for fetching product details.
- * This composable fetches the product details from the API
- * and returns it as a reactive state.
- */
-export async function useProductDetailComposable() {
-  const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
+  function routerLink(path: string) {
+    router.push(toLocalePath(path))
+  }
 
-  const { data: product, status } = await useFetch<ProductNode>(`/api/products/${id}`, {
-    method: 'GET',
-    immediate: true,
-    onResponseError({ error }) {
-      createError({
-        statusMessage: error?.message,
-        statusCode: 404
-      })
-    }
+  onBeforeRouteLeave((to, from, next) => {
+    if (state.value) toggleState(false)
+    next()
   })
-
-  console.log('Fetched product:', product.value)
-
-  const isLoading = computed(() => status.value !== 'success')
 
   return {
     /**
-     * Product data fetched from the API
+     * Function to handle router link navigation
+     * @param path The path to navigate to
      */
-    product,
+    routerLink
+  }
+}
+
+export type GlobalStateModalNames = 'search' | 'language' | 'whatsApp' | 'cart' | 'login' | 'addedProduct' | 'editProduct'
+
+export type GlobalStateModalRefs = {
+  [key in GlobalStateModalNames]: Ref<boolean>
+}
+
+/**
+ * Composable used to quickly manage the states of modals
+ * that uses the global state for visibility
+ */
+export function useModalsState() {
+  const showSearchModal = useState<boolean>('showSearchModal')
+  const toggleShowSearchModal = useToggle(showSearchModal)
+
+  const showLanguageModal = useState<boolean>('showLanguageModal')
+  const toggleShowLanguageModal = useToggle(showLanguageModal)
+  
+  const showWhatsAppModal = useState<boolean>('showWhatsAppModal')
+  const toggleShowWhatsAppModal = useToggle(showWhatsAppModal)
+  
+  const showCartDrawer = useState<boolean>('showCartDrawer')
+  const toggleShowCartDrawer = useToggle(showCartDrawer)
+  
+  const showLoginDrawer = useState<boolean>('showLoginDrawer')
+  const toggleShowLoginDrawer = useToggle(showLoginDrawer)
+  
+  const authenticatedCart = useState<boolean>('authenticatedCart')
+  const toggleAuthenticatedCart = useToggle(authenticatedCart)
+
+  const showAddedProductDrawer = useState<boolean>('showAddedProductDrawer')
+  const toggleShowAddedProductDrawer = useToggle(showAddedProductDrawer)
+  
+  const showEditProductDrawer = useState<boolean>('showEditProductDrawer')
+  const toggleShowEditProductDrawer = useToggle(showEditProductDrawer)
+
+  function closeAllModals(callback?: ({ search, language, whatsApp, cart, login, addedProduct, editProduct }: GlobalStateModalRefs) => void) {
+    const modalStates = [
+      showSearchModal,
+      showLanguageModal,
+      showWhatsAppModal,
+      showCartDrawer,
+      showLoginDrawer,
+      showAddedProductDrawer,
+      showEditProductDrawer
+    ]
+
+    modalStates.forEach((modalState) => {
+      if (modalState.value) {
+        modalState.value = false
+      }
+    })
+
+    if (callback) {
+      callback({ search: showSearchModal, language: showLanguageModal, whatsApp: showWhatsAppModal, cart: showCartDrawer, login: showLoginDrawer, addedProduct: showAddedProductDrawer, editProduct: showEditProductDrawer })
+    }
+  }
+
+  return {
+    toggleShowSearchModal,
+    toggleShowLanguageModal,
+    toggleShowWhatsAppModal,
+    toggleShowCartDrawer,
+    toggleShowLoginDrawer,
+    toggleAuthenticatedCart,
+    toggleShowAddedProductDrawer,
+    toggleShowEditProductDrawer,
     /**
-     * Whether the product is currently being loaded
+     * Closes all modals
+     * @param callback - Optional callback with the modal refs that can be to manipulate the state of other modals after closing all
      */
-    isLoading
+    closeAllModals
   }
 }

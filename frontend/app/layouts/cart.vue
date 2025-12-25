@@ -39,7 +39,7 @@
         <div class="col-span-6">
           <volt-card class="border-none bg-gray-50">
             <template #title>
-              {{ $t('Résumé', { n: numberOfProducts }) }}
+              {{ $t('Résumé', { n: cartSession?.numberOfItems || 0 }) }}
             </template>
             
             <template #content>
@@ -50,7 +50,7 @@
               <div class="flex flex-col w-full">
                 <div class="price flex justify-between w-full">
                   <div class="w-full">{{ $t('Sous-total') }}</div>
-                  <div class="font-bold">{{ $n(cartTotal, 'currency') }}</div>
+                  <div class="font-bold">{{ $n(cartSession?.total || 0, 'currency') }}</div>
                 </div>
 
                 <div class="delivery flex justify-between my-2 w-full">
@@ -63,7 +63,7 @@
 
                 <div class="total flex justify-between w-full">
                   <div class="p-5">{{ $t('Total (TVA comprise)') }}</div>
-                  <div class="font-bold">{{ $n(cartTotal, 'currency') }}</div>
+                  <div class="font-bold">{{ $n(cartSession?.total || 0, 'currency') }}</div>
                 </div>
               </div>
             </template>
@@ -76,13 +76,10 @@
 
 <script setup lang="ts">
 const { t } = useI18n()
-const cartStore = useCart()
 const route = useRoute()
 
 // Checks if the user has reached the success page
-const isSuccessPage = computed(() => {
-  return route.path === '/cart/success'
-})
+const isSuccessPage = computed(() => route.path === '/cart/success')
 
 const paymentLinks = computed(() => {
   const links = [
@@ -104,7 +101,8 @@ const paymentLinks = computed(() => {
   ]
 
   if (route.path === '/cart/shipment' || route.path === '/cart/payment') {
-    links[1].disabled = false
+    const item = links[1]
+    if (item) item.disabled = false
   }
   
   return links
@@ -114,7 +112,7 @@ const paymentLinks = computed(() => {
  * Cart
  */
 
-const { cartTotal, numberOfProducts } = await useCartInformation()
+const { cartSession } = useCartComposable()
 
 /**
  * SEO

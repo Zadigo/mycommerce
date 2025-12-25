@@ -25,11 +25,11 @@
           </nuxt-link-locale >
 
           <div id="actions" class="mt-5">
-            <volt-button v-if="isEditable" id="action-edit-product" variant="light" class="me-2 rounded-full" size="sm" @click="handleProductEdition(cartItem)">
+            <volt-button v-if="isEditable" id="action-edit-product" variant="light" class="me-2 rounded-full" size="sm" @click="proxyCloseAllModals(cartItem)">
               <icon name="i-lucide:pen" />
             </volt-button>
 
-            <volt-button id="action-delete-product" variant="light" class="rounded-full" size="sm" @click="async () => { removeProduct(cartItem) }">
+            <volt-button id="action-delete-product" variant="light" class="rounded-full" size="sm" @click="async () => { await removeProduct(cartItem) }">
               <icon name="i-lucide:trash" />
             </volt-button>
           </div>
@@ -45,38 +45,27 @@ import type { CartItem } from '~/types'
 const props = defineProps<{ isEditable?: boolean }>()
 const emit = defineEmits<{ 'edit-product': [editedProduct: CartItem], 'show-cart-drawer': [] }>()
 
-// const { gtag } = useGtag()
+/**
+ * Cart
+ */
 
-const { cart, reduceQuantity, removeProduct } = useCartComposable()
-
-console.log('iterator.statistics', cart?.value)
+const { cart, removeProduct } = useCartComposable()
 
 /**
- * Computed property that get the items from the session
- * and iterates on each statistic object to be displayed
+ * Modals
  */
-// const cartItems = computed((): ProductToEdit[] => {
-//   if (sessionCache.value) {
-//     if (sessionCache.value.cart) {
-//       return sessionCache.value.cart.statistics.map((item) => {
-//         const productInfo = sessionCache.value.cart.results.find((cartItem) => {
-//           return cartItem.product.id === item.product__id
-//         })
-//         return { ...item, product_info: productInfo }
-//       })
-//     }
-//   }
-//   return []
-// })
 
-/**
- * Function to open the product edition drawer
- * 
- * @param item The item to edit
- */
-function handleProductEdition (item: CartItem) {
-  emit('edit-product', item)
+const { editedCartItem } = await useEditCartItemComposable()
+const { closeAllModals } = useModalsState()
+
+function proxyCloseAllModals(cartItem: CartItem) {
+  closeAllModals(({ editProduct }) => {
+    editedCartItem.value = cartItem
+    editProduct.value = true
+  })
 }
+
+// const { gtag } = useGtag()
 
 /**
  * TODO: Callback function used to construct a valid GA-4
@@ -111,10 +100,4 @@ function handleProductEdition (item: CartItem) {
 //   })
 // }
 
-/**
- * @param cartItem The item t odelete from the cart
- */
-// function proxyDeleteFromCart(cartItem: ProductToEdit) {
-//   cartStore.deleteFromCart(cartItem)
-// }
 </script>

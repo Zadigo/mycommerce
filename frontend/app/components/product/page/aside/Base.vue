@@ -33,7 +33,7 @@ const emit = defineEmits<{
   'availability-modal': [] 
 }>()
 
-const { hasColorVariants } = useProductComposable(props.product)
+const { hasColorVariants } = await useProductDetailsComposableStore()
 
 // const { gtag } = useGtag()
 

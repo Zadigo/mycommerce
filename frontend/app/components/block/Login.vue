@@ -17,12 +17,12 @@
         <volt-input-text v-model="usernameField" :placeholder="$t(`Nom d'utilisateur ou email`)" type="text" autocomplete="email" />
         <volt-input-text v-model="password" :placeholder="$t('Mot de passe')" class="my-2" type="password" autocomplete="current-password" />
 
-        <volt-button id="signin-email" class="rounded-full w-full mt-5" size="lg" @click="async () => { await login() }">
+        <volt-button id="signin-email" class="rounded-full w-full mt-5" size="lg" @click="async () => { await login(() => closeAllModals()) }">
           {{ $t('Se connecter') }}
         </volt-button>
       </form>
 
-      <p class="flex-grow font-light text-center mt-3">
+      <p class="grow font-light text-center mt-3">
         {{ $t('No account signup text') }} 
         <a link="action-sigup" href="#" class="text-blue-600 underline" @click.prevent="emit('show-signup')">
           {{ $t("Inscris-toi") }}
@@ -77,4 +77,5 @@ async function handleGoogle () {
 
 // Email/Password Login
 const { login, usernameField, password } = useLogin('username')
+const { closeAllModals } = useModalsState()
 </script>

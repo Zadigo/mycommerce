@@ -1,5 +1,5 @@
-// export * from './address'
-// export * from './payment'
+export * from './address'
+export * from './payment'
 
 // import type { DefaultClotheSize } from '~/data/constants/constants'
 // import type { Nullable, ProductNode } from '../..'

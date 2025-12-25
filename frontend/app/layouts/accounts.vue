@@ -1,7 +1,7 @@
 <template>
   <section id="account">
     <!-- Navbar -->
-    <NavbarBase />
+    <navbar-base />
 
     <div class="mx-auto px-10">
       <div class="grid grid-cols-12 grid-rows-1 gap-2 my-10">
@@ -46,7 +46,7 @@ const cookieSessionId = useCookie('sessionId')
 const fireStore = useFirestore()
 
 const { getProfile, userId } = useUser<Profile>()
-const profile = await getProfile(userId.value)
+const profile = await getProfile('/auth/v1/profile')
 
 if (isDefined(profile)) {
   const userRef = doc(fireStore, 'users', cookieSessionId.value)

@@ -2,7 +2,15 @@ import { doc, updateDoc } from 'firebase/firestore'
 import { CARTSESSIONNAME } from '~/composables/use'
 import type { Arrayable, BaseSizeSet, CartItem, CartSessionData, ProductNode, Undefineable } from '~/types'
 
-export const useCartComposable = createGlobalState(() => {
+/**
+ * Composable for managing the shopping cart.
+ * This composable provides methods to add, remove,
+ * and manage items in the cart, as well as syncing
+ * the cart state with Firestore.
+ * @param sizeSelected - Optional ref to track if size is selected
+ * @return Cart management methods and state
+ */
+export const useCartComposable = createGlobalState((sizeSelected?: Ref<boolean>) => {
   const _cart = ref<Arrayable<CartItem>>([])
   const lastProduct = computed(() => _cart.value[_cart.value.length - 1] || null)
   const isInitialized = ref(false)
@@ -11,7 +19,7 @@ export const useCartComposable = createGlobalState(() => {
   const freeDeliveryTarget = reactify((total: number = 0, threshold: number = 50.00) => {
     return total >= threshold ? 0 : threshold - total
   })
-
+  
   const defaultReturn = {
     docRef: null,
     cartSessionId: ref(''),
@@ -23,7 +31,7 @@ export const useCartComposable = createGlobalState(() => {
     syncError,
     freeDeliveryTarget,
     createItem: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { },
-    removeProduct: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { },
+    removeProduct: async (_cartItem: CartItem): Promise<void> => { },
     reduceQuantity: async (_product: Undefineable<ProductNode>, _size: Undefineable<BaseSizeSet>): Promise<void> => { },
     clearCart: async (): Promise<void> => { }
   }
@@ -118,15 +126,34 @@ export const useCartComposable = createGlobalState(() => {
   }
 
   // Create or increment cart item
-  async function _createItem(product: Undefineable<ProductNode>, size: Undefineable<BaseSizeSet>, callback?: (item: CartItem) => void): Promise<void> {
+  async function _createItem(product: Undefineable<ProductNode>, size: Undefineable<BaseSizeSet>, successCallback?: (items: Ref<Arrayable<CartItem>>) => void, errorCallback?: (message: string) => void): Promise<void> {
     if (!isDefined(product) || !isDefined(size)) {
       console.warn('Product or size is undefined')
+      if (isDefined(errorCallback)) {
+        errorCallback('Product or size is undefined')
+      }
       return
     }
 
     if (!_hasSize(product, size)) {
       console.warn('Product does not have the specified size')
+      if (isDefined(errorCallback)) {
+        errorCallback('Product does not have the specified size')
+      }
       return
+    }
+
+    // If a ref is passed to track size selection state
+    // then we check to see if size is selected in order
+    // to prevent adding to cart without size selection
+    if (isDefined(sizeSelected)) {
+      if (!sizeSelected.value) {
+        console.warn('Size not selected, cannot add to cart')
+        if (isDefined(errorCallback)) {
+          errorCallback('Please select a size before adding to cart')
+        }
+        return
+      }
     }
 
     const existingItem = _findCartItem(product, size)
@@ -151,10 +178,10 @@ export const useCartComposable = createGlobalState(() => {
       }
 
       _cart.value.push(newItem)
+    }
 
-      if (isDefined(callback)) {
-        callback(newItem)
-      }
+    if (isDefined(successCallback)) {
+      successCallback(_cart)
     }
   }
 
@@ -213,21 +240,75 @@ export const useCartComposable = createGlobalState(() => {
   const clearCart = useThrottleFn(_clearCart, 300)
 
   return {
+    /**
+     * Reference to the Firestore cart document
+     */
     docRef,
+    /**
+     * Current cart session ID (from cookie and Firestore)
+     * @default ''
+     */
     cartSessionId,
+    /**
+     * Current cart session data from Firestore (a cart session can
+     * be defined as the actions and state of a user's cart stored in Firestore
+     * during their shopping session)
+     * @default null
+     */
     cartSession,
+    /**
+     * Current cart items
+     * @default []
+     */
     cart,
+    /**
+     * Last added product in the cart
+     * @default null
+     */
     lastProduct,
+    /**
+     * Whether the cart has been initialized from Firestore
+     * @default false
+     */
     isInitialized,
+    /**
+     * Whether the cart is currently syncing with Firestore
+     * @default false
+     */
     isSyncing,
+    /**
+     * Error message from the last sync attempt, if any
+     * @default null
+     */
     syncError,
+    /**
+     * Calculates the remaining amount needed to reach free delivery threshold
+     * @param total - Current cart total
+     * @param threshold - Free delivery threshold
+     * @return Amount remaining to reach free delivery
+     */
     freeDeliveryTarget,
+    /**
+     * Adds a product to the cart or increments its quantity
+     * @param product - The product to add
+     * @param size - The size of the product
+     */
     createItem,
     /**
      * Removes a product entirely from the cart
+     * @param product - The product to remove
+     * @param size - The size of the product
      */
     removeProduct,
+    /**
+     * Reduces the quantity of a product in the cart by one
+     * @param product - The product to reduce quantity for
+     * @param size - The size of the product
+     */
     reduceQuantity,
+    /**
+     * Clears all items from the cart
+     */
     clearCart
   }
 })

@@ -31,10 +31,12 @@ function handleReset() {
     showSignup.value = false
   } else {
     showLoginDrawer.value = false
-    
-    setTimeout(() => {
-      showSignup.value = false
-    }, 1000)
+
+    useTimeout(1000, {
+      callback: () => {
+        showSignup.value = false
+      }
+    })
   }
 }
 
@@ -42,7 +44,7 @@ function handleReset() {
  * Syncing
  */
 
-const {  sessionId } = await useSession()
+const { sessionId } = useSession()
 const { customHandleError } = useErrorHandler()
 const { $client } = useNuxtApp()
 

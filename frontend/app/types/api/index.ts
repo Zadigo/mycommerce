@@ -1,5 +1,4 @@
 import type { Nullable } from '..'
-import type { ProductApi } from './shop'
 
 export interface BaseApiResponse<T> {
   count: number
@@ -17,10 +16,6 @@ export interface _DatabaseObject {
   id: number
 }
 
-/**
- * @todo Remove `Product`
-*/
-export type MaybeProduct = ProductApi | MaybeRef<ProductApi | undefined> | undefined
-
-export type * from './feed'
+export type * from './cart'
+export type * from './shop'
 export type * from './accounts'

@@ -1,9 +1,8 @@
-import type { MaybeType } from '~/types'
+import type { ExtendedRouteParamsRawGeneric, MaybeType } from '~/types'
 import type { ProductNode } from '~/types/graphql'
 
 export * from './images'
 export * from './items'
-export * from './stock'
 export * from './utils'
 export * from './ws_manager'
 
@@ -35,4 +34,61 @@ export function useImageComponentComposable(product: MaybeType<ProductNode>) {
      */
     imagesComponent
   }
+}
+
+/**
+ * Composable for fetching product details.
+ * This composable fetches the product details from the API
+ * and returns it as a reactive state.
+ */
+const [useProductDetailsComposable, _useProductDetailsComposableStore] = createInjectionState(async () => {
+  const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
+
+  const { data: product, status } = await useFetch<ProductNode>(`/api/products/${id}`, {
+    method: 'GET',
+    immediate: true,
+    onResponseError({ error }) {
+      createError({
+        statusMessage: error?.message,
+        statusCode: 404
+      })
+    }
+  })
+
+  const isLoading = computed(() => status.value !== 'success')
+  const numberOfImages = computed(() => isDefined(product) ? product.value.node.productImages.length : 0)
+  const hasColorVariants = computed(() => isDefined(product) ? product.value.node.colorVariants.length > 0 : false)
+
+  return {
+    /**
+     * Product data fetched from the API
+     * @default undefined
+     */
+    product,
+    /**
+     * Whether the product is currently being loaded
+     * @default true
+     */
+    isLoading,
+    /**
+     * Number of images associated with the product
+     * @default 0
+     */
+    numberOfImages,
+    /**
+     * Whether the product has color variants
+     * @default false
+     */
+    hasColorVariants
+  }
+})
+
+export { useProductDetailsComposable }
+
+export function useProductDetailsComposableStore() {
+  const store = _useProductDetailsComposableStore()
+  if (!isDefined(store)) {
+    throw new Error('useProductDetailsComposableStore must be used within a useProductDetailsComposable context')
+  }
+  return store
 }

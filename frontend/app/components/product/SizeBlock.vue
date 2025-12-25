@@ -21,9 +21,4 @@ import type { BaseSizeSet, ProductNode, Undefineable } from '~/types'
 
 const props = defineProps<{ product: ProductNode, selectedSize: Undefineable<BaseSizeSet> }>()
 const emit = defineEmits<{ 'select-size': [size: BaseSizeSet] }>()
-
-// const cartStore = useCart()
-// const { userSelection } = storeToRefs(cartStore)
-
-// const { selectedSize, selectSize } = useSizeSelection(props.product)
 </script>

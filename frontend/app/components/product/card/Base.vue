@@ -9,7 +9,7 @@
     </client-only>
     
     <!-- Carousel -->
-    <product-card-carousel :product="product" :index="index" :is-hovered="isHovered" :show-carousel="showCarousel" @has-navigated="emit('has-navigated', [index, product])" />
+    <product-card-carousel :product="product" :index="index" :is-hovered="isHovered" :show-carousel="showCarousel" @has-navigated="(index) => selectProductEvent(index)" />
     
     <!-- Cart -->
     <product-card-cart :product="product" :is-hovered="isHovered" :show-cart="showCart" />
@@ -18,7 +18,7 @@
     <div v-if="showPrices" class="mt-4 flex justify-between align-top gap-5">
       <div id="price">
         <h3 class="text-sm text-gray-700">
-          <nuxt-link-locale  id="link-product-card-info" :to="`/shop/${product.node.id}`" @click="emit('has-navigated', [index, product])">
+          <nuxt-link-locale  id="link-product-card-info" :to="`/shop/${product.node.id}`" @click="selectProductEvent(index)">
             <span aria-hidden="true" class="absolute inset-0" />
             {{ product.node.name }}
           </nuxt-link-locale >
@@ -43,7 +43,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useAnalyticsCallback } from '~/composables/use/analytics'
 import type { ProductNode } from '~/types'
 
 const props = defineProps<{
@@ -59,11 +58,13 @@ const props = defineProps<{
 // hosting this component that a navigation occured. This
 // is useful for Google Analytics for example or for passing
 // information on a product on which the link was clicked
-const emit = defineEmits<{ 'has-navigated': [data: (number | ProductNode)[]] }>()
+const emit = defineEmits<{ 'has-navigated': [index: number] }>()
 
+/**
+ * Analytics
+ */
 
-// const { gtag } = useGtag()
-// const { triggerEvent } = useAnalyticsCallback(props.product, props.index)
+const { selectProductEvent } = useGoogleAnalyticsCallbacks(props.product)
 
 /**
  * Like/Wishlist

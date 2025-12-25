@@ -38,7 +38,7 @@
         </div>
 
         <!-- Products -->
-        <cart-iterator class="mt-2 mb-5" @edit-product="handleOpenProductEdition" />
+        <cart-iterator class="mt-2 mb-5" :is-editable="true" />
 
         <div class="flex justify-between align-center py-4">
           <span class="font-light">{{ $t('Total (TVA comprise)') }}</span>
@@ -52,7 +52,7 @@
             </nuxt-link-locale>
           </volt-button>
 
-          <volt-button v-else id="action-login-cart" rounded @click="showCartDrawer=false, showLoginDrawer=true">
+          <volt-button v-else id="action-login-cart" rounded @click="closeAllModals(({ login }) => { login.value = true })">
             {{ $t('Passer commande') }}
           </volt-button>
         </div>
@@ -70,7 +70,7 @@
             {{ $t('Empty cart text') }}
           </p>
 
-          <volt-button @click.prevent="handleCartButtonRedirection">
+          <volt-button @click.prevent="routerLink('/shop/collection/novelties')">
             <nuxt-link-locale id="link-collections-cart" to="/collections/all">
               {{ $t('Découvrir') }}
             </nuxt-link-locale>
@@ -86,10 +86,9 @@ import type { CartItem } from '~/types'
 
 const emit = defineEmits<{ 'edit-product': CartItem }>()
 
-const toLocalePath = useLocalePath()
-
-const showCartDrawer = useState<boolean>('showCartDrawer')
-const showLoginDrawer = useState<boolean>('showLoginDrawer')
+/**
+ * Cart
+ */
 
 const { cartSession, freeDeliveryTarget } = useCartComposable()
 
@@ -106,25 +105,12 @@ const remainingForFreeDelivery = freeDeliveryTarget(cartSession?.data.value?.tot
 
 const { isAuthenticated } = useUser()
 
-const router = useRouter()
+/**
+ * Modals
+ */
 
-// Handles the redirection to the correct page
-// if the user clicks on the discover button
-// in the cart modal
-function handleCartButtonRedirection () {
-  showCartDrawer.value = false
-  router.push(toLocalePath('/shop/collection/novelties'))
-}
+const showCartDrawer = useState<boolean>('showCartDrawer')
+const { routerLink } = useModalStateNavigation(showCartDrawer)
 
-const cartStore = useCart()
-const { currentEditedProduct, showEditProductDrawer } = storeToRefs(cartStore)
-
-// Handle the opening or the closing of
-// the product edition dialog by ensuring
-// that cartDrawer is closed
-function handleOpenProductEdition (editedProduct: CartItem) {
-  currentEditedProduct.value = editedProduct
-  showCartDrawer.value = false
-  showEditProductDrawer.value = true
-}
+const { closeAllModals } = useModalsState()
 </script>

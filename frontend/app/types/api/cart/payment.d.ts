@@ -1,9 +1,8 @@
 import type { Nullable } from '~/types'
 
-// TODO:: Rename to DefaultPaymentProviders
-export type PaymentType = 'Stripe' | 'Klarna'
+export type DefaultPaymentProviders = 'Stripe' | 'Klarna'
 
-export interface NewIntentAPIResponse {
+export interface PaymentIntentApiResponse {
   intent: Nullable<string>
   client: Nullable<string>
   message: string
@@ -47,4 +46,50 @@ export interface StripeTokenResponse {
     type: string
     used: boolean
   }
+}
+
+export interface EstimatedDeliveryDate {
+	delivery_date: string
+	minDelivery_date: string
+	maxDelivery_date: string
+}
+
+// interface ShopRunbackValues {
+// 	is_link_order_return_active: boolean
+// 	order_return_type: {}
+// 	order_return_link?: any
+// 	order_return_number_of_day: number
+// 	url: string
+// }
+
+type ShippingNames = 'Relais Colis'
+  | 'Colipost Internet' 
+  | 'Colipost DOMTOM'
+  | 'En Magasin'
+  | 'Inpost' 
+  | 'Chronopost' 
+  | 'Mondial Relay' 
+  | 'DHL' 
+  | 'UPS' 
+  | 'GLS' 
+  | 'La Poste'
+
+export interface DeliveryOption {
+	id: string
+	name: ShippingNames
+	description: string
+	estimated_arrival_time?: any
+	default: boolean
+	shipping_cost: string
+	selected: boolean
+	is_relais: boolean
+	is_home: boolean
+	is_store: boolean
+	is_inpost: boolean
+	is_managed_by_kbrw: boolean
+	is_cash_on_delivery: boolean
+	is_tAH: boolean
+  estimated_delivery_date: EstimatedDeliveryDate
+	shipping_costValue: number
+  // shop_runback_values: ShopRunbackValues
 }

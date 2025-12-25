@@ -15,6 +15,23 @@ export interface DefaultSocialLinks {
   icon: string
 }
 
+export interface FooterSection {
+  name: string
+  links: {
+    name: string
+    to: string
+  }[]
+}
+
+export interface FooterLinks {
+  socials: {
+    name: string
+    url: string
+    icon: string | null
+  }[],
+  sections: FooterSection[]
+}
+
 export const socialLinks: DefaultSocialLinks[] = [
   {
     name: "Facebook",
@@ -32,23 +49,6 @@ export const socialLinks: DefaultSocialLinks[] = [
     icon: "twitter"
   }
 ]
-
-export interface FooterSection {
-  name: string
-  links: {
-    name: string
-    to: string
-  }[]
-}
-
-export interface FooterLinks {
-  socials: {
-    name: string
-    url: string
-    icon: string | null
-  }[],
-  sections: FooterSection[]
-}
 
 export const footerLinks: FooterLinks = {
   socials: socialLinks,

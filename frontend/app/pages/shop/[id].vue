@@ -61,7 +61,14 @@ const AsyncBaseRecommendationBlock = defineAsyncComponent({
  * Get Product
  */
 
-const { product, isLoading } = await useProductDetailComposable()
+const { product } = await useProductDetailsComposable()
+
+/**
+ * Analytics
+ */
+
+const { productEvent } = useGoogleAnalyticsCallbacks(product)
+onMounted(async () => { await productEvent() })
 
 /**
  * Image Zoom
@@ -73,8 +80,8 @@ const { selectImage } = useImageZoomComposable()
  * Stock
  */
 
-const { stockState } = useProductStockComposable(product, isLoading) 
-provide('stockState', stockState)
+// const { stockState } = useProductStockComposable(product, isLoading) 
+// provide('stockState', stockState)
 
 /**
  * Images Component
@@ -102,7 +109,7 @@ useSeoMeta({
   titleTemplate: '%s | E-Woman'
 })
 
-if (product.value) {
+if (isDefined(product)) {
   useSchemaOrg(defineProduct({
     "@type": 'Product',
     "@id": `https://example.com/products/${product.value.node.slug}`,

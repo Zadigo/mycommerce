@@ -1,13 +1,13 @@
 import { updateDoc } from 'firebase/firestore'
 import type { CartItem } from '~/types'
 
-type PromiseReturn = (string | number)[]
+type PromiseReturn = (string | number | undefined)[]
 
 type PromiseType<T> = () => Promise<T>
 
-const [useEditCartItemComposable, _useEditCartItemStore] = createInjectionState(() => {
+export const useEditCartItemComposable = createGlobalState(() => {
   const { docRef, cartSession, isInitialized, cart } = useCartComposable()
-  const editedCartItem = ref<CartItem>()
+  const editedCartItem = refAutoReset<CartItem | undefined>(undefined, 1*60*1000) // 1 minute
   const operations = ref <PromiseType<PromiseReturn>[]>([])
   const isSyncing = ref(false)
 
@@ -40,7 +40,7 @@ const [useEditCartItemComposable, _useEditCartItemStore] = createInjectionState(
       const promise = new Promise<PromiseReturn>((resolve) => {
         isSyncing.value = true
         const newQuantity = _addQuantity()
-        resolve([editedCartItem.value.product.id, newQuantity])
+        resolve([editedCartItem.value?.product.id || undefined, newQuantity])
       })
   
       _createTask(() => promise)
@@ -52,7 +52,7 @@ const [useEditCartItemComposable, _useEditCartItemStore] = createInjectionState(
       const promise = new Promise<PromiseReturn>((resolve) => {
         isSyncing.value = true
         const newQuantity = _decreaseQuantity()
-        resolve([editedCartItem.value.product.id, newQuantity])
+        resolve([editedCartItem.value?.product.id || undefined, newQuantity])
       })
   
       _createTask(() => promise)
@@ -99,11 +99,3 @@ const [useEditCartItemComposable, _useEditCartItemStore] = createInjectionState(
     return defaultReturn
   }
 })
-
-export { useEditCartItemComposable }
-
-export function useEditCartItemStore() {
-  const store = _useEditCartItemStore()
-  if (!store) throw new Error('useEditCartItemStore must be used after calling useEditCartItemComposable')
-  return store
-}

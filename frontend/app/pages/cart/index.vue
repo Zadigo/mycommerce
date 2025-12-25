@@ -6,11 +6,11 @@
       </h2>
 
       <template v-if="deliveryOptions.length > 0">
-        <volt-label v-for="(delivery, i) in deliveryOptions" :key="delivery.id" :for="`delivery-${i}`">
-          <volt-radio-button v-model="shippingStore.newShippingInfo.delivery" :value="delivery.id" />
+        <volt-label v-for="(delivery, i) in deliveryOptions" :key="delivery.id" :label-for="delivery.id">
+          <volt-radio-button v-model="shipping" :value="delivery.id" :id="delivery.id" />
         </volt-label>
       </template>
-      <volt-skeleton v-else height="30px" class="mt-5" />
+      <volt-skeleton v-else height="3rem" />
     </template>
 
     <template #footer>
@@ -21,8 +21,7 @@
 
 <script lang="ts" setup>
 import { useStorage } from '@vueuse/core'
-import type { DeliveryOption } from '~/types'
-import type { NewIntentAPIResponse } from '~/types/api/cart/payment'
+import type { PaymentIntentApiResponse, DeliveryOption } from '~/types/api/cart/payment'
 
 definePageMeta({
   title: 'Cart: Index',
@@ -33,21 +32,21 @@ definePageMeta({
 const { t } = useI18n()
 const { customHandleError } = useErrorHandler()
 
-const shippingStore = useShippingInfo()
-const { $client } = useNuxtApp()
+const { shipping } = useShippingComposable()
 
 // const { gtag } = useGtag()
 
 const deliveryOptions = useStorage<DeliveryOption[]>('deliveryOptions', [])
-const paymentIntent = useCookie<NewIntentAPIResponse>('paymentIntent')
-
+const paymentIntent = useCookie<PaymentIntentApiResponse>('paymentIntent')
+  
 const { sessionId } = useSession()
-
+  
 /**
  * Get the delivery options from which the
  * user can choose from in order to deliver
  * the products 
  */
+const { $client } = useNuxtApp()
 const { data } = await useAsyncData('delivery-options', async () => {
   return await Promise.all(
     [
@@ -56,7 +55,7 @@ const { data } = await useAsyncData('delivery-options', async () => {
        * intent ID that will be used to confirm the payment
        * on the actual payment page
        */
-      await $client<NewIntentAPIResponse>('/api/v1/orders/intent', {
+      $client<PaymentIntentApiResponse>('/api/v1/orders/intent', {
         method: 'POST',
         baseURL: useRuntimeConfig().public.prodDomain,
         body: { session_id: sessionId.value },
@@ -64,7 +63,7 @@ const { data } = await useAsyncData('delivery-options', async () => {
           customHandleError(error)
         }
       }),
-      await $client<DeliveryOption[]>('/api/v1/orders/delivery-options', {
+      $client<DeliveryOption[]>('/api/v1/orders/delivery-options', {
         method: 'GET',
         baseURL: useRuntimeConfig().public.quartProdUrl,
         onRequestError() {
@@ -110,6 +109,10 @@ onMounted(async () => {
   //   shipping: 1
   // })
 })
+
+/**
+ * SEO
+ */
 
 useHead({
   title: t('Options de livraison'),

@@ -7,12 +7,12 @@
             {{ $t("Adresse de livraison") }}
           </h2>
 
-          <volt-input-text v-model="newShippingInfo.address_line" class="w-full" placeholder="Addresse" autocomplete="street-address" />
-          <volt-input-text v-model="newShippingInfo.city" class="w-full my-1" placeholder="Ville" autocomplete="address-level1" />
+          <volt-input-text v-model="shippingInfo.address_line" class="w-full" placeholder="Addresse" autocomplete="street-address" />
+          <volt-input-text v-model="shippingInfo.city" class="w-full my-1" placeholder="Ville" autocomplete="address-level1" />
 
           <div class="flex justify-between gap-1">
-            <volt-input-text v-model="newShippingInfo.zip_code" class="w-full" placeholder="Zip code" autocomplete="postal-code" />
-            <volt-input-text v-model="newShippingInfo.country" autocomplete="country" />
+            <volt-input-text v-model="shippingInfo.zip_code" class="w-full" placeholder="Zip code" autocomplete="postal-code" />
+            <volt-input-text v-model="shippingInfo.country" autocomplete="country" />
           </div>
 
           <volt-divider class="my-10" />
@@ -22,17 +22,17 @@
           </h2>
 
           <div class="flex justify-between gap-1">
-            <volt-input-text v-model="newShippingInfo.firstname" class="w-full" placeholder="Nom" autocomplete="family-name" />
-            <volt-input-text v-model="newShippingInfo.lastname" class="w-full" placeholder="Prénom" autocomplete="given-name" />
+            <volt-input-text v-model="shippingInfo.firstname" class="w-full" placeholder="Nom" autocomplete="family-name" />
+            <volt-input-text v-model="shippingInfo.lastname" class="w-full" placeholder="Prénom" autocomplete="given-name" />
           </div>
 
           <div class="flex justify-between gap-2 my-2">
-            <volt-input-text v-model="newShippingInfo.email" class="w-full" type="email" placeholder="Email" autocomplete="email" />
-            <volt-input-text v-model="newShippingInfo.telephone" class="w-full" placeholder="Téléphone" autocomplete="tel" />
+            <volt-input-text v-model="shippingInfo.email" class="w-full" type="email" placeholder="Email" autocomplete="email" />
+            <volt-input-text v-model="shippingInfo.telephone" class="w-full" placeholder="Téléphone" autocomplete="tel" />
           </div>
 
           <volt-label label-for="create-address-set" class="mt-2">
-            <volt-toggle-switch id="create-address-set" v-model="saveShipmentDetails" />
+            <volt-toggle-switch id="create-address-set" v-model="saveDetails" />
             <template #label>
               {{ $t('Sauvegarder mes données') }}
             </template> 
@@ -42,15 +42,13 @@
     </template>
 
     <template #footer>
-      <!-- @navigate:next-page="handleNewPaymentIntent" -->
       <CartNavigationCardFooter next-page="/cart/payment" @navigate:next-page="handleUpdatePaymentIntent" />
     </template>
   </volt-card>
 </template>
 
 <script lang="ts" setup>
-import { useLocalStorage } from '@vueuse/core'
-import type { NewIntentAPIResponse } from '~/types/api/cart/payment'
+import type { PaymentIntentApiResponse } from '~/types'
 
 definePageMeta({
   title: 'Cart: Shipment',
@@ -58,13 +56,7 @@ definePageMeta({
   middleware: ['cart']
 })
 
-/**
- * New Address form
- */
-
 // const { gtag } = useGtag()
-const { $client } = useNuxtApp()
-
 
 // TODO: G-Analytics
 // gtag('event', 'add_shipping_info', {
@@ -86,64 +78,40 @@ const { $client } = useNuxtApp()
 //   })
 // })
 
-const saveShipmentDetails = ref(false)
-
-const shippingStore = useShippingInfo()
-const { newShippingInfo } = storeToRefs(shippingStore)
-
 /**
- * Payment Intent from localStorage
+ * New Address form
  */
 
-const paymentIntent = useLocalStorage<NewIntentAPIResponse>('paymentIntent', null, {
-  deep: true,
-  serializer: {
-    read(raw) {
-      return JSON.parse(raw)
-    },
-    write(value) {
-      return JSON.stringify(value)
-    }
-  }
-})
-
-/**
- * Create new Address
- */
-
-const { execute } = useAsyncData('intent', () => $fetch('/api/v1/address-set/create', {
-  method: 'POST',
-  baseURL: useRuntimeConfig().public.prodDomain,
-  body: newShippingInfo.value,
-  immediate: false
-}))
+const { shippingInfo, saveDetails } = useShippingComposable()
 
 /**
  * Payment Intent update
  */
 
+const { $client } = useNuxtApp()
+
+const paymentIntent = useState<PaymentIntentApiResponse>('paymentIntent')
+
 const { customHandleError } = useErrorHandler()
-const { sessionId } = await useSession()
+const { sessionId } = useSession()
 
 async function handleUpdatePaymentIntent() {
   
   if (isDefined(sessionId)) {
-    newShippingInfo.value.session_id = sessionId.value
+    shippingInfo.value.session_id = sessionId.value
 
     await $client('/api/v1/orders/intent/update', {
       method: 'POST',
       baseURL: useRuntimeConfig().public.prodDomain,
       body: {
         intent: paymentIntent.value.intent,
-        ...newShippingInfo.value
+        ...shippingInfo.value
       },
       onRequestError({ error }) {
         customHandleError(error)
       }
     })
 
-    await execute()
-  
     // TODO: G-Analytics
     // useTrackEvent('add_shipping_info', {
     //   transaction_id: cartStore.sessionId,
@@ -154,13 +122,9 @@ async function handleUpdatePaymentIntent() {
   }
 }
 
-// onBeforeRouteLeave((to, from, next) => {
-//   if (to.path === '/cart/payment') {
-//     if (saveShipmentDetails.value) {
-//       console.log('Save new address set')
-//     }
-//   }
-// })
+/**
+ * SEO
+ */
 
 useHead({
   title: 'Cart: Shipment',

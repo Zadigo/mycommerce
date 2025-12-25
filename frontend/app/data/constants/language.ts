@@ -7,5 +7,4 @@ export const countries = [
   'Réunion'
 ] satisfies readonly BaseCountries[]
 
-
 export const availableLocales = ['fr', 'en', 'es'] satisfies readonly Languages[]

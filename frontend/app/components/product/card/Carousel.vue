@@ -6,7 +6,7 @@
 
     <!-- {{ isLargeScreen }} -->
 
-    <nuxt-link-locale id="link-product-carousel" :to="`/shop/${product.node.id}`" @click="emit('has-navigated', [index, product])">
+    <nuxt-link-locale id="link-product-carousel" :to="`/shop/${product.node.id}`" @click="emit('has-navigated', index)">
       <img v-if="!isLoading && isReady" :src="state.original" :alt="state.name" class="self-center aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-full">
       <volt-skeleton v-else class="min-h-100 rounded-md" />
     </nuxt-link-locale>
@@ -39,7 +39,7 @@ const { index, product, isHovered, showCarousel = false } = defineProps<{
  * is useful for Google Analytics for example or for passing
  * information on a product on which the link was clicked
  */
-const emit = defineEmits<{ 'has-navigated': [data: (number | ProductNode)[]] }>()
+const emit = defineEmits<{ 'has-navigated': [index: number] }>()
 
 const cleanImages = useArrayMap(product.node.productImages, (image) => {
   // if (image.original.startsWith('/')) {

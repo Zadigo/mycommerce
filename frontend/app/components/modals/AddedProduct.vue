@@ -37,7 +37,7 @@
         <volt-skeleton v-else height="300px" class="w-full mb-10" />
 
         <!-- Recommendations -->
-        <base-recommendations :quantity="20" :columns="3" :load-cache="true" :show-carousel="false" :show-like-button="false" :show-cart="false" :show-prices="false" />
+        <base-recommendations :quantity="20" :columns="2" :load-cache="true" :show-carousel="false" :show-like-button="false" :show-cart="false" :show-prices="false" />
       </div>
 
       <ModalsSkeletonLoader v-else />
@@ -49,7 +49,16 @@
 const toLocalePath = useLocalePath()
 const router = useRouter()
 
+/**
+ * Cart
+ */
+
 const { cart, lastProduct } = useCartComposable()
+
+
+/**
+ * Modals
+ */
 
 const showLoginDrawer = useState<boolean>('showLoginDrawer')
 const toggleLoginDrawer = useToggle(showLoginDrawer)
@@ -59,6 +68,10 @@ const toggleShowAddedProductDrawer = useToggle(showAddedProductDrawer)
 
 const showcartDrawer = useState<boolean>('showCartDrawer')
 const toggleShowcartDrawer = useToggle(showcartDrawer)
+
+/**
+ * User
+ */
 
 const { isAuthenticated } = useUser()
 

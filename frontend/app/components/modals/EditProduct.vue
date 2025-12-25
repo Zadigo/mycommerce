@@ -1,7 +1,7 @@
 <template>
-  <volt-drawer id="dialog-edit-product" v-model:open="showEditProductDrawer">
+  <volt-drawer id="dialog-edit-product" v-model:visible="showEditProductDrawer" :block-scroll="true" position="right">
     <div v-if="editedCartItem">
-      <volt-button class="mb-2" @click="handleCloseProductEdition">
+      <volt-button class="mb-2" @click="closeAllModals(({ cart }) => { cart.value = true })">
         <icon name="i-fa7-solid:angle-left" />
       </volt-button>
 
@@ -23,9 +23,9 @@
           <p class="font-bold">
             {{ $t('Couleur') }}
           </p>
-          <p>
+          <!-- <p>
             {{ editedCartItem.product.variant.name }}
-          </p>
+          </p> -->
         </div>
 
         <div class="my-4">
@@ -34,7 +34,7 @@
           </p>
 
           <div class="flex gap-2">
-            <product-size-button v-for="size in editedCartItem.product.sizesSet" :key="size.id" :size="size" @select-size="handleSizeSelection" />
+            <!-- <product-size-button v-for="size in editedCartItem.product.sizesSet" :key="size.id" :size="size" @select-size="handleSizeSelection" /> -->
           </div>
         </div>
 
@@ -46,7 +46,7 @@
           <volt-input-number v-model="editedCartItem.quantity" :min="1" :max="999" class="w-[2/4]" />
         </div>
 
-        <volt-button class="w-full" @click="handleCloseProductEdition">
+        <volt-button class="w-full" @click="closeAllModals(({ cart }) => { cart.value = true })">
           {{ $t('Enregistrer') }}
         </volt-button>
       </div>
@@ -59,23 +59,13 @@
 </template>
 
 <script setup lang="ts">
-import type { BaseSizeSet } from '~/types'
+/**
+ * Edition
+ */
 
-const { editedCartItem } = useEditCartItemStore()
+const { editedCartItem } = useEditCartItemComposable()
 
 const showEditProductDrawer = useState<boolean>('showEditProductDrawer')
 
-/**
- * Closes the modal that edits a given product
- */
-function handleCloseProductEdition() {
-  showEditProductDrawer.value = false
-  showCartDrawer.value = true
-}
-
-function handleSizeSelection(size: BaseSizeSet) {
-  if (isDefined(editedCartItem)) {
-    editedCartItem.value.size = size
-  }
-}
+const { closeAllModals, toggleShowEditProductDrawer } = useModalsState()
 </script>

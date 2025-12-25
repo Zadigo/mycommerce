@@ -21,6 +21,7 @@
 
 <script setup lang="ts">
 import { provideSSRWidth } from '@vueuse/core'
+import type { PaymentIntentApiResponse, Undefineable } from './types'
 
 /**
  * Session
@@ -63,6 +64,12 @@ useState('showLoginDrawer', () => false)
 useState('authenticatedCart', () => false)
 useState('showAddedProductDrawer', () => false)
 useState('showEditProductDrawer', () => false)
+
+/**
+ * Other global setups
+ */
+
+useState<Undefineable<PaymentIntentApiResponse>>('paymentIntent', () => undefined)
 
 /**
  * Load Stripe.js

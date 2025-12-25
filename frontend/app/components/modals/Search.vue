@@ -46,10 +46,6 @@ const AsyncRecommendations = defineAsyncComponent({
 
 const showSearchModal = useState<boolean>('showSearchModal')
 
-// const { gtag } = useGtag()
-const { $client } = useNuxtApp()
-const { customHandleError } = useErrorHandler()
-
 /**
  * Search state
  */
@@ -67,7 +63,11 @@ provide(productsSymbol, products)
  * Search watcher
  */
 
-const db = useFirestore()
+// const { gtag } = useGtag()
+
+const { $client } = useNuxtApp()
+const { customHandleError } = useErrorHandler()
+
 const { history, last } = useDebouncedRefHistory(search, { debounce: 5000 })
 const { docRef, session } = useSession()
 

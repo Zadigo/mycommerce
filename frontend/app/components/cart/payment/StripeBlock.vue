@@ -8,16 +8,16 @@
 
     <volt-button @click="handleStripe">
       <v-progress-circular v-if="isLoading" indeterminate />
-      {{ $t('Payer somme', { n: $n(cartStore.cartTotal, 'currency') }) }}
+      {{ $t('Payer somme', { n: $n(cartSession?.total || 0, 'currency') }) }}
     </volt-button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useLocalStorage, useSessionStorage } from '@vueuse/core'
+import { useSessionStorage } from '@vueuse/core'
 import { StripeElement, StripeElements } from 'vue-stripe-js'
 
-import type { NewIntentAPIResponse, PaymentType, StripeTokenResponse } from '~/types'
+import type { DefaultPaymentProviders, PaymentIntentApiResponse, StripeTokenResponse, Undefineable } from '~/types'
 
 interface TokenData {
   session_id: string | null | undefined
@@ -29,9 +29,7 @@ interface TokenData {
 
 const { customHandleError } = useErrorHandler()
 
-const emit = defineEmits<{ 'payment-complete': [blockName: PaymentType] }>()
-
-const cartStore = useCart()
+const emit = defineEmits<{ 'payment-complete': [blockName: DefaultPaymentProviders] }>()
 
 const paymentResponse = useSessionStorage('paymentResponse', null, {
   serializer: {
@@ -44,18 +42,11 @@ const paymentResponse = useSessionStorage('paymentResponse', null, {
   }
 })
 
-const paymentIntent = useLocalStorage<NewIntentAPIResponse>('paymentIntent', null, {
-  deep: true,
-  serializer: {
-    read (raw) {
-      return JSON.parse(raw)
-    },
-    write (value) {
-      return JSON.stringify(value)
-    }
-  }
-})
+/**
+ * Cart
+ */
 
+const { cartSession } = useCartComposable()
 const tokenData = ref<TokenData>({
   session_id: null,
   card: null,
@@ -105,12 +96,14 @@ const stripeKey = computed(() => {
 
 console.log(stripeKey)
 
-const { sessionId } = await useSession()
-
 /**
- * @link https://github.com/ectoflow/vue-stripe-js 
+ * Payment
  */
-async function handleStripe () {
+
+const { sessionId } = useSession()
+
+// https://github.com/ectoflow/vue-stripe-js 
+async function handleStripe() {
   // Test card number: 4242424242424242
   // Test card number: 4000056655665556
   // Test card number: 5200828282828210
@@ -130,11 +123,8 @@ async function handleStripe () {
   }
 }
 
-/**
- * Payment
- */
-
 const { $client } = useNuxtApp()
+const paymentIntent = useState<Undefineable<PaymentIntentApiResponse>>('paymentIntent')
 
 async function handlePayment () {
   try {
@@ -146,7 +136,7 @@ async function handlePayment () {
 
     paymentResponse.value = response
     isLoading.value = false
-    paymentIntent.value = null
+    paymentIntent.value = undefined
 
     emit('payment-complete', 'Stripe')
   } catch (e) {

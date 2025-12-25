@@ -7,7 +7,7 @@
 
     <!-- Products -->
     <template v-if="productsCount > 0" #default>
-      <products-iterator :columns="currentGridSize" @has-navigated="sendAnalytics" />
+      <products-iterator :columns="currentGridSize" />
     </template>
 
     <!-- <template v-else #default>
@@ -49,7 +49,6 @@
 
 <script setup lang="ts">
 import { useIntersectionObserver } from '@vueuse/core'
-import { useProductNavigationAnalytics } from '~/composables/use/analytics'
 import { useHandleGridSize } from '~/composables/use/grid'
 import { productsSymbol } from '~/data/constants/symbols'
 import type { Product } from '~/types'
@@ -70,7 +69,9 @@ provide(productsSymbol, products)
  * Analytics
  */
 
-const { sendAnalytics } = useProductNavigationAnalytics()
+const { viewProductsEvent } = useGoogleAnalyticsCallbacks(undefined, products.value)
+
+onMounted(async () => { await viewProductsEvent() })
 
 /**
  * Grid

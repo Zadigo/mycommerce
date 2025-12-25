@@ -1,5 +1,5 @@
 <template>
-  <volt-button :variant="buttonStyle === 'button' ? 'outlined' : 'text'" :class="buttonClass" size="small" @click="() => emit('select-size', size)">
+  <volt-button :variant="buttonStyle === 'button' ? 'outlined' : 'text'" :class="theme" size="small" @click="() => emit('select-size', size)">
     <icon v-if="!size.availability" name="i-lucide:clock-fading" class="text-warning-500 me-2" />
     {{ size.name }}
   </volt-button>
@@ -18,9 +18,13 @@ const { size, selectedSize, selectable = true, customClass, buttonStyle = 'butto
 
 const emit = defineEmits<{ 'select-size': [size: BaseSizeSet] }>()
 
+/**
+ * Theme
+ */
+
 const isSelected = computed(() => isDefined(selectedSize) ? size.name === selectedSize.name : false)
 
-const buttonClass = computed(() => {
+const theme = computed(() => {
   return [
     {
       'rounded-full border': buttonStyle === 'button',

@@ -1,91 +1,100 @@
-import type { ProductNode } from '~/types'
+import type { Arrayable, ProductNode, Undefineable } from '~/types'
+import type { EventNames } from 'nuxt-ganalytics'
 
-export function useAnalyticsCallback(product: MaybeRef<ProductNode>, index?: number) {
-  const currentProduct = toRef(product)
+/**
+ * A set of Google Analytics callbacks for product-related events
+ * @param product The product to track
+ * @param products A list of products to track
+ */
+export function useGoogleAnalyticsCallbacks(product?: MaybeRef<Undefineable<ProductNode>>, productNodes?: Arrayable<ProductNode>) {
+  const { sendEvent } = useAnalyticsEvent()
 
-  function triggerEvent(eventName: string) {
-    if (isDefined(currentProduct)) {
-      // TODO: G-Analytics
-      // gtag('event', eventName, {
-      //   items: {
-      //     item_id: currentProduct.value?.id,
-      //     item_name: currentProduct.value?.name,
-      //     price: currentProduct.value?.get_price,
-      //     quantity: 1,
-      //     item_brand: null,
-      //     item_category: currentProduct.value?.category,
-      //     item_category2: currentProduct.value?.sub_category,
-      //     item_variant: currentProduct.value?.color,
-      //     index: index,
-      //     item_reference: null
-      //   }
-      // })
-    } else {
-      // Handle case where product is not defined
+  const _product = toValue(product)
+  const _products = toValue(productNodes)
+
+  async function viewProductsEvent(listName?: string) {
+    if (isDefined(_products)) {
+      const items = _products.map((product, idx) => ({
+        index: idx,
+        item_name: product.node.name,
+        item_id: product.node.id,
+        price: product.node.price,
+        item_brand: '',
+        item_category: product.node.category,
+        item_category2: product.node.subCategory,
+        item_category3: product.node.color,
+        item_list_name: listName || ''
+      }))
+
+      await sendEvent(defineAnalyticsEvent('view_item_list', { items }))
     }
   }
 
-  function triggerEventList(products: ProductNode[]) {
-    const items = useArrayMap(products, (product, idx) => ({
-      item_id:  product.node.id,
-      item_name: product.node.name,
-      price: product.node.price,
-      quantity: 1,
-      item_brand: null,
-      item_category: product.node.category,
-      item_category2: product.node.subCategory,
-      item_variant: product.node.color,
-      index: idx,
-      item_reference: null
-    }))
-
-    // TODO: G-Analytics
-    // gtag('event', 'add_to_wishlist', {
-    //   items
-    // })
+  async function productEvent() {
+    if (_product && isDefined(_product)) {
+      await sendEvent(defineAnalyticsEvent('view_item', {
+        items: [
+          {
+            index: 0,
+            item_name: _product.node.name,
+            item_id: _product.node.id,
+            price: _product.node.price,
+            item_brand: '',
+            item_category: _product.node.category,
+            item_category2: _product.node.subCategory,
+            item_category3: _product.node.color
+          }
+        ]
+      }))
+    }
   }
 
-  return {
-    triggerEvent,
-    triggerEventList
+  async function selectProductEvent(index: number, listName?: string) {
+    if (_product && isDefined(_product)) {
+      await sendEvent(defineAnalyticsEvent('select_item', {
+        items: [
+          {
+            index,
+            item_name: _product.node.name,
+            item_id: _product.node.id,
+            price: _product.node.price,
+            item_brand: '',
+            item_category: _product.node.category,
+            item_category2: _product.node.subCategory,
+            item_category3: _product.node.color,
+            item_list_name: listName || ''
+          }
+        ]
+      }))
+    }
   }
-}
 
-export function useProductNavigationAnalytics() {
-  /**
-   * Function that handles and routes navigation events
-   * to Google Analytics
-   * @param data The product that is being navigated to
-   */
-  function sendAnalytics(data: (number | ProductNode)[] | null | undefined) {
-    if (isDefined(data)) {
-      const [id, product] = data
-
-      if (isDefined(product)) {
-        // TODO: G-Analytics
-        // if (product && typeof product === 'object' && 'id' in product) {
-        //   gtag('event',  'select_item',  {
-        //     items: [
-        //       {
-        //         item_id: product.id,
-        //         item_name: product.name,
-        //         price: product.get_price,
-        //         item_brand: null,
-        //         item_category: product.category,
-        //         index: data[0]
-        //       }
-        //     ],
-        //     item_list_name: route.params.id,
-        //     item_list_id: route.params.id,
-        //     currency: 'EUR'
-        //   })
-        // }
-      }
-
+  async function addToCartEvent(index?: number) {
+    if (_product && isDefined(_product)) {
+      await sendEvent(defineAnalyticsEvent('add_to_cart', {
+        currency: 'EUR',
+        value: _product.node.price,
+        items: [
+          {
+            index: index ?? 0,
+            item_name: _product.node.name,
+            item_id: _product.node.id,
+            price: _product.node.price,
+            item_brand: '',
+            item_category: _product.node.category,
+            item_category2: _product.node.subCategory,
+            item_category3: _product.node.color,
+            quantity: 1
+          }
+        ]
+      }))
     }
   }
 
   return {
-    sendAnalytics
+    productEvent,
+    selectProductEvent,
+    viewProductsEvent,
+    addToCartEvent
   }
 }

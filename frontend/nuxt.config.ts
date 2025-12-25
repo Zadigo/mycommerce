@@ -77,6 +77,7 @@ export default defineNuxtConfig({
     '@vueuse/motion',
     '@vueuse/nuxt',
     'nuxt-authentication',
+    'nuxt-ganalytics',
     'nuxt-schema-org',
     'nuxt-vuefire',
     'pinia-plugin-persistedstate',
@@ -188,6 +189,16 @@ export default defineNuxtConfig({
     refreshEndpoint: '/auth/v1/token/refresh/',
     verifyEndpoint: '/auth/v1/token/verify/'
   },
+
+  ganalytics: {
+    ga4: {
+      id: 'G-CVKFG2XPVG',
+      enableDebug: true
+    },
+    gtm: {
+      id: 'GTM-TJZFHM5'
+    }
+  }
 
   // nitro: {
   //   storage: {

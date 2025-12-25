@@ -9,19 +9,20 @@
 
       <volt-divider v-if="hasSelectedPaymentMethod" class="my-5" />
 
+      <!-- Blocks -->
       <CartPaymentStripeBlock v-if="stripeSelected" @payment-complete="callbackPaymentComplete" />
       <CartPaymentKlarnaBlock v-else-if="klarnaSelected" />
 
       <div class="flex gap-1 items-center justify-center mt-10">
-        <NuxtImg src="/cards/mastercard.svg" height="30" width="30" />
-        <NuxtImg src="/cards/visa.png" height="30" width="30" />
+        <nuxt-img src="/cards/mastercard.svg" height="30" width="30" />
+        <nuxt-img src="/cards/visa.png" height="30" width="30" />
       </div>
     </template>
   </volt-card>
 </template>
 
 <script lang="ts" setup>
-import type { PaymentType } from '~/types'
+import type { DefaultPaymentProviders } from '~/types'
 
 definePageMeta({
   title: 'Cart: Payment',
@@ -41,19 +42,11 @@ const stripeSelected = computed(() => hasSelectedPaymentMethod.value && selected
 const klarnaSelected = computed(() => hasSelectedPaymentMethod.value && selectedPaymentMethod.value === 'Klarna')
 
 /**
- * Executes card tokenization and initiates the
- * payment on the backend side
- */
-function handlePaymentType(cardType: string) {
-  selectedPaymentMethod.value = cardType
-}
-
-/**
  * Callback when the payment was completed
  * successfully
  * @param blockName The payment block that was used (e.g. Stripe, Klarna, etc.)
  */
-function callbackPaymentComplete(blockName: PaymentType) {
+function callbackPaymentComplete(blockName: DefaultPaymentProviders) {
 // TODO: G-Analytics
 // gtag('event', 'add_payment_info', {
   //   transaction_id: cartStore.sessionId,
