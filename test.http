@@ -1,15 +1,7 @@
-POST http://127.0.0.1:8000/v1/graphql/ HTTP/1.1
-
+POST http://127.0.0.1:8007/auth/v1/login HTTP/1.1
 Content-Type: application/json
-Accept: application/json
 
 {
-  "query": "
-        query {
-            recommendations(productName: \"Trapèze\", quantity: 4) {
-                id
-                name
-            }
-        }
-      "
+  "username": "Zadigo",
+  "password": "touparet"
 }
