@@ -6,11 +6,11 @@ from cart.models import Cart
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
     list_display = [
-        'product', 'price',
+        'session_id', 'total',
         'is_stale', 'is_paid_for',
         'is_anonymous'
     ]
-    search_fields = ['session_id', 'product__name']
+    search_fields = ['session_id']
     date_hiearchy = 'created_on'
     list_filter = ['is_anonymous', 'is_paid_for', 'is_stale']
     actions = ['remove_is_paid_for']

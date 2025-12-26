@@ -1,3 +1,4 @@
+import re
 from cart.models import Cart
 from cart.validators import validate_quantity
 from django.db.models import Count, Sum
@@ -6,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from orders.models import Product
 from rest_framework import fields
 from rest_framework.serializers import Serializer
+from cart import tasks
 
 
 def cart_statistics(queryset: BaseManager[Cart]):
@@ -114,23 +116,27 @@ class ValidateCart(Serializer):
     """Validates the data used to create a
     new cart object in the database"""
 
-    product = fields.JSONField()
-    session_id = fields.CharField(allow_null=True)
-    size = fields.CharField(write_only=True, default='Unique')
-
-    results = fields.JSONField(read_only=True)
-    statistics = fields.JSONField(read_only=True)
-    total = fields.FloatField(read_only=True)
+    id = fields.IntegerField(read_only=True)
+    session_id = fields.CharField(required=True)
+    items = fields.JSONField(write_only=True)
 
     def create(self, validated_data):
         request = self._context['request']
-        return Cart.objects.rest_api_add_to_cart(request, **validated_data)
+
+        instance = Cart.objects.create(
+            session_id=validated_data['session_id'],
+            items=validated_data['items']
+        )
+        tasks.calculate_total.apply_async(
+            args=[instance.id],
+            countdown=10
+        )
+
+        return instance
 
     def update(self, instance, validated_data):
-        product_id = validated_data['product']['id']
-        if instance.id == product_id:
-            if instance.size == validated_data['size']:
-                pass
+        instance.items = validated_data['items']
+        tasks.calculate_total.apply_async(args=[instance.id], countdown=5)
         return instance
 
 
@@ -152,36 +158,3 @@ class DeleteFromCartSerializer(Serializer):
             item.delete()
 
         return qs
-
-
-class ValidateIncreaseDecreaseSerializer(Serializer):
-    product = ValidateProduct()
-    method = fields.ChoiceField(
-        [
-            ('Increase', 'Increase'),
-            ('Descrease', 'Decrease')
-        ],
-        default='Increase'
-    )
-    quantity = fields.IntegerField(validators=[validate_quantity])
-
-    def update(self, instance, validated_data):
-        product = get_object_or_404(
-            Product,
-            id=validated_data['product']['id']
-        )
-
-        stock = instance.stock_set.all()
-        if stock.exists():
-            pass
-
-        if validated_data['method'] == 'Increase':
-            new_objects = map(
-                Cart(product=product),
-                range(1, validated_data['quantity']
-                      )
-            )
-            instances = Cart.objects.bulk_create(new_objects)
-        elif validated_data['method'] == 'Decrease':
-            pass
-        return instance

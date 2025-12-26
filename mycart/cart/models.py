@@ -47,18 +47,14 @@ class AbstractCart(models.Model):
         blank=True,
         null=True
     )
-    product = models.JSONField(
+    items = models.JSONField(
         default=dict
     )
-    size = models.CharField(
-        max_length=100,
-        blank=True,
-        null=True
+    quantity = models.PositiveBigIntegerField(
+        default=1
     )
-    price = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        default=0
+    total = models.FloatField(
+        default=0.0
     )
     # has_discount = models.BooleanField(
     #     default=False
@@ -84,7 +80,7 @@ class AbstractCart(models.Model):
         abstract = True
         ordering = ['-created_on', '-pk']
         indexes = [
-            models.Index(fields=['price', 'session_id']),
+            models.Index(fields=['total', 'session_id']),
         ]
 
     def __str__(self):
@@ -129,11 +125,5 @@ class Cart(AbstractCart):
                 condition=Q(is_paid_for=True),
                 fields=['is_paid_for'],
                 name='is_paid_for_carts'
-            )
-        ]
-        constraints = [
-            models.CheckConstraint(
-                check=Q(price__gte=0),
-                name='cart_price_over_zero'
             )
         ]

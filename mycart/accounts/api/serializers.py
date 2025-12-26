@@ -114,3 +114,15 @@ class EmailTokenObtainSerializer(TokenObtainSerializer):
     user name field by email for JWT authentication"""
 
     username_field = 'email'
+
+
+
+class AuthenticateUserSerializer(Serializer):
+    """Serializer used to authenticate a user
+    based on email and password credentials"""
+
+    email = fields.EmailField(required=True)
+    password = fields.CharField(required=True, write_only=True)
+
+    def create(self, validated_data):
+        return super().create(validated_data)

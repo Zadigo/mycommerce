@@ -16,7 +16,7 @@ urlpatterns = [
         name='delete'
     ),
     re_path(
-        r'^(?P<unique_id>\d+)/update$',
+        r'^(?P<unique_id>[a-zA-Z0-9]+)/update$',
         views.UpdateInCartView.as_view(),
         name='update'
     ),

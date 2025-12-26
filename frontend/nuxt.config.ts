@@ -45,6 +45,9 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    // Stripe
+    stripeTestSecretKey: process.env.NUXT_STRIPE_TEST_SECRET_KEY,
+
     public: {
       // Django/Quart/Flask
       quartProdUrl: process.env.NUXT_PUBLIC_QUART_PROD_URL || 'http://127.0.0.1:5000',
@@ -53,8 +56,7 @@ export default defineNuxtConfig({
       reviewsProdDomain: process.env.NUXT_PUBLIC_DJANGO_REVIEWS_PROD_URL || 'http://127.0.0.1:8002',
 
       // Stripe
-      stripeTestSecretKey: process.env.NUXT_PUBLIC_STRIPE_TEST_SECRET_KEY,
-      stripeTestPublishableKey: process.env.NUXT_PUBLIC_STRIPE_TEST_PUBLISHABLE_KEY,
+      stripeTestPublishableKey: process.env.NUXT_STRIPE_TEST_PUBLISHABLE_KEY,
       stripeApiVersion: '2024-06-20',
       stripeLocale: 'fr',
 
