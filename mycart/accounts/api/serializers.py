@@ -46,6 +46,8 @@ class UserSerializer(ModelSerializer):
 
 
 class UserRegistrationSerializer(ModelSerializer):
+    """Serializer used to register a new user"""
+
     password1 = fields.CharField(write_only=True, required=True)
     password2 = fields.CharField(write_only=True, required=True)
 
@@ -62,14 +64,17 @@ class UserRegistrationSerializer(ModelSerializer):
     def validate(self, attrs):
         username = attrs.get('username')
         if username is None:
-            attrs['username'] = f'user_{get_random_string(length=12)}'            
+            attrs['username'] = f'user_{get_random_string(length=12)}'
 
         password1 = attrs.get('password1')
         password2 = attrs.get('password2')
 
         if password1 != password2:
             raise ValidationError(
-                detail={'password': 'Passwords do not match'})
+                detail={
+                    'password': 'Passwords do not match'
+                }
+            )
 
         if password1 is None:
             raise ValidationError(detail={'password': 'Password is not valid'})
@@ -114,7 +119,6 @@ class EmailTokenObtainSerializer(TokenObtainSerializer):
     user name field by email for JWT authentication"""
 
     username_field = 'email'
-
 
 
 class AuthenticateUserSerializer(Serializer):

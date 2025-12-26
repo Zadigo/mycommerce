@@ -1,9 +1,11 @@
 import dataclasses
 import datetime
 import hashlib
+import json
 import os
 import secrets
 import time
+from typing import Union
 
 import jwt
 import pytz
@@ -132,7 +134,11 @@ def decode_jwt_token(token: str, secret: str = None, raise_exception: bool = Fal
     encoded_secret = func(secret.encode('utf-8')).hexdigest()
 
     try:
-        return jwt.decode(token, key=encoded_secret, **kwargs)
+        data = jwt.decode(
+            token, 
+            key=encoded_secret, 
+            **kwargs
+        )
     except jwt.exceptions.InvalidAudienceError:
         raise jwt.exceptions.InvalidAudienceError(
             'Invalid audience. You need to pass the intended audience '
@@ -142,6 +148,10 @@ def decode_jwt_token(token: str, secret: str = None, raise_exception: bool = Fal
         if raise_exception:
             raise Exception(e)
         return None
+    else:
+        if isinstance(data, str):
+            return json.loads(data)
+        return data
 
 
 def is_token_expired(payload: dict, grace_period_seconds: int = 0) -> bool:

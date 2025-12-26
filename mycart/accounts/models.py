@@ -1,10 +1,11 @@
+from accounts import tasks
 from accounts.choices import Genders
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from accounts.tasks import create_stripe_customer, update_stripe_customer
+
 
 class Address(models.Model):
     """This represents billing information which
@@ -105,12 +106,22 @@ class UserProfile(models.Model):
 
 @receiver(post_save, sender=User)
 def create_profile(instance, created, **kwargs):
+    """Creates a user profile when a new user is created and
+    schedules a task to create a Stripe customer"""
     if created:
         instance = UserProfile.objects.create(user=instance)
-        create_stripe_customer.apply_async(args=[instance.user.email], countdown=30)
+        tasks.create_stripe_customer.apply_async(
+            args=[instance.user.email],
+            countdown=30
+        )
 
 
 @receiver(post_save, sender=User)
 def update_profile(instance, created, **kwargs):
+    """Updates the Stripe customer information
+    when the user information is updated"""
     if not created:
-        update_stripe_customer.apply_async(args=[instance.email], countdown=60)
+        tasks.update_stripe_customer.apply_async(
+            args=[instance.email],
+            countdown=60
+        )

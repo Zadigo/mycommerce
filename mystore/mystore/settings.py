@@ -240,11 +240,13 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'http://127.0.0.1:8007'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'http://127.0.0.1:8007'
 ]
 
 
@@ -413,9 +415,9 @@ PY_UTILITIES_JWT_SECRET = os.getenv('PY_UTILITIES_JWT_SECRET')
 
 # APi urls
 
-CART_API_URL = os.getenv('CART_API_URL', 'http://127.0.0.1:8001')
+# CART_API_URL = os.getenv('CART_API_URL', 'http://127.0.0.1:8001')
 
-REVIEWS_API_URL = os.getenv('REVIEWS_API_URL', 'http://127.0.0.1:8002')
+# REVIEWS_API_URL = os.getenv('REVIEWS_API_URL', 'http://127.0.0.1:8002')
 
 
 # Graphene

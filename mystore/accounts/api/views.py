@@ -4,16 +4,15 @@ from accounts import tasks
 from accounts.api import serializers
 from accounts.models import Address
 from accounts.permissions import CustomIsAuthenticated
+from celery import chain
 from django.contrib.auth import get_user_model
 from django.db.models import F
 from django.utils import timezone
-from celery import chain
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt import views as jwt_views
-
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserInfo(generics.RetrieveUpdateAPIView):
@@ -96,11 +95,15 @@ class Signup(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
-        instance = serializer.save()
-        # tasks.signup_workflow.apply_async(
-        #     (instance.email,),
-        #     countdown=30
-        # )
+        return serializer.save()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        response_serializer = serializers.UserSerializer(instance=instance)
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class TokenObtainPair(jwt_views.TokenObtainPairView):
@@ -111,10 +114,10 @@ class TokenObtainPair(jwt_views.TokenObtainPairView):
             serializer.is_valid(raise_exception=True)
         except TokenError as e:
             raise InvalidToken(e.args[0])
-        
-        chain(
-            tasks.signup_cart_api.apply_async(kwargs=request.data),
-            tasks.signup_reviews_api.apply_async(kwargs=request.data)
-        )
+
+        # chain(
+        #     tasks.signup_cart_api.apply_async(kwargs=request.data),
+        #     tasks.signup_reviews_api.apply_async(kwargs=request.data)
+        # )
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)

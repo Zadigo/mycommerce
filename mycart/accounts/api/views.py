@@ -1,12 +1,12 @@
 from datetime import timedelta
 
 import requests
-
 from accounts import tasks
 from accounts.api import serializers
 from accounts.models import Address
 from accounts.permissions import CustomIsAuthenticated
 from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth.models import User
 from django.db.models import F, Q
 from django.utils import timezone
 from rest_framework import generics, status
@@ -15,7 +15,6 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth.models import User
 
 
 class UserInfo(generics.RetrieveUpdateAPIView):
@@ -99,6 +98,8 @@ class Signup(generics.CreateAPIView):
 
 
 class Login(generics.GenericAPIView):
+    """This endpoint is used to login either via email or username"""
+
     def post(self, request, *args, **kwargs):
         email = request.data.get('email', '')
         username = request.data.get('username', '')
@@ -111,10 +112,8 @@ class Login(generics.GenericAPIView):
             print(e)
             raise ValidationError('Account not recognized')
         else:
-            if email != '':
-                credentials = {'email': email}
-            else:
-                credentials = {'username': username}
+            if not user.is_active:
+                raise ValidationError('Account not active')
 
             state = user.check_password(password)
             if not state:
@@ -124,9 +123,8 @@ class Login(generics.GenericAPIView):
             if not user.is_active:
                 raise ValidationError('Account not active')
 
-            instance = Token.objects.create(user=user)
+            instance, _ = Token.objects.get_or_create(user=user)
             return Response({'access': instance.key}, status=status.HTTP_201_CREATED)
-
 
 
 class Logout(generics.GenericAPIView):
@@ -134,4 +132,4 @@ class Logout(generics.GenericAPIView):
 
     def post(self, *args, **kwargs):
         self.request.user.token.delete()
-        return Response({}, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,7 +1,8 @@
+from accounts import tasks
 from accounts.models import Address
 from django.contrib.auth import get_user_model, password_validation
 from django.utils.crypto import get_random_string
-from rest_framework import fields
+from rest_framework import fields, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
@@ -46,45 +47,65 @@ class UserSerializer(ModelSerializer):
 
 
 class UserRegistrationSerializer(ModelSerializer):
-    password1 = fields.CharField(write_only=True, required=True)
-    password2 = fields.CharField(write_only=True, required=True)
+    """Serializer used for user registration"""
+
+    password = fields.CharField(write_only=True, required=True)
+    password_confirmation = fields.CharField(write_only=True, required=True)
 
     class Meta:
         model = get_user_model()
-        fields = ['email', 'password1', 'password2']
+        fields = ['username', 'email', 'password', 'password_confirmation']
 
     def validate_username(self, value):
         qs = get_user_model().objects.filter(username=value)
-        if qs.exclude(pk=self.instance.pk).exists():
-            raise ValidationError('This username is already taken')
+        if qs.exists():
+            raise ValidationError(
+                detail={
+                    'username': 'A user with that username already exists.'
+                }
+            )
+        return value
+    
+    def validate_email(self, value):
+        qs = get_user_model().objects.filter(email=value)
+        if qs.exists():
+            raise ValidationError(
+                detail={
+                    'email': 'A user with that email address already exists.'
+                }
+            )
         return value
 
     def validate(self, attrs):
         username = attrs.get('username')
         if username is None:
-            attrs['username'] = f'user_{get_random_string(length=12)}'            
+            attrs['username'] = f'user_{get_random_string(length=12)}'
 
-        password1 = attrs.get('password1')
-        password2 = attrs.get('password2')
+        password = attrs.get('password')
+        password_confirmation = attrs.get('password_confirmation')
 
-        if password1 != password2:
+        if password != password_confirmation:
             raise ValidationError(
                 detail={'password': 'Passwords do not match'})
 
-        if password1 is None:
+        if password is None:
             raise ValidationError(detail={'password': 'Password is not valid'})
 
-        password_validation.validate_password(password1)
+        password_validation.validate_password(password)
         return attrs
 
     def create(self, validated_data):
         instance = get_user_model().objects.create_user(**{
             'username': validated_data['username'],
-            'password': validated_data['password1'],
+            'password': validated_data['password'],
             'email': validated_data['email'],
             'first_name': '',
-            'last_name': ''
+            'last_name': '',
+            'is_active': False
         })
+
+        # Start the signup workflow tasks
+        tasks.signup_workflow.apply_async(args=[instance.email], countdown=30)
         return instance
 
 

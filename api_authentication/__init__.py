@@ -1,6 +1,9 @@
+import logging.handlers
 import dotenv
 import pathlib
 import os
+import logging
+import yaml
 
 
 BASE_PROJECT = pathlib.Path(__file__).parent.absolute()
@@ -11,21 +14,16 @@ MEDIA_PATH = BASE_PROJECT / 'media'
 
 ENV_PATH = BASE_PROJECT / '.env'
 
+
 if ENV_PATH.exists():
-    dotenv.load_dotenv(ENV_PATH / '.env')
+    dotenv.load_dotenv(ENV_PATH)
 
 
-def debug_mode():
-    env_path = BASE_PROJECT / '.env'
-    if env_path.exists():
-        dotenv.load_dotenv(BASE_PROJECT / '.env')
-
-    debug = os.getenv('DEBUG')
-    return True if debug == '1' else False
-
-
-def get_host():
-    if debug_mode():
-        return None
-    return '0.0.0.0'
- 
+def create_logger(name: str) -> logging.Logger:
+    """Create and configure a custom logger from
+    a YAML file"""
+    path = BASE_PROJECT / 'logging.yaml'
+    with open(path, 'r') as f:
+        config = yaml.safe_load(f)
+        logging.config.dictConfig(config)
+        return logging.getLogger(name)

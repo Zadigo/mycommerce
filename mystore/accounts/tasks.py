@@ -42,13 +42,25 @@ def update_profile(email):
 
 
 @shared_task
-def signup_workflow(email):
-    user = get_user_model().objects.get(email=email)
+def signup_workflow(email: str):
+    try:
+        user = get_user_model().objects.get(email=email)
+    except ObjectDoesNotExist:
+        logger.error(
+            f"User with email {email} does "
+            "not exist for signup workflow"
+        )
+        return {'error': 'User does not exist'}
 
-    result = stripe.Customer.create(
-        email=user.email,
-        name=f'{user.first_name} {user.last_name}'
-    )
+    try:
+        result = stripe.Customer.create(
+            email=user.email,
+            name=f'{user.first_name} {user.last_name}'
+        )
+    except stripe.error.StripeError as e:
+        logger.error(
+            f"Stripe error during customer creation for {email}: {str(e)}")
+        return {'error': str(e)}
 
     user.userprofile.stripe_id = result.id
     user.userprofile.save()
@@ -56,26 +68,28 @@ def signup_workflow(email):
     return {'email': email, 'token': user.userprofile.stripe_id}
 
 
-@shared_task
-def signup_cart_api(email: str, password: str):
-    try:
-        credentials = {'email': email, 'password': password}
-        headers = {'content-type': 'application/json'}
-        response = requests.post(settings.CART_API_URL, data=credentials, headers=headers)
-    except:
-        pass
-    else:
-        if response.ok:
-            return response.json()
-        return False
-    
+# @shared_task
+# def signup_cart_api(email: str, password: str):
+#     try:
+#         credentials = {'email': email, 'password': password}
+#         headers = {'content-type': 'application/json'}
+#         response = requests.post(
+#             settings.CART_API_URL, data=credentials, headers=headers)
+#     except:
+#         pass
+#     else:
+#         if response.ok:
+#             return response.json()
+#         return False
+
 
 @shared_task
 def signup_reviews_api(credentials_response: dict | bool, email: str, password: str):
     try:
         credentials = {'email': email, 'password': password}
         headers = {'content-type': 'application/json'}
-        response = requests.post(settings.REVIEWS_API_URL, data=credentials, headers=headers)
+        response = requests.post(
+            settings.REVIEWS_API_URL, data=credentials, headers=headers)
     except:
         pass
     else:
