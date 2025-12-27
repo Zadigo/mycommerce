@@ -36,7 +36,7 @@ def calculate_total(cart_id: int):
         quantity = 0
 
         for json_product in instance.items:
-            total += json_product['total']
+            total += json_product['product']['price'] * json_product['quantity']
             quantity += json_product['quantity']
 
         instance.total = total
@@ -45,4 +45,4 @@ def calculate_total(cart_id: int):
         instance.save()
 
         logger.warning(
-            f"Updated item {instance.id} with price {instance.total}")
+            f"Updated item {instance.id}. Quantity: {instance.quantity} price {instance.total}")

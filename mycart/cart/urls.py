@@ -26,9 +26,9 @@ urlpatterns = [
         name='add'
     ),
     re_path(
-        r'^authenticate$',
-        views.AuthenticateUserCart.as_view(),
-        name='authenticate'
+        r'^create$',
+        views.AddToCartView.as_view(),
+        name='create'
     ),
     re_path(
         r'^session-id$',
@@ -37,7 +37,7 @@ urlpatterns = [
     ),
     re_path(
         r'^$',
-        views.ListCartsView.as_view(),
+        views.ListCartView.as_view(),
         name='list'
     )
 ]

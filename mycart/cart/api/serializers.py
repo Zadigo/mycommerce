@@ -1,99 +1,65 @@
-import re
+
+from cart import tasks
 from cart.models import Cart
-from cart.validators import validate_quantity
-from django.db.models import Count, Sum
-from django.db.models.manager import BaseManager
-from django.shortcuts import get_object_or_404
-from orders.models import Product
 from rest_framework import fields
 from rest_framework.serializers import Serializer
-from cart import tasks
 
 
-def cart_statistics(queryset: BaseManager[Cart]):
-    """Helper function that groups each products
-    from the cart and aggregates them in order to return
-    the total quantity of each products, their total sum or
-    any other useful pieces of information for Nuxt"""
-    values = queryset.values('product__id', 'product__name', 'size')
-    grouped = values.annotate(
-        quantity=Count('product__name'),
-        total=Sum('price')
-    )
-    return grouped.order_by()
+class _SizeSerializer(Serializer):
+    """Serializes the size object
+    inside the cart item objects"""
+
+    name = fields.CharField()
+    active = fields.BooleanField()
+    metric = fields.CharField()
+    availability = fields.BooleanField()
+    variantPrice = fields.FloatField()
 
 
-def build_cart_response(queryset: BaseManager[Cart], session_id: str):
-    """A special helper class that resolves the
-    queryset, that resolves the total count for
-    each product in the cart and returns a valid
-    dictionnary response for adding an object in
-    the user's cart
+class CartItemMainImageSerializer(Serializer):
+    """Serializes the main image
+    inside the cart item objects"""
 
-    >>> {
-            'session_id': '...', 
-            'results': [
-                { 
-                    'id': '...', # cart id
-                    'product': {...},
-                    'size': '...', 
-                    'color': '...', 
-                    'price': '...',
-                    'created_on': '...'
-                }
-            ],
-            'statistics': [
-                {
-                    'product__id': '...',
-                    'product__name': '...',
-                    'quantity': '...',
-                    'total': '...'
-                }
-            ],
-            'total': '...'
-        }
-
-    * "results" are the products that are currently in the user's cart
-    * "statistics" are the aggregation of the quantity and price
-    * "total" is the total of the price of the products in the cart
-    """
-    serializer = CartSerializer(instance=queryset, many=True)
-    response_data = {
-        'session_id': session_id,
-        'results': serializer.data,
-        'statistics': cart_statistics(queryset)
-    }
-    response_data = response_data | queryset.aggregate(total=Sum('price'))
-    return response_data
+    name = fields.CharField()
+    variant = fields.CharField()
+    original = fields.CharField()
+    createdOn = fields.CharField()
+    thumbnail = fields.CharField()
+    isMainImage = fields.BooleanField()
 
 
-# class StoreProductSerializer(Serializer):
-#     """A serializer used to adapt a product that comes from
-#     the store to a usable object in the cart"""
+class _ProductSerializer(Serializer):
+    """Serializes the product object
+    inside the cart item objects"""
 
-#     id = fields.IntegerField()
-#     name = fields.CharField()
-#     sku = fields.CharField()
-#     main_image = fields.URLField()
-#     unit_price = fields.DecimalField(5, 2)
+    id = fields.IntegerField()
+    name = fields.CharField()
+    price = fields.FloatField()
+    salePrice = fields.FloatField()
+    unitPrice = fields.FloatField()
+    mainImage = CartItemMainImageSerializer()
+
+
+class CartItemSerializer(Serializer):
+    """Serializes the cart item objects that come
+    directly from Firebase in Nuxt4"""
+
+    size = _SizeSerializer()
+    total = fields.FloatField()
+    product = _ProductSerializer()
+    quantity = fields.IntegerField()
 
 
 class CartSerializer(Serializer):
-    """Serializes the cart objects"""
+    """Serializes the car objects"""
 
     id = fields.IntegerField()
-    session_id = fields.CharField(write_only=True)
-    product = fields.JSONField()
-    size = fields.CharField()
-    price = fields.DecimalField(5, 2)
+    session_id = fields.CharField()
+    items = fields.JSONField()
+    total = fields.FloatField()
+    quantity = fields.IntegerField()
+    is_paid_for = fields.BooleanField()
     created_on = fields.DateTimeField()
-
-
-# class ValidateVariants(Serializer):
-#     size = fields.ChoiceField(
-#         ClotheSizesChoices.sizes,
-#         default=ClotheSizesChoices.default('S')
-#     )
 
 
 class ValidateProduct(Serializer):
@@ -112,21 +78,24 @@ class ValidateProduct(Serializer):
     )
 
 
-class ValidateCart(Serializer):
+class ValidateCreateCart(Serializer):
     """Validates the data used to create a
     new cart object in the database"""
 
-    id = fields.IntegerField(read_only=True)
     session_id = fields.CharField(required=True)
-    items = fields.JSONField(write_only=True)
+    items = CartItemSerializer(required=True, many=True)
 
     def create(self, validated_data):
         request = self._context['request']
-
-        instance = Cart.objects.create(
+        instance, created = Cart.objects.update_or_create(
             session_id=validated_data['session_id'],
-            items=validated_data['items']
+            defaults={'items': validated_data['items']}
         )
+
+        if request.user.is_authenticated:
+            instance.user = request.user
+            instance.save()
+
         tasks.calculate_total.apply_async(
             args=[instance.id],
             countdown=10
@@ -136,7 +105,10 @@ class ValidateCart(Serializer):
 
     def update(self, instance, validated_data):
         instance.items = validated_data['items']
-        tasks.calculate_total.apply_async(args=[instance.id], countdown=5)
+        tasks.calculate_total.apply_async(
+            args=[instance.id],
+            countdown=5
+        )
         return instance
 
 
