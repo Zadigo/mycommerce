@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+from stripe import PaymentIntent
 from cart.models import Cart
 from django.db.models import F, Sum
 from django.utils.crypto import get_random_string
@@ -6,8 +8,8 @@ from orders.api import serializers
 from orders.models import CustomerOrder, Product
 from orders.payment import PaymentInterface
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, GenericAPIView
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 
@@ -30,16 +32,14 @@ class CartMixin:
     can provide basic information on the items in a customer's
     cart .e.g. the items in the cart, the cart's total etc."""
 
-    def get_cart_queryset(self, request, serializer):
-        session_id = serializer.validated_data['session_id']
-        return Cart.objects.cart_items(session_id)
+    error_message = {'message': 'Empty cart'}
 
-    def get_cart_amount(self, request, serializer):
-        queryset = self.get_cart_queryset(request, serializer)
-        return queryset.aggregate(total=Sum('price'))['total']
+    def get_cart_object(self, request, serializer):
+        session_id = serializer.validated_data['session_id']
+        return get_object_or_404(Cart, session_id=session_id)
 
     def cart_empty_response(self):
-        return Response({'message': 'Empty cart'}, status=status.HTTP_402_PAYMENT_REQUIRED)
+        return Response(self.error_message, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CreatePaymentIntent(CartMixin, CreateAPIView):
@@ -49,58 +49,113 @@ class CreatePaymentIntent(CartMixin, CreateAPIView):
     on cart/shipment or cart/home"""
 
     serializer_class = serializers.ValidateCreateIntent
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        queryset = self.get_cart_queryset(request, serializer)
-        if not queryset.exists():
-            return self.cart_empty_response()
+        incoming_total = serializer.validated_data['total']
+        cart = self.get_cart_object(request, serializer)
 
-        interface = PaymentInterface()
-        amount = self.get_cart_amount(request, serializer)
-        state = interface.payment_intent(request, amount)
+        # We want to avoid creating multiple intents
+        # so that we can track the customer correctly
+        if cart.payment_intent is not None:
+            return Response({'intent': cart.payment_intent}, status=status.HTTP_200_OK)
+
+        if cart.total != incoming_total:
+            pass
+
+        if cart.is_paid_for:
+            pass
+
+        if cart.is_stale:
+            pass
+
+        intent = PaymentInterface()
+        state = intent.payment_intent(request, cart.total)
+
         if not state:
-            return interface.get_fail_response()
+            return intent.get_fail_response()
 
-        headers = self.get_success_headers(interface.response_data)
-        return interface.get_success_response(headers=headers, message='Intent created')
+        headers = self.get_success_headers(intent.response_data)
+        return intent.get_success_response(headers=headers, message='Intent created')
 
 
-class UpdatePaymentIntent(CartMixin, CreateAPIView):
+class UpdatePaymentIntent(CartMixin, GenericAPIView):
     """This endpoint is used to update the pieces of
     information on a given payment intent. This endpoint
     is triggered on the page cart/shipment in Nuxt"""
 
-    serializer_class = serializers.ValidateShipment
+    serializer_class = serializers.ValidateUpdateIntent
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         return serializer.save()
 
-    def create(self, request, *args, **kwargs):
+    def update_billing_address(self, interface: PaymentInterface, cart: Cart, validated_data: dict):
+        shipment = validated_data['shipment']
+        if shipment is not None:
+            billing_addresses = self.request.user.userprofile.address_set.all()
+            params = {
+                'firstname': validated_data['firstname'],
+                'lastname': validated_data['lastname'],
+                'address_line': validated_data['address_line'],
+                'zip_code': validated_data['zip_code'],
+                'country': validated_data['country'],
+                'city': validated_data['city'],
+                'telephone': validated_data['telephone'],
+                'user_profile': self.request.user.userprofile
+            }
+            billing_address, state = billing_addresses.update_or_create(
+                defaults=params,
+                firstname=params['firstname'],
+                lastname=params['lastname'],
+                address_line=params['address_line']
+            )
+
+            active_addresses = billing_addresses.filter(is_active=True)
+            if not active_addresses.exists():
+                billing_addresses.update(is_active=False)
+                billing_address.is_active = True
+                billing_address.save()
+
+            return interface.update_intent(
+                cart.payment_intent,
+                billing_address=active_addresses
+            )
+
+    def update_total(self, interface: PaymentInterface, cart: Cart, total: float):
+        return interface.update_intent(cart.payment_intent, total=total)
+
+    def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        queryset = self.get_cart_queryset(request, serializer)
-        if not queryset.exists():
-            return self.cart_empty_response()
-
-        billing_address = self.perform_create(serializer)
+        cart = self.get_cart_object(request, serializer)
+        if not cart.payment_intent:
+            return Response({'message': 'No payment intent associated with this cart'}, status=status.HTTP_400_BAD_REQUEST)
 
         interface = PaymentInterface()
-        amount = self.get_cart_amount(request, serializer)
-        state = interface.update_intent(
-            serializer.validated_data['intent'],
-            billing_address
-        )
-        if not state:
-            return interface.get_fail_response()
 
-        headers = self.get_success_headers(interface.response_data)
-        return interface.get_success_response(headers=headers, message='Intent updated')
+        shipment = serializer.validated_data.get('shipment', None)
+        total = serializer.validated_data.get('total', None)
+
+        if shipment is None and total is None:
+            return Response({'message': 'No data provided to update'}, status=status.HTTP_200_OK)
+
+        if shipment is not None:
+            state = self.update_billing_address(
+                interface, cart, serializer.validated_data)
+            if not state:
+                return interface.get_fail_response()
+
+        if total is not None:
+            state = self.update_total(interface, cart, total)
+            if not state:
+                return interface.get_fail_response()
+
+        return interface.get_success_response(message='Intent updated')
 
 
 class CapturePaymentIntent(CartMixin, CreateAPIView):

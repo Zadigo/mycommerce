@@ -32,6 +32,7 @@ class DeliveryOptionsSerializer(Serializer):
 
 class ValidateCreateIntent(Serializer):
     session_id = fields.CharField()
+    total = fields.FloatField(default=0.0)
 
 
 class ValidateShipment(Serializer):
@@ -39,8 +40,6 @@ class ValidateShipment(Serializer):
     options for the given user. This used
     by the shipment page"""
 
-    intent = fields.CharField(allow_null=True, validators=[])
-    session_id = fields.CharField()
     email = fields.CharField()
     firstname = fields.CharField()
     lastname = fields.CharField()
@@ -55,32 +54,16 @@ class ValidateShipment(Serializer):
         default='Chronopost'
     )
 
-    def create(self, validated_data):
-        request = self._context['request']
-        billing_addresses = request.user.userprofile.address_set.all()
-        params = {
-            'firstname': validated_data['firstname'],
-            'lastname': validated_data['lastname'],
-            'address_line': validated_data['address_line'],
-            'zip_code': validated_data['zip_code'],
-            'country': validated_data['country'],
-            'city': validated_data['city'],
-            'telephone': validated_data['telephone'],
-            'user_profile': request.user.userprofile
-        }
-        billing_address, state = billing_addresses.update_or_create(
-            defaults=params,
-            firstname=params['firstname'],
-            lastname=params['lastname'],
-            address_line=params['address_line']
-        )
 
-        active_addresses = billing_addresses.filter(is_active=True)
-        if not active_addresses.exists():
-            billing_addresses.update(is_active=False)
-            billing_address.is_active = True
-            billing_address.save()
-        return billing_address
+class ValidateUpdateIntent(Serializer):
+    """Serializer used to validate the shipping
+    options for the given user. This used
+    by the shipment page"""
+
+    intent = fields.CharField(allow_null=True, validators=[])
+    session_id = fields.CharField()
+    total = fields.FloatField(allow_null=True)
+    shipment = ValidateShipment(allow_null=True)
 
 
 class ValidateOrder(Serializer):

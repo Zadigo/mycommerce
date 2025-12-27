@@ -53,8 +53,7 @@ const router = useRouter()
  * Cart
  */
 
-const { cart, lastProduct } = useCartComposable()
-
+const { cart, lastProduct, cartSession } = useCartComposable()
 
 /**
  * Modals
@@ -68,6 +67,18 @@ const toggleShowAddedProductDrawer = useToggle(showAddedProductDrawer)
 
 const showcartDrawer = useState<boolean>('showCartDrawer')
 const toggleShowcartDrawer = useToggle(showcartDrawer)
+
+/**
+ * Payment Intent
+ */
+
+const { hasPaymentIntent, create } = usePaymentIntentComposable()
+
+watch(showAddedProductDrawer, async (newVal) => {
+  if (newVal && !hasPaymentIntent.value) {
+    await create(cartSession?.value?.total || 0)
+  }
+})
 
 /**
  * User

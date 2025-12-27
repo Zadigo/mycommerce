@@ -49,6 +49,7 @@ class UserSerializer(ModelSerializer):
 class UserRegistrationSerializer(ModelSerializer):
     """Serializer used for user registration"""
 
+    username = fields.CharField(required=False, allow_blank=True)
     password = fields.CharField(write_only=True, required=True)
     password_confirmation = fields.CharField(write_only=True, required=True)
 

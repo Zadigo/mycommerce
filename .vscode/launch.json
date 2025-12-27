@@ -20,7 +20,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/mycart/manage.py",
             "args": [
-                "runserver"
+                "runserver",
+                "8001"
             ],
             "envFile": "${workspaceFolder}/mycart/.env",
             "preLaunchTask": "Celery: start",

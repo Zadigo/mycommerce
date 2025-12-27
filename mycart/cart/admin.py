@@ -14,7 +14,8 @@ class CartAdmin(admin.ModelAdmin):
     date_hiearchy = 'created_on'
     list_filter = ['is_anonymous', 'is_paid_for', 'is_stale']
     actions = ['remove_is_paid_for']
-    readonly_fields = ['session_id']
+    readonly_fields = ['session_id', 'payment_intent',
+                       'quantity', 'total', 'order_reference']
 
     def remove_is_paid_for(self, request, queryset):
         queryset.update(is_paid_for=False)

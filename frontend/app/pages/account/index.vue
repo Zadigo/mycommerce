@@ -74,8 +74,8 @@
         {{ $t('Adresses de facturation') }}
       </template>
 
-      <AccountBillingForm v-for="address in profile.userprofile.address_set" :key="address.id" :address="address" @delete-complete="handleDelete" />
-      <AccountBillingForm v-if="showNewAddressForm" @create-complete="handleCreation" @close="showNewAddressForm=false" />
+      <account-billing-form v-for="address in profile.userprofile.address_set" :key="address.id" :address="address" @delete-complete="handleDelete" />
+      <account-billing-form v-if="showNewAddressForm" @create-complete="handleCreation" @close="showNewAddressForm=false" />
 
       <template #content>
         <div class="flex justify-end">
@@ -108,7 +108,7 @@ const { $client } = useNuxtApp()
 const { customHandleError } = useErrorHandler()
 
 const { getProfile, userId } = useUser()
-const profile = await getProfile(userId.value)
+const profile = await getProfile(`/api/v1/accounts/${userId.value}`)
 
 const emailPasswordRequestData = ref<EmailPasswordData>({
   email: '',
@@ -121,9 +121,7 @@ const showNewAddressForm = ref<boolean>(false)
 const showEditPassword = ref<boolean>(false)
 const showEditEmail = ref<boolean>(false)
 
-/**
- * 
- */
+// Resets the user's password
 function resetEmailPasswordData () {
   showEditEmail.value = false
   showEditPassword.value = false
@@ -135,10 +133,8 @@ function resetEmailPasswordData () {
   }
 }
 
-/**
- * Toggles the section that reveals the input for the
- * user to modify his email
- */
+// Toggles the section that reveals the input for the
+// user to modify his email
 function handleEditEmail() {
   if (profile) {
     emailPasswordRequestData.value.email = profile.email
@@ -146,20 +142,14 @@ function handleEditEmail() {
   }
 }
 
-/**
- * @param data The addresse set to be created
- */
+// The addresse set to be created
 function handleCreation(data: AddressSet) {
   if (profile) {
     profile.userprofile.address_set.push(data)
   }
 }
 
-/**
- * Deletes an address set
- * 
- * @param id The id of the address set to delete
- */
+// Deletes an address set
 function handleDelete(id: number) {
   if (profile) {
     const index = profile.userprofile.address_set.findIndex(x => x.id === id)
@@ -167,10 +157,8 @@ function handleDelete(id: number) {
   }
 }
 
-/**
- * Requests an update for the password and/or
- * the email address by the user 
- */
+// Requests an update for the password and/or
+// the email address by the user 
 async function requestUpdate() {
   await $client(`/api/v1/accounts/${userId.value}`, {
     method: 'PATCH',

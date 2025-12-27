@@ -10,8 +10,8 @@
       <volt-divider v-if="hasSelectedPaymentMethod" class="my-5" />
 
       <!-- Blocks -->
-      <CartPaymentStripeBlock v-if="stripeSelected" @payment-complete="callbackPaymentComplete" />
-      <CartPaymentKlarnaBlock v-else-if="klarnaSelected" />
+      <cart-payment-stripe-block v-if="stripeSelected" @payment-complete="callbackPaymentComplete" />
+      <cart-payment-klarna-block v-else-if="klarnaSelected" />
 
       <div class="flex gap-1 items-center justify-center mt-10">
         <nuxt-img src="/cards/mastercard.svg" height="30" width="30" />

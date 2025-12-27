@@ -89,11 +89,13 @@ class PaymentInterface(StripeInterfaceMixin):
                 return False
         return response
 
-    def update_intent(self, intent_id, billing_adress):
+    def update_intent(self, intent_id: str, billing_adress = None, total: int = None):
         """Update a previously created intent with additonal
         information from the shipment page"""
-        params = {
-            'shipping': {
+        params = {}
+
+        if billing_adress is not None:
+            params['shipping'] = {
                 'address': {
                     'line1': getattr(billing_adress, 'address_line'),
                     'line2': None,
@@ -106,7 +108,12 @@ class PaymentInterface(StripeInterfaceMixin):
                 'phone': getattr(billing_adress, 'telephone'),
                 # 'carrier': None
             }
-        }
+
+        if total is not None:
+            params['amount'] = self.adapt_number(total)
+
+        if billing_adress is None and total is None:
+            return False
 
         try:
             response = stripe.PaymentIntent.modify(intent_id, **params)
@@ -119,7 +126,17 @@ class PaymentInterface(StripeInterfaceMixin):
                 return False
         return response
 
-    def payment_intent(self, request, amount, billing_adress=None, debug=False, products=[], stripe_params={}):
+    def payment_intent(self, request, amount: int, billing_adress: str = None, debug: bool = False, products=[], stripe_params={}):
+        """Create a new payment intent for the given amount
+
+        Args:
+            request: The current request object
+            amount (int): The amount to be charged in euros
+            billing_adress (str, optional): The billing address object. Defaults to None.
+            debug (bool, optional): Whether to use debug mode. Defaults to False. Defaults to False.
+            products (list, optional): List of products in the cart. Defaults to [].
+            stripe_params (dict, optional): Additional stripe parameters. Defaults to {}.
+        """
         session_id = stripe_params.get('session_id')
 
         params = {
@@ -131,7 +148,6 @@ class PaymentInterface(StripeInterfaceMixin):
                 'enabled': False
             },
             'currency': 'eur',
-            'customer': request.user.userprofile.stripe_id,
             'description': 'Customer order for products',
             'metadata': {},
             # 'shipping': {
@@ -146,9 +162,12 @@ class PaymentInterface(StripeInterfaceMixin):
             #     'name': billing_adress.get_full_name,
             #     'phone': getattr(billing_adress, 'telephone'),
             #     'carrier': None
-            # },
-            'receipt_email': request.user.email,
+            # }
         }
+
+        if request.user.is_authenticated:
+            params['customer'] = request.user.userprofile.stripe_id
+            params['receipt_email'] = request.user.email,
 
         try:
             response = stripe.PaymentIntent.create(**params)

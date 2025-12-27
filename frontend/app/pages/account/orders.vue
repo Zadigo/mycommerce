@@ -57,6 +57,10 @@ const showFindOrder = ref(false)
 
 const hasOrders = computed(() => false)
 
+/**
+ * SEO
+ */
+
 useHead({
   title: t('Commandes'),
   meta: [

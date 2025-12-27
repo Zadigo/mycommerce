@@ -1,8 +1,8 @@
-from orders import tasks
 from cart.models import Cart
 from django.core.cache import cache
 from django.db.models import F, Sum
 from django.utils.crypto import get_random_string
+from orders import tasks
 from orders.api import serializers
 from orders.models import CustomerOrder, ProductHistory
 from orders.payment import PaymentInterface

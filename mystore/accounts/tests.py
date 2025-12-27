@@ -1,9 +1,12 @@
+from typing import override
 import unittest
+
+from django.test import override_settings
+
 from accounts import tasks
 from accounts.models import Address
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from orders.payment import StripeInterfaceMixin
 from rest_framework.test import APITestCase
 
 
@@ -126,16 +129,21 @@ class TestApiEndpoints(APITestCase):
     def test_create_user(self):
         path = reverse('accounts_api:signup')
         response = self.client.post(path, data={
+            'username': 'randomuser',
             'email': 'random@gmail.com',
-            'password1': 'touparette',
-            'password2': 'touparette'
+            'password': 'touparette',
+            'password_confirmation': 'touparette'
         })
         data = response.json()
-        print(data)
-        # self.assertEqual(response.status_code, 201)
-        # self.assertIn('id', data)
+        self.assertEqual(response.status_code, 201)
+        self.assertIn('id', data)
 
-        # tasks.signup_workflow.apply_async(
-        #     args=[self.user.email],
-        #     countdown=1
-        # )
+
+@override_settings(CELERY_TASK_ALWAYS_EAGER=True)
+class TestAccountsTasks(APITestCase):
+    fixtures = ['accounts']
+
+    def test_signup_workflow_task(self):
+        self.user = get_user_model().objects.first()
+        data = tasks.signup_workflow.apply((self.user.email,)).get()
+        print(data)

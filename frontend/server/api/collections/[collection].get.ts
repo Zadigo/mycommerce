@@ -63,13 +63,17 @@
 
 import { generateProducts } from '~/data/__fixtures__/products/utils'
 
-export default defineCachedEventHandler(async (_event) => {
-  return await generateProducts(2)
-}, {
-  base: 'redis',
-  maxAge: 0, // disable cache for now,
-  getKey(event) {
-    const collectionName = getRouterParam(event, 'collection')
-    return `collection-${collectionName || 'all'}`  
-  }
+// export default defineCachedEventHandler(async (_event) => {
+//   return await generateProducts(5)
+// }, {
+//   base: 'redis',
+//   maxAge: 0, // disable cache for now,
+//   getKey(event) {
+//     const collectionName = getRouterParam(event, 'collection')
+//     return `collection-${collectionName || 'all'}`  
+//   }
+// })
+
+export default defineEventHandler(async _event => {
+  return await generateProducts(5)
 })

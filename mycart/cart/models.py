@@ -59,6 +59,16 @@ class AbstractCart(models.Model):
     # has_discount = models.BooleanField(
     #     default=False
     # )
+    payment_intent = models.CharField(
+        max_length=200,
+        help_text=_(
+            "Stripe payment intent ID "
+            "used to identify the payment "
+            "associated with this cart"
+        ),
+        blank=True,
+        null=True
+    )
     is_stale = models.BooleanField(
         default=False,
         help_text=_(

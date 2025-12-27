@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import { useStorage } from '@vueuse/core'
-import type { PaymentIntentApiResponse, DeliveryOption } from '~/types/api/cart/payment'
+import type { DeliveryOption } from '~/types/api/cart/payment'
 
 definePageMeta({
   title: 'Cart: Index',
@@ -37,9 +37,6 @@ const { shipping } = useShippingComposable()
 // const { gtag } = useGtag()
 
 const deliveryOptions = useStorage<DeliveryOption[]>('deliveryOptions', [])
-const paymentIntent = useCookie<PaymentIntentApiResponse>('paymentIntent')
-  
-const { sessionId } = useSession()
   
 /**
  * Get the delivery options from which the
@@ -50,19 +47,6 @@ const { $client } = useNuxtApp()
 const { data } = await useAsyncData('delivery-options', async () => {
   return await Promise.all(
     [
-      /**
-       * Requests a new payment intent and returns an
-       * intent ID that will be used to confirm the payment
-       * on the actual payment page
-       */
-      $client<PaymentIntentApiResponse>('/api/v1/orders/intent', {
-        method: 'POST',
-        baseURL: useRuntimeConfig().public.prodDomain,
-        body: { session_id: sessionId.value },
-        onRequestError({ error }) {
-          customHandleError(error)
-        }
-      }),
       $client<DeliveryOption[]>('/api/v1/orders/delivery-options', {
         method: 'GET',
         baseURL: useRuntimeConfig().public.quartProdUrl,
@@ -75,7 +59,6 @@ const { data } = await useAsyncData('delivery-options', async () => {
 })
 
 if (data.value) {
-  paymentIntent.value = data.value[0]
   deliveryOptions.value = data.value[1]
 }
 

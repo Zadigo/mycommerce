@@ -47,7 +47,7 @@
 
 import { generateProducts } from '~/data/__fixtures__/products/utils'
 
-export default defineCachedEventHandler(async (_event) => {
+export default defineEventHandler(async (_event) => {
   $fetch('/v1/graphql', {
     method: 'POST',
     baseURL: useRuntimeConfig().public.prodDomain,
@@ -70,11 +70,4 @@ export default defineCachedEventHandler(async (_event) => {
   })
   const result = await generateProducts(1)
   return result.data.allProducts.edges.at(0)
-}, {
-  base: 'redis',
-  maxAge: 0, // disable cache for now
-  getKey(event) {
-    const id = getRouterParam(event, 'id')
-    return `product-${id}`
-  }
 })
