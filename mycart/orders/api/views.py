@@ -51,6 +51,14 @@ class CreatePaymentIntent(CartMixin, CreateAPIView):
 
     serializer_class = serializers.ValidateCreateIntent
     permission_classes = [AllowAny]
+    error_messages = {
+        'stale': 'Invalid operation on stale cart',
+        'paid': 'Invalid operation on paid cart',
+        'mismatch': 'Total amount mismatch'
+    }
+
+    def create_error(self, ke):
+        return Response({'message': self.error_messages[ke]}, status=status.HTTP_400_BAD_REQUEST)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -66,13 +74,13 @@ class CreatePaymentIntent(CartMixin, CreateAPIView):
 
         if cart.total > 0:
             if cart.total != incoming_total:
-                pass
+                return self.create_error('mismatch')
 
         if cart.is_paid_for:
-            pass
+            return self.create_error('paid')
 
         if cart.is_stale:
-            pass
+            return self.create_error('stale')
 
         intent = PaymentInterface()
         state = intent.payment_intent(request, cart.total)

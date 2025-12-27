@@ -92,7 +92,7 @@ class AbstractCart(models.Model):
         ]
 
     def __str__(self):
-        return f'Session: {self.pk}'
+        return f'CartSession: {self.pk}'
 
     # def discounted_prices(self):
     #     """If the the current product is related to
