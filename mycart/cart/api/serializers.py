@@ -112,6 +112,7 @@ class ValidateCreateCart(Serializer):
         return instance
 
 
+
 class DeleteFromCartSerializer(Serializer):
     session_id = fields.CharField()
-    product_ids = fields.ListField(child=fields.IntegerField())
+    product_ids = fields.ListField()

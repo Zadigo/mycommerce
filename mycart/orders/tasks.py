@@ -1,10 +1,9 @@
 import stripe
-from cart.models import Cart, Product
 from celery import shared_task
 from celery.utils.log import get_logger
 from django.conf import settings
 from django.template.loader import render_to_string
-from orders.models import CustomerOrder
+from orders.models import CustomerOrder, Product
 
 logger = get_logger('orders')
 
@@ -31,15 +30,16 @@ def workflow_trigger_order_webhooks(order_id, cart_id):
     #     'from_email': settings.DEFAULT_FROM_EMAIL,
     #     'html_content': render_to_string('test.html')
     # }
-    # instance.user.email_user('Order received', '', **params)  
+    # instance.user.email_user('Order received', '', **params)
     # return {'order_id': order_id}
 
 
 @shared_task
 def workflow_order_create_products(customer_order_reference, items: list[dict]):
     """Create product instances for a given order. The products
-    are the items received as per serialized by the store"""    
-    customer_order = CustomerOrder.objects.get(reference=customer_order_reference)
+    are the items received as per serialized by the store"""
+    customer_order = CustomerOrder.objects.get(
+        reference=customer_order_reference)
     for product in items:
         Product.objects.create(
             customer_order=customer_order,

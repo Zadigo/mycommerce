@@ -39,7 +39,7 @@
             "quantity": 11,
             "payment_intent": null,
             "order_reference": null,
-            "session_id": "other-session-id",
+            "session_id": "postmanTest1234",
             "user": null
         }
     }

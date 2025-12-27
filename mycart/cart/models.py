@@ -1,5 +1,3 @@
-from cart.managers import CartManager
-from orders.models import Product
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Q
@@ -124,8 +122,6 @@ class Cart(AbstractCart):
     and ensures persistent shopping behavior, contributing to a 
     positive user experience
     """
-
-    objects = CartManager.as_manager()
 
     class Meta(AbstractCart.Meta):
         verbose_name = _('Cart')
