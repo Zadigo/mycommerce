@@ -265,6 +265,7 @@ CACHES = {
 
 FIXTURE_DIRS = [
     'fixtures/user',
+    'fixtures/user_profile',
     'fixtures/products'
 ]
 
@@ -339,7 +340,7 @@ MICROSERVICES = {
             }
         ],
         'orders': [
-            
+
         ]
     }
 }

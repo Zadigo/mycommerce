@@ -1,11 +1,10 @@
 from cart.models import Cart
-from django.db import transaction
-from django.db.models import F, Sum
+from django.db.models import F
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 from orders import tasks
 from orders.api import serializers
-from orders.models import CustomerOrder, Product
+from orders.models import CustomerOrder
 from orders.payment import PaymentInterface
 from rest_framework import status
 from rest_framework.generics import (CreateAPIView, GenericAPIView,
@@ -13,7 +12,6 @@ from rest_framework.generics import (CreateAPIView, GenericAPIView,
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from stripe import PaymentIntent
 
 
 class ListCustomerOrders(ListAPIView):
@@ -66,7 +64,6 @@ class CreatePaymentIntent(CartMixin, CreateAPIView):
         if cart.payment_intent is not None:
             return Response({'intent': cart.payment_intent}, status=status.HTTP_200_OK)
 
-
         if cart.total > 0:
             if cart.total != incoming_total:
                 pass
@@ -82,7 +79,7 @@ class CreatePaymentIntent(CartMixin, CreateAPIView):
 
         if not state:
             return intent.get_fail_response()
-        
+
         cart.payment_intent = state.id
         cart.save()
 

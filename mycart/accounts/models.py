@@ -1,6 +1,6 @@
 from accounts import tasks
 from accounts.choices import Genders
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -78,8 +78,9 @@ class Address(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name='userprofile'
     )
     stripe_id = models.CharField(
         max_length=100,
@@ -116,18 +117,16 @@ class UserProfile(models.Model):
         return self.source_id is not None
 
 
-@receiver(post_save, sender=UserProfile)
+@receiver(post_save, sender=get_user_model())
 def create_profile(instance, created, **kwargs):
     """Creates a user profile when a new user is created and
     schedules a task to create a Stripe customer"""
     if created:
-        instance = UserProfile.objects.create(user=instance)
-
-        if instance.stripe_id is None:
-            tasks.create_stripe_customer.apply_async(
-                args=[instance.user.email],
-                countdown=15
-            )
+        UserProfile.objects.create(user=instance)
+        tasks.create_stripe_customer.apply_async(
+            args=[instance.email],
+            countdown=15
+        )
 
 
 @receiver(post_save, sender=UserProfile)
