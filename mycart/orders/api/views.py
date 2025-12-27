@@ -66,8 +66,10 @@ class CreatePaymentIntent(CartMixin, CreateAPIView):
         if cart.payment_intent is not None:
             return Response({'intent': cart.payment_intent}, status=status.HTTP_200_OK)
 
-        if cart.total != incoming_total:
-            pass
+
+        if cart.total > 0:
+            if cart.total != incoming_total:
+                pass
 
         if cart.is_paid_for:
             pass
@@ -80,6 +82,9 @@ class CreatePaymentIntent(CartMixin, CreateAPIView):
 
         if not state:
             return intent.get_fail_response()
+        
+        cart.payment_intent = state.id
+        cart.save()
 
         headers = self.get_success_headers(intent.response_data)
         return intent.get_success_response(headers=headers, message='Intent created')
@@ -97,17 +102,17 @@ class UpdatePaymentIntent(CartMixin, GenericAPIView):
         return serializer.save()
 
     def update_billing_address(self, interface: PaymentInterface, cart: Cart, validated_data: dict):
-        shipment = validated_data['shipment']
-        if shipment is not None:
+        shipment_data = validated_data.get('shipment', None)
+        if shipment_data is not None:
             billing_addresses = self.request.user.userprofile.address_set.all()
             params = {
-                'firstname': validated_data['firstname'],
-                'lastname': validated_data['lastname'],
-                'address_line': validated_data['address_line'],
-                'zip_code': validated_data['zip_code'],
-                'country': validated_data['country'],
-                'city': validated_data['city'],
-                'telephone': validated_data['telephone'],
+                'firstname': shipment_data['firstname'],
+                'lastname': shipment_data['lastname'],
+                'address_line': shipment_data['address_line'],
+                'zip_code': shipment_data['zip_code'],
+                'country': shipment_data['country'],
+                'city': shipment_data['city'],
+                'telephone': shipment_data['telephone'],
                 'user_profile': self.request.user.userprofile
             }
             billing_address, state = billing_addresses.update_or_create(
@@ -125,7 +130,7 @@ class UpdatePaymentIntent(CartMixin, GenericAPIView):
 
             return interface.update_intent(
                 cart.payment_intent,
-                billing_address=active_addresses
+                billing_address=billing_address
             )
 
     def update_total(self, interface: PaymentInterface, cart: Cart, total: float):
@@ -190,6 +195,9 @@ class CapturePaymentIntent(CartMixin, CreateAPIView):
 
         cart = self.get_cart_object(request, serializer)
 
+        if cart.total <= 0:
+            return self.cart_empty_response()
+
         is_valid = all([
             not cart.is_paid_for,
             not cart.is_stale,
@@ -217,7 +225,6 @@ class CapturePaymentIntent(CartMixin, CreateAPIView):
                 request.user.userprofile.save()
 
             state_or_response = interface.capture_intent(
-                request,
                 serializer.validated_data['intent'],
                 request.user.userprofile.source_id
                 # serializer.validated_data['card']

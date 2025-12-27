@@ -2,7 +2,7 @@
   <div id="product-images-five" class="grid grid-cols-1 auto-rows-min col-span-8">
     <div class="grid grid-cols-2 gap-x-1">
       <div v-for="image in images.slice(0, 2)" :key="image.id" id="image">
-        <nuxt-img :src="image.original" :alt="image.name" class="cursor-zoom-in" @click="emit('zoom-image', image)">
+        <nuxt-img :src="image.original" :alt="image.name" class="cursor-zoom-in" @click="emit('zoom-image', image)" />
       </div>
     </div>
 

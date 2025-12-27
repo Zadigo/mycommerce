@@ -69,17 +69,20 @@ function callbackPaymentComplete(blockName: DefaultPaymentProviders) {
   //     }
   //   })
   // })
-
-  // useTrackEvent('add_payment_info', {
-  //   checkout_step: 3,
-  //   currency: 'EUR',
-  //   shipping: 1,
-  //   value: cartStore.cartTotal
-  // })
   console.log('callbackPaymentComplete', blockName)
 
   router.push('/cart/success')
 }
+
+onMounted(() => {
+  useAnalyticsEvent(defineAnalyticsEvent('begin_checkout', {
+    transaction_id: docRef.id || '',
+    checkout_step: 2,
+    currency: 'EUR',
+    shipping: 1,
+    items: []
+  }))
+})
 
 /**
  * Other

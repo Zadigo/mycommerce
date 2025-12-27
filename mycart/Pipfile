@@ -32,6 +32,7 @@ boto3 = "*"
 django-storages = "*"
 django-ckeditor-5 = "*"
 channels = {extras = ["daphne"], version = "*"}
+httpx = "*"
 
 [dev-packages]
 autopep8 = "*"

@@ -5,7 +5,6 @@ from pathlib import Path
 import dotenv
 import stripe
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -318,6 +317,29 @@ CKEDITOR_5_CONFIGS = {
         'toolbar': [
             'heading', '|', 'bold', 'italic',
             'link', 'bulletedList'
+        ]
+    }
+}
+
+
+# Micro-services
+
+# This is a list of muicro-services with which
+# this application must communicate
+
+MICROSERVICES = {
+    'shared': [
+
+    ],
+    'apps': {
+        'cart': [
+            {
+                'name': 'mystore',
+                'url': 'http://127.0.0.1:8000/shop/v1/'
+            }
+        ],
+        'orders': [
+            
         ]
     }
 }

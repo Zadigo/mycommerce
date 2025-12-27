@@ -1,5 +1,5 @@
 import { updateDoc } from 'firebase/firestore'
-import type { PaymentIntentApiResponse } from '~/types'
+import type { Nullable, PaymentIntentApiResponse, ShipingInformation } from '~/types'
 
 /**
  * A composable used to manage the Stripe Payment Intent state globally.
@@ -8,7 +8,7 @@ import type { PaymentIntentApiResponse } from '~/types'
 export const usePaymentIntentComposable = createGlobalState(() => {
   const { $client } = useNuxtApp()
   const { customHandleError } = useErrorHandler()
-  const { docRef, cartSessionId } = useCartComposable()
+  const { docRef, cartSessionId, cartSession } = useCartComposable()
 
   const apiResponse = ref<PaymentIntentApiResponse | null>(null)
   const paymentIntent = useCookie('payment_intent')
@@ -20,13 +20,13 @@ export const usePaymentIntentComposable = createGlobalState(() => {
     // We want to use one single payment intent
     // per session in order to have proper tracking
     // of the customer's payment attempts
-    if (isDefined(paymentIntent)) {
-      return 
-    }
+    // if (isDefined(paymentIntent)) {
+    //   return 
+    // }
 
-    const data = await $client<PaymentIntentApiResponse>('/api/v1/orders/intent', {
+    const data = await $client<PaymentIntentApiResponse>('orders/v1/intent', {
       method: 'POST',
-      baseURL: useRuntimeConfig().public.prodDomain,
+      baseURL: useRuntimeConfig().public.cartProdDomain,
       body: {
         session_id: cartSessionId.value,
         total
@@ -38,6 +38,29 @@ export const usePaymentIntentComposable = createGlobalState(() => {
 
     apiResponse.value = data
     paymentIntent.value = data.intent
+  }
+
+  async function update(total: Nullable<number> = null, shipment: MaybeRef<Nullable<ShipingInformation>> = null) {
+    if (isDefined(docRef) && isDefined(cartSession)) {
+      $client('orders/v1/intent/update', {
+        method: 'POST',
+        baseURL: useRuntimeConfig().public.cartProdDomain,
+        body: {
+          session_id: docRef.id,
+          shipment: toValue(shipment),
+          total,
+          intent: cartSession.value.paymentIntent
+        } as {
+          session_id: string
+          shipment: Nullable<ShipingInformation>
+          total: Nullable<number>,
+          intent: string
+        },
+        onRequestError({ error }) {
+          customHandleError(error)
+        }
+      })
+    }
   }
 
   watchDebounced(paymentIntent, async (newValue) => {
@@ -56,6 +79,7 @@ export const usePaymentIntentComposable = createGlobalState(() => {
   return {
     paymentIntent: readonly(paymentIntent),
     hasPaymentIntent,
+    update,
     create
   }
 })

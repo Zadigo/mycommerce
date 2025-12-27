@@ -85,12 +85,15 @@ onMounted(async () => {
   //   })
   // })
 
-  // useTrackEvent('begin_checkout', {
-  //   transaction_id: cartStore.sessionId,
-  //   checkout_step: 1,
-  //   currency: 'EUR',
-  //   shipping: 1
-  // })
+  onMounted(() => {
+    useAnalyticsEvent(defineAnalyticsEvent('begin_checkout', {
+      transaction_id: docRef.id || '',
+      checkout_step: 2,
+      currency: 'EUR',
+      shipping: 1,
+      items: []
+    }))
+  })
 })
 
 /**

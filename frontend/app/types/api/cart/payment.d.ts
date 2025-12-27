@@ -6,7 +6,6 @@ export interface PaymentIntentApiResponse {
   intent: Nullable<string>
   client: Nullable<string>
   message: string
-  customer_id: Nullable<string>
   headers: Record<string, string>
 }
 
@@ -92,4 +91,15 @@ export interface DeliveryOption {
   estimated_delivery_date: EstimatedDeliveryDate
 	shipping_costValue: number
   // shop_runback_values: ShopRunbackValues
+}
+
+export interface ShipingInformation {
+  address_line: string
+  city: string
+  zip_code: string
+  country: string
+  firstname: string
+  lastname: string
+  telephone: string
+  email: string
 }

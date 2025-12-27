@@ -113,7 +113,29 @@ export function useGoogleAnalyticsCallbacks(product?: MaybeRef<Undefineable<Prod
     }
   }
 
+  async function addShippingInfo(items: MaybeRef<Arrayable<CartItem>>, total: number) {
+    if (_product && isDefined(_product)) {
+      await sendEvent(defineAnalyticsEvent('add_shipping_info', {
+        currency: 'EUR',
+        value: total,
+        items: toValue(items).map((item, idx) => ({
+          index: idx,
+          item_id: item.product.id,
+          item_name: item.product.name,
+          price: item.product.price,
+          quantity: item.quantity,
+          // item_brand: '',
+          // item_category: item.product.category,
+          // item_category2: item.product.subCategory,
+          // item_category3: item.product.variant.color,
+          // item_variant: ''
+        }) as Item) || []
+      }))
+    }
+  }
+
   return {
+    addShippingInfo,
     productEvent,
     selectProductEvent,
     viewProductsEvent,

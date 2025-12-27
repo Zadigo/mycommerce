@@ -69,18 +69,6 @@ const showcartDrawer = useState<boolean>('showCartDrawer')
 const toggleShowcartDrawer = useToggle(showcartDrawer)
 
 /**
- * Payment Intent
- */
-
-const { hasPaymentIntent, create } = usePaymentIntentComposable()
-
-watch(showAddedProductDrawer, async (newVal) => {
-  if (newVal && !hasPaymentIntent.value) {
-    await create(cartSession?.value?.total || 0)
-  }
-})
-
-/**
  * User
  */
 
@@ -90,7 +78,7 @@ const { isAuthenticated } = useUser()
 // to go to the cart but is not logged in. If
 // he tries to access the cart while anonymous,
 // he is invited to login before pursuing
-function handleNotAuthenticatedOrdering () {
+async function handleNotAuthenticatedOrdering () {
   if (isAuthenticated.value) {
     toggleShowAddedProductDrawer(false)
     router.push(toLocalePath('/cart/'))

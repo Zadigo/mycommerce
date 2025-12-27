@@ -14,7 +14,11 @@
         </li>
 
         <li class="flex items-center p-1 text-sm gap-x-2 text-primary-600">
-          <a id="action-cart-navbar" href="#" class="flex items-center gap-2" @click.prevent="() => { toggleShowCartDrawer() }">
+          <nuxt-link-locale v-if="isAuthenticated" id="link-cart-navbar" to="/cart">
+            <icon name="i-fa7-solid:shopping-bag" size="18" />
+            {{ $t("Panier") }}
+          </nuxt-link-locale>
+          <a v-else id="action-cart-navbar" href="#" class="flex items-center gap-2" @click.prevent="() => { toggleShowCartDrawer() }">
             <icon name="i-fa7-solid:shopping-bag" size="18" />
             {{ $t("Panier") }}
           </a>

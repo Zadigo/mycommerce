@@ -35,11 +35,6 @@ class ListCartView(CartMixin, generics.RetrieveAPIView):
     lookup_url_kwarg = 'unique_id'
     lookup_field = 'session_id'
 
-    # def retrieve(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-
-    #     return Response(instance.items)
-
 
 class CreateCartView(generics.CreateAPIView):
     """Create a new cart for the user"""

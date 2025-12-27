@@ -39,7 +39,8 @@
 </template>
 
 <script setup lang="ts">
-import type { ProductNode } from '~/types';
+import { promiseTimeout } from '@vueuse/core'
+import type { ProductNode } from '~/types'
 
 const props = defineProps<{ product: ProductNode }>()
 const emit = defineEmits<{ 'size-guide': [], 'availability-modal': [] }>()
@@ -62,6 +63,13 @@ const { like, icon } = await useLikeComposable(props.product)
 const { selectedSize, hasSelection, selectSize } = useSizeSelection(props.product)
 
 /**
+ * Payment Intent
+ */
+
+const { hasPaymentIntent, create } = usePaymentIntentComposable()
+const { update } = useDjangoCartComposable()
+
+/**
  * Cart
  */
 
@@ -69,5 +77,10 @@ const [showSizeSelectionWarning, toggleSizeSelectionWarning] = useToggle(false)
 const { createItem } = useCartComposable(hasSelection)
 
 const showAddedProductDrawer = useState<boolean>('showAddedProductDrawer')
-const successCallback = () => { showAddedProductDrawer.value = true }
+async function successCallback(_, total) {
+  showAddedProductDrawer.value = true
+  await update()
+  await promiseTimeout(5000)
+  await create(total)
+}
 </script>

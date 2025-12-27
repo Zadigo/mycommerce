@@ -126,17 +126,15 @@ class PaymentInterface(StripeInterfaceMixin):
         else:
             if self.errors:
                 return False
-            
+
             return response
 
-    def payment_intent(self, request, amount: int, billing_adress: str = None, debug: bool = False, products=[], stripe_params={}):
+    def payment_intent(self, request, amount: int, products=[], stripe_params={}):
         """Create a new payment intent for the given amount
 
         Args:
             request: The current request object
             amount (int): The amount to be charged in euros
-            billing_adress (str, optional): The billing address object. Defaults to None.
-            debug (bool, optional): Whether to use debug mode. Defaults to False. Defaults to False.
             products (list, optional): List of products in the cart. Defaults to [].
             stripe_params (dict, optional): Additional stripe parameters. Defaults to {}.
         """
@@ -147,24 +145,24 @@ class PaymentInterface(StripeInterfaceMixin):
             'setup_future_usage': 'off_session',
             'payment_method_types': ['card'],
             'idempotency_key': session_id,
-            'automatic_payment_methods': {
-                'enabled': False
-            },
-            'currency': 'eur',
+            'automatic_payment_methods': {'enabled': False},
             'description': 'Customer order for products',
+            'currency': 'eur',
             'metadata': {}
         }
 
         if request.user.is_authenticated:
             params['customer'] = request.user.userprofile.stripe_id
-            params['receipt_email'] = request.user.email,
+            params['receipt_email'] = request.user.email
 
         try:
             response = stripe.PaymentIntent.create(**params)
         except stripe.StripeError as e:
             self.errors['payment_error'] = e.args
+            return False
         except Exception as e:
             self.errors['payment_error'] = e.args
+            return False
         finally:
             if self.errors:
                 return False
@@ -176,9 +174,9 @@ class PaymentInterface(StripeInterfaceMixin):
         self.payment_details.client_secret = token
         self.payment_details.payment_intent_id = intent_id
         self.completed = True
-        return True
+        return response
 
-    def capture_intent(self, request, intent, payment_method):
+    def capture_intent(self, intent: str, payment_method: str):
         try:
             response = stripe.PaymentIntent.confirm(
                 intent,
@@ -186,11 +184,10 @@ class PaymentInterface(StripeInterfaceMixin):
             )
         except stripe.StripeError as e:
             self.errors['payment_error'] = e.args
+            return False
         except Exception as e:
             self.errors['payment_error'] = e.args
-        finally:
-            if self.errors:
-                return False
-
+            return False
+        
         self.completed = True
         return response

@@ -1,26 +1,40 @@
-import requests
+import asyncio
+
+import httpx
+from cart.models import Cart
 from celery import shared_task
 from celery.utils.log import get_logger
-from django.db import models
-from cart.models import Cart
+from django.conf import settings
 
 logger = get_logger(__name__)
 
 
 @shared_task
-def check_product_exists(product_id):
+def check_product_exists(items: list[dict]):
     """Check if a product exists in `mystore.Product` 
     service model"""
-    try:
-        response = requests.get(f'http://127.0.0.1:8000/shop/v1/{product_id}')
+    microservices = getattr(settings, 'MICROSERVICES', {})
+    services = microservices.get('apps', {}).get('cart', [])
 
-        if response.status_code == 200:
-            return True
+    async def runner(url: str):
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.post(url, json=items)
+                response.raise_for_status()
+                return response.json()
+        except httpx.HTTPError as exc:
+            logger.error(f"Error while checking product exists: {exc}")
         else:
-            return False
-    except requests.RequestException as e:
-        logger.error(f"Error checking product existence: {e}")
-        return False
+            logger.info(f"Successfully checked products at {url}")
+
+    async def main():
+        tasks = [
+            asyncio.create_task(runner(service))
+            for service in services
+        ]
+        return await asyncio.gather(*tasks)
+
+    asyncio.run(main())
 
 
 @shared_task
@@ -36,7 +50,8 @@ def calculate_total(cart_id: int):
         quantity = 0
 
         for json_product in instance.items:
-            total += json_product['product']['price'] * json_product['quantity']
+            total += json_product['product']['price'] * \
+                json_product['quantity']
             quantity += json_product['quantity']
 
         instance.total = total

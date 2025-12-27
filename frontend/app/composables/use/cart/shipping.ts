@@ -1,15 +1,4 @@
-import type { DeliveryOption, PaymentIntentApiResponse } from "~/types/api/cart"
-
-export interface ShippingInfo {
-  address_line: string
-  city: string
-  zip_code: string
-  country: string
-  firstname: string
-  lastname: string
-  telephone: string
-  email: string
-}
+import type { DeliveryOption, ShipingInformation } from '~/types/api/cart'
 
 /**
  * Composable for managing shipping information in the cart
@@ -22,8 +11,9 @@ export const useShippingComposable = createSharedComposable(() => {
   const shipping = ref<DeliveryOption>()
   // const paymentIntent = useCookie<PaymentIntentApiResponse>('paymentIntent')
   const saveDetails = ref(false)
+  const _saveDetails = refDebounced(saveDetails, 1000)
 
-  const shippingInfo = ref<ShippingInfo>({
+  const shippingInfo = ref<ShipingInformation>({
     address_line: '',
     city: '',
     zip_code: '',
@@ -53,30 +43,36 @@ export const useShippingComposable = createSharedComposable(() => {
 
   const { $client } = useNuxtApp()
 
-  whenever(saveDetails, () => {
-    try {
-      if (shippingInfoCompleted.value) {
-        const data = $client('/api/v1/address-set/create', {
+  const { trigger: save } = watchTriggerable([_saveDetails, shippingInfo], async ([saveDetailsValue, shippingInfoValue]) => {
+    const canBeSaved = Object.entries(shippingInfoValue).map(([_, value]) => value !== '').every((val) => val === true)
+
+    if (saveDetailsValue && canBeSaved) {
+      try {
+        const data = await $client('/api/v1/address-set/create', {
           method: 'POST',
           baseURL: useRuntimeConfig().public.prodDomain,
-          body: shippingInfo.value,
-          onResponse() {
-            addressSaved.value = true
-          }
+          body: shippingInfoValue
         })
+
+        if (data) {
+          addressSaved.value = true
+        }
+      } catch (error) {
+        console.error('Error saving address set:', error)
       }
-    } catch (error) {
-      console.error('Error saving address set:', error)
-    }
+    } 
   })
 
   return {
     shippingInfoCompleted,
     addressSaved: readonly(addressSaved),
     shipping,
-    // paymentIntent: readonly(paymentIntent),
     shippingInfo,
-    saveDetails
+    saveDetails,
+    /**
+     * Function to manually trigger saving shipping details
+     */
+    save
   }
 })
 

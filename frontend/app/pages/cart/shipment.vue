@@ -42,41 +42,30 @@
     </template>
 
     <template #footer>
-      <CartNavigationCardFooter next-page="/cart/payment" @navigate:next-page="handleUpdatePaymentIntent" />
+      <CartNavigationCardFooter next-page="/cart/payment" @navigate:next-page="handleNextPage" />
     </template>
   </volt-card>
 </template>
 
 <script lang="ts" setup>
-import type { PaymentIntentApiResponse } from '~/types'
-
 definePageMeta({
   title: 'Cart: Shipment',
   layout: 'cart',
   middleware: ['cart']
 })
 
-// const { gtag } = useGtag()
+/**
+ * Cart
+ */
 
-// TODO: G-Analytics
-// gtag('event', 'add_shipping_info', {
-//   value: cartStore.cartTotal,
-//   currency: 'EUR',
-//   items: cartStore.products.map((item, i) => {
-//     return {
-//       item_id: item.product.id,
-//       item_name: item.product.name,
-//       price: item.product.get_price,
-//       quantity: 1,
-//       item_brand: null,
-//       item_category: item.product.category,
-//       item_category2: item.product.sub_category,
-//       item_variant: item.product.color,
-//       index: i,
-//       size: item.size
-//     }
-//   })
-// })
+const { cart, cartSession, docRef } = useCartComposable()
+const { update } = usePaymentIntentComposable()
+
+/**
+ * Analytics
+ */
+
+const { addShippingInfo } = useGoogleAnalyticsCallbacks() 
 
 /**
  * New Address form
@@ -85,42 +74,25 @@ definePageMeta({
 const { shippingInfo, saveDetails } = useShippingComposable()
 
 /**
- * Payment Intent update
+ * Navigation
  */
 
-const { $client } = useNuxtApp()
-
-const paymentIntent = useState<PaymentIntentApiResponse>('paymentIntent')
-
-const { customHandleError } = useErrorHandler()
-const { sessionId } = useSession()
-
-async function handleUpdatePaymentIntent() {
-  
-  if (isDefined(sessionId)) {
-    shippingInfo.value.session_id = sessionId.value
-
-    await $client('/api/v1/orders/intent/update', {
-      method: 'POST',
-      baseURL: useRuntimeConfig().public.prodDomain,
-      body: {
-        intent: paymentIntent.value.intent,
-        ...shippingInfo.value
-      },
-      onRequestError({ error }) {
-        customHandleError(error)
-      }
-    })
-
-    // TODO: G-Analytics
-    // useTrackEvent('add_shipping_info', {
-    //   transaction_id: cartStore.sessionId,
-    //   checkout_step: 2,
-    //   currency: 'EUR',
-    //   shipping: 1
-    // })
+async function handleNextPage() {
+  if (isDefined(cartSession) && cartSession.value) {
+    await addShippingInfo(cart, cartSession.value.total)
+    await update(cartSession.value.total, shippingInfo)
   }
 }
+
+onMounted(() => {
+  useAnalyticsEvent(defineAnalyticsEvent('begin_checkout', {
+    transaction_id: docRef.id || '',
+    checkout_step: 2,
+    currency: 'EUR',
+    shipping: 1,
+    items: []
+  }))
+})
 
 /**
  * SEO

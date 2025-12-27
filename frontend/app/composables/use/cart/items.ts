@@ -126,7 +126,7 @@ export const useCartComposable = createGlobalState((sizeSelected?: Ref<boolean>)
   }
 
   // Create or increment cart item
-  async function _createItem(product: Undefineable<ProductNode>, size: Undefineable<BaseSizeSet>, successCallback?: (items: Ref<Arrayable<CartItem>>) => void, errorCallback?: (message: string) => void): Promise<void> {
+  async function _createItem(product: Undefineable<ProductNode>, size: Undefineable<BaseSizeSet>, successCallback?: (items: Ref<Arrayable<CartItem>>, total?: number) => void, errorCallback?: (message: string) => void): Promise<void> {
     if (!isDefined(product) || !isDefined(size)) {
       console.warn('Product or size is undefined')
       if (isDefined(errorCallback)) {
@@ -181,7 +181,7 @@ export const useCartComposable = createGlobalState((sizeSelected?: Ref<boolean>)
     }
 
     if (isDefined(successCallback)) {
-      successCallback(_cart)
+      successCallback(_cart, cartSession.value?.total)
     }
   }
 
