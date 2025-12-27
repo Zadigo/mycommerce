@@ -1,16 +1,19 @@
-from django.shortcuts import get_object_or_404
-from stripe import PaymentIntent
 from cart.models import Cart
+from django.db import transaction
 from django.db.models import F, Sum
+from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 from orders import tasks
 from orders.api import serializers
 from orders.models import CustomerOrder, Product
 from orders.payment import PaymentInterface
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, GenericAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.generics import (CreateAPIView, GenericAPIView,
+                                     ListAPIView, UpdateAPIView)
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.response import Response
+from stripe import PaymentIntent
 
 
 class ListCustomerOrders(ListAPIView):
@@ -138,6 +141,20 @@ class UpdatePaymentIntent(CartMixin, GenericAPIView):
 
         interface = PaymentInterface()
 
+        if cart.is_anonymous:
+            if self.request.user.is_authenticated:
+                cart.user = self.request.user
+
+                state = interface.update_intent(
+                    cart.payment_intent,
+                    customer=self.request.user.userprofile.stripe_id
+                )
+                if not state:
+                    return interface.get_fail_response()
+
+                cart.is_anonymous = ~F('is_anonymous')
+                cart.save()
+
         shipment = serializer.validated_data.get('shipment', None)
         total = serializer.validated_data.get('total', None)
 
@@ -167,12 +184,19 @@ class CapturePaymentIntent(CartMixin, CreateAPIView):
     serializer_class = serializers.ValidateOrder
     permission_classes = [IsAuthenticated]
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request: Request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        queryset = self.get_cart_queryset(request, serializer)
-        if queryset.exists():
+        cart = self.get_cart_object(request, serializer)
+
+        is_valid = all([
+            not cart.is_paid_for,
+            not cart.is_stale,
+            # cart.total == serializer.validated_data['total']
+        ])
+
+        if is_valid:
             interface = PaymentInterface()
 
             logic = [
@@ -214,25 +238,29 @@ class CapturePaymentIntent(CartMixin, CreateAPIView):
                 'zip_code': billing_address.zip_code
             }
             customer_order = CustomerOrder.objects.create(**attrs)
-            customer_order.total = self.get_cart_amount(request, serializer)
+            customer_order.total = cart.total
             customer_order.save()
 
             # 5. Save the products at the price state at
             # which the customer bought them. This allows
             # us and the customer to keep track of the previous
             # prices of the given product
-            items_to_create = []
-            for item in queryset:
-                product_history = Product(
-                    product=item.product,
-                    unit_price=item.price
-                )
-                items_to_create.append(product_history)
+            tasks.workflow_order_create_products.apply_async(
+                args=[cart.id],
+                countdown=30
+            )
+            # items_to_create = []
+            # for item in queryset:
+            #     product_history = Product(
+            #         product=item.product,
+            #         unit_price=item.price
+            #     )
+            #     items_to_create.append(product_history)
 
-            created_items = Product.objects.bulk_create(items_to_create)
-            customer_order.products.add(*created_items)
+            # created_items = Product.objects.bulk_create(items_to_create)
+            # customer_order.products.add(*created_items)
 
-            queryset.update(is_paid_for=~F('is_paid_for'))
+            cart.is_paid_for = ~F('is_paid_for')
 
             # 6. Create a new shipment object that will be
             # completed once we get a tracking number for
@@ -244,8 +272,13 @@ class CapturePaymentIntent(CartMixin, CreateAPIView):
 
             # 6. Send webhooks as required using N8N or
             # other automated interfaces
-            # webhooks = Webhook(request, '/my-path')
-            # webhooks.send()
+            tasks.workflow_trigger_order_webhooks.apply_async(
+                args=[
+                    customer_order.reference,
+                    cart.id
+                ],
+                countdown=60
+            )
             return interface.get_success_response(customer_order=customer_order.reference)
 
         return self.cart_empty_response()

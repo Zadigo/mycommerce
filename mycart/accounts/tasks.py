@@ -6,11 +6,18 @@ from django.core.exceptions import ObjectDoesNotExist
 
 logger = get_task_logger(__name__)
 
+
 @shared_task
-def update_stripe_customer(email):
+def update_stripe_customer(email: str):
     """Function used to sync the modifications of the
     user profile locally into Stripe when the user
-    updates his user profile"""
+    updates his user profile
+
+    Link: https://docs.stripe.com/api/customers/create
+
+    Args:
+        email (str): The email of the user whose profile needs to be updated in Stripe
+    """
     try:
         user = get_user_model().objects.get(email=email)
     except ObjectDoesNotExist:
@@ -24,19 +31,27 @@ def update_stripe_customer(email):
         'phone': f'{user.userprofile.telephone}'
     }
 
-    instance = user.address_set.filter(is_active=True)
+    instance = user.userprofile.address_set.filter(is_active=True)
     if instance.exists():
         address = instance.get()
         params['address'] = {
             'line1': address.address_line,
-            'zip_code': address.post_code,
-            'city': address.city
+            'line2': address.address_line_two,
+            'postal_code': address.zip_code,
+            'city': address.city,
+            'country': address.country,
+            # 'preferred_locales': ['en']
         }
     else:
         logger.warning(f'User {email} has no active address')
         return {}
-    
-    result = stripe.Customer.modify(**params)
+
+    try:
+        stripe.Customer.modify(**params)
+    except stripe.error.StripeError as e:
+        logger.error(f'Error updating Stripe customer for {email}: {e}')
+        return {}
+
     return {'email': user.email}
 
 
@@ -49,8 +64,8 @@ def create_stripe_customer(email):
     except ObjectDoesNotExist:
         logger.error(f'User with email {email} does not exist')
         return {}
-    
-    try:    
+
+    try:
         result = stripe.Customer.create(
             email=user.email,
             name=f'{user.first_name} {user.last_name}'

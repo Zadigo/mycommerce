@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.crypto import get_random_string
@@ -30,11 +30,14 @@ class Product(models.Model):
         help_text=_("Serialized product data"),
         default=dict
     )
-    unit_price = models.DecimalField(
+    unit_price = models.FloatField(
         help_text=_("Price at the time of order"),
-        max_digits=5,
-        decimal_places=2,
-        default=0
+        default=0.0
+    )
+    customer_order = models.ManyToManyField(
+        'orders.CustomerOrder',
+        blank=True,
+        help_text=_("Link to the customer order(s)")
     )
     created_on = models.DateTimeField(
         auto_now=True
@@ -85,19 +88,9 @@ class CustomerOrder(models.Model):
         choices=CountryChoices.choices,
         default=CountryChoices.FRANCE
     )
-    products = models.ManyToManyField(
-        Product,
-        blank=True,
-        help_text=_(
-            "Reference to the products that were bought "
-            "at the price at which they were bought on "
-            "the purchase date"
-        )
-    )
-    total = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        default=0
+
+    total = models.FloatField(
+        default=0.0
     )
     notes = CKEditor5Field(
         max_length=5000,
@@ -125,6 +118,20 @@ class CustomerOrder(models.Model):
             "with the same customer order reference"
         )
     )
+    return_delay = models.DateTimeField(
+        blank=True,
+        null=True,
+        help_text=_(
+            "Date until which the customer can request a return"
+        )
+    )
+    max_return_delay = models.DateTimeField(
+        blank=True,
+        null=True,
+        help_text=_(
+            "Maximum date until which the customer can request a return"
+        )
+    )
     created_on = models.DateTimeField(
         auto_now=True
     )
@@ -143,16 +150,17 @@ class CustomerOrder(models.Model):
     def __str__(self):
         return f'CustomerOrder: {self.reference}'
 
-    @property
-    def return_delay(self):
-        return self.created_on + timezone.timedelta(days=15)
-    
-    @property
-    def max_return_delay(self):
-        return self.created_on + timezone.timedelta(days=30)
-
 
 @receiver(pre_save, sender=CustomerOrder)
 def create_order_reference(instance, **kwargs):
     if instance.reference is None:
         instance.reference = get_random_string(length=30)
+
+
+@receiver(post_save, sender=CustomerOrder)
+def set_return_dates(instance, created, **kwargs):
+    if created and instance.return_delay is None and instance.max_return_delay is None:
+        instance.return_delay = instance.created_on + \
+            timezone.timedelta(days=15)
+        instance.max_return_delay = instance.created_on + \
+            timezone.timedelta(days=30)

@@ -28,8 +28,7 @@ class CustomerOrderAdmin(admin.ModelAdmin):
             'Order',
             {
                 'fields': [
-                    'total',
-                    'products'
+                    'total'
                 ]
             }
         ],
@@ -51,7 +50,6 @@ class CustomerOrderAdmin(admin.ModelAdmin):
         'send_email_confirmation', 'download_pdf',
         'download_csv', 'send_order_cancelled_email'
     ]
-    filter_horizontal = ['products']
     date_hiearchy = 'created_on'
 
     def send_email_confirmation(self):

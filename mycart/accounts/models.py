@@ -8,9 +8,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Address(models.Model):
-    """This represents billing information which
-    can be totally different from the main account's
-    information"""
+    """TThis model stores the address information for the customer
+    which is used for billing and shipping purposes."""
 
     user_profile = models.ForeignKey(
         'UserProfile',
@@ -23,14 +22,27 @@ class Address(models.Model):
         max_length=100
     )
     address_line = models.CharField(
-        max_length=100
+        max_length=100,
+        help_text=_(
+            "The main address line for billing such as Address line 1, such "
+            "as the street, PO Box, or company name."
+        )
+    )
+    address_line_two = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text=_(
+            "The second address line for billing such as Address line 2, "
+            "such as apartment, suite, unit, building, floor, etc."
+        )
     )
     zip_code = models.PositiveIntegerField(
         validators=[]
     )
     country = models.CharField(
         max_length=100,
-        default='France'
+        default='FR'
     )
     city = models.CharField(
         max_length=100,
@@ -104,24 +116,26 @@ class UserProfile(models.Model):
         return self.source_id is not None
 
 
-@receiver(post_save, sender=User)
+@receiver(post_save, sender=UserProfile)
 def create_profile(instance, created, **kwargs):
     """Creates a user profile when a new user is created and
     schedules a task to create a Stripe customer"""
     if created:
         instance = UserProfile.objects.create(user=instance)
-        tasks.create_stripe_customer.apply_async(
-            args=[instance.user.email],
-            countdown=30
-        )
+
+        if instance.stripe_id is None:
+            tasks.create_stripe_customer.apply_async(
+                args=[instance.user.email],
+                countdown=15
+            )
 
 
-@receiver(post_save, sender=User)
+@receiver(post_save, sender=UserProfile)
 def update_profile(instance, created, **kwargs):
     """Updates the Stripe customer information
     when the user information is updated"""
     if not created:
         tasks.update_stripe_customer.apply_async(
-            args=[instance.email],
-            countdown=60
+            args=[instance.user.email],
+            countdown=15
         )

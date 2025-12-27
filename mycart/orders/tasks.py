@@ -1,37 +1,22 @@
 import stripe
+from cart.models import Cart, Product
 from celery import shared_task
 from celery.utils.log import get_logger
-from django.utils.crypto import get_random_string
 from django.conf import settings
 from django.template.loader import render_to_string
 from orders.models import CustomerOrder
-from django.contrib.auth import get_user_model
-from cart.models import Product
 
 logger = get_logger('orders')
 
 
 @shared_task
-def create_order(charge, user_id, cart_amount):
-    user = get_user_model().objects.get(id=user_id)
-    billing_address = user.userprofile.address_set.get(
-        is_active=True
-    )
+def workflow_create_order(charge, user_id, cart_amount):
+    pass
 
-    attrs = {
-        'reference': get_random_string(12),
-        'stripe_charge': charge,
-        'user': user,
-        'address': billing_address.address_line,
-        'city': billing_address.city,
-        'zip_code': billing_address.zip_code
-    }
-    customer_order = CustomerOrder.objects.create(**attrs)
-    customer_order.total = cart_amount
-    customer_order.save()
 
-    return customer_order.id
-
+@shared_task
+def workflow_trigger_order_webhooks(order_id, cart_id):
+    pass
     # # 6. Send webhooks as required using N8N or
     # # other automated interfaces
     # # webhooks = Webhook(request, '/my-path')
@@ -46,19 +31,21 @@ def create_order(charge, user_id, cart_amount):
     #     'from_email': settings.DEFAULT_FROM_EMAIL,
     #     'html_content': render_to_string('test.html')
     # }
-    # instance.user.email_user('Order received', '', **params)
+    # instance.user.email_user('Order received', '', **params)  
     # return {'order_id': order_id}
 
 
 @shared_task
-def create_products(order_id, products, serialized_product):
+def workflow_order_create_products(customer_order_reference, items: list[dict]):
     """Create product instances for a given order. The products
-    are the items received as per serialized by the store"""
-    instance = CustomerOrder.objects.get(reference=order_id)
-
-    for product in products:
-        instance.products.create(serialized_data=product)
-    return {'order_id': order_id, 'product_ids': [p.id for p in products]}
+    are the items received as per serialized by the store"""    
+    customer_order = CustomerOrder.objects.get(reference=customer_order_reference)
+    for product in items:
+        Product.objects.create(
+            customer_order=customer_order,
+            serialized_data=product,
+            unit_price=product.get('unit_price', 0)
+        )
 
 
 @shared_task

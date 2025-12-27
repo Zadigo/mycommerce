@@ -7,26 +7,6 @@ from django.utils.http import urlsafe_base64_encode
 from rest_framework import status
 from rest_framework.response import Response
 
-# def update_carrier(self, charge, customer, carrier, tracking_number):
-#     try:
-#         response = stripe.PaymentIntent.modify(
-#             charge,
-#             customer=customer,
-#             shipping={
-#                 'carrier': carrier,
-#                 'tracking_number': tracking_number,
-#             }
-#         )
-#     except stripe.StripeError as e:
-#         self.errors['update_error'] = e.args
-#     except Exception as e:
-#         self.errors['update_error'] = e.args
-#     else:
-#         return True
-#     finally:
-#         if self.errors:
-#             return False
-
 
 @dataclasses.dataclass
 class PaymentDetails:
@@ -71,9 +51,13 @@ class PaymentInterface(StripeInterfaceMixin):
         self.response_data = data | kwargs
         return Response(self.response_data, status=status.HTTP_201_CREATED)
 
-    def create_new_source(self, customer, source):
+    def create_new_source(self, customer: str, source: str):
         if settings.DEBUG:
             source = 'tok_visa'
+
+        if customer is None or source is None:
+            self.errors['payment_error'] = 'Customer or source is None'
+            return False
 
         try:
             response = stripe.Customer.create_source(
@@ -89,42 +73,61 @@ class PaymentInterface(StripeInterfaceMixin):
                 return False
         return response
 
-    def update_intent(self, intent_id: str, billing_adress = None, total: int = None):
+    def update_intent(self, intent_id: str, billing_address=None, total: int = None, carrier: dict = None, customer: str = None):
         """Update a previously created intent with additonal
         information from the shipment page"""
         params = {}
 
-        if billing_adress is not None:
+        if billing_address is not None:
             params['shipping'] = {
                 'address': {
-                    'line1': getattr(billing_adress, 'address_line'),
+                    'line1': getattr(billing_address, 'address_line'),
                     'line2': None,
-                    'postal_code': getattr(billing_adress, 'zip_code'),
-                    'city': getattr(billing_adress, 'city'),
+                    'postal_code': getattr(billing_address, 'zip_code'),
+                    'city': getattr(billing_address, 'city'),
                     'state': None,
-                    'country': getattr(billing_adress, 'country'),
+                    'country': getattr(billing_address, 'country'),
                 },
-                'name': billing_adress.get_full_name,
-                'phone': getattr(billing_adress, 'telephone'),
-                # 'carrier': None
+                'name': billing_address.get_full_name,
+                'phone': getattr(billing_address, 'telephone')
             }
 
         if total is not None:
             params['amount'] = self.adapt_number(total)
 
-        if billing_adress is None and total is None:
-            return False
+        if carrier is not None:
+            params['shipping'] = {
+                'carrier': carrier,
+                'tracking_number': None
+            }
+
+        if customer is not None:
+            params['customer'] = customer
+
+        logic = all([
+            billing_address is None,
+            total is None,
+            customer is None,
+        ])
+
+        if logic:
+            # If no parameters to update, return makes
+            # no sense to call stripe API
+            return True
 
         try:
             response = stripe.PaymentIntent.modify(intent_id, **params)
         except stripe.StripeError as e:
             self.errors['payment_error'] = e.args
+            return False
         except Exception as e:
             self.errors['payment_error'] = e.args
-        finally:
+            return False
+        else:
             if self.errors:
                 return False
-        return response
+            
+            return response
 
     def payment_intent(self, request, amount: int, billing_adress: str = None, debug: bool = False, products=[], stripe_params={}):
         """Create a new payment intent for the given amount
@@ -149,20 +152,7 @@ class PaymentInterface(StripeInterfaceMixin):
             },
             'currency': 'eur',
             'description': 'Customer order for products',
-            'metadata': {},
-            # 'shipping': {
-            #     'address': {
-            #         'line1': getattr(billing_adress, 'address_line'),
-            #         'line2': None,
-            #         'postal_code': getattr(billing_adress, 'zip_code'),
-            #         'city': getattr(billing_adress, 'city'),
-            #         'state': None,
-            #         'country': getattr(billing_adress, 'country'),
-            #     },
-            #     'name': billing_adress.get_full_name,
-            #     'phone': getattr(billing_adress, 'telephone'),
-            #     'carrier': None
-            # }
+            'metadata': {}
         }
 
         if request.user.is_authenticated:
