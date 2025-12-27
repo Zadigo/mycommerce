@@ -114,19 +114,4 @@ class ValidateCreateCart(Serializer):
 
 class DeleteFromCartSerializer(Serializer):
     session_id = fields.CharField()
-    product_id = fields.IntegerField()  # ID of the item in the cart
-    size = fields.CharField(default='Unique')
-
-    def delete(self):
-        request = self._context['request']
-
-        product_id = self.validated_data['product_id']
-        size = self.validated_data['size']
-        session_id = self.validated_data['session_id']
-
-        qs = Cart.objects.items_to_remove(
-            request, product_id, session_id, size=size)
-        for item in qs:
-            item.delete()
-
-        return qs
+    product_ids = fields.ListField(child=fields.IntegerField())

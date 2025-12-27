@@ -1,15 +1,17 @@
+from cart import tasks
 from cart.api import serializers
-from cart.api.serializers import DeleteFromCartSerializer
 from cart.models import Cart
 from cart.sessions import CartJWTGenerator
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema, inline_serializer
-from rest_framework import fields, generics
+from rest_framework import fields, generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 
 class CartMixin:
+    queryset = Cart.objects.all()
+
     def get_queryset(self):
         qs = super().get_queryset()
         if self.request.user.is_authenticated:
@@ -28,7 +30,6 @@ class ListCartView(CartMixin, generics.RetrieveAPIView):
     """Return all items that were saved
     in the specific user's cart"""
 
-    queryset = Cart.objects.all()
     serializer_class = serializers.CartSerializer
     permission_classes = [AllowAny]
     lookup_url_kwarg = 'unique_id'
@@ -47,43 +48,37 @@ class CreateCartView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 
-class DeleteFromCart(generics.DestroyAPIView):
+class DeleteFromCart(CartMixin, generics.DestroyAPIView):
     """Delete a set of objects from the cart"""
 
     permission_classes = [AllowAny]
-    serializer_class = serializers.CartSerializer
-    queryset = Cart.objects.all()
-
-    def destroy(self, request, *args, **kwargs):
-        cart = self.get_object()
-
-
-class AddToCartView(generics.CreateAPIView):
-    """Add a product to the cart. This allows the customer
-    to add products being anonymous or logged in. In the
-    first case, it returns a `session_id` used to identify
-    the user and the list of products that were added to the
-    cart for the given session"""
-
-    serializer_class = serializers.ValidateCreateCart
-    permission_classes = [AllowAny]
-
-
-class UpdateInCartView(CartMixin, generics.UpdateAPIView):
-    """Update item in cart (quantity, size...)"""
-
-    serializer_class = serializers.ValidateCreateCart
-    permission_classes = [AllowAny]
+    serializer_class = serializers.DeleteFromCartSerializer
     lookup_url_kwarg = 'unique_id'
     lookup_field = 'session_id'
 
+    def destroy(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-class DeleteFromCart(generics.GenericAPIView):
-    """Delete one or multiple products
-    from the user cart"""
+        instance = self.get_object()
+        self.perform_destroy(instance, serializer)
 
-    serializer_class = DeleteFromCartSerializer
-    queryset = Cart.objects.all()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def perform_destroy(self, instance, serializer):
+        product_ids = serializer.validated_data['product_ids']
+        updated_items = [
+            item for item in instance.items
+            if item['product']['id'] not in product_ids
+        ]
+        instance.items = updated_items
+        instance.save()
+
+        tasks.calculate_total.apply_async(
+            args=[instance.id],
+            countdown=5
+        )
+        return instance
 
 
 @extend_schema(responses={201: inline_serializer(name='TokenSerializer', fields={'token': fields.CharField()})})
