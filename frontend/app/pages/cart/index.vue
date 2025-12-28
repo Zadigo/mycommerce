@@ -14,7 +14,7 @@
     </template>
 
     <template #footer>
-      <CartNavigationCardFooter next-page="/cart/shipment" />
+      <cart-navigation-card-footer next-page="/cart/shipment" />
     </template>
   </volt-card>
 </template>
@@ -33,8 +33,6 @@ const { t } = useI18n()
 const { customHandleError } = useErrorHandler()
 
 const { shipping } = useShippingComposable()
-
-// const { gtag } = useGtag()
 
 const deliveryOptions = useStorage<DeliveryOption[]>('deliveryOptions', [])
   
@@ -62,38 +60,23 @@ if (data.value) {
   deliveryOptions.value = data.value[1]
 }
 
+/**
+ * Analytics Event
+ */
+
+const { docRef } = useCartComposable() 
+
 onMounted(async () => {
-  // await handleNewPaymentIntent()
-
-  // TODO: G-Analytics
-  // gtag('event', 'begin_checkout', {
-  //   value: cartStore.cartTotal,
-  //   currency: 'EUR',
-  //   items: cartStore.products.map((item, i) => {
-  //     return {
-  //       item_id: item.product.id,
-  //       item_name: item.product.name,
-  //       price: item.product.get_price,
-  //       quantity: 1,
-  //       item_brand: null,
-  //       item_category: item.product.category,
-  //       item_category2: item.product.sub_category,
-  //       item_variant: item.product.color,
-  //       index: i,
-  //       size: item.size
-  //     }
-  //   })
-  // })
-
-  onMounted(() => {
-    useAnalyticsEvent(defineAnalyticsEvent('begin_checkout', {
+  const { sendEvent } = useAnalyticsEvent()
+  if (isDefined(docRef)) {
+    await sendEvent(defineAnalyticsEvent('begin_checkout', {
       transaction_id: docRef.id || '',
       checkout_step: 2,
       currency: 'EUR',
       shipping: 1,
       items: []
     }))
-  })
+  }
 })
 
 /**

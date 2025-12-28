@@ -13,7 +13,8 @@
           </volt-secondary-button>
         </li>
 
-        <li class="flex items-center p-1 text-sm gap-x-2 text-primary-600">
+        <!-- OLD - Method -->
+        <!-- <li class="flex items-center p-1 text-sm gap-x-2 text-primary-600">
           <nuxt-link-locale v-if="isAuthenticated" id="link-cart-navbar" to="/cart">
             <icon name="i-fa7-solid:shopping-bag" size="18" />
             {{ $t("Panier") }}
@@ -22,6 +23,13 @@
             <icon name="i-fa7-solid:shopping-bag" size="18" />
             {{ $t("Panier") }}
           </a>
+        </li> -->
+
+        <li class="flex items-center p-1 text-sm gap-x-2 text-primary-600">
+          <nuxt-link-locale id="link-cart-navbar" to="/cart">
+            <icon name="i-fa7-solid:shopping-bag" size="18" />
+            {{ $t("Panier") }}
+          </nuxt-link-locale>
         </li>
 
         <li v-if="!isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-primary-600">

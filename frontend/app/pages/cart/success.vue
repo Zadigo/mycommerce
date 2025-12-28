@@ -15,90 +15,70 @@
               deleniti est quae nesciunt repellat non.
             </p>
   
-            <NuxtLinkLocale id="link-home" to="/" class="mt-5">
+            <nuxt-link-locale id="link-home" to="/" class="mt-5">
               {{ $t('Boutique') }}
-            </NuxtLinkLocale>
+            </nuxt-link-locale>
           </div>
         </template>
       </volt-card>
     </div>
 
     <div class="w-10/12 mx-auto mt-5">
-      <BaseRecommendations :quantity="8" />
+      <base-recommendations :quantity="8" />
     </div>
   </section>
 </template>
 
 <script lang="ts" setup>
-import { useSessionStorage } from '@vueuse/core'
-import type { CartUpdateApiResponse, ProductStockApiResponse } from '~/types';
+import type { CartUpdateApiResponse, ProductStockApiResponse } from '~/types'
 
 definePageMeta({
   layout: 'cart',
   middleware:  ['cart']
 })
 
-const { t } = useI18n()
-const cartStore = useCart()
-const cart = useSessionStorage<CartUpdateApiResponse>('cart', null)
-
-// const { gtag } = useGtag()
-const { handleError } = useErrorHandler()
+const { sendEvent } = useAnalyticsEvent()
+const { customHandleError } = useErrorHandler()
 const {  $client } = useNuxtApp()
 
-/**
- * 
- */
-async function handleUpdateStock () {
-  try {
-    const response = await $client<ProductStockApiResponse[]>('/api/v1/stocks/update', {
-      method: 'POST',
-      body: {
-        customer_order: null
-      }
-    })
-    console.log(response)
-  } catch (e) {
-    handleError(e)
-  }
+try {
+  const response = await $client<ProductStockApiResponse[]>('/api/v1/stocks/update', {
+    method: 'POST',
+    body: {
+      customer_order: null
+    }
+  })
+  console.log(response)
+} catch (e) {
+  customHandleError(e)
+  sendEvent(defineAnalyticsEvent('exception', {
+    description: 'Error while updating product stock after order completion',
+    fatal: false
+  }))
 }
 
-onMounted(async () => {
-  await handleUpdateStock()
+/**
+ * Analytics 
+ */
 
-  // TODO: G-Analytics
-  // gtag('event', 'purchase', {
-  //   transaction_id: cartStore.sessionId,
-  //   currency: 'EUR',
-  //   tax: 20,
-  //   shipping: 1,
-  //   value: cartStore.cartTotal,
-  //   items: cartStore.products.map((item, i) => {
-  //     return {
-  //       item_id: item.product.id,
-  //       item_name: item.product.name,
-  //       price: item.product.get_price,
-  //       quantity: 1,
-  //       item_brand: null,
-  //       item_category: item.product.category,
-  //       item_category2: item.product.sub_category,
-  //       item_variant: item.product.color,
-  //       index: i,
-  //       size: item.size
-  //     }
-  //   })
-  // })
+const { docRef, cartSession } = useCartComposable()
 
-  // useTrackEvent('purchase', {
-  //   checkout_step: 4,
-  //   currency: 'EUR',
-  //   shipping: 1,
-  //   value: cartStore.cartTotal
-  // })
-
-  cart.value = null
-  cartStore.cache = null
+onMounted(() => {
+  if (isDefined(docRef) && isDefined(cartSession)) {
+    sendEvent(defineAnalyticsEvent('purchase', {
+      transaction_id: docRef.id || '',
+      currency: 'EUR',
+      value: cartSession.value?.total || 0,
+      items: []
+    }))
+  }
 })
+
+/**
+ * SEO
+ */
+
+const { t } = useI18n()
 
 useHead({
   title: t('Récapitualif de la commande'),

@@ -47,41 +47,27 @@ const klarnaSelected = computed(() => hasSelectedPaymentMethod.value && selected
  * @param blockName The payment block that was used (e.g. Stripe, Klarna, etc.)
  */
 function callbackPaymentComplete(blockName: DefaultPaymentProviders) {
-// TODO: G-Analytics
-// gtag('event', 'add_payment_info', {
-  //   transaction_id: cartStore.sessionId,
-  //   currency: 'EUR',
-  //   tax: 20,
-  //   shipping: 1,
-  //   value: cartStore.cartTotal,
-  //   items: cartStore.products.map((item, i) => {
-  //     return {
-  //       item_id: item.product.id,
-  //       item_name: item.product.name,
-  //       price: item.product.get_price,
-  //       quantity: 1,
-  //       item_brand: null,
-  //       item_category: item.product.category,
-  //       item_category2: item.product.sub_category,
-  //       item_variant: item.product.color,
-  //       index: i,
-  //       size: item.size
-  //     }
-  //   })
-  // })
   console.log('callbackPaymentComplete', blockName)
-
   router.push('/cart/success')
 }
 
+/**
+ * Analytics
+ */
+
+const { docRef } = useCartComposable()
+
 onMounted(() => {
-  useAnalyticsEvent(defineAnalyticsEvent('begin_checkout', {
-    transaction_id: docRef.id || '',
-    checkout_step: 2,
-    currency: 'EUR',
-    shipping: 1,
-    items: []
-  }))
+  const { sendEvent } = useAnalyticsEvent()
+  if (isDefined(docRef)) {
+    sendEvent(defineAnalyticsEvent('add_payment_info', {
+      transaction_id: docRef.id || '',
+      checkout_step: 3,
+      currency: 'EUR',
+      shipping: 1,
+      items: []
+    }))
+  }
 })
 
 /**

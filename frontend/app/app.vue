@@ -77,6 +77,8 @@ useState<Undefineable<PaymentIntentApiResponse>>('paymentIntent', () => undefine
 
 useScript({
   async: true,
-  src: 'https://js.stripe.com/v3/'
+  src: 'https://js.stripe.com/v3/',
+  crossorigin: 'anonymous',
+  tagPriority: 'high'
 })
 </script>

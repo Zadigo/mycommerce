@@ -42,7 +42,7 @@
     </template>
 
     <template #footer>
-      <CartNavigationCardFooter next-page="/cart/payment" @navigate:next-page="handleNextPage" />
+      <cart-navigation-card-footer next-page="/cart/payment" @navigate:next-page="handleNextPage" />
     </template>
   </volt-card>
 </template>
@@ -84,14 +84,18 @@ async function handleNextPage() {
   }
 }
 
-onMounted(() => {
-  useAnalyticsEvent(defineAnalyticsEvent('begin_checkout', {
-    transaction_id: docRef.id || '',
-    checkout_step: 2,
-    currency: 'EUR',
-    shipping: 1,
-    items: []
-  }))
+onMounted(async () => {
+  const { sendEvent } = useAnalyticsEvent()
+
+  if (isDefined(docRef)) {
+    await sendEvent(defineAnalyticsEvent('add_shipping_info', {
+      transaction_id: docRef.id || '',
+      checkout_step: 2,
+      currency: 'EUR',
+      shipping: 1,
+      items: []
+    }))
+  }
 })
 
 /**

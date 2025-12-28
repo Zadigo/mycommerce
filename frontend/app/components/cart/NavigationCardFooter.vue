@@ -1,43 +1,37 @@
 <template>
   <div class="flex justify-between items-center w-full">
     <volt-button v-if="currentStep > 1"> 
-      <NuxtLinkLocale  id="link-cart-previous" to="/cart/" class="block" @click="$emit('navigate:previous-page')">
+      <nuxt-link-locale  id="link-cart-previous" to="/cart/" class="block" @click="$emit('navigate:previous-page')">
         {{ $t("Retour") }}
-      </NuxtLinkLocale >
+      </nuxt-link-locale >
     </volt-button>
 
     <volt-button v-else>
-      <NuxtLinkLocale  id="link-home" to="/">
+      <nuxt-link-locale  id="link-home" to="/">
         <Icon name="i-fa7-solid:arrow-left" class="me-2" />
         {{ $t('Boutique') }}
-      </NuxtLinkLocale >
+      </nuxt-link-locale >
     </volt-button>
     
-    <volt-button>
-      <NuxtLinkLocale  :to="nextPage" id="link-cart-next" class="block" @click="$emit('navigate:next-page')">
+    <volt-button v-if="isAuthenticated">
+      <nuxt-link-locale :to="nextPage" id="link-cart-next" class="block" @click="$emit('navigate:next-page')">
         {{ $t("Continuer") }}
-      </NuxtLinkLocale >
+      </nuxt-link-locale >
     </volt-button>
+
+    <a v-else href="#" @click.prevent="toggleShowLoginDrawer(true)">
+      <volt-button>
+        {{ $t("Continuer") }}
+      </volt-button>
+    </a>
   </div>
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  nextPage: {
-    type: String,
-    required: true
-  }
-})
+defineProps<{ nextPage: string }>()
+defineEmits<{ 'navigate:previous-page': [], 'navigate:next-page': [] }>()
 
-defineEmits({
-  'navigate:previous-page' () {
-    return true
-  },
-  'navigate:next-page' () {
-    return true
-  }
-})
-
+const { isAuthenticated } = useUser()
 const route = useRoute()
 
 const currentStep = computed(() => {
@@ -53,4 +47,10 @@ const currentStep = computed(() => {
     return 0
   }
 })
+
+/**
+ * 
+ */
+
+const { toggleShowLoginDrawer } = useModalsState()
 </script>
