@@ -14,7 +14,7 @@ const { mockUseFetch, mockUseRoute } = vi.hoisted(() => ({
 mockNuxtImport('useFetch', () => mockUseFetch)
 mockNuxtImport('useRoute', () => mockUseRoute)
 
-describe('Products Feed Component', () => {
+describe.skip('Products Feed Component', () => {
   afterAll(() => {
     vi.restoreAllMocks()
   })

@@ -1,13 +1,11 @@
-import { describe, it, expect, vi } from 'vitest'
-import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import type { CartItem, ProductNode } from '~/types'
+import { describe, expect, it, vi } from 'vitest'
 import { productFixture } from '~/data/__fixtures__'
 
 mockNuxtImport('useCookie', () => {
-  return (name: string, options?: any) => ref(options?.default?.() ?? '')
+  return (_name: string, _options?: object) => {
+    return ref(null)
+  }
 })
-
-import { useCartComposable } from '../../app/composables/use/cart'
 
 vi.mock('firebase/firestore', () => ({
   doc: vi.fn(),
@@ -16,7 +14,7 @@ vi.mock('firebase/firestore', () => ({
 
 vi.mock('vuefire', () => {
   const vuefire = vi.importActual<typeof import('vuefire')>('vuefire')
-  
+
   return {
     ...vuefire,
     useDocument: vi.fn(() => ({
@@ -30,45 +28,48 @@ vi.mock('vuefire', () => {
   }
 })
 
+import { useCookie } from '#app'
+import { useCartComposable } from '../../app/composables/use/cart/items'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { useDocument } from 'vuefire'
 
-describe('useCartComposable', () => {
-  it('should initialize with default values', () => {
-    const {
-      cart,
-      cartSession,
-      cartSessionId,
+describe('useCartComposable Nuxt', () => {
+  it('should return default values on server', () => {
+    const { 
+      cart, 
+      cartSession, 
+      cartSessionId, 
+      docRef, 
+      isInitialized, 
+      isSyncing,
       lastProduct,
-      createItem,
+      syncError,
+      clearCart, 
+      createItem, 
       reduceQuantity,
-      removeProduct
+      removeProduct,
+      freeDeliveryTarget 
     } = useCartComposable()
 
-    expect(cart.value).toBeTypeOf('object')
-
-    expect(Array.isArray(cart.value)).toBe(true)
-    if (Array.isArray(cart.value)) {
-      expect(cart.value.length).toBe(0)
-    }
-
-    expect(createItem).toBeTypeOf('function')
-    expect(removeProduct).toBeTypeOf('function')
-    expect(reduceQuantity).toBeTypeOf('function')
-  })
-
-  it('should have cartSessionId as a ref string', () => {
-    const { cartSessionId } = useCartComposable()
-    expect(cartSessionId).toBeTypeOf('object')
+    expect(cart.value).toEqual([])
+    expect(cartSession).toBeNull()
     expect(cartSessionId.value).toBe('')
-  })
-
-  it('should have lastProduct as null initially', () => {
-    const { lastProduct } = useCartComposable()
-    expect(lastProduct).toBeTypeOf('object')
+    expect(docRef).toBeNull()
+    expect(isInitialized.value).toBe(false)
+    expect(isSyncing.value).toBe(false)
     expect(lastProduct.value).toBeNull()
+    expect(syncError.value).toBeNull()
+    expect(clearCart).toBeTypeOf('function')
+    expect(createItem).toBeTypeOf('function')
+    expect(reduceQuantity).toBeTypeOf('function') 
+    expect(removeProduct).toBeTypeOf('function')
+    expect(freeDeliveryTarget(30, 50).value).toBe(20)
   })
 
-  it('should create new item in cart', async () => {
+  it('should be able to create new item in cart', async () => {
+    // Run in client-side mode
+    vi.stubGlobal('process', { client: true })
+
     vi.mocked(useDocument).mockReturnValueOnce({
       data: {
         value: {
@@ -99,23 +100,16 @@ describe('useCartComposable', () => {
       }
     } as any)
 
-    vi.mocked(useCookie).mockReturnValueOnce(ref('test_session_id'))
+    const sessionId = useCookie('cartSessionId')
+    sessionId.value = 'test-session-id'
 
-    const { createItem, cart } = useCartComposable()
+    const { createItem, cart  } = useCartComposable()
+    
+    await createItem(productFixture, productFixture.node.sizeSet[9])
 
-    const mockProduct: ProductNode = productFixture
-
-    await createItem(mockProduct, mockProduct.node.sizeSet[0])
-
+    console.log(cart.value)
     expect(cart.value.length).toBe(1)
 
-    // expect(Array.isArray(cart.value)).toBe(true)
-    // if (Array.isArray(cart.value)) {
-    //   expect(cart.value.length).toBe(1)
-    //   expect(cart.value[0].product.id).toBe('prod_1')
-    //   expect(cart.value[0].size.id).toBe('size_1')
-    //   expect(cart.value[0].quantity).toBe(1)
-    //   expect(cart.value[0].total).toBe(0)
-    // }
+    vi.unstubAllGlobals()
   })
 })

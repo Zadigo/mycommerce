@@ -4,8 +4,8 @@
 export const useHandleGridSize = createGlobalState(() => {
   if (import.meta.server) {
     return {
-      threeState: ref<string>('ghost'),
-      fourState: ref<string>('ghost'),
+      threeState: ref<string>('light'),
+      fourState: ref<string>('light'),
       gridClass: ref<string>('grid grid-cols-4 gap-2 px-1'),
       currentGridSize: ref<number>(3),
       handleGridSize: () => { }

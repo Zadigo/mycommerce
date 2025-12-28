@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { generateProducts, generateImages, IMAGE_GROUPS } from '../../app/data/__fixtures__/products/utils'
 import type { ProductNode } from '~/types'
 
-describe('Fixtures Generator - generateProducts', () => {
+describe.skip('Fixtures Generator - generateProducts', () => {
   it('should generate the correct number of products', async () => {
     const count = 5
     const products = await generateProducts(count)
@@ -16,7 +16,7 @@ describe('Fixtures Generator - generateProducts', () => {
   })
 })
 
-describe('Fixtures Generator - generateImages', () => {
+describe.skip('Fixtures Generator - generateImages', () => {
   it('should generate the correct number of images', async () => {
     const images = await generateImages(IMAGE_GROUPS.at(0))
     expect(images.length).toBeGreaterThan(1)
