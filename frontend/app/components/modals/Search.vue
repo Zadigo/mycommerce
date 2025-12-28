@@ -38,7 +38,7 @@ import type { SearchedProducts } from '~/types'
 import { baseProductGraph } from '~/data/constants/graphs'
 
 const AsyncRecommendations = defineAsyncComponent({
-  loader: async () => import('~/components/BaseRecommendations.vue'),
+  loader: async () => import('~/components/base/Recommendations.vue'),
   suspensible: true,
   delay: 200,
   timeout: 10000

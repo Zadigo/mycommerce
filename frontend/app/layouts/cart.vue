@@ -11,10 +11,12 @@
     </header>
 
     <div class="container mx-auto px-10">
+      <!-- Success Page -->
       <div v-if="isSuccessPage" class="my-5">
         <slot />
       </div>
 
+      <!-- Items -->
       <div v-else class="my-5 grid grid-cols-12 gap-4">
         <div class="col-span-12">
           <volt-card class="shadow-none border-none">
@@ -35,7 +37,6 @@
           <slot />
         </div>
 
-
         <div class="col-span-6">
           <volt-card class="border-none bg-gray-50">
             <template #title>
@@ -43,7 +44,7 @@
             </template>
             
             <template #content>
-              <CartIterator :is-editable="false" />
+              <cart-iterator :is-editable="false" />
             </template>
 
             <template #footer>

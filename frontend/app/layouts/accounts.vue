@@ -1,7 +1,7 @@
 <template>
   <section id="account">
     <!-- Navbar -->
-    <navbar-base />
+    <base-navbar />
 
     <div class="mx-auto px-10">
       <div class="grid grid-cols-12 grid-rows-1 gap-2 my-10">

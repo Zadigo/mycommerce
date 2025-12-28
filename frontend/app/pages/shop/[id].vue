@@ -52,7 +52,7 @@
  */
 
 const AsyncBaseRecommendationBlock = defineAsyncComponent({
-  loader: async () => import('~/components/BaseRecommendations.vue'),
+  loader: async () => import('~/components/base/Recommendations.vue'),
   suspensible: true,
   timeout: 5000
 })

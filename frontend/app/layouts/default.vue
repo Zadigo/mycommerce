@@ -1,7 +1,7 @@
 <template>
   <section id="shop" class="relative">
     <!-- Navbar -->
-    <navbar-base />
+    <base-navbar />
 
     <slot />
 

@@ -1,25 +1,18 @@
 <template>
-  <div class="mx-auto px-10 my-10">
-    <volt-button variant="outline" class="">
-      Test
-    </volt-button>
+  <section id="cart">
+    <div class="grid grid-cols-12">
+      <!-- Header -->
+      <header class="col-span-12">
+        Header
+      </header>
 
-    <div class="mx-auto px-5">
-      <TailFooter variant="light">
-        <TailFooterContent>
-          <TailFooterSection>
-            <TailFooterSectionLinks v-for="i in 3" :key="i" title="Some title">
-              <TailFooterSectionLink to="/">Link 1</TailFooterSectionLink>
-              <TailFooterSectionLink to="/">Link 2</TailFooterSectionLink>
-            </TailFooterSectionLinks>
-          </TailFooterSection>
+      <div class="col-span-8">
+        Something
+      </div>
 
-          <TailFooterSocials>
-            <template #coopywrite>Copwrite</template>
-            <template #socials>Socials</template>
-          </TailFooterSocials>
-        </TailFooterContent>
-      </TailFooter>
+      <div class="col-span-4">
+        Aside
+      </div>
     </div>
-  </div>
+  </section>
 </template>
