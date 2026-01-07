@@ -128,6 +128,8 @@ class TestShopApi(AuthenticatedTestCase):
         self.assertEqual(response_data.get('count'), 1)
 
     def test_get_product(self):
+        products = ProductFactory.create_batch(size=10)
+
         product = Product.objects.first()
         path = reverse('shop_api:product', args=[product.id])
         response = self.client.get(path)
@@ -136,6 +138,8 @@ class TestShopApi(AuthenticatedTestCase):
         self.assertIn('id', response.json())
 
     def test_recommendations(self):
+        products = ProductFactory.create_batch(size=50)
+
         path = reverse('shop_api:recommendations')
         query = urlencode({
             'quantity': 1,

@@ -31,11 +31,12 @@ boto3 = "*"
 django-storages = "*"
 django-ckeditor-5 = "*"
 channels = {extras = ["daphne"], version = "*"}
-httpx = "*"
-django-environ = "*"
 coverage = "*"
 factory-boy = "*"
 graphene-django = "*"
+httpx = "*"
+django-environ = "*"
+pytest-django = "*"
 
 [dev-packages]
 autopep8 = "*"

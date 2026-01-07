@@ -1,5 +1,3 @@
-
-
 from cart.models import Cart
 from django.db.models.fields import json
 from django.test import override_settings
@@ -185,49 +183,3 @@ class TestCartApi(AuthenticatedTestCase):
 
         qs = Cart.objects.filter(session_id='duplicateSessionID')
         self.assertEqual(qs.count(), 2)
-
-
-# @unittest.skip('Live test skipped')
-# class TestLiveCart(LiveServerTestCase):
-#     @classmethod
-#     def setUpClass(cls):
-#         super().setUpClass()
-#         cls.browser = webdriver.Edge()
-
-#     @classmethod
-#     def tearDownClass(cls):
-#         cls.browser.quit()
-#         super().tearDownClass()
-
-#     def test_cart(self):
-#         self.browser.get('http://localhost:5173/')
-
-#         WebDriverWait(self.browser, 10).until(
-#             ec.element_to_be_clickable(
-#                 (
-#                     By.ID,
-#                     'btn-select-language'
-#                 )
-#             )
-#         )
-
-#         language_button = self.browser.find_element(
-#             By.ID,
-#             'btn-select-language'
-#         )
-#         language_button.click()
-
-#         time.sleep(2)
-
-#         section = self.browser.find_element(
-#             By.CSS_SELECTOR,
-#             'section#collections'
-#         )
-#         collections = section.find_elements(
-#             By.TAG_NAME,
-#             'article'
-#         )
-#         first_collection = collections[0]
-#         first_collection.click()
-
-#         time.sleep(10)

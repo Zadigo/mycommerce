@@ -1,24 +1,24 @@
-import os
 from datetime import timedelta
 from pathlib import Path
 
-import dotenv
+import environ
 import stripe
+
+env = environ.Env(DEBUG=(bool, False))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-if BASE_DIR.joinpath('.env').exists():
-    dotenv.load_dotenv(BASE_DIR / '.env')
+environ.Env.read_env(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
@@ -92,11 +92,11 @@ ASGI_APPLICATION = 'mycart.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT', 5432)
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD', default='touparet'),
+        'HOST': env('DB_HOST', default='localhost'),
+        'PORT': env('DB_PORT', default=5432)
     }
 }
 
@@ -198,17 +198,17 @@ SIMPLE_JWT = {
 
 # Emailing
 
-EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
 
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
 
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 
 EMAIL_USE_TLS = True
 
 EMAIL_PORT = 587
 
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='webmaster@localhost')
 
 
 # Sites
@@ -223,17 +223,17 @@ SITE_ID = 1
 # password to establish the connection:
 # https://github.com/redis/redis/issues/13437
 
-REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
+REDIS_HOST = env('REDIS_HOST', default='127.0.0.1')
 
-REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
+REDIS_PASSWORD = env('REDIS_PASSWORD')
 
 REDIS_URL = f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:6379'
 
-RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', 'localhost')
+RABBITMQ_HOST = env('RABBITMQ_HOST', default='localhost')
 
-RABBITMQ_USER = os.getenv('RABBITMQ_DEFAULT_USER', 'guest')
+RABBITMQ_USER = env('RABBITMQ_DEFAULT_USER', default='guest')
 
-RABBITMQ_PASSWORD = os.getenv('RABBITMQ_DEFAULT_PASS', 'guest')
+RABBITMQ_PASSWORD = env('RABBITMQ_DEFAULT_PASS', default='guest')
 
 CELERY_BROKER_URL = f'amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_HOST}:5672'
 
@@ -278,28 +278,28 @@ PY_UTILITIES_JWT_ISSUER = 'ecommerce'
 
 # PY_UTILITIES_JWT_SUBJECT = 'cart'
 
-PY_UTILITIES_JWT_SECRET = os.getenv('PY_UTILITIES_JWT_SECRET')
+PY_UTILITIES_JWT_SECRET = env('PY_UTILITIES_JWT_SECRET')
 
 
 # Stripe
 
 if DEBUG:
-    stripe.api_key = os.getenv('STRIPE_TEST_SECRET_KEY')
+    stripe.api_key = env('STRIPE_TEST_SECRET_KEY')
 else:
-    stripe.api_key = os.getenv('STRIPE_PRODUCTION_API_KEY')
+    stripe.api_key = env('STRIPE_PRODUCTION_API_KEY')
 
 
 # VAT - In order to use VAT when returning
 # product price, set this value to the applicable
 # VAT for your given country
-VAT_PERCENTAGE = os.getenv('VAT_PERCENTAGE', 0)
+VAT_PERCENTAGE = env('VAT_PERCENTAGE', default=0)
 
 
 # PYJWT
 
 PY_UTILITIES_JWT_ISSUER = 'ecommerce'
 
-PY_UTILITIES_JWT_SECRET = os.getenv('PY_UTILITIES_JWT_SECRET')
+PY_UTILITIES_JWT_SECRET = env('PY_UTILITIES_JWT_SECRET')
 
 
 # CKEditor for more information on customizing
