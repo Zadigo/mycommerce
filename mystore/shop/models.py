@@ -1,17 +1,11 @@
-import pathlib
-import random
-import string
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, models, transaction
-from django.db.models import CheckConstraint, Choices, Q, UniqueConstraint
-from django.db.models.signals import (post_delete, post_save, pre_delete,
-                                      pre_save)
+from django.db.models import CheckConstraint, Choices, Q
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.forms import ValidationError
-from django.urls import reverse
-from django.utils.functional import cached_property
 from django.utils.timezone import now, timedelta
 from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
@@ -208,10 +202,7 @@ class AbstractProduct(models.Model):
         blank=True,
         null=True
     )
-    unit_price = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        default=1,
+    unit_price = models.FloatField(
         help_text=_('Cost value of the current product'),
         validators=[validators.price_validator]
     )
@@ -222,10 +213,10 @@ class AbstractProduct(models.Model):
             'the product unit price'
         )
     )
-    sale_price = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        default=0
+    sale_price = models.FloatField(
+        default=0,
+        help_text=_('Sale price of the current product'),
+        validators=[validators.price_validator]
     )
     on_sale = models.BooleanField(
         default=False

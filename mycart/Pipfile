@@ -22,7 +22,6 @@ django-import-export = "*"
 numpy = "*"
 celery = "*"
 firebase-admin = "*"
-requests = "*"
 djangorestframework-simplejwt = "*"
 daphne = "*"
 django-celery-beat = "*"
@@ -33,6 +32,10 @@ django-storages = "*"
 django-ckeditor-5 = "*"
 channels = {extras = ["daphne"], version = "*"}
 httpx = "*"
+django-environ = "*"
+coverage = "*"
+factory-boy = "*"
+graphene-django = "*"
 
 [dev-packages]
 autopep8 = "*"

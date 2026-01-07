@@ -1,5 +1,5 @@
-from django.forms import ValidationError
 from collection.api.serializers import CollectionSerializer
+from django.forms import ValidationError
 from rest_framework import fields
 from rest_framework.serializers import Serializer
 from variants.api.serializers import SizeSerializer
@@ -61,7 +61,6 @@ class ProductSerializer(Serializer):
     model_size = fields.CharField()
     # video = VideoSerializer(required=False)
     color_variant_name = fields.CharField()
-    is_new = fields.BooleanField()
     active = fields.BooleanField()
     display_new = fields.BooleanField()
     slug = fields.SlugField(required=False)

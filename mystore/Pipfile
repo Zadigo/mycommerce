@@ -40,8 +40,12 @@ daphne = "*"
 django-celery-beat = "*"
 flower = "*"
 pyjwt = "*"
-graphene-django = "*"
 django-filter = "*"
+django-environ = "*"
+coverage = "*"
+factory-boy = "*"
+graphene-django = "*"
+httpx = "*"
 
 [dev-packages]
 autopep8 = "*"

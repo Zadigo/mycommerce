@@ -1,11 +1,32 @@
+import factory
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
 
+class UserFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = get_user_model()
+
+    username = factory.Faker(
+        'user_name'
+    )
+    email = factory.Faker(
+        'email'
+    )
+    first_name = factory.Faker(
+        'first_name'
+    )
+    last_name = factory.Faker(
+        'last_name'
+    )
+
+
 class AuthenticationMixin:
     @classmethod
     def setUpTestData(cls):
+        users = UserFactory.create_batch(5)
+
         cls.user = get_user_model().objects.get(pk=1)
         cls.user.set_password('touparet')
         cls.user.save()
@@ -18,7 +39,7 @@ class AuthenticationMixin:
         response = self.client.post(
             reverse('token_obtain_pair'),
             data={
-                'username': 'juliette',
+                'username': self.user.username,
                 'password': 'touparet'
             }
         )

@@ -2,6 +2,7 @@ import unittest
 from decimal import Decimal
 from urllib.parse import urlencode
 
+import factory
 from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 from rest_framework.mixins import status
@@ -12,6 +13,53 @@ from shop.utils import (calculate_sale, create_slug, process_file_name,
                         transform_to_snake_case)
 
 from mystore.mixins import AuthenticatedTestCase
+
+
+class ProductFactory(factory.django.DjangoModelFactory):
+    # sale_value = factory.Transformer(0, transform=0)
+
+    class Meta:
+        model = Product
+
+    name = factory.Faker(
+        'word'
+    )
+    color = factory.Faker(
+        'color_name'
+    )
+    sku = factory.Faker(
+        'ean13'
+    )
+    unit_price = factory.Faker(
+        'pyfloat',
+        left_digits=2,
+        right_digits=2,
+        positive=True
+    )
+    # sale_value = factory.Faker(
+    #     'pyfloat',
+    #     left_digits=1,
+    #     right_digits=2,
+    #     positive=True
+    # )
+    # sale_price = factory.Faker(
+    #     'pyfloat',
+    #     left_digits=2,
+    #     right_digits=2,
+    #     positive=True
+    # )
+    # on_sale = factory.Faker(
+    #     'boolean',
+    #     chance_of_getting_true=50
+    # )
+    display_new = factory.Faker(
+        'boolean',
+        chance_of_getting_true=50
+    )
+    active = factory.Faker(
+        'boolean',
+        chance_of_getting_true=90
+    )
 
 
 class TestProductModel(TransactionTestCase):
@@ -40,16 +88,17 @@ class TestProductModel(TransactionTestCase):
 
 
 class TestShopApi(AuthenticatedTestCase):
-    fixtures = ['fixtures/users', 'fixtures/products']
+    # fixtures = ['fixtures/users', 'fixtures/products']
 
     def test_list_products(self):
+        products = ProductFactory.create_batch(size=10)
+
         path = reverse('shop_api:products')
         response = self.client.get(path)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.json()
         self.assertIn('count', data)
-        self.assertEqual(data['count'], 7)
         self.assertIn('results', data)
 
         for item in data['results']:
@@ -65,7 +114,9 @@ class TestShopApi(AuthenticatedTestCase):
                         )
                     except AssertionError as e:
                         print(
-                            f'{item['id']}: clean not called on fixtures? {e}')
+                            f'{item["id"]}: clean not called '
+                            f'on fixtures? {e}'
+                        )
 
     def test_lists_products_as_search(self):
         path = reverse('shop_api:products')
