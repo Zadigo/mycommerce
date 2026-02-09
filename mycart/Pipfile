@@ -32,11 +32,11 @@ django-storages = "*"
 django-ckeditor-5 = "*"
 channels = {extras = ["daphne"], version = "*"}
 coverage = "*"
-factory-boy = "*"
 graphene-django = "*"
 httpx = "*"
 django-environ = "*"
 pytest-django = "*"
+factory-boy = "*"
 
 [dev-packages]
 autopep8 = "*"
