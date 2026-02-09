@@ -11,26 +11,25 @@ export async function useLikeComposable(product: MaybeType<ProductNode>, callbac
     
   const _product = toValue(product)
   const productId = useToNumber(isDefined(_product) ? _product.node.id : '')
+
   const likedProducts = computed(() => isDefined(session) ? session.value.likedProducts : [])
-  
   const isLiked = useArrayIncludes(likedProducts, productId.value)
-  const icon = computed(() => isLiked.value ? 'i-fa7-solid:heart' : 'i-fa7-regular:heart')
+
+  const icon = computed(() => isLiked.value ? 'fa7-solid:heart' : 'fa7-regular:heart')
   
   async function like() {
-    if (isDefined(_product)) {
-      if (isDefined(docRef)) {
-        if (isLiked.value) {
-          await updateDoc(docRef, { likedProducts: arrayRemove(productId.value) })
-        } else {
-          await updateDoc(docRef, { likedProducts: arrayUnion(productId.value) })
-        }
-        
-        // const uniqueIds = useArrayUnique(session.value.likedProducts)
-        // await updateDoc(docRef, { likedProducts: toValue(uniqueIds) })
+    if (isDefined(_product) && isDefined(docRef)) {
+      if (isLiked.value) {
+        await updateDoc(docRef, { likedProducts: arrayRemove(productId.value) })
+      } else {
+        await updateDoc(docRef, { likedProducts: arrayUnion(productId.value) })
+      }
+      
+      // const uniqueIds = useArrayUnique(session.value.likedProducts)
+      // await updateDoc(docRef, { likedProducts: toValue(uniqueIds) })
 
-        if (callback) {
-          callback(isLiked.value ? 'unlike' : 'like')
-        }
+      if (callback) {
+        callback(isLiked.value ? 'unlike' : 'like')
       }
     }
   }

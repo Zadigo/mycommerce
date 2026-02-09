@@ -34,8 +34,16 @@
       </div>
       
       <div class="flex align-center">
-        <button type="button" class="bg-white rounded-full p-2" @click="like">
-          <icon :name="icon" size="13" />
+        <button type="button" class="bg-white text-black rounded-full" @click="like">
+          <client-only>
+            <template #default>
+              <icon :name="icon" class="text-sm" />
+            </template>
+
+            <template #fallback>
+              <icon name="fa7-regular:heart" class="text-sm" />
+            </template>
+          </client-only>
         </button>
       </div>
     </div>

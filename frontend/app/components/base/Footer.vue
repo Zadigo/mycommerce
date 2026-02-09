@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import { socialLinks, footerLinks, useBusinessDetails } from '~/data'
+import { footerLinks, useBusinessDetails } from '~/data'
 import type { BaseCountries } from '~/types'
 
 const i18nCountry = useCookie<BaseCountries>('i18nCountry')
@@ -64,7 +64,7 @@ const { activeSocials, get, getSocial, getSocialIcon } = await useBusinessDetail
 const emit = defineEmits<{ 'show-whatsapp': [] }>()
 
 const numberOfSections = computed(() => footerLinks.sections.length)
-const languageChoice = computed(() => isDefined(writeableSession) ? writeableSession.value.language.choice : 'fr')
+const languageChoice = computed(() => isDefined(writeableSession) ? writeableSession.value?.language.choice : 'fr')
 const currentYear = computed(() => $dayjs().year())
 
 const showLanguageModal = useState<boolean>('showLanguageModal')

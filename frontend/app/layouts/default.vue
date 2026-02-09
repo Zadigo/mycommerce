@@ -18,29 +18,11 @@
     <!-- Footer -->
     <base-footer class="mt-40" @show-whatsapp="showWhatsAppModal=true" />
 
-    <dev-only>
-      <client-only>
-        <template #default>
-          <div class="fixed top-1/12 right-5 bg-white rounded-lg shadow-lg p-4 z-50 w-100 space-y-5">
-            <p class="font-bold">Website data</p>
-            <p>{{ cartSession }}</p>
-            <p>Cart: {{ cart }}</p>
-            <p>session: {{ sessionId }} ({{ isInitialized }})</p>
-            <p>Cart session: {{ cartSessionId }}</p>
-          </div>
-        </template>
-
-        <template #fallback>
-          Loading website data...
-        </template>
-      </client-only>
-    </dev-only>
+    <!-- Debug -->
+    <website-data />
   </section>
 </template>
 
 <script lang="ts" setup>
 const showWhatsAppModal = ref<boolean>(false)
-
-const { sessionId, isInitialized } = useSession()
-const { cartSession, cart, cartSessionId } = useCartComposable()
 </script>

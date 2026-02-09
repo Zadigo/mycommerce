@@ -1,20 +1,3 @@
-export const socialPlatforms = [
-  'Facebook',
-  'Twitter',
-  'Instagram',
-  'YouTube',
-  'Snapchat',
-  'WhatsApp'
-] as const
-
-export type DefaultSocialPlatforms = (typeof socialPlatforms)[number] | (string & {})
-
-export interface DefaultSocialLinks {
-  name: DefaultSocialPlatforms,
-  url: string
-  icon: string
-}
-
 export interface FooterSection {
   name: string
   links: {
@@ -24,34 +7,10 @@ export interface FooterSection {
 }
 
 export interface FooterLinks {
-  socials: {
-    name: string
-    url: string
-    icon: string | null
-  }[],
   sections: FooterSection[]
 }
 
-export const socialLinks: DefaultSocialLinks[] = [
-  {
-    name: "Facebook",
-    url: "#",
-    icon: "facebook-f"
-  },
-  {
-    name: "Facebook",
-    url: "#",
-    icon: "instagram"
-  },
-  {
-    name: "Facebook",
-    url: "#",
-    icon: "twitter"
-  }
-]
-
 export const footerLinks: FooterLinks = {
-  socials: socialLinks,
   sections: [
     {
       name: 'Aide',

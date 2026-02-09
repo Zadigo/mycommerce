@@ -1,5 +1,5 @@
 import { promiseTimeout } from '@vueuse/core'
-import { addDoc, collection, doc } from 'firebase/firestore'
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 import { useDocument, useFirestore } from 'vuefire'
 import { baseSessionCacheData } from '~/data/constants'
 
@@ -135,12 +135,14 @@ export function useSetupSession() {
  * @returns An object containing the sessionId cookie and a reactive session object.
  */
 export const useSession = createGlobalState(() => {
+  const [isSyncing, toggleSyncing] = useToggle(false)
   const [isInitialized, toggleInitialized] = useToggle(false)
 
   if (import.meta.server) {
     return {
       docRef: null,
       isInitialized,
+      isSyncing,
       session: readonly(ref(null)),
       sessionId: ref<string | null>(null)
     }
@@ -152,28 +154,59 @@ export const useSession = createGlobalState(() => {
   if (!isDefined(sessionId)) {
     throw new Error('Session ID cookie is undefined.')
   }
-        
+  
   const docRef = doc(fireStore, 'sessions', sessionId.value)
   const session = useDocument<SessionCacheData>(docRef)
-  
-  // const docRef = computed(() => {
-  //   if (!isDefined(sessionId)) return null
-  //   return doc(fireStore, 'sessions', sessionId.value)
-  // })
 
-  // const session = computed(() => {
-  //   if (!isDefined(docRef)) return null
-  //   return useDocument<SessionCacheData>(docRef.value)
-  // })
+  const _docRef = computed(() => {
+    if (!isDefined(sessionId)) return null
+    return doc(fireStore, 'sessions', sessionId.value)
+  })
+
+  const _session = computed(() => {
+    if (!isDefined(docRef)) return null
+    return useDocument<SessionCacheData>(_docRef.value)
+  })
+
+  console.log('Session data from Firestore:', _session.value?.value)
 
   whenever(() => isDefined(session), () => {
     toggleInitialized(true)
   })
 
+  /**
+   * Writeable session
+   */
+
+  const writeableSession = ref<SessionCacheData>()
+
+  watchDebounced(() => _session.value?.value, async (newSession) => {
+    if (!isDefined(docRef) || !isDefined(newSession)) return
+    
+    try {
+      toggleSyncing(true)
+      await setDoc(docRef, newSession)
+    } catch (error) {
+      console.log('Error writing session data to Firestore:', error)
+    } finally {
+      toggleSyncing(false)
+    }
+  }, { deep: true, debounce: 500 })
+
+  // Watch for when the session is defined in Firestore 
+  // and update the local session state accordingly
+  watch(() => _session.value?.value, (newValue) => {
+    if (isDefined(newValue)) {
+      writeableSession.value = newValue
+    }
+  })
+
   return {
     docRef,
     isInitialized,
+    isSyncing,
     session,
+    writeableSession,
     sessionId: readonly(sessionId)
   }
 })

@@ -33,14 +33,23 @@
     </volt-button>
 
     <volt-button id="action-add-favorite" :aria-label="$t('Ajouter au favori')" class="mt-5" variant="outline" @click="async () => { await like() }">
-      <icon :name="icon" />
+      <client-only>
+        <template #default>
+          {{ icon }}
+          <icon :name="icon" />
+        </template>
+
+        <template #fallback>
+          <icon name="fa7-solid:heart" />
+        </template>
+      </client-only>
     </volt-button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { promiseTimeout } from '@vueuse/core'
-import type { ProductNode } from '~/types'
+import { promiseTimeout, type Arrayable } from '@vueuse/core'
+import type { CartItem, ProductNode, Undefineable } from '~/types'
 
 const props = defineProps<{ product: ProductNode }>()
 const emit = defineEmits<{ 'size-guide': [], 'availability-modal': [] }>()
@@ -77,7 +86,8 @@ const [showSizeSelectionWarning, toggleSizeSelectionWarning] = useToggle(false)
 const { createItem } = useCartComposable(hasSelection)
 
 const showAddedProductDrawer = useState<boolean>('showAddedProductDrawer')
-async function successCallback(_, total) {
+
+async function successCallback(_: Ref<Arrayable<CartItem>>, total: Undefineable<number>) {
   showAddedProductDrawer.value = true
   await update()
   await promiseTimeout(5000)
