@@ -3,6 +3,7 @@ import type { ProductsQuery } from '~/types'
 
 /**
  * Function that adds filtering capabilities to the products composable
+ * @private
  */
 function _useProductsFilteringComposable() {
   const [showModal, toggle] = useToggle()
@@ -82,7 +83,6 @@ const [ useProductsComposable, _useProductsStore ] =  createInjectionState(async
     })
   }
 
-  
   /**
    * Other
   */

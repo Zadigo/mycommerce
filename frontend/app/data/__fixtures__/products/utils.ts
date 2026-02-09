@@ -1,6 +1,7 @@
 import { productFixture, productGraphqlFixture } from '~/data/__fixtures__'
 import type { Arrayable } from '~/types'
 import type { BaseImage, ProductNode } from '~/types/graphql'
+import { faker } from '@faker-js/faker'
 
 export const IMAGE_GROUPS: Record<number, string[]> = {
   1: [
@@ -68,13 +69,13 @@ export function generateImages(group: Arrayable<string> | undefined): Arrayable<
     }
 
     return group.map((imageUrl, i) => ({
-    id: (i + 1).toString(),
-    createdOn: '2025-01-01',
-    isMainImage: i === 0,
-    name: `Image ${i + 1}`,
-    original: imageUrl,
-    thumbnail: imageUrl,
-    variant: 'default'
+      id: (i + 1).toString(),
+      createdOn: '2025-01-01',
+      isMainImage: i === 0,
+      name: `Image ${i + 1}`,
+      original: imageUrl,
+      thumbnail: imageUrl,
+      variant: 'default'
   }))
 }
 
@@ -110,12 +111,10 @@ export async function generateProducts(count = 3) {
     const randomGroup = getRandomGroup()
     const newItem: ProductNode = { ...productFixture }
 
-    newItem.node.id = (i + 1).toString()
-    newItem.node.name = `Product Fixture ${i + 1}`
+    console.log('Random group for product:', newItem)
+
     newItem.node.mainImage = generateMainImage(randomGroup)
     newItem.node.productImages = generateImages(randomGroup)
-    newItem.node.unitPrice = 50 + i * 10
-    newItem.node.price = newItem.node.unitPrice
     newItem.node.saleValue = newItem.node.salePrice ? newItem.node.unitPrice - (newItem.node.salePrice) : 0
 
     newItem.node.sizeSet = [

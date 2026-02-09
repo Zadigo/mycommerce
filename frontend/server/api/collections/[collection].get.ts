@@ -61,7 +61,7 @@
 //   }
 // })
 
-import { generateProducts } from '~/data/__fixtures__/products/utils'
+import { useGenerateProdcucts } from '~/data/__fixtures__' 
 
 // export default defineCachedEventHandler(async (_event) => {
 //   return await generateProducts(5)
@@ -75,5 +75,9 @@ import { generateProducts } from '~/data/__fixtures__/products/utils'
 // })
 
 export default defineEventHandler(async _event => {
-  return await generateProducts(5)
+  try {
+    return useGenerateProdcucts(5).value
+  } catch (e) {
+    console.error('Error generating products:', e)
+  }
 })

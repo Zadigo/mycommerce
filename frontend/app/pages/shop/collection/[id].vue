@@ -33,6 +33,7 @@
 
 <script setup lang="ts">
 import { useChangeCase } from '@vueuse/integrations/useChangeCase'
+import { useBusinessDetails } from '~/data'
 
 const AsyncProductsFeed = defineAsyncComponent({
   loader: async () => import('~/components/products/Feed.vue'),
@@ -53,10 +54,12 @@ const { products, productsCount, toggleModal } = await useProductsComposable()
  * Schema
  */
 
+const { get } = await useBusinessDetails()
+
 useSeoMeta({
   title: useChangeCase(id as string, 'capitalCase'),
   description: t('Découvrez toutes notre collection de vêtements'),
-  titleTemplate: '%s | E-Woman'
+  titleTemplate: `%s | ${get('legalName')}`
 })
 
 useSchemaOrg(products.value.map(x => defineProduct({
@@ -69,8 +72,8 @@ useSchemaOrg(products.value.map(x => defineProduct({
   itemCondition: "https://schema.org/NewCondition",
   brand: {
     "@type": 'Brand',
-    name: 'E-Woman',
-    logo: 'https://example.com/image.png',
+    name: get('legalName'),
+    logo: get('logo'),
   },
   offers: {
     price: x.node.price,
