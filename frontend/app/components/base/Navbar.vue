@@ -2,7 +2,7 @@
   <nav class="block w-full px-4 py-2 mx-auto text-white bg-white shadow-md lg:px-8 lg:py-3 sticky top-0 z-50">
     <div class="container flex flex-wrap items-center justify-between mx-auto text-primary-800">
       <nuxt-link-locale  id="link-home-navbar" to="/" class="mr-4 block py-1.5 text-base text-primary-800 font-semibold uppercase">
-        {{ getKey('legalName') }}
+        {{ get('legalName') }}
       </nuxt-link-locale>
 
       <ul class="hidden lg:flex lg:items-center lg:mb-0 lg:gap-6 lg:mt-0 gap-2 mt-2 mb-4">
@@ -77,7 +77,7 @@ const toggleShowSearchModal = useToggle(showSearchModal)
  * Business
  */
 
-const { getKey } = await useBusinessDetails()
+const { get } = await useBusinessDetails()
 
 /**
  * Authentication
@@ -91,28 +91,4 @@ const { isAuthenticated } = useUser()
 
 const showCartDrawer = useState<boolean>('showCartDrawer')
 const toggleShowCartDrawer = useToggle(showCartDrawer)
-  
-// const { gtag } = useGtag()
-// TODO: G-Analytics
-// if (cartStore.cache && cartStore.hasProducts) {
-//   gtag('event', 'view_cart', {
-//     currency: 'EUR',
-//     value: cartStore.cartTotal,
-//     items: cartStore.cache.statistics.map((item, i) => {
-//       const result = cartStore.cache?.results.find(x => x.id === item.product__id)
-//       return {
-//         item_id: item.product__id,
-//         item_name: item.product__name,
-//         price: result?.product.get_price,
-//         quantity: item.quantity,
-//         item_brand: null,
-//         item_category: result?.product.category,
-//         item_category2: result?.product.sub_category,
-//         item_variant: result?.product.color,
-//         index: i,
-//         size: result?.size
-//       }
-//     })
-//   })
-// }
 </script> 

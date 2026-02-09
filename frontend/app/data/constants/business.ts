@@ -159,9 +159,12 @@ export async function useBusinessDetails() {
     return icons[platform]
   }
 
+  const sameAs = computed(() => Object.values(get('socials')).map(social => social.url))
+
   return {
     businessDetails,
     activeSocials,
+    sameAs,
     get,
     reactiveGet,
     getSocial,

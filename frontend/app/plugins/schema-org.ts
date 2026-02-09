@@ -1,7 +1,7 @@
 import { useBusinessDetails } from '~/data'
 
 export default defineNuxtPlugin(async () => {
-  const { get } = await useBusinessDetails()
+  const { sameAs, get } = await useBusinessDetails()
 
   useSchemaOrg([
     defineOrganization({
@@ -72,7 +72,7 @@ export default defineNuxtPlugin(async () => {
         'Google Pay',
       ],
       currenciesAccepted: ['EUR'],
-      sameAs: get('sameAs'),
+      sameAs: sameAs.value,
       openingHoursSpecification: [
         {
           '@type': 'OpeningHoursSpecification',
