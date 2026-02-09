@@ -155,6 +155,16 @@ export const useSession = createGlobalState(() => {
         
   const docRef = doc(fireStore, 'sessions', sessionId.value)
   const session = useDocument<SessionCacheData>(docRef)
+  
+  // const docRef = computed(() => {
+  //   if (!isDefined(sessionId)) return null
+  //   return doc(fireStore, 'sessions', sessionId.value)
+  // })
+
+  // const session = computed(() => {
+  //   if (!isDefined(docRef)) return null
+  //   return useDocument<SessionCacheData>(docRef.value)
+  // })
 
   whenever(() => isDefined(session), () => {
     toggleInitialized(true)
