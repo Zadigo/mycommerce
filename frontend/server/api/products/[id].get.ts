@@ -45,7 +45,7 @@
 //   }
 // })
 
-import { generateProducts } from '~/data/__fixtures__/products/utils'
+import { useGenerateProducts } from '~/data/__fixtures__/products'
 
 export default defineEventHandler(async (_event) => {
   $fetch('/v1/graphql', {
@@ -68,6 +68,6 @@ export default defineEventHandler(async (_event) => {
       `
     }
   })
-  const result = await generateProducts(1)
-  return result.data.allProducts.edges.at(0)
+  const result = await useGenerateProducts(1)
+  return result.value.data.allProducts.edges.at(0)
 })

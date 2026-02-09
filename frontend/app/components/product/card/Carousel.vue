@@ -16,8 +16,8 @@
     </button>
 
     <!-- Indicators -->
-    <div class="flex absolute top-6 left-1/2 transform -translate-x-1/2 gap-2 z-20">
-      <div v-for="idx in product.node.productImages.length" :class="{ 'bg-primary-200': cycleIndex === (idx - 1) }" class="w-3 h-3 bg-primary-50 rounded-full transition-all ease-in-out duration-300" />
+    <div class="flex absolute bottom-20 left-1/2 transform -translate-x-1/2 gap-2 z-20">
+      <div v-for="idx in product.node.productImages.length" :class="{ 'bg-primary-200/80': cycleIndex === (idx - 1) }" class="w-3 h-3 bg-primary-50/20 backdrop-blur-md rounded-full transition-all ease-in-out duration-300" />
     </div>
   </div>
 </template>

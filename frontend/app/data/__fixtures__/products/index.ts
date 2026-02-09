@@ -1,8 +1,7 @@
-import type { BaseImage, Product, ProductNode } from '~/types/graphql'
 import { faker } from '@faker-js/faker'
-import { IMAGE_GROUPS } from './utils'
-import { ref } from 'vue'
 import { isDefined } from '@vueuse/core'
+import { ref } from 'vue'
+import type { BaseImage, Product, ProductNode } from '~/types/graphql'
 
 export const productFixture: ProductNode = {
   node: {
@@ -87,7 +86,52 @@ export const productGraphqlFixture: Product = {
   }
 }
 
-export function useGenerateProdcucts(count = 10): Ref<Product> {
+export const IMAGE_GROUPS: Record<number, string[]> = {
+  1: [
+    '/images/group1/img1.jpg',
+    '/images/group1/img2.jpg',
+    '/images/group1/img3.jpg',
+    '/images/group1/img4.jpg'
+  ],
+  2: [
+    '/images/group2/img1.jpg',
+    '/images/group2/img2.jpg',
+    '/images/group2/img3.jpg',
+  ],
+  3: [
+    '/images/group3/img1.jpeg',
+    '/images/group3/img2.jpeg',
+    '/images/group3/img3.jpeg'
+  ],
+  4: [
+    '/images/group4/img1.jpeg',
+    '/images/group4/img2.jpeg',
+    '/images/group4/img3.jpeg',
+    '/images/group4/img4.jpeg'
+  ],
+  5: [
+    '/images/group5/img1.jpeg',
+    '/images/group5/img2.jpeg',
+    '/images/group5/img3.jpeg'
+  ],
+  6: [
+    '/images/group6/img1.jpg',
+    '/images/group6/img2.jpg',
+    '/images/group6/img3.jpg',
+    '/images/group6/img4.jpg',
+    '/images/group6/img5.jpg'
+  ],
+  7: [
+    '/images/group7/img1.jpg',
+    '/images/group7/img2.jpg',
+    '/images/group7/img3.jpg',
+    '/images/group7/img4.jpg',
+    '/images/group7/img5.jpg',
+    '/images/group7/img6.jpg'
+  ]
+}
+
+export function useGenerateProducts(count = 10): Ref<Product> {
   const node = ref(productGraphqlFixture)
 
   node.value.data.allProducts.edges = Array.from({ length: count }, (_, i) => {
