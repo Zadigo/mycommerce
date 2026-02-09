@@ -1,11 +1,15 @@
-export default defineNuxtPlugin(() => {
+import { useBusinessDetails } from '~/data'
+
+export default defineNuxtPlugin(async () => {
+  const { get } = await useBusinessDetails()
+
   useSchemaOrg([
     defineOrganization({
       '@type': 'onlineStore',
-      name: 'E-Woman',
-      alternateName: 'The E-Woman',
-      description: 'A description for the e-woman e-commerce website',
-      foundingDate: '2015-01-01',
+      name: get('name'),
+      alternateName: get('alternateName'),
+      description: get('description'),
+      foundingDate: get('foundingDate'),
       numberOfEmployees: {
         '@type': 'QuantitativeValue',
         value: 100
@@ -15,11 +19,11 @@ export default defineNuxtPlugin(() => {
       vatID: 'EU123456789',
       address: {
         '@type': 'PostalAddress',
-        streetAddress: '100 Commerce Way, Suite 300',
-        addressLocality: 'Portland',
-        addressRegion: 'OR',
-        postalCode: '97201',
-        addressCountry: 'US'
+        streetAddress: get('address'),
+        addressLocality: 'Lille',
+        addressRegion: 'Hauts-de-France',
+        postalCode: '59000',
+        addressCountry: 'FR'
       },
       hasMerchantReturnPolicy: {
         '@type': 'MerchantReturnPolicy',
@@ -68,12 +72,7 @@ export default defineNuxtPlugin(() => {
         'Google Pay',
       ],
       currenciesAccepted: ['EUR'],
-      sameAs: [
-        'https://facebook.com/modernhome',
-        'https://instagram.com/modernhome',
-        'https://pinterest.com/modernhome',
-        'https://twitter.com/modernhome'
-      ],
+      sameAs: get('sameAs'),
       openingHoursSpecification: [
         {
           '@type': 'OpeningHoursSpecification',
@@ -86,8 +85,8 @@ export default defineNuxtPlugin(() => {
         {
           '@type': 'ContactPoint',
           contactType: 'customer service',
-          telephone: '+1-888-555-0123',
-          email: 'support@modernhome.com',
+          telephone: get('contact').telephone,
+          email: get('contact').email,
           availableLanguage: ['English', 'French'],
           hoursAvailable: {
             '@type': 'OpeningHoursSpecification',
@@ -99,8 +98,8 @@ export default defineNuxtPlugin(() => {
         {
           '@type': 'ContactPoint',
           contactType: 'sales',
-          telephone: '+1-888-555-0124',
-          email: 'sales@modernhome.com'
+          telephone: get('contact').telephone,
+          email: get('contact').email
         }
       ]
     })

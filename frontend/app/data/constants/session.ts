@@ -13,7 +13,7 @@ export const baseSessionCacheData: SessionCacheData = {
   /**
    * @deprecated
    */
-  cart: null,
+  cart: [],
   /**
    * @deprecated
    */
