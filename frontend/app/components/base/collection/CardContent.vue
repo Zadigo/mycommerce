@@ -1,5 +1,5 @@
 <template>
-  <nuxt-link-locale id="link-collection-card" :to="`/shop/collection/${urlId || category}`" class="block">
+  <nuxt-link-locale :id="createElementId('link-collection-card', collectionName)" :to="`/shop/collection/${urlId || category}`" class="block">
     <nuxt-img :alt="collectionName" :src="image" format="webp" quality="80" class="aspect-square object-cover w-full xl:hover:scale-110 xl:hover:rotate-2 transition-all ease-in-out duration-200" />
     
     <h1 class="text-white text-3xl absolute bottom-4 left-3 uppercase font-bold">
@@ -9,9 +9,11 @@
 </template>
 
 <script setup lang="ts">
+import type { Undefineable } from '~/types'
+
 defineProps<{ 
-  collectionName: string,
-  category: string,
+  collectionName: Undefineable<string>,
+  category: Undefineable<string>,
   image: string,
   urlId?: string
 }>()

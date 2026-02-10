@@ -1,5 +1,5 @@
 import type { Item } from 'nuxt-ganalytics'
-import type { Arrayable, CartItem, ProductNode, Undefineable } from '~/types'
+import type { Arrayable, BaseImage, CartItem, ProductNode, Undefineable } from '~/types'
 /**
  * A set of Google Analytics callbacks for product-related events
  * @param product The product to track
@@ -133,6 +133,13 @@ export function useGoogleAnalyticsCallbacks(product?: MaybeRef<Undefineable<Prod
       }))
     }
   }
+
+  // async function clickProductImage(image: BaseImage) {
+  //   await sendEvent(defineAnalyticsEvent('click_image_product', {
+  //     image_url: image.thumbnail,
+  //     image_variant: image.variant
+  //   }))
+  // }
 
   return {
     addShippingInfo,
