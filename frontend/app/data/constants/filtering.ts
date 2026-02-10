@@ -2,11 +2,13 @@ import type { Arrayable, ClotheSizes } from '~/types'
 
 export type FilterActions = 'sorted by' | 'typology' | 'colors' | 'sizes' | 'price'
 
-export const filterBySorting = [
+export const filterBySorting: Arrayable<['New' | 'Price up' | 'Price down', string]> = [
   ['New', 'Nouveautés'],
   ['Price up', 'Prix croissant'],
   ['Price down', 'Prix décroissant']
 ]
+
+export type SortingFilter = typeof filterBySorting[number][0]
 
 export const filterByClotheSize = ['XS', 'S', 'M', 'L', 'XL'] satisfies readonly ClotheSizes[]
 

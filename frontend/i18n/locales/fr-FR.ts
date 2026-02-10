@@ -160,7 +160,18 @@ export default defineI18nLocale(async locale => {
     "J'ai lu et j'accepte les Conditions générales et je comprends les informations sur le traitement de mes données personnelles expliquées dans la": "J'ai lu et j'accepte les Conditions générales et je comprends les informations sur le traitement de mes données personnelles expliquées dans la",
     "Policy: account": "BERSHKA prend très au sérieux le respect de votre vie privée et nous sommes engagés dans la protection de vos données personnelles. Découvrez comment nous prenons soin et comment nous traitons vos données dans notre",
     "Ecris les produits à rechercher": "Ecris les produits à rechercher",
-    "Erreur 500": "Erreur 500"
+    "Erreur 500": "Erreur 500",
+    "Trier par": "Trier par",
+    "Price up": "Prix croissant",
+    "Price down": "Prix décroissant",
+    "Size": "Taille",
+    "Color": "Couleur",
+    "Reset filters": "Réinitialiser les filtres",
+    "Filters": "Filtres",
+    "Show filters": "Afficher les filtres",
+    "Hide filters": "Masquer les filtres",
+    "Price range": "Gamme de prix",
+    "New": "Nouveau",
   }
 })
 

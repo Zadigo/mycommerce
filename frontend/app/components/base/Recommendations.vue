@@ -12,7 +12,8 @@
 
 <script lang="ts" setup>
 import { productsSymbol } from '~/data'
-import { baseProductGraph } from '~/data/constants/graphs';
+import { useGenerateProducts } from '~/data/__fixtures__';
+import { baseProductGraph } from '~/data/constants/graphs'
 import type { ExtendedRouteParamsRawGeneric, ProductNode, ProductRecommendations, Undefineable } from '~/types'
 
 const {
@@ -53,12 +54,12 @@ try {
     method: 'post',
     body: {
       query: `
-          query($name: String!, $quantity: Int!) {
-            recommendations(productName: $name, quantity: $quantity) {
-              ${baseProductGraph}
-            }
+        query($name: String!, $quantity: Int!) {
+          recommendations(productName: $name, quantity: $quantity) {
+            ${baseProductGraph}
           }
-          `,
+        }
+      `,
       variables: {
         name: 'Trapèze',
         quantity: quantity
@@ -70,8 +71,11 @@ try {
   })
 
   provideLocal(productsSymbol, isDefined(data) ? data.value.data.recommendations.map(x => ({ node: x })) : [])
-  
 } catch (e) {
+  const fixtureProducts = useGenerateProducts(quantity)
+  data.value = { data: { recommendations: fixtureProducts.value.data.allProducts.edges.map(x => x.node) } }
+  provideLocal(productsSymbol, isDefined(data) ? data.value.data.recommendations.map(x => ({ node: x })) : [])
+  console.log('Recommendations', data.value)
   console.error(e)
 }
 

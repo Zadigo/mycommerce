@@ -1,5 +1,4 @@
-import type { Product, SearchedProducts } from '~/types'
-import type { ProductsQuery } from '~/types'
+import type { LocationProductsQuery, Product, SearchedProducts, SelectedFilters } from '~/types'
 
 /**
  * Function that adds filtering capabilities to the products composable
@@ -18,14 +17,15 @@ function _useProductsFilteringComposable() {
    * Route parameters
    */
 
-  const queryParams = useUrlSearchParams<ProductsQuery>('history', { removeNullishValues: true }) as Partial<ProductsQuery>
+  const queryParams = useUrlSearchParams<LocationProductsQuery>('history', { removeNullishValues: true })
 
-  const query = ref<ProductsQuery>({
+  const query = ref<SelectedFilters>({
     sorted_by: 'Nouveautés',
     typology: [],
     colors: [],
     sizes: [],
     price: null,
+    limit: 100,
     offset: 0
   })
 
@@ -33,15 +33,14 @@ function _useProductsFilteringComposable() {
 
   watch(query, (newQuery) => {
     queryParams.sorted_by = newQuery.sorted_by
-    queryParams.typology = newQuery.typology
-    queryParams.colors = newQuery.colors
-    queryParams.sizes = newQuery.sizes
+    queryParams.typology = newQuery.typology.join(',')
+    queryParams.colors = newQuery.colors.join(',')
+    queryParams.sizes = newQuery.sizes.join(',')
     queryParams.price = newQuery.price
+  }, {
+    deep: true
   })
-
-  /**
-   * Function that resets the filters to their default values
-   */
+  
   function resetFilters() {
     query.value = {
       sorted_by: 'Nouveautés',
@@ -59,6 +58,9 @@ function _useProductsFilteringComposable() {
     history: last,
     query,
     filteredProducts,
+    /**
+     * Function that resets the filters to their default values
+     */
     resetFilters,
     toggleModal: toggle
   }

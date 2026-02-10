@@ -159,7 +159,18 @@ export default defineI18nLocale(async locale => {
     "Je veux recevoir les nouveautés et des communications commerciales personnalisées de BERSHKA par e-mail ou d'autres moyens": "Je veux recevoir les nouveautés et des communications commerciales personnalisées de BERSHKA par e-mail ou d'autres moyens",
     "J'ai lu et j'accepte les Conditions générales et je comprends les informations sur le traitement de mes données personnelles expliquées dans la": "J'ai lu et j'accepte les Conditions générales et je comprends les informations sur le traitement de mes données personnelles expliquées dans la",
     "Ecris les produits à rechercher": "Ecris les produits à rechercher",
-    "Erreur 500": "Erreur 500"
+    "Erreur 500": "Erreur 500",
+    "Trier par": "Trier par",
+    "Price up": "Prix croissant",
+    "Price down": "Prix décroissant",
+    "Size": "Taille",
+    "Color": "Couleur",
+    "Reset filters": "Réinitialiser les filtres",
+    "Filters": "Filtres",
+    "Show filters": "Afficher les filtres",
+    "Hide filters": "Masquer les filtres",
+    "Price range": "Gamme de prix",
+    "New": "New"
   }
 })
 
