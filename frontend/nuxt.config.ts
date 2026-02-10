@@ -49,9 +49,10 @@ export default defineNuxtConfig({
     stripeTestSecretKey: process.env.NUXT_STRIPE_TEST_SECRET_KEY,
 
     public: {
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
       // Django/Quart/Flask
-      quartProdUrl: process.env.NUXT_PUBLIC_QUART_PROD_URL || 'http://127.0.0.1:5000',
       prodDomain: process.env.NUXT_PUBLIC_DJANGO_PROD_URL || 'http://127.0.0.1:8000',
+      quartProdUrl: process.env.NUXT_PUBLIC_QUART_PROD_URL || 'http://127.0.0.1:5000',
       cartProdDomain: process.env.NUXT_PUBLIC_DJANGO_CART_PROD_URL || 'http://127.0.0.1:8001',
       reviewsProdDomain: process.env.NUXT_PUBLIC_DJANGO_REVIEWS_PROD_URL || 'http://127.0.0.1:8002',
 

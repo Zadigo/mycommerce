@@ -3,7 +3,7 @@
     <div class="grid grid-cols-12 grid-row-1 w-full gap-5">
       <!-- Images -->
       <client-only>
-        <component :is="imagesComponent" :images="product?.node.productImages" :product="product" @zoom-image="selectImage" />
+        <component :is="imagesComponent" :images="product?.node.productImages" :product="product" @zoom-image="(image: BaseImage) => selectImage(image)" />
       </client-only>
       
       <!-- Details -->
@@ -47,6 +47,9 @@
 </template>
 
 <script setup lang="ts">
+import { useBusinessDetails } from '~/data'
+import type { BaseImage } from '~/types'
+
 /**
  * Recommendations
  */
@@ -101,42 +104,49 @@ const [showCompositionModal, toggleCompositionModal] = useToggle<boolean>(false)
  * SEO
  */
 
+const route = useRoute()
+const { get } = await useBusinessDetails()
+
+const url = useRuntimeConfig().public.siteUrl
+
 const name = product.value?.node.name || '...'
 
 useSeoMeta({
   title: name,
   description: '',
-  titleTemplate: '%s | E-Woman'
+  titleTemplate: `%s | ${get('legalName')}`
 })
 
 if (isDefined(product)) {
-  useSchemaOrg(defineProduct({
-    "@type": 'Product',
-    "@id": `https://example.com/products/${product.value.node.slug}`,
-    name,
-    sku: product.value.node.sku,
-    image: product.value.node.productImages?.map(image => image.original) ?? [],
-    url: `https://example.com/products/${product.value.node.slug}`,
-    itemCondition: "https://schema.org/NewCondition",
-    brand: {
-      "@type": 'Brand',
-      name: 'E-Woman',
-      logo: 'https://example.com/image.png',
-    },
-    offers: {
-      price: product.value.node.price,
-      priceCurrency: 'EUR',
-      availability: 'https://schema.org/InStock',
-      image: product.value.node.mainImage.original,
-      shippingDetails: {
-        "@type": 'OfferShippingDetails',
-        shippingDestination: [
-          { "@type": "DefinedRegion", addressCountry: 'FR' },
-          { "@type": "DefinedRegion", addressCountry: 'GP' }
-        ],
-        deliveryTime: null
+  useSchemaOrg(
+    defineProduct({
+      "@type": 'Product',
+      "@id": `${url}${route.fullPath}`,
+      name,
+      sku: product.value.node.sku,
+      image: product.value.node.productImages?.map(image => image.original) ?? [],
+      url: `${url}${route.fullPath}`,
+      itemCondition: "https://schema.org/NewCondition",
+      brand: {
+        "@type": 'Brand',
+        name: get('legalName'),
+        logo: get('logo'),
+      },
+      offers: {
+        price: product.value.node.price,
+        priceCurrency: 'EUR',
+        availability: 'https://schema.org/InStock',
+        image: product.value.node.mainImage.original,
+        shippingDetails: {
+          "@type": 'OfferShippingDetails',
+          shippingDestination: [
+            { "@type": "DefinedRegion", addressCountry: 'FR' },
+            { "@type": "DefinedRegion", addressCountry: 'GP' }
+          ],
+          deliveryTime: null
+        }
       }
-    }
-  }))
+    })
+   )
 }
 </script>

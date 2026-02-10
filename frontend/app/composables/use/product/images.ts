@@ -11,13 +11,13 @@ const [useImageZoomComposable, _useImageZoomComposableStore] = createInjectionSt
       showModal,
       selectedImage: ref<BaseImage | null | undefined>(),
       handleCloseSelection: toggleShowModal,
-      selectImage: (_image: BaseImage, successCallback: () => void) => { }
+      selectImage: (_image: BaseImage, successCallback?: () => void) => { }
     }
   }
 
   const selectedImage = ref<BaseImage | null | undefined>()
 
-  function selectImage(image: BaseImage, successCallback: () => void) {
+  function selectImage(image: BaseImage, successCallback?: () => void) {
     showModal.value = true
     selectedImage.value = image
     
