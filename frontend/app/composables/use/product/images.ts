@@ -4,45 +4,40 @@ import type { BaseImage } from '~/types'
  * Composable for handling image selection and modal display
  */
 const [useImageZoomComposable, _useImageZoomComposableStore] = createInjectionState(() => {
+  const [showModal, toggleShowModal] = useToggle()
+
   if (import.meta.server) {
     return {
-      showModal: ref(false),
+      showModal,
       selectedImage: ref<BaseImage | null | undefined>(),
-      toggleShowModal: () => { },
-      handleCloseSelection: () => { },
-      handleSelectedImage: (_image: BaseImage) => { },
-      selectImage: (_image: BaseImage, _fn: () => void) => { }
+      handleCloseSelection: toggleShowModal,
+      selectImage: (_image: BaseImage, successCallback: () => void) => { }
     }
   }
 
-  const { vueApp } = useNuxtApp()
-
-  const [showModal, toggleShowModal] = useToggle()
   const selectedImage = ref<BaseImage | null | undefined>()
 
-  /**
-   * Selects and image and opens the images modal
-   * @param image The image to select
-   * @param fn Callback function to be used
-   */
-  function selectImage(image: BaseImage, fn: () => void) {
+  function selectImage(image: BaseImage, successCallback: () => void) {
     showModal.value = true
     selectedImage.value = image
-    fn.call(vueApp)
-  }
-
-  /**
-   * Closes the image modal
-   */
-  function handleCloseSelection() {
-    showModal.value = false
+    
+    if (isDefined(successCallback)) {
+      successCallback()
+    }
   }
 
   return {
     showModal,
     selectedImage,
-    toggleShowModal,
-    handleCloseSelection,
+    /**
+     * Closes the image modal
+     */
+    handleCloseSelection: toggleShowModal,
+    /**
+     * Selects and image and opens the images modal
+     * @param image The image to select
+     * @param successCallback Callback function to be used
+     */
     selectImage
   }
 })
