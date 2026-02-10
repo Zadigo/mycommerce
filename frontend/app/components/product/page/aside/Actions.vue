@@ -1,5 +1,5 @@
 <template>
-  <div id="actions">    
+  <div id="actions">
     <!-- Size selection -->
     <product-size-block v-if="product" :selected-size="selectedSize" :product="product" class="mb-4" @select-size="(size) => { selectSize(size) }" />
     <volt-skeleton v-else height="100px" class="w-2/6" />
@@ -60,10 +60,16 @@ const emit = defineEmits<{ 'size-guide': [], 'availability-modal': [] }>()
 // const { userSelection, showSizeSelectionWarning } = storeToRefs(cartStore)
 
 /**
+ * Analytics
+ */
+
+const { addToWishlistEvent } = useGoogleAnalyticsCallbacks(props.product)
+
+/**
  * Like
  */
 
-const { like, icon } = await useLikeComposable(props.product)
+const { like, icon } = await useLikeComposable(props.product, addToWishlistEvent)
 
 /**
  * Size Selection
@@ -83,14 +89,21 @@ const { update } = useDjangoCartComposable()
  */
 
 const [showSizeSelectionWarning, toggleSizeSelectionWarning] = useToggle(false)
-const { createItem } = useCartComposable(hasSelection)
+const { createItem, lastProduct } = useCartComposable(hasSelection)
 
 const showAddedProductDrawer = useState<boolean>('showAddedProductDrawer')
+
+const { addToCartEvent } = useGoogleAnalyticsCallbacks(props.product)
 
 async function successCallback(_: Ref<Arrayable<CartItem>>, total: Undefineable<number>) {
   showAddedProductDrawer.value = true
   await update()
+  
   await promiseTimeout(5000)
   await create(total)
+
+  if (isDefined(lastProduct)) {
+    await addToCartEvent(undefined, lastProduct)
+  }
 }
 </script>

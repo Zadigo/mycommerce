@@ -1,5 +1,6 @@
 import type { Item } from 'nuxt-ganalytics'
-import type { Arrayable, BaseImage, CartItem, ProductNode, Undefineable } from '~/types'
+import type { Arrayable, BaseImage, BaseSizeSet, CartItem, MaybeEmpty, ProductNode, Undefineable } from '~/types'
+
 /**
  * A set of Google Analytics callbacks for product-related events
  * @param product The product to track
@@ -29,6 +30,21 @@ export function useGoogleAnalyticsCallbacks(product?: MaybeRef<Undefineable<Prod
       }))
       return {} as I
     }
+  }
+
+  function buildProductFromCartItem(items: MaybeRef<Arrayable<CartItem>>): Array<Item> {
+    return toValue(items).map((cartItem, idx) => ({
+      index: idx,
+      item_name: cartItem.product.name,
+      item_id: cartItem.product.id,
+      price: cartItem.product.price,
+      item_brand: '',
+      // item_category: cartItem.product.category,
+      // item_category2: cartItem.product.subCategory,
+      // item_category3: cartItem.product.variant.color,
+      item_category4: cartItem.size.name,
+      quantity: cartItem.quantity
+    }))
   }
 
   async function viewProductsEvent(listName?: string) {
@@ -76,13 +92,13 @@ export function useGoogleAnalyticsCallbacks(product?: MaybeRef<Undefineable<Prod
     }
   }
 
-  async function addToCartEvent(index?: Undefineable<number>, sizeName?: string) {
+  async function addToCartEvent(index?: Undefineable<number>, lastCartItem: MaybeRefOrGetter<MaybeEmpty<CartItem>> = undefined) {
     if (_product && isDefined(_product)) {
       const item = _buildProductItem()
 
       item.index = index ?? undefined
       item.quantity = 1
-      item.item_category5 = sizeName || undefined
+      item.item_category4 = toValue(lastCartItem)?.size.name || undefined
 
       await sendEvent(defineAnalyticsEvent('add_to_cart', {
         currency: 'EUR',
@@ -94,21 +110,10 @@ export function useGoogleAnalyticsCallbacks(product?: MaybeRef<Undefineable<Prod
     }
   }
 
-  async function viewCartEvent(items: Arrayable<CartItem>) {
+  async function viewCartEvent(items: MaybeRef<Arrayable<CartItem>>) {
     if (_product && isDefined(_product)) {
       await sendEvent(defineAnalyticsEvent('view_cart', {
-        items: items.map((cartItem, idx) => ({
-          index: idx,
-          item_name: cartItem.product.name,
-          item_id: cartItem.product.id,
-          price: cartItem.product.price,
-          item_brand: '',
-          // item_category: cartItem.product.category,
-          // item_category2: cartItem.product.subCategory,
-          // item_category3: cartItem.product.variant.color,
-          item_category4: cartItem.size.name,
-          quantity: cartItem.quantity
-        }))
+        items: buildProductFromCartItem(items)
       }))
     }
   }
@@ -141,12 +146,40 @@ export function useGoogleAnalyticsCallbacks(product?: MaybeRef<Undefineable<Prod
   //   }))
   // }
 
+  async function selectProdcutSize(size: BaseSizeSet) {
+    if (isDefined(size)) {
+      await sendEvent(
+        defineAnalyticsEvent('select_size', {
+          item_id: _product?.node.id,
+          item_name: _product?.node.name,
+          item_category4: size.name
+        })
+      )
+    }
+  }
+
+  async function addToWishlistEvent(action: 'like' | 'unlike') {
+    if (_product && isDefined(_product)) {
+      const item = _buildProductItem()
+
+      await sendEvent(defineAnalyticsEvent('add_to_wishlist', {
+        action,
+        items: [
+          item
+        ]
+      }))
+    }
+  }
+
   return {
     addShippingInfo,
     productEvent,
     selectProductEvent,
+    addToWishlistEvent,
     viewProductsEvent,
     addToCartEvent,
-    viewCartEvent
+    viewCartEvent,
+    selectProdcutSize,
+    buildProductFromCartItem
   }
 }

@@ -15,7 +15,7 @@
         </client-only>
 
         <client-only>
-          <base-collection-card v-for="collectionItem in collections?.data.allCollections" :key="collectionItem.slug" :collection="collectionItem" image="/images/group2/img2.jpg" v-motion-slide-bottom />
+          <base-collection-card v-for="collectionItem in collections?.data.allCollections" :key="collectionItem.slug" :collection="collectionItem" image="/images/group2/img2.jpg" v-motion-slide-bottom @click="viewCollection(collectionItem)" />
         </client-only>
       </template>
     </div>
@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ProductCollection } from '~/types'
+import type { BaseProductCollection, ProductCollection } from '~/types'
 
 const { t } = useI18n()
 const { customHandleError } = useErrorHandler()
@@ -33,6 +33,46 @@ const { data: collections, status } = await useFetch<ProductCollection>('/api/co
     customHandleError(error)
   }
 })
+
+/**
+ * Analytics
+ */
+
+const { sendEvent } = useAnalyticsEvent()
+
+if (isDefined(collections)) {
+  sendEvent(
+    defineAnalyticsEvent('view_item_list', {
+      items: collections.value.data.allCollections.map((collection) => ({
+        item_id: collection.slug,
+        item_name: collection.name,
+        item_category: 'Collection',
+        item_category2: collection.subCategory
+      }))
+    })
+  )
+}
+
+function viewCollection(collection: BaseProductCollection) {
+  if (isDefined(collection)) {
+    sendEvent(
+      defineAnalyticsEvent('select_item', {
+        items: [
+          {
+            item_id: collection.slug,
+            item_name: collection.name,
+            item_category: 'Collection',
+            item_category2: collection.subCategory
+          }
+        ]
+      })
+    )
+  }
+}
+
+/**
+ * SEO
+ */
 
 const title = t('Achat en ligne de vêtements')
 const description = t('Découvrez notre collection de vêtements en ligne')

@@ -18,7 +18,7 @@
       <!-- Recommendations -->
       <suspense v-else>
         <template #default>
-          <AsyncRecommendations @has-navigated="showSearchModal=false" />
+          <AsyncRecommendations list-name="Recommendations Search" @has-navigated="showSearchModal=false" />
         </template>
         
         <template #fallback>
@@ -118,7 +118,7 @@ watch(searchDebounced, async () => {
    * Save search
    */
 
-  if (isDefined(session)) {
+  if (isDefined(session) && isDefined(docRef)) {
     await updateDoc(docRef, {
       searchHistory: history.value.map(item => ({
         term: item.snapshot,

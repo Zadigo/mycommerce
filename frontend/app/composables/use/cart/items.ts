@@ -158,7 +158,7 @@ export const useCartComposable = createGlobalState((sizeSelected?: Ref<boolean>)
       }
     }
 
-    const existingItem = _findCartItem(product, size)
+    let existingItem = _findCartItem(product, size)
 
     if (existingItem) {
       // Increment quantity

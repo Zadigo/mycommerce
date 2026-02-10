@@ -1,5 +1,5 @@
 <template>
-  <volt-button :variant="buttonStyle === 'button' ? 'outlined' : 'text'" :class="theme" size="small" @click="() => emit('select-size', size)">
+  <volt-button :variant="buttonStyle === 'button' ? 'outlined' : 'text'" :id="createElementId('action-size', size.name)" :class="theme" size="small" @click="selectSize(size)">
     <icon v-if="!size.availability" name="i-lucide:clock-fading" class="text-warning-500 me-2" />
     {{ size.name }}
   </volt-button>
@@ -34,4 +34,15 @@ const theme = computed(() => {
     customClass
   ]
 })
+
+/**
+ * Analytics
+ */
+
+const { selectProdcutSize } = useGoogleAnalyticsCallbacks()
+
+async function selectSize(size: BaseSizeSet) {
+  emit('select-size', size)
+  await selectProdcutSize(size)
+}
 </script>

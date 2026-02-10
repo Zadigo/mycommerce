@@ -49,7 +49,7 @@
 
 <script lang="ts" setup>
 definePageMeta({
-  title: 'Cart: Shipment',
+  title: 'Cart Shipment',
   layout: 'cart',
   middleware: ['cart']
 })
@@ -83,20 +83,6 @@ async function handleNextPage() {
     await update(cartSession.value.total, shippingInfo)
   }
 }
-
-onMounted(async () => {
-  const { sendEvent } = useAnalyticsEvent()
-
-  if (isDefined(docRef)) {
-    await sendEvent(defineAnalyticsEvent('add_shipping_info', {
-      transaction_id: docRef.id || '',
-      checkout_step: 2,
-      currency: 'EUR',
-      shipping: 1,
-      items: []
-    }))
-  }
-})
 
 /**
  * SEO

@@ -61,25 +61,6 @@ if (data.value) {
 }
 
 /**
- * Analytics Event
- */
-
-const { docRef } = useCartComposable() 
-
-onMounted(async () => {
-  const { sendEvent } = useAnalyticsEvent()
-  if (isDefined(docRef)) {
-    await sendEvent(defineAnalyticsEvent('begin_checkout', {
-      transaction_id: docRef.id || '',
-      checkout_step: 2,
-      currency: 'EUR',
-      shipping: 1,
-      items: []
-    }))
-  }
-})
-
-/**
  * SEO
  */
 

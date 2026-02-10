@@ -1,4 +1,4 @@
-import type { DeliveryOption } from './delivery'
+import type { DeliveryOption } from './api'
 
 export type Arrayable<T> = T[]
 

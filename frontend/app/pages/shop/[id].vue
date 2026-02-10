@@ -16,7 +16,7 @@
     <div id="recommendations" class="mt-10">
       <suspense>
         <template #default>
-          <async-base-recommendation-block />
+          <async-base-recommendation-block list-name="Recommendations Product Page" />
         </template>
 
         <template #fallback>

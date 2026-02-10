@@ -65,7 +65,7 @@
           {{ $t("Supprimer") }}
         </volt-button>
         
-        <volt-button id="action-filters-result" variant="default">
+        <volt-button id="action-filters-result" variant="default" @click="() => { showModal = false, execute() }">
           {{ $t('Voir résulats', { n: count }) }}
         </volt-button>
       </div>
@@ -87,12 +87,6 @@ const emit = defineEmits<{
 }>()
 
 /**
- * Products
- */
-
-const { showModal, query, resetFilters } = await useProductsStore()
-
-/**
  * Route parameters
  */
 
@@ -102,10 +96,25 @@ const { id } = useRoute().params as { id: string }
  * Products
  */
 
+const { showModal, query, resetFilters } = await useProductsStore()
+
 const { data: filteredProducts, execute } = await useFetch<SearchedProducts>(`/api/collections/${id}`, {
   method: 'GET',
   immediate: false,
 })
+
+/**
+ * Analytics
+ */
+
+// const { viewProductsEvent } = useGoogleAnalyticsCallbacks(undefined, filteredProducts.value?.data.searchProducts)
+
+// watchDebounced(query, async () => {
+//   await viewProductsEvent('Filtered Produts')
+// }, {
+//   debounce: 500,
+//   deep: true
+// })
 
 /**
  * Function that pushes or removes the value from the filter lists

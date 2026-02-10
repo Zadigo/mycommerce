@@ -18,16 +18,17 @@ import type { ExtendedRouteParamsRawGeneric, ProductNode, ProductRecommendations
 
 const {
   blockTitle = "Cela peut t'intéresser",
+  listName = 'Recommendations',
   quantity = 20,
   scrollable,
   columns = 3,
   showLikeButton,
   showCarousel = true,
   showCart = true,
-  showPrices = true,
-  loadCache
+  showPrices = true
 } = defineProps<{
   blockTitle?: string
+  listName?: string
   quantity?: number
   scrollable?: boolean
   columns?: number
@@ -35,7 +36,6 @@ const {
   showCarousel?: boolean
   showCart?: boolean
   showPrices?: boolean
-  loadCache?: boolean
 }>()
 
 const emit = defineEmits<{ 'has-navigated': [product: ProductNode] }>()
@@ -86,7 +86,7 @@ try {
 const { selectProductEvent, viewProductsEvent } = useGoogleAnalyticsCallbacks(undefined, data.value?.data.recommendations.map(x => ({ node: x })))
 
 onMounted(async () => {
-  await viewProductsEvent('Recommendations')
+  await viewProductsEvent(listName)
 
   if (scrollable) {
     if (productsRow.value) {

@@ -1,10 +1,10 @@
 <template>
-  <div v-if="product.node.hasSizes" id="sizes" class="flex justify-start gap-1" aria-label="Product sizes">
+  <div v-if="product.node.hasSizes" id="product-sizes" class="flex justify-start gap-1" aria-label="Product sizes">
     <product-size-button v-for="size in product.node.sizeSet" :key="size.name" :size="size" :selected-size="selectedSize" @select-size="(size) => { $emit('select-size', size) }" />
   </div>
 
   <div v-else>
-    <p class="font-bold">
+    <p class="font-bold" id="product-sizes-unique" aria-label="Unique size">
       {{ $t("Taille unique") }}
     </p>
   </div>

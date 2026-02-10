@@ -37,7 +37,7 @@
         <volt-skeleton v-else height="300px" class="w-full mb-10" />
 
         <!-- Recommendations -->
-        <base-recommendations :quantity="20" :columns="2" :load-cache="true" :show-carousel="false" :show-like-button="false" :show-cart="false" :show-prices="false" />
+        <base-recommendations :quantity="20" :columns="2" :load-cache="true" :show-carousel="false" :show-like-button="false" :show-cart="false" :show-prices="false" list-name="Recommendations Modal Added Product" />
       </div>
 
       <ModalsSkeletonLoader v-else />

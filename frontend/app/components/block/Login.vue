@@ -20,6 +20,28 @@
         <volt-button id="signin-email" class="rounded-full w-full mt-5" size="lg" @click="async () => { await login(() => closeAllModals()) }">
           {{ $t('Se connecter') }}
         </volt-button>
+
+        <dev-only>
+          <div class="mt-5">
+            <nuxt-link to="/cart/shipment">
+              <volt-button variant="outline">
+                Force To Shipment
+              </volt-button>
+            </nuxt-link>
+
+            <nuxt-link to="/cart/payment">
+              <volt-button variant="outline">
+                Force To Payment
+              </volt-button>
+            </nuxt-link>
+
+            <nuxt-link to="/cart/success">
+              <volt-button variant="outline">
+                Force To Success
+              </volt-button>
+            </nuxt-link>
+          </div>
+        </dev-only>
       </form>
 
       <p class="grow font-light text-center mt-3">

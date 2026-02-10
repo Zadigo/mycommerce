@@ -1,13 +1,13 @@
 <template>  
   <div class="bg-transparent absolute bottom-4/20 md:bottom-3/20 lg:bottom-2/20 left-0 p-5 w-full flex justify-center gap-2 z-30">
-    <volt-contrast-button v-for="size in product.node.sizeSet" :id="`button-size-${size.name}__${product.node.id}`" :key="size.name" size="small" class="min-w-2" @click="() => createItem(product, size, async () => { await successCallback(size) })">
+    <volt-contrast-button v-for="size in product.node.sizeSet" :id="createElementId('button-size', `${size.name}-${product.node.id}`)" :key="size.name" size="small" class="min-w-2" @click="() => createItem(product, size, successCallback)">
       {{ size.name }}
     </volt-contrast-button>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { BaseSizeSet, ProductNode } from '~/types'
+import type { ProductNode } from '~/types'
 
 const props = defineProps<{
   product: ProductNode
@@ -25,7 +25,7 @@ const { addToCartEvent } = useGoogleAnalyticsCallbacks(props.product)
  * Cart
  */
 
-const { createItem } = useCartComposable()
+const { lastProduct, createItem } = useCartComposable()
 
 // TODO: Create a special global state modal for a AddedProduct which
 // gets triggered whene a user adds a product, will closed automatically
@@ -41,9 +41,9 @@ const { start } = useCountdown(3, {
   }
 })
 
-const successCallback = async (size: BaseSizeSet) => {
+const successCallback = async () => {
   showAddedProductDrawer.value = true
   start()
-  await addToCartEvent(undefined, size.name)
+  await addToCartEvent(undefined, lastProduct)
 }
 </script>

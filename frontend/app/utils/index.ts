@@ -20,7 +20,8 @@ export function scrollToTop() {
  * @param base The base of the id, usually the component name
  * @param parts The parts to be added to the id, usually the props of the component
  */
-export function createElementId(base: string, part: Undefineable<string | number>, join = '__') {
+export function createElementId(base: string, part: Undefineable<string | number>, parts: Array<Undefineable<string | number>> = [], join = '__') {
   const _part = (part || '').toString().replace(' ', '-')
+  const _parts = parts.map(p => (p || '').toString().replace(' ', '-')).join(join)
   return `${base}${join}${_part}`
 }

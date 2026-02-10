@@ -90,7 +90,7 @@ const emit = defineEmits<{ 'edit-product': CartItem }>()
  * Cart
  */
 
-const { cartSession, freeDeliveryTarget } = useCartComposable()
+const { cartSession, cart, freeDeliveryTarget } = useCartComposable()
 
 /**
  * Free delivery target
@@ -122,9 +122,7 @@ const { viewCartEvent } = useGoogleAnalyticsCallbacks()
 
 watchDebounced(showCartDrawer, (visible) => {
   if (visible) {
-    if (isDefined(cartSession) && isDefined(cartSession.data.value)) {
-      viewCartEvent(cartSession.data.value.items)
-    }
+    viewCartEvent(cart)
   }
 }, { debounce: 500 })
 </script>
