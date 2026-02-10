@@ -81,4 +81,17 @@ useScript({
   crossorigin: 'anonymous',
   tagPriority: 'high'
 })
+
+/**
+ * SEO
+ */
+useHead({
+  link: [
+    {
+      rel: 'icon',
+      type: 'image/png',
+      href: '/favicon.ico'
+    }
+  ]
+})
 </script>

@@ -110,14 +110,24 @@ const { get } = await useBusinessDetails()
 const url = useRuntimeConfig().public.siteUrl
 
 const name = product.value?.node.name || '...'
+const description = `${name} - ${product.value?.node.color} - ${get('legalName')}€`
 
 useSeoMeta({
   title: name,
-  description: '',
+  description,
   titleTemplate: `%s | ${get('legalName')}`
 })
 
 if (isDefined(product)) {
+  useSeoMeta({
+    ogDescription: description,
+    ogImage: product.value.node.mainImage.original,
+    twitterTitle: name,
+    twitterDescription: description,
+    twitterImage: product.value.node.mainImage.original,
+    twitterCard: 'summary_large_image'
+  })
+
   useSchemaOrg(
     defineProduct({
       "@type": 'Product',
@@ -147,6 +157,13 @@ if (isDefined(product)) {
         }
       }
     })
-   )
+  )
+
+  defineOgImage({
+    url: product.value.node.mainImage.original,
+    width: 1200,
+    height: 630,
+    alt: name
+  })
 }
 </script>

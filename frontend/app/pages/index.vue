@@ -85,6 +85,13 @@ useSeoMeta({
   twitterTitle: title,
   twitterDescription: description,
   twitterImage: '/images/group1/img1.jpeg',
-  twitterCard: 'summary'
+  twitterCard: 'summary_large_image'
+})
+
+defineOgImage({
+  url: '/images/group1/img1.jpeg',
+  width: 1200,
+  height: 630,
+  alt: title
 })
 </script>

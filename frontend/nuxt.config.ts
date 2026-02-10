@@ -84,7 +84,8 @@ export default defineNuxtConfig({
     'nuxt-schema-org',
     'nuxt-vuefire',
     'pinia-plugin-persistedstate',
-    'vue-sonner/nuxt'
+    'vue-sonner/nuxt',
+    '@nuxtjs/seo'
   ],
 
   typescript: {

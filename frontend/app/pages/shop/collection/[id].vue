@@ -59,7 +59,15 @@ const { get } = await useBusinessDetails()
 useSeoMeta({
   title: useChangeCase(id as string, 'capitalCase'),
   description: t('Découvrez toutes notre collection de vêtements'),
-  titleTemplate: `%s | ${get('legalName')}`
+  titleTemplate: `%s | ${get('legalName')}`,
+  ogTitle: useChangeCase(id as string, 'capitalCase'),
+  ogDescription: t('Découvrez toutes notre collection de vêtements'),
+  ogImage: '/images/group1/img1.jpeg',
+  twitterTitle: useChangeCase(id as string, 'capitalCase'),
+  twitterDescription: t('Découvrez toutes notre collection de vêtements'),
+  twitterImage: '/images/group1/img1.jpeg',
+  twitterCard: 'summary_large_image',
+  ogSiteName: get('legalName')
 })
 
 useSchemaOrg(products.value.map(x => defineProduct({
@@ -90,4 +98,11 @@ useSchemaOrg(products.value.map(x => defineProduct({
     }
   }
 })))
+
+defineOgImage({
+  url: '/images/group1/img1.jpeg',
+  width: 1200,
+  height: 630,
+  alt: t('Découvrez toutes notre collection de vêtements')
+})
 </script>
