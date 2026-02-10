@@ -1,7 +1,7 @@
 <template>
   <template v-if="products.length > 0">
     <div id="products" :class="gridClass">
-      <div v-for="(product, idx) in products" id="product" :key="product.node.id">
+      <div v-for="(product, idx) in products" :id="`product__${product.node.id}`" :key="product.node.id">
         <product-card-base :index="idx" :product="product" :show-like-button="showLikeButton" :show-cart="showCart" :show-prices="showPrices" :show-carousel="true" :delay="300" v-motion-slide-bottom @has-navigated="$emit('has-navigated', idx)" />
       </div>
     </div>

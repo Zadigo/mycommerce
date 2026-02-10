@@ -25,9 +25,9 @@
     </suspense>
 
     <!-- Modals -->
-    <!-- <client-only>
+    <client-only>
       <products-modals-filters :count="productsCount" />
-    </client-only > -->
+    </client-only>
   </section>
 </template>
 

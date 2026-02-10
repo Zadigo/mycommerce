@@ -1,5 +1,5 @@
 <template>
-  <div ref="carouselEl" class="relative">
+  <div ref="carouselEl" :id="`carousel-product__${product.node.id}`" class="relative">
     <button v-if="showCarousel && isHovered && isLargeScreen" type="button" class="absolute top-2/5 left-3 py-5 rounded-full z-10 w-15 h-50 place-content-center hover:opacity-60 flex" @click="() => { prev() }">
       <icon name="i-fa7-solid:caret-left" />
     </button>
