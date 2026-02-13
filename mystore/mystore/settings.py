@@ -50,8 +50,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'graphene_django',
+    'mcp_server',
+    'oauth2_provider',
+    'oauth_dcr',
 
-    'django_ecommerce',
     'accounts',
     'collection',
     'shop',
@@ -426,3 +428,13 @@ GRAPHENE = {
     'SCHEMA': 'mystore.schema.schema',
     'TESTING_ENDPOINT': '/graphql/'
 }
+
+
+# Django MCP
+# https://django-oauth-toolkit.readthedocs.io/en/latest/getting_started.html
+# https://github.com/gts360/django-oauth-toolkit-dcr
+# https://github.com/gts360/django-mcp-server?tab=readme-ov-file
+
+DJANGO_MCP_AUTHENTICATION_CLASSES = [
+    'oauth2_provider.contrib.rest_framework.OAuth2Authentication'
+]
