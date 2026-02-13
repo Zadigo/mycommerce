@@ -75,7 +75,3 @@ export const useShippingComposable = createSharedComposable(() => {
     save
   }
 })
-
-export function useStripComposable() {
-  
-}

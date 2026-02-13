@@ -1,4 +1,4 @@
-import type { Nullable } from '~/types'
+import type { KeysAsType, Nullable } from '~/types'
 
 export type DefaultPaymentProviders = 'Stripe' | 'Klarna'
 
@@ -93,13 +93,6 @@ export interface DeliveryOption {
   // shop_runback_values: ShopRunbackValues
 }
 
-export interface ShipingInformation {
-  address_line: string
-  city: string
-  zip_code: string
-  country: string
-  firstname: string
-  lastname: string
-  telephone: string
-  email: string
-}
+export type _ShipingInformation = 'address_line' | 'city' | 'zip_code' | 'country' | 'firstname' | 'lastname' | 'telephone' | 'email'
+
+export type ShipingInformation = KeysAsType<_ShipingInformation, string>

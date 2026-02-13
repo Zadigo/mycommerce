@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { productSymbol } from '~/data'
+import { productSymbol, useBusinessDetails } from '~/data'
 import type { Product } from '~/types'
 
 const { t } = useI18n()
@@ -49,7 +49,7 @@ const likeProductsIds = useLocalStorage<number[]>('likedProducts', [])
  */
 
 const { $client } = useNuxtApp()
-const { sessionId } = await useSession()
+const { sessionId } = useSession()
 
 const { data } = useAsyncData(async () => {
   return $client<Product[]>('/api/v1/shop/wishlist', {
@@ -87,5 +87,57 @@ useHead({
       content: t('Tout les produits que vous avez aimé')
     }
   ]
+})
+
+const { get } = await useBusinessDetails()
+
+useSeoMeta({
+  title: t('Liste de souhait'),
+  description: t('Découvrez toutes notre collection de vêtements'),
+  titleTemplate: `%s | ${get('legalName')}`,
+  ogTitle: t('Liste de souhait'),
+  ogDescription: t('Découvrez toutes notre collection de vêtements'),
+  ogImage: '/images/group1/img1.jpeg',
+  twitterTitle: t('Liste de souhait'),
+  twitterDescription: t('Découvrez toutes notre collection de vêtements'),
+  twitterImage: '/images/group1/img1.jpeg',
+  twitterCard: 'summary_large_image',
+  ogSiteName: get('legalName')
+})
+
+// useSchemaOrg(products.value.map(x => defineProduct({
+//   "@type": 'Product',
+//   "@id": `https://example.com/products/${x.node.slug}`,
+//   name: x.node.name,
+//   sku: x.node.sku,
+//   image: x.node.productImages.map(image => image.original),
+//   url: `https://example.com/products/${x.node.slug}`,
+//   itemCondition: "https://schema.org/NewCondition",
+//   brand: {
+//     "@type": 'Brand',
+//     name: get('legalName'),
+//     logo: get('logo'),
+//   },
+//   offers: {
+//     price: x.node.price,
+//     priceCurrency: 'EUR',
+//     availability: 'https://schema.org/InStock',
+//     image: x.node.mainImage.original,
+//     shippingDetails: {
+//       "@type": 'OfferShippingDetails',
+//       shippingDestination: [
+//         { "@type": "DefinedRegion", addressCountry: 'FR' },
+//         { "@type": "DefinedRegion", addressCountry: 'GP' }
+//       ],
+//       deliveryTime: null
+//     }
+//   }
+// })))
+
+defineOgImage({
+  url: '/images/group1/img1.jpeg',
+  width: 1200,
+  height: 630,
+  alt: t('Découvrez toutes notre collection de vêtements')
 })
 </script>

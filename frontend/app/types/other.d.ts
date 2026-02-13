@@ -16,3 +16,5 @@ export interface ExtendedLocationQuery extends LocationQuery {
 type ExtendedRouteParamsRawGeneric = RouteParamsRawGeneric & {
   id: string
 }
+
+type LikeActions = 'like' | 'unlike'

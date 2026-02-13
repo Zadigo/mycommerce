@@ -1,12 +1,12 @@
 import { arrayRemove, arrayUnion, updateDoc } from 'firebase/firestore'
-import type { MaybeType, ProductNode } from '~/types'
+import type { KeyToRefs, LikeActions, MaybeType, ProductNode } from '~/types'
 
 /**
  * Composable for working with likes on the product
  * on a single product page 
  * @param product - The product to handle likes for
  */
-export async function useLikeComposable(product: MaybeType<ProductNode>, callback?: (actionName: 'like' | 'unlike') => void) {
+export async function useLikeComposable(product: MaybeType<ProductNode>, successCallback?: (actionName: LikeActions) => void) {
   const { docRef, session } = useSession()
     
   const _product = toValue(product)
@@ -25,11 +25,8 @@ export async function useLikeComposable(product: MaybeType<ProductNode>, callbac
         await updateDoc(docRef, { likedProducts: arrayUnion(productId.value) })
       }
       
-      // const uniqueIds = useArrayUnique(session.value.likedProducts)
-      // await updateDoc(docRef, { likedProducts: toValue(uniqueIds) })
-
-      if (callback) {
-        callback(isLiked.value ? 'unlike' : 'like')
+      if (successCallback) {
+        successCallback(isLiked.value ? 'unlike' : 'like')
       }
     }
   }
@@ -78,10 +75,6 @@ export function useModalStateNavigation(state: Ref<boolean>) {
 
 export type GlobalStateModalNames = 'search' | 'language' | 'whatsApp' | 'cart' | 'login' | 'addedProduct' | 'editProduct'
 
-export type GlobalStateModalRefs = {
-  [key in GlobalStateModalNames]: Ref<boolean>
-}
-
 /**
  * Composable used to quickly manage the states of modals
  * that uses the global state for visibility
@@ -111,7 +104,7 @@ export function useModalsState() {
   const showEditProductDrawer = useState<boolean>('showEditProductDrawer')
   const toggleShowEditProductDrawer = useToggle(showEditProductDrawer)
 
-  function closeAllModals(callback?: ({ search, language, whatsApp, cart, login, addedProduct, editProduct }: GlobalStateModalRefs) => void) {
+  function closeAllModals(callback?: ({ search, language, whatsApp, cart, login, addedProduct, editProduct }: KeyToRefs<GlobalStateModalNames, boolean>) => void) {
     const modalStates = [
       showSearchModal,
       showLanguageModal,

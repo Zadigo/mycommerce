@@ -10,6 +10,22 @@ export type Refable<T> = Ref<T>
 
 export type MaybeEmpty<T> = Undefineable<T> | Nullable<T>
 
+export type KeysAsType<K extends string, T> = {
+  [key in K]: T
+}
+
+export type KeyToRefs<K extends string, T> = {
+  [key in K]: Ref<T>
+}
+
+/**
+ * @deprecated Use MaybeEmpty
+ */
+export type MaybeType<T> = MaybeRef<MaybeEmpty<T>> | Undefineable<T>
+
+/**
+ * @deprecated Use MaybeEmpty
+ */
 export type StringNull = string | null | undefined
 
 export type * from './api/accounts'
@@ -67,5 +83,3 @@ export interface ExtendedLocationQuery {
 export type Languages = 'fr' | 'en' | 'es'
 
 export type BaseCountries = 'France' | 'Guadeloupe' | 'Martinique' | 'Réunion'
-
-export type MaybeType<T> = MaybeRef<MaybeEmpty<T>> | MaybeEmpty<T>
