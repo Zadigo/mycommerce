@@ -25,4 +25,6 @@ class CustomerOrderFaker(factory.django.DjangoModelFactory):
     zip_code = factory.Faker('postcode')
     country = factory.Faker('country_code')
     total = factory.Faker('pyfloat', positive=True, max_value=100.0)
-    completed = factory.Faker('boolean')
+    completed = factory.Faker('boolean', truth_probability=0.5)
+    refund_requested = factory.Faker('boolean', truth_probability=0.1)
+    

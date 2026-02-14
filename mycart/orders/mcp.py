@@ -1,10 +1,10 @@
 import pandas
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.db import models
 from django.utils import timezone
 from django_mcp import mcp_app as mcp
 from mcp.server.fastmcp import Context
-from django.core.cache import cache
 from mcp_server import MCPToolset, ModelQueryToolset
 from orders.api.serializers import CustomerOrderSerializer
 from orders.models import CustomerOrder, Product
@@ -65,7 +65,8 @@ class CustomOrderTools(MCPToolset):
         qs = cache.get('mcp_customer_orders')
         if qs is None or force_refresh:
             qs = CustomerOrder.objects.prefetch_related('user')
-            cache.set('mcp_customer_orders', qs, timeout=60 * 60 * 24)  # Cache for 24 hours
+            cache.set('mcp_customer_orders', qs, timeout=60 *
+                      60 * 24)  # Cache for 24 hours
         return qs.all()
 
     def get_order(self, reference: str, email: str = None) -> dict:
@@ -123,8 +124,8 @@ class CustomOrderTools(MCPToolset):
         qs = qs.filter(refund_requested=refund_requested)
         return CustomerOrderSerializer(instance=qs, many=True).data
 
-    async def refund_customers(self, order_reference: str):
-        data = await mcp.call_tool('get_by_refund_requested', refund_requested=True)
+    # async def refund_customers(self, order_reference: str):
+    #     data = await mcp.call_tool('get_by_refund_requested', refund_requested=True)
 
     def get_return_delay(self, order_reference: str):
         pass
@@ -239,7 +240,7 @@ class CustomOrderTools(MCPToolset):
 
         total_sales = qs.aggregate(models.Sum('total'))['total__sum'] or 0
         total_orders = qs.count()
-        
+
         average_value = total_sales / total_orders if total_orders > 0 else 0
         return average_value
 
@@ -309,7 +310,7 @@ class CustomOrderTools(MCPToolset):
         qs = qs.filter(created_on__year=current_year)
 
         df = pandas.DataFrame(list(qs.values('id', 'created_on', 'total')))
-        return df.describe().to_dict()
+        return df.describe().to_dict()['total']
 
     def statistcs_of_orders_this_quarter(self):
         pass

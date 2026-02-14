@@ -45,9 +45,15 @@ class Product(models.Model):
 
     class Meta:
         ordering = ['created_on']
+        indexes = [
+            models.Index(
+                fields=['reference'],
+                name='product_reference_index'
+            )
+        ]
 
     def __str__(self):
-        return f'Product: {self.product_reference}'
+        return f'{self.reference}'
 
 
 class CustomerOrder(models.Model):
@@ -144,11 +150,24 @@ class CustomerOrder(models.Model):
             models.Index(
                 models.Q(stock_updated=False),
                 name='stock_not_updated_index'
+            ),
+            models.Index(
+                fields=['reference'],
+                name='reference_index'
+            ),
+            models.Index(
+                models.Q(refund_requested=True),
+                models.Q(completed=True),
+                name='refund_requested_index'
+            ),
+            models.Index(
+                models.Q(completed=True),
+                name='completed_index'
             )
         ]
 
     def __str__(self):
-        return f'CustomerOrder: {self.reference}'
+        return f'{self.reference}'
 
 
 @receiver(pre_save, sender=CustomerOrder)

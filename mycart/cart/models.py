@@ -89,6 +89,10 @@ class AbstractCart(models.Model):
         ordering = ['-created_on', '-pk']
         indexes = [
             models.Index(fields=['total', 'session_id']),
+            models.Index(
+                Q(is_stale=True) | Q(is_paid_for=True),
+                name='stale_or_paid_carts'
+            )
         ]
 
     def __str__(self):
