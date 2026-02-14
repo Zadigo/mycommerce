@@ -1,11 +1,8 @@
-import unittest
 
 import factory
 import pytest
 from accounts.models import Address
 from django.contrib.auth import get_user_model
-from django.urls import reverse
-from rest_framework.test import APITestCase
 
 
 class UserFaker(factory.django.DjangoModelFactory):

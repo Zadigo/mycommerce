@@ -1,49 +1,28 @@
+from accounts.tests.mixins import AuthenticatedTestCase
+from django.urls import reverse
+from orders.models import CustomerOrder, Product
+from orders.tests.utils import CustomerOrderFaker, ProductFaker
 
-from unittest import TestCase
 
-from orders.tests.utils import CustomerOrderFaker
-
-
-class TestOrdersApi(TestCase):
+class TestOrdersApi(AuthenticatedTestCase):
     # fixtures = ['orders']
-
-    # def setUp(self):
-    #     self.client = self.client_class()
-    #     self.token = self._authenticate()
-
-    # def test_create_shipping(self):
-    #     """
-    #     See: https://docs.stripe.com/testing?testing-method=tokens
-    #     """
-    #     shipping = json.dumps({
-    #         'session_id': 'some_session',
-    #         'email': 'juliette@test-mail.com',
-    #         'firstname': 'Juliette',
-    #         'lastname': 'Lopez',
-    #         'address_line': '1 rue de Paris',
-    #         'zip_code': 59000,
-    #         'city': 'Lille',
-    #         'country': 'France',
-    #         'telephone': '0601010101',
-    #         'delivery_option': 'Chronopost',
-    #         'card': os.getenv('STRIPE_TEST_CARD'),
-    #         'token': 'tok_visa',
-    #         'intent': '',
-    #         'client_ip': '1.1.1.1'
-    #         # 'source': os.getenv('STRIPE_TEST_CARD'),
-    #         # 'card_token': 'ca_token'
-    #     })
-
-    #     response = self.client.post(
-    #         reverse('orders_api:create'),
-    #         content_type='application/json',
-    #         data=shipping
-    #     )
-    #     self.assertEqual(response.status_code, 200,
-    #                      f'Failed to create shipping: {response.json()}')
-
+    
     def setUp(self):
-        self.orders = CustomerOrderFaker.create_batch(2)
+        super().setUp()
+        products: list[Product] = ProductFaker.create_batch(2)
+        self.orders: list[CustomerOrder] = CustomerOrderFaker.create_batch(2)
 
-    def test_orders_list(self):
-        print(self.orders)
+        for order in self.orders:
+            order.user = self.user
+            order.save()
+
+        products[0].customer_order.add(*self.orders)
+
+    def test_list_customer_orders(self):
+        response = self.client.get(reverse('orders_api:orders'))
+        self.assertEqual(
+            response.status_code, 200,
+            f'Failed to list customer orders: {response.json()}'
+        )
+
+        print(response.json())

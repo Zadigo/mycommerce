@@ -1,9 +1,8 @@
-from orders.api.validators import validate_card_token, validate_intent_token
+from orders.api.validators import validate_card_token
+from orders.choices import ShipmentChoices
 from orders.models import CustomerOrder
 from rest_framework import fields
 from rest_framework.serializers import ModelSerializer, Serializer
-
-from orders.choices import ShipmentChoices
 
 
 class ProductSerializer(Serializer):
@@ -16,7 +15,7 @@ class ProductSerializer(Serializer):
 class CustomerOrderSerializer(Serializer):
     id = fields.IntegerField()
     reference = fields.CharField()
-    products = ProductSerializer(many=True)
+    products = ProductSerializer(many=True, source='product_set')
     total = fields.DecimalField(5, 2)
     created_on = fields.DateTimeField()
 

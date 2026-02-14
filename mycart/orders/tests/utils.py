@@ -1,12 +1,21 @@
 import factory
 from accounts.tests.utils import UserFaker
 from faker import Faker
-from orders.models import Product
+from orders.models import CustomerOrder, Product
+
+
+class ProductFaker(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Product
+
+    reference = factory.Faker('random_int')
+    serialized_data = factory.LazyFunction(lambda: {'name': Faker().word()})
+    unit_price = factory.Faker('pyfloat', positive=True, max_value=100.0)
 
 
 class CustomerOrderFaker(factory.django.DjangoModelFactory):
     class Meta:
-        model = 'orders.CustomerOrder'
+        model = CustomerOrder
 
     reference = factory.Faker('ean13')
     stripe_charge = factory.Faker('ean8')
@@ -17,13 +26,3 @@ class CustomerOrderFaker(factory.django.DjangoModelFactory):
     country = factory.Faker('country_code')
     total = factory.Faker('pyfloat', positive=True, max_value=100.0)
     completed = factory.Faker('boolean')
-
-
-class ProductFaker(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Product
-
-    reference = factory.Faker('random_int')
-    serialized_data = factory.LazyFunction(lambda: {'name': Faker().word()})
-    unit_price = factory.Faker('pyfloat', positive=True, max_value=100.0)
-    customer_order = factory.SubFactory(CustomerOrderFaker)
