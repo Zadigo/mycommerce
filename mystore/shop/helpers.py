@@ -4,6 +4,7 @@ from django.db.models import Q
 from rest_framework.response import Response
 
 from mystore.responses import CustomPagination
+from warnings import deprecated
 
 
 class CustomProductPagination(CustomPagination):
@@ -20,6 +21,7 @@ class CustomProductPagination(CustomPagination):
         ]))
 
 
+@deprecated("Use GraphQL instead of REST API for better performance and flexibility.")
 def products_filering_helper(request, queryset):
     # Since we receive the query as
     # [a,b,c] string, we need to parse

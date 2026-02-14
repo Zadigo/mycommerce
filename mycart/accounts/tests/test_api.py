@@ -51,7 +51,7 @@ def test_address_creation():
     address = AddressFaker()
     assert address.id is not None
 
-ù
+
 # class TestApiEndpoints(APITestCase):
 #     fixtures = ['accounts']
 

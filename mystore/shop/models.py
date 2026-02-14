@@ -456,9 +456,12 @@ class Novelty(Product):
         verbose_name_plural = _('novelties')
 
 
-# class Women(Product):
-#     class Meta:
-#         proxy = True
+class Women(Product):
+    objects = managers.WomenManager()
+
+    class Meta:
+        ordering = ['-created_on']
+        proxy = True
 
 
 # class ViewingHistory(models.Model):

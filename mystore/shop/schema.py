@@ -1,7 +1,8 @@
+import random
+
 import graphene
 from django.core.cache import cache
 from graphene import relay
-import random
 from graphene_django import DjangoObjectType
 from shop.models import Image, Novelty, Product, Sale, Video
 

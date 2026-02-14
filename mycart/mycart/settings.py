@@ -46,6 +46,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
 
+    'mcp_server',
+    'oauth2_provider',
+    'oauth_dcr',
+
     'accounts',
     'cart',
     'orders',

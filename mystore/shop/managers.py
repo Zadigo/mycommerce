@@ -1,37 +1,35 @@
-from django.utils import timezone
-
+from django.db.models import BooleanField, Case, F, Manager, Q, When
 from django.db.models.functions.datetime import ExtractDay
-from django.db.models import F, Case, BooleanField, Manager, When, Q
+from django.utils import timezone
+from shop.choices import GenderChoices
 
 
 class WomenManager(Manager):
-    """"Manager used to return products
-    that are specifically categorized
-    for women"""
-
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(gender_category='Womam')
+        return qs.filter(gender_category=GenderChoices.WOMAN)
 
 
 class MenManager(Manager):
-    """"Manager used to return products
-    that are specifically categorized
-    for men"""
-
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(gender_category='Man')
+        return qs.filter(gender_category=GenderChoices.MAN)
 
 
-class KidsManager(Manager):
-    """"Manager used to return products
-    that are specifically categorized
-    for kids"""
-
+class UnisexManager(Manager):
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(gender_category='Kids')
+        return qs.filter(gender_category=GenderChoices.UNISEX)
+
+
+# class KidsManager(Manager):
+#     """"Manager used to return products
+#     that are specifically categorized
+#     for kids"""
+
+#     def get_queryset(self):
+#         qs = super().get_queryset()
+#         return qs.filter(gender_category=GenderChoices.KIDS)
 
 
 class SaleManager(Manager):

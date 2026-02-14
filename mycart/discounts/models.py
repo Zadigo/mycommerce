@@ -21,9 +21,10 @@ class Discount(models.Model):
         blank=True,
         null=True
     )
-    products = models.ManyToManyField(
-        Product,
-        blank=True
+    products = models.JSONField(
+        default=list,
+        blank=True,
+        null=True
     )
     percentage = models.PositiveIntegerField(
         default=0,

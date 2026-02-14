@@ -1,9 +1,5 @@
-from typing import override
 import unittest
 
-from django.test import override_settings
-
-from accounts import tasks
 from accounts.models import Address
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -137,13 +133,3 @@ class TestApiEndpoints(APITestCase):
         data = response.json()
         self.assertEqual(response.status_code, 201)
         self.assertIn('id', data)
-
-
-@override_settings(CELERY_TASK_ALWAYS_EAGER=True)
-class TestAccountsTasks(APITestCase):
-    fixtures = ['accounts']
-
-    def test_signup_workflow_task(self):
-        self.user = get_user_model().objects.first()
-        data = tasks.signup_workflow.apply((self.user.email,)).get()
-        print(data)

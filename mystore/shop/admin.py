@@ -1,7 +1,6 @@
 import random
 
 from django.contrib import admin, messages
-from django.core.exceptions import ValidationError
 from django.db.models import Count
 from django.urls import re_path
 from import_export.admin import ImportExportModelAdmin
@@ -30,12 +29,6 @@ class ProductResource(ModelResource):
 
     class Meta:
         model = Product
-        # fields = [
-        #     'name', 'color', 'unit_price', 'active',
-        #     'display_new', 'slug', 'category',
-        #     'on_sale', 'sale_value'
-        # ]
-        # exclude = ['id']  # Exclude the ID field on import/export
 
 
 @admin.register(Product)

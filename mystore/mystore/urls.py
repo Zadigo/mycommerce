@@ -4,14 +4,31 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
-from drf_spectacular import views as drf_views
-from rest_framework_simplejwt import views as jwt_views
-from graphene_django.views import GraphQLView
 from django.views.decorators.csrf import csrf_exempt
+from drf_spectacular import views as drf_views
+from graphene_django.views import GraphQLView
+from oauth_dcr import views as oauth_dcr_views
+from rest_framework_simplejwt import views as jwt_views
 
 from mystore import views
 
 urlpatterns = [
+    path(
+        'o/',
+        include(
+            ('oauth2_provider.urls', 'oauth2_provider'),
+            namespace='oauth2_provider'
+        )
+    ),
+    path(
+        'o/register/',
+        oauth_dcr_views.DynamicClientRegistrationView.as_view(),
+        name='oauth2_dcr'
+    ),
+    path(
+        'agents/',
+        include(('mcp_server.urls', 'mcp_server'), namespace='mcp_server')
+    ),
     path(
         'v1/graphql/',
         csrf_exempt(GraphQLView.as_view(graphiql=True)),
