@@ -21,11 +21,12 @@ def check_product_exists(items: list[dict]):
             async with httpx.AsyncClient() as client:
                 response = await client.post(url, json=items)
                 response.raise_for_status()
-                return response.json()
-        except httpx.HTTPError as exc:
-            logger.error(f"Error while checking product exists: {exc}")
+        except httpx.HTTPError as e:
+            logger.error(f"Error while checking product exists: {e}")
+            return None
         else:
-            logger.info(f"Successfully checked products at {url}")
+            logger.info(f"Successfully checked product at {url}")
+            return response.json()
 
     async def main():
         tasks = [
@@ -34,30 +35,35 @@ def check_product_exists(items: list[dict]):
         ]
         return await asyncio.gather(*tasks)
 
-    asyncio.run(main())
+    results = asyncio.run(main())
 
 
 @shared_task
 def calculate_total(cart_id: int):
-    """Calculate the total price of items in the cart"""
+    """Calculate the total price of items 
+    in a given cart"""
     try:
         instance = Cart.objects.get(id=cart_id)
-    except:
+    except Cart.DoesNotExist:
         logger.error(f"Cart with id {cart_id} does not exist.")
         return
     else:
         total = 0
-        quantity = 0
+        total_quantity = 0
 
         for json_product in instance.items:
-            total += json_product['product']['price'] * \
-                json_product['quantity']
-            quantity += json_product['quantity']
+            price = json_product['product']['price']
+            quantity = json_product['quantity']
+
+            total += (price * quantity)
+            total_quantity += quantity
 
         instance.total = total
-        instance.quantity = quantity
+        instance.quantity = total_quantity
 
         instance.save()
 
         logger.warning(
-            f"Updated item {instance.id}. Quantity: {instance.quantity} price {instance.total}")
+            f"Updated item {instance.id}. Quantity: "
+            f"{instance.quantity} price {instance.total}"
+        )
