@@ -15,18 +15,29 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@nuxt/test-utils',
     '@askdoppler/nuxt',
-    '@nuxtjs/apollo',
     '@nuxtjs/ionic',
     '@nuxtjs/i18n',
     '@nuxtjs/seo',
     '@nuxtjs/supabase',
     '@vueuse/nuxt',
-    '@ionic/cli'
+    'nuxt-authentication',
+    'nuxt-ganalytics'
   ],
+
+  ogImage: {
+    enabled: false
+  },
 
   vuefire: {
     config: {
-
+      apiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY,
+      authDomain: process.env.NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+      dbUrl: process.env.NUXT_PUBLIC_FIREBASE_DB_URL,
+      storageBucket: process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+      appId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID,
+      measurementId: process.env.NUXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+      messageSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGE_SENDER_ID,
+      projectId: process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID
     }
   },
 
