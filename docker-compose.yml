@@ -199,6 +199,29 @@ services:
     networks:
       - ecommerce
 
+  subscribers:
+    build: ./subscribers
+    container_name: app_subscribers
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.subscribers.entrypoints=websecure
+      - traefik.http.routers.subscribers.rule=Host(`subscribers.example.com`)
+      - traefik.http.routers.subscribers.tls=true
+      - traefik.http.routers.subscribers.tls.certresolver=production
+      - traefik.http.services.subscribers-service.loadbalancer.server.port=8000
+      - traefik.http.routers.subscribers.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    env_file:
+      - ./docker/environment/django.env
+      - ./docker/environment/global.env
+      - ./docker/environment/redis.env
+    volumes:
+      - ./subscribers:/code
+      - ./subscribers/media:/code/media:rw
+    networks:
+      - ecommerce
+
   db:
     build: ./docker/database
     container_name: app_database
@@ -210,11 +233,6 @@ services:
       - PostgresData:/var/lib/postgresql/data/
     networks:
       - ecommerce
-    # healthcheck:
-    #   test: ["CMD-SHELL", "pg_isready -h localhost -U $$DB_USER -d $$DB_NAME"]
-    #   interval: 5s
-    #   timeout: 5s
-    #   retries: 10
   
   pgadmin:
     image: dpage/pgadmin4
@@ -236,17 +254,17 @@ services:
     networks:
       - ecommerce  
   
-  api:
-    build: ./api_server
-    container_name: app_api_quart
+  api_global:
+    build: ./api_global
+    container_name: app_api_global
     labels:
       - traefik.enable=true
-      - traefik.http.routers.api_quart.entrypoints=websecure
-      - traefik.http.routers.api_quart.rule=Host(`api.example.fr`)
-      - traefik.http.routers.api_quart.tls=true
-      - traefik.http.routers.api_quart.tls.certresolver=production
-      - traefik.http.services.api_quart-service.loadbalancer.server.port=5000
-      - traefik.http.routers.api_quart.middlewares=https-redirect
+      - traefik.http.routers.api_global.entrypoints=websecure
+      - traefik.http.routers.api_global.rule=Host(`api.example.fr`)
+      - traefik.http.routers.api_global.tls=true
+      - traefik.http.routers.api_global.tls.certresolver=production
+      - traefik.http.services.api_global-service.loadbalancer.server.port=5000
+      - traefik.http.routers.api_global.middlewares=https-redirect
       - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
       - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
     env_file:
@@ -282,19 +300,19 @@ services:
     networks:
       - ecommerce
 
-  frontend_shop:
+  nuxt_frontend:
     build: ./frontend
-    container_name: app_frontend_shop
+    container_name: app_nuxt_frontend
     command: pnpm run start --host 0.0.0.0
     restart: always
     labels:
       - traefik.enable=true
-      - traefik.http.routers.frontend_shop.entrypoints=websecure
-      - traefik.http.routers.frontend_shop.rule=Host(`ecommerce.fr`)
-      - traefik.http.routers.frontend_shop.tls=false
-      - traefik.http.routers.frontend_shop.tls.certresolver=staging
-      - traefik.http.services.frontend_shop-service.loadbalancer.server.port=80
-      # - traefik.http.routers.frontend_shop.middlewares=https-redirect
+      - traefik.http.routers.nuxt_frontend.entrypoints=websecure
+      - traefik.http.routers.nuxt_frontend.rule=Host(`ecommerce.fr`)
+      - traefik.http.routers.nuxt_frontend.tls=false
+      - traefik.http.routers.nuxt_frontend.tls.certresolver=staging
+      - traefik.http.services.nuxt_frontend-service.loadbalancer.server.port=80
+      # - traefik.http.routers.nuxt_frontend.middlewares=https-redirect
       # - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
       # - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
     env_file:

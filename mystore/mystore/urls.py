@@ -2,7 +2,6 @@ from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
 from django.views.decorators.csrf import csrf_exempt
 from drf_spectacular import views as drf_views
@@ -37,10 +36,6 @@ urlpatterns = [
     path(
         '__debug__/',
         include('debug_toolbar.urls')
-    ),
-    path(
-        'admin/v1/',
-        include('adminapi.urls')
     ),
     path(
         'api/v1/stocks/',
