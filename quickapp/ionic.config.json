@@ -1,0 +1,7 @@
+{
+  "name": "quickapp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
