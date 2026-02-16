@@ -56,7 +56,7 @@ def cancel_order(order_id):
 
 
 @shared_task
-def refund_request(order_id, reason=None):
+def refund_request(order_id: str, reason: str = None):
     """Case where an order has been fully executed and the
     customer asks for refund"""
     instance = CustomerOrder.objects.get(reference=order_id)

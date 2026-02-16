@@ -64,6 +64,10 @@ urlpatterns = [
         include('django_ckeditor_5.urls')
     ),
     path(
+        'discounts/v1/',
+        include('discounts.urls')
+    ),
+    path(
         'orders/v1/',
         include('orders.urls')
     ),

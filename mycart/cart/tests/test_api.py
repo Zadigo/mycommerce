@@ -45,10 +45,13 @@ class TestCartApi(AuthenticatedTestCase):
         self.assertIn('quantity', data)
 
     def test_create_cart_authenticated(self):
-        data = create_items(quantity=2)
+        data = list(create_items(quantity=2))
         response = self.client.post(
             reverse('cart_api:create'),
-            data=data,
+            data={
+                'session_id': 'postmanTest1234',
+                'items': data
+            },
             content_type='application/json'
         )
         self.assertEqual(
@@ -58,6 +61,7 @@ class TestCartApi(AuthenticatedTestCase):
         )
 
         data = response.json()
+
         self.assertIn('session_id', data)
         self.assertIsInstance(data['session_id'], str)
 
@@ -80,7 +84,7 @@ class TestCartApi(AuthenticatedTestCase):
         # First, create the cart
         create_response = self.client.post(
             reverse('cart_api:create'),
-            data=create_items(quantity=2),
+            data=list(create_items(quantity=2)),
             content_type='application/json'
         )
         self.assertEqual(
@@ -115,13 +119,13 @@ class TestCartApi(AuthenticatedTestCase):
         # ones were paid for.
         Cart.objects.create(**{
             'session_id': 'duplicateSessionID',
-            'items': create_items(quantity=2),
+            'items': list(create_items(quantity=2)),
             'is_paid_for': True
         })
 
         Cart.objects.create(**{
             'session_id': 'duplicateSessionID',
-            'items': create_items(quantity=2),
+            'items': list(create_items(quantity=2)),
             'is_paid_for': False
         })
 

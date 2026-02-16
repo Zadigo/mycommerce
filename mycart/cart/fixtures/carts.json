@@ -18,6 +18,32 @@
                     },
                     "total": 660,
                     "product": {
+                        "id": "1",
+                        "name": "Product Fixture 2",
+                        "price": 60,
+                        "mainImage": {
+                            "name": "Main Image",
+                            "variant": "default",
+                            "original": "/images/group5/img1.jpeg",
+                            "createdOn": "2025-01-01",
+                            "thumbnail": "/images/group5/img1.jpeg",
+                            "isMainImage": true
+                        },
+                        "salePrice": 80,
+                        "unitPrice": 60
+                    },
+                    "quantity": 11
+                },
+                {
+                    "size": {
+                        "name": "M",
+                        "active": true,
+                        "metric": "cm",
+                        "availability": false,
+                        "variantPrice": 5
+                    },
+                    "total": 660,
+                    "product": {
                         "id": "2",
                         "name": "Product Fixture 2",
                         "price": 60,

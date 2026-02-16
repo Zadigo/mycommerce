@@ -1,4 +1,3 @@
-
 from cart import tasks
 from cart.models import Cart
 from rest_framework import fields
@@ -55,7 +54,7 @@ class CartSerializer(Serializer):
 
     id = fields.IntegerField()
     session_id = fields.CharField()
-    items = fields.JSONField()
+    items = CartItemSerializer(many=True)
     total = fields.FloatField()
     quantity = fields.IntegerField()
     is_paid_for = fields.BooleanField()

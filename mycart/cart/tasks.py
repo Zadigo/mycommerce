@@ -2,6 +2,7 @@ import asyncio
 
 import httpx
 from cart.models import Cart
+from cart.utils import calculate_items_total
 from celery import shared_task
 from celery.utils.log import get_logger
 from django.conf import settings
@@ -48,16 +49,7 @@ def calculate_total(cart_id: int):
         logger.error(f"Cart with id {cart_id} does not exist.")
         return
     else:
-        total = 0
-        total_quantity = 0
-
-        for json_product in instance.items:
-            price = json_product['product']['price']
-            quantity = json_product['quantity']
-
-            total += (price * quantity)
-            total_quantity += quantity
-
+        total, total_quantity = calculate_items_total(instance.items)
         instance.total = total
         instance.quantity = total_quantity
 

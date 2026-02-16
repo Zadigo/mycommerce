@@ -46,6 +46,13 @@ class CreateCartView(generics.CreateAPIView):
     serializer_class = serializers.ValidateCreateCart
     permission_classes = [AllowAny]
 
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        tasks.calculate_total.apply_async(
+            args=[instance.id],
+            countdown=5
+        )
+
 
 class DeleteFromCart(CartMixin, generics.DestroyAPIView):
     """Delete a set of objects from the cart"""
@@ -66,7 +73,7 @@ class DeleteFromCart(CartMixin, generics.DestroyAPIView):
 
     def perform_destroy(self, instance, serializer):
         product_ids = serializer.validated_data['product_ids']
-        
+
         for item_id, size in product_ids:
             instance.items = [
                 item for item in instance.items

@@ -1,30 +1,36 @@
 from cart.models import Cart
-from discounts.api.serializers import DiscountSerializer
 from discounts.models import Discount
-from discounts.utils import calculate_discount
+from discounts.utils import (calculate_discount, calculate_partial_discount,
+                             get_calculated_discount_response)
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import UpdateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from shop.models import Product
 
 
-def apply_discount(request, **kwargs):
-    product = get_object_or_404(Product, pk=1)
+class ApplyDiscountView(GenericAPIView):
+    def post(self, request, *args, **kwargs):
+        session_id = request.data.get('cart_id')
+        discount_code = request.data.get('discount_code')
 
-    cart = Cart.objects.cart_items('session_idinienoz')
-    selected_products = cart.filter(product__id=product.id)
+        cart = get_object_or_404(Cart, session_id=session_id)
 
-    discount = get_object_or_404(
-        Discount,
-        name='ETE2025',
-        products__id=product.id
-    )
+        instance = get_object_or_404(Discount, name=discount_code)
+        if not instance.is_valid:
+            return Response({}, status=400)
 
-    if discount.is_valid:
-        # result = calculate_discount(product.get_price, discount.percentage)
-        # selected_products.update({'discounted_price': result})
-        discounted_prices = product.cart_set.get().discounted_prices
-        serializer = DiscountSerializer(instance=discount)
-        return Response(serializer.data)
-    return Response({})
+        if instance.products is not None and len(instance.products) > 0:
+            valid_items, invalid_items, discounted_total, undiscounted_total = calculate_partial_discount(
+                cart.items,
+                instance.percentage,
+                instance.products
+            )
+            data = get_calculated_discount_response(
+                valid_products=valid_items,
+                invalid_products=invalid_items,
+                discounted_total=discounted_total,
+                undiscounted=undiscounted_total
+            )
+            return Response(data)
+        breakpoint()
+        data = calculate_discount(cart.total, instance.percentage)
+        return Response(get_calculated_discount_response(discounted_total=data))

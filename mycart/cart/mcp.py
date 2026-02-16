@@ -1,6 +1,7 @@
 import pandas
 from cart.api.serializers import CartSerializer
 from cart.models import Cart
+from discounts.models import Discount
 from django.core.cache import cache
 from mcp_server import MCPToolset, ModelQueryToolset
 
@@ -79,7 +80,7 @@ class CartTools(MCPToolset):
         if anonymous_qs.exists():
             df = pandas.DataFrame(anonymous_qs.values('id', 'total'))
             return df.describe().to_dict()['total']
-        
+
         return {
             'count': 0,
             'mean': 0,
@@ -107,3 +108,23 @@ class CartTools(MCPToolset):
             created_on__date__lte=end_date
         )
         return CartSerializer(instance=between_qs, many=True).data
+
+    def check_discount_on_cart(self, cart_id: int, discount_id: str | int) -> dict:
+        """Checks if a discount is applied to the cart with the given ID.
+
+        Args:
+            cart_id (int): The ID of the cart to check for discounts.
+
+        Returns:
+            dict: A dictionary containing information about the discount applied to the cart, if any.
+        """
+        cart = self._get_queryset().filter(id=cart_id).first()
+        if not cart:
+            return {'error': 'Cart not found'}
+
+        try:
+            discount = Discount.objects.filter(id=discount_id).first()
+        except Discount.DoesNotExist:
+            return {'error': 'Discount not found'}
+
+        return {'message': 'No discount applied to this cart'}

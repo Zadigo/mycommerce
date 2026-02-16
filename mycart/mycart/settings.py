@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'oauth_dcr',
 
     'accounts',
+    'discounts',
     'cart',
     'orders',
     'shipments'

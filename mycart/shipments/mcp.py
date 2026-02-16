@@ -25,7 +25,7 @@ class ShipmentTools(MCPToolset):
     def get_shipment_by_tracking_number(self, tracking_number: str):
         pass
 
-    def email_user(self, user_id: int, subject: str, message: str):
+    def email_user_for_shipment(self, user_id: int, subject: str, message: str):
         pass
 
 
