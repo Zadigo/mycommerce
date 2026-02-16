@@ -1,30 +1,48 @@
-import tailwind from '@tailwindcss/vite'
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   ssr: false,
-
   modules: [
+    '@pinia/nuxt',
+    'nuxt-vuefire',
+    '@nuxt/a11y',
     '@nuxt/eslint',
+    '@nuxt/fonts',
+    '@nuxt/hints',
+    '@nuxt/icon',
     '@nuxt/image',
     '@nuxt/scripts',
     '@nuxt/test-utils',
-    '@nuxt/ui',
+    '@askdoppler/nuxt',
+    '@nuxtjs/apollo',
     '@nuxtjs/ionic',
-    '@pinia/nuxt',
+    '@nuxtjs/i18n',
+    '@nuxtjs/seo',
+    '@nuxtjs/supabase',
     '@vueuse/nuxt',
-    '@nuxt/icon'
+    '@ionic/cli'
   ],
 
-  css: [
-    '~/assets/css/main.css'
-  ],
+  vuefire: {
+    config: {
 
-  vite: {
-    plugins: [
-      tailwind()
-    ]
+    }
+  },
+
+  ionic: {
+    integrations: {
+      //
+    },
+    css: {
+      //
+    },
+    config: {
+      //
+    }
+  },
+
+  runtimeConfig: {
+    
   }
 })
