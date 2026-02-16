@@ -39,16 +39,8 @@ urlpatterns = [
         include('debug_toolbar.urls')
     ),
     path(
-        'admin/v1/',
-        include('adminapi.urls')
-    ),
-    path(
         'api/v1/stocks/',
         include('stocks.api.urls')
-    ),
-    path(
-        'api/v1/orders/',
-        include('orders.api.urls')
     ),
     path(
         'api/v1/accounts/',
@@ -57,10 +49,6 @@ urlpatterns = [
     path(
         'api/v1/shop/',
         include('shop.api.urls')
-    ),
-    path(
-        'api/v1/cart/',
-        include('cart.api.urls')
     ),
     path(
         'api/v1/collection/',

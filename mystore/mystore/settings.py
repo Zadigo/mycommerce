@@ -58,12 +58,7 @@ INSTALLED_APPS = [
     'collection',
     'shop',
     'variants',
-    'cart',
-    'orders',
-    'shipments',
-    'stocks',
-
-    'adminapi'
+    'stocks'
 ]
 
 MIDDLEWARE = [
