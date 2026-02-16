@@ -1,68 +1,11 @@
 from cart.models import Cart
+from cart.tests.utils import create_items
 from django.db.models.fields import json
 from django.test import override_settings
 from django.urls import reverse
 from rest_framework.mixins import status
 
 from mycart.mixins import AuthenticatedTestCase
-
-SERIALIZED_CARTITEM = {
-    "session_id": "postmanTest1234",
-    "items": [
-        {
-            "size": {
-                "name": "M",
-                "metric": "cm",
-                "active": True,
-                "variantPrice": 5,
-                "availability": False
-            },
-            "product": {
-                "salePrice": 0,
-                "name": "Product Fixture 2",
-                "id": "2",
-                "price": 10,
-                "mainImage": {
-                    "createdOn": "2025-01-01",
-                    "isMainImage": True,
-                    "thumbnail": "/images/group5/img1.jpeg",
-                    "variant": "default",
-                    "name": "Main Image",
-                    "original": "/images/group5/img1.jpeg"
-                },
-                "unitPrice": 10
-            },
-            "total": 10,
-            "quantity": 1
-        },
-        {
-            "size": {
-                "variantPrice": 0,
-                "availability": True,
-                "active": True,
-                "metric": "cm",
-                "name": "S"
-            },
-            "quantity": 1,
-            "product": {
-                "mainImage": {
-                    "original": "/images/group1/img1.jpg",
-                    "createdOn": "2025-01-01",
-                    "thumbnail": "/images/group1/img1.jpg",
-                    "name": "Main Image",
-                    "isMainImage": True,
-                    "variant": "default"
-                },
-                "salePrice": 0,
-                "id": "1",
-                "price": 20,
-                "unitPrice": 20,
-                "name": "Product Fixture 1"
-            },
-            "total": 20
-        }
-    ]
-}
 
 
 @override_settings(PY_UTILITIES_JWT_ISSUER='ecommerce', PY_UTILITIES_JWT_SECRET='some_secret')
@@ -102,9 +45,10 @@ class TestCartApi(AuthenticatedTestCase):
         self.assertIn('quantity', data)
 
     def test_create_cart_authenticated(self):
+        data = create_items(quantity=2)
         response = self.client.post(
             reverse('cart_api:create'),
-            data=SERIALIZED_CARTITEM,
+            data=data,
             content_type='application/json'
         )
         self.assertEqual(
@@ -136,7 +80,7 @@ class TestCartApi(AuthenticatedTestCase):
         # First, create the cart
         create_response = self.client.post(
             reverse('cart_api:create'),
-            data=SERIALIZED_CARTITEM,
+            data=create_items(quantity=2),
             content_type='application/json'
         )
         self.assertEqual(
@@ -166,18 +110,18 @@ class TestCartApi(AuthenticatedTestCase):
         )
 
     def test_add_same_cart_if_others_were_paid_for(self):
-        # The user should be abe to create a new cart
+        # The user should be able to create a new cart
         # with the same session ID, if the previous
         # ones were paid for.
         Cart.objects.create(**{
             'session_id': 'duplicateSessionID',
-            'items': SERIALIZED_CARTITEM['items'],
+            'items': create_items(quantity=2),
             'is_paid_for': True
         })
 
         Cart.objects.create(**{
             'session_id': 'duplicateSessionID',
-            'items': SERIALIZED_CARTITEM['items'],
+            'items': create_items(quantity=2),
             'is_paid_for': False
         })
 

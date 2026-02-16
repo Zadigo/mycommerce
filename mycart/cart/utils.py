@@ -1,5 +1,4 @@
-from django.utils.crypto import get_random_string
-from typing import Callable, Union
+from typing import Union
 
 from django.apps import apps
 from django.conf import settings
@@ -18,5 +17,5 @@ def get_product_model():
 def calculate_vat(value: Union[DecimalField, float, int], vat: int = 20):
     price = float(value)
     if vat < 0 or vat > 100:
-        raise ValueError('VAT should be above 0 and below a 100')
+        raise ValueError('VAT should be above 0 and below 100')
     return price * (1 + (vat / 100))

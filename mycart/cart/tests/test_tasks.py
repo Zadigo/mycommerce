@@ -2,8 +2,8 @@ from unittest.mock import patch
 
 from cart import tasks
 from cart.models import Cart
+from cart.tests.utils import create_items
 from django.test import TestCase, override_settings
-from faker import Faker
 
 from mycart.settings import MICROSERVICES
 
@@ -16,40 +16,11 @@ MICROSERVICES = {
     }
 }
 
-fake = Faker(locale='en_US')
-
 
 @override_settings(CELERY_ALWAYS_EAGER=True, MICROSERVICES=MICROSERVICES)
 class TestTasks(TestCase):
     def setUp(self):
-
-        item = [
-            {
-                'size': {
-                    'name': fake.pystr(max_chars=10),
-                    'active': True,
-                    'metric': 'cm',
-                    'availability': True,
-                    'variantPrice': 0.0},
-                'total': fake.pyfloat(positive=True, right_digits=2),
-                'product': {
-                    'id': fake.pyint(min_value=1),
-                    'name': fake.pystr(max_chars=10),
-                    'price': fake.pyfloat(positive=True, right_digits=2, min_value=1.0, max_value=10.0),
-                    'mainImage': {
-                        'name': fake.pystr(max_chars=10),
-                        'variant': fake.pystr(max_chars=10),
-                        'original': fake.pystr(max_chars=10),
-                        'createdOn': fake.date(),
-                        'thumbnail': fake.pystr(max_chars=10),
-                        'isMainImage': fake.pybool()},
-                    'salePrice': fake.pyfloat(positive=True, right_digits=2, min_value=1.0, max_value=10.0),
-                    'unitPrice': fake.pyfloat(positive=True, right_digits=2, min_value=1.0, max_value=10.0)},
-                'quantity': fake.pyint(min_value=1, max_value=2)
-            }
-        ]
-
-        self.items = [item for _ in range(5)]
+        self.items = create_items(quantity=2)
 
     def test_check_product_exists(self):
         with patch('cart.tasks.httpx', autospec=True) as mhttpx:
