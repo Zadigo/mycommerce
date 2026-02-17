@@ -1,5 +1,3 @@
-import { test } from 'vitest'
-
 export * from './errors'
 export * from './use'
 

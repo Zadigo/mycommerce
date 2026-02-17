@@ -28,6 +28,10 @@ export default defineNuxtConfig({
     enabled: false
   },
 
+  extends: [
+    '../frontend'
+  ],
+
   vuefire: {
     config: {
       apiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY,
