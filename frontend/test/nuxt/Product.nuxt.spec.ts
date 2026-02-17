@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { productFixture } from '~~/layers/base/data/__fixtures__'
+import { productFixture } from '~~/layers/base/app/data/__fixtures__'
 
 // Mock useProductDetailsComposable before import
 vi.mock('../../app/composables/use/product/useProductDetailsComposable', () => ({

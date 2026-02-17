@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { useBusinessDetails } from '~~/layers/base/data'
+import { useBusinessDetails } from '~~/layers/base/app/data'
 import type { BaseImage } from '~/types'
 
 /**

@@ -1,7 +1,7 @@
 import { promiseTimeout } from '@vueuse/core'
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 import { useDocument, useFirestore } from 'vuefire'
-import { baseSessionCacheData } from '~~/layers/base/data/constants'
+import { baseSessionCacheData } from '~~/layers/base/app/data/constants'
 
 import type { CartSessionData, SessionCacheData } from '~/types'
 

@@ -36,7 +36,7 @@
 //   maxAge: 0 // disable cache for now
 // })
 
-import { collectionRestApiFixture } from '~~/layers/base/data/__fixtures__'
+import { collectionRestApiFixture } from '~~/layers/base/app/data/__fixtures__'
 
 export default defineCachedEventHandler(_event => {
   return collectionRestApiFixture

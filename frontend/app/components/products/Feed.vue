@@ -50,7 +50,7 @@
 <script setup lang="ts">
 import { useIntersectionObserver } from '@vueuse/core'
 import { useHandleGridSize } from '~/composables/use/grid'
-import { productsSymbol } from '~~/layers/base/data/constants/symbols'
+import { productsSymbol } from '~~/layers/base/app/data/constants/symbols'
 import type { Product } from '~/types'
 
 const emit = defineEmits<{ 'products:list': [products: Product[]], 'modal:product-filters': [] }>()

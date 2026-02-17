@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { productsSymbol } from '~~/layers/base/data/constants/symbols'
+import { productsSymbol } from '~~/layers/base/app/data/constants/symbols'
 import type { ProductNode } from '~/types'
 
 const emit = defineEmits<{

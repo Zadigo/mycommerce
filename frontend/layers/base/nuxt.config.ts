@@ -1,4 +1,8 @@
 export default defineNuxtConfig({
+  imports: {
+    dirs: ['data']
+  },
+  
   vuefire: {
     config: {
       apiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY,

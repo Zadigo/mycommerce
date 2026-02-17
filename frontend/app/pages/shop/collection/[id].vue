@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { useChangeCase } from '@vueuse/integrations/useChangeCase'
-import { useBusinessDetails } from '~~/layers/base/data'
+import { useBusinessDetails } from '~~/layers/base/app/data'
 
 const AsyncProductsFeed = defineAsyncComponent({
   loader: async () => import('~/components/products/Feed.vue'),

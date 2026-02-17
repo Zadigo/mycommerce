@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { productSymbol } from '~~/layers/base/data/constants/symbols'
+import { productSymbol } from '~~/layers/base/app/data/constants/symbols'
 import { useHandleGridSize } from '~/composables/use/grid'
 import type { ProductNode } from '~/types'
 

@@ -45,7 +45,7 @@
 //   }
 // })
 
-import { useGenerateProducts } from '~~/layers/base/data/__fixtures__/products'
+import { useGenerateProducts } from '~~/layers/base/app/data/__fixtures__/products'
 
 export default defineEventHandler(async (_event) => {
   $fetch('/v1/graphql', {

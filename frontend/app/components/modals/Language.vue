@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import { doc, setDoc } from 'firebase/firestore'
-import { countries } from '~~/layers/base/data/constants'
+import { countries } from '~~/layers/base/app/data/constants'
 import type { BaseCountries } from '~/types'
 
 type AvailableLanguages = typeof i18n.locale.value
