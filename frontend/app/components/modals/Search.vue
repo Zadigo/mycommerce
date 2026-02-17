@@ -32,10 +32,10 @@
 </template>
 
 <script setup lang="ts">
-import { productsSymbol } from '~/data/constants/symbols'
+import { productsSymbol } from '~~/layers/base/data/constants/symbols'
 import { doc, updateDoc } from 'firebase/firestore'
 import type { SearchedProducts } from '~/types'
-import { baseProductGraph } from '~/data/constants/graphs'
+import { baseProductGraph } from '~~/layers/base/data/constants/graphs'
 
 const AsyncRecommendations = defineAsyncComponent({
   loader: async () => import('~/components/base/Recommendations.vue'),

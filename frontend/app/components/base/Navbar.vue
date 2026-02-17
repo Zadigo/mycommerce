@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { useBusinessDetails } from '~/data'
+import { useBusinessDetails } from '~~/layers/base/data'
 
 /**
  * Other modals

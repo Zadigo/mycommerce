@@ -29,7 +29,8 @@ export default defineNuxtConfig({
   },
 
   extends: [
-    '../frontend/layers/base'
+    '../frontend/layers/base',
+    'github:Zadigo/nuxt-extender'
   ],
 
   vuefire: {

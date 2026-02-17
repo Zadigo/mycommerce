@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { privacyText } from '~/data/privacy'
+import { privacyText } from '~~/layers/base/data/privacy'
 
 const { t } = useI18n()
 

@@ -13,8 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { useHandleGridSize } from '~/composables/use/grid'
-import { productsSymbol } from '~/data/constants/symbols'
+import { productsSymbol } from '~~/layers/base/data/constants/symbols'
 import type { ProductNode } from '~/types'
 
 const emit = defineEmits<{

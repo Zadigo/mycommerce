@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { filterByClotheSize, filterBySorting, filterByPrice, type FilterActions, type PriceFilter, type SortingFilter } from '~/data/constants'
+import { filterByClotheSize, filterBySorting, filterByPrice, type FilterActions, type PriceFilter, type SortingFilter } from '~~/layers/base/data/constants'
 import type { ClotheSizes, SearchedProducts, Undefineable } from '~/types'
 
 const { count = 0 } = defineProps<{

@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import { footerLinks, useBusinessDetails } from '~/data'
+import { footerLinks, useBusinessDetails } from '~~/layers/base/data'
 import type { BaseCountries } from '~/types'
 
 const i18nCountry = useCookie<BaseCountries>('i18nCountry')

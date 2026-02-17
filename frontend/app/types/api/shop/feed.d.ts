@@ -1,4 +1,4 @@
-import type { SortingFilter } from '~/data'
+import type { SortingFilter } from '~~/layers/base/data'
 import type { DefaultClotheSize, DefaultColors, DefaultPriceFilters } from '~/data/constants/constants'
 import type { Empty } from '../..'
 

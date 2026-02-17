@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { productSymbol, useBusinessDetails } from '~/data'
+import { productSymbol, useBusinessDetails } from '~~/layers/base/data'
 import type { Product } from '~/types'
 
 const { t } = useI18n()
