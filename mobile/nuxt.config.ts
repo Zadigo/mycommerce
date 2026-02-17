@@ -60,5 +60,35 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     
+  },
+
+  i18n: {
+    baseUrl: './',
+    langDir: './locales',
+    defaultLocale: 'fr',
+    vueI18n: './i18n.config.ts',
+    locales: [
+      {
+        code: 'en',
+        language: 'en-US',
+        file: 'en-US.ts',
+        dir: 'ltr',
+        name: 'English'
+      },
+      {
+        code: 'es',
+        language: 'es-ES',
+        file: 'es-ES.ts',
+        dir: 'ltr',
+        name: 'Spanish'
+      },
+      {
+        code: 'fr',
+        language: 'fr-FR',
+        file: 'fr-FR.ts',
+        dir: 'ltr',
+        name: 'Français'
+      }
+    ]
   }
 })
