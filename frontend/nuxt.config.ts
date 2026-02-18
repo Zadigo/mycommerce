@@ -85,15 +85,26 @@ export default defineNuxtConfig({
     'nuxt-vuefire',
     'pinia-plugin-persistedstate',
     'vue-sonner/nuxt',
-    '@nuxtjs/seo'
+    '@nuxtjs/seo',
+    '@nuxt/eslint'
   ],
 
   typescript: {
     tsConfig: {
       include: [
         '../test/unit/**/*.ts'
-      ]
+      ],
+      compilerOptions: {
+        paths: {
+          '@shared-types': ['./types'],
+          '@shared-types/*': ['./types/*']
+        }
+      }
     }
+  },
+
+  alias: {
+    '@shared-types': './types'
   },
 
   i18n: {
@@ -202,7 +213,7 @@ export default defineNuxtConfig({
     gtm: {
       id: 'GTM-TJZFHM5'
     }
-  }
+  },
 
   // nitro: {
   //   storage: {

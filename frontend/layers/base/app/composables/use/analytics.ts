@@ -1,5 +1,5 @@
 import type { Item } from 'nuxt-ganalytics'
-import type { Arrayable, BaseImage, BaseSizeSet, CartItem, MaybeEmpty, ProductNode, Undefineable } from '~/types'
+import type { Arrayable, BaseSizeSet, CartItem, MaybeEmpty, ProductNode, Undefineable } from '~/types'
 
 /**
  * A set of Google Analytics callbacks for product-related events

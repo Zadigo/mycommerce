@@ -1,4 +1,4 @@
-import type { BaseCountries, Languages } from '~/types'
+import type { BaseCountries, Languages } from '../../../../../app/types'
 
 export const countries = [
   'France',

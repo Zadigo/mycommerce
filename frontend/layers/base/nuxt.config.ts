@@ -1,4 +1,19 @@
 export default defineNuxtConfig({
+  alias: {
+    '@shared-types': '../../types'
+  },
+
+  typescript: {
+    tsConfig: {
+      compilerOptions: {
+        paths: {
+          '@shared-types': ['../../nuxt.config.ts'],
+          '@shared-types/*': ['../../types/*']
+        }
+      }
+    }
+  },
+
   imports: {
     dirs: ['data']
   },

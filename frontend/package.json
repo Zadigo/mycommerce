@@ -17,6 +17,7 @@
     "cleanup": "nuxt cleanup && rm -rf .nuxt .output dist node_modules/.cache"
   },
   "dependencies": {
+    "@nuxt/eslint": "1.15.1",
     "@nuxt/fonts": "0.13.0",
     "@nuxtjs/seo": "^3.4.0",
     "@primevue/icons": "^4.5.4",
