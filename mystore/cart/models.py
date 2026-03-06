@@ -137,7 +137,7 @@ class Cart(AbstractCart):
         ]
         constraints = [
             models.CheckConstraint(
-                check=Q(price__gte=0),
+                condition=Q(price__gte=0),
                 name='cart_price_over_zero'
             )
         ]
