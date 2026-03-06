@@ -5,17 +5,17 @@ mainly related to storing product details, categories, collections, and product 
 
 ## Technologies Used 🌳
 
-| Technology            | Purpose/Usage                  | Version   |
-|-----------------------|-------------------------------|------------|
-| Django                | Web framework                 | ✅ 3.2     |
-| Django REST Framework | API development               | ✅ 3.12    |
-| PostgreSQL            | Database                      | ✅ 13      |
-| Redis                 | Caching, message broker       | ✅ 6.2     |
-| RabbitMQ              | Message broker                | ✅ 3.8.9   |
-| Celery                | Task queue/background jobs    | ✅ 5.1.2   |
-| Docker                | Containerization              | ✅ 20.10.7 |
-| Graphene-Django       | GraphQL API                   | ✅ 3.0.0   |
-| Daphne                | ASGI server                   | ✅ 3.0.4   |
+| Technology            | Purpose/Usage              | Version    |
+| --------------------- | -------------------------- | ---------- |
+| Django                | Web framework              | ✅ 3.2     |
+| Django REST Framework | API development            | ✅ 3.12    |
+| PostgreSQL            | Database                   | ✅ 13      |
+| Redis                 | Caching, message broker    | ✅ 6.2     |
+| RabbitMQ              | Message broker             | ✅ 3.8.9   |
+| Celery                | Task queue/background jobs | ✅ 5.1.2   |
+| Docker                | Containerization           | ✅ 20.10.7 |
+| Graphene-Django       | GraphQL API                | ✅ 3.0.0   |
+| Daphne                | ASGI server                | ✅ 3.0.4   |
 
 ## Features ⭐
 
@@ -48,7 +48,6 @@ mainly related to storing product details, categories, collections, and product 
 - `AWS_S3_SECRET_ACCESS_KEY`: Your AWS S3 secret access key
 - `AWS_STORAGE_BUCKET_NAME`: Your AWS S3 storage bucket name
 - `AWS_S3_REGION_NAME`: Your AWS S3 region name
-
 
 ### Optional
 
@@ -83,4 +82,10 @@ information and display it to users.
         "MaxAgeSeconds": 3000
     }
 ]
+```
+
+## MCP Inspector
+
+```bash
+npx @modelcontextprotocol/inspector uv --directory /Volumes/Coding/Projects/Websites/mycommerce/mystore/ run manage.py stdio_server
 ```
