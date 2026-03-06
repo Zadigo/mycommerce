@@ -386,7 +386,7 @@ if env('USES_HTTP_SCHEME', default='http') == 'https':
 if DEBUG:
     stripe.api_key = env('STRIPE_TEST_SECRET_KEY')
 else:
-    stripe.api_key = env('STRIPE_PRODUCTION_API_KEY')
+    stripe.api_key = env('STRIPE_PRODUCTION_SECRET_KEY')
 
 
 # VAT - In order to use VAT when returning

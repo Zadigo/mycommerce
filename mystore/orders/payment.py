@@ -43,7 +43,7 @@ class StripeInterfaceMixin:
         if settings.DEBUG:
             stripe.api_key = os.getenv('STRIPE_TEST_SECRET_KEY')
         else:
-            stripe.api_key = os.getenv('STRIPE_PRODUCTION_API_KEY')
+            stripe.api_key = os.getenv('STRIPE_PRODUCTION_SECRET_KEY')
 
     @staticmethod
     def adapt_number(value):
