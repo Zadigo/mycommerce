@@ -7,7 +7,7 @@
       </ion-col>
 
       <!-- Filter -->
-      <ion-col size="2">
+      <ion-col size="2"> 
         <ion-button fill="outline" size="small" @click="showFilter = true">
           <icon name="i-lucide-filter" />
         </ion-button>
@@ -20,7 +20,7 @@
     <products-feed-three v-else-if="grid === 3" />
 
     <!-- Infinite Scroll -->
-    <ion-infinite-scroll @ion-infinite="fetch">
+    <ion-infinite-scroll @ion-infinite="getProducts">
       <ion-infinite-scroll-content />
     </ion-infinite-scroll>
 
@@ -30,7 +30,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { Product } from '~/types'
+// import type { Product } from '~/types'
+import { useGenerateProducts } from '../../../../../frontend/layers/base/app/data/__fixtures__'
 
 const grid = useState('grid')
 
@@ -38,12 +39,10 @@ const grid = useState('grid')
  * Products Feed Composable
  */
 
-const { fetch } = useProductsFeed()
-provideLocal('products', await fetch())
+const { products, getProducts } = await useProductsComposable()
 
-const products = inject<Product[]>('products', [])
-// console.log(products)
-// useProviderProduct(products)
+const productsFixtures = useGenerateProducts(100)
+provide('products', productsFixtures)
 
 /**
  * Modals

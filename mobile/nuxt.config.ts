@@ -18,7 +18,7 @@ export default defineNuxtConfig({
     '@nuxtjs/ionic',
     '@nuxtjs/i18n',
     '@nuxtjs/seo',
-    '@nuxtjs/supabase',
+    // '@nuxtjs/supabase',
     '@vueuse/nuxt',
     'nuxt-authentication',
     'nuxt-ganalytics'

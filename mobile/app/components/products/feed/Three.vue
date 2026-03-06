@@ -3,10 +3,15 @@
 </template>
 
 <script lang="ts" setup>
-import type { Product } from '~/types'
+/**
+ * Products
+ */
 
-const products = inject<Product[]>('products', [])
-const { setProduct } = useProductStore()
+const { products } = await useProductsStore()
 
-console.log(products)
+/**
+ * Product
+ */
+
+const { setProduct } = useDelayedProductDetailComposable()
 </script>

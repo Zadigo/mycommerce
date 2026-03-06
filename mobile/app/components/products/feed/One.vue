@@ -1,14 +1,19 @@
 <template>
   <div class="grid grid-cols-1 gap-1">
-    <products-feed-image v-for="product in products" :key="product.id" :image-src="product.get_main_image?.original" @click="setProduct" />
+    <products-feed-image v-for="product in products" :key="product.node.id" :image-src="product.node.mainImage.original" @click="setProduct(product)" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import type { Product } from '~/types'
+/**
+ * Products
+ */
 
-const products = inject<Product[]>('products', [])
-const { setProduct } = useProductStore()
+const { products } = await useProductsStore()
 
-// console.log(products)
+/**
+ * Product
+ */
+
+const { setProduct } = useDelayedProductDetailComposable()
 </script>

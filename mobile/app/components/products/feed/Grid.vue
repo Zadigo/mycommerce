@@ -1,12 +1,14 @@
 <template>
   <div class="grid grid-cols-3 gap-1">
-    <products-feed-image v-for="product in products" :key="product.id" :image-src="product.get_main_image?.original" @click="emit('navigate', product)" />
+    <template v-if="products">
+      <products-feed-image v-for="product in products" :key="product.node.id" :image-src="product.node.mainImage.original" @click="emit('navigate', product)" />
+    </template>
   </div>
 </template>
 
 <script lang="ts" setup>
-import type { Product } from '~/types'
+import type { Arrayable, ProductNode } from '~/types'
 
-const { products = []} = defineProps<{ products?: Product[] }>()
-const emit = defineEmits<{ navigate: [product: Product] }>()
+const { products } = defineProps<{ products?: Arrayable<ProductNode> }>()
+const emit = defineEmits<{ navigate: [product: ProductNode] }>()
 </script>
