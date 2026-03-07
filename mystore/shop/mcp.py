@@ -5,7 +5,7 @@ import pydantic
 from django.core.cache import cache
 from django_mcp import mcp_app as mcp
 from mcp_server import MCPToolset, ModelQueryToolset
-from shop.api.serializers import ProductSerializer
+from shop.api.serializers import ProductSerializer, WishlistSerializer
 from shop.models import Image, Product, Video, Wishlist
 from mcp.types import TextContent
 
@@ -237,10 +237,13 @@ class ProductTools(MCPToolset):
             list[dict]: A list of dictionaries representing the matching products.
         """
         qs = self._get_queryset()
+
         if start_date:
             qs = qs.filter(created_on__date__gte=start_date)
+
         if end_date:
             qs = qs.filter(created_on__date__lte=end_date)
+
         return ProductSerializer(instance=qs, many=True).data
 
     def get_products_for_facebook_ads(self) -> list[dict]:
@@ -262,12 +265,75 @@ class ProductTools(MCPToolset):
             list[dict]: A list of dictionaries representing the matching products.
         """
         qs = self._get_queryset()
-        items = filter(lambda x: x.validity_score >= min_score, qs)
+
+        def parser(item):
+            try:
+                return int(item.validity_score.split('/')[0]) >= min_score
+            except (ValueError, IndexError):
+                return False
+
+        items = filter(parser, qs)
         filtered_items = list(items)
         return ProductSerializer(instance=filtered_items, many=True).data
 
     def deactivate_products(self, names: list[str]) -> str:
         return "Old products deactivated successfully."
+
+
+class WishlistTools(MCPToolset):
+    def _get_queryset(self):
+        qs = cache.get('mcp_wishlists', None)
+        if qs is None:
+            qs = Wishlist.objects.prefetch_related('products').all()
+            cache.set('mcp_wishlists', qs, 60 * 60 * 24)  # Cache for 24 hours
+        return qs
+
+    def get_all_wishlists_by_user(self, email: str) -> list[dict]:
+        """Returns a list of all wishlists created by the specified user.
+
+        Args:
+            email (str): The email of the user whose wishlists are to be retrieved.
+
+        Returns:
+            list[dict]: A list of dictionaries representing the wishlists created by the specified user.
+        """
+        qs = self._get_queryset()
+        return qs.filter(user__email__iexact=email)
+
+    def get_all_wishlists(self) -> list[dict]:
+        """Returns a list of all wishlists in the store.
+
+        Returns:
+            list[dict]: A list of dictionaries representing all the wishlists in the store.
+        """
+        qs = self._get_queryset()
+        return WishlistSerializer(instance=qs, many=True).data
+
+    def get_all_wishlists_by_quarter(self, quarter: int = 1):
+        """Returns a list of all wishlists created in the specified quarter.
+
+        Args:
+            quarter (int): The quarter to filter wishlists by (1 for Q1, 2 for Q2, 3 for Q3, 4 for Q4).
+
+        Returns:
+            list[dict]: A list of dictionaries representing the wishlists created in the specified quarter.
+        """
+        qs = self._get_queryset()
+        if value := quarter in [1, 2, 3, 4]:
+            return qs.filter(created_on__quarter=quarter)
+        return []
+
+    def get_all_wishlists_by_product(self, name: str):
+        """Returns a list of all wishlists that contain a product with the specified name.
+
+        Args:
+            name (str): The name of the product to filter wishlists by.
+
+        Returns:
+            list[dict]: A list of dictionaries representing the wishlists that contain a product with the specified name.
+        """
+        qs = self._get_queryset()
+        return qs.filter(products__name__icontains=name)
 
 
 @mcp.resource('file://{namespace}')
