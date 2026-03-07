@@ -1,13 +1,16 @@
+import base64
 import itertools
-from typing import Annotated, Optional
+from typing import Annotated, Optional, Text
 
+from django.db.models import Q
 import pydantic
+import mimetypes
 from django.core.cache import cache
 from django_mcp import mcp_app as mcp
 from mcp_server import MCPToolset, ModelQueryToolset
-from shop.api.serializers import ProductSerializer, WishlistSerializer
+from shop.api.serializers import ProductSerializer, WishlistSerializer, ImageSerializer
 from shop.models import Image, Product, Video, Wishlist
-from mcp.types import TextContent
+from mcp.types import TextContent, ImageContent
 
 from shop.choices import GenderChoices, AgeGroupChoices
 from mystore.choices import CategoryChoices, SubCategoryChoices
@@ -34,6 +37,13 @@ class UpdateProductModel(CreateProductModel):
     model_height: Optional[int] = pydantic.Field(160, required=False, gte=160)
     model_size: Optional[int] = pydantic.Field(40, required=False, gte=40)
     active: bool = False
+
+
+class UpdateImageModel(pydantic.BaseModel):
+    name: str
+    product_id: int
+    variant: Optional[str] = None
+    is_main_image: bool = False
 
 
 class ImageQueryTool(ModelQueryToolset):
@@ -334,6 +344,93 @@ class WishlistTools(MCPToolset):
         """
         qs = self._get_queryset()
         return qs.filter(products__name__icontains=name)
+
+
+class ImageTools(MCPToolset):
+    def _get_queryset(self):
+        qs = cache.get('mcp_images', None)
+        if qs is None:
+            qs = Image.objects.select_related('product').all()
+            cache.set('mcp_images', qs, 60 * 60 * 24)  # Cache for 24 hours
+        return qs
+
+    def update_image(self, data: UpdateImageModel) -> dict:
+        """Updates an existing image with the given attributes and returns its serialized data.
+
+        Args:
+            data: The attributes of the image to be updated, which should include the 'product_id' of the associated product and any fields to be updated.
+
+        Returns:
+            dict: A dictionary representing the serialized data of the updated image.
+        """
+        cleaned_data = data.model_dump()
+        product_id = cleaned_data.pop('product_id', None)
+
+        if product_id is None:
+            raise ValueError("Product ID is required for updating an image.")
+
+        try:
+            instance = Image.objects.get(product_id=product_id)
+        except Image.DoesNotExist:
+            raise ValueError(
+                f"Image with Product ID {product_id} does not exist.")
+
+        for key, value in cleaned_data.items():
+            if hasattr(instance, key):
+                setattr(instance, key, value)
+
+        instance.save()
+        return ImageSerializer(instance=instance).data
+
+    def get_image(self, name: str, product_name: Optional[str] = None, image_id: Optional[str | int] = None) -> list[TextContent | ImageContent]:
+        """Returns the image associated with the specified name and optional image ID.
+
+        Args:
+            name (str): The name of the product associated with the image to retrieve.
+            product_name (str, optional): The name of the product to filter images by.
+            image_id (str | int, optional): The ID of the image to retrieve. If not provided, the first matching image will be returned.
+
+        Returns:
+            list[TextContent | ImageContent]: A list containing the serialized data of the retrieved image as TextContent and ImageContent objects.
+        """
+        qs = self._get_queryset()
+        if product_name is not None:
+            qs = qs.filter(product__name__icontains=product_name)
+
+        images_qs = qs.filter(name=name)
+        if not images_qs.exists():
+            raise ValueError(
+                f"No image found for name '{name}' and product name '{product_name}'."
+            )
+
+        instance = images_qs.first()
+        if instance is None:
+            raise ValueError(
+                f"No image found for product name '{name}' with ID '{image_id}'."
+            )
+        
+        data = ImageSerializer(instance=instance).data
+
+        bytes_data = instance.original.read()
+        mime_type = mimetypes.guess_type(instance.original.name)[0] or 'application/octet-stream'
+        base64_image = base64.b64encode(bytes_data).decode('utf-8')
+
+        return [
+            TextContent(type='text', text=str(data)),
+            ImageContent(type='image', data=base64_image, mimeType=mime_type)
+        ]
+
+    def get_images_by_product_name(self, name: str) -> list[dict]:
+        """Returns a list of images associated with products that match the given name.
+
+        Args:
+            name (str): The name or partial name of the product to search for.
+
+        Returns:
+            list[dict]: A list of dictionaries representing the images associated with matching products.
+        """
+        qs = self._get_queryset().filter(product__name__icontains=name)
+        return ImageSerializer(instance=qs, many=True).data
 
 
 @mcp.resource('file://{namespace}')
