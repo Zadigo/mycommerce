@@ -307,15 +307,31 @@ class CustomOrderTools(MCPToolset):
         current_year = timezone.now().year
 
         qs = self._get_queryset()
-        qs = qs.filter(created_on__year=current_year)
+        qs = qs.filter(
+            created_on__year=current_year,
+            refund_requested=False
+        )
 
         df = pandas.DataFrame(list(qs.values('id', 'created_on', 'total')))
         return df.describe().to_dict()['total']
 
-    def statistcs_of_orders_this_quarter(self):
-        pass
+    def statistcs_of_orders_this_quarter(self, quarter: int) -> dict:
+        """Returns statistics of orders for the specified quarter of the current year,
+        including total sales, average order value, and number of orders.
 
-    def statistcs_of_orders_this_semester(self):
+        Args:
+            quarter (int): The quarter for which to retrieve the statistics (1, 2, 3, or 4).
+
+        Returns:
+            dict: A dictionary containing the statistics of orders for the specified quarter of the current year.
+        """
+        qs = self._get_queryset()
+        qs_current_quarter = qs.filter(created_on__quarter=quarter)
+        values = qs_current_quarter.values('id', 'created_on', 'total')
+        df = pandas.DataFrame(list(values))
+        return df.describe().to_dict()['total']
+
+    def statistcs_of_orders_this_semester(self, semester: int):
         pass
 
     def statistics_of_orders_this_week(self):

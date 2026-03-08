@@ -29,8 +29,11 @@ class CartTools(MCPToolset):
         qs = cache.get('mcp_carts')
         if qs is None or force_refresh:
             qs = Cart.objects.prefetch_related('user')
-            cache.set('mcp_carts', qs, timeout=60 *
-                      60 * 24)  # Cache for 24 hours
+            cache.set(
+                'mcp_carts', qs, 
+                timeout=60 *
+                60 * 24
+            )  # Cache for 24 hours
         return qs.all()
 
     def get_all_carts(self) -> list[dict]:
