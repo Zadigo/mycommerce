@@ -4,6 +4,7 @@
         "vitest.explorer",
         "Postman.postman-for-vscode",
         "docker.docker",
-        "WebNative.webnative"
+        "WebNative.webnative",
+        "oxc.oxc-vscode"
     ]
 }

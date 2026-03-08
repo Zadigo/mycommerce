@@ -63,6 +63,14 @@ export default defineConfig({
           environment: 'nuxt',
           testTimeout: 20000
         }
+      }),
+      await defineVitestProject({
+        test: {
+          name: 'unit',
+          include: [ 'test/unit/*.{test,spec}.ts' ],
+          environment: 'node',
+          testTimeout: 20000
+        }
       })
     ]
   },

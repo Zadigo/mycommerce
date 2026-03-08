@@ -1,0 +1,30 @@
+{
+    "tailwind-fold.autoFold": false,
+    "vitest.rootConfig": "${workspaceFolder}/frontend/vitest.config.ts",
+    "[python]": {
+       "editor.codeActionsOnSave": {
+        "source.organizeImports": "always",
+        "source.unusedImports": "always"
+       }
+    },
+    "python.testing.pytestEnabled": false,
+    "python.testing.unittestEnabled": true,
+    "python.testing.autoTestDiscoverOnSaveEnabled": true,
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        ".",
+        "-p",
+        "test_*.py"
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:venv",
+    "python.analysis.autoSearchPaths": true,
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/mycart/.venv/lib/python3.14/site-packages",
+        "${workspaceFolder}/mystore/.venv/lib/python3.14/site-packages"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.oxc": "never"
+    }
+}
