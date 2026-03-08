@@ -1,13 +1,17 @@
 from django.test import override_settings
+from cart.tests.utils import create_items
+from accounts.tests.mixins import AuthenticatedTestCase
 from django.urls import reverse
-from rest_framework.mixins import status
-
-from mycart.mixins import AuthenticatedTestCase
-
+from rest_framework import status
 
 @override_settings(PY_UTILITIES_JWT_ISSUER='ecommerce', PY_UTILITIES_JWT_SECRET='some_secret')
 class TestCartApi(AuthenticatedTestCase):
     # fixtures = ['fixtures/user', 'carts']
+
+    def setUp(self):
+        super().setUp()
+        items = create_items(2)
+        print(items)
 
     def test_list_all_carts(self):
         response = self.client.get(reverse('cart_api:list'))
