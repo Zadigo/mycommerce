@@ -352,11 +352,11 @@ class CustomOrderTools(MCPToolset):
         return monthly_stats
 
 
-@mcp.prompt('sync_customers_with_google_ads')
+@mcp.prompt(description='Send customers to the Google Ads Api')
 async def sync_customers_with_google_ads(ctx: Context):
     pass
 
 
-@mcp.prompt('sync_orders_with_facebook_ads')
+@mcp.prompt(description='Send customers to the Facebood Ads Api')
 async def sync_orders_with_facebook_ads(ctx: Context):
     pass

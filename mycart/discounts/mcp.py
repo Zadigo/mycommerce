@@ -1,5 +1,6 @@
 from discounts.models import Discount
 from mcp_server import MCPToolset, ModelQueryToolset
+from django.contrib.auth import get_user_model
 
 
 class DiscountQueryTool(ModelQueryToolset):
@@ -16,14 +17,14 @@ class DiscountQueryTool(ModelQueryToolset):
 
 
 class DiscountTools(MCPToolset):
-    def get_all_discounts(self):
-        pass
-
-    def get_discount_by_name(self, name: str):
-        pass
-
-    def email_user_for_discount(self, user_id: int, subject: str, message: str):
-        pass
-
-    def get_user_emails(self, email: str):
-        pass
+    def email_user_for_discount(self, email: str, subject: str, message: str):
+        """Send an email to a user regarding a discount.
+        
+        Args:
+            email (str): The email address of the user to contact.
+            subject (str): The subject of the email.
+            message (str): The body of the email.
+        """
+        user = get_user_model().objects.filter(email=email).first()
+        if user is not None:
+            user.email_user(subject, message)

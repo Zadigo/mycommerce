@@ -19,9 +19,6 @@ class ShipmentQueryTool(ModelQueryToolset):
 
 
 class ShipmentTools(MCPToolset):
-    def get_all_shipments(self):
-        pass
-
     def get_shipment_by_tracking_number(self, tracking_number: str):
         pass
 

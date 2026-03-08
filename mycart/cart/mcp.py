@@ -1,9 +1,22 @@
+from typing import Optional
+
 import pandas
 from cart.api.serializers import CartSerializer
 from cart.models import Cart
 from discounts.models import Discount
 from django.core.cache import cache
+from itertools import chain
+
 from mcp_server import MCPToolset, ModelQueryToolset
+
+
+def get_queryset(force_refresh: bool = False) -> Cart:
+    key = 'mcp_carts'
+    qs = cache.get(key)
+    if qs is None or force_refresh:
+        qs = Cart.objects.prefetch_related('user', 'customer_orders').all()
+        cache.set(key, qs, timeout=60 * 60 * 24)  # Cache for 24 hours
+    return qs
 
 
 class CartQueryTool(ModelQueryToolset):
@@ -20,30 +33,10 @@ class CartQueryTool(ModelQueryToolset):
     ]
 
     def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.prefetch_related('customer_order').all()
+        return get_queryset()
 
 
 class CartTools(MCPToolset):
-    def _get_queryset(self, force_refresh: bool = False):
-        qs = cache.get('mcp_carts')
-        if qs is None or force_refresh:
-            qs = Cart.objects.prefetch_related('user')
-            cache.set(
-                'mcp_carts', qs, 
-                timeout=60 *
-                60 * 24
-            )  # Cache for 24 hours
-        return qs.all()
-
-    def get_all_carts(self) -> list[dict]:
-        """Returns a list of all carts in the database.
-
-        Returns:
-            list[dict]: A list of dictionaries representing the carts.
-        """
-        return CartSerializer(instance=self._get_queryset(), many=True).data
-
     def get_inactive_carts(self) -> list[dict]:
         """Returns a list of carts that are not paid for. The customer
         may have abandoned the cart or may have been inactive for a long time.
@@ -51,7 +44,7 @@ class CartTools(MCPToolset):
         Returns:
             list[dict]: A list of dictionaries representing the inactive carts.
         """
-        inactive_qs = self._get_queryset().filter(is_stale=True)
+        inactive_qs = get_queryset().filter(is_stale=True)
         return CartSerializer(instance=inactive_qs, many=True).data
 
     def get_anonymous_carts(self) -> list[dict]:
@@ -60,7 +53,7 @@ class CartTools(MCPToolset):
         Returns:
             list[dict]: A list of dictionaries representing the anonymous carts.
         """
-        anonymous_qs = self._get_queryset().filter(is_anonymous=True)
+        anonymous_qs = get_queryset().filter(is_anonymous=True)
         return CartSerializer(instance=anonymous_qs, many=True).data
 
     def get_authenticated_user_carts(self) -> list[dict]:
@@ -69,19 +62,52 @@ class CartTools(MCPToolset):
         Returns:
             list[dict]: A list of dictionaries representing the authenticated user carts.
         """
-        auth_qs = self._get_queryset().filter(is_anonymous=False)
+        auth_qs = get_queryset().filter(is_anonymous=False)
         return CartSerializer(instance=auth_qs, many=True).data
 
-    def get_anonnymous_cart_statistics(self) -> dict:
+    def get_cart_statistics(self, quarter: Optional[int] = None, min_date: Optional[str] = None, max_date: Optional[str] = None, is_anonymous: Optional[bool] = None, is_paid_for: Optional[bool] = None) -> dict:
         """Returns statistics about anonymous carts, including the total number of
         anonymous carts and the average total value of those carts.
 
+        Args:
+            quarter (Optional[int]): The quarter to filter the carts by (1-4).
+            min_date (Optional[str]): The minimum date to filter the carts by (in the format 'YYYY-MM-DD').
+            max_date (Optional[str]): The maximum date to filter the carts by (in the format 'YYYY-MM-DD').
+            is_anonymous (Optional[bool]): Whether to filter by anonymous carts (True) or authenticated user carts (False).
+            is_paid_for (Optional[bool]): Whether to filter by paid for carts (True) or unpaid carts (False).
+
         Returns:
-            dict: A dictionary containing statistics about anonymous carts.
+            dict: A dictionary containing the mean, standard deviation etc. of the total value of the carts that match the specified filters.
         """
-        anonymous_qs = self._get_queryset().filter(is_anonymous=True)
-        if anonymous_qs.exists():
-            df = pandas.DataFrame(anonymous_qs.values('id', 'total'))
+        qs = get_queryset()
+
+        if is_paid_for is not None:
+            if is_paid_for:
+                qs = qs.filter(is_paid_for=True)
+            else:
+                qs = qs.filter(is_paid_for=False)
+
+        if quarter is not None:
+            if quarter < 1 or quarter > 4:
+                raise ValueError("Quarter must be between 1 and 4")
+            
+            qs = qs.filter(created_on__quarter=quarter)
+
+        if is_anonymous is not None:
+            if is_anonymous:
+                qs = qs.filter(is_anonymous=True)
+            else:
+                qs = qs.filter(is_anonymous=False)
+
+
+        if min_date is not None:
+            qs = qs.filter(created_on__date__gte=min_date)
+
+        if max_date is not None:
+            qs = qs.filter(created_on__date__lte=max_date)
+
+        if qs.exists():
+            df = pandas.DataFrame(qs.values('id', 'total'))
             return df.describe().to_dict()['total']
 
         return {
@@ -105,7 +131,7 @@ class CartTools(MCPToolset):
         Returns:
             list[dict]: A list of dictionaries representing the carts created between the specified dates.
         """
-        between_qs = self._get_queryset()
+        between_qs = get_queryset()
         between_qs = between_qs.filter(
             created_on__date__gte=start_date,
             created_on__date__lte=end_date
@@ -121,7 +147,7 @@ class CartTools(MCPToolset):
         Returns:
             dict: A dictionary containing information about the discount applied to the cart, if any.
         """
-        cart = self._get_queryset().filter(id=cart_id).first()
+        cart = get_queryset().filter(id=cart_id).first()
         if not cart:
             return {'error': 'Cart not found'}
 
@@ -131,3 +157,16 @@ class CartTools(MCPToolset):
             return {'error': 'Discount not found'}
 
         return {'message': 'No discount applied to this cart'}
+    
+    def get_cart_products(self) -> list:
+        """Returns a list of all products in the carts.
+        
+        Returns:
+            list: A list of all products in the carts.
+        """
+        items = [
+            cart_item.items
+            for cart_item in get_queryset()
+        ]
+        return list(chain(*items))
+
