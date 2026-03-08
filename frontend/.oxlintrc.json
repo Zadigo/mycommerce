@@ -11,7 +11,17 @@
     "node"
   ],
   "categories": {},
-  "rules": {},
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "^_",
+        "argsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ]
+  },
   "settings": {
     "jsx-a11y": {
       "polymorphicPropName": null,
@@ -42,7 +52,9 @@
     }
   },
   "env": {
-    "builtin": true
+    "builtin": true,
+    "browser": true,
+    "node": true,
   },
   "globals": {},
   "ignorePatterns": [],

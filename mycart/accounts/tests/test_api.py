@@ -1,4 +1,3 @@
-
 import factory
 import pytest
 from accounts.models import Address

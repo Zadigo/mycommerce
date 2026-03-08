@@ -1,10 +1,9 @@
-
 import factory
 from accounts.models import Address
 from django.contrib.auth import get_user_model
 
 
-class UserFaker(factory.django.DjangoModelFactory):
+class FakeUser(factory.django.DjangoModelFactory):
     class Meta:
         model = get_user_model()
 
@@ -15,21 +14,21 @@ class UserFaker(factory.django.DjangoModelFactory):
     is_active = True
 
 
-class UserProfileFaker(factory.django.DjangoModelFactory):
+class FakeUserProfile(factory.django.DjangoModelFactory):
     class Meta:
         model = get_user_model()
 
-    user = factory.SubFactory(UserFaker)
+    user = factory.SubFactory(FakeUser)
     stripe_id = factory.Faker('ean13')
     source_id = factory.Faker('ean8')
     telephone = factory.Faker('phone_number')
 
 
-class AddressFaker(factory.django.DjangoModelFactory):
+class FakeAddress(factory.django.DjangoModelFactory):
     class Meta:
         model = Address
 
-    user_profile = factory.SubFactory(UserProfileFaker)
+    user_profile = factory.SubFactory(FakeUserProfile)
     firstname = factory.Faker('firstname')
     lastname = factory.Faker('lastname')
     address_line = factory.Faker('street_address')
