@@ -14,8 +14,9 @@ from mcp.types import TextContent, ImageContent
 
 from shop.choices import GenderChoices, AgeGroupChoices
 from mystore.choices import CategoryChoices, SubCategoryChoices
-
+from variants.choices import VariantMetrics
 from mystore.constants import SUB_CATEGORIES
+from variants.models import Size
 
 
 class CreateProductModel(pydantic.BaseModel):
@@ -30,6 +31,9 @@ class CreateProductModel(pydantic.BaseModel):
     sale_value: Annotated[int, pydantic.Field(ge=0, le=100)] = 0
     on_sale: bool = False
     display_new: bool = False
+    default_size_metric: Optional[VariantMetrics] = VariantMetrics.METRIC
+    default_size_names: Annotated[Optional[str],
+                                  'Comma separated sizes'] = None
 
 
 class UpdateProductModel(CreateProductModel):
@@ -144,7 +148,22 @@ class ProductTools(MCPToolset):
         Returns:
             dict: A dictionary representing the serialized data of the created product.
         """
-        instance = Product.objects.create(**data.model_dump())
+        validated_data = data.model_dump()
+
+        default_size_names = validated_data.pop('default_size_names', None)
+        default_size_metric = validated_data.pop('default_size_metric', None)
+
+        if default_size_names is not None:
+            if default_size_metric == VariantMetrics.CLOTHE.value:
+                default_sizes = ['xs', 's', 'm', 'xl']
+                objs = [
+                    Size(name=size, metric='Clothe', product=instance)
+                    for size in default_sizes
+                ]
+                instances = Size.objects.batch_create(objs)
+                instance.objects.add(instances)
+
+        instance = Product.objects.create(**validated_data)
         return ProductSerializer(instance=instance).data
 
     def update_product(self, data: UpdateProductModel) -> dict:
@@ -255,9 +274,6 @@ class ProductTools(MCPToolset):
             qs = qs.filter(created_on__date__lte=end_date)
 
         return ProductSerializer(instance=qs, many=True).data
-
-    def get_products_for_facebook_ads(self) -> list[dict]:
-        return
 
     def transfer_to_google_sheets(self) -> str:
         return "Data transferred to Google Sheets successfully."
@@ -408,11 +424,12 @@ class ImageTools(MCPToolset):
             raise ValueError(
                 f"No image found for product name '{name}' with ID '{image_id}'."
             )
-        
+
         data = ImageSerializer(instance=instance).data
 
         bytes_data = instance.original.read()
-        mime_type = mimetypes.guess_type(instance.original.name)[0] or 'application/octet-stream'
+        mime_type = mimetypes.guess_type(instance.original.name)[
+            0] or 'application/octet-stream'
         base64_image = base64.b64encode(bytes_data).decode('utf-8')
 
         return [
