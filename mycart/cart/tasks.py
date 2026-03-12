@@ -12,8 +12,7 @@ logger = get_logger(__name__)
 
 @shared_task
 def check_product_exists(items: list[dict]):
-    """Check if a product exists in `mystore.Product` 
-    service model"""
+    """Check if a product exists in the mystore microservice"""
     microservices = getattr(settings, 'MICROSERVICES', {})
     services = microservices.get('apps', {}).get('cart', [])
 
@@ -34,9 +33,12 @@ def check_product_exists(items: list[dict]):
             asyncio.create_task(runner(service))
             for service in services
         ]
-        return await asyncio.gather(*tasks)
+        
+        async with asyncio.timeout(delay=30):
+            return await asyncio.gather(*tasks)
 
     results = asyncio.run(main())
+    print(results)
 
 
 @shared_task

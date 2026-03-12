@@ -5,8 +5,9 @@ from django.test import TestCase
 
 class TestUtils(TestCase):
     def test_calculate_items_total(self):
-        items = list(create_items(1))
+        items = create_items(1)
         total, total_quantity = calculate_items_total(items)
+        
         self.assertEqual(
             total,
             sum(
