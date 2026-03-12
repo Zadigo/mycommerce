@@ -78,23 +78,3 @@ def create_stripe_customer(email):
         user.userprofile.save()
 
         return {'email': email, 'token': user.userprofile.stripe_id}
-
-
-# @shared_task
-# def schedule_delete_accounts():
-#     """Task that iterates over accounts that are scheduled
-#     to be deleted every day on the given day"""
-#     qs = get_user_model().objects.filter(active=False)
-#     if qs.exists():
-#         params = {
-#             'from_email': '',
-#             'html_content': None
-#         }
-
-#         ids = list(qs.values_list('id', flat=True))
-#         for user in qs:
-#             # 1. Email the user that his account
-#             # has been deleted
-#             user.email_user('Account deleted', '', **params)
-#             user.delete()
-#         return ids

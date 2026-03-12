@@ -1,12 +1,8 @@
 from datetime import timedelta
 
-import requests
-from accounts import tasks
 from accounts.api import serializers
 from accounts.models import Address
-from accounts.permissions import CustomIsAuthenticated
-from django.contrib.auth import authenticate, get_user_model
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db.models import F, Q
 from django.utils import timezone
 from rest_framework import generics, status
@@ -14,7 +10,6 @@ from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserInfo(generics.RetrieveUpdateAPIView):

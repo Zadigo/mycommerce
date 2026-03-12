@@ -10,18 +10,19 @@ class TestCartApi(AuthenticatedTestCase):
 
     def setUp(self):
         super().setUp()
-        items = create_items(2)
-        print(items)
+        self.items = create_items(2)
 
     def test_list_all_carts(self):
         response = self.client.get(reverse('cart_api:list'))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.content)
 
         for item in response.json():
             with self.subTest(item=item):
                 self.assertIn('items', item)
                 self.assertIn('total', item)
                 self.assertIn('quantity', item)
+
+        print(response.json())
 
     # def test_list_cart_items_not_authenticated(self):
     #     self.client.credentials(HTTP_AUTHORIZATION='')
