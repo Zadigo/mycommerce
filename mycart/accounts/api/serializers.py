@@ -1,8 +1,6 @@
 from accounts.models import Address
-from django.contrib.auth import get_user_model, password_validation
-from django.utils.crypto import get_random_string
+from django.contrib.auth import get_user_model
 from rest_framework import fields
-from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
 
@@ -48,39 +46,13 @@ class UserSerializer(ModelSerializer):
 class UserRegistrationSerializer(ModelSerializer):
     """Serializer used to register a new user"""
 
+    username = fields.CharField()
     password1 = fields.CharField(write_only=True, required=True)
     password2 = fields.CharField(write_only=True, required=True)
 
     class Meta:
         model = get_user_model()
-        fields = ['email', 'password1', 'password2']
-
-    def validate_username(self, value):
-        qs = get_user_model().objects.filter(username=value)
-        if qs.exclude(pk=self.instance.pk).exists():
-            raise ValidationError('This username is already taken')
-        return value
-
-    def validate(self, attrs):
-        username = attrs.get('username')
-        if username is None:
-            attrs['username'] = f'user_{get_random_string(length=12)}'
-
-        password1 = attrs.get('password1')
-        password2 = attrs.get('password2')
-
-        if password1 != password2:
-            raise ValidationError(
-                detail={
-                    'password': 'Passwords do not match'
-                }
-            )
-
-        if password1 is None:
-            raise ValidationError(detail={'password': 'Password is not valid'})
-
-        password_validation.validate_password(password1)
-        return attrs
+        fields = ['username', 'email', 'password1', 'password2']
 
     def create(self, validated_data):
         instance = get_user_model().objects.create_user(**{
