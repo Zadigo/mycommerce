@@ -11,7 +11,6 @@
 </template>
 
 <script lang="ts" setup>
-import { productsSymbol } from '~~/layers/base/app/data'
 import { useGenerateProducts } from '~~/layers/base/app/data/__fixtures__';
 import { baseProductGraph } from '~~/layers/base/app/utils/constants/graphs'
 import type { ExtendedRouteParamsRawGeneric, ProductNode, ProductRecommendations, Undefineable } from '~/types'

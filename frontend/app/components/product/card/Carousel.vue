@@ -4,10 +4,8 @@
       <icon name="i-fa7-solid:caret-left" />
     </button>
 
-    <!-- {{ isLargeScreen }} -->
-
     <nuxt-link-locale id="link-product-carousel" :to="`/shop/${product.node.id}`" @click="emit('has-navigated', index)">
-      <img v-if="!isLoading && isReady" :src="state.original" :alt="state.name" class="self-center aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-full">
+      <nuxt-img v-if="!isLoading && isReady" :src="state.original" :alt="state.name" class="self-center aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-full" />
       <volt-skeleton v-else class="min-h-100 rounded-md" />
     </nuxt-link-locale>
 
@@ -42,9 +40,9 @@ const { index, product, isHovered, showCarousel = false } = defineProps<{
 const emit = defineEmits<{ 'has-navigated': [index: number] }>()
 
 const cleanImages = useArrayMap(product.node.productImages, (image) => {
-  // if (image.original.startsWith('/')) {
-  //   image.original = `${useRuntimeConfig().public.prodDomain}${image.original}`
-  // }
+  if (image.original.startsWith('/')) {
+    image.original = `${useRuntimeConfig().public.prodDomain}${image.original}`
+  }
 
   return image
 })
