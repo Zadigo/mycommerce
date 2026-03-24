@@ -1,4 +1,3 @@
-export * from './business'
 export * from './filtering'
 export * from './footer'
 export * from './graphs'

@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 import { useIntersectionObserver } from '@vueuse/core'
-import { productsSymbol } from '~~/layers/base/app/data/constants/symbols'
+import { productsSymbol } from '~~/layers/base/app/utils/constants/symbols'
 import type { Product } from '~/types'
 
 const emit = defineEmits<{ 'products:list': [products: Product[]], 'modal:product-filters': [] }>()

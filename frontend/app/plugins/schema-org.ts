@@ -1,5 +1,3 @@
-import { useBusinessDetails } from '~~/layers/base/app/data'
-
 export default defineNuxtPlugin(async () => {
   const { sameAs, get } = await useBusinessDetails()
 

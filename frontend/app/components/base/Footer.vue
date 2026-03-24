@@ -1,6 +1,6 @@
 <template>
   <footer class="px-6 md:px-16 lg:px-24 xl:px-32 w-full text-sm text-primary-500 bg-white border-t border-primary-50 pt-10">
-    <div :class="`grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-${numberOfSections + 1}`">
+    <div :class="`grid gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-${numberOfSections + 1}`">
       <div class="sm:col-span-2 lg:col-span-1">
         <nuxt-link-locale id="link-home-footer" to="/" class="font-bold font-title text-3xl mb-6">
           {{ get('legalName') }}
@@ -11,14 +11,16 @@
           crafted, customizable components built with Tailwind CSS.
         </p>
 
-        <a v-for="item in activeSocials" :id="`link-social-${item}`" :key="item" :href="getSocial(item)?.url" class="opacity-80 transition-opacity hover:opacity-100">
-          <icon :name="getSocialIcon(item)" />
-        </a>
+        <div class="flex gap-2">
+          <a v-for="item in activeSocials" :id="`link-social-${item}`" :key="item" :href="getSocial(item)?.url" class="opacity-80 transition-opacity hover:opacity-100">
+            <icon :name="getSocialIcon(item)" />
+          </a>
+        </div>
 
         <client-only>
           <template #default>
-            <a href="#" @click.prevent="showLanguageModal = true">
-              {{ i18nCountry }}|{{ languageChoice }}
+            <a href="#" class="hover:bg-slate-100 p-1 rounded-lg" @click.passive.prevent="showLanguageModal = true">
+              {{ i18nCountry }} | {{ languageChoice }}
             </a>
           </template>
           
@@ -45,19 +47,17 @@
 
     <client-only>
       <p class="py-4 text-center border-t mt-6 border-slate-200">
-        Copyright {{ currentYear }} © <nuxt-link-locale to="/">{{ get('legalName') }}</nuxt-link-locale> All Right Reserved.
+        Copyright <nuxt-time :datetime="Date.now()" year="numeric" /> © <nuxt-link-locale to="/">{{ get('legalName') }}</nuxt-link-locale> All Right Reserved.
       </p>
     </client-only>
   </footer>
 </template>
 
 <script lang="ts" setup>
-import { footerLinks, useBusinessDetails } from '~~/layers/base/app/data'
 import type { BaseCountries } from '~/types'
 
 const i18nCountry = useCookie<BaseCountries>('i18nCountry')
 
-const { $dayjs } = useNuxtApp()
 const { writeableSession } = useSession()
 const { activeSocials, get, getSocial, getSocialIcon } = await useBusinessDetails()
 
@@ -65,7 +65,6 @@ const emit = defineEmits<{ 'show-whatsapp': [] }>()
 
 const numberOfSections = computed(() => footerLinks.sections.length)
 const languageChoice = computed(() => isDefined(writeableSession) ? writeableSession.value?.language.choice : 'fr')
-const currentYear = computed(() => $dayjs().year())
 
 const showLanguageModal = useState<boolean>('showLanguageModal')
 </script>

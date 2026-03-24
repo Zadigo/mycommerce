@@ -35,9 +35,9 @@ const { x, y, style } = useDraggable(divEl, {
 
 const positions = useLocalStorage('website-data-position', { x: 40, y: 40 })
 
-watch([x, y], ([newX, newY]) => {
+watchDebounced([x, y], ([newX, newY]) => {
   positions.value = { x: newX, y: newY }
-})
+}, { debounce: 2000 })
 
 onMounted(() => {
   if (isDefined(positions)) {

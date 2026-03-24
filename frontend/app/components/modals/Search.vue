@@ -5,25 +5,25 @@
 
       <div class="relative w-full items-center mb-10">
         <volt-input-text id="search" v-model="search" :placeholder="$t('Ecris les produits à rechercher')" type="search" class="pl-10 w-full" />
-        <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
-          <Icon name="i-fa7-solid:search" />
+        <span class="absolute inset-s-0 inset-y-0 flex items-center justify-center px-2">
+          <icon name="i-fa7-solid:search" />
         </span>
       </div>
       
       <div v-if="canShowSearch" class="row gx-1 gy-1">
         <!-- TODO: Gtag analytics to track product click from search @has-navigated -->
-        <ProductsIterator />
+        <products-iterator />
       </div>
       
       <!-- Recommendations -->
       <suspense v-else>
         <template #default>
-          <AsyncRecommendations list-name="Recommendations Search" @has-navigated="showSearchModal=false" />
+          <async-recommendations list-name="Recommendations Search" @has-navigated="showSearchModal=false" />
         </template>
         
         <template #fallback>
           <div class="grid grid-cols-4 gap-2">
-            <ProductsLoadingCards :quantity="8" />
+            <products-loading-cards :quantity="8" />
           </div>
         </template>
       </suspense>
@@ -32,10 +32,10 @@
 </template>
 
 <script setup lang="ts">
-import { productsSymbol } from '~~/layers/base/app/data/constants/symbols'
+import { productsSymbol } from '~~/layers/base/app/utils/constants/symbols'
 import { doc, updateDoc } from 'firebase/firestore'
 import type { SearchedProducts } from '~/types'
-import { baseProductGraph } from '~~/layers/base/app/data/constants/graphs'
+import { baseProductGraph } from '~~/layers/base/app/utils/constants/graphs'
 
 const AsyncRecommendations = defineAsyncComponent({
   loader: async () => import('~/components/base/Recommendations.vue'),
@@ -62,8 +62,6 @@ provide(productsSymbol, products)
 /**
  * Search watcher
  */
-
-// const { gtag } = useGtag()
 
 const { $client } = useNuxtApp()
 const { customHandleError } = useErrorHandler()

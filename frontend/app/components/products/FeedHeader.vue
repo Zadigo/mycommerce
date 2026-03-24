@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { productSymbol } from '~~/layers/base/app/data/constants/symbols'
+import { productSymbol } from '~~/layers/base/app/utils/constants/symbols'
 import type { ProductNode } from '~/types'
 
 defineProps<{ count: number }>()

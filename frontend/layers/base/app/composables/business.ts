@@ -1,4 +1,4 @@
-import type { Nullable } from '@shared-types'
+import type { Nullable } from '~/types'
 
 export interface WebsiteProvider {
   legalName: string
