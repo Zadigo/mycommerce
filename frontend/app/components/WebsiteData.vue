@@ -28,4 +28,21 @@ const divEl = useTemplateRef<HTMLDivElement>('divEl')
 const { x, y, style } = useDraggable(divEl, {
   initialValue: { x: 40, y: 40 },
 })
+
+/**
+ * Save State
+ */
+
+const positions = useLocalStorage('website-data-position', { x: 40, y: 40 })
+
+watch([x, y], ([newX, newY]) => {
+  positions.value = { x: newX, y: newY }
+})
+
+onMounted(() => {
+  if (isDefined(positions)) {
+    x.value = positions.value.x
+    y.value = positions.value.y
+  }
+})
 </script>
