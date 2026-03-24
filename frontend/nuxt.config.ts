@@ -20,15 +20,17 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/': { swr: true, cache: { swr: true, base: 'redis', maxAge: 1 } },
-    'shop/**': { swr: true, cache: { swr: true, base: 'redis', maxAge: 1 } },
-    'wishlist': { ssr: false },
-    'account/**': { ssr: false },
-    'cart/**': { ssr: false },
-    'guide': { prerender: true },
-    'confidentialite': { prerender: true },
-    'conditions-generales': { prerender: true },
-    'complete-size-guide': { prerender: true }
+    '/': { ssr: true },
+    '/shop': { ssr: true },
+    '/shop/collection/**': { ssr: true },
+    '/shop/**': { ssr: true },
+    '/wishlist': { ssr: false },
+    '/account/**': { ssr: false },
+    '/cart/**': { ssr: false },
+    '/guide': { prerender: true },
+    '/confidentialite': { prerender: true },
+    '/conditions-generales': { prerender: true },
+    '/complete-size-guide': { prerender: true }
   },
 
   vuefire: {
@@ -215,15 +217,15 @@ export default defineNuxtConfig({
     }
   },
 
-  // nitro: {
-  //   storage: {
-  //     redis: {
-  //       driver: 'redis',
-  //       host: process.env.NUXT_PUBLIC_REDIS_HOST,
-  //       port: 6379,
-  //       username: process.env.NUXT_PUBLIC_REDIS_USER,
-  //       password: process.env.NUXT_PUBLIC_REDIS_PASSWORD
-  //     }
-  //   }
-  // }
+  nitro: {
+    storage: {
+      redis: {
+        driver: 'redis',
+        host: process.env.NUXT_PUBLIC_REDIS_HOST,
+        port: 6379,
+        username: process.env.NUXT_PUBLIC_REDIS_USER,
+        password: process.env.NUXT_PUBLIC_REDIS_PASSWORD
+      }
+    }
+  }
 })

@@ -134,7 +134,7 @@ useSeoMeta({
 //   }
 // })))
 
-defineOgImage({
+defineOgImage('Nuxt', {
   url: '/images/group1/img1.jpeg',
   width: 1200,
   height: 630,

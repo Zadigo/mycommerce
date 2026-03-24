@@ -424,7 +424,7 @@ PY_UTILITIES_JWT_SECRET = env('PY_UTILITIES_JWT_SECRET')
 
 GRAPHENE = {
     'SCHEMA': 'mystore.schema.schema',
-    'TESTING_ENDPOINT': '/graphql/'
+    'TESTING_ENDPOINT': '/v1/graphql/'
 }
 
 

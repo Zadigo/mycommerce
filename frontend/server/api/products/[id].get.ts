@@ -1,73 +1,27 @@
-// import { FetchError } from 'ofetch'
-// import { refreshAccessToken } from '~/utils'
-// import { productFixture } from '~/data/__fixtures__/products'
-
-
-// import type { Product } from '~/types'
-
-// export default defineCachedEventHandler(async event => {
-//   const id = getRouterParam(event, 'id')
-  
-//   const access = getCookie(event, 'access')
-//   const refresh = getCookie(event, 'refresh')
-  
-//   try {
-//     // return productFixture
-    
-//     const response = await $fetch<Product[]>(`/api/v1/shop/products/${id}`, {
-//       baseURL: useRuntimeConfig().public.prodDomain,
-//       method: 'GET',
-//       headers: [
-//         ['Authorization', access ? `Token ${access}` : '']
-//       ]
-//     })
-
-//     return response
-//   } catch (e) {
-//     if (e instanceof FetchError) {
-//       if (e.status === 401 && refresh) {
-//         const { access } = await refreshAccessToken(refresh)
-//         setCookie(event, 'access', access)
-//       } else {
-//         throw createError({
-//           statusCode: e.status || 500,
-//           message: e.message
-//         })
-//       }
-//     }
-//   }
-// }, {
-//   base: 'redis',
-//   maxAge: 0, // disable cache for now
-//   getKey(event) {
-//     const id = getRouterParam(event, 'id')
-//     return `product-${id}`
-//   }
-// })
-
 import { useGenerateProducts } from '~~/layers/base/app/data/__fixtures__/products'
 
-export default defineEventHandler(async (_event) => {
-  $fetch('/v1/graphql', {
+export default defineEventHandler(async (event) => {
+  const id = getRouterParam(event, 'id')
+  const data = await $fetch('/v1/graphql/', {
     method: 'POST',
     baseURL: useRuntimeConfig().public.prodDomain,
     body: {
       query: `
-        query {
-          allProducts {
-            edges {
-              node {
-                id
-                name
-                description
-                price
-              }
-            }
+        query($id: ID!) {
+          product(id: $id) {
+            id
+            name
           }
         }
-      `
+      `,
+      variables: {
+        id
+      }
     }
   })
+
+  console.log('$fetch', data)
+
   const result = await useGenerateProducts(1)
   return result.value.data.allProducts.edges.at(0)
 })

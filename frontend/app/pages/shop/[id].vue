@@ -32,16 +32,16 @@
       <product-page-bottom-cart v-if="product" :product="product" />
 
       <!-- Zoom -->
-      <lazy-product-modals-image-zoom :product="product" />
+      <lazy-product-modals-image-zoom :product="product" hydrate-on-idle />
       
       <!-- Size Guide -->
-      <lazy-product-modals-size-guide v-model:show="showSizeGuideDrawer" :product="product" />
+      <lazy-product-modals-size-guide v-model:show="showSizeGuideDrawer" :product="product" hydrate-on-visible />
       
       <!-- Availability & Composition -->
-      <lazy-product-modals-availability v-model:show="showAvailabilityModal" :product="product" />
+      <lazy-product-modals-availability v-model:show="showAvailabilityModal" :product="product" hydrate-on-visible />
       
       <!-- Composition -->
-      <lazy-product-modals-composition v-model:show="showCompositionModal" />
+      <lazy-product-modals-composition v-model:show="showCompositionModal" hydrate-on-visible />
     </client-only>
   </section>
 </template>
@@ -159,7 +159,7 @@ if (isDefined(product)) {
     })
   )
 
-  defineOgImage({
+  defineOgImage('Nuxt', {
     url: product.value.node.mainImage.original,
     width: 1200,
     height: 630,

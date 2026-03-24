@@ -1,31 +1,78 @@
-
+import json
 from graphene_django.utils.testing import GraphQLTestCase
-from shop.models import Product
 from shop.tests.utils import ProductFactory
-
+from shop.models import Product
 
 class TestGraphQl(GraphQLTestCase):
     def setUp(self):
-        self.products = ProductFactory.build_batch(size=100)
+        self.products: list[Product] = ProductFactory.create_batch(1)
+        self.product = self.products[0]
+        self.product_id: str = None
 
-    def test_some_query(self):
-        print(Product.objects.all())
+    def _get_products(self):
         response = self.query(
             '''
             query {
                 allProducts {
-                    id
-                    name
+                    edges {
+                        node {
+                            id
+                            name
+                        }
+                    }
                 }
             }
             '''
         )
 
-        print(response.content)
+        content = json.loads(response.content)
+        self.assertResponseNoErrors(response)
+        return content
 
-        # content = json.loads(response.content)
+    def test_get_all_products(self):
+        content = self._get_products()
 
-        # # This validates the status code and if you get errors
-        # self.assertResponseNoErrors(response)
+        nodes = content['data']['allProducts']['edges']
+        self.assertEqual(len(nodes), 1)
 
-        # print(content)
+        for item in nodes:
+            with self.subTest(item=item):
+                node = item['node']
+
+    def test_get_product(self):
+        content = self._get_products()
+        node = content['data']['allProducts']['edges'][0]['node']
+
+        response = self.query(
+            '''
+            query($id: ID!) {
+                product(id: $id) {
+                    id
+                    name
+                }
+            }
+            ''',
+            variables={'id': node['id']}
+        )
+
+        content = json.loads(response.content)
+        self.assertResponseNoErrors(response)
+
+    def test_search_products(self):
+        content = self._get_products()
+        node = content['data']['allProducts']['edges'][0]['node']
+
+        response = self.query(
+            '''
+            query($minPrice: Int!) {
+                searchProducts(minPrice: $minPrice) {
+                    id
+                    name
+                }
+            }
+            ''',
+            variables={'minPrice': 1}
+        )
+
+        content = json.loads(response.content)
+        self.assertResponseNoErrors(response)

@@ -66,7 +66,7 @@
 
     <!-- Modals -->
     <client-only>
-      <modals-login /> 
+      <lazy-modals-login hydrate-on-visible /> 
     </client-only>
   </section>
 </template>

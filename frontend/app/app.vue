@@ -13,8 +13,8 @@
 
     <!-- Modals -->
     <client-only>
-      <modals-language />
-      <lazy-modals-whats-app />
+      <lazy-modals-language hydrate-on-idle />
+      <lazy-modals-whats-app hydrate-on-visible />
     </client-only>
   </nuxt-layout>
 </template>

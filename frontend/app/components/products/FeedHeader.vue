@@ -47,7 +47,6 @@
 
 <script setup lang="ts">
 import { productSymbol } from '~~/layers/base/app/data/constants/symbols'
-import { useHandleGridSize } from '~/composables/use/grid'
 import type { ProductNode } from '~/types'
 
 defineProps<{ count: number }>()
