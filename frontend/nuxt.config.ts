@@ -221,6 +221,7 @@ export default defineNuxtConfig({
     storage: {
       redis: {
         driver: 'redis',
+        base: 'nuxt-cache',
         host: process.env.NUXT_PUBLIC_REDIS_HOST,
         port: 6379,
         username: process.env.NUXT_PUBLIC_REDIS_USER,
