@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 
-class DeliveryPage extends StatelessWidget {
-  const DeliveryPage({super.key});
+class ProductScreen extends StatelessWidget {
+  const ProductScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const CupertinoPageScaffold(
-      child: Center(child: Text('Delivery Page')),
+      child: Center(child: Text('Product Screen')),
     );
   }
 }

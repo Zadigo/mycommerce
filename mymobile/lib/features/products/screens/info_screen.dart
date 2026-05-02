@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
-class InfoPage extends StatelessWidget {
-  const InfoPage({super.key});
+class InfoScreen extends StatelessWidget {
+  const InfoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

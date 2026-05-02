@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
-class CollectionPage extends StatelessWidget {
-  const CollectionPage({super.key});
+class CollectionScreen extends StatelessWidget {
+  const CollectionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

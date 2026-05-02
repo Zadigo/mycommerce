@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mymobile/pages/account/account_index_page.dart';
-import 'package:mymobile/pages/home_page.dart';
+import 'package:mymobile/features/account/screens/account_index_screen.dart';
+import 'package:mymobile/features/home/screens/home_screen.dart';
+import 'package:mymobile/features/products/logic/product_cubit.dart';
+import 'package:mymobile/core/widgets/base_navigation_widget.dart';
+
 
 void main() {
   runApp(const MainApp());
@@ -10,15 +14,18 @@ void main() {
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
-  final Map<String, WidgetBuilder> routes = {
-    '/': (context) => const HomePage(),
-    '/account': (context) => const AccountIndexPage(),
-  };
+  // void _handleNavigationBarTap(int index) {
+  //   // Handle navigation bar tap if needed
+  //   print('Tapped on index: $index');
+  // }
 
   @override
   Widget build(BuildContext context) {
     const String title = 'Ecommerce Application';
-    final ColorScheme colorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
+    
+    final ColorScheme colorScheme = ColorScheme.fromSeed(seedColor: Colors.purple);
+    // final routing = ApplicationRouting();
+
     return MaterialApp(
       title: title,
       theme: ThemeData(
@@ -26,7 +33,25 @@ class MainApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: GoogleFonts.manrope().fontFamily,
       ),
-      routes: routes,
+      routes: {
+        // '/': (context) => const HomeScreen(),
+        '/account': (context) => const AccountIndexScreen(),
+      },
+      initialRoute: '/',
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<ProductsCubit>(
+            create: (context) => ProductsCubit(),
+          ),
+        ],
+        child: Scaffold(
+          body: const HomeScreen(),
+          bottomNavigationBar: const BaseNavigationWidget(
+            // routing: routing,
+            // onTap: _handleNavigationBarTap,
+          ),
+        ), 
+      )
     );
   }
 }

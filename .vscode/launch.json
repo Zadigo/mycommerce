@@ -73,6 +73,12 @@
             "args": [
                 "dev"
             ]
+        },
+        {
+            "name": "Flutter",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/mymobile/lib/main.dart",
         }
     ],
     "compounds": [
