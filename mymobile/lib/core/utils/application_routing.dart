@@ -7,8 +7,8 @@ import 'package:mymobile/features/home/screens/home_screen.dart';
 class ApplicationRouting {
   int currentIndex = 0;
   final Map<String, WidgetBuilder> routeMap = {
-    '/': (context) => const HomePage(),
-    '/account': (context) => const AccountIndexPage(),
+    '/': (context) => const HomeScreen(),
+    '/account': (context) => const AccountIndexScreen(),
   };
 
   List<String> getNames() {
