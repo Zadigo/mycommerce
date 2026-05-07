@@ -1,5 +1,5 @@
 name: mymobile
-description: "A new Flutter project."
+description: "The ecommerce flutter application for the main Nuxt 4 ecommerce website."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -62,7 +62,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - images/img1.jpg
+    - assets/images/img1.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

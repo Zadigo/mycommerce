@@ -1,64 +1,22 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": [
-    "eslint",
     "typescript",
     "unicorn",
-    "jsdoc",
-    "import",
+    "oxc",
+    "typescript",
+    "eslint",
     "vue",
-    "vitest",
-    "node"
+    "node",
+    "oxc",
+    "promise",
+    "import"
   ],
-  "categories": {},
-  "rules": {
-    "@typescript-eslint/no-explicit-any": "warn",
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      {
-        "varsIgnorePattern": "^_",
-        "argsIgnorePattern": "^_",
-        "caughtErrorsIgnorePattern": "^_"
-      }
-    ]
+  "categories": {
+    "correctness": "error"
   },
-  "settings": {
-    "jsx-a11y": {
-      "polymorphicPropName": null,
-      "components": {},
-      "attributes": {}
-    },
-    "next": {
-      "rootDir": []
-    },
-    "react": {
-      "formComponents": [],
-      "linkComponents": [],
-      "version": null,
-      "componentWrapperFunctions": []
-    },
-    "jsdoc": {
-      "ignorePrivate": false,
-      "ignoreInternal": false,
-      "ignoreReplacesDocs": true,
-      "overrideReplacesDocs": true,
-      "augmentsExtendsReplacesDocs": false,
-      "implementsReplacesDocs": false,
-      "exemptDestructuredRootsFromChecks": false,
-      "tagNamePreference": {}
-    },
-    "vitest": {
-      "typecheck": false
-    }
-  },
+  "rules": {},
   "env": {
-    "builtin": true,
-    "browser": true,
-    "node": true,
-  },
-  "globals": {},
-  "ignorePatterns": [],
-  "options": {
-    "typeAware": true
+    "builtin": true
   }
 }
