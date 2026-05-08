@@ -6,22 +6,23 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	neturl "net/url"
 
 	"github.com/redis/go-redis/v9"
 )
 
-// ResponseToken represents the structure of the 
+// ResponseToken represents the structure of the
 // authentication token returned by the main endpoint
 type ResponseToken struct {
 	// Token is the authentication token string
-	// that will be used for subsequent requests 
+	// that will be used for subsequent requests
 	// to other services
 	Token string `json:"token"`
 }
 
-// AuthenticationInterface defines the methods that 
+// AuthenticationInterface defines the methods that
 // any authentication backend must implement
 type AuthenticationInterface interface {
 	// Authenticate verifies the user's credentials on the main endpoint and then
@@ -40,7 +41,7 @@ type AuthenticationTokens struct {
 	SubscribersToken ResponseToken `json:"subscribersToken"`
 }
 
-// AuthenticationBackend is a concrete implementation 
+// AuthenticationBackend is a concrete implementation
 // of the AuthenticationInterface
 type AuthenticationBackend struct {
 	Tokens       map[string]*AuthenticationTokens
@@ -60,9 +61,8 @@ func (a *AuthenticationBackend) Authenticate(username, password string) (*Authen
 	hashedPassword := HashToSHA256(password)
 
 	key := fmt.Sprintf("auth:%s:%s", hashedUsername, hashedPassword)
-	a.redisClient.Set(context.Background(), key, ResponseToken{}, 0)
 
-	backend := &AuthenticationTokens{}
+	backend := &AuthenticationTokens{}	
 	a.Tokens[key] = backend
 
 	resultChannel := make(chan ResponseToken)
@@ -78,11 +78,13 @@ func (a *AuthenticationBackend) Authenticate(username, password string) (*Authen
 
 		body, err := json.Marshal(data)
 		if err != nil {
+			log.Printf("❌ Failed to marshal authentication request for service '%s': %v", url.Name, err)
 			return
 		}
 
 		parsedUrl, err := neturl.Parse(url.Url)
 		if err != nil {
+			log.Printf("❌ Failed to parse URL for service '%s': %v", url.Name, err)
 			return
 		}
 
@@ -98,6 +100,12 @@ func (a *AuthenticationBackend) Authenticate(username, password string) (*Authen
 
 		response, err := client.Do(request)
 		if err != nil {
+			log.Printf("❌ Authentication request failed for service '%s': %v", url.Name, err)
+			return
+		}
+
+		if response.StatusCode != http.StatusOK {
+			log.Printf("❌ Authentication failed for service '%s' with status code %d", url.Name, response.StatusCode)
 			return
 		}
 
@@ -105,6 +113,7 @@ func (a *AuthenticationBackend) Authenticate(username, password string) (*Authen
 
 		var result ResponseToken
 		if err := json.NewDecoder(response.Body).Decode(&result); err != nil {
+			log.Printf("❌ Failed to decode authentication response for service '%s': %v", url.Name, err)
 			return
 		}
 
@@ -121,6 +130,8 @@ func (a *AuthenticationBackend) Authenticate(username, password string) (*Authen
 
 	allResults := <-resultChannel
 	fmt.Print(allResults)
+
+	a.redisClient.Set(context.Background(), key, a.Tokens[key], 0)
 
 	// Implement authentication logic here
 	return backend, nil

@@ -1,26 +1,22 @@
 package tests
 
 import (
-	"net/http"
-	"net/http/httptest"
+	"encoding/json"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestLoginEndpoint(t *testing.T) {
-	server, _, _ := CreateRecorder()
-	defer server.Close()
 
 	t.Run("Successful Login", func(t *testing.T) {
-		// Simulate a successful login request
-		req, _ := http.NewRequest("POST", server.URL+"/login", nil)
+		recorder := CreateRecorder(t)
 
-		recorder := httptest.NewRecorder()
-		req.Write(recorder)
-
-		server.Config.Handler.ServeHTTP(recorder, req)
-
-		assert.Equal(t, http.StatusOK, recorder.Code, recorder.Body.String())
+		body := json.NewDecoder(recorder.Body)
+		var response struct {
+			Token string `json:"token"`
+		}
+		err := body.Decode(&response)
+		if err != nil {
+			t.Fatalf("Failed to decode response body: %v", err)
+		}
 	})
 }

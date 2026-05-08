@@ -9,7 +9,7 @@ import (
 )
 
 type RedisConfig struct {
-	Address string `yaml:"redis_address"`
+	Address string `yaml:"address"`
 }
 
 type UrlEndpoint struct {

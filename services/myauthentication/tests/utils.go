@@ -1,16 +1,20 @@
 package tests
 
 import (
+	"bytes"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
+	"testing"
 
 	"github.com/Zadigo/myauthentication/internal/backend"
 	"github.com/Zadigo/myauthentication/internal/handlers"
+	"github.com/stretchr/testify/assert"
 )
 
-func CreateRecorder() (*httptest.Server, *backend.ServerConfig, backend.AuthenticationInterface) {
+func CreateRecorder(t *testing.T) *httptest.ResponseRecorder {
 	projectPath, _ := os.Getwd()
 	value, _ := strings.CutSuffix(projectPath, "/tests")
 	serverConfig := backend.NewServerConfig(value)
@@ -18,9 +22,18 @@ func CreateRecorder() (*httptest.Server, *backend.ServerConfig, backend.Authenti
 	redisClient := backend.NewRedisClient(backend.RedisConfig{Address: "redis://@localhost:6379/0"})
 	authBackend := backend.NewAuthenticationBackend(redisClient, serverConfig)
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		handlers.LoginEndpoint(w, r, serverConfig, authBackend)
-	}))
+	body, _ := json.Marshal(map[string]string{
+		"username": "testuser",
+		"password": "testpass",
+	})
 
-	return server, serverConfig, authBackend
+	req := httptest.NewRequest("POST", "/login", bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+
+	recorder := httptest.NewRecorder()
+	handlers.LoginEndpoint(recorder, req, serverConfig, authBackend)
+
+	assert.Equal(t, http.StatusOK, recorder.Code)
+
+	return recorder
 }
