@@ -1,16 +1,12 @@
 import asyncio
 import json
-import os
-from collections import defaultdict
-from typing import Any
 
-import dotenv
 import httpx
 import redis
-from fastapi import Depends, FastAPI, Form, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.concurrency import asynccontextmanager
 
-from api_authentication import BASE_PROJECT, ENV_PATH, create_logger, models
+from api_authentication import models
 from api_authentication.tokens import JWTGenerator, decode_jwt_token
 from api_authentication.utils import redis_instance
 
@@ -18,7 +14,7 @@ MY_STORE_URL = 'http://127.0.0.1:8000/auth/v1/'
 
 APP_URLS = [
     ('mycart', 'http://localhost:8001/auth/v1/token/'),
-]
+] 
 
 
 @asynccontextmanager

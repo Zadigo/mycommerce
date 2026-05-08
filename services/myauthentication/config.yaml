@@ -2,5 +2,7 @@ config:
   redis:
     address: redis://@localhost:6379/0
   endpoints:
-    - https://example.com
-    - https://example.com/1
+    - name: shop
+      url: https://example.com
+    - name: auth
+      url: https://example.com/1

@@ -12,10 +12,10 @@ import (
 
 func main() {
 	projectPath, _ := os.Getwd()
-	serverConfig := backend.LoadYamlConfig(projectPath)
+	serverConfig := backend.NewServerConfig(projectPath)
 
 	redisClient := backend.NewRedisClient(serverConfig.Config.Redis)
-	authenticationBackend := backend.NewAuthenticationBackend(redisClient)
+	authenticationBackend := backend.NewAuthenticationBackend(redisClient, serverConfig)
 
 	router := chi.NewRouter()
 
@@ -25,11 +25,15 @@ func main() {
 	router.Use(middleware.Recoverer)
 
 	router.Post("/login", func(w http.ResponseWriter, r *http.Request) {
-		handlers.LoginEndpoint(w, r, authenticationBackend)
+		handlers.LoginEndpoint(w, r, serverConfig, authenticationBackend)
 	})
 
 	router.Post("/logout", func(w http.ResponseWriter, r *http.Request) {
-		handlers.LogoutEndpoint(w, r, authenticationBackend)
+		handlers.LogoutEndpoint(w, r, serverConfig, authenticationBackend)
+	})
+
+	router.Post("/verify", func(w http.ResponseWriter, r *http.Request) {
+		handlers.VerifyEndpoint(w, r, serverConfig, authenticationBackend)
 	})
 
 	http.ListenAndServe(":8080", router)
