@@ -4,7 +4,6 @@ from collection.api import serializers
 from collection.models import Collection
 from django.core.cache import cache
 from django.db.models import Q, When, Case
-from django.db.models.functions import Lower
 from django.utils.timezone import now, timedelta
 from rest_framework import generics
 from rest_framework.permissions import AllowAny

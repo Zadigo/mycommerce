@@ -1,13 +1,13 @@
-from cart.api.serializers import cart_statistics
-from cart.models import Cart
+from mystore.cart.api.serializers import cart_statistics
+from mystore.cart.models import Cart
 from django.db.models import F
 from django.shortcuts import get_object_or_404
-from orders.models import CustomerOrder
+from mystore.orders.models import CustomerOrder
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import Response
-from stocks.api import serializers
-from stocks.models import Stock
+from mystore.stocks.api import serializers
+from mystore.stocks.models import Stock
 
 
 class GetProductStockStatus(generics.RetrieveAPIView):

@@ -1,6 +1,6 @@
 from django.contrib.sitemaps import Sitemap
 
-from collection.models import Collection
+from mystore.collection.models import Collection
 
 
 class CollectionSitemap(Sitemap):

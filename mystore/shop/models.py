@@ -10,7 +10,8 @@ from django.utils.timezone import now, timedelta
 from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
-from shop import managers, validators
+from shop import managers
+from shop import validators
 from shop.choices import AgeGroupChoices, ColorChoices, GenderChoices
 from shop.utils import (calculate_sale, create_slug, generate_sku, image_path,
                         video_path)

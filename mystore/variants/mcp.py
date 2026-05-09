@@ -1,10 +1,9 @@
-from typing import Annotated, List, Optional, Text
+from typing import List, Optional
 
 import pydantic
 from django.core.cache import cache
 from mcp_server import MCPToolset, ModelQueryToolset
-from pydantic import (BaseModel, FieldValidationInfo, ValidationError,
-                      field_validator)
+from pydantic import (FieldValidationInfo, field_validator)
 
 from variants.models import Size
 

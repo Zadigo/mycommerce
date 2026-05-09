@@ -1,4 +1,4 @@
-from accounts import tasks
+from mystore.accounts import tasks
 from django.contrib.auth import get_user_model
 from django.test import override_settings
 from rest_framework.test import APITestCase

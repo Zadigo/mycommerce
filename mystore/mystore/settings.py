@@ -58,9 +58,6 @@ INSTALLED_APPS = [
     'collection',
     'shop',
     'variants',
-    'cart',
-    'orders',
-    'shipments',
     'stocks'
 ]
 
@@ -406,18 +403,7 @@ FIXTURES_DIRS = [
 
 PY_UTILITIES_JWT_ISSUER = 'ecommerce'
 
-# PY_UTILITIES_JWT_AUDIENCE = 'cart'
-
-# PY_UTILITIES_JWT_SUBJECT = 'cart'
-
 PY_UTILITIES_JWT_SECRET = env('PY_UTILITIES_JWT_SECRET')
-
-
-# APi urls
-
-# CART_API_URL = env('CART_API_URL', 'http://127.0.0.1:8001')
-
-# REVIEWS_API_URL = env('REVIEWS_API_URL', 'http://127.0.0.1:8002')
 
 
 # Graphene

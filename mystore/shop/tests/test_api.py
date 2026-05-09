@@ -2,10 +2,10 @@ from urllib.parse import urlencode
 
 from django.urls import reverse
 from rest_framework.mixins import status
-from shop.models import Product
-from shop.tests.utils import ProductFactory
+from mystore.shop.models import Product
+from mystore.shop.tests.utils import ProductFactory
 
-from mystore.mixins import AuthenticatedTestCase
+from mystore.mystore.mixins import AuthenticatedTestCase
 
 
 class TestShopApi(AuthenticatedTestCase):

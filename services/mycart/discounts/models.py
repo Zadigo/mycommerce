@@ -1,0 +1,63 @@
+from services.mycart.discounts.validators import validate_percentage
+from django.db import models
+from django.utils import timezone
+from django.utils.functional import cached_property
+from django.core.validators import int_list_validator
+
+
+class Discount(models.Model):
+    """References discounts like coupons, promotional codes, etc.
+    that could be applied to a product or a set of given products
+    when the customer is checking out."""
+
+    reference = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+    name = models.CharField(
+        max_length=100,
+        validators=[],
+        blank=True,
+        null=True
+    )
+    products = models.JSONField(
+        default=list,
+        help_text='List of product ids that the discount can be applied to',
+        validators=[int_list_validator()],
+        blank=True,
+        null=True
+    )
+    percentage = models.PositiveIntegerField(
+        default=0,
+        validators=[validate_percentage]
+    )
+    start_date = models.DateField(
+        default=timezone.now
+    )
+    end_date = models.DateField(
+        default=timezone.now
+    )
+    created_on = models.DateField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f'{self.reference}'
+
+    @cached_property
+    def remaining_days(self):
+        """Calculates the remaining days before
+        the discount becomes invalid"""
+        result = (self.end_date - timezone.now().date()).days
+        return 0 if result < 0 else result
+
+    @property
+    def is_valid(self):
+        """Checks if the discount is valid by
+        comparing if the current date is beyond
+        the starting date and below the ending one"""
+        return all([
+            timezone.now().date() >= self.start_date,
+            self.end_date >= timezone.now().date()
+        ])

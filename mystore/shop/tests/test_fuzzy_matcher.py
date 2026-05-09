@@ -1,6 +1,6 @@
 
 from django.test import TransactionTestCase
-from shop.processors import FuzzyMatcherMixin
+from mystore.shop.processors import FuzzyMatcherMixin
 
 
 class TestFuzzyMatcher(TransactionTestCase):

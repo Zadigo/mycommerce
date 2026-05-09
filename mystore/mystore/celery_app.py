@@ -58,7 +58,7 @@ def check_orders():
     database to check if there are new
     orders to process of the day. This
     triggers a 'process order' workflow"""
-    from orders.models import CustomerOrder
+    from mystore.orders.models import CustomerOrder
     from django.utils import timezone
 
     qs = CustomerOrder.objects.filter(created_on=timezone.now())

@@ -2,7 +2,7 @@ import unittest
 
 import factory
 from django.test import TransactionTestCase
-from shop.models import Product
+from mystore.shop.models import Product
 
 
 class ProductFactory(factory.django.DjangoModelFactory):

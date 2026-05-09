@@ -1,8 +1,7 @@
 import base64
 import itertools
-from typing import Annotated, Optional, Text
+from typing import Annotated, Optional
 
-from django.db.models import Q
 import pydantic
 import mimetypes
 from django.core.cache import cache
@@ -13,7 +12,7 @@ from shop.models import Image, Product, Video, Wishlist
 from mcp.types import TextContent, ImageContent
 
 from shop.choices import GenderChoices, AgeGroupChoices
-from mystore.choices import CategoryChoices, SubCategoryChoices
+from mystore.choices import CategoryChoices
 from variants.choices import VariantMetrics
 from mystore.constants import SUB_CATEGORIES
 from variants.models import Size

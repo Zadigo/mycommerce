@@ -2,7 +2,7 @@
 import factory
 import faker
 import faker.providers
-from shop.models import Product
+from mystore.shop.models import Product
 
 dynamic_names = faker.providers.DynamicProvider('names', elements=[
     'Mini-jupe à paillettes',

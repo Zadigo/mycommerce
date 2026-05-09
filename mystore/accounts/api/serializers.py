@@ -2,7 +2,7 @@ from accounts import tasks
 from accounts.models import Address
 from django.contrib.auth import get_user_model, password_validation
 from django.utils.crypto import get_random_string
-from rest_framework import fields, status
+from rest_framework import fields
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework_simplejwt.serializers import TokenObtainSerializer

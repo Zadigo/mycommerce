@@ -2,7 +2,6 @@ package backend
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -27,7 +26,7 @@ type ResponseToken struct {
 type AuthenticationInterface interface {
 	// Authenticate verifies the user's credentials on the main endpoint and then
 	// will sync the authentication token with the remaining services
-	Authenticate(username, password string) (*AuthenticationTokens, error)
+	Authenticate(username, password string) (string, *AuthenticationTokens, error)
 	Logout(userID string) error
 	GetTokens(userID string) *AuthenticationTokens
 	GetRedisClient() *redis.Client
@@ -54,7 +53,7 @@ func (a *AuthenticationBackend) GetRedisClient() *redis.Client {
 }
 
 // Authenticate verifies the user's credentials and returns true if authentication is successful
-func (a *AuthenticationBackend) Authenticate(username, password string) (*AuthenticationTokens, error) {
+func (a *AuthenticationBackend) Authenticate(username, password string) (string, *AuthenticationTokens, error) {
 	// Hash the username and password to sha256 encoding that we will be using
 	// as a key on Redis to store the authentication tokens for the user
 	hashedUsername := HashToSHA256(username)
@@ -62,7 +61,7 @@ func (a *AuthenticationBackend) Authenticate(username, password string) (*Authen
 
 	key := fmt.Sprintf("auth:%s:%s", hashedUsername, hashedPassword)
 
-	backend := &AuthenticationTokens{}	
+	backend := &AuthenticationTokens{}
 	a.Tokens[key] = backend
 
 	resultChannel := make(chan ResponseToken)
@@ -131,10 +130,8 @@ func (a *AuthenticationBackend) Authenticate(username, password string) (*Authen
 	allResults := <-resultChannel
 	fmt.Print(allResults)
 
-	a.redisClient.Set(context.Background(), key, a.Tokens[key], 0)
-
 	// Implement authentication logic here
-	return backend, nil
+	return key, backend, nil
 }
 
 // Logout invalidates the user's authentication tokens

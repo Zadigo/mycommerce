@@ -1,10 +1,7 @@
 from datetime import timedelta
 
-from accounts import tasks
 from accounts.api import serializers
 from accounts.models import Address
-from accounts.permissions import CustomIsAuthenticated
-from celery import chain
 from django.contrib.auth import get_user_model
 from django.db.models import F
 from django.utils import timezone
@@ -12,7 +9,6 @@ from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt import views as jwt_views
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserInfo(generics.RetrieveUpdateAPIView):

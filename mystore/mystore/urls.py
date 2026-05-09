@@ -2,14 +2,13 @@ from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from drf_spectacular import views as drf_views
 from graphene_django.views import GraphQLView
 from oauth_dcr import views as oauth_dcr_views
 from rest_framework_simplejwt import views as jwt_views
 
-from mystore import views
 
 urlpatterns = [
     path(
@@ -42,20 +41,12 @@ urlpatterns = [
         include('stocks.api.urls')
     ),
     path(
-        'api/v1/orders/',
-        include('orders.api.urls')
-    ),
-    path(
         'api/v1/accounts/',
         include('accounts.api.urls')
     ),
     path(
         'api/v1/shop/',
         include('shop.api.urls')
-    ),
-    path(
-        'api/v1/cart/',
-        include('cart.api.urls')
     ),
     path(
         'api/v1/collection/',
@@ -104,11 +95,11 @@ urlpatterns = [
         'admin/',
         admin.site.urls
     ),
-    re_path(
-        r'^$',
-        views.HomeView.as_view(),
-        name='home'
-    )
+    # re_path(
+    #     r'^$',
+    #     views.HomeView.as_view(),
+    #     name='home'
+    # )
 ]
 
 

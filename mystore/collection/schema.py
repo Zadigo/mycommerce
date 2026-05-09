@@ -1,10 +1,10 @@
 import graphene
-from collection.models import Collection
+from mystore.collection.models import Collection
 from django.core.cache import cache
 from django.db import models
 from graphene import relay
 from graphene_django import DjangoObjectType
-from shop.schema import ProductType
+from mystore.shop.schema import ProductType
 
 
 class CollectionType(DjangoObjectType):

@@ -1,7 +1,7 @@
 import graphene
-from collection.schema import CollectionsQuery
-from shop.schema import ProductQuery
-from variants.schema import VariantQuery
+from mystore.collection.schema import CollectionsQuery
+from mystore.shop.schema import ProductQuery
+from mystore.variants.schema import VariantQuery
 
 
 class Query(CollectionsQuery, VariantQuery, ProductQuery, graphene.ObjectType):

@@ -12,7 +12,7 @@ class Address(models.Model):
     information"""
 
     user_profile = models.ForeignKey(
-        'UserProfile',
+        'accounts.UserProfile',
         on_delete=models.CASCADE
     )
     firstname = models.CharField(

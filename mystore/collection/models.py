@@ -1,9 +1,8 @@
 from collection.utils import create_slug
 from django.db import models
 from django.db.models import UniqueConstraint
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
-from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from shop.models import Product

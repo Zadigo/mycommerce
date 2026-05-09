@@ -1,6 +1,6 @@
 import unittest
 
-from accounts.models import Address
+from mystore.accounts.models import Address
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework.test import APITestCase

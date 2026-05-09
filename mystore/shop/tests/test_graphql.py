@@ -1,7 +1,7 @@
 import json
 from graphene_django.utils.testing import GraphQLTestCase
-from shop.tests.utils import ProductFactory
-from shop.models import Product
+from mystore.shop.tests.utils import ProductFactory
+from mystore.shop.models import Product
 
 class TestGraphQl(GraphQLTestCase):
     def setUp(self):

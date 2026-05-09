@@ -1,6 +1,6 @@
 from celery import shared_task
 from celery.utils.log import get_task_logger
-from shop.models import Product
+from mystore.shop.models import Product
 
 
 @shared_task

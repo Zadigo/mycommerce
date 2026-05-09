@@ -1,17 +1,15 @@
-import json
 import random
 
 import pandas
 from django.core.cache import cache
 from django.db.models import Case, Q, When
-from django.db.models.functions.text import Concat
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
-from rest_framework.decorators import api_view
 from rest_framework.mixins import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from shop.api import CustomPagination, serializers
+from shop.api import CustomPagination
+from shop.api import serializers
 from shop.models import Novelty, Product, Sale
 from shop.processors import FuzzyMatcherMixin
 

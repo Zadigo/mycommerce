@@ -4,9 +4,9 @@ import graphene
 from django.core.cache import cache
 from graphene import relay
 from graphene_django import DjangoObjectType
-from shop.models import Image, Novelty, Product, Sale, Video
+from mystore.shop.models import Image, Novelty, Product, Sale, Video
 
-from mystore.custom_utilities.word_processor import FuzzyMatcher
+from mystore.mystore.custom_utilities.word_processor import FuzzyMatcher
 
 
 class ImageType(DjangoObjectType):
