@@ -1,6 +1,8 @@
 package backend
 
 import (
+	"context"
+
 	"github.com/redis/go-redis/v9"
 )
 
@@ -10,5 +12,11 @@ func NewRedisClient() *redis.Client {
 		panic(err)
 	}
 	client := redis.NewClient(options)
+
+	status := client.Ping(context.Background())
+	if status.Err() != nil {
+		panic(status.Err())
+	}
+
 	return client
 }

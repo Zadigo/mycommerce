@@ -1,8 +1,12 @@
 package backend
 
 import (
+	"errors"
 	"log"
 	"os"
+	"regexp"
+	"slices"
+	"strings"
 
 	"github.com/Zadigo/purchase/internal/backend/payment"
 	"github.com/redis/go-redis/v9"
@@ -17,11 +21,11 @@ type YamlConfig struct {
 		Name string `yaml:"name"`
 		Url  string `yaml:"url"`
 	} `yaml:"endpoints"`
-	Callbacks []struct {
-		Name         string `yaml:"name"`
-		ForEndpoints string `yaml:"for_endpoints"`
-		Url          string `yaml:"url"`
-	} `yaml:"callbacks"`
+	Webhooks []struct {
+		Name      string `yaml:"name"`
+		Endpoints string `yaml:"endpoints"`
+		Url       string `yaml:"url"`
+	} `yaml:"webhooks"`
 }
 
 // GetEndpoint returns the URL of the endpoint with the given name
@@ -64,6 +68,7 @@ type ServerConfigInterface interface {
 
 func (s *ServerConfig) SetConfig(redisClient *redis.Client) error {
 	s.redisClient = redisClient
+
 	key := os.Getenv("STRIPE_API_KEY")
 	if key == "" {
 		log.Print("❌ STRIPE_API_KEY environment variable is not set")
@@ -86,28 +91,65 @@ func (s *ServerConfig) SetConfig(redisClient *redis.Client) error {
 	}
 	log.Printf("🟢 Loaded YAML configuration from %s", filePath)
 
+	endpointNames := []string{}
+
+	allErrors := []error{}
+
 	for _, endpoint := range s.Config.Endpoints {
 		if endpoint.Name == "" || endpoint.Url == "" {
 			log.Printf("⚠️ Skipping invalid endpoint with empty name or URL: %+v", endpoint)
 			continue
 		}
-		log.Printf("🔗 Endpoint: %s -> %s", endpoint.Name, endpoint.Url)
+
+		if slices.Contains(endpointNames, endpoint.Name) {
+			allErrors = append(allErrors, errors.New("❌ Duplicate endpoint name found in YAML configuration: "+endpoint.Name))
+		}
+
+		// Validate that the endpoint name only contains
+		// lowercase letters, underscores, and hyphens
+		state, err := regexp.Match("[a-z\\_\\-]+", []byte(endpoint.Name))
+		if err != nil {
+			allErrors = append(allErrors, errors.New("⚠️ Error while validating endpoint name format: "+endpoint.Name+", error: "+err.Error()))
+		}
+
+		if !state {
+			allErrors = append(allErrors, errors.New("⚠️ Invalid endpoint name format: "+endpoint.Name))
+		}
+
+		CheckUrl(endpoint.Url)
+		endpointNames = append(endpointNames, endpoint.Name)
 	}
 
-	for _, endpoint := range s.Config.Callbacks {
-		if endpoint.Name == "" || endpoint.Url == "" {
-			log.Printf("⚠️ Skipping invalid callback with empty name or URL: %+v", endpoint)
-			continue
+	log.Printf("🔗 Endpoints: %v", endpointNames)
+
+	for _, webhook := range s.Config.Webhooks {
+		if webhook.Name == "" || webhook.Url == "" {
+			allErrors = append(allErrors, errors.New("⚠️ Skipping invalid webhook with empty name or URL: "+webhook.Name))
 		}
-		log.Printf("🔗 Callback: %s -> [%s]", endpoint.Url, endpoint.ForEndpoints)
+
+		// Ensure that all endpoints referenced by the webhook
+		// are defined in the endpoints list
+		for token := range strings.SplitSeq(webhook.Endpoints, ",") {
+			if !slices.Contains(endpointNames, token) {
+				allErrors = append(allErrors, errors.New("❌ Webhook "+webhook.Name+" references undefined endpoint: "+token))
+			}
+		}
+
+		CheckUrl(webhook.Url)
 	}
+
+	log.Printf("🔗 Webhooks: %v", s.Config.Webhooks)
 
 	if len(s.Config.Endpoints) == 0 {
 		log.Print("⚠️ No endpoints found in YAML configuration")
 	}
 
-	if len(s.Config.Callbacks) == 0 {
-		log.Print("⚠️ No callbacks found in YAML configuration")
+	if len(s.Config.Webhooks) == 0 {
+		log.Print("⚠️ No webhooks found in YAML configuration")
+	}
+
+	if len(allErrors) > 0 {
+		return errors.Join(allErrors...)
 	}
 
 	return nil
@@ -140,10 +182,10 @@ func NewServerConfig(rootDir string) ServerConfigInterface {
 				Name string `yaml:"name"`
 				Url  string `yaml:"url"`
 			}{},
-			Callbacks: []struct {
-				Name         string `yaml:"name"`
-				ForEndpoints string `yaml:"for_endpoints"`
-				Url          string `yaml:"url"`
+			Webhooks: []struct {
+				Name      string `yaml:"name"`
+				Endpoints string `yaml:"endpoints"`
+				Url       string `yaml:"url"`
 			}{},
 		},
 	}
