@@ -1,24 +1,13 @@
 import graphene
 from django.core.cache import cache
-from graphene_django import DjangoObjectType
 from variants.models import Size
-
-
-class SizeType(DjangoObjectType):
-    variant_price = graphene.Float(source='attributed_price')
-
-    class Meta:
-        model = Size
-        fields = [
-            'name', 'metric',
-            'availability', 'active'
-        ]
-
+from variants.graphql.types import SizeType
+from graphql import GraphQLResolveInfo
 
 class VariantQuery(graphene.ObjectType):
     all_sizes = graphene.List(SizeType)
 
-    def resolve_all_sizes(self, info, **kwargs):
+    def resolve_all_sizes(self, info: GraphQLResolveInfo, **kwargs):
         qs = cache.get('allSizes')
         if not qs:
             qs = Size.objects.select_related('product').all()

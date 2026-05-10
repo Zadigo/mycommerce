@@ -15,17 +15,21 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 
 class AuthenticationMixin:
+    authenticate_user: bool = True
+
     @classmethod
     def setUpTestData(cls):
         users = UserFactory.create_batch(5)
-
+        
+        cls.users = users
         cls.user = get_user_model().objects.get(pk=1)
         cls.user.set_password('touparet')
         cls.user.save()
 
     def setUp(self):
         self.client = self.client_class()
-        self.token = self._authenticate()
+        if self.authenticate_user:
+            self.token = self._authenticate()
 
     def _authenticate(self):
         response = self.client.post(
@@ -46,4 +50,4 @@ class AuthenticationMixin:
 
 
 class AuthenticatedTestCase(AuthenticationMixin, APITestCase):
-    pass
+    """A test case class that automatically authenticates a user for API testing."""
