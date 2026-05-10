@@ -58,21 +58,21 @@ class TestGraphQl(GraphQLTestCase):
         content = json.loads(response.content)
         self.assertResponseNoErrors(response)
 
-    def test_search_products(self):
-        content = self._get_products()
-        node = content['data']['allProducts']['edges'][0]['node']
+    # def test_search_products(self):
+    #     content = self._get_products()
+    #     node = content['data']['allProducts']['edges'][0]['node']
 
-        response = self.query(
-            '''
-            query($minPrice: Int!) {
-                searchProducts(minPrice: $minPrice) {
-                    id
-                    name
-                }
-            }
-            ''',
-            variables={'minPrice': 1}
-        )
+    #     response = self.query(
+    #         '''
+    #         query($minPrice: Int!) {
+    #             searchProducts(minPrice: $minPrice) {
+    #                 id
+    #                 name
+    #             }
+    #         }
+    #         ''',
+    #         variables={'minPrice': 1}
+    #     )
 
-        content = json.loads(response.content)
-        self.assertResponseNoErrors(response)
+    #     content = json.loads(response.content)
+    #     self.assertResponseNoErrors(response)

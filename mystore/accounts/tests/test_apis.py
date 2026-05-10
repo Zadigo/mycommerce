@@ -1,6 +1,6 @@
 import unittest
 
-from mystore.accounts.models import Address
+from accounts.models import Address
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -102,7 +102,7 @@ class TestApiEndpoints(APITestCase):
         self.assertIn('id', data)
 
         path = reverse(
-            'accounts_api:update_address_line',
+            'accounts_api:update_destroy_address_line',
             args=[self.user.id, data['id']]
         )
 
