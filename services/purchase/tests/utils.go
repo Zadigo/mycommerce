@@ -81,3 +81,30 @@ func UpdatePaymentIntentRecorder() *httptest.ResponseRecorder {
 	handler.ServeHTTP(recorder, request)
 	return recorder
 }
+
+func CapturePaymentIntentRecorder() *httptest.ResponseRecorder {
+	serverConfig := GetServerConfig()
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		handlers.ProcessPaymentHandler(w, r, serverConfig)
+	})
+
+	data, err := json.Marshal(&payment.CapturePaymentIntentRequest{
+		PaymentIntentData: payment.PaymentIntentData{
+			PaymentIntentID: os.Getenv("PAYMENT_INTENT_ID"),
+			CustomerID:      os.Getenv("CUSTOMER_ID"),
+		},
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	reader := bytes.NewReader(data)
+
+	request := httptest.NewRequest("POST", "/payment", reader)
+	recorder := httptest.NewRecorder()
+
+	handler.ServeHTTP(recorder, request)
+	return recorder
+}

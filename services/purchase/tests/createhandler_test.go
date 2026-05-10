@@ -33,3 +33,14 @@ func TestUpdatePaymentIntentHandler(t *testing.T) {
 		fmt.Print(recorder.Body)
 	})
 }
+
+func TestCapturePaymentIntentHandler(t *testing.T) {
+	err := godotenv.Load()
+	assert.NoError(t, err)
+
+	t.Run("Should capture payment intent", func(t *testing.T) {
+		recorder := CapturePaymentIntentRecorder()
+		assert.Equal(t, 200, recorder.Code, recorder.Body.String())
+		fmt.Print(recorder.Body)
+	})
+}

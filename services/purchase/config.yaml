@@ -10,6 +10,6 @@ endpoints:
     url: http://127.0.0.1:8004/api/v1/
 
 webhooks:
-  - name: null
-    endpoints: all
-    url: null
+  # - name: null
+  #   endpoints: all
+  #   url: null

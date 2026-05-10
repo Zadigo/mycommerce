@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/Zadigo/purchase/internal/backend"
+	"github.com/Zadigo/purchase/internal/backend/utilities"
 )
 
 type StockInterface interface {
@@ -28,7 +29,7 @@ func (s *CheckStockResponse) CheckStock(productID []string) error {
 	}
 
 	reader := bytes.NewReader(value)
-	err = backend.SendRequest("https://example.com/stock", reader, s)
+	err = utilities.SendRequest("https://example.com/stock", reader, s)
 	if err != nil {
 		return err
 	}

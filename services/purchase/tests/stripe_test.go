@@ -5,15 +5,20 @@ import (
 	"time"
 
 	"github.com/Zadigo/purchase/internal/backend/payment"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestStripePayment(t *testing.T) {
+	err := godotenv.Load()
+	assert.NoError(t, err)
+
 	client := payment.CreateStripeClient()
+	assert.NotNil(t, client)
 
 	t.Run("Should create intent", func(t *testing.T) {
 		intent, err := client.CreateIntent(payment.CreatePaymentIntentRequest{
-			Amount: 1214,
+			Amount: 8,
 		})
 		assert.NoError(t, err)
 		assert.NotNil(t, intent)
@@ -25,11 +30,15 @@ func TestStripePayment(t *testing.T) {
 				PaymentIntentData: payment.PaymentIntentData{
 					PaymentIntentID: intent.ID,
 				},
-				AddressLine: "123 Main St",
-				City:        "Anytown",
-				Country:     "US",
-				PostalCode:  "12345",
-				State:       "CA",
+				AddressLine: "10 Rue Meurein",
+				City:        "Lille",
+				Country:     "FR",
+				PostalCode:  "59800",
+				State:       "Hauts-de-France",
+				Firstname:   "John",
+				Lastname:    "Doe",
+				Email:       "bevat30904@ellbit.com",
+				Telephone:   "(508)956-4243",
 			})
 
 			assert.NoError(t, err)

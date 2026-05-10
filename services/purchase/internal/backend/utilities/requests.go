@@ -1,4 +1,4 @@
-package backend
+package utilities
 
 import (
 	"encoding/json"

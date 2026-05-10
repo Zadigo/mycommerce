@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/Zadigo/purchase/internal/backend/payment"
+	"github.com/Zadigo/purchase/internal/backend/utilities"
 	"github.com/redis/go-redis/v9"
 	"gopkg.in/yaml.v3"
 )
@@ -116,7 +117,7 @@ func (s *ServerConfig) SetConfig(redisClient *redis.Client) error {
 			allErrors = append(allErrors, errors.New("⚠️ Invalid endpoint name format: "+endpoint.Name))
 		}
 
-		CheckUrl(endpoint.Url)
+		utilities.CheckUrl(endpoint.Url)
 		endpointNames = append(endpointNames, endpoint.Name)
 	}
 
@@ -135,7 +136,7 @@ func (s *ServerConfig) SetConfig(redisClient *redis.Client) error {
 			}
 		}
 
-		CheckUrl(webhook.Url)
+		utilities.CheckUrl(webhook.Url)
 	}
 
 	log.Printf("🔗 Webhooks: %v", s.Config.Webhooks)

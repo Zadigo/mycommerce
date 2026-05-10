@@ -1,11 +1,14 @@
 package payment
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 
+	"github.com/Zadigo/purchase/internal/backend/utilities"
 	"github.com/stripe/stripe-go/v85"
 )
 
@@ -55,10 +58,34 @@ func (s *StripeClient) UpdateIntent(data UpdatePaymentIntentRequest, callbacks .
 }
 
 func (s *StripeClient) CreateIntent(data CreatePaymentIntentRequest, callbacks ...func(intent *stripe.PaymentIntent)) (*stripe.PaymentIntent, error) {
+	// Try to get an active customer from the shop database. We should receeive
+	// a customer ID that we can use to create the payment intent since Django
+	// automatically creates a Stripe customer for each user that registers
+	// on the platform. If a customer does not exist, we will be able to update
+	// it later in the UpdateIntent method once the customer creates his account.
+	var customerID string
+
+	requestData, _ := json.Marshal(map[string]any{"email": "something@gmail.com"})
+	reader := bytes.NewReader(requestData)
+
+	responseData := map[string]any{"customerId": ""}
+	err := utilities.SendRequest("https://example.com/", reader, responseData)
+
+	if err != nil {
+		// Do something
+	} else {
+		if id, ok := responseData["customerId"].(string); ok {
+			customerID = id
+		}
+	}
+
 	options := &stripe.PaymentIntentCreateParams{
+		Customer:    stripe.String(customerID),
 		Amount:      stripe.Int64(int64(data.Amount * 100)), // Convert to cents
-		Currency:    stripe.String(string(stripe.CurrencyUSD)),
+		Currency:    stripe.String(string(stripe.CurrencyEUR)),
 		Description: stripe.String("Test Payment Intent"),
+		ReturnURL:   stripe.String("https://example.com/return_url"),
+		// PaymentMethod: stripe.String("pm_card_visa"),
 	}
 
 	intent, err := s.Client.V1PaymentIntents.Create(context.Background(), options)

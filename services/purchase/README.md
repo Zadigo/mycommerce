@@ -29,3 +29,7 @@ Here is the detailed implementation of the payment process:
     Shipment->>Nuxt4: Success
     end
 ```
+
+## Resources
+
+* Stripe test cards [Stripe](https://docs.stripe.com/testing?testing-method=payment-methods#visa "Test cards")
