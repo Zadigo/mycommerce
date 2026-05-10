@@ -4,7 +4,9 @@ from urllib.parse import parse_qs, urlparse
 import stripe
 from django.conf import settings
 from rest_framework.pagination import LimitOffsetPagination
-
+from django.http.request import HttpRequest
+from django.db.models import QuerySet
+from rest_framework.serializers import Serializer
 
 class CustomPagination(LimitOffsetPagination):
     default_limit = 34
@@ -29,7 +31,7 @@ class PaginationHelper:
         self.paginated_data = []
         self.serializer_instance = None
 
-    def __call__(self, request, queryset, serializer, response_only=True):
+    def __call__(self, request: HttpRequest, queryset: QuerySet, serializer: Serializer, response_only: bool=True):
         """Paginates a list of items using the
         CustomPagination class above and the serializer
         to be used in order to return the data"""

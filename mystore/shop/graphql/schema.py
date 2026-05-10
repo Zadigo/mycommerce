@@ -3,10 +3,10 @@ import random
 import graphene
 from django.core.cache import cache
 from graphene import relay
-from mystore.shop.models import Image, Novelty, Product
+from shop.models import Image, Novelty, Product
 
-from mystore.mystore.custom_utilities.word_processor import FuzzyMatcher
-from mystore.shop.graphql.types import ProductConnection, ImageType, ProductType, ProductNoveltyType, ProductNoveltyConnection, RecommendationsType, VideoType
+from mystore.custom_utilities.word_processor import FuzzyMatcher
+from shop.graphql.types import ProductConnection, ImageType, ProductType, ProductNoveltyType, ProductNoveltyConnection, RecommendationsType, VideoType
 
 class ProductQuery(graphene.ObjectType):
     all_products = relay.ConnectionField(ProductConnection)

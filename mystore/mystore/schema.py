@@ -1,10 +1,15 @@
 import graphene
-from mystore.collection.schema import CollectionsQuery
-from mystore.shop.schema import ProductQuery
-from mystore.variants.schema import VariantQuery
+from collection.graphql.schema import CollectionsQuery
+from shop.graphql.schema import ProductQuery
+from variants.schema import VariantQuery
 
 
-class Query(CollectionsQuery, VariantQuery, ProductQuery, graphene.ObjectType):
+class Query(
+    CollectionsQuery, 
+    VariantQuery, 
+    ProductQuery, 
+    graphene.ObjectType
+):
     pass
 
 

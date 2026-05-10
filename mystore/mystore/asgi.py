@@ -14,7 +14,7 @@ django_asgi_application = get_asgi_application()
 # at this level after the "get_asgi_application". See:
 # https://github.com/django/daphne/issues/347
 # https://channels.readthedocs.io/en/stable/deploying.html#configuring-the-asgi-application
-from songs import routing
+from shop import routing
 
 application = ProtocolTypeRouter({
     'http': django_asgi_application,

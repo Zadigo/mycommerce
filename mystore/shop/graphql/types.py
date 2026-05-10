@@ -1,7 +1,7 @@
 import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
-from mystore.shop.models import Image, Novelty, Product, Video
+from shop.models import Image, Novelty, Product, Video
 
 
 

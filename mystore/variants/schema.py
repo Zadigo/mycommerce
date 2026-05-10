@@ -1,8 +1,7 @@
 import graphene
 from django.core.cache import cache
-from graphene import relay
 from graphene_django import DjangoObjectType
-from mystore.variants.models import Size
+from variants.models import Size
 
 
 class SizeType(DjangoObjectType):

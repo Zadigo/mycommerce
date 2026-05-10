@@ -3,7 +3,7 @@ from collections import OrderedDict
 from django.db.models import Q
 from rest_framework.response import Response
 
-from mystore.mystore.responses import CustomPagination
+from mystore.responses import CustomPagination
 from warnings import deprecated
 
 

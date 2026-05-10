@@ -50,17 +50,3 @@ app.conf.beat_schedule = {
         'schedule': crontab(day_of_week='mon-fri', hour=6)
     }
 }
-
-
-@app.task(queue='orders', ignore_result=True)
-def check_orders():
-    """A scheduler that goes through the
-    database to check if there are new
-    orders to process of the day. This
-    triggers a 'process order' workflow"""
-    from mystore.orders.models import CustomerOrder
-    from django.utils import timezone
-
-    qs = CustomerOrder.objects.filter(created_on=timezone.now())
-    if qs.exists():
-        print('We should check these orders')

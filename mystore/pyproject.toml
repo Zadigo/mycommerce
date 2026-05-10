@@ -7,6 +7,7 @@ requires-python = ">=3.14"
 dependencies = [
     "boto3>=1.42.62",
     "celery>=5.6.2",
+    "channels-redis>=4.3.0",
     "coverage>=7.13.4",
     "daphne>=4.2.1",
     "django>=6.0.3",
@@ -46,8 +47,10 @@ dependencies = [
     "python-levenshtein>=0.27.3",
     "rapidfuzz>=3.14.3",
     "requests>=2.32.5",
+    "spacy>=3.8.13",
     "stripe>=14.4.0",
     "tablib>=3.9.0",
     "thefuzz>=0.22.1",
+    "twisted[http2,tls]>=25.5.0",
     "unidecode>=1.4.0",
 ]

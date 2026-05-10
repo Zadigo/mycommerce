@@ -2,8 +2,8 @@ import unittest
 from decimal import Decimal
 
 from django.test import TestCase
-from mystore.shop.models import Product
-from mystore.shop.utils import (calculate_sale, create_slug, process_file_name,
+from shop.models import Product
+from shop.utils import (calculate_sale, create_slug, process_file_name,
                         product_media_path, remove_special_characters,
                         transform_to_snake_case)
 

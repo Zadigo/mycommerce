@@ -94,12 +94,7 @@ urlpatterns = [
     path(
         'admin/',
         admin.site.urls
-    ),
-    # re_path(
-    #     r'^$',
-    #     views.HomeView.as_view(),
-    #     name='home'
-    # )
+    )
 ]
 
 

@@ -9,6 +9,9 @@ class MultipleFileInput(widgets.ClearableFileInput):
 
 
 class MultipleFileField(fields.FileField):
+    """Custom form field to handle multiple file 
+    uploads in the admin panel"""
+
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('widget', MultipleFileInput())
         super().__init__(*args, **kwargs)
@@ -23,6 +26,9 @@ class MultipleFileField(fields.FileField):
 
 
 class UploadImagesForm(forms.Form):
+    """Form to upload images for a product 
+    in the admin panel"""
+    
     file_name = fields.CharField(
         max_length=100,
         required=True,

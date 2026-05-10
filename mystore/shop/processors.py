@@ -3,10 +3,8 @@ to create a list of recommended products based on a target
 product or set set of target products"""
 
 import re
-from difflib import SequenceMatcher
 import random
 import Levenshtein
-from rapidfuzz import fuzz, process
 from thefuzz import fuzz as thefuzz
 import pandas
 from unidecode import unidecode
@@ -130,7 +128,7 @@ class SpacyMixin:
     a list of recommended products"""
 
     def recommendation_by_similarity(self, values, products, initial_product, quantity: int) -> list[int]:
-        import scpacy
+        import spacy
 
         df = pandas.DataFrame(values)
 

@@ -1,6 +1,6 @@
 from rest_framework import fields
 from rest_framework.serializers import Serializer
-from mystore.variants.api.serializers import SizeSerializer
+from variants.api.serializers import SizeSerializer
 
 
 class StockSerializer(Serializer):
