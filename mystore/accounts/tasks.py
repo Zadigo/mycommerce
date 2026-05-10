@@ -40,13 +40,6 @@ def signup_workflow(email: str):
 
     return {'email': email, 'token': user.userprofile.stripe_id}
 
-
-@shared_task
-def login_workflow():
-    # 1. Email user for login made or failed
-    return {}
-
-
 @shared_task
 def update_profile_workflow(email: str):
     """Function used to sync the modifications of the
@@ -83,28 +76,16 @@ def update_profile_workflow(email: str):
     return {'email': str(user.email)}
 
 
-# @shared_task
-# def signup_cart_api(email: str, password: str):
-#     try:
-#         credentials = {'email': email, 'password': password}
-#         headers = {'content-type': 'application/json'}
-#         response = requests.post(
-#             settings.CART_API_URL, data=credentials, headers=headers)
-#     except:
-#         pass
-#     else:
-#         if response.ok:
-#             return response.json()
-#         return False
-
-
 @shared_task
 def signup_reviews_api(credentials_response: dict | bool, email: str, password: str):
     try:
         credentials = {'email': email, 'password': password}
         headers = {'content-type': 'application/json'}
         response = requests.post(
-            settings.REVIEWS_API_URL, data=credentials, headers=headers)
+            settings.REVIEWS_API_URL, 
+            data=credentials,
+            headers=headers
+        )
     except:
         pass
     else:
@@ -130,5 +111,13 @@ def schedule_delete_accounts():
             # 1. Email the user that his account
             # has been deleted
             user.email_user('Account deleted', '', **params)
-            user.delete()
+            user.is_active = False
+            user.save()
         return ids
+
+
+@shared_task
+def login_workflow():
+    # 1. Email user for login made or failed
+    return {}
+

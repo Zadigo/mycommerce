@@ -108,7 +108,7 @@ DATABASES = {
         'USER': env('DB_USER'),
         'PASSWORD': env('DB_PASSWORD'),
         'HOST': env('DB_HOST', default='localhost'),
-        'PORT': env('DB_PORT', default=5432)
+        'PORT': env.int('DB_PORT', default=5432)
     }
 }
 
@@ -153,13 +153,13 @@ STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 
 
-USE_S3 = False
+USE_S3 = env.bool('USE_S3', default=False)
 
 
 def aws_endpoint(path=None):
     base_url = 'https://{bucket}.s3.{region}.amazonaws.com'
 
-    bucket = env('AWS_S3_REGION_NAME')
+    bucket = env('AWS_S3_BUCKET_NAME')
     region = env('AWS_S3_REGION_NAME')
     url = base_url.format(bucket=bucket, region=region)
 
@@ -389,7 +389,7 @@ else:
 # VAT - In order to use VAT when returning
 # product price, set this value to the applicable
 # VAT for your given country
-VAT_PERCENTAGE = None
+VAT_PERCENTAGE = env('VAT_PERCENTAGE', default=0.0, cast=float)
 
 
 # Fixtures
@@ -401,9 +401,9 @@ FIXTURES_DIRS = [
 
 # JWT Generator
 
-PY_UTILITIES_JWT_ISSUER = 'ecommerce'
+PY_UTILITIES_JWT_ISSUER = env('PY_UTILITIES_JWT_ISSUER', default='mystore')
 
-PY_UTILITIES_JWT_SECRET = env('PY_UTILITIES_JWT_SECRET')
+PY_UTILITIES_JWT_SECRET = env('PY_UTILITIES_JWT_SECRET', cast=str)
 
 
 # Graphene
@@ -422,3 +422,11 @@ GRAPHENE = {
 DJANGO_MCP_AUTHENTICATION_CLASSES = [
     'oauth2_provider.contrib.rest_framework.OAuth2Authentication'
 ]
+
+# Microservices
+# List of microservices to be used in the project, each microservice 
+# should be defined as a string representing  an absolute url
+
+MICROSERVICES = env.list('MICROSERVICES', default=[])
+
+GOLANG_ROUTER = None
