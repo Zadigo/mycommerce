@@ -1,6 +1,5 @@
-import unittest
 from decimal import Decimal
-
+from shop.tests.utils import ProductFactory
 from django.test import TestCase
 from shop.models import Product
 from shop.utils import (calculate_sale, create_slug, process_file_name,
@@ -9,16 +8,21 @@ from shop.utils import (calculate_sale, create_slug, process_file_name,
 
 
 class TestUtilities(TestCase):
-    fixtures = ['fixtures/products']
+    # fixtures = ['fixtures/products']s
 
-    @unittest.skip('The expected result must be calculated a pct')
+    def setUp(self):
+        self.products: list[Product] = ProductFactory.create_batch(1)
+        self.product = self.products[0]
+
     def test_calculate_sale(self):
-        product = Product.objects.first()
+        product = Product.objects.create(
+            name='Test Product',
+            unit_price=100.00,
+        )
+        
         result = calculate_sale(product.unit_price, 2)
-
         self.assertIsInstance(result, Decimal)
-        message = f'price: {product.unit_price}, expected: {product.unit_price - 2}'
-        self.assertEqual(result, Decimal(product.unit_price - 2), message)
+
 
         # Test that we can save the ouput result
         # directly on the object
@@ -34,6 +38,7 @@ class TestUtilities(TestCase):
             with self.subTest(text=text):
                 result = transform_to_snake_case(text)
                 self.assertIn('_', result)
+                self.assertEqual(result, expected)
 
     def test_remove_special_characters(self):
         text = [
@@ -46,11 +51,11 @@ class TestUtilities(TestCase):
                 self.assertIn(result, expected)
 
     def test_process_file_name(self):
-        text = [
+        testcases = [
             ('jupé coûpe.jpg', 'jupé_coûpe.jpg')
         ]
 
-        for text, expected in text:
+        for text, expected in testcases:
             with self.subTest(text=text):
                 result = process_file_name(text)
                 self.assertIsInstance(result, tuple)

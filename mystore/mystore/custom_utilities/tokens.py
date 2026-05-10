@@ -4,6 +4,7 @@ import hashlib
 import os
 import secrets
 import time
+from typing import Optional
 
 import jwt
 import pytz
@@ -58,7 +59,18 @@ class Payload:
 
 
 class JWTGenerator:
-    def __init__(self, issuer: str, audience: str, subject: int, expiration_seconds: str = None, expiration_days: int = 1, **payload: str | int) -> str:
+    """A class to generate JWT tokens with a custom payload. The payload must include the following fields."""
+
+    def __init__(self, issuer: str, audience: str, subject: int, expiration_seconds: Optional[int] = None, expiration_days: int = 1, **payload: str | int) -> str:
+        """
+        Args:
+            issuer (str): Identifier (or, name) of the server or system issuing the token. Typically a DNS name, but doesn't have to be.
+            audience (str): Intended recipient of this token; can be any string, as long as the other end uses the same string when validating the token. Typically a DNS name.
+            subject (int): Identifier (or, name) of the user this token represents.
+            expiration_seconds (Optional[int]): Date/time at which point the token is no longer valid. (defaults to one day from now)
+            expiration_days (int): Date/time at which point the token is no longer valid. (defaults to one day from now)
+        """
+
         self.secret_cache = None
         self.payload = Payload(issuer, audience, subject)
         dict_payload = dataclasses.asdict(self.payload)

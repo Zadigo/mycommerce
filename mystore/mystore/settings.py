@@ -386,10 +386,10 @@ else:
     stripe.api_key = env('STRIPE_PRODUCTION_SECRET_KEY')
 
 
-# VAT - In order to use VAT when returning
-# product price, set this value to the applicable
-# VAT for your given country
-VAT_PERCENTAGE = env('VAT_PERCENTAGE', default=0.0, cast=float)
+# VAT
+# In order to use VAT when returning product price, set this value 
+# to the applicable VAT for your given country
+VAT_PERCENTAGE = env('VAT_PERCENTAGE', default=0.0, cast=lambda x: x.isnumeric() and float(x) or 0.0)
 
 
 # Fixtures

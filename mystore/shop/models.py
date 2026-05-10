@@ -419,7 +419,6 @@ class AbstractProduct(models.Model):
             try:
                 with transaction.atomic():
                     return super().save(*args, **kwargs)
-
             except IntegrityError:
                 if attempt == MAX_SKU_RETRIES - 1:
                     raise

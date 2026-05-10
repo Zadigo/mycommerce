@@ -1,9 +1,11 @@
 import random
+from typing import Any
 
 import pandas
 from django.core.cache import cache
 from django.db.models import Case, Q, When
 from django.shortcuts import get_object_or_404
+from shop.typings import TypeRestFrameworkRequest
 from rest_framework import generics
 from rest_framework.mixins import status
 from rest_framework.permissions import AllowAny
@@ -20,7 +22,7 @@ class ListProducts(generics.ListAPIView):
     filter the elements by type:
 
     * `q` - Searches the products by name
-    * `colors` - Filters the prodcuts by color
+    * `colors` - Filters the products by color
     * `min_price` - `max_price` - Returns the products between
       the selected price range
     * `sizes` - Filters the products by a given size
@@ -255,7 +257,7 @@ class ListWishlist(generics.GenericAPIView):
     serializer_class = serializers.ProductSerializer
     queryset = Product.objects.filter(active=True)
 
-    def post(self, request, **kwargs):
+    def post(self, request: TypeRestFrameworkRequest, **kwargs: Any):
         serializer = serializers.WishlistSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

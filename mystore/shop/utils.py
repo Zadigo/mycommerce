@@ -8,13 +8,14 @@ from urllib.parse import unquote
 import unidecode
 from django.utils.crypto import get_random_string
 from django.utils.text import get_valid_filename
+from shop.choices import ColorChoices
+from shop.typings import TypeProductModel
 
-
-def remove_accents(text):
+def remove_accents(text: str):
     return unidecode.unidecode(text)
 
 
-def clean_text(text):
+def clean_text(text: str) -> str | None:
     if text is None:
         return None
 
@@ -51,7 +52,14 @@ def create_image_slug(name: str, reverse: bool = False):
     return f'{image_name.strip().lower()}.jpg'
 
 
-def create_slug(word, *additional_words, generate_random_id=True):
+def create_slug(word: str, *additional_words: str, generate_random_id: bool=True):
+    """Function that creates a slug from a string by removing
+    special characters, accents and by transforming the string to lowercase. 
+    It also removes some determinants that do not bring any fundamental value 
+    to the final string::
+
+        create_slug('Blazzer Strapped')  # Output: 'blazzer_strapped'
+    """
     # List of determinants to exclude from
     # the text and that do not bring any
     # fundamental value to the final string
@@ -124,33 +132,72 @@ def remove_special_characters(value: str):
 
 def process_file_name(value: str):
     """Changes the initial file name to a
-    random more standard string"""
+    random more standard string that can be used 
+    as a file name for the media files.
+    
+    For example, 'jupé coûpe.jpg' becomes 'jupe_coupe.jpg'::
+
+        name, ext = process_file_name('jupé coûpe.jpg')
+        print(name)  # Output: 'jupe_coupe'
+        print(ext)   # Output: 'jpg'
+
+    Returns:
+        tuple(str, str): A tuple containing the processed file name and its extension.
+    """
     basename, ext = value.split('.')
     basename = unquote(basename)
     return get_valid_filename(basename).lower(), ext
 
 
-def product_media_path(filename):
-    """Function that creates unique identifier for the
-    by cleaning it's base name"""
+def product_media_path(filename: str):
+    """Function that generates a new file name for the media 
+    files of the products. It transforms the initial file name to a more standard 
+    string and adds a random unique identifier to avoid integrity errors. 
+    
+    Example with 'Blazer Strapped.jpg'::
+    
+        new_filename = product_media_path('Blazer Strapped.jpg')
+        print(new_filename)  # Output: 'blazer_strapped_abc123.jpg'
+
+    Args:
+        filename (str): The original file name to be processed.
+
+    Returns:
+        str: The new file name with a unique identifier.
+    """
     unique_identifier = get_random_string(12)
     basename, ext = process_file_name(filename)
     snaked_case_name = transform_to_snake_case(basename)
     return f"{snaked_case_name}_{unique_identifier}.{ext}"
 
 
-def video_path(instance, filename):
+def video_path(instance: TypeProductModel, filename: str):
     new_name = product_media_path(filename)
     return f"videos/{new_name}"
 
 
-def image_path(instance, filename):
+def image_path(instance: TypeProductModel, filename: str):
     new_name = product_media_path(filename)
     return f"images/{new_name}"
 
 
-def generate_sku(color: str, length: int = 8) -> str:
+def generate_sku(color: str | None, length: int = 8) -> str:
     """Function that generates a SKU based on
-    the color and a random hexadecimal string"""
+    the color and a random hexadecimal string
+    
+    Args:
+        color (str | None): The color to be included in the SKU. If None, a random string will be used.
+        length (int): The length of the random hexadecimal string to be generated. Default is 8.
+
+    Returns:
+        str: A SKU string in the format "COLXXX", where "COL" is the
+        first three letters of the color and "XXX" is a random hexadecimal string.
+    """
+    if color is None:
+        color = get_random_string(5)
+
+    if isinstance(color, ColorChoices):
+        color = color.value
+
     prefix = color[:3].upper()
     return f"{prefix}{secrets.token_hex(length).upper()}"

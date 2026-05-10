@@ -26,9 +26,6 @@ NAMES =  [
     'Minijupe en dentelle volants '
 ]
 
-# f = factory.Faker()
-# f.add_provider(dynamic_names)
-
 faker = faker.Faker()
 
 
@@ -38,8 +35,7 @@ class ProductFactory(factory.django.DjangoModelFactory):
 
     name = faker.random_element(NAMES)
     color = faker.color_name()
-    sku = faker.random_number(digits=5, fix_len=True)
-
+    sku = faker.random_number(digits=5)
     unit_price = faker.pyfloat(
         left_digits=2,
         right_digits=2,

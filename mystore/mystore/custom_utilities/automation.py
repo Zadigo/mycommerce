@@ -1,12 +1,13 @@
 from urllib.parse import urljoin
-
+from typing import Optional, Any
 from django.conf import settings
 from requests import Session
-from requests.auth import HTTPBasicAuth
-from requests.models import Request
+from rest_framework.request import Request
+from django.http import HttpRequest
+from abc import ABC
 
 
-class BaseWebhook:
+class BaseWebhook(ABC):
     """A base class for sending requests to the
     N8N endpoint in order to trigger additional
     automations for external apps that require
@@ -16,14 +17,14 @@ class BaseWebhook:
     ... automation.send(json={"email": "test@gmail.com"})
     """
 
-    def __init__(self, request, path, *, base_port=5678):
-        self.api_url = None
+    def __init__(self, request: Request | HttpRequest, path: str, *, base_port: int = 5678):
+        self.api_url: Optional[str] = None
         self.request = request
         self.path = path
-        self.errors = []
-        self.completed = False
-        self.include_port = False
-        self.base_port = base_port
+        self.errors: list[tuple[str, str]] = []
+        self.completed: bool = False
+        self.include_port: bool = False
+        self.base_port: int = base_port
 
     @property
     def get_scheme(self):
@@ -37,7 +38,7 @@ class BaseWebhook:
     def get_api_url(self):
         """Returns the N8N url to use for the API
         endpoint"""
-        api_url = getattr(settings, 'N8N_TEST_API_URL')
+        api_url: str = getattr(settings, 'N8N_TEST_API_URL')
         if not settings.DEBUG:
             api_url = getattr(settings, 'N8N_API_URL')
         return api_url
@@ -46,7 +47,7 @@ class BaseWebhook:
         base_headers = {'Content-Type': 'application/json'}
         return base_headers | extra_headers
 
-    def create_request(self, method='post', data=None, fail_silently=True, request_params={}):
+    def create_request(self, method: str='post', data: dict[str, Any]=None, fail_silently: bool=True, request_params: dict[str, Any]={}):
         if self.get_api_url is None:
             self.errors.append(('api_url', 'Not set'))
 
@@ -68,7 +69,7 @@ class BaseWebhook:
         prepared_request = session.prepare_request(request)
         return session, prepared_request
 
-    def send(self, method='post', fail_silently=True, **kwargs):
+    def send(self, method:str='post', fail_silently:bool=True, **kwargs):
         session, prepared_request = self.create_request(
             method=method,
             **kwargs
