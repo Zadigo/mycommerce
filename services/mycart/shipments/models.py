@@ -1,7 +1,7 @@
 from django.db import models
-from services.mycart.orders.models import CustomerOrder
+from orders.models import CustomerOrder
 
-from services.mycart.mycart.choices import ShipmentChoices
+from mycart.choices import ShipmentChoices
 
 # class ShippingMethod(models.Model):
 #     name = models.CharField(

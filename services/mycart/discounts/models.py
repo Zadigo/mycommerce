@@ -1,4 +1,4 @@
-from services.mycart.discounts.validators import validate_percentage
+from discounts.validators import validate_percentage
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property

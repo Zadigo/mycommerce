@@ -1,7 +1,7 @@
 import json
 from unittest.mock import Mock, PropertyMock, patch
 
-from services.mycart.cart.models import Cart
+from cart.models import Cart
 from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework.response import Response

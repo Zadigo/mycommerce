@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.utils.crypto import get_random_string
 
-from services.mycart.mycart.custom_utilities.tokens import JWTGenerator
+from mycart.custom_utilities.tokens import JWTGenerator
 
 
 class CartJWTGenerator(JWTGenerator):

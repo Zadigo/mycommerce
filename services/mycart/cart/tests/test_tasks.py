@@ -1,10 +1,10 @@
 from unittest.mock import AsyncMock, patch
 
-from services.mycart.cart import tasks
-from services.mycart.cart.tests.utils import create_items
+from cart import tasks
+from cart.tests.utils import create_items
 from django.test import TestCase, override_settings
 from faker import Faker
-from services.mycart.mycart.settings import MICROSERVICES
+from mycart.settings import MICROSERVICES
 
 MICROSERVICES = {
     'apps': {

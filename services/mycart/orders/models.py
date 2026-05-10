@@ -7,7 +7,7 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.fields import CKEditor5Field
 
-from services.mycart.mycart.choices import CityChoices, CountryChoices
+from mycart.choices import CityChoices, CountryChoices
 
 
 class Product(models.Model):

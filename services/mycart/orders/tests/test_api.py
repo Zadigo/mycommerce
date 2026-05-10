@@ -1,7 +1,7 @@
-from services.mycart.accounts.tests.mixins import AuthenticatedTestCase
+from accounts.tests.mixins import AuthenticatedTestCase
 from django.urls import reverse
-from services.mycart.orders.models import CustomerOrder, Product
-from services.mycart.orders.tests.utils import CustomerOrderFaker, ProductFaker
+from orders.models import CustomerOrder, Product
+from orders.tests.utils import CustomerOrderFaker, ProductFaker
 
 
 class TestOrdersApi(AuthenticatedTestCase):

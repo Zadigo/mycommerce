@@ -6,8 +6,8 @@ from django.utils import timezone
 from django_mcp import mcp_app as mcp
 from mcp.server.fastmcp import Context
 from mcp_server import MCPToolset, ModelQueryToolset
-from services.mycart.orders.api.serializers import CustomerOrderSerializer
-from services.mycart.orders.models import CustomerOrder, Product
+from orders.api.serializers import CustomerOrderSerializer
+from orders.models import CustomerOrder, Product
 
 
 class UserQueryTool(ModelQueryToolset):

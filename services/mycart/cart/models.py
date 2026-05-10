@@ -21,6 +21,7 @@ class AbstractCart(models.Model):
     * Ensures that users can add products to their cart while logged in or logged out, 
       with items being linked to their profile once they log in.
     """
+    
     session_id = models.CharField(
         max_length=400,
         help_text=_(

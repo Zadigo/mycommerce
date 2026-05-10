@@ -1,6 +1,6 @@
 from django.test import override_settings
-from services.mycart.cart.tests.utils import create_items
-from services.mycart.accounts.tests.mixins import AuthenticatedTestCase
+from cart.tests.utils import create_items
+from accounts.tests.mixins import AuthenticatedTestCase
 from django.urls import reverse
 from rest_framework import status
 

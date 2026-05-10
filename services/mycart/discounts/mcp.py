@@ -1,4 +1,4 @@
-from services.mycart.discounts.models import Discount
+from discounts.models import Discount
 from mcp_server import MCPToolset, ModelQueryToolset
 from django.contrib.auth import get_user_model
 

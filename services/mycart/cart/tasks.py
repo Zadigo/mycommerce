@@ -1,8 +1,8 @@
 import asyncio
 
 import httpx
-from services.mycart.cart.models import Cart
-from services.mycart.cart.utils import calculate_items_total
+from cart.models import Cart
+from cart.utils import calculate_items_total
 from celery import shared_task
 from celery.utils.log import get_logger
 from django.conf import settings

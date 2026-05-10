@@ -1,7 +1,7 @@
 import factory
-from services.mycart.accounts.tests.utils import UserFaker
+from accounts.tests.utils import UserFaker
 from faker import Faker
-from services.mycart.orders.models import CustomerOrder, Product
+from orders.models import CustomerOrder, Product
 
 
 class ProductFaker(factory.django.DjangoModelFactory):

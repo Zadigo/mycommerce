@@ -1,6 +1,6 @@
 from mcp.server.fastmcp import Context
 from mcp_server import MCPToolset, ModelQueryToolset, mcp_server
-from services.mycart.shipments.models import Shipment
+from shipments.models import Shipment
 
 
 class ShipmentQueryTool(ModelQueryToolset):

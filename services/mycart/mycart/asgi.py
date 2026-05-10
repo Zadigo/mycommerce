@@ -7,7 +7,7 @@ from django.core.asgi import get_asgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mycart.settings')
 
-from services.mycart.orders import routing
+from orders import routing
 
 django_asgi_application = get_asgi_application()
 

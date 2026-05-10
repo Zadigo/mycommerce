@@ -1,6 +1,6 @@
 from django.urls import re_path
 
-from services.mycart.orders.api import views
+from orders.api import views
 
 app_name = 'orders_api'
 

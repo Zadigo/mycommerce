@@ -1,12 +1,10 @@
 import asyncio
-import datetime
 from django.core.cache import cache
 
-from services.mycart.cart.models import Cart
+from cart.models import Cart
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
-from services.mystore.orders.api.views import ListCustomerOrders
 
 
 class CartConsumerMixin:

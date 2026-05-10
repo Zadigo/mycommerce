@@ -3,7 +3,7 @@ from celery import shared_task
 from celery.utils.log import get_logger
 from django.conf import settings
 from django.template.loader import render_to_string
-from services.mycart.orders.models import CustomerOrder, Product
+from orders.models import CustomerOrder, Product
 
 logger = get_logger('orders')
 

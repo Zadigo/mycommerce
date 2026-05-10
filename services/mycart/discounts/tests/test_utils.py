@@ -1,5 +1,5 @@
-from services.mycart.cart.tests.utils import create_items
-from services.mycart.discounts.utils import (calculate_discount, calculate_partial_discount,
+from cart.tests.utils import create_items
+from discounts.utils import (calculate_discount, calculate_partial_discount,
                              get_calculated_discount_response)
 from django.test import TestCase
 

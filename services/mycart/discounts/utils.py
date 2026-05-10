@@ -1,6 +1,6 @@
 from typing import Any
 
-from services.mycart.cart.utils import calculate_items_total
+from cart.utils import calculate_items_total
 from django.utils.crypto import get_random_string
 
 

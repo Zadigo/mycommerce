@@ -1,6 +1,6 @@
-from services.mycart.cart import tasks
-from services.mycart.cart.api import serializers
-from services.mycart.cart.models import Cart
+from cart import tasks
+from cart.api import serializers
+from cart.models import Cart
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny

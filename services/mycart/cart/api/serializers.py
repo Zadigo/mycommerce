@@ -1,5 +1,5 @@
-from services.mycart.cart import tasks
-from services.mycart.cart.models import Cart
+from cart import tasks
+from cart.models import Cart
 from rest_framework import fields
 from rest_framework.serializers import Serializer
 

@@ -1,6 +1,6 @@
-from services.mycart.cart.models import Cart
-from services.mycart.cart.tests.utils import create_items
-from services.mycart.discounts.models import Discount
+from cart.models import Cart
+from cart.tests.utils import create_items
+from discounts.models import Discount
 from django.test import TestCase
 from django.urls import reverse
 

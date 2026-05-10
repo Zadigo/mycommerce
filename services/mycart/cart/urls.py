@@ -1,4 +1,4 @@
-from services.mycart.cart.api import views
+from cart.api import views
 from django.urls import re_path
 
 app_name = 'cart_api'

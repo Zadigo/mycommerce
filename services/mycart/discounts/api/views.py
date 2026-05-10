@@ -1,6 +1,6 @@
-from services.mycart.cart.models import Cart
-from services.mycart.discounts.models import Discount
-from services.mycart.discounts.utils import (calculate_discount, calculate_partial_discount,
+from cart.models import Cart
+from discounts.models import Discount
+from discounts.utils import (calculate_discount, calculate_partial_discount,
                              get_calculated_discount_response)
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import GenericAPIView

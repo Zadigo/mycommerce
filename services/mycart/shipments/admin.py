@@ -1,5 +1,5 @@
 from django.contrib import admin
-from services.mycart.shipments.models import Shipment
+from shipments.models import Shipment
 
 
 @admin.register(Shipment)

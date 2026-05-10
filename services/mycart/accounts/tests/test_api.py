@@ -1,7 +1,7 @@
 from django.urls import reverse
 from django.test import override_settings
-from services.mycart.accounts.tests.mixins import AuthenticatedTestCase
-from services.mycart.accounts.models import Address
+from accounts.tests.mixins import AuthenticatedTestCase
+from accounts.models import Address
 
 @override_settings(CELERY_TASK_ALWAYS_EAGER=True, CELERY_TASK_EAGER_PROPAGATES=True)
 class TestApiEndpoints(AuthenticatedTestCase):

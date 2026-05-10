@@ -1,5 +1,5 @@
 import factory
-from services.mycart.accounts.models import Address
+from accounts.models import Address
 from django.contrib.auth import get_user_model
 
 

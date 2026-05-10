@@ -1,6 +1,6 @@
 from faker import Faker
 from factory.django import DjangoModelFactory
-from services.mycart.cart.models import Cart
+from cart.models import Cart
 import pydantic
 
 faker = Faker(locale='en_US')

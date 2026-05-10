@@ -1,6 +1,6 @@
-from services.mycart.orders.api.validators import validate_card_token
-from services.mycart.orders.choices import ShipmentChoices
-from services.mycart.orders.models import CustomerOrder
+from orders.api.validators import validate_card_token
+from orders.choices import ShipmentChoices
+from orders.models import CustomerOrder
 from rest_framework import fields
 from rest_framework.serializers import ModelSerializer, Serializer
 

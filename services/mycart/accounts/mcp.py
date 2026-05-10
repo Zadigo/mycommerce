@@ -1,4 +1,4 @@
-from services.mycart.accounts.models import Address, UserProfile
+from accounts.models import Address, UserProfile
 from django.contrib.auth import get_user_model
 from mcp_server import MCPToolset, ModelQueryToolset
 

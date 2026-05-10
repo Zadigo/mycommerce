@@ -1,6 +1,6 @@
 from django.urls import re_path
 
-from services.mycart.orders import consumers
+from orders import consumers
 
 websocket_urlpatterns = [
     re_path(

@@ -1,11 +1,11 @@
-from services.mycart.cart.models import Cart
+from cart.models import Cart
 from django.db.models import F
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
-from services.mycart.orders import tasks
-from services.mycart.orders.api import serializers
-from services.mycart.orders.models import CustomerOrder
-from services.mycart.orders.payment import PaymentInterface
+from orders import tasks
+from orders.api import serializers
+from orders.models import CustomerOrder
+from orders.payment import PaymentInterface
 from rest_framework import status
 from rest_framework.generics import (CreateAPIView, GenericAPIView,
                                      ListAPIView, UpdateAPIView)

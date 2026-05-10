@@ -1,6 +1,6 @@
 from django.test import TestCase, override_settings
 
-from services.mycart.mycart.custom_utilities.tokens import JWTGenerator, decode_jwt_token
+from mycart.custom_utilities.tokens import JWTGenerator, decode_jwt_token
 
 
 @override_settings(PY_UTILITIES_JWT_SECRET='some_secret')

@@ -1,4 +1,4 @@
-from services.mycart.accounts.models import Address
+from accounts.models import Address
 from django.contrib.auth import get_user_model
 from rest_framework import fields
 from rest_framework.serializers import ModelSerializer, Serializer

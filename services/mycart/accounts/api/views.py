@@ -1,7 +1,7 @@
 from datetime import timedelta
 
-from services.mycart.accounts.api import serializers
-from services.mycart.accounts.models import Address
+from accounts.api import serializers
+from accounts.models import Address
 from django.contrib.auth import get_user_model
 from django.db.models import F, Q
 from django.utils import timezone

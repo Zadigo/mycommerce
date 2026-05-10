@@ -1,5 +1,5 @@
-from services.mycart.cart.tests.utils import create_items
-from services.mycart.cart.utils import calculate_items_total
+from cart.tests.utils import create_items
+from cart.utils import calculate_items_total
 from django.test import TestCase
 
 

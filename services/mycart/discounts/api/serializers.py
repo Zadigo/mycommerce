@@ -1,6 +1,5 @@
 from rest_framework.serializers import Serializer
 from rest_framework import fields
-from services.mycart.discounts.utils import calculate_discount
 
 
 class DiscountSerializer(Serializer):

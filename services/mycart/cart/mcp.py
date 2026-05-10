@@ -1,9 +1,9 @@
 from typing import Optional
 
 import pandas
-from services.mycart.cart.api.serializers import CartSerializer
-from services.mycart.cart.models import Cart
-from services.mycart.discounts.models import Discount
+from cart.api.serializers import CartSerializer
+from cart.models import Cart
+from discounts.models import Discount
 from django.core.cache import cache
 from itertools import chain
 

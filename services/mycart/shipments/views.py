@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.generic import DetailView, ListView
-from services.mycart.shipments.models import Shipment
+from shipments.models import Shipment
 
 
 class ShipmentsView(LoginRequiredMixin, ListView):

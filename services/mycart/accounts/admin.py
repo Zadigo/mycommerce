@@ -1,7 +1,7 @@
 import stripe
 from django.contrib import admin, messages
 from django.template.loader import render_to_string
-from services.mycart.accounts.models import Address, UserProfile
+from accounts.models import Address, UserProfile
 
 
 @admin.register(UserProfile)
