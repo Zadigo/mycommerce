@@ -6,7 +6,8 @@ from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework.response import Response
 
-from mycart.mixins import (SERIALIZED_CARTITEM, AuthenticatedTestCase)
+from accounts.tests.mixins import AuthenticatedTestCase
+from cart.tests.utils import SERIALIZED_CARTITEM
 
 
 @patch('orders.api.views.PaymentInterface')

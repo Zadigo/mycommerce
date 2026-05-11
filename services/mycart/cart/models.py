@@ -47,13 +47,20 @@ class AbstractCart(models.Model):
         null=True
     )
     items = models.JSONField(
-        default=dict
+        default=dict,
+        help_text=_(
+            "A JSON field that stores the details of the "
+            "products added to the cart, including product ID, "
+            "quantity, price, and any other relevant information"
+        )
     )
     quantity = models.PositiveBigIntegerField(
-        default=1
+        default=1,
+        help_text=_("The total quantity of items in the cart")
     )
     total = models.FloatField(
-        default=0.0
+        default=0.0,
+        help_text=_("The total price of all items in the cart")
     )
     # has_discount = models.BooleanField(
     #     default=False

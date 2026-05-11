@@ -1315,12 +1315,19 @@ dependencies = [
     { name = "numpy" },
     { name = "pandas" },
     { name = "psycopg", extra = ["binary", "pool"] },
+    { name = "pydantic" },
     { name = "pyjwt" },
-    { name = "pytest-django" },
     { name = "python-dotenv" },
     { name = "stripe" },
     { name = "twisted", extra = ["http2", "tls"] },
     { name = "unidecode" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "autopep8" },
+    { name = "pytest" },
+    { name = "pytest-django" },
 ]
 
 [package.metadata]
@@ -1358,12 +1365,19 @@ requires-dist = [
     { name = "numpy", specifier = ">=2.4.2" },
     { name = "pandas", specifier = ">=3.0.1" },
     { name = "psycopg", extras = ["binary", "pool"], specifier = ">=3.3.3" },
+    { name = "pydantic", specifier = ">=2.12.5" },
     { name = "pyjwt", specifier = ">=2.11.0" },
-    { name = "pytest-django", specifier = ">=4.12.0" },
     { name = "python-dotenv", specifier = ">=1.2.2" },
     { name = "stripe", specifier = ">=14.4.1" },
     { name = "twisted", extras = ["http2", "tls"], specifier = ">=25.5.0" },
     { name = "unidecode", specifier = ">=1.4.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "autopep8", specifier = ">=2.3.2" },
+    { name = "pytest", specifier = ">=9.0.2" },
+    { name = "pytest-django", specifier = ">=4.12.0" },
 ]
 
 [[package]]

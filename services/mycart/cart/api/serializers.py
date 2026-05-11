@@ -1,3 +1,5 @@
+from typing import Any
+
 from cart import tasks
 from cart.models import Cart
 from rest_framework import fields
@@ -61,22 +63,6 @@ class CartSerializer(Serializer):
     created_on = fields.DateTimeField()
 
 
-class ValidateProduct(Serializer):
-    """Serializer that validates the product
-    is going to be added contains an `id`, a `size`
-    and a `color`"""
-
-    id = fields.IntegerField()
-    size = fields.CharField(
-        required=False,
-        allow_null=True
-    )
-    color = fields.CharField(
-        required=False,
-        allow_null=True
-    )
-
-
 class ValidateCreateCart(Serializer):
     """Validates the data used to create a
     new cart object in the database"""
@@ -84,7 +70,7 @@ class ValidateCreateCart(Serializer):
     session_id = fields.CharField(required=True)
     items = CartItemSerializer(required=True, many=True)
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict[str, Any]):
         request = self._context['request']
         instance, created = Cart.objects.update_or_create(
             session_id=validated_data['session_id'],
@@ -102,7 +88,7 @@ class ValidateCreateCart(Serializer):
 
         return instance
 
-    def update(self, instance, validated_data):
+    def update(self, instance, validated_data: dict[str, Any]):
         instance.items = validated_data['items']
         tasks.calculate_total.apply_async(
             args=[instance.id],
@@ -115,3 +101,20 @@ class ValidateCreateCart(Serializer):
 class DeleteFromCartSerializer(Serializer):
     session_id = fields.CharField()
     product_ids = fields.ListField()
+
+
+class ValidateProduct(Serializer):
+    """Serializer that validates the product
+    is going to be added contains an `id`, a `size`
+    and a `color`"""
+
+    id = fields.IntegerField()
+    size = fields.CharField(
+        required=False,
+        allow_null=True
+    )
+    color = fields.CharField(
+        required=False,
+        allow_null=True
+    )
+

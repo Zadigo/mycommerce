@@ -9,14 +9,28 @@ from mycart.choices import ShipmentChoices
 #         choices=TransporterChoices.choices,
 #         default=TransporterChoices.IN_HOUSE
 #     )
-#     description = models.CharField(max_length=100)
-#     cost = models.PositiveIntegerField(default=0)
+#     description = models.CharField(
+#         max_length=100
+#     )
+#     cost = models.PositiveIntegerField(
+#         default=0
+#     )
 
-#     is_relais = models.BooleanField(default=False)
-#     is_home = models.BooleanField(default=False)
-#     is_store = models.BooleanField(default=False)
-#     is_inpost = models.BooleanField(default=False)
-#     is_cash_on_delivery = models.BooleanField(default=False)
+#     is_relais = models.BooleanField(
+#         default=False
+#     )
+#     is_home = models.BooleanField(
+#         default=False
+#     )
+#     is_store = models.BooleanField(
+#         default=False
+#     )
+#     is_inpost = models.BooleanField(
+#         default=False
+#     )
+#     is_cash_on_delivery = models.BooleanField(
+#         default=False
+#     )
 
 #     @property
 #     def estimated_delivery_date(self):

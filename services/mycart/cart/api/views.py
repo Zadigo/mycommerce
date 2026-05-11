@@ -46,8 +46,8 @@ class CreateCartView(generics.CreateAPIView):
     serializer_class = serializers.ValidateCreateCart
     permission_classes = [AllowAny]
 
-    def perform_create(self, serializer):
-        instance = serializer.save()
+    def perform_create(self, serializer: serializers.ValidateCreateCart):
+        instance: Cart = serializer.save()
         tasks.calculate_total.apply_async(
             args=[instance.id],
             countdown=5

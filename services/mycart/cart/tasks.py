@@ -43,8 +43,12 @@ def check_product_exists(items: list[dict]):
 
 @shared_task
 def calculate_total(cart_id: int):
-    """Calculate the total price of items 
-    in a given cart"""
+    """Calculates the total price of items 
+    present in a given cart
+    
+    Args:
+        cart_id (int): The ID of the cart to calculate the total for.
+    """
     try:
         instance = Cart.objects.get(id=cart_id)
     except Cart.DoesNotExist:
