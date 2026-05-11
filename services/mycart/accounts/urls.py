@@ -31,7 +31,7 @@ urlpatterns = [
     ),
     re_path(
         r'^login$',
-        views.Login.as_view(),
+        views.RemoteLogin.as_view(),
         name='login'
     )
 ]

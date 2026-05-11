@@ -1,5 +1,5 @@
 import factory
-from accounts.tests.utils import UserFaker
+from accounts.tests.utils import FakeUser
 from faker import Faker
 from orders.models import CustomerOrder, Product
 
@@ -19,7 +19,7 @@ class CustomerOrderFaker(factory.django.DjangoModelFactory):
 
     reference = factory.Faker('ean13')
     stripe_charge = factory.Faker('ean8')
-    user = factory.SubFactory(UserFaker)
+    user = factory.SubFactory(FakeUser)
     address = factory.Faker('street_address')
     city = factory.Faker('city')
     zip_code = factory.Faker('postcode')
@@ -27,4 +27,3 @@ class CustomerOrderFaker(factory.django.DjangoModelFactory):
     total = factory.Faker('pyfloat', positive=True, max_value=100.0)
     completed = factory.Faker('boolean', truth_probability=0.5)
     refund_requested = factory.Faker('boolean', truth_probability=0.1)
-    

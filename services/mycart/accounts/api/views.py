@@ -10,6 +10,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.request import Request
 
 
 class UserInfo(generics.RetrieveUpdateAPIView):
@@ -23,16 +24,13 @@ class UserInfo(generics.RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
 
-    def retrieve(self, request, *args, **kwargs):
+    def retrieve(self, request: Request, *args, **kwargs):
         user = self.get_object()
         serializer = serializers.UserSerializer(instance=user)
         return Response(serializer.data)
 
-    def update(self, request, *args, **kwargs):
+    def update(self, request: Request, *args, **kwargs):
         super().update(request, *args, **kwargs)
-        # Modified version that returns the the response
-        # from the classic retrieve view
-        # user = self.get_object()
         # tasks.update_profile.apply_async((user.email,), countdown=30)
         return self.retrieve(request, *args, **kwargs)
 
@@ -57,6 +55,9 @@ class AddressLines(generics.ListAPIView, generics.CreateAPIView):
 
 
 class UpdateDestroyAddressLine(generics.UpdateAPIView, generics.DestroyAPIView):
+    """Allows the user to update or delete an address line that can be
+    used for delivering the products to his house"""
+
     queryset = Address.objects.all()
     serializer_class = serializers.AddressSerializer
     permission_classes = [IsAuthenticated]
@@ -92,10 +93,12 @@ class Signup(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 
-class Login(generics.GenericAPIView):
-    """This endpoint is used to login either via email or username"""
+class RemoteLogin(generics.GenericAPIView):
+    """Endpoint used to log in a user by email and password remotely (e.g. from a
+    microservice like Golang). It is not called directly from the frontend but used an
+    interface to ensure that the user is authenticated on this backend."""
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args, **kwargs):
         email = request.data.get('email', '')
         username = request.data.get('username', '')
         password = request.data.get('password', '')

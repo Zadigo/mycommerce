@@ -3,6 +3,7 @@ from django.conf import settings
 
 def pytest_configure():
     settings.configure(
+        SECRET_KEY='aXDfw6xCDKIFRgz2yzpTgAqFBqVLgSeyOVGayj8KqcJAjG3O96dT7cQPMExxAteX',
         DATABASES={
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',
@@ -10,9 +11,16 @@ def pytest_configure():
             }
         },
         INSTALLED_APPS=[
-            'django.contrib.contenttypes',
+            'daphne',
+            'django.contrib.admin',
             'django.contrib.auth',
-            'tests',
+            'django.contrib.contenttypes',
+            'django.contrib.sessions',
+            'django.contrib.messages',
+            'django.contrib.staticfiles',
+
+            'django_extensions',
+
             'corsheaders',
             'drf_spectacular',
             'import_export',
@@ -34,6 +42,7 @@ def pytest_configure():
             'shipments'
         ],
         AUTH_USER_MODEL='auth.User',  # ← default Django user
+        ROOT_URLCONF='mycart.urls',
         DEFAULT_AUTO_FIELD='django.db.models.BigAutoField',
         REST_FRAMEWORK={
             'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -41,5 +50,8 @@ def pytest_configure():
                 'rest_framework.authentication.TokenAuthentication',
             ],
             'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
+        },
+        SIMPLE_JWT={
+            'AUTH_HEADER_TYPES': ['Token']
         }
     )
