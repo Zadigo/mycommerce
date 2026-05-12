@@ -122,7 +122,7 @@ class RemoteLogin(generics.GenericAPIView):
                 raise ValidationError('Account not active')
 
             instance, _ = Token.objects.get_or_create(user=user)
-            return Response({'access': instance.key}, status=status.HTTP_201_CREATED)
+            return Response({'access': instance.key}, status=status.HTTP_200_OK)
 
 
 class Logout(generics.GenericAPIView):

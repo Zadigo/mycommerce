@@ -26,3 +26,55 @@ class TestOrdersApi(AuthenticatedTestCase):
         )
 
         print(response.json())
+
+
+class TestPaymentIntentApi(AuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.order: CustomerOrder = CustomerOrderFaker.create()
+        self.order.user = self.user
+        self.order.save()
+        self.payment_intent = None
+
+    def test_create_payment_intent(self):
+        response = self.client.post(
+            reverse(
+                'orders_api:create', 
+                args=[self.order.id]
+            )
+        )
+        self.assertEqual(
+            response.status_code, 200,
+            f'Failed to create payment intent: {response.json()}'
+        )
+
+        data = response.json()
+
+    def test_update_payment_intent(self):
+        # First, create a payment intent
+        create_response = self.client.post(
+            reverse('orders_api:create_payment_intent', args=[self.order.id])
+        )
+        self.assertEqual(create_response.status_code, 200)
+
+        # Now, update the payment intent
+        update_response = self.client.post(
+            reverse('orders_api:update_payment_intent', args=[self.order.id])
+        )
+        self.assertEqual(
+            update_response.status_code, 200,
+            f'Failed to update payment intent: {update_response.json()}'
+        )
+
+        print(update_response.json())
+
+    def test_cancel_order(self):
+        response = self.client.post(
+            reverse('orders_api:cancel_order', args=[self.order.id])
+        )
+        self.assertEqual(
+            response.status_code, 200,
+            f'Failed to cancel order: {response.json()}'
+        )
+
+        print(response.json())

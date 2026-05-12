@@ -37,6 +37,38 @@ class TestUserApiEndpoints(AuthenticatedTestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn('username', data, data)
 
+    def test_login_successful(self):
+        path = reverse('accounts_api:login')
+        response = self.client.post(path, data={
+            'email': self.user.email,
+            'password': 'touparet'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('access', response.json())
+
+    def test_login_failed(self):
+        path = reverse('accounts_api:login')
+
+        testcases = [
+            ('wrong_username', 'touparet', True),
+            (self.user.email, 'wrong_password', True),
+            (self.user.email, 'touparet', False)
+        ]
+
+        for testcase in testcases:
+            email, password, is_active = testcase
+
+            if not is_active:
+                self.user.is_active = False
+                self.user.save()
+
+            with self.subTest(testcase=testcase):
+                response = self.client.post(path, data={
+                    'email': email,
+                    'password': password
+                })
+                self.assertEqual(response.status_code, 400)
+
     def test_get_authentication_token(self):
         response = self.client.post(
             reverse('token_obtain_pair'),

@@ -14,12 +14,12 @@ from cart.tests.utils import SERIALIZED_CARTITEM
 class TestPaymentInterface(AuthenticatedTestCase):
     fixtures = ['fixtures/user']
 
-    def _create_fake_request(self):
-        fake_request = RequestFactory()
-        fake_request = fake_request.get(reverse('cart_api:list'))
-        setattr(fake_request, 'user', self.user)
-        setattr(fake_request, 'META', {'REMOTE_ADDR': ''})
-        return fake_request
+    # def _create_fake_request(self):
+    #     fake_request = RequestFactory()
+    #     fake_request = fake_request.get(reverse('cart_api:list'))
+    #     setattr(fake_request, 'user', self.user)
+    #     setattr(fake_request, 'META', {'REMOTE_ADDR': ''})
+    #     return fake_request
 
     def _build_fake_interface(self, mock_value):
         intent_value = 'pi_1N4qY2L3a'
@@ -97,7 +97,7 @@ class TestPaymentInterface(AuthenticatedTestCase):
             'Invalid operation on paid cart'
         )
 
-    def test_update_payment_intent(self, mocked_interface: Mock):
+    def test_update_payment_intent_not_anonymous(self, mocked_interface: Mock):
         new_item = Cart.objects.create(**{
             'session_id': 'test_session_12345',
             'items': SERIALIZED_CARTITEM['items'],
@@ -122,7 +122,29 @@ class TestPaymentInterface(AuthenticatedTestCase):
 
         print(response.json())
 
-        # self.assertEqual(
-        #     response.status_code, 200,
-        #     f'Failed to process payment intent: {response.json()}'
-        # )
+    def test_update_payment_intent_anonymous(self, mocked_interface: Mock):
+        cart = Cart.objects.create(**{
+            'session_id': 'test_session_12345',
+            'items': SERIALIZED_CARTITEM['items'],
+            'payment_intent': 'pi_1N4qY2L3a',
+            'is_anonymous': True,
+            'total': 15,
+            'quantity': 3
+        })
+
+        fake_interface = mocked_interface.return_value
+        self._build_fake_interface(fake_interface)
+
+        response = self.client.post(
+            reverse('orders_api:update'),
+            data=json.dumps({
+                'intent': 'pi_1N4qY2L3a',
+                'shipment': None,
+                'session_id': cart.session_id,
+                'total': cart.total
+            }),
+            content_type='application/json'
+        )
+
+        data = response.json()
+        print(data)

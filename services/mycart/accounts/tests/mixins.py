@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = get_user_model()
@@ -13,11 +14,6 @@ class UserFactory(factory.django.DjangoModelFactory):
     last_name = factory.Faker('last_name')
     is_staff = False
     is_superuser = False
-
-
-from django.contrib.auth import get_user_model
-from django.urls import reverse
-from rest_framework.test import APITestCase
 
 
 class AuthenticationMixin:

@@ -1,5 +1,6 @@
 import dataclasses
 import os
+from typing import Optional
 
 import stripe
 from django.conf import settings
@@ -12,8 +13,6 @@ from rest_framework.response import Response
 class PaymentDetails:
     payment_intent_id: str = None
     client_secret: str = None
-
-# TODO: Remove
 
 
 class StripeInterfaceMixin:
@@ -33,15 +32,20 @@ class StripeInterfaceMixin:
 
 
 class PaymentInterface(StripeInterfaceMixin):
+    """The PaymentInterface class provides a high-level interface for handling payment 
+    operations using Stripe internally. It includes methods for creating and updating 
+    payment intents, as well as capturing payments. The class also provides methods for generating 
+    success and failure responses based on the outcome of payment operations."""
+
     def __init__(self):
         self.payment_details = PaymentDetails()
         super().__init__()
 
-    def get_fail_response(self, message=None, **kwargs):
+    def get_fail_response(self, message: Optional[str] = None, **kwargs):
         data = {'message': 'Payment failed'} | kwargs | self.errors
         return Response(data, status=status.HTTP_402_PAYMENT_REQUIRED)
 
-    def get_success_response(self, message=None, **kwargs):
+    def get_success_response(self, message: Optional[str] = None, **kwargs):
         data = {
             'intent': self.payment_details.payment_intent_id,
             'client': self.payment_details.client_secret
@@ -68,9 +72,10 @@ class PaymentInterface(StripeInterfaceMixin):
             self.errors['payment_error'] = e.args
         except Exception as e:
             self.errors['payment_error'] = e.args
-        finally:
-            if self.errors:
-                return False
+
+        if self.errors:
+            return False
+
         return response
 
     def update_intent(self, intent_id: str, billing_address=None, total: int = None, carrier: dict = None, customer: str = None):
@@ -163,9 +168,9 @@ class PaymentInterface(StripeInterfaceMixin):
         except Exception as e:
             self.errors['payment_error'] = e.args
             return False
-        finally:
-            if self.errors:
-                return False
+
+        if self.errors:
+            return False
 
         intent_id = response['id']
         client_secret = response['client_secret'].encode('utf-8')
@@ -188,6 +193,6 @@ class PaymentInterface(StripeInterfaceMixin):
         except Exception as e:
             self.errors['payment_error'] = e.args
             return False
-        
+
         self.completed = True
         return response

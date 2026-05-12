@@ -30,14 +30,23 @@ class DeliveryOptionsSerializer(Serializer):
 
 
 class ValidateCreateIntent(Serializer):
+    """Serializer used to validate the creation of a 
+    new payment intent. Payment intents are created as early
+    as possible in Nuxt
+    
+    Args:
+        session_id: The session id of the current user session (Firebase Key)
+        total: The total amount of the order, used to create the payment Intent 
+    """
     session_id = fields.CharField()
     total = fields.FloatField(default=0.0)
 
 
 class ValidateShipment(Serializer):
     """Serializer used to validate the shipping
-    options for the given user. This used
-    by the shipment page"""
+    options for the given user. This is used
+    for the shipping page and alternatively used
+    to update an existing payment intent"""
 
     email = fields.CharField()
     firstname = fields.CharField()
