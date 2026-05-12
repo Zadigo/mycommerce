@@ -155,6 +155,8 @@ class UpdatePaymentIntent(CartMixin, GenericAPIView):
             if self.request.user.is_authenticated:
                 cart.user = self.request.user
 
+                # In order to check out, the user must login. Link
+                # the intent with the stripe customer id
                 state = interface.update_intent(
                     cart.payment_intent,
                     customer=self.request.user.userprofile.stripe_id
@@ -174,6 +176,7 @@ class UpdatePaymentIntent(CartMixin, GenericAPIView):
         if shipment is not None:
             state = self.update_billing_address(
                 interface, cart, serializer.validated_data)
+            
             if not state:
                 return interface.get_fail_response()
 

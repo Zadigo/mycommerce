@@ -166,7 +166,7 @@ class PaymentInterface(StripeInterfaceMixin):
             'payment_method_types': ['card'],
             'idempotency_key': session_id,
             'automatic_payment_methods': {'enabled': False},
-            'description': 'Customer order for products',
+            'description': f'Customer order for {len(products)} products',
             'currency': 'eur',
             'metadata': {}
         }

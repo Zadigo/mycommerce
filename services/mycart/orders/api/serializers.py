@@ -64,9 +64,8 @@ class ValidateShipment(Serializer):
 
 
 class ValidateUpdateIntent(Serializer):
-    """Serializer used to validate the shipping
-    options for the given user. This used
-    by the shipment page"""
+    """Serializer used to validate the shipping options 
+    for the given user. This used by the shipment page"""
 
     intent = fields.CharField(allow_null=True, validators=[])
     session_id = fields.CharField()
