@@ -8,19 +8,19 @@
        }
     },
     
-    "python.testing.pytestEnabled": false,
-    "python.testing.unittestEnabled": true,
-    "python.testing.autoTestDiscoverOnSaveEnabled": true,
-    "python.testing.pytestArgs": [
-        "tests"
-    ],
-    "python.testing.unittestArgs": [
-        "-v",
-        "-s",
-        ".",
-        "-p",
-        "test_*.py"
-    ],
+    // "python.testing.pytestEnabled": false,
+    // "python.testing.unittestEnabled": true,
+    // "python.testing.autoTestDiscoverOnSaveEnabled": true,
+    // "python.testing.pytestArgs": [
+    //     "tests"
+    // ],
+    // "python.testing.unittestArgs": [
+    //     "-v",
+    //     "-s",
+    //     ".",
+    //     "-p",
+    //     "test_*.py"
+    // ],
     "python-envs.defaultEnvManager": "ms-python.python:venv",
     "python.analysis.autoSearchPaths": true,
     "editor.codeActionsOnSave": {

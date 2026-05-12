@@ -12,6 +12,7 @@ from rest_framework.generics import (CreateAPIView, GenericAPIView,
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from orders.payment.routers import GolangPaymentRouter
 
 
 class ListCustomerOrders(ListAPIView):
@@ -176,7 +177,7 @@ class UpdatePaymentIntent(CartMixin, GenericAPIView):
         if shipment is not None:
             state = self.update_billing_address(
                 interface, cart, serializer.validated_data)
-            
+
             if not state:
                 return interface.get_fail_response()
 
@@ -314,3 +315,18 @@ class CancelOrder(UpdateAPIView):
         instance = super().get_object()
         tasks.refund_request.apply_async((instance.reference,), countdown=60)
         return super().update(request, *args, **kwargs)
+
+
+class GolangPaymentRouter(GenericAPIView):
+    """This endpoint is used to route the payment information
+    from the Golang service to the Django backend. This is
+    required because we want to keep all the payment logic
+    in the Django backend and avoid having to duplicate it in
+    the Golang service"""
+
+    serializer_class = serializers.GolangPaymentRouterSerializer
+    permission_classes = [IsAuthenticated]
+    router_class = GolangPaymentRouter
+
+    def get_router(self):
+        return self.router_class(self.request)
