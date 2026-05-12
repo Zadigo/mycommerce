@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -113,4 +114,12 @@ func ProcessPaymentHandler(w http.ResponseWriter, r *http.Request, serverConfig 
 
 	shipment := &stock.ShipmentResponse{}
 	go shipment.CreateShipment("orderID")
+}
+
+func PingHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	
+	responseData := bytes.NewBuffer([]byte(`{"message": "pong"}`))
+	w.Write(responseData.Bytes())
 }

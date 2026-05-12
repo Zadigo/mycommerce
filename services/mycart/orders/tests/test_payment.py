@@ -2,13 +2,13 @@ import json
 from unittest.mock import Mock, PropertyMock, patch
 
 from cart.models import Cart
-from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework.response import Response
 
 from accounts.tests.mixins import AuthenticatedTestCase
 from cart.tests.utils import SERIALIZED_CARTITEM
-
+from orders.payment import GolangPaymentRouter
+from django.test import RequestFactory
 
 @patch('orders.api.views.PaymentInterface')
 class TestPaymentInterface(AuthenticatedTestCase):
@@ -148,3 +148,15 @@ class TestPaymentInterface(AuthenticatedTestCase):
 
         data = response.json()
         print(data)
+
+
+
+class TestGolangPaymentInterface(AuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+
+        request = RequestFactory().get('/ping')
+        self.interface = GolangPaymentRouter(request)
+
+    def test_golang_ping(self):
+        self.interface.ping()

@@ -1,5 +1,5 @@
 from rest_framework.request import Request
-import pathlib
+import httpx
 
 class GolangPaymentRouter:
     """The GolangPaymentRouter class is responsible for handling HTTP requests 
@@ -10,13 +10,15 @@ class GolangPaymentRouter:
 
     def __init__(self, request: Request):
         self.request = request
-        self.route_url = 'http://127.0.0.1:9000/v1'
+        self.route_url = 'http://127.0.0.1:9000/payment'
 
-    @property
-    def create_intent_url(self):
-        return f"{self.route_url}/create-intent"
+    def create_url(self, path: str) -> str:
+        if not path.startswith('/'):
+            path = f'/{path}'
+        return f"{self.route_url}{path}"
 
-    @property
-    def update_intent_url(self):
-        return f"{self.route_url}/update-intent"
-    
+    def ping(self):
+        with httpx.Client() as client:
+            response = client.get(self.create_url("ping"))
+            response.raise_for_status()
+            return response.json()

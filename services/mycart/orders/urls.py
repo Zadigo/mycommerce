@@ -11,6 +11,11 @@ urlpatterns = [
         name='cancel'
     ),
     re_path(
+        r'^payment-router$',
+        views.GolangPaymentRouter.as_view(),
+        name='payment_router'
+    ),
+    re_path(
         r'^create$',
         views.CapturePaymentIntent.as_view(),
         name='create'

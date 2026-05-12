@@ -62,4 +62,3 @@ reportUntypedBaseClass = true
 
 [tool.pytest_env]
 env_files = [".env", ".env.test"]
-

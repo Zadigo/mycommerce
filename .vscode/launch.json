@@ -10,7 +10,24 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}/services/myauthentication",
-        },     
+            "presentation": {
+                "hidden": false,
+                "group": "Golang",
+                "order": 1
+            }
+        },
+        {
+            "name": "Services: Purchase",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/services/purchase",
+            "presentation": {
+                "hidden": false,
+                "group": "Golang",
+                "order": 1
+            }
+        },
         {
             "name": "Django: Shop",
             "type": "debugpy",

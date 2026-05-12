@@ -29,3 +29,13 @@ dependencies = [
     "psycopg[binary,pool]>=3.3.3",
     "unidecode>=1.4.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "pytest-aio>=2.1.7",
+    "pytest-cov>=7.1.0",
+    "pytest-django>=4.12.0",
+    "pytest-env>=1.6.0",
+    "pytest-playwright>=0.7.2",
+]

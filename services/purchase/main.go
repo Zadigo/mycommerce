@@ -47,17 +47,21 @@ func main() {
 	router.Use(middleware.Logger)
 
 	router.Route("/payment", func(r chi.Router) {
-		router.Post("/", func(w http.ResponseWriter, r *http.Request) {
+		r.Post("/", func(w http.ResponseWriter, r *http.Request) {
 			handlers.CreatePaymentIntentHandler(w, r, serverConfig)
 		})
 
-		router.Post("/update", func(w http.ResponseWriter, r *http.Request) {
+		r.Post("/update", func(w http.ResponseWriter, r *http.Request) {
 			handlers.UpdatePaymentIntentHandler(w, r, serverConfig)
 		})
 
-		router.Post("/capture", func(w http.ResponseWriter, r *http.Request) {
+		r.Post("/capture", func(w http.ResponseWriter, r *http.Request) {
 			handlers.ProcessPaymentHandler(w, r, serverConfig)
 		})
+
+		r.Get("/ping", handlers.Cors(func(w http.ResponseWriter, r *http.Request) {
+			handlers.PingHandler(w, r)
+		}))
 	})
 
 	err = http.ListenAndServe(":9000", router)

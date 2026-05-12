@@ -324,7 +324,7 @@ class GolangPaymentRouter(GenericAPIView):
     in the Django backend and avoid having to duplicate it in
     the Golang service"""
 
-    serializer_class = serializers.GolangPaymentRouterSerializer
+    # serializer_class = serializers.GolangPaymentRouterSerializer
     permission_classes = [IsAuthenticated]
     router_class = GolangPaymentRouter
 
