@@ -12,7 +12,7 @@ urlpatterns = [
     ),
     re_path(
         r'^payment-router$',
-        views.GolangPaymentRouter.as_view(),
+        views.GolangRouter.as_view(),
         name='payment_router'
     ),
     re_path(

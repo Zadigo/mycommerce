@@ -1,3 +1,5 @@
+from typing import Type
+
 from cart.models import Cart
 from django.db.models import F
 from django.shortcuts import get_object_or_404
@@ -317,16 +319,22 @@ class CancelOrder(UpdateAPIView):
         return super().update(request, *args, **kwargs)
 
 
-class GolangPaymentRouter(GenericAPIView):
+class GolangRouter(GenericAPIView):
     """This endpoint is used to route the payment information
     from the Golang service to the Django backend. This is
     required because we want to keep all the payment logic
     in the Django backend and avoid having to duplicate it in
     the Golang service"""
 
-    # serializer_class = serializers.GolangPaymentRouterSerializer
     permission_classes = [IsAuthenticated]
-    router_class = GolangPaymentRouter
+    router_class: Type[GolangPaymentRouter] = GolangPaymentRouter
 
     def get_router(self):
         return self.router_class(self.request)
+    
+    def get(self, request: Request, *args, **kwargs):
+        pass
+
+    def post(self, request: Request, *args, **kwargs):
+        router = self.get_router()
+        return router.get_payment_intent(request.data)

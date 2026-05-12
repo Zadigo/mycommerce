@@ -1,14 +1,11 @@
 package payment
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 
-	"github.com/Zadigo/purchase/internal/backend/utilities"
 	"github.com/stripe/stripe-go/v85"
 )
 
@@ -34,12 +31,9 @@ func (s *StripeClient) CaptureIntent(data ProcessPaymentIntentRequest) (*stripe.
 // UpdateIntent updates an existing payment intent with new
 // details like shipping information and metadata.
 func (s *StripeClient) UpdateIntent(data UpdatePaymentIntentRequest, callbacks ...func(intent *stripe.PaymentIntent)) (*stripe.PaymentIntent, error) {
-	intent, err := s.Client.V1PaymentIntents.Update(context.Background(), data.PaymentIntentID, &stripe.PaymentIntentUpdateParams{
-		Customer:     stripe.String(data.CustomerID),
+	params := &stripe.PaymentIntentUpdateParams{
 		ReceiptEmail: stripe.String(data.Email),
-		Metadata: map[string]string{
-			"orderId": "6735",
-		},
+		Metadata:     map[string]string{},
 		Shipping: &stripe.ShippingDetailsParams{
 			Name:  stripe.String(fmt.Sprintf("%s %s", data.Firstname, data.Lastname)),
 			Phone: stripe.String(data.Telephone),
@@ -52,7 +46,13 @@ func (s *StripeClient) UpdateIntent(data UpdatePaymentIntentRequest, callbacks .
 				State:      stripe.String(data.State),
 			},
 		},
-	})
+	}
+
+	if data.CustomerID != "" {
+		params.Customer = stripe.String(data.CustomerID)
+	}
+
+	intent, err := s.Client.V1PaymentIntents.Update(context.Background(), data.PaymentIntentID, params)
 	s.RunCallbacks(intent, callbacks...)
 	return intent, err
 }
@@ -63,28 +63,28 @@ func (s *StripeClient) CreateIntent(data CreatePaymentIntentRequest, callbacks .
 	// automatically creates a Stripe customer for each user that registers
 	// on the platform. If a customer does not exist, we will be able to update
 	// it later in the UpdateIntent method once the customer creates his account.
-	var customerID string
+	// var customerID string
 
-	requestData, _ := json.Marshal(map[string]any{"email": "something@gmail.com"})
-	reader := bytes.NewReader(requestData)
+	// requestData, _ := json.Marshal(map[string]any{"email": "something@gmail.com"})
+	// reader := bytes.NewReader(requestData)
 
-	responseData := map[string]any{"customerId": ""}
-	err := utilities.SendRequest("https://example.com/", reader, responseData)
+	// responseData := map[string]any{"customerId": ""}
+	// err := utilities.SendRequest("https://example.com/", reader, responseData)
 
-	if err != nil {
-		// Do something
-	} else {
-		if id, ok := responseData["customerId"].(string); ok {
-			customerID = id
-		}
-	}
+	// if err != nil {
+	// 	// Do something
+	// } else {
+	// 	if id, ok := responseData["customerId"].(string); ok {
+	// 		customerID = id
+	// 	}
+	// }
 
 	options := &stripe.PaymentIntentCreateParams{
-		Customer:    stripe.String(customerID),
-		Amount:      stripe.Int64(int64(data.Amount * 100)), // Convert to cents
+		// Customer:    stripe.String(customerID),
+		Amount:      stripe.Int64(int64(data.Total * 100)), // Convert to cents
 		Currency:    stripe.String(string(stripe.CurrencyEUR)),
 		Description: stripe.String("Test Payment Intent"),
-		ReturnURL:   stripe.String("https://example.com/return_url"),
+		// ReturnURL:   stripe.String("https://example.com/return_url"),
 		// PaymentMethod: stripe.String("pm_card_visa"),
 	}
 
@@ -113,3 +113,15 @@ func CreateStripeClient() PaymentInterface {
 		Client: client,
 	}
 }
+
+// func UnmarshalStripeError(err error) map[string]any {
+// 	if err.(*stripe.Error) != nil {
+// 		data := map[string]any{}
+// 		json.Unmarshal([]byte(err.Error()), &data)
+// 		return data
+// 	}
+
+// 	return map[string]any{
+// 		"error": "Unknown error",
+// 	}
+// }

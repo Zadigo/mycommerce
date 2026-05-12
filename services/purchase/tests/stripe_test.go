@@ -18,7 +18,8 @@ func TestStripePayment(t *testing.T) {
 
 	t.Run("Should create intent", func(t *testing.T) {
 		intent, err := client.CreateIntent(payment.CreatePaymentIntentRequest{
-			Amount: 8,
+			SessionId: "test-session-id",
+			Total:     8,
 		})
 		assert.NoError(t, err)
 		assert.NotNil(t, intent)

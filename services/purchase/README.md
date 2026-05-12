@@ -15,19 +15,23 @@ Here is the detailed implementation of the payment process:
 
 ```mermaid
 %% Example of sequence diagram
-  sequenceDiagram
-    Nuxt4->>Router: Request payment
-    Router->>Stock: Check stock
-    alt Has stock
-    Router->>Payment: Try payment
-    else Not found
-    Router->>Nuxt4: Product doest not exist
-    end
-    alt Shipment
-    Router->>Shipment: Run shipment backend
-    else Payment failed
-    Shipment->>Nuxt4: Success
-    end
+sequenceDiagram
+
+Nuxt ->> Django: Start payment
+Django ->> Router: Request payment
+Router ->> Stock: Check stock
+
+alt Has stock
+Router ->> Payment: Try payment
+else Not found
+Router->>Nuxt: Product doest not exist
+end
+
+alt Shipment
+Router->>Shipment: Run shipment backend
+else Payment failed
+Shipment->>Nuxt: Success
+end
 ```
 
 ## Resources

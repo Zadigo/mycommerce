@@ -94,3 +94,21 @@ class CancelOrderSerializer(ModelSerializer):
     class Meta:
         model = CustomerOrder
         fields = ['id', 'reference', 'refund_requested']
+
+
+class GolangValidateIntent(Serializer):
+    """
+    Serializer used to send payment intent information from Django to the Golang service. 
+
+    ::
+
+        {
+            "action": "intent",
+            "data": {
+                "session_id": "test_session_12345",
+                "total": 15
+            }
+        }
+    """
+    action = fields.CharField()
+    data = ValidateCreateIntent()

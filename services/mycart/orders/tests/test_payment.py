@@ -160,3 +160,10 @@ class TestGolangPaymentInterface(AuthenticatedTestCase):
 
     def test_golang_ping(self):
         self.interface.ping()
+
+    def test_create_payment_intent(self):
+        response = self.interface.get_payment_intent({
+            'session_id': 'test_session_12345',
+            'total': 18
+        })
+
