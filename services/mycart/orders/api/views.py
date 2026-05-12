@@ -57,8 +57,8 @@ class CreatePaymentIntent(CartMixin, CreateAPIView):
         'mismatch': 'Total amount mismatch'
     }
 
-    def create_error(self, ke):
-        return Response({'message': self.error_messages[ke]}, status=status.HTTP_400_BAD_REQUEST)
+    def create_error(self, key: str):
+        return Response({'message': self.error_messages[key]}, status=status.HTTP_400_BAD_REQUEST)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

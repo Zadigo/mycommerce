@@ -3,7 +3,9 @@ from django.conf import settings
 
 def pytest_configure():
     settings.configure(
+        DEBUG=True,
         SECRET_KEY='aXDfw6xCDKIFRgz2yzpTgAqFBqVLgSeyOVGayj8KqcJAjG3O96dT7cQPMExxAteX',
+        PY_UTILITIES_JWT_SECRET='zpDaqupaQR7SxrEcsoFYOkZQIdJPEim4Sz30zC5oBFGOZwY92FYvVeqqO3Z5Pw6P',
         DATABASES={
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',

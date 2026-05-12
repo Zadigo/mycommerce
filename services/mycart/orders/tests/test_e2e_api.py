@@ -2,11 +2,17 @@ from accounts.tests.mixins import AuthenticatedTestCase
 from django.urls import reverse
 from orders.models import CustomerOrder, Product
 from orders.tests.utils import CustomerOrderFaker, ProductFaker
+from cart.tests.utils import create_items
+from django.test import override_settings
+
+# env = environ.Env()
+
+# environ.Env.read_env(settings.BASE_DIR / '.env')
 
 
 class TestOrdersApi(AuthenticatedTestCase):
     # fixtures = ['orders']
-    
+
     def setUp(self):
         super().setUp()
         products: list[Product] = ProductFaker.create_batch(2)
@@ -27,21 +33,38 @@ class TestOrdersApi(AuthenticatedTestCase):
 
         print(response.json())
 
+    def test_cancel_order(self):
+        response = self.client.post(
+            reverse('orders_api:cancel_order', args=[self.order.id])
+        )
+        self.assertEqual(
+            response.status_code, 200,
+            f'Failed to cancel order: {response.json()}'
+        )
 
-class TestPaymentIntentApi(AuthenticatedTestCase):
+        print(response.json())
+
+
+class TestCreatePaymentIntentApi(AuthenticatedTestCase):
     def setUp(self):
         super().setUp()
+
         self.order: CustomerOrder = CustomerOrderFaker.create()
         self.order.user = self.user
         self.order.save()
+
         self.payment_intent = None
 
-    def test_create_payment_intent(self):
+        self.path = reverse('orders_api:intent')
+        self.cart = create_items(1)[0]
+
+    def test_with_valid_existing_cart(self):
         response = self.client.post(
-            reverse(
-                'orders_api:create', 
-                args=[self.order.id]
-            )
+            self.path,
+            data={
+                'session_id': self.cart.session_id,
+                'total': self.cart.total
+            }
         )
         self.assertEqual(
             response.status_code, 200,
@@ -49,6 +72,34 @@ class TestPaymentIntentApi(AuthenticatedTestCase):
         )
 
         data = response.json()
+        print(data)
+
+    def test_with_no_payment_intent(self):
+        pass
+
+    def test_with_none_existing_cart(self):
+        pass
+
+    def test_with_cart_total_mismatch(self):
+        pass
+
+    def test_with_cart_already_paid_for(self):
+        pass
+
+    def test_with_stale_cart(self):
+        pass
+
+    def test_with_failed_stripe_api_call(self):
+        pass
+
+
+class TestUpdatePaymentIntentApi(AuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.order: CustomerOrder = CustomerOrderFaker.create()
+        self.order.user = self.user
+        self.order.save()
+        self.payment_intent = None
 
     def test_update_payment_intent(self):
         # First, create a payment intent
@@ -67,14 +118,3 @@ class TestPaymentIntentApi(AuthenticatedTestCase):
         )
 
         print(update_response.json())
-
-    def test_cancel_order(self):
-        response = self.client.post(
-            reverse('orders_api:cancel_order', args=[self.order.id])
-        )
-        self.assertEqual(
-            response.status_code, 200,
-            f'Failed to cancel order: {response.json()}'
-        )
-
-        print(response.json())

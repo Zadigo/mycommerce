@@ -1,12 +1,13 @@
 import dataclasses
 import os
-from typing import Optional
+from typing import Any, Optional
 
 import stripe
 from django.conf import settings
 from django.utils.http import urlsafe_base64_encode
 from rest_framework import status
 from rest_framework.response import Response
+from django.http.request import HttpRequest
 
 
 @dataclasses.dataclass
@@ -27,7 +28,7 @@ class StripeInterfaceMixin:
             stripe.api_key = os.getenv('STRIPE_PRODUCTION_API_KEY')
 
     @staticmethod
-    def adapt_number(value):
+    def adapt_number(value: int | float):
         return int(float(value)) * 100
 
 
@@ -56,6 +57,12 @@ class PaymentInterface(StripeInterfaceMixin):
         return Response(self.response_data, status=status.HTTP_201_CREATED)
 
     def create_new_source(self, customer: str, source: str):
+        """Create a new payment source for the given customer.
+
+        Args:
+            customer (str): The Stripe customer id.
+            source (str): The payment source token (e.g., card token).
+        """
         if settings.DEBUG:
             source = 'tok_visa'
 
@@ -80,7 +87,15 @@ class PaymentInterface(StripeInterfaceMixin):
 
     def update_intent(self, intent_id: str, billing_address=None, total: int = None, carrier: dict = None, customer: str = None):
         """Update a previously created intent with additonal
-        information from the shipment page"""
+        information from the shipment page
+
+        Args:
+            intent_id (str): The id of the payment intent to update
+            billing_address (BillingAddress, optional): The billing address of the customer. Defaults to None.
+            total (int, optional): The total amount of the order. Defaults to None.
+            carrier (dict, optional): The carrier information for the shipment. Defaults to None.
+            customer (str, optional): The Stripe customer id. Defaults to None.
+        """
         params = {}
 
         if billing_address is not None:
@@ -134,7 +149,7 @@ class PaymentInterface(StripeInterfaceMixin):
 
             return response
 
-    def payment_intent(self, request, amount: int, products=[], stripe_params={}):
+    def payment_intent(self, request: HttpRequest, amount: int, products=[], stripe_params: dict[str, Any] = {}):
         """Create a new payment intent for the given amount
 
         Args:
@@ -182,6 +197,12 @@ class PaymentInterface(StripeInterfaceMixin):
         return response
 
     def capture_intent(self, intent: str, payment_method: str):
+        """Capture a previously created payment intent
+
+        Args:
+            intent (str): The id of the payment intent to capture
+            payment_method (str): The payment method to use for capturing
+        """
         try:
             response = stripe.PaymentIntent.confirm(
                 intent,

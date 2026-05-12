@@ -61,4 +61,4 @@ reportMissingImports = true
 reportUntypedBaseClass = true
 
 [tool.pytest_env]
-TEST_ENV="test"
+env_files = [".env", ".env.test"]
