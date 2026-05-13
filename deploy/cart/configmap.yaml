@@ -5,6 +5,6 @@ metadata:
   labels:
     app: django-cart
 data:
-  pgadmin_default_email: cGVuZGVucXVlam9obkBnbWFpbC5jb20=
+  pgadmin_default_email: pendenquejohn@gmail.com
   pgadmin_cookie_protection: "True" 
 
