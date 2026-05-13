@@ -35,8 +35,13 @@
             "program": "${workspaceFolder}/mystore/manage.py",
             "args": ["runserver"],
             "envFile": "${workspaceFolder}/mystore/.env",
-            "preLaunchTask": "Celery: start",
-            "django": true
+            // "preLaunchTask": "Celery: start",
+            "django": true,
+            "presentation": {
+                "hidden": false,
+                "group": "Django",
+                "order": 1
+            }
         },
         {
             "name": "Django: Cart",
@@ -49,7 +54,12 @@
             ],
             "envFile": "${workspaceFolder}/mycart/.env",
             "preLaunchTask": "Celery: start",
-            "django": true
+            "django": true,
+            "presentation": {
+                "hidden": false,
+                "group": "Django",
+                "order": 1
+            }
         },
         {
             "name": "Django: Reviews",
@@ -60,10 +70,15 @@
                 "runserver"
             ],
             "envFile": "${workspaceFolder}/myreviews/.env",
-            "django": true
+            "django": true,
+            "presentation": {
+                "hidden": false,
+                "group": "Django",
+                "order": 1
+            }
         },
         {
-            "name": "Celery",
+            "name": "Django: Celery Shop",
             "type": "debugpy",
             "request": "launch",
             "module": "celery",
@@ -76,7 +91,13 @@
                 "-E",
                 "--loglevel=INFO",
                 "--pool=solo"
-            ]
+            ],
+            "envFile": "${workspaceFolder}/mystore/.env",
+            "presentation": {
+                "hidden": false,
+                "group": "Django",
+                "order": 2
+            }
         },
 
         {

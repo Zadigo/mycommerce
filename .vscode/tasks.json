@@ -3,9 +3,9 @@
     "tasks": [
         {
             "type": "shell",
-            "command": "cd mystore && celery -A mystore.celery_app worker -E -l info",
+            "command": "cd mystore && uv run celery -A mystore.celery_app worker -E -l info",
             "windows": {
-                "command": "cd mystore && celery -A mystore.celery_app worker -E --loglevel=INFO --pool=solo"
+                "command": "cd mystore && uv run celery -A mystore.celery_app worker -E --loglevel=INFO --pool=solo"
             },
             "icon": {
                 "id": "database"

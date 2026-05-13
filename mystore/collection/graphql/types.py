@@ -1,10 +1,12 @@
 import graphene
+from graphql import GraphQLResolveInfo
 from collection.models import Collection
 from graphene_django import DjangoObjectType
 import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
 from shop.graphql.types import ProductType
+from shop.models import Product
 
 
 class CollectionType(DjangoObjectType):
@@ -19,15 +21,15 @@ class CollectionType(DjangoObjectType):
             'tags', 'slug', 'subcategory_slug', 'created_on'
         ]
 
-    def resolve_products(self, info):
+    def resolve_products(self, info: GraphQLResolveInfo):
         return self.products.all()
 
-    def resolve_illustration(self, info):
+    def resolve_illustration(self, info: GraphQLResolveInfo):
         if self.illustration:
             return self.illustration.url
         return None
 
-    def resolve_get_view_name(self, info):
+    def resolve_get_view_name(self, info: GraphQLResolveInfo):
         return f'/collections/{self.view_name}/'
 
 
@@ -44,9 +46,8 @@ class FilteredCollectionType(DjangoObjectType):
             'tags': ['exact', 'icontains'],
         }
 
-    def resolve_products(self, info):
+    def resolve_products(self, info: GraphQLResolveInfo):
         return self.products.all()
-
 
 
 class CollectionConnection(relay.Connection):

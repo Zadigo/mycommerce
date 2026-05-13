@@ -1,16 +1,22 @@
 import random
+from typing import Optional
 
 import graphene
 from django.core.cache import cache
 from graphene import relay
+from graphql import GraphQLResolveInfo
 from shop.models import Image, Novelty, Product
 
 from mystore.custom_utilities.word_processor import FuzzyMatcher
 from shop.graphql.types import ProductConnection, ImageType, ProductType, ProductNoveltyType, ProductNoveltyConnection, RecommendationsType, VideoType
 
 class ProductQuery(graphene.ObjectType):
-    all_products = relay.ConnectionField(ProductConnection)
-    product = relay.Node.Field(ProductType)
+    all_products = relay.ConnectionField(
+        ProductConnection
+    )
+    product = relay.Node.Field(
+        ProductType
+    )
 
     search_products = relay.ConnectionField(
         ProductConnection,
@@ -25,7 +31,7 @@ class ProductQuery(graphene.ObjectType):
 
     products_by_category = relay.ConnectionField(
         ProductConnection,
-        name=graphene.String(required=True),
+        category=graphene.String(required=True),
         color=graphene.String(),
         size=graphene.String(),
         order_by=graphene.String(),
@@ -33,11 +39,19 @@ class ProductQuery(graphene.ObjectType):
         max_price=graphene.Float(required=False)
     )
 
-    all_images = graphene.List(ImageType)
-    all_videos = graphene.List(VideoType)
+    all_images = graphene.List(
+        ImageType
+    )
+    all_videos = graphene.List(
+        VideoType
+    )
 
-    product_novelty = relay.Node.Field(ProductNoveltyType)
-    all_product_novelties = relay.ConnectionField(ProductNoveltyConnection)
+    product_novelty = relay.Node.Field(
+        ProductNoveltyType
+    )
+    all_product_novelties = relay.ConnectionField(
+        ProductNoveltyConnection
+    )
 
     recommendations = graphene.List(
         RecommendationsType,
@@ -46,7 +60,7 @@ class ProductQuery(graphene.ObjectType):
         quantity=graphene.Int(required=False, default_value=10)
     )
 
-    def resolve_all_products(self, info, **kwargs):
+    def resolve_all_products(self, info: GraphQLResolveInfo, **kwargs):
         qs = cache.get('allProducts')
         if not qs:
             qs = Product.objects.prefetch_related(
@@ -54,13 +68,13 @@ class ProductQuery(graphene.ObjectType):
             cache.set('allProducts', qs, 60*15)  # Cache for 15 minutes
         return qs
     
-    # def resolve_get_product(self, info, **kwargs):
+    # def resolve_get_product(self, info: GraphQLResolveInfo, **kwargs):
     #     return Product.objects.get(pk=kwargs.get('id'))
 
-    def resolve_all_product_novelties(self, info, **kwargs):
+    def resolve_all_product_novelties(self, info: GraphQLResolveInfo, **kwargs):
         return Novelty.objects.all()
 
-    def resolve_search_products(self, info, **kwargs):
+    def resolve_search_products(self, info: GraphQLResolveInfo, **kwargs):
         name = kwargs.get('name')
         sku = kwargs.get('sku')
         color = kwargs.get('color')
@@ -98,24 +112,27 @@ class ProductQuery(graphene.ObjectType):
 
         return qs
 
-    def resolve_all_images(self, info, **kwargs):
+    def resolve_all_images(self, info: GraphQLResolveInfo, **kwargs):
         return Image.objects.all()
 
-    def resolve_products_by_category(self, info, name, min_price=None, max_price=None, **kwargs):
-        cache_key = f'productsByCategory_{name}'
+    def resolve_products_by_category(self, info: GraphQLResolveInfo, category: str, min_price: Optional[int]=None, max_price: Optional[int]=None, **kwargs):
+        cache_key = f'productsByCategory_{category}'
         qs = cache.get(cache_key)
 
         if qs is None:
             qs = Product.objects.prefetch_related(
-                'product_images', 'video').filter(category__iexact=name)
+                'product_images', 'video').filter(category__icontains=category)
             cache.set(cache_key, qs, 60*10)  # Cache for 10 minutes
 
         if min_price is not None:
             qs = qs.filter(unit_price__gte=min_price)
 
+        if max_price is not None:
+            qs = qs.filter(unit_price__lte=max_price)
+
         return qs
 
-    def resolve_recommendations(self, info, product_name=None, product_category=None, quantity=10, **kwargs):
+    def resolve_recommendations(self, info: GraphQLResolveInfo, product_name: Optional[str]=None, product_category: Optional[str]=None, quantity: int=10, **kwargs):
         cache_key = 'productsForRecommendations'
         qs = cache.get(cache_key)
 
