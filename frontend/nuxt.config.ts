@@ -9,7 +9,31 @@ export default defineNuxtConfig({
   ssr: true,
 
   site: {
-    url: process.env.NUXT_PUBLIC_DJANGO_PROD_URL || 'http://localhost:3000'
+    url: process.env.NUXT_PUBLIC_SITE_URL,
+    name: process.env.NUXT_PUBLIC_SITE_NAME
+  },
+
+  seo: {
+    fallbackTitle: true
+  },
+
+  head: {
+    titleTemplate: "%s %separator %siteName",
+    templateParams: {
+      separator: '-',
+      siteName: process.env.NUXT_PUBLIC_SITE_NAME,
+      meta: [
+        {
+          name: 'theme-color',
+          content: '#96726a'
+        },
+        {
+          name: 'theme-color',
+          content: '#5e4842',
+          media: '(prefers-color-scheme: dark)'
+        }
+      ]
+    }
   },
 
   app: {
@@ -51,12 +75,13 @@ export default defineNuxtConfig({
     stripeTestSecretKey: process.env.NUXT_STRIPE_TEST_SECRET_KEY,
 
     public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
       // Django/Quart/Flask
-      prodDomain: process.env.NUXT_PUBLIC_DJANGO_PROD_URL || 'http://127.0.0.1:8000',
-      quartProdUrl: process.env.NUXT_PUBLIC_QUART_PROD_URL || 'http://127.0.0.1:5000',
-      cartProdDomain: process.env.NUXT_PUBLIC_DJANGO_CART_PROD_URL || 'http://127.0.0.1:8001',
-      reviewsProdDomain: process.env.NUXT_PUBLIC_DJANGO_REVIEWS_PROD_URL || 'http://127.0.0.1:8002',
+      prodDomain: process.env.NUXT_PUBLIC_DJANGO_PROD_URL,
+      quartProdUrl: process.env.NUXT_PUBLIC_QUART_PROD_URL,
+      cartProdDomain: process.env.NUXT_PUBLIC_DJANGO_CART_PROD_URL,
+      reviewsProdDomain: process.env.NUXT_PUBLIC_DJANGO_REVIEWS_PROD_URL,
+      golangPaymentRouter: process.env.NUXT_PUBLIC_GOLANG_PAYMENT_ROUTER_URL,
 
       // Stripe
       stripeTestPublishableKey: process.env.NUXT_STRIPE_TEST_PUBLISHABLE_KEY,

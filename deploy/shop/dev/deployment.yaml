@@ -1,32 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shop-depl
+  name: django-dev
 spec:
   selector:
     matchLabels:
-      app: nuxt-app
+      app: django
+      environment: dev
   template:
     metadata:
       labels:
-        app: nuxt-app
+        app: django
+        environment: dev
     spec:
       containers:
-      - name: nuxt-app
-        image: node:latest
-        imagePullPolicy: IfNotPresent
+      - name: django
+        image: python:latest
+        imagePullPolicy: Always
         envFrom:
         - configMapRef:
-          name: nuxt-config
-        env:
-          - name: VITE_API_VERSION
-            value: "2024-06-20"
-          - name: VITE_STRIPE_LOCALE
-            value: fr
+          name: django-config
         resources:
           limits:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 5173
-          name: vite-port
+        - containerPort: 8000
+          name: django-port

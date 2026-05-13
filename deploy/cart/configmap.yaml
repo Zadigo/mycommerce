@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: django-cart-configmap
+  labels:
+    app: django-cart
+data:
+  pgadmin_default_email: cGVuZGVucXVlam9obkBnbWFpbC5jb20=
+  pgadmin_cookie_protection: "True" 
+
