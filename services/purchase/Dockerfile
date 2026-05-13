@@ -1,4 +1,4 @@
-FROM golang:1.24-alpine AS builder
+FROM golang:1.26.3-alpine3.23 AS build-stage
 
 WORKDIR /app
 
@@ -13,8 +13,8 @@ FROM alpine:latest
 
 WORKDIR /app
 
-COPY --from=builder /app/server .
-COPY --from=builder /app/.env .
+COPY --from=build-stage /app/server .
+COPY --from=build-stage /app/.env .
 
 EXPOSE 9000
 
