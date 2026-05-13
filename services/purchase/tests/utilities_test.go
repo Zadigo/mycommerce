@@ -17,7 +17,7 @@ func TestSendRequest(t *testing.T) {
 	response := struct{}{}
 
 	t.Run("Should send request", func(t *testing.T) {
-		err := utilities.SendRequest("http://localhost:8080/payment", reader, &response)
+		err := utilities.SendRequest("http://localhost:8080/payment", "POST", reader, &response)
 		assert.NotNil(t, err)
 	})
 }

@@ -29,7 +29,7 @@ func (s *CheckStockResponse) CheckStock(productID []string) error {
 	}
 
 	reader := bytes.NewReader(value)
-	err = utilities.SendRequest("https://example.com/stock", reader, s)
+	err = utilities.SendRequest("https://example.com/stock", "POST", reader, s)
 	if err != nil {
 		return err
 	}
