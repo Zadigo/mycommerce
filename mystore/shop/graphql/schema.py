@@ -6,6 +6,7 @@ from django.core.cache import cache
 from graphene import relay
 from graphql import GraphQLResolveInfo
 from shop.models import Image, Novelty, Product
+from shop.utils import transform_to_snake_case
 
 from mystore.custom_utilities.word_processor import FuzzyMatcher
 from shop.graphql.types import ProductConnection, ImageType, ProductType, ProductNoveltyType, ProductNoveltyConnection, RecommendationsType, VideoType
@@ -133,7 +134,13 @@ class ProductQuery(graphene.ObjectType):
         return qs
 
     def resolve_recommendations(self, info: GraphQLResolveInfo, product_name: Optional[str]=None, product_category: Optional[str]=None, quantity: int=10, **kwargs):
-        cache_key = 'productsForRecommendations'
+        cache_key = f'productsForRecommendations'
+        if product_name is not None:
+            name = transform_to_snake_case(product_name)
+            cache_key += f'_{name}'
+        else:
+            cache_key += '_all'
+        
         qs = cache.get(cache_key)
 
         if not qs:
@@ -148,8 +155,8 @@ class ProductQuery(graphene.ObjectType):
         if product_category is not None:
             qs = qs.filter(category__iexact=product_category)
 
-        product_ids = []
         if product_name is not None:
+            product_ids = []
             matched_products = list(
                 filter(
                     lambda p: matcher.is_match(p.name, product_name),
