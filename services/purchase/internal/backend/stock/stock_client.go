@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 
-	"github.com/Zadigo/purchase/internal/backend"
+	"github.com/Zadigo/purchase/internal/backend/payment"
 	"github.com/Zadigo/purchase/internal/backend/utilities"
 )
 
@@ -14,7 +14,7 @@ type StockInterface interface {
 }
 
 type CheckStockResponse struct {
-	Product backend.Product `json:"product"`
+	Product payment.Product `json:"product"`
 	State   bool            `json:"state"`
 }
 

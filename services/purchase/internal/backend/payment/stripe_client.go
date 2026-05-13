@@ -24,16 +24,20 @@ func (s *StripeClient) RunCallbacks(intent *stripe.PaymentIntent, callbacks ...f
 
 // CaptureIntent processes a payment for the given amount.
 func (s *StripeClient) CaptureIntent(data ProcessPaymentIntentRequest) (*stripe.PaymentIntent, error) {
-	intent, err := s.Client.V1PaymentIntents.Confirm(context.Background(), data.PaymentIntentID, &stripe.PaymentIntentConfirmParams{})
+	intent, err := s.Client.V1PaymentIntents.Confirm(context.Background(), data.PaymentIntentID, &stripe.PaymentIntentConfirmParams{
+		ReturnURL:     stripe.String("https://example.com/return_url"),
+		PaymentMethod: stripe.String("pm_card_mastercard"),
+	})
 	return intent, err
 }
 
-// UpdateIntent updates an existing payment intent with new
-// details like shipping information and metadata.
+// UpdateIntent updates an existing payment intent with new details like shipping information and metadata.
 func (s *StripeClient) UpdateIntent(data UpdatePaymentIntentRequest, callbacks ...func(intent *stripe.PaymentIntent)) (*stripe.PaymentIntent, error) {
 	params := &stripe.PaymentIntentUpdateParams{
 		ReceiptEmail: stripe.String(data.Email),
-		Metadata:     map[string]string{},
+		AmountDetails: &stripe.PaymentIntentUpdateAmountDetailsParams{
+			LineItems: data.Items.UpdateLineItems(),
+		},
 		Shipping: &stripe.ShippingDetailsParams{
 			Name:  stripe.String(fmt.Sprintf("%s %s", data.Firstname, data.Lastname)),
 			Phone: stripe.String(data.Telephone),
@@ -81,11 +85,19 @@ func (s *StripeClient) CreateIntent(data CreatePaymentIntentRequest, callbacks .
 
 	options := &stripe.PaymentIntentCreateParams{
 		// Customer:    stripe.String(customerID),
-		Amount:      stripe.Int64(int64(data.Total * 100)), // Convert to cents
-		Currency:    stripe.String(string(stripe.CurrencyEUR)),
-		Description: stripe.String("Test Payment Intent"),
 		// ReturnURL:   stripe.String("https://example.com/return_url"),
 		// PaymentMethod: stripe.String("pm_card_visa"),
+		Amount:           stripe.Int64(int64(data.Total * 100)), // Convert to cents
+		Currency:         stripe.String(string(stripe.CurrencyEUR)),
+		Description:      stripe.String("Test Payment Intent"),
+		Metadata:         map[string]string{"sessionId": data.SessionId},
+		SetupFutureUsage: stripe.String("off_session"),
+		AmountDetails: &stripe.PaymentIntentCreateAmountDetailsParams{
+			LineItems: data.Items.CreateLineItems(),
+		},
+		PaymentMethodTypes: []*string{
+			stripe.String("card"),
+		},
 	}
 
 	intent, err := s.Client.V1PaymentIntents.Create(context.Background(), options)
@@ -113,15 +125,3 @@ func CreateStripeClient() PaymentInterface {
 		Client: client,
 	}
 }
-
-// func UnmarshalStripeError(err error) map[string]any {
-// 	if err.(*stripe.Error) != nil {
-// 		data := map[string]any{}
-// 		json.Unmarshal([]byte(err.Error()), &data)
-// 		return data
-// 	}
-
-// 	return map[string]any{
-// 		"error": "Unknown error",
-// 	}
-// }
