@@ -16,6 +16,7 @@ type App struct {
 	redisClient  *redis.Client
 	serverConfig *ServerConfig
 	router       *chi.Mux
+	ctx          context.Context
 }
 
 type AppInterface interface {
@@ -23,6 +24,8 @@ type AppInterface interface {
 }
 
 func (a *App) Start(ctx context.Context) error {
+	a.ctx = ctx
+
 	port, err := strconv.ParseUint(a.serverConfig.Port, 10, 16)
 	if err != nil {
 		return fmt.Errorf("invalid port: %w", err)
@@ -34,7 +37,8 @@ func (a *App) Start(ctx context.Context) error {
 		Handler: a.router,
 	}
 
-	err = a.redisClient.Ping(ctx).Err()
+	// Redis
+	err = a.redisClient.Ping(a.ctx).Err()
 	if err != nil {
 		return fmt.Errorf("could not connect to Redis: %w", err)
 	}

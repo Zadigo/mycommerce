@@ -1,11 +1,13 @@
 package server
 
 import (
+	"log"
 	"time"
 
 	"github.com/Zadigo/purchase/internal/handlers"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/stripe/stripe-go/v85"
 )
 
 // NewApp initializes the application with the provided server
@@ -22,14 +24,31 @@ func (a *App) loadRoutes() {
 	router.Use(middleware.Logger)
 
 	router.Route("/payments", a.loadPaymentRoutes)
+	router.Route("/auth", a.loadAuthRoutes)
 	a.router = router
 }
 
 func (a *App) loadPaymentRoutes(router chi.Router) {
 	paymentApi := handlers.PaymentApi{
-		ServerConfig: a.serverConfig,
+		PaymentClient: &stripe.Client{},
+		ServerConfig:  a.serverConfig,
+		Ctx:           a.ctx,
 	}
+
+	err := paymentApi.LoadClient()
+	if err != nil {
+		log.Fatalf("Failed to load payment client: %v", err)
+	}
+
 	router.Post("/intent", paymentApi.CreateIntent)
 	router.Post("/capture", paymentApi.CaptureIntent)
 	router.Post("/update", paymentApi.UpdateIntent)
+}
+
+func (a *App) loadAuthRoutes(router chi.Router) {
+	authApi := handlers.AuthenticationApi{
+		ServerConfig: a.serverConfig,
+		Ctx:          a.ctx,
+	}
+	router.Post("/token", authApi.Authenticate)
 }

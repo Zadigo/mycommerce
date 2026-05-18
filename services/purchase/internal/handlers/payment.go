@@ -2,8 +2,11 @@ package handlers
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/Zadigo/purchase/internal/backend"
 	"github.com/Zadigo/purchase/internal/backend/models"
@@ -143,14 +146,117 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 type PaymentApi struct {
-	ServerConfig models.ServerConfigInterface
+	PaymentClient *stripe.Client
+	ServerConfig  models.ServerConfigInterface
+	Ctx           context.Context
+}
+
+func (p *PaymentApi) LoadClient() error {
+	key := os.Getenv("STRIPE_API_KEY")
+	if key == "" {
+		return fmt.Errorf("STRIPE_API_KEY environment variable is not set")
+	}
+	p.PaymentClient = stripe.NewClient(key)
+	return nil
 }
 
 func (p *PaymentApi) CreateIntent(w http.ResponseWriter, r *http.Request) {
+	data := payment.CreatePaymentIntentRequest{}
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		message := DefaultErrorResponse{Detail: "Invalid request payload", Message: err.Error()}
+		JsonResponse(w, message, http.StatusBadRequest)
+		return
+	}
+
+	params := &stripe.PaymentIntentUpdateParams{
+		ReceiptEmail: stripe.String(data.Email),
+		AmountDetails: &stripe.PaymentIntentUpdateAmountDetailsParams{
+			LineItems: data.Items.UpdateLineItems(),
+		},
+		Shipping: &stripe.ShippingDetailsParams{
+			Name:  stripe.String(fmt.Sprintf("%s %s", data.Firstname, data.Lastname)),
+			Phone: stripe.String(data.Telephone),
+			Address: &stripe.AddressParams{
+				City:       stripe.String(data.City),
+				Country:    stripe.String(data.Country),
+				Line1:      stripe.String(data.AddressLine),
+				Line2:      stripe.String(""),
+				PostalCode: stripe.String(data.PostalCode),
+				State:      stripe.String(data.State),
+			},
+		},
+	}
+
+	if data.CustomerID != "" {
+		params.Customer = stripe.String(data.CustomerID)
+	}
+
+	intent, err := a.PaymentClient.V1PaymentIntents.Update(p.Ctx, data.PaymentIntentID, params)
+
+	// client := serverConfig.GetPaymentClient()
+	// intent, err := client.CreateIntent(data)
+	if err != nil {
+		message := DefaultErrorResponse{Detail: "Failed to create payment intent", Message: err.Error()}
+		JsonResponse(w, message, http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]string{
+		"paymentIntentId": intent.ID,
+		"message":         "Payment intent created successfully",
+	})
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 }
 
 func (p *PaymentApi) UpdateIntent(w http.ResponseWriter, r *http.Request) {
+	data := payment.UpdatePaymentIntentRequest{}
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		message := DefaultErrorResponse{Detail: "Invalid request payload", Message: err.Error()}
+		JsonResponse(w, message, http.StatusBadRequest)
+		return
+	}
+
+	if data.PaymentIntentData.PaymentIntentID == "" {
+		message := DefaultErrorResponse{Detail: "Payment intent ID is required", Message: "Please provide a valid payment intent ID"}
+		JsonResponse(w, message, http.StatusBadRequest)
+		return
+	}
+
+	params := &stripe.PaymentIntentUpdateParams{
+		ReceiptEmail: stripe.String(data.Email),
+		AmountDetails: &stripe.PaymentIntentUpdateAmountDetailsParams{
+			LineItems: data.Items.UpdateLineItems(),
+		},
+		Shipping: &stripe.ShippingDetailsParams{
+			Name:  stripe.String(fmt.Sprintf("%s %s", data.Firstname, data.Lastname)),
+			Phone: stripe.String(data.Telephone),
+			Address: &stripe.AddressParams{
+				City:       stripe.String(data.City),
+				Country:    stripe.String(data.Country),
+				Line1:      stripe.String(data.AddressLine),
+				Line2:      stripe.String(""),
+				PostalCode: stripe.String(data.PostalCode),
+				State:      stripe.String(data.State),
+			},
+		},
+	}
+
+	if data.CustomerID != "" {
+		params.Customer = stripe.String(data.CustomerID)
+	}
+
+	intent, err := p.PaymentClient.V1PaymentIntents.Update(p.Ctx, data.PaymentIntentID, params)
 }
 
 func (p *PaymentApi) CaptureIntent(w http.ResponseWriter, r *http.Request) {
+	intent, err := p.PaymentClient.V1PaymentIntents.Confirm(p.Ctx, data.PaymentIntentID, &stripe.PaymentIntentConfirmParams{
+		ReturnURL:     stripe.String("https://example.com/return_url"),
+		PaymentMethod: stripe.String("pm_card_mastercard"),
+	})
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 }
