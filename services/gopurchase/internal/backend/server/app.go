@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -25,31 +27,38 @@ type AppInterface interface {
 func (a *App) Start(ctx context.Context) error {
 	a.ctx = ctx
 
-	log.Printf("⚡️ Starting server on port %d...", a.serverConfig.Port)
+	port, err := strconv.ParseUint(os.Getenv("PORT"), 10, 16)
+	if err != nil {
+		return fmt.Errorf("🔴 Invalid port: %w", err)
+	}
+	a.serverConfig.Port = strconv.FormatUint(port, 10)
+
+	log.Printf("⚡️ Starting server on port %s...", a.serverConfig.Port)
 	server := &http.Server{
-		Addr:    fmt.Sprintf(":%d", a.serverConfig.Port),
+		Addr:    fmt.Sprintf(":%s", a.serverConfig.Port),
 		Handler: a.router,
 	}
 
 	// Redis
-	err := a.redisClient.Ping(a.ctx).Err()
+	err = a.redisClient.Ping(a.ctx).Err()
 	if err != nil {
-		return fmt.Errorf("could not connect to Redis: %w", err)
+		return fmt.Errorf("🔴 Could not connect to Redis: %w", err)
 	}
 
 	defer func() {
 		err := a.redisClient.Close()
 		if err != nil {
-			log.Printf("Error closing Redis client: %s", err)
+			log.Printf("🔴 Error closing Redis client: %s", err)
 		}
 	}()
 
 	ch := make(chan error, 1)
 
 	go func() {
+		log.Print("🟢 Server ready to receive requests...")
 		err := server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
-			ch <- fmt.Errorf("could not start server: %w", err)
+			ch <- fmt.Errorf("🔴 Could not start server: %w", err)
 		}
 	}()
 
@@ -57,7 +66,7 @@ func (a *App) Start(ctx context.Context) error {
 	case err := <-ch:
 		return err
 	case <-ctx.Done():
-		fmt.Println("Shutting down server...")
+		log.Println("⚡️ Shutting down server...")
 		timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 		defer cancel()
 		return server.Shutdown(timeoutCtx)
@@ -66,11 +75,11 @@ func (a *App) Start(ctx context.Context) error {
 
 func NewApp(serverConfig *ServerConfig) AppInterface {
 	app := &App{
+		serverConfig: serverConfig,
 		redisClient: redis.NewClient(&redis.Options{
 			Addr: "localhost:6379",
 			DB:   0,
 		}),
-		serverConfig: serverConfig,
 	}
 	app.loadRoutes()
 	return app

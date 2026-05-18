@@ -17,7 +17,7 @@ func TestApp(t *testing.T) {
 
 	app := server.NewApp(&server.ServerConfig{
 		RootDir: rootDir,
-		Port:    3000,
+		Port:    "3000",
 		YamlConfig: &server.YamlConfig{
 			Redis: struct {
 				Address string "yaml:\"address\""

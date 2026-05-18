@@ -116,14 +116,14 @@ func (c *YamlConfig) GetEndpoint(name string) string {
 
 type ServerConfig struct {
 	RootDir    string
-	Port       uint
+	Port       string
 	YamlConfig *YamlConfig
 }
 
 func LoadConfig(rootDir string) *ServerConfig {
 	return &ServerConfig{
 		RootDir: rootDir,
-		Port:    8000,
+		Port:    "8000",
 		YamlConfig: &YamlConfig{
 			Redis: struct {
 				Address string `yaml:"address"`
