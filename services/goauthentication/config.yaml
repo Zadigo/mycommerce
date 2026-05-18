@@ -1,8 +1,7 @@
-config:
-  redis:
-    address: redis://@localhost:6379/0
-  endpoints:
-    - name: shop
-      url: https://example.com
-    - name: auth
-      url: https://example.com/1
+endpoints:
+  - name: shop
+    url: https://example.com/1
+    is_main: true
+  - name: auth
+    url: https://example.com/1
+    is_main: false

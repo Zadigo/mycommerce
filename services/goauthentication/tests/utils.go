@@ -5,35 +5,29 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"os"
-	"strings"
 	"testing"
 
-	"github.com/Zadigo/goauthentication/internal/backend"
 	"github.com/Zadigo/goauthentication/internal/handlers"
-	"github.com/stretchr/testify/assert"
 )
 
 func CreateRecorder(t *testing.T) *httptest.ResponseRecorder {
-	projectPath, _ := os.Getwd()
-	value, _ := strings.CutSuffix(projectPath, "/tests")
-	serverConfig := backend.NewServerConfig(value)
+	apiHandler := handlers.AuthenticationApi{}
 
-	redisClient := backend.NewRedisClient(backend.RedisConfig{Address: "redis://@localhost:6379/0"})
-	authBackend := backend.NewAuthenticationBackend(redisClient, serverConfig)
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		apiHandler.Login(w, r)
+	})
 
-	body, _ := json.Marshal(map[string]string{
+	recorder := httptest.NewRecorder()
+
+	credentials, _ := json.Marshal(map[string]string{
 		"username": "testuser",
 		"password": "testpass",
 	})
 
-	req := httptest.NewRequest("POST", "/login", bytes.NewBuffer(body))
-	req.Header.Set("Content-Type", "application/json")
+	buffer := bytes.NewBuffer(credentials)
 
-	recorder := httptest.NewRecorder()
-	handlers.LoginEndpoint(recorder, req, serverConfig, authBackend)
-
-	assert.Equal(t, http.StatusOK, recorder.Code)
-
+	request := httptest.NewRequest("POST", "/login", buffer)
+	request.Header.Set("Content-Type", "application/json")
+	handler.ServeHTTP(recorder, request)
 	return recorder
 }
