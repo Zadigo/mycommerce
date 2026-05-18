@@ -29,7 +29,7 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/services/myauthentication",
+            "program": "${workspaceFolder}/services/goauthentication",
             "presentation": {
                 "hidden": false,
                 "group": "Golang",
@@ -41,7 +41,7 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/services/purchase",
+            "program": "${workspaceFolder}/services/gopurchase",
             "presentation": {
                 "hidden": false,
                 "group": "Golang",
@@ -98,7 +98,7 @@
             }
         },
         {
-            "name": "Django: Celery Shop",
+            "name": "Celery: Shop Worker",
             "type": "debugpy",
             "request": "launch",
             "module": "celery",
@@ -120,38 +120,58 @@
             }
         },
         {
+            "name": "Flutter: Mobile App",
+            "type": "dart",
+            "request": "launch",
+            "program": "${workspaceFolder}/mymobile/lib/main.dart",
+            "presentation": {
+                "hidden": false,
+                "group": "Flutter",
+                "order": 1
+            }
+        },
+        {
             "type": "chrome",
             "request": "launch",
-            "name": "client: My commerce",
+            "name": "Nuxt: My commerce (Client)",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}/frontend/app",
+            "presentation": {
+                "hidden": false,
+                "group": "Nuxt",
+                "order": 1
+            }
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "server: My commerce",
+            "name": "Nuxt: My commerce (Server)",
             "outputCapture": "std",
             "cwd": "${workspaceFolder}/frontend",
             "program": "${workspaceFolder}/frontend/node_modules/nuxt/bin/nuxt.mjs",
             "envFile": "${workspaceFolder}/frontend/.env",
             "args": [
                 "dev"
-            ]
-        },
-        {
-            "name": "Flutter",
-            "type": "dart",
-            "request": "launch",
-            "program": "${workspaceFolder}/mymobile/lib/main.dart",
+            ],
+            "presentation": {
+                "hidden": false,
+                "group": "Nuxt",
+                "order": 1
+            }
         }
     ],
     "compounds": [
         {
-            "name": "My commerce: nuxt",
+            "name": "Nuxt Website",
             "configurations": [
-                "server: My commerce",
-                "client: My commerce"
-            ]
+                "Nuxt: My commerce (Server)",
+                "Nuxt: My commerce (Client)"
+            ],
+            "presentation": {
+                "hidden": false,
+                "group": "Nuxt",
+                "order": 1
+            }
         }
     ]
 }

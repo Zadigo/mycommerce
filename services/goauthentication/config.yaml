@@ -1,7 +1,7 @@
 endpoints:
   - name: shop
-    url: https://example.com/1
+    url: https://127.0.0.1:8000/auth/v1/token
     is_main: true
-  - name: auth
-    url: https://example.com/1
+  - name: cart
+    url: https://127.0.0.1:8000/auth/v1/token
     is_main: false

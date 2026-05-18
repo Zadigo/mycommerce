@@ -19,6 +19,8 @@ type App struct {
 }
 
 func (a *App) Start(ctx context.Context) error {
+	log.Print("⚡️ Starting Go Authentication micro-service...")
+
 	a.ctx = ctx
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%s", a.serverConfig.Port),
