@@ -1,148 +1,69 @@
 package handlers
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
-	"github.com/Zadigo/purchase/internal/backend"
-	"github.com/Zadigo/purchase/internal/backend/models"
-	"github.com/Zadigo/purchase/internal/backend/payment"
+	"github.com/Zadigo/purchase/internal/models"
 	"github.com/stripe/stripe-go/v85"
 )
 
-// CreatePaymentIntentHandler handles the creation of a payment intent.
-func CreatePaymentIntentHandler(w http.ResponseWriter, r *http.Request, serverConfig backend.ServerConfigInterface) {
-	data := payment.CreatePaymentIntentRequest{}
-	err := json.NewDecoder(r.Body).Decode(&data)
-	if err != nil {
-		message := DefaultErrorResponse{Detail: "Invalid request payload", Message: err.Error()}
-		JsonResponse(w, message, http.StatusBadRequest)
-		return
-	}
-
-	syncWithDjango := func(intent *stripe.PaymentIntent) {}
-	syncWithRedis := func(intent *stripe.PaymentIntent) {}
-
-	client := serverConfig.GetPaymentClient()
-	intent, err := client.CreateIntent(data, syncWithDjango, syncWithRedis)
-	if err != nil {
-		message := DefaultErrorResponse{Detail: "Failed to create payment intent", Message: err.Error()}
-		JsonResponse(w, message, http.StatusInternalServerError)
-		return
-	}
-
-	json.NewEncoder(w).Encode(map[string]string{
-		"paymentIntentId": intent.ID,
-		"message":         "Payment intent created successfully",
-	})
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+type PaymentIntentData struct {
+	// The ID of the payment intent in Stripe. This is required to
+	// update or capture the payment intent.
+	PaymentIntentID string `json:"paymentIntentId"`
+	// Stripe customer ID. This is optional and can be used to link the payment intent
+	// to an existing customer in Stripe.
+	CustomerID string `json:"customerId,omitempty"`
 }
 
-// UpdatePaymentIntentHandler handles the updating of a payment intent. This should be called on the shipping for for example
-// in order to update the shipping information of the payment intent.
-func UpdatePaymentIntentHandler(w http.ResponseWriter, r *http.Request, serverConfig backend.ServerConfigInterface) {
-	data := payment.UpdatePaymentIntentRequest{}
-	err := json.NewDecoder(r.Body).Decode(&data)
-	if err != nil {
-		message := DefaultErrorResponse{Detail: "Invalid request payload", Message: err.Error()}
-		JsonResponse(w, message, http.StatusBadRequest)
-		return
-	}
-
-	if data.PaymentIntentData.PaymentIntentID == "" {
-		message := DefaultErrorResponse{Detail: "Payment intent ID is required", Message: "Please provide a valid payment intent ID"}
-		JsonResponse(w, message, http.StatusBadRequest)
-		return
-	}
-
-	syncWithDjango := func(intent *stripe.PaymentIntent) {}
-	syncWithRedis := func(intent *stripe.PaymentIntent) {}
-
-	client := serverConfig.GetPaymentClient()
-	intent, err := client.UpdateIntent(data, syncWithDjango, syncWithRedis)
-	if err != nil {
-		message := DefaultErrorResponse{Detail: "Failed to update payment intent", Message: err.Error()}
-		JsonResponse(w, message, http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-
-	json.NewEncoder(w).Encode(map[string]string{
-		"paymentIntentId": intent.ID,
-		"message":         "Payment intent updated successfully",
-	})
-
-	w.WriteHeader(http.StatusOK)
+type CartItemsData struct {
+	// The items in the customer's cart. This is used to create line items in
+	// the payment intent and to provide detailed information about the purchase
+	// in the payment intent metadata.
+	Items models.CartItems `json:"items"`
 }
 
-// ProcessPaymentHandler handles the entire payment process, including authentication, stock checking, payment processing, and post-payment tasks.
-func ProcessPaymentHandler(w http.ResponseWriter, r *http.Request, serverConfig backend.ServerConfigInterface) {
-	// 1. Check that the user is authenticated and has the necessary permissions to make a purchase
-	// auth := auth.NewAuthentication()
-	// response, err := auth.AuthenticateToken("token")
-	// if err != nil {
-	// 	message := DefaultErrorResponse{Detail: "Failed to authenticate user", Message: err.Error()}
-	// 	JsonResponse(w, message, http.StatusUnauthorized)
-	// 	return
-	// }
-	// if response.State == false {
-	// 	message := DefaultErrorResponse{Detail: "User is not authorized", Message: "User does not have the necessary permissions"}
-	// 	JsonResponse(w, message, http.StatusForbidden)
-	// 	return
-	// }
-
-	// 2. Check the stock for the given product ID
-	// stockInstance := &stock.CheckStockResponse{}
-	// err := stockInstance.CheckStock([]string{"1234"})
-	// if err != nil {
-	// 	message := DefaultErrorResponse{Detail: "Failed to check stock", Message: err.Error()}
-	// 	JsonResponse(w, message, http.StatusInternalServerError)
-	// 	return
-	// }
-	// if stockInstance.State == false {
-	// 	message := DefaultErrorResponse{Detail: "Stock is not available", Message: "The requested product is out of stock"}
-	// 	JsonResponse(w, message, http.StatusConflict)
-	// 	return
-	// }
-
-	// 3. If stock is available, proceed to payment
-	paymentClient := serverConfig.GetPaymentClient()
-
-	data := payment.ProcessPaymentIntentRequest{}
-	err := json.NewDecoder(r.Body).Decode(&data)
-	if err != nil {
-		message := DefaultErrorResponse{Detail: "Invalid request payload", Message: err.Error()}
-		JsonResponse(w, message, http.StatusBadRequest)
-		return
-	}
-
-	_, err = paymentClient.CaptureIntent(data)
-	if err != nil {
-		message := DefaultErrorResponse{Detail: "Failed to process payment", Message: err.Error()}
-		JsonResponse(w, message, http.StatusInternalServerError)
-		return
-	}
-
-	// 4. IF the payment is successful create a task that will create an order and update the stock
-	// go stockInstance.UpdateStock("1234", 10)
-
-	// shipment := &stock.ShipmentResponse{}
-	// go shipment.CreateShipment("orderID")
+// UpdatePaymentIntentData represents the data
+// required to update a payment intent.
+type UpdatePaymentIntentRequest struct {
+	PaymentIntentData
+	CartItemsData
+	Firstname   string `json:"firstname,omitempty"`
+	Lastname    string `json:"lastname,omitempty"`
+	AddressLine string `json:"addressLine,omitempty"`
+	City        string `json:"city,omitempty"`
+	Country     string `json:"country,omitempty"`
+	PostalCode  string `json:"postalCode,omitempty"`
+	State       string `json:"state,omitempty"`
+	Email       string `json:"email,omitempty"`
+	Telephone   string `json:"telephone,omitempty"`
 }
 
-func PingHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+type CapturePaymentIntentRequest struct {
+	PaymentIntentData
+	CartItemsData
+}
 
-	responseData := bytes.NewBuffer([]byte(`{"message": "pong"}`))
-	w.Write(responseData.Bytes())
+type ProcessPaymentIntentRequest struct {
+	PaymentIntentData
+	CartItemsData
+}
+
+type CreatePaymentIntentRequest struct {
+	CartItemsData
+	// The session ID is used to link the payment intent to the session in
+	// the Django backend. This allows us to easily retrieve the payment intent
+	// when the user returns from the payment page and update the order
+	// status accordingly.
+	SessionId string `json:"sessionId"`
+	// The total amount to be charged to the customer. This should be calculated
+	// in the Django backend and passed to the Golang service to create the payment intent.
+	Total float64 `json:"total"`
 }
 
 type PaymentApi struct {
@@ -151,7 +72,7 @@ type PaymentApi struct {
 	Ctx           context.Context
 }
 
-func (p *PaymentApi) LoadClient() error {
+func (p *PaymentApi) LoadStripeClient() error {
 	key := os.Getenv("STRIPE_API_KEY")
 	if key == "" {
 		return fmt.Errorf("STRIPE_API_KEY environment variable is not set")
@@ -161,7 +82,28 @@ func (p *PaymentApi) LoadClient() error {
 }
 
 func (p *PaymentApi) CreateIntent(w http.ResponseWriter, r *http.Request) {
-	data := payment.CreatePaymentIntentRequest{}
+	// Try to get an active customer from the shop database. We should receeive
+	// a customer ID that we can use to create the payment intent since Django
+	// automatically creates a Stripe customer for each user that registers
+	// on the platform. If a customer does not exist, we will be able to update
+	// it later in the UpdateIntent method once the customer creates his account.
+	// var customerID string
+
+	// requestData, _ := json.Marshal(map[string]any{"email": "something@gmail.com"})
+	// reader := bytes.NewReader(requestData)
+
+	// responseData := map[string]any{"customerId": ""}
+	// err := utilities.SendRequest("https://example.com/", reader, responseData)
+
+	// if err != nil {
+	// 	// Do something
+	// } else {
+	// 	if id, ok := responseData["customerId"].(string); ok {
+	// 		customerID = id
+	// 	}
+	// }
+
+	data := CreatePaymentIntentRequest{}
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		message := DefaultErrorResponse{Detail: "Invalid request payload", Message: err.Error()}
@@ -169,34 +111,26 @@ func (p *PaymentApi) CreateIntent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	params := &stripe.PaymentIntentUpdateParams{
-		ReceiptEmail: stripe.String(data.Email),
-		AmountDetails: &stripe.PaymentIntentUpdateAmountDetailsParams{
-			LineItems: data.Items.UpdateLineItems(),
+	options := &stripe.PaymentIntentCreateParams{
+		// Customer:    stripe.String(customerID),
+		// ReturnURL:   stripe.String("https://example.com/return_url"),
+		// PaymentMethod: stripe.String("pm_card_visa"),
+		Amount:           stripe.Int64(int64(data.Total * 100)), // Convert to cents
+		Currency:         stripe.String(string(stripe.CurrencyEUR)),
+		Description:      stripe.String("Test Payment Intent"),
+		Metadata:         map[string]string{"sessionId": data.SessionId},
+		SetupFutureUsage: stripe.String("off_session"),
+		AmountDetails: &stripe.PaymentIntentCreateAmountDetailsParams{
+			LineItems: data.Items.CreateLineItems(),
 		},
-		Shipping: &stripe.ShippingDetailsParams{
-			Name:  stripe.String(fmt.Sprintf("%s %s", data.Firstname, data.Lastname)),
-			Phone: stripe.String(data.Telephone),
-			Address: &stripe.AddressParams{
-				City:       stripe.String(data.City),
-				Country:    stripe.String(data.Country),
-				Line1:      stripe.String(data.AddressLine),
-				Line2:      stripe.String(""),
-				PostalCode: stripe.String(data.PostalCode),
-				State:      stripe.String(data.State),
-			},
+		PaymentMethodTypes: []*string{
+			stripe.String("card"),
 		},
 	}
 
-	if data.CustomerID != "" {
-		params.Customer = stripe.String(data.CustomerID)
-	}
-
-	intent, err := a.PaymentClient.V1PaymentIntents.Update(p.Ctx, data.PaymentIntentID, params)
-
-	// client := serverConfig.GetPaymentClient()
-	// intent, err := client.CreateIntent(data)
+	intent, err := p.PaymentClient.V1PaymentIntents.Create(p.Ctx, options)
 	if err != nil {
+		log.Printf("❌ Failed to create payment intent: %v", err)
 		message := DefaultErrorResponse{Detail: "Failed to create payment intent", Message: err.Error()}
 		JsonResponse(w, message, http.StatusInternalServerError)
 		return
@@ -212,7 +146,7 @@ func (p *PaymentApi) CreateIntent(w http.ResponseWriter, r *http.Request) {
 }
 
 func (p *PaymentApi) UpdateIntent(w http.ResponseWriter, r *http.Request) {
-	data := payment.UpdatePaymentIntentRequest{}
+	data := UpdatePaymentIntentRequest{}
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		message := DefaultErrorResponse{Detail: "Invalid request payload", Message: err.Error()}
@@ -250,13 +184,47 @@ func (p *PaymentApi) UpdateIntent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	intent, err := p.PaymentClient.V1PaymentIntents.Update(p.Ctx, data.PaymentIntentID, params)
+
+	if err != nil {
+		message := DefaultErrorResponse{Detail: "Failed to update payment intent", Message: err.Error()}
+		JsonResponse(w, message, http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]string{
+		"paymentIntentId": intent.ID,
+		"message":         "Payment intent updated successfully",
+	})
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 }
 
 func (p *PaymentApi) CaptureIntent(w http.ResponseWriter, r *http.Request) {
+	data := UpdatePaymentIntentRequest{}
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		message := DefaultErrorResponse{Detail: "Invalid request payload", Message: err.Error()}
+		JsonResponse(w, message, http.StatusBadRequest)
+		return
+	}
+
 	intent, err := p.PaymentClient.V1PaymentIntents.Confirm(p.Ctx, data.PaymentIntentID, &stripe.PaymentIntentConfirmParams{
 		ReturnURL:     stripe.String("https://example.com/return_url"),
 		PaymentMethod: stripe.String("pm_card_mastercard"),
 	})
+
+	if err != nil {
+		message := DefaultErrorResponse{Detail: "Failed to capture payment intent", Message: err.Error()}
+		JsonResponse(w, message, http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]string{
+		"paymentIntentId": intent.ID,
+		"message":         "Payment intent captured successfully",
+	})
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 }

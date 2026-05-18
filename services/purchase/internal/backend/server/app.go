@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -26,19 +25,14 @@ type AppInterface interface {
 func (a *App) Start(ctx context.Context) error {
 	a.ctx = ctx
 
-	port, err := strconv.ParseUint(a.serverConfig.Port, 10, 16)
-	if err != nil {
-		return fmt.Errorf("invalid port: %w", err)
-	}
-
-	log.Printf("⚡️ Starting server on port %d...", port)
+	log.Printf("⚡️ Starting server on port %d...", a.serverConfig.Port)
 	server := &http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
+		Addr:    fmt.Sprintf(":%d", a.serverConfig.Port),
 		Handler: a.router,
 	}
 
 	// Redis
-	err = a.redisClient.Ping(a.ctx).Err()
+	err := a.redisClient.Ping(a.ctx).Err()
 	if err != nil {
 		return fmt.Errorf("could not connect to Redis: %w", err)
 	}

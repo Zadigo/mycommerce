@@ -35,7 +35,7 @@ func (a *App) loadPaymentRoutes(router chi.Router) {
 		Ctx:           a.ctx,
 	}
 
-	err := paymentApi.LoadClient()
+	err := paymentApi.LoadStripeClient()
 	if err != nil {
 		log.Fatalf("Failed to load payment client: %v", err)
 	}

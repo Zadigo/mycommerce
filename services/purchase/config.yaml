@@ -1,5 +1,5 @@
 redis:
-  address: "redis://@localhost:6379/0"
+  address: "localhost:6379"
 
 endpoints:
   - name: payment

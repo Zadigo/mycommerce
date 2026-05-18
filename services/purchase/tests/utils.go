@@ -7,10 +7,10 @@ import (
 	"net/http/httptest"
 	"os"
 	"strings"
+	"testing"
 
-	"github.com/Zadigo/purchase/internal/backend"
-	"github.com/Zadigo/purchase/internal/backend/payment"
 	"github.com/Zadigo/purchase/internal/handlers"
+	"github.com/stretchr/testify/assert"
 )
 
 func GetRootDir() string {
@@ -23,36 +23,33 @@ func GetRootDir() string {
 	return rootDir
 }
 
-func GetServerConfig() *backend.ServerConfig {
-	serverConfig := backend.NewServerConfig(GetRootDir())
-	serverConfig.SetConfig(nil)
-	return serverConfig.(*backend.ServerConfig)
-}
-
-func CreatePaymentIntentRecorder() *httptest.ResponseRecorder {
-	serverConfig := GetServerConfig()
+func CreatePaymentIntentRecorder(t *testing.T) *httptest.ResponseRecorder {
+	handlers := handlers.PaymentApi{}
+	err := handlers.LoadStripeClient()
+	assert.NotNil(t, err)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		handlers.CreatePaymentIntentHandler(w, r, serverConfig)
+		handlers.CaptureIntent(w, r)
 	})
 
 	reader := bytes.NewReader([]byte(`{"amount":1.5}`))
 	request := httptest.NewRequest("POST", "/payment", reader)
 	recorder := httptest.NewRecorder()
-
 	handler.ServeHTTP(recorder, request)
 	return recorder
 }
 
-func UpdatePaymentIntentRecorder() *httptest.ResponseRecorder {
-	serverConfig := GetServerConfig()
+func UpdatePaymentIntentRecorder(t *testing.T) *httptest.ResponseRecorder {
+	apiHandlers := handlers.PaymentApi{}
+	err := apiHandlers.LoadStripeClient()
+	assert.NotNil(t, err)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		handlers.UpdatePaymentIntentHandler(w, r, serverConfig)
+		apiHandlers.UpdateIntent(w, r)
 	})
 
-	data, err := json.Marshal(&payment.UpdatePaymentIntentRequest{
-		PaymentIntentData: payment.PaymentIntentData{
+	data, err := json.Marshal(&handlers.UpdatePaymentIntentRequest{
+		PaymentIntentData: handlers.PaymentIntentData{
 			PaymentIntentID: os.Getenv("PAYMENT_INTENT_ID"),
 			CustomerID:      os.Getenv("CUSTOMER_ID"),
 		},
@@ -67,14 +64,7 @@ func UpdatePaymentIntentRecorder() *httptest.ResponseRecorder {
 		Telephone:   "+330612345678",
 	})
 
-	if err != nil {
-		panic(err)
-	}
-
 	reader := bytes.NewReader(data)
-
-	// stringData := fmt.Sprintf(`{"customer": "%s", "paymentIntentId":"%s","addressLine": "1 rue de Paris","city": "Paris","postalCode": "75001"}`, os.Getenv("CUSTOMER_ID"), os.Getenv("PAYMENT_INTENT_ID"))
-	// reader := bytes.NewReader([]byte(stringData))
 	request := httptest.NewRequest("POST", "/payment", reader)
 	recorder := httptest.NewRecorder()
 
@@ -82,23 +72,21 @@ func UpdatePaymentIntentRecorder() *httptest.ResponseRecorder {
 	return recorder
 }
 
-func CapturePaymentIntentRecorder() *httptest.ResponseRecorder {
-	serverConfig := GetServerConfig()
+func CapturePaymentIntentRecorder(t *testing.T) *httptest.ResponseRecorder {
+	apiHandlers := handlers.PaymentApi{}
+	err := apiHandlers.LoadStripeClient()
+	assert.NotNil(t, err)
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		handlers.ProcessPaymentHandler(w, r, serverConfig)
+		apiHandlers.CaptureIntent(w, r)
 	})
 
-	data, err := json.Marshal(&payment.CapturePaymentIntentRequest{
-		PaymentIntentData: payment.PaymentIntentData{
+	data, err := json.Marshal(&handlers.CapturePaymentIntentRequest{
+		PaymentIntentData: handlers.PaymentIntentData{
 			PaymentIntentID: os.Getenv("PAYMENT_INTENT_ID"),
 			CustomerID:      os.Getenv("CUSTOMER_ID"),
 		},
 	})
-
-	if err != nil {
-		panic(err)
-	}
 
 	reader := bytes.NewReader(data)
 

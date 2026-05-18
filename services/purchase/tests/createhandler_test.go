@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Zadigo/purchase/internal/backend/payment"
+	"github.com/Zadigo/purchase/internal/handlers"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,10 +15,10 @@ func TestCreatePaymentIntentHandler(t *testing.T) {
 	assert.NoError(t, err)
 
 	t.Run("Should create payment intent", func(t *testing.T) {
-		recorder := CreatePaymentIntentRecorder()
+		recorder := CreatePaymentIntentRecorder(t)
 		assert.Equal(t, 200, recorder.Code)
 
-		err := json.NewDecoder(recorder.Body).Decode(&payment.CreatePaymentIntentRequest{})
+		err := json.NewDecoder(recorder.Body).Decode(&handlers.CreatePaymentIntentRequest{})
 		assert.NoError(t, err)
 	})
 }
@@ -28,7 +28,7 @@ func TestUpdatePaymentIntentHandler(t *testing.T) {
 	assert.NoError(t, err)
 
 	t.Run("Should update payment intent", func(t *testing.T) {
-		recorder := UpdatePaymentIntentRecorder()
+		recorder := UpdatePaymentIntentRecorder(t)
 		assert.Equal(t, 200, recorder.Code)
 		fmt.Print(recorder.Body)
 	})
@@ -39,7 +39,7 @@ func TestCapturePaymentIntentHandler(t *testing.T) {
 	assert.NoError(t, err)
 
 	t.Run("Should capture payment intent", func(t *testing.T) {
-		recorder := CapturePaymentIntentRecorder()
+		recorder := CapturePaymentIntentRecorder(t)
 		assert.Equal(t, 200, recorder.Code, recorder.Body.String())
 		fmt.Print(recorder.Body)
 	})

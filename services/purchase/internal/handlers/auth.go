@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/Zadigo/purchase/internal/backend/models"
+	"github.com/Zadigo/purchase/internal/models"
 )
 
 type AuthenticationApi struct {
