@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Zadigo/purchase/internal/handlers"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
@@ -18,13 +17,14 @@ func TestCreatePaymentIntentHandler(t *testing.T) {
 		recorder := CreatePaymentIntentRecorder(t)
 		assert.Equal(t, 200, recorder.Code)
 
-		err := json.NewDecoder(recorder.Body).Decode(&handlers.CreatePaymentIntentRequest{})
+		var responseData any
+		err := json.NewDecoder(recorder.Body).Decode(&responseData)
 		assert.NoError(t, err)
 	})
 }
 
 func TestUpdatePaymentIntentHandler(t *testing.T) {
-	err := godotenv.Load()
+	err := godotenv.Load(".env")
 	assert.NoError(t, err)
 
 	t.Run("Should update payment intent", func(t *testing.T) {
@@ -35,7 +35,7 @@ func TestUpdatePaymentIntentHandler(t *testing.T) {
 }
 
 func TestCapturePaymentIntentHandler(t *testing.T) {
-	err := godotenv.Load()
+	err := godotenv.Load(".env")
 	assert.NoError(t, err)
 
 	t.Run("Should capture payment intent", func(t *testing.T) {
