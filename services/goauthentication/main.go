@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/Zadigo/myauthentication/internal/backend"
-	"github.com/Zadigo/myauthentication/internal/handlers"
+	"github.com/Zadigo/goauthentication/internal/backend"
+	"github.com/Zadigo/goauthentication/internal/handlers"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/v5/middleware"
 )

@@ -3,7 +3,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/Zadigo/myauthentication/internal/backend"
+	"github.com/Zadigo/goauthentication/internal/backend"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Zadigo/myauthentication/internal/backend"
+	"github.com/Zadigo/goauthentication/internal/backend"
 	"github.com/golang-jwt/jwt/v5"
 )
 
