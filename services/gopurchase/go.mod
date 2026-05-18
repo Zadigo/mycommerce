@@ -1,4 +1,4 @@
-module github.com/Zadigo/purchase
+module github.com/Zadigo/gopurchase
 
 go 1.25.5
 

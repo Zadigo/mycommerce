@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/Zadigo/purchase/internal/models"
+	"github.com/Zadigo/gopurchase/internal/models"
 )
 
 type AuthenticationApi struct {

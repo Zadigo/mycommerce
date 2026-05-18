@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/Zadigo/purchase/internal/handlers"
+	"github.com/Zadigo/gopurchase/internal/handlers"
 	"github.com/stretchr/testify/assert"
 )
 

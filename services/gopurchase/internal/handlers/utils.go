@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/Zadigo/purchase/internal/models"
+	"github.com/Zadigo/gopurchase/internal/models"
 	"github.com/gorilla/websocket"
 )
 

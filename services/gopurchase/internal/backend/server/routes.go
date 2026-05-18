@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/Zadigo/purchase/internal/handlers"
+	"github.com/Zadigo/gopurchase/internal/handlers"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/stripe/stripe-go/v85"

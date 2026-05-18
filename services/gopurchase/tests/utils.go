@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Zadigo/purchase/internal/handlers"
-	"github.com/Zadigo/purchase/internal/models"
+	"github.com/Zadigo/gopurchase/internal/handlers"
+	"github.com/Zadigo/gopurchase/internal/models"
 )
 
 func GetRootDir() string {

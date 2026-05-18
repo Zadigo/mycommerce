@@ -7,7 +7,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/Zadigo/purchase/internal/backend/server"
+	"github.com/Zadigo/gopurchase/internal/backend/server"
 )
 
 func main() {
@@ -19,7 +19,7 @@ func main() {
 	app := server.NewApp(server.LoadConfig(rootDir))
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
-	
+
 	err = app.Start(ctx)
 	if err != nil {
 		fmt.Printf("Could not start server %s", err)

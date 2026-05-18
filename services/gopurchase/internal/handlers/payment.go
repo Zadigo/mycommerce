@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/Zadigo/purchase/internal/models"
+	"github.com/Zadigo/gopurchase/internal/models"
 	"github.com/stripe/stripe-go/v85"
 )
 

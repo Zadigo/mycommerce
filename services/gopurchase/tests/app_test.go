@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Zadigo/purchase/internal/backend/server"
+	"github.com/Zadigo/gopurchase/internal/backend/server"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
