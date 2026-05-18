@@ -1,5 +1,3 @@
-e
-
 export async function useForTesting() {
   const data = await $fetch<[]>('https://jsonplaceholder.typicode.com/todos/1', {
     method: 'GET',

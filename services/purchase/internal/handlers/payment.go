@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/Zadigo/purchase/internal/backend"
+	"github.com/Zadigo/purchase/internal/backend/models"
 	"github.com/Zadigo/purchase/internal/backend/payment"
 	"github.com/stripe/stripe-go/v85"
 )
@@ -139,4 +140,17 @@ func PingHandler(w http.ResponseWriter, r *http.Request) {
 
 	responseData := bytes.NewBuffer([]byte(`{"message": "pong"}`))
 	w.Write(responseData.Bytes())
+}
+
+type PaymentApi struct {
+	ServerConfig models.ServerConfigInterface
+}
+
+func (p *PaymentApi) CreateIntent(w http.ResponseWriter, r *http.Request) {
+}
+
+func (p *PaymentApi) UpdateIntent(w http.ResponseWriter, r *http.Request) {
+}
+
+func (p *PaymentApi) CaptureIntent(w http.ResponseWriter, r *http.Request) {
 }

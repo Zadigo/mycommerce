@@ -1,71 +1,29 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"time"
+	"os/signal"
 
-	"github.com/Zadigo/purchase/internal/backend"
-	"github.com/Zadigo/purchase/internal/handlers"
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
-	"github.com/joho/godotenv"
+	"github.com/Zadigo/purchase/internal/backend/server"
 )
 
 func main() {
-	log.Printf("🚀 Starting purchase service...")
-
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	redisClient := backend.NewRedisClient()
-	log.Print("⚡️ Started Redis client...")
-
 	rootDir, err := os.Getwd()
 	if err != nil {
 		log.Fatalf("❌ Failed to get current working directory: %v", err)
 	}
 
-	serverConfig := backend.NewServerConfig(rootDir)
-	serverConfig.SetConfig(redisClient)
-
-	err = serverConfig.SetConfig(redisClient)
+	app := server.NewApp(server.LoadConfig(rootDir))
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer cancel()
+	
+	err = app.Start(ctx)
 	if err != nil {
-		log.Fatalf("❌ Failed to load YAML configuration: %v", err)
+		fmt.Printf("Could not start server %s", err)
 	}
 
-	router := chi.NewRouter()
-
-	router.Use(middleware.RequestID)
-	router.Use(middleware.RealIP)
-	router.Use(middleware.Logger)
-	router.Use(middleware.Recoverer)
-	router.Use(middleware.Timeout(60 * time.Second))
-	router.Use(middleware.Logger)
-
-	router.Route("/payment", func(r chi.Router) {
-		r.Post("/intent", handlers.Cors(func(w http.ResponseWriter, r *http.Request) {
-			handlers.CreatePaymentIntentHandler(w, r, serverConfig)
-		}))
-
-		r.Post("/update", handlers.Cors(func(w http.ResponseWriter, r *http.Request) {
-			handlers.UpdatePaymentIntentHandler(w, r, serverConfig)
-		}))
-
-		r.Post("/capture", handlers.Cors(func(w http.ResponseWriter, r *http.Request) {
-			handlers.ProcessPaymentHandler(w, r, serverConfig)
-		}))
-
-		r.Get("/ping", handlers.Cors(func(w http.ResponseWriter, r *http.Request) {
-			handlers.PingHandler(w, r)
-		}))
-	})
-
-	err = http.ListenAndServe(":9000", router)
-	if err != nil {
-		log.Fatalf("❌ Failed to start server: %v", err)
-	}
+	log.Printf("🚀 Starting purchase service...")
 }
