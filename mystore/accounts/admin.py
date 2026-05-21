@@ -2,6 +2,7 @@ import stripe
 from django.contrib import admin, messages
 from django.template.loader import render_to_string
 from accounts.models import Address, UserProfile
+from accounts.tasks import testing_django_task
 
 
 @admin.register(UserProfile)
@@ -70,3 +71,8 @@ class AddressAdmin(admin.ModelAdmin):
         'zip_code', 'city', 'is_active'
     ]
     search_fields = ['address_line', 'zip_code', 'country']
+    actions = ['update_in_stripe']
+
+    def update_in_stripe(self, request, queryset):
+        for address in queryset:
+            testing_django_task.enqueue(email=address.user_profile.user.email)

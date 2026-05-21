@@ -11,4 +11,10 @@
         "-p",
         "test_*.py",
     ],
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "always",
+            "source.fixAll.pylance": "always"
+        }
+    }
 }

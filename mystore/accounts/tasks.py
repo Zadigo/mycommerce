@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from accounts.models import Address
+from django.tasks import task
 
 
 logger = get_task_logger(__name__)
@@ -121,3 +122,38 @@ def login_workflow():
     # 1. Email user for login made or failed
     return {}
 
+
+@task
+def testing_django_task(email: str):
+    """Function used to sync the modifications of the
+    user profile locally into Stripe when the user
+    updates his user profile"""
+    user = get_user_model().objects.get(email=email)
+
+    params = {
+        'id': user.userprofile.stripe_id,
+        'email': user.email,
+        'name': f'{user.first_name} {user.last_name}',
+        'phone': f'{user.userprofile.telephone}'
+    }
+
+    instance = user.userprofile.address_set.filter(is_active=True)
+    if instance.exists():
+        address: Address = instance.get()
+        params['address'] = {
+            'line1': address.address_line,
+            'postal_code': address.zip_code,
+            'city': address.city
+        }
+        params['shipping'] = {
+            'name': f'{user.first_name} {user.last_name}',
+            'phone': f'{user.userprofile.telephone}',
+            'address': {
+                'line1': address.address_line,
+                'postal_code': address.zip_code,
+                'city': address.city
+            }
+        }
+
+    result = stripe.Customer.modify(**params)
+    return {'email': str(user.email)}

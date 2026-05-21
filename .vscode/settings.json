@@ -10,16 +10,6 @@
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
     "python.testing.autoTestDiscoverOnSaveEnabled": true,
-    // "python.testing.pytestArgs": [
-    //     "tests"
-    // ],
-    // "python.testing.unittestArgs": [
-    //     "-v",
-    //     "-s",
-    //     ".",
-    //     "-p",
-    //     "test_*.py"
-    // ],
     "python-envs.defaultEnvManager": "ms-python.python:venv",
     "python.analysis.autoSearchPaths": true,
     "editor.codeActionsOnSave": {

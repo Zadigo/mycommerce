@@ -430,3 +430,12 @@ DJANGO_MCP_AUTHENTICATION_CLASSES = [
 MICROSERVICES = env.list('MICROSERVICES', default=[])
 
 GOLANG_ROUTER = None
+
+
+# Tasks
+
+TASKS = {
+    'default': {
+        'BACKEND': 'django.tasks.backends.immediate.ImmediateBackend'
+    }
+}
