@@ -5,8 +5,9 @@ metadata:
 spec:
   selector:
     app: mystore-depl # Pod to target
-  type: ClusterIP
+  type: NodePort
   ports:
   - name:  mystore-port
     port:  80
     targetPort:  8000 # Container to expose
+    nodePort: 31000

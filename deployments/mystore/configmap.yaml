@@ -8,7 +8,7 @@ data:
   AWS_S3_BUCKET_NAME: ""
   AWS_S3_REGION_NAME: ""
   AWS_STORAGE_BUCKET_NAME: ""
-  DB_HOST: db
+  DB_HOST: localhost
   DB_NAME: "mystore"
   DB_USER: "testuser"
   DEBUG: "true"

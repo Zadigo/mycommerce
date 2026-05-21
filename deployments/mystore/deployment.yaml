@@ -62,3 +62,14 @@ spec:
                 secretKeyRef:
                   name: mystore-secret
                   key: POSTGRES_PASSWORD
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: mystore-config
+                  key: DB_USER
+            - name: POSTGRES_DB 
+              valueFrom:
+                configMapKeyRef:
+                  name: mystore-config
+                  key: DB_NAME
+                
