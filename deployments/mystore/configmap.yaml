@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mystore-config
+  labels:
+    app: mystore-config
+data:
+  AWS_S3_BUCKET_NAME: ""
+  AWS_S3_REGION_NAME: ""
+  AWS_STORAGE_BUCKET_NAME: ""
+  DB_HOST: db
+  DB_NAME: "mystore"
+  DB_USER: "testuser"
+  DEBUG: "true"
+  EMAIL_HOST: ""
+  EMAIL_HOST_USER: ""
+  GOLANG_ROUTER: ""
+  MICROSERVICES: ""
+  N8N_API_URL: ""
+  N8N_TEST_API_URL: ""
+  PY_UTILITIES_JWT_ISSUER: ""
+  RABBITMQ_USER: ""
+  REDIS_HOST: redis
+  USE_S3: "false"
+  VAT_PERCENTAGE: "20"
+

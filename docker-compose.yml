@@ -1,25 +1,14 @@
-volumes:
-  ShopData:
-  PostgresData:
-  NginxLogs:
-  RedisData:
-  GrafanaStorage:
-
-networks:
-  ecommerce:
-    driver: bridge
-
 services:
-  shop:
+  mystore:
     build: ./mystore
-    container_name: app_shop
+    container_name: app_mystore
     labels:
       - traefik.enable=true
-      - traefik.http.routers.shop.entrypoints=websecure
-      - traefik.http.routers.shop.rule=Host(`store.mycommerce.fr`)
-      - traefik.http.routers.shop.tls=true
-      - traefik.http.routers.shop.tls.certresolver=production
-      - traefik.http.services.shop-service.loadbalancer.server.port=8000
+      - traefik.http.routers.mystore.entrypoints=websecure
+      - traefik.http.routers.mystore.rule=Host(`store.mycommerce.fr`)
+      - traefik.http.routers.mystore.tls=true
+      - traefik.http.routers.mystore.tls.certresolver=production
+      - traefik.http.services.mystore-service.loadbalancer.server.port=8000
     env_file:
       - ./docker/environment/django.env
       - ./docker/environment/global.env
@@ -30,9 +19,9 @@ services:
     networks:
       - ecommerce
 
-  shop_celery:
+  mystore_celery:
     build: ./mystore
-    container_name: app_shop_celery
+    container_name: app_mystore_celery
     command: celery -A mystore.celery_app worker --loglevel=info --logfile=celery.log
     env_file:
       - ./docker/environment/django.env
@@ -47,9 +36,9 @@ services:
     networks:
       - ecommerce
 
-  shop_celery_beat:
+  mystore_celery_beat:
     build: ./mystore
-    container_name: app_shop_celery_beat
+    container_name: app_mystore_celery_beat
     command: |
       celery -A mystore.celery_app beat --loglevel=info --logfile=celery_beat.log &&
       celery -A mystore.celery_app worker --loglevel=info
@@ -63,19 +52,19 @@ services:
     networks:
       - ecommerce
 
-  shop_flower:
+  mystore_flower:
     build: ./mystore
-    container_name: flower_myemailing
+    container_name: flower_mystore
     command: celery -A mystore.celery_app flower --loglevel=info --logfile=flower.log
     restart: always
     labels:
       - traefik.enable=true
-      - traefik.http.routers.flower.entrypoints=websecure
-      - traefik.http.routers.flower.rule=PathPrefix(`/flower`)
-      - traefik.http.routers.flower.tls=true
-      - traefik.http.routers.flower.tls.certresolver=production
-      - traefik.http.services.flower-service.loadbalancer.server.port=80
-      - traefik.http.routers.flower.middlewares=https-redirect
+      - traefik.http.routers.mystore_flower.entrypoints=websecure
+      - traefik.http.routers.mystore_flower.rule=PathPrefix(`/flower`)
+      - traefik.http.routers.mystore_flower.tls=true
+      - traefik.http.routers.mystore_flower.tls.certresolver=production
+      - traefik.http.services.mystore_flower-service.loadbalancer.server.port=80
+      - traefik.http.routers.mystore_flower.middlewares=https-redirect
       - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
       - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
     env_file:
@@ -127,9 +116,9 @@ services:
     networks:
       - ecommerce
 
-  cart_celery_beat:
+  mycart_celery_beat:
     build: ./mycart
-    container_name: app_cart_celery_beat
+    container_name: app_mycart_celery_beat
     command: |
       celery -A mycart.celery_app beat --loglevel=info --logfile=celery_beat.log &&
       celery -A mycart.celery_app worker --loglevel=info
@@ -143,19 +132,19 @@ services:
     networks:
       - ecommerce
 
-  cart_flower:
+  mycart_flower:
     build: ./mycart
     container_name: flower_mycart
     command: celery -A mycart.celery_app flower --loglevel=info --logfile=flower.log
     restart: always
     labels:
       - traefik.enable=true
-      - traefik.http.routers.flower.entrypoints=websecure
-      - traefik.http.routers.flower.rule=PathPrefix(`/flower`)
-      - traefik.http.routers.flower.tls=true
-      - traefik.http.routers.flower.tls.certresolver=production
-      - traefik.http.services.flower-service.loadbalancer.server.port=80
-      - traefik.http.routers.flower.middlewares=https-redirect
+      - traefik.http.routers.mycart_flower.entrypoints=websecure
+      - traefik.http.routers.mycart_flower.rule=PathPrefix(`/flower`)
+      - traefik.http.routers.mycart_flower.tls=true
+      - traefik.http.routers.mycart_flower.tls.certresolver=production
+      - traefik.http.services.mycart_flower-service.loadbalancer.server.port=80
+      - traefik.http.routers.mycart_flower.middlewares=https-redirect
       - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
       - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
     env_file:
@@ -217,8 +206,8 @@ services:
     restart: always
     ports:
       - 5432:5432
-    volumes:
-      - PostgresData:/var/lib/postgresql/data/
+    # volumes:
+    #   - PostgresData:/var/lib/postgresql/data/
     networks:
       - ecommerce
   
@@ -502,3 +491,14 @@ services:
       - "--certificatesresolvers.staging.acme.storage=/letsencrypt/acme.json"
     networks:
       - ecommerce
+
+volumes:
+  ShopData:
+  PostgresData:
+  NginxLogs:
+  RedisData:
+  GrafanaStorage:
+
+networks:
+  ecommerce:
+    driver: bridge

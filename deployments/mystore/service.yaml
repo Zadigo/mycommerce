@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: mystore-serv
+spec:
+  selector:
+    app: mystore-depl # Pod to target
+  type: ClusterIP
+  ports:
+  - name:  name-of-the-port
+    port:  80
+    targetPort:  8000 # Container to expose
