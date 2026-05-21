@@ -7,6 +7,6 @@ spec:
     app: mystore-depl # Pod to target
   type: ClusterIP
   ports:
-  - name:  name-of-the-port
+  - name:  mystore-port
     port:  80
     targetPort:  8000 # Container to expose
