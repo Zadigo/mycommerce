@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: pgadmin-service
+spec:
+  selector:
+    app:  pgadmin-depl
+  type: ClusterIP
+  ports:
+  - name: pgadmin-port
+    port:  5000
+    targetPort: 80

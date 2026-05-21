@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: xlogger-service
+spec:
+  selector:
+    app:  xlogger-depl
+  type: ClusterIP
+  ports:
+  - name: go-xlogger
+    port:  80
+    targetPort: 9000

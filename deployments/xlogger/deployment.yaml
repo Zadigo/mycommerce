@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xlogger-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xlogger-depl
+  template:
+    metadata:
+      labels:
+        app: xlogger-depl
+    spec:
+      containers:
+
+      - name: xlogger
+        image: xlogger-xlogger:latest
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 9000
+        # volumeMounts:
+        # - name: xlogger-vol
+        #   mountPath: /etc/xlogger/logs.conf
+        #   subPath: logs.conf
+
+      - name: redis
+        image: redis:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+          - containerPort: 6379
+
+      - name: db
+        image: db:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+          - containerPort: 5432
+
+      # volumes:
+      # - name: xlogger-vol
+      #   configMap:
+      #     name: logs-vol
+      #     items:
+      #       - key: logs
+      #         path: logs.conf
+
