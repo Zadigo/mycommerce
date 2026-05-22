@@ -1,6 +1,7 @@
 node_modules
 .nuxt
 .git
+.gitignore
 .env
 .env*
 test*
@@ -8,3 +9,5 @@ public/images
 public/videos
 public/audios
 *.txt
+*.md
+dist
