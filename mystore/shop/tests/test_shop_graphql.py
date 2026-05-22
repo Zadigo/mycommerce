@@ -2,6 +2,9 @@ import json
 from graphene_django.utils.testing import GraphQLTestCase
 from shop.tests.utils import ProductFactory
 from shop.models import Product
+from graphene_django.settings import graphene_settings
+from django.test import override_settings
+
 
 class TestGraphQl(GraphQLTestCase):
     def setUp(self):
@@ -23,6 +26,12 @@ class TestGraphQl(GraphQLTestCase):
                 }
             }
             '''
+        )
+
+        self.assertNotIn(
+            'Not Found',
+            response.content.decode(),
+            response.content
         )
 
         content = json.loads(response.content)

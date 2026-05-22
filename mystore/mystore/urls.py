@@ -28,7 +28,7 @@ urlpatterns = [
         include(('mcp_server.urls', 'mcp_server'), namespace='mcp_server')
     ),
     path(
-        'v1/graphql/',
+        'graphql/',
         csrf_exempt(GraphQLView.as_view(graphiql=True)),
         name='graphql'
     ),
@@ -50,7 +50,7 @@ urlpatterns = [
     ),
     path(
         'api/v1/collection/',
-        include('collection.api.urls')
+        include('collection.urls')
     ),
     path(
         'api/schema/',

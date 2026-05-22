@@ -387,9 +387,10 @@ else:
 
 
 # VAT
-# In order to use VAT when returning product price, set this value 
+# In order to use VAT when returning product price, set this value
 # to the applicable VAT for your given country
-VAT_PERCENTAGE = env('VAT_PERCENTAGE', default=0.0, cast=lambda x: x.isnumeric() and float(x) or 0.0)
+VAT_PERCENTAGE = env('VAT_PERCENTAGE', default=0.0,
+                     cast=lambda x: x.isnumeric() and float(x) or 0.0)
 
 
 # Fixtures
@@ -410,7 +411,7 @@ PY_UTILITIES_JWT_SECRET = env('PY_UTILITIES_JWT_SECRET', cast=str)
 
 GRAPHENE = {
     'SCHEMA': 'mystore.schema.schema',
-    'TESTING_ENDPOINT': '/v1/graphql/'
+    'TESTING_ENDPOINT': 'graphql/'
 }
 
 
@@ -424,7 +425,7 @@ DJANGO_MCP_AUTHENTICATION_CLASSES = [
 ]
 
 # Microservices
-# List of microservices to be used in the project, each microservice 
+# List of microservices to be used in the project, each microservice
 # should be defined as a string representing  an absolute url
 
 MICROSERVICES = env.list('MICROSERVICES', default=[])
