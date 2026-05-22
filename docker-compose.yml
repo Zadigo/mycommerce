@@ -229,7 +229,7 @@ services:
     env_file: 
       - ./docker/environment/pgadmin.env
     networks:
-      - ecommerce  
+      - ecommerce
 
   gopurchase:
     build: ./services/gopurchase

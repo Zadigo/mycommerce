@@ -3,7 +3,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/Zadigo/gopurchase/internal/backend/server"
+	"github.com/Zadigo/gopurchase/internal/server"
 	"github.com/stretchr/testify/assert"
 )
 

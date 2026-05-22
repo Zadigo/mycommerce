@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Zadigo/gopurchase/internal/backend/server"
+	"github.com/Zadigo/gopurchase/internal/server"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,7 +15,7 @@ func TestApp(t *testing.T) {
 	rootDir, err := os.Getwd()
 	assert.NoError(t, err)
 
-	app := server.NewApp(&server.ServerConfig{
+	app := server.NewApp(t.Context(), &server.ServerConfig{
 		RootDir: rootDir,
 		Port:    "3000",
 		YamlConfig: &server.YamlConfig{
@@ -34,7 +34,7 @@ func TestApp(t *testing.T) {
 		},
 	})
 	t.Run("Should start application", func(t *testing.T) {
-		err := app.Start(t.Context())
+		err := app.Start()
 		t.Context().Done()
 		assert.NotNil(t, err)
 	})

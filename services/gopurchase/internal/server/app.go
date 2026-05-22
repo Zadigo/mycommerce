@@ -21,12 +21,10 @@ type App struct {
 }
 
 type AppInterface interface {
-	Start(ctx context.Context) error
+	Start() error
 }
 
-func (a *App) Start(ctx context.Context) error {
-	a.ctx = ctx
-
+func (a *App) Start() error {
 	port, err := strconv.ParseUint(os.Getenv("PORT"), 10, 16)
 	if err != nil {
 		return fmt.Errorf("🔴 Invalid port: %w", err)
@@ -65,16 +63,17 @@ func (a *App) Start(ctx context.Context) error {
 	select {
 	case err := <-ch:
 		return err
-	case <-ctx.Done():
+	case <-a.ctx.Done():
 		log.Println("⚡️ Shutting down server...")
-		timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+		timeoutCtx, cancel := context.WithTimeout(a.ctx, 10*time.Second)
 		defer cancel()
 		return server.Shutdown(timeoutCtx)
 	}
 }
 
-func NewApp(serverConfig *ServerConfig) AppInterface {
+func NewApp(ctx context.Context, serverConfig *ServerConfig) AppInterface {
 	app := &App{
+		ctx:          ctx,
 		serverConfig: serverConfig,
 		redisClient: redis.NewClient(&redis.Options{
 			Addr: "localhost:6379",
