@@ -1,4 +1,4 @@
-FROM python:3-slim AS builder
+FROM python:alpine AS builder
 
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
@@ -18,17 +18,20 @@ COPY pyproject.toml uv.lock ./
 # Install dependencies into /app/.venv (no project, just deps)
 RUN uv sync --frozen --no-install-project --no-dev
 
-FROM python:3-slim AS runtime
+FROM python:alpine AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/app/.venv/bin:$PATH"
 
 # Install system dependencies needed at runtime
-RUN apt-get update && apt-get install -y --no-install-recommends libpq5 && rm -rf /var/lib/apt/lists/*
+# Python:slim -> RUN apt-get update && apt-get install -y --no-install-recommends libpq5 && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache libpq
 
 # Create a non-root user for security
-RUN groupadd --gid 1001 django && useradd --uid 1001 --gid django --shell /bin/bash --create-home django
+# Python:slim -> RUN groupadd --gid 1001 django && useradd --uid 1001 --gid django --shell /bin/bash --create-home django
+RUN addgroup -S django && adduser -S django -G django
+
 
 WORKDIR /app
 
