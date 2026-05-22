@@ -1,6 +1,7 @@
 from accounts.models import Address, UserProfile
 from django.contrib.auth import get_user_model
 from mcp_server import MCPToolset, ModelQueryToolset
+from accounts.api import serializers
 
 
 class UserQueryTool(ModelQueryToolset):
@@ -36,15 +37,15 @@ class UserProfileQueryTool(ModelQueryToolset):
         'user__first_name',
         'user__last_name',
         'user__email',
+        'stripe_id'
     ]
 
 
 class UserTools(MCPToolset):
-    def get_all_users(self):
-        pass
-
     def get_user_by_email(self, email: str):
-        pass
+        """"""
+        user = get_user_model().objects.get(email=email)
+        return serializers.UserSerializer(instance=user).data
 
     def email_user(self, user_id: int, subject: str, message: str):
         pass
