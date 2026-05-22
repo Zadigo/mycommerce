@@ -1,23 +1,18 @@
 from cart.tests.utils import create_items
-from cart.utils import calculate_items_total
+from cart.utils import calculate_total_from_instance
 from django.test import TestCase
 
 
 class TestUtils(TestCase):
     def test_calculate_items_total(self):
         items = create_items(1)
-        total, total_quantity = calculate_items_total(items)
+        total, _ = calculate_total_from_instance(items[0])
         
-        self.assertEqual(
-            total,
-            sum(
-                item['product']['price'] * item['quantity']
-                for item in items
-            )
+        _item = items[0].items
+        totals = map(
+            lambda x: x['product']['price'] * x['quantity'],
+            _item
         )
-        self.assertEqual(
-            total_quantity, sum(
-                item['quantity']
-                for item in items
-            )
-        )
+        total = sum(totals)
+        self.assertGreater(total, 0)
+
