@@ -1,4 +1,6 @@
-FROM golang:1.26.3-alpine3.23 AS build-stage
+ARG GO_VERSION=1
+
+FROM golang:${GO_VERSION}-alpine AS build-stage
 
 WORKDIR /app
 
@@ -9,7 +11,7 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o server .
 
-FROM alpine:latest
+FROM alpine:latest AS builder
 
 WORKDIR /app
 
@@ -18,4 +20,4 @@ COPY --from=build-stage /app/.env .
 
 EXPOSE 9000
 
-CMD ["./server"]
+CMD [ "./server" ]

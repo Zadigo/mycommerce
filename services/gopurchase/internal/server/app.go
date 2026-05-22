@@ -72,12 +72,19 @@ func (a *App) Start() error {
 }
 
 func NewApp(ctx context.Context, serverConfig *ServerConfig) AppInterface {
+	redisAddress := os.Getenv("REDIS_ADDRESS")
+
+	if redisAddress == "" {
+		redisAddress = "localhost:6379"
+	}
+
 	app := &App{
 		ctx:          ctx,
 		serverConfig: serverConfig,
 		redisClient: redis.NewClient(&redis.Options{
-			Addr: "localhost:6379",
-			DB:   0,
+			Addr:     redisAddress,
+			Password: os.Getenv("REDIS_PASSWORD"),
+			DB:       0,
 		}),
 	}
 	app.loadRoutes()

@@ -17,10 +17,10 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml .npmrc ./
 
 FROM base AS prod-dependencies
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod
 
 FROM prod-dependencies AS build
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 
 # Copy the rest of the application files to the working directory
 COPY . .

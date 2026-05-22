@@ -234,6 +234,9 @@ services:
   gopurchase:
     build: ./services/gopurchase
     container_name: app_gopurchase
+    environment:
+      - REDIS_ADDRESS="redis:6379"
+      - REDIS_PASSWORD="your-password"
     labels:
       - traefik.enable=true
       - traefik.http.routers.gopurchase.entrypoints=websecure
@@ -241,6 +244,8 @@ services:
       - traefik.http.routers.gopurchase.tls=true
       - traefik.http.routers.gopurchase.tls.certresolver=production
       - traefik.http.services.gopurchase-service.loadbalancer.server.port=8000
+    depends_on:
+      - redis
     networks:
       - ecommerce
 
