@@ -79,7 +79,7 @@ services:
     networks:
       - ecommerce
 
-  cart:
+  mycart:
     build: ./services/mycart
     container_name: app_cart
     labels:
@@ -99,7 +99,7 @@ services:
     networks:
       - ecommerce
 
-  cart_celery:
+  mycart_celery:
     build: ./mycart
     container_name: app_cart_celery
     command: celery -A mycart.celery_app worker --loglevel=info --logfile=celery.log
@@ -159,7 +159,7 @@ services:
     networks:
       - ecommerce
 
-  reviews:
+  myreviews:
     build: ./services/myreviews
     container_name: app_reviews
     labels:
@@ -179,7 +179,7 @@ services:
     networks:
       - ecommerce
 
-  subscribers:
+  mysubscribers:
     build: ./services/subscribers
     container_name: app_subscribers
     labels:
@@ -230,44 +230,35 @@ services:
       - ./docker/environment/pgadmin.env
     networks:
       - ecommerce  
-  
-  api_global:
-    build: ./api_global
-    container_name: app_api_global
+
+  gopurchase:
+    build: ./services/gopurchase
+    container_name: app_gopurchase
     labels:
       - traefik.enable=true
-      - traefik.http.routers.api_global.entrypoints=websecure
-      - traefik.http.routers.api_global.rule=Host(`api.example.fr`)
-      - traefik.http.routers.api_global.tls=true
-      - traefik.http.routers.api_global.tls.certresolver=production
-      - traefik.http.services.api_global-service.loadbalancer.server.port=5000
-      - traefik.http.routers.api_global.middlewares=https-redirect
-      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
-      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
-    env_file:
-      - ./docker/environment/backend_api.env
-      - ./docker/environment/rabbitmq.env
-      - ./docker/environment/redis.env
-    volumes:
-      - ~/var/quart.log:/backend_api/quart.log
+      - traefik.http.routers.gopurchase.entrypoints=websecure
+      - traefik.http.routers.gopurchase.rule=Host(`purchase.mycommerce.fr`)
+      - traefik.http.routers.gopurchase.tls=true
+      - traefik.http.routers.gopurchase.tls.certresolver=production
+      - traefik.http.services.gopurchase-service.loadbalancer.server.port=8000
     networks:
       - ecommerce
 
-  purchase:
-    build: ./services/purchase
-    container_name: app_purchase
+  goauthentication:
+    build: ./services/goauthentication
+    container_name: app_goauthentication
     labels:
       - traefik.enable=true
-      - traefik.http.routers.golangpurchase.entrypoints=websecure
-      - traefik.http.routers.golangpurchase.rule=Host(`purchase.mycommerce.fr`)
-      - traefik.http.routers.golangpurchase.tls=true
-      - traefik.http.routers.golangpurchase.tls.certresolver=production
-      - traefik.http.services.golangpurchase-service.loadbalancer.server.port=8000
+      - traefik.http.routers.goauthentication.entrypoints=websecure
+      - traefik.http.routers.goauthentication.rule=Host(`authentication.mycommerce.fr`)
+      - traefik.http.routers.goauthentication.tls=true
+      - traefik.http.routers.goauthentication.tls.certresolver=production
+      - traefik.http.services.goauthentication-service.loadbalancer.server.port=8000
     networks:
       - ecommerce
 
   admin:
-    build : ./frontend_admin
+    build : ./frontend/admin
     container_name: app_dashboard
     labels:
       - traefik.enable=true
@@ -279,30 +270,30 @@ services:
     restart: always
     env_file:
       - ./docker/environment/vite.env
-    volumes:
-      - NginxLogs:/var/log:ro
-      - ~/var/admin_nginx_error.log:/var/log/nginx/error.log:rw
-      - ~/var/admin_nginx_access.log:/var/log/nginx/access.log:rw
-      - ./frontend_admin/dist:/var/www/frontend_admin/dist:ro
+    depends_on:
+      - redis
+      - mystore
+    ports:
+      - 3001:3000
     networks:
       - ecommerce
 
-  nuxt_frontend:
-    build: ./frontend
-    container_name: app_nuxt_frontend
-    # command: pnpm run start --host 0.0.0.0
+  mainsite:
+    build: ./frontend/mainsite
+    container_name: app_mainsite
     restart: always
     labels:
       - traefik.enable=true
-      - traefik.http.routers.nuxt_frontend.entrypoints=websecure
-      - traefik.http.routers.nuxt_frontend.rule=Host(`mycommerce.fr`)
-      - traefik.http.routers.nuxt_frontend.tls=true
-      - traefik.http.routers.nuxt_frontend.tls.certresolver=production
-      - traefik.http.services.nuxt_frontend-service.loadbalancer.server.port=8000
+      - traefik.http.routers.mainsite.entrypoints=websecure
+      - traefik.http.routers.mainsite.rule=Host(`mycommerce.fr`)
+      - traefik.http.routers.mainsite.tls=true
+      - traefik.http.routers.mainsite.tls.certresolver=production
+      - traefik.http.services.mainsite-service.loadbalancer.server.port=8000
     env_file:
       - ./docker/environment/nuxt.env
     depends_on:
       - redis
+      - mystore
     environment:
       - NODE_ENV=production
       - NITRO_HOST=0.0.0.0

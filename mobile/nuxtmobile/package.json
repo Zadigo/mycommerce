@@ -1,5 +1,5 @@
 {
-  "name": "mobile",
+  "name": "nuxt-mobile",
   "type": "module",
   "private": true,
   "scripts": {

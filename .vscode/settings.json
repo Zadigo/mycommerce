@@ -1,6 +1,6 @@
 {
     "tailwind-fold.autoFold": false,
-    "vitest.rootConfig": "${workspaceFolder}/frontend/vitest.config.ts",
+    "vitest.rootConfig": "${workspaceFolder}/frontend/mainsite/vitest.config.ts",
     "[python]": {
        "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit",
