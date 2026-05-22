@@ -290,7 +290,7 @@ services:
   nuxt_frontend:
     build: ./frontend
     container_name: app_nuxt_frontend
-    command: pnpm run start --host 0.0.0.0
+    # command: pnpm run start --host 0.0.0.0
     restart: always
     labels:
       - traefik.enable=true
@@ -301,6 +301,8 @@ services:
       - traefik.http.services.nuxt_frontend-service.loadbalancer.server.port=8000
     env_file:
       - ./docker/environment/nuxt.env
+    depends_on:
+      - redis
     environment:
       - NODE_ENV=production
       - NITRO_HOST=0.0.0.0

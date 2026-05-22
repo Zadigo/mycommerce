@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nuxt-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nuxt-depl
+  template:
+    metadata:
+      labels:
+        app: nuxt-depl
+    spec:
+      containers:
+
+        - name: nuxt
+          image: mycommerce-nuxt_frontend
+          imagePullPolicy: Always
+          # restartPolicy: Always
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: nuxt-config
+            - secretRef:
+                name: nuxt-secret
+
+        - name: redis
+          image: redis:latest
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+            requests:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 6379

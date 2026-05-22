@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: xlogger-config
-  labels:
-    app: xlogger-config
-data:
-  redis_addr: redis:6379
-
