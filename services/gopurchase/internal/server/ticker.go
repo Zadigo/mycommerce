@@ -24,6 +24,7 @@ type Ticker struct {
 	scheduler    *gocron.Scheduler
 	serverConfig *ServerConfig
 	redisClient  *redis.Client
+	debug        bool
 	Key          string
 }
 
@@ -66,17 +67,23 @@ func (t *Ticker) Start() {
 
 				t.redisClient.LPush(t.ctx, fmt.Sprintf("%s:checks", t.Key), data)
 				t.redisClient.Expire(t.ctx, fmt.Sprintf("%s:checks", t.Key), 24*time.Hour)
+			}
 
+			if t.debug {
+				j.LimitRunsTo(1)
 			}
 		})
 	}()
+
+	<-ch
 }
 
-func NewTicker(ctx context.Context, serverConfig *ServerConfig, redisClient *redis.Client) *Ticker {
+func NewTicker(ctx context.Context, serverConfig *ServerConfig, redisClient *redis.Client, debug bool) *Ticker {
 	return &Ticker{
 		ctx:          ctx,
 		serverConfig: serverConfig,
 		redisClient:  redisClient,
 		Key:          "gopurchase",
+		debug:        debug,
 	}
 }

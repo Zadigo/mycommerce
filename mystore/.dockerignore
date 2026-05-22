@@ -11,7 +11,12 @@ __pycache__
 !.env.example
 *.sqlite3
 *.log
+*.ipynb
+contest.py
+reset_project.py
 .DS_Store
 node_modules
 staticfiles
 mediafiles
+media
+fixtures
