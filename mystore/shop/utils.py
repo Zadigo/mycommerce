@@ -11,15 +11,21 @@ from django.utils.text import get_valid_filename
 from shop.choices import ColorChoices
 from shop.typings import TypeProductModel
 
+
 def remove_accents(text: str):
+    """Removes accents from a given string using the unidecode library."""
     return unidecode.unidecode(text)
 
 
 def clean_text(text: str) -> str | None:
+    """Cleans the input text by removing special characters, extra spaces, and accents.
+    It also converts the text to lowercase and capitalizes the first letter of each word."""
     if text is None:
         return None
 
     text = str(text)
+    # Normalize the text to decompose accented characters
+    # into their base characters and diacritics
     text = unicodedata.normalize('NFKD', text)
 
     tokens = text.split(' ')
@@ -30,11 +36,10 @@ def clean_text(text: str) -> str | None:
 def create_image_slug(name: str, reverse: bool = False):
     """Create an image slug
 
-    Parameters
-    ----------
+    Args:
 
-        reverse: from an image slug, guess the name of the image: an_image_slug 
-        becomes in that case 'An image slug'
+        name (str): The original name to be transformed into a slug.
+        reverse (bool): If True, the function will attempt to reverse the slug back to a more human-readable format. Default is False.
     """
     if reverse:
         if '_' in name:
@@ -52,13 +57,19 @@ def create_image_slug(name: str, reverse: bool = False):
     return f'{image_name.strip().lower()}.jpg'
 
 
-def create_slug(word: str, *additional_words: str, generate_random_id: bool=True):
+def create_slug(word: str, *additional_words: str, generate_random_id: bool = True):
     """Function that creates a slug from a string by removing
     special characters, accents and by transforming the string to lowercase. 
     It also removes some determinants that do not bring any fundamental value 
     to the final string::
 
         create_slug('Blazzer Strapped')  # Output: 'blazzer_strapped'
+
+    Args:
+
+        word (str): The main string to be transformed into a slug.
+        *additional_words (str): Additional strings to be included in the slug. These will be processed in the same way as the main string and appended to the slug.
+        generate_random_id (bool): If True, a random identifier will be appended to the slug to ensure uniqueness. Default is True.
     """
     # List of determinants to exclude from
     # the text and that do not bring any
@@ -134,7 +145,7 @@ def process_file_name(value: str):
     """Changes the initial file name to a
     random more standard string that can be used 
     as a file name for the media files.
-    
+
     For example, 'jupé coûpe.jpg' becomes 'jupe_coupe.jpg'::
 
         name, ext = process_file_name('jupé coûpe.jpg')
@@ -153,9 +164,9 @@ def product_media_path(filename: str):
     """Function that generates a new file name for the media 
     files of the products. It transforms the initial file name to a more standard 
     string and adds a random unique identifier to avoid integrity errors. 
-    
+
     Example with 'Blazer Strapped.jpg'::
-    
+
         new_filename = product_media_path('Blazer Strapped.jpg')
         print(new_filename)  # Output: 'blazer_strapped_abc123.jpg'
 
@@ -184,7 +195,7 @@ def image_path(instance: TypeProductModel, filename: str):
 def generate_sku(color: str | None, length: int = 8) -> str:
     """Function that generates a SKU based on
     the color and a random hexadecimal string
-    
+
     Args:
         color (str | None): The color to be included in the SKU. If None, a random string will be used.
         length (int): The length of the random hexadecimal string to be generated. Default is 8.

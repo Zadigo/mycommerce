@@ -7,7 +7,7 @@ from shop.models import Image
 class AdminUploadImageView(FormView):
     """Simple class to allow the upload of multiple images 
     on the Django admin for testing purposes"""
-    
+
     template_name = 'upload_images.html'
     form_class = UploadImagesForm
     success_url = reverse_lazy('admin:admin_upload_images')
@@ -22,7 +22,7 @@ class AdminUploadImageView(FormView):
         objs = []
         for i, file in enumerate(files):
             name = f'{file_name} - {i}'
-            
+
             obj = Image.objects.create(
                 name=name,
                 variant=variant,

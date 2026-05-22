@@ -121,6 +121,33 @@ class Video(models.Model):
 
 
 class AbstractProduct(models.Model):
+    """The `AbstractProduct` model serves as a base class for 
+    product-related models in the e-commerce application. It defines common fields and 
+    methods that are shared across different product types.
+    
+    Attributes:
+        name (CharField): The name of the product.
+        color (CharField): The color of the product, with predefined choices.
+        sku (CharField): The Stock Keeping Unit, a unique identifier for the product.
+        model_height (CharField): The height of the model wearing the product.
+        model_size (CharField): The size of the clothing worn by the model.
+        age_group_category (CharField): The age group category for the product.
+        gender_category (CharField): The gender category for the product.
+        category (CharField): The main category for grouping the product.
+        sub_category (CharField): An additional category for better classification.
+        video (ForeignKey): A reference to a related video for the product.
+        unit_price (FloatField): The cost value of the product.
+        sale_value (PositiveIntegerField): The percentage of the current sale on the product.
+        sale_price (FloatField): The sale price of the product.
+        on_sale (BooleanField): Indicates whether the product is currently on sale.
+        display_new (BooleanField): Indicates whether to show the product as new.
+        slug (SlugField): A URL-friendly representation of the product name.
+        validity_score (CharField): A score indicating the product's readiness for display.
+        active (BooleanField): Indicates whether the product is active and available for purchase.
+        created_on (DateField): The date when the product was created.
+        modified_on (DateField): The date when the product was last modified.
+    """
+    
     name = models.CharField(
         max_length=100
     )
@@ -309,15 +336,6 @@ class AbstractProduct(models.Model):
     def __str__(self):
         return f'{self.pk}: {self.name}'
 
-    # @property
-    # def is_new(self):
-    #     """The `is_new` property is a read-only attribute
-    #     that determines whether a product is considered new.
-    #     A product is classified as new if it has been created
-    #     within the last five days."""
-    #     difference = (now() - timedelta(days=5))
-    #     return self.created_on <= difference.date()
-
     @property
     def get_main_image(self):
         """The `get_main_image` property is a read-only attribute 
@@ -352,8 +370,15 @@ class AbstractProduct(models.Model):
     def vat_price(self):
         """Property that returns the product price (using get_price)
          + VAT from settings.VAT_PERCENTAGE"""
-        if settings.VAT_PERCENTAGE is not None:
-            percentage = 1 + (settings.VAT_PERCENTAGE / 100)
+        value = getattr(settings, 'VAT_PERCENTAGE', None)            
+        if value is not None:
+            if not isinstance(value, (int, float)):
+                return None
+            
+            if value < 0 or value > 100:
+                return None
+
+            percentage = 1 + (value / 100)
             return self.get_price * percentage
         return None
 

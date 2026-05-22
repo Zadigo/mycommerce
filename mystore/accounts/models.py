@@ -7,9 +7,21 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Address(models.Model):
-    """This represents billing information which
-    can be totally different from the main account's
-    information"""
+    """Represents the address billing information of a user.
+
+    Attributes:
+        user_profile (UserProfile): The user profile associated with this address
+        firstname (str): The first name of the user
+        lastname (str): The last name of the user
+        address_line (str): The address line
+        zip_code (int): The zip code of the address
+        country (str): The country of the address
+        city (str): The city of the address
+        telephone (str): The telephone number of the user
+        gender (int): The gender of the user
+        is_active (bool): Indicates if the address is active
+        created_on (datetime): The date and time when the address was created
+    """
 
     user_profile = models.ForeignKey(
         'accounts.UserProfile',
@@ -64,6 +76,17 @@ class Address(models.Model):
 
 
 class UserProfile(models.Model):
+    """Represents the main account information which can be used 
+    for billing but also for other purposes like sending notifications, etc.
+
+    Attributes:
+        user (User): The user associated with this profile
+        stripe_id (str): The token that identifies the customer in Stripe e.g. cus_1234
+        source_id (str): The token that identifies the customer's payment method in Stripe e.g. card_1234
+        telephone (str): The user's telephone number
+        created_on (date): The date when the profile was created
+    """
+
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE

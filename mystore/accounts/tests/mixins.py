@@ -20,7 +20,7 @@ class AuthenticationMixin:
     @classmethod
     def setUpTestData(cls):
         users = UserFactory.create_batch(5)
-        
+
         cls.users = users
         cls.user = get_user_model().objects.get(pk=1)
         cls.user.set_password('touparet')

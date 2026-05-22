@@ -41,6 +41,7 @@ def signup_workflow(email: str):
 
     return {'email': email, 'token': user.userprofile.stripe_id}
 
+
 @shared_task
 def update_profile_workflow(email: str):
     """Function used to sync the modifications of the
@@ -61,7 +62,8 @@ def update_profile_workflow(email: str):
         params['address'] = {
             'line1': address.address_line,
             'postal_code': address.zip_code,
-            'city': address.city
+            'city': address.city,
+            'country': address.country
         }
         params['shipping'] = {
             'name': f'{user.first_name} {user.last_name}',
@@ -69,11 +71,20 @@ def update_profile_workflow(email: str):
             'address': {
                 'line1': address.address_line,
                 'postal_code': address.zip_code,
-                'city': address.city
+                'city': address.city,
+                'country': address.country
             }
         }
 
-    result = stripe.Customer.modify(**params)
+    try:
+        result = stripe.Customer.modify(**params)
+    except stripe.error.StripeError as e:
+        logger.error(
+            "Stripe error during customer "
+            f"modification for {user.email}: {str(e)}"
+        )
+        return {'error': str(e)}
+
     return {'email': str(user.email)}
 
 
@@ -83,7 +94,7 @@ def signup_reviews_api(credentials_response: dict | bool, email: str, password: 
         credentials = {'email': email, 'password': password}
         headers = {'content-type': 'application/json'}
         response = requests.post(
-            settings.REVIEWS_API_URL, 
+            settings.REVIEWS_API_URL,
             data=credentials,
             headers=headers
         )
@@ -143,7 +154,8 @@ def testing_django_task(email: str):
         params['address'] = {
             'line1': address.address_line,
             'postal_code': address.zip_code,
-            'city': address.city
+            'city': address.city,
+            'country': address.country
         }
         params['shipping'] = {
             'name': f'{user.first_name} {user.last_name}',
@@ -151,7 +163,8 @@ def testing_django_task(email: str):
             'address': {
                 'line1': address.address_line,
                 'postal_code': address.zip_code,
-                'city': address.city
+                'city': address.city,
+                'country': address.country
             }
         }
 

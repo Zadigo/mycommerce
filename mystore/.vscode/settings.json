@@ -16,5 +16,6 @@
             "source.organizeImports": "always",
             "source.fixAll.pylance": "always"
         }
-    }
+    },
+    "env"
 }

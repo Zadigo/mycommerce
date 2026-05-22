@@ -84,7 +84,8 @@ class TestShopApi(AuthenticatedTestCase):
             'with_images': 0
         })
         response = self.client.get(path + f'?{query}')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code,
+                         status.HTTP_200_OK, response.content)
 
         data = response.json()
         self.assertTrue(len(data) > 0)

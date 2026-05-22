@@ -1,6 +1,7 @@
 from decimal import Decimal
 from shop.tests.utils import ProductFactory
 from django.test import TestCase
+from shop.utils import create_slug, generate_sku
 from shop.models import Product
 from shop.utils import (calculate_sale, create_slug, process_file_name,
                         product_media_path, remove_special_characters,
@@ -14,15 +15,94 @@ class TestUtilities(TestCase):
         self.products: list[Product] = ProductFactory.create_batch(1)
         self.product = self.products[0]
 
+    def test_remove_accents(self):
+        from shop.utils import remove_accents
+
+        test_cases = [
+            ('é', 'e'),
+            ('à', 'a'),
+            ('ç', 'c'),
+            ('ü', 'u'),
+            ('ñ', 'n'),
+            ('Jupé de Paris', 'Jupe de Paris')
+        ]
+
+        for input_str, expected in test_cases:
+            with self.subTest(input_str=input_str):
+                result = remove_accents(input_str)
+                self.assertEqual(result, expected)
+
+    def test_clean_text(self):
+        from shop.utils import clean_text
+
+        test_cases = [
+            ('Blazzer Strapped', 'Blazzer strapped'),
+            ('Floral Mesh Balcony Soutien Gorge Et String Ensemble',
+             'floral mesh balcony soutien gorge et string ensemble'),
+            ('Blazer Jupe Boutons Dorées', 'blazer jupe boutons dorées'),
+            ('Blazer, plissée de Japon', 'blazer plissée de japon'),
+            ('Blazer - Facile', 'blazer facile'),
+            ('some_simple_file', 'some_simple_file'),
+            ('some#invalid**filename', 'someinvalidfilename'),
+            ('jupe-cargo-lani%C3%A8res', 'jupe cargo lanières')
+        ]
+
+        for input_str, expected in test_cases:
+            with self.subTest(input_str=input_str):
+                result = clean_text(input_str)
+                self.assertEqual(result, expected)
+
+        result = clean_text(None)
+        self.assertIsNone(result)
+
+    def test_create_image_slug(self):
+        from shop.utils import create_image_slug
+
+        test_cases = [
+            ('Blazzer Strapped', 'blazzer_strapped.jpg'),
+            ('Blazer Jupe Boutons Dorées', 'blazer_jupe_boutons_dorées.jpg'),
+            ('Blazer, plissée de Japon', 'blazer_plissée_de_japon.jpg'),
+            ('Blazer - Facile', 'blazer_facile.jpg'),
+            ('some_simple_file', 'some_simple_file.jpg'),
+            ('some#invalid**filename', 'someinvalidfilename.jpg'),
+            ('jupe-cargo-lani%C3%A8res', 'jupe_cargo_lanières.jpg')
+        ]
+
+        for input_str, expected in test_cases:
+            with self.subTest(input_str=input_str):
+                result = create_image_slug(input_str)
+                self.assertEqual(result, expected)
+
+        result = create_image_slug('blazer_strapped.jpg', reverse=True)
+        self.assertEqual(result, 'Blazer Strapped')
+
+    def test_create_slug(self):
+        test_cases = [
+            ('Blazzer Strapped', 'blazzer-strapped'),
+            ('Blazer Jupe Boutons Dorées', 'blazer-jupe-boutons-dorées'),
+            ('Blazer, plissée de Japon', 'blazer-plissée-de-japon'),
+            ('Blazer - Facile', 'blazer-facile'),
+            ('some_simple_file', 'some_simple_file'),
+            ('some#invalid**filename', 'someinvalidfilename'),
+            ('jupe-cargo-lani%C3%A8res', 'jupe-cargo-lanières')
+        ]
+
+        for input_str, expected in test_cases:
+            with self.subTest(input_str=input_str):
+                result = create_slug(input_str)
+                self.assertIn(expected, result)
+
+        result = create_slug("jupe l'apostrophe", 1234, None)
+        self.assertTrue(result.startswith('jupe-apostrophe'))
+
     def test_calculate_sale(self):
         product = Product.objects.create(
             name='Test Product',
             unit_price=100.00,
         )
-        
+
         result = calculate_sale(product.unit_price, 2)
         self.assertIsInstance(result, Decimal)
-
 
         # Test that we can save the ouput result
         # directly on the object
@@ -104,25 +184,6 @@ class TestUtilities(TestCase):
                 result = product_media_path(name)
                 self.assertRegex(result, expected)
 
-    def test_video_path(self):
-        pass
-
-    def test_image_path(self):
-        pass
-
-    def test_create_slug(self):
-        products = [
-            "Jupe Midi Popeline Taille Élastique",
-            "Jupe d'appoint",
-            "éladine de marseille - d'argan"
-        ]
-        for product in products:
-            slug = create_slug(product)
-            with self.subTest(product=product):
-                self.assertIsInstance(slug, str)
-
-        slug = create_slug(products[0], 1, 'blue')
-        self.assertIn(
-            'jupe-midi-popeline-taille-elastique-1-blue',
-            slug
-        )
+    def test_generate_sku(self):
+        value = generate_sku('red')
+        self.assertTrue(value.startswith('RED'))

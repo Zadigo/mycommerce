@@ -45,7 +45,7 @@ class TestApiEndpoints(APITestCase):
                 'password': 'touparet'
             }
         )
-        self.assertEqual(response.status_code, 200, 'Cannot login with email')
+        self.assertEqual(response.status_code, 200, response.json())
 
     def test_get_user_details(self):
         path = reverse('accounts_api:user', args=[self.user.id])

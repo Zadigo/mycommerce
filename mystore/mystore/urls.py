@@ -46,7 +46,7 @@ urlpatterns = [
     ),
     path(
         'api/v1/shop/',
-        include('shop.api.urls')
+        include('shop.urls')
     ),
     path(
         'api/v1/collection/',
