@@ -14,20 +14,19 @@ RUN corepack enable
 WORKDIR /app
 
 # Copy package.json and pnpm-lock.yaml files to the working directory
-COPY ./package.json /app/
-COPY ./pnpm-lock.yaml /app/
+COPY package.json pnpm-lock.yaml ./
 
 ## Install dependencies
-RUN pnpm install --shamefully-hoist
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the application files to the working directory
-COPY . ./
+COPY . .
 
 # Build the application
 RUN pnpm run build
 
 # Create a new stage for the production image
-FROM node:${NODE_VERSION}-slim
+FROM node:${NODE_VERSION}-slim AS production
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -36,11 +35,11 @@ WORKDIR /app
 COPY --from=build /app/.output ./
 
 # Define environment variables
-ENV HOST=0.0.0.0 NODE_ENV=production
+ENV HOST=0.0.0.0
 ENV NODE_ENV=production
 
 # Expose the port the application will run on
 EXPOSE 3000
 
 # Start the application
-CMD [ "node", "/app/server/index.mjs" ]
+CMD [ "node", "/server/index.mjs" ]
