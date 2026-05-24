@@ -1,6 +1,6 @@
 # My Commerce - E-commerce solution with Django & Nuxt 4 🛍️
 
-My Commerce is a comprehensive e-commerce solution specialized for online retail, built with Django and Nuxt 4. 
+My Commerce is a comprehensive e-commerce solution created for online retail, built with Django and Nuxt 4. 
 It offers a robust backend for managing products, orders, and customers, along with a dynamic frontend for an 
 engaging shopping experience.
 
@@ -14,7 +14,11 @@ engaging shopping experience.
 | Frontend              | Nuxt 4             | Renders the desktop user interface       |
 | Frontend Admin        | Nuxt 4             | User-friendly admin interface            |
 | Frontend Mobile       | Nuxt 4 + Ionic     | Mobile-friendly interface                |
-| Ecommece MCP          | Python             | MCP client for tools and services        |
+| GoPurchase            | Golang             | Managing Stripe payments                 |
+| GoAuthentication      | Golang             | User authentication and authorization    |
+| MyCart                | Django             | Cart management                          |
+| MyReviews             | Django             | Reviews management                       |
+| MySubscribers         | Django             | Newsletters etc. management              |
 
 The project was built with scalability in mind, allowing for easy addition of new micro-services as needed. For instance, the cart
 management system can be swapped out for a third-party solution if desired.
@@ -23,15 +27,15 @@ management system can be swapped out for a third-party solution if desired.
 
 | Technology            | Purpose/Usage                  | Version   |
 |-----------------------|-------------------------------|------------|
-| Django                | Web framework                 | ✅ 3.2     |
-| Django REST Framework | API development               | ✅ 3.12    |
-| PostgreSQL            | Database                      | ✅ 13      |
-| Redis                 | Caching, message broker       | ✅ 6.2     |
-| RabbitMQ              | Message broker                | ✅ 3.8.9   |
-| Celery                | Task queue/background jobs    | ✅ 5.1.2   |
-| Docker                | Containerization              | ✅ 20.10.7 |
-| Nuxt 4                | Frontend framework            | ✅ 4.1.1   |
-| Ionic                 | Mobile application framework  | ✅ 7.0.0   |
+| Django                | Web framework                 | ✅ 6.X     |
+| Django REST Framework | API development               | ✅ 3.X     |
+| PostgreSQL            | Database                      | ✅ 13.X    |
+| Redis                 | Caching, message broker       | ✅ 6.X     |
+| RabbitMQ              | Message broker                | ✅ 3.8.X   |
+| Celery                | Task queue/background jobs    | ✅ 5.X     |
+| Docker                | Containerization              | ✅ 20.X    |
+| Nuxt 4                | Frontend framework            | ✅ 4.X     |
+| Ionic                 | Mobile application framework  | ✅ 7.X     |
 | Stripe                | Payment processing            | ✅ -       |
 | Klarna                | Payment processing            | ✅ -       |
 | Firebase              | Authentication, database      | ✅ -       |
@@ -40,10 +44,10 @@ management system can be swapped out for a third-party solution if desired.
 | Google Analytics      | Traffic analysis              | ✅ -       |
 | Facebook Pixels       | Traffic analysis              | ✅ -       |
 | Microsoft Clarity     | Traffic analysis              | ✅ -       |
-| Celery Beat           | Periodic tasks scheduling     | ✅ 2.2.1   |
-| Daphne                | ASGI server                   | ✅ 3.0.4   |
-| Graphene-Django       | GraphQL API                   | ✅ 3.0.0   |
-| MCP cli               | Micro-service communication   | ✅ 0.3.0   |
+| Celery Beat           | Periodic tasks scheduling     | ✅ 2.2.X   |
+| Daphne                | ASGI server                   | ✅ 3.X     |
+| Graphene-Django       | GraphQL API                   | ✅ 3.X     |
+| MCP cli               | Micro-service communication   | ✅ 0.3.X   |
 
 ## Configuring your project 🏠
 
@@ -78,7 +82,7 @@ you will not be able to execute the provided tasks correctly.
 
 ### Configuring Nuxt 🎶
 
-1. Enter in the `frontend` directory and run `pnpm run dev`
+1. Enter the [frontend/mainsite](frontend/mainsite) directory and run `pnpm run dev`
 2. Ensure you have a Stripe account for working/testing the cart payment process in development mode
 3. You also need an active Google Account in order to create the relevant keys for Google Authentication
 4. Create a `.env` file in the `frontend` folder with all the relevant keys provided below.
@@ -88,66 +92,9 @@ you will not be able to execute the provided tasks correctly.
 
 The Nuxt application also comes with basic fixtures that can be used to test the application out of the box. They are located in `~/data/__fixtures__/` and can be used to simulate server API calls.
 
-#### Environment variables for Nuxt 🎶
-
-These are the environment variables that are used to configure your Nuxt application
-
-```env
-NUXT_DJANGO_PROD_URL=example.com
-
-# Stripe
-
-NUXT_STRIPE_PUBLISHABLE_KEY=
-
-NUXT_STRIPE_SECRET_KEY=
-
-NUXT_STRIPE_TEST_PUBLISHABLE_KEY=pk_test_1
-
-NUXT_STRIPE_TEST_SECRET_KEY=sk_test_1
-
-NUXT_STRIPE_ACCOUNT=sk_test_2
-
-NUXT_STRIPE_API_VERSION="2024-06-20"
-
-NUXT_STRIPE_LOCALE="fr"
-
-# Google
-
-GOOGLE_CLIENT_ID=123.apps.googleusercontent.com
-
-GOOGLE_CLIENT_SECRET=GOCSPX-123
-
-# Facebook Pixels
-
-NUXT_METAPIXEL_DEFAULT_ID=123
-
-NUXT_METAPIXEL_ADS01_ID=123
-
-NUXT_METAPIXEL_ADS02_ID=123
-
-# Firebase
-
-NUXT_FIREBASE_API_KEY=
-
-NUXT_FIREBASE_AUTH_DOMAIN=
-
-NUXT_FIREBASE_DB_URL=
-
-NUXT_FIREBASE_PROJECT_ID=
-
-NUXT_FIREBASE_STORAGE_BUCKET=
-
-NUXT_FIREBASE_MESSAGE_SENDER_ID=
-
-NUXT_FIREBASE_APP_ID=
-
-NUXT_FIREBASE_MEASUREMENT_ID=
-```
-
 ## Useful e-commerce tools 🛠️
 
-Some of the internal micro-services can be replaced by third-party services. Here are some useful
-tools that can be used to enhance your e-commerce website:
+Some of the internal micro-services can be replaced by third-party services. Here are some useful tools that can be used to enhance your e-commerce website:
 
 - Track shipping: [https://www.aftership.com/](Aftership)
 - Inventory tracking: [https://www.zoho.com/inventory/](Zoho Inventory)

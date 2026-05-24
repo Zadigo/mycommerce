@@ -1,61 +1,53 @@
-## Nuxt Frontend
+# Mainsite 🚀
 
-### Environment variables
+The mainsite Nuxt 4 project serves as the frontend for both the desktop and mobile versions of the e-commerce website. It is designed to provide a seamless shopping experience for users, with a focus on performance and responsiveness.
 
-```conf
-NUXT_DJANGO_PROD_URL=
+## Key Features ✨
 
-NUXT_QUART_PROD_URL=
+- **Dynamic Product Catalog**: Fetches product data from the Store micro-service and displays it in an engaging way.
+- **User Authentication**: Integrates with the GoAuthentication micro-service for secure user login and registration.
+- **Shopping Cart**: Connects to the Cart micro-service to manage user carts and checkout processes.
+- **Reviews and Ratings**: Displays product reviews and ratings fetched from the Reviews micro-service.
+- **Responsive Design**: Ensures a consistent user experience across desktop and mobile devices.
 
-# Stripe
 
-NUXT_STRIPE_PUBLISHABLE_KEY=
+## Technologies Used 🌳
 
-NUXT_STRIPE_SECRET_KEY=
+| Technology            | Purpose/Usage                  | Version   |
+|-----------------------|-------------------------------|------------|
+| Nuxt 4                | Frontend framework            | ✅ 4.X     |
+| Ionic                 | Mobile application framework  | ✅ 7.X     |
+| Stripe                | Payment processing            | ✅ -       |
+| Klarna                | Payment processing            | ✅ -       |
+| Firebase              | Authentication, database      | ✅ -       |
+| AWS S3                | Static and media storage      | ✅ -       |
+| Cloudfront            | CDN for static files          | ✅ -       |
+| Google Analytics      | Traffic analysis              | ✅ -       |
+| Facebook Pixels       | Traffic analysis              | ✅ -       |
+| Microsoft Clarity     | Traffic analysis              | ✅ -       |
 
-NUXT_STRIPE_TEST_PUBLISHABLE_KEY=
+## Architecture 🏗
 
-NUXT_STRIPE_TEST_SECRET_KEY=
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant GoAuthentication
+    participant Store
+    participant Cart
+    participant Reviews
 
-NUXT_STRIPE_ACCOUNT=
+    User->>Frontend: Browse products
+    Frontend->>Store: Fetch product data
+    Store-->>Frontend: Return product data
 
-NUXT_STRIPE_API_VERSION="2024-06-20"
+    User->>Frontend: Add product to cart
+    Frontend->>Cart: Add item to cart
+    Cart-->>Frontend: Confirm item added
 
-NUXT_STRIPE_LOCALE="fr"
-
-# Google
-
-GOOGLE_CLIENT_ID=
-
-GOOGLE_CLIENT_SECRET=
-
-# Facebook Pixels
-
-NUXT_PUBLIC_METAPIXEL_DEFAULT_ID=
-
-NUXT_PUBLIC_METAPIXEL_ADS01_ID=
-
-NUXT_PUBLIC_METAPIXEL_ADS02_ID=
-
-# Firebase
-
-NUXT_FIREBASE_API_KEY=
-
-NUXT_FIREBASE_AUTH_DOMAIN=
-
-NUXT_FIREBASE_DB_URL=
-
-NUXT_FIREBASE_PROJECT_ID=
-
-NUXT_FIREBASE_STORAGE_BUCKET=
-
-NUXT_FIREBASE_MESSAGE_SENDER_ID=
-
-NUXT_FIREBASE_APP_ID=
-
-NUXT_FIREBASE_MEASUREMENT_ID=
-
-# What's App
-
-NUXT_WHATS_APP_URL=
+    User->>Frontend: Write a review
+    Frontend->>GoAuthentication: Authenticate user
+    GoAuthentication-->>Frontend: Return user info
+    Frontend->>Reviews: Submit review with user info
+    Reviews-->>Frontend: Confirm review submitted
 ```

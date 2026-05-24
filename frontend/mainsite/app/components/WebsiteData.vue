@@ -3,6 +3,8 @@
     <client-only>
       <template #default>
         <div ref="divEl" :style="style" class="fixed top-1/12 cursor-move right-5 bg-white/5 backdrop-blur-md hover:bg-white/70 rounded-lg shadow-xl p-4 z-50 w-100 space-y-5">
+          <p>Show login drawer: {{ showLoginDrawer }}</p>
+          <p>Show cart drawer: {{ showCartDrawer }}</p>
           <p class="font-bold text-2xl">Website & Firebase data</p>
           <div class="h-30 overflow-y-scroll rounded-md p-3 inset-shadow-sm">{{ cartSession }}</div>
           <div class="h-30 overflow-y-scroll rounded-md p-3 inset-shadow-sm">Cart: {{ cart }}</div>
@@ -45,4 +47,11 @@ onMounted(() => {
     y.value = positions.value.y
   }
 })
+
+/**
+ * Modals
+ */
+
+const showLoginDrawer = useState<boolean>('showLoginDrawer')
+const showCartDrawer = useState<boolean>('showCartDrawer')
 </script>

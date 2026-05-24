@@ -9,6 +9,11 @@ export const SESSIONNAME = 'sessionId'
 
 export const CARTSESSIONNAME = 'cart-session'
 
+/**
+ * Composable used to initalize the sessions for the user in Firestore. A global session
+ * is created to track user interactions and a cart session is created to manage the user's cart. The composable
+ * also manages the state of the session initialization and any errors that may occur during the process.
+ */
 export function useSetupSession() {
   const errors = ref<string[]>([])
   const [isInitialized, toggleInitialized] = useToggle(false)

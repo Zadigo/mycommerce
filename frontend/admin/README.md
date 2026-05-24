@@ -1,75 +1,49 @@
-# Nuxt Minimal Starter
+# Admin 🚀
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+The admin Nuxt 4 project serves as the backend management interface for the e-commerce website. It is designed to provide administrators with tools to manage products, orders, users, and other aspects of the platform efficiently.
 
-## Setup
+This admin panel exists as a centralized dashboard that reunites the functionalities of the Django initial admin panels.
 
-Make sure to install dependencies:
+## Key Features ✨
 
-```bash
-# npm
-npm install
+- **Product Management**: Add, update, and delete products in the catalog.
+- **Order Management**: View and manage customer orders.
+- **User Management**: Manage user accounts and permissions.
+- **Analytics Dashboard**: View sales and user activity metrics.
+- **Responsive Design**: Ensures a consistent experience across devices.
 
-# pnpm
-pnpm install
+## Technologies Used 🌳
 
-# yarn
-yarn install
+| Technology            | Purpose/Usage                  | Version   |
+|-----------------------|-------------------------------|------------|
+| Nuxt 4                | Frontend framework            | ✅ 4.X     |
+| Firebase              | Authentication, database      | ✅ -       |
+| AWS S3                | Static and media storage      | ✅ -       |
+| Cloudfront            | CDN for static files          | ✅ -       |
+| Google Analytics      | Traffic analysis              | ✅ -       |
+| Facebook Pixels       | Traffic analysis              | ✅ -       |
+| Microsoft Clarity     | Traffic analysis              | ✅ -       |
 
-# bun
-bun install
+## Architecture 🏗
+
+```mermaid
+sequenceDiagram
+    participant Admin
+    participant Frontend
+    participant GoAuthentication
+    participant Store
+    participant Cart
+    participant Reviews
+
+    Admin->>Frontend: Manage products
+    Frontend->>Store: Fetch product data
+    Store-->>Frontend: Return product data
+
+    Admin->>Frontend: Manage orders
+    Frontend->>Cart: Fetch order data
+    Cart-->>Frontend: Return order data
+
+    Admin->>Frontend: Manage users
+    Frontend->>GoAuthentication: Fetch user data
+    GoAuthentication-->>Frontend: Return user data
 ```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
