@@ -123,10 +123,41 @@ export function useSetupSession() {
   const hasKey = computed(() => isDefined(sessionId) && sessionId.value !== '')
 
   return {
+    /**
+     * errors is an array of error messages that may occur 
+     * during the session setup process. This allows the application to track 
+     * and display any issues that arise while creating or managing the sessions 
+     * in Firestore.
+     */
     errors,
+    /**
+     * isWriting indicates whether the session setup process 
+     * is currently writing to Firestore. This is important for
+     * ensuring that we don't perform operations that depend on the session
+     * data before it has been fully written and initialized.
+     */
     isWriting,
+    /**
+     * isInitialized indicates whether the session has 
+     * been successfully initialized in Firestore. This is important for
+     * ensuring that the session data is ready before performing any operations
+     * that depend on it.
+     */
     isInitialized,
+    /**
+     * hasKey indicates whether a session ID exists in the cookies, 
+     * which is used to determine if a session has already been initialized for 
+     * the user. This is important for ensuring that we don't create multiple sessions 
+     * for the same user and that we can link the user's interactions across the site 
+     * using the session ID.
+     */
     hasKey,
+    /**
+     * The sessionId is the unique identifier for the 
+     * user's session, stored in a cookie and used to link the user's 
+     * interactions across the site. It is created if it does not already exist and 
+     * is used to manage both the global session and the cart session in Firestore.
+     */
     sessionId
   }
 }

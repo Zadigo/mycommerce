@@ -25,6 +25,28 @@
             "detail": "Starts Celery",
             "label": "Celery: start",
             "isBackground": true
+        },
+        {
+            "type": "shell",
+            "label": "GoPurchase",
+            "isBackground": true,
+            "detail": "Start Go-Purchase",
+            "command": "cd services/gopurchase && go run .",
+            "icon": {
+                "id": "play"
+            },
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^$",
+                    "file": 1,
+                    "message": 2
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^🟢 Server ready",
+                    "endsPattern": ".*requests..."
+                }
+            }
         }
     ]
 }

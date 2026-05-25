@@ -1,5 +1,5 @@
 import { doc, updateDoc } from 'firebase/firestore'
-import { CARTSESSIONNAME } from '~/composables/use'
+import { CARTSESSIONNAME } from '../session'
 import type { Arrayable, BaseSizeSet, CartItem, CartSessionData, ProductNode, Undefineable } from '~/types'
 
 /**
@@ -8,7 +8,6 @@ import type { Arrayable, BaseSizeSet, CartItem, CartSessionData, ProductNode, Un
  * and manage items in the cart, as well as syncing
  * the cart state with Firestore.
  * @param sizeSelected - Optional ref to track if size is selected
- * @return Cart management methods and state
  */
 export const useCartComposable = createGlobalState((sizeSelected?: Ref<boolean>) => {
   const _cart = ref<Arrayable<CartItem>>([])
@@ -116,7 +115,7 @@ export const useCartComposable = createGlobalState((sizeSelected?: Ref<boolean>)
     return product.node.sizeSet.some(s => s.name === size.name)
   }
 
-  // Helper: Find existing cart item
+  // Helper: Find existing cart item within product.a.b.c
   function _findCartItem(product: ProductNode, size: Undefineable<BaseSizeSet>) {
     if (!isDefined(size)) return null
 

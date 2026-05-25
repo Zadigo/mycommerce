@@ -11,6 +11,14 @@
           <p><span class="font-bold">Session initialized:</span> {{ isInitialized }}</p>
           <p><span class="font-bold">Session ID:</span> {{ sessionId }}</p>
           <p><span class="font-bold">Cart ID:</span> {{ cartSessionId }}</p>
+
+
+          <p><span class="font-bold">Payment Intent:</span> {{ paymentIntent }}</p>
+          <p><span class="font-bold">Has Payment Intent:</span> {{ hasPaymentIntent }}</p>
+
+          <volt-button @click="() => { void create(cartSession?.total) }">
+            Test payment intent
+          </volt-button>
         </div>
       </template>
 
@@ -54,4 +62,10 @@ onMounted(() => {
 
 const showLoginDrawer = useState<boolean>('showLoginDrawer')
 const showCartDrawer = useState<boolean>('showCartDrawer')
+
+/**
+ * Payment Intent
+ */
+
+const { create, hasPaymentIntent, paymentIntent } = usePaymentIntentComposable()
 </script>

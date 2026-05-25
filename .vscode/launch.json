@@ -135,7 +135,7 @@
             "request": "launch",
             "name": "Nuxt: My commerce (Client)",
             "url": "http://localhost:3000",
-            "webRoot": "${workspaceFolder}/frontend/app",
+            "webRoot": "${workspaceFolder}/frontend/mainsite/app",
             "presentation": {
                 "hidden": false,
                 "group": "Nuxt",
@@ -147,9 +147,9 @@
             "request": "launch",
             "name": "Nuxt: My commerce (Server)",
             "outputCapture": "std",
-            "cwd": "${workspaceFolder}/frontend",
-            "program": "${workspaceFolder}/frontend/node_modules/nuxt/bin/nuxt.mjs",
-            "envFile": "${workspaceFolder}/frontend/.env",
+            "cwd": "${workspaceFolder}/frontend/mainsite",
+            "program": "${workspaceFolder}/frontend/mainsite/node_modules/nuxt/bin/nuxt.mjs",
+            "envFile": "${workspaceFolder}/frontend/mainsite/.env",
             "args": [
                 "dev"
             ],
@@ -167,6 +167,7 @@
                 "Nuxt: My commerce (Server)",
                 "Nuxt: My commerce (Client)"
             ],
+            "preLaunchTask": "GoPurchase",
             "presentation": {
                 "hidden": false,
                 "group": "Nuxt",

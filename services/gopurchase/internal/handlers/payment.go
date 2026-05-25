@@ -111,11 +111,21 @@ func (p *PaymentApi) CreateIntent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// TODO: Session ID should be JWT token in order to be able to verify
+	// its authenticity and prevent malicious users from creating payment intents
+	// with random session IDs. The JWT token should contain the session ID and any other
+	// relevant information that we might need to create the payment intent. We can then verify the
+	// JWT token using a secret key and extract the session ID from it to create the payment intent.
+	if data.SessionId == "" {
+		message := DefaultErrorResponse{Detail: "Session ID is required", Message: "Please provide a valid session ID"}
+		JsonResponse(w, message, http.StatusBadRequest)
+		return
+	}
+
 	options := &stripe.PaymentIntentCreateParams{
 		// Customer:    stripe.String(customerID),
 		// ReturnURL:   stripe.String("https://example.com/return_url"),
 		// PaymentMethod: stripe.String("pm_card_visa"),
-		Amount:           stripe.Int64(int64(data.Total * 100)), // Convert to cents
 		Currency:         stripe.String(string(stripe.CurrencyEUR)),
 		Description:      stripe.String("Test Payment Intent"),
 		Metadata:         map[string]string{"sessionId": data.SessionId},
@@ -126,6 +136,13 @@ func (p *PaymentApi) CreateIntent(w http.ResponseWriter, r *http.Request) {
 		PaymentMethodTypes: []*string{
 			stripe.String("card"),
 		},
+	}
+
+	if data.Total > 0 {
+		// Only set the amount if it's greater than 0 in order to avoid
+		// raising an error from Stripe since the amount is required when
+		// creating a payment intent.
+		options.Amount = stripe.Int64(int64(data.Total * 100)) // Convert to cents
 	}
 
 	intent, err := p.PaymentClient.V1PaymentIntents.Create(p.Ctx, options)

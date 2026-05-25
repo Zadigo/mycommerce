@@ -18,6 +18,7 @@ func (a *App) loadRoutes() {
 
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
+	router.Use(handlers.Cors)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.Timeout(60 * time.Second))

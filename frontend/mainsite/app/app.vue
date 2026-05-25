@@ -30,6 +30,22 @@ import type { PaymentIntentApiResponse, Undefineable } from './types'
 useSetupSession()
 
 /**
+ * Payment Intent
+ */
+
+const { cartSession, cart } = useCartComposable()
+const { create, update, hasPaymentIntent, paymentIntent } = usePaymentIntentComposable()
+
+watch(cart, async () => {
+  if (!hasPaymentIntent.value) {
+    void create(cartSession?.value?.total)
+    
+  } else {
+    void update(cartSession?.value?.total)
+  }
+})
+
+/**
  * Authentication
  */
 
@@ -213,7 +229,7 @@ defineOrganization({
       availableLanguage: ['English', 'French'],
       hoursAvailable: {
         '@type': 'OpeningHoursSpecification',
-        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        dayOfWeek: days.value,
         opens: '09:00:00',
         closes: '18:00:00'
       }

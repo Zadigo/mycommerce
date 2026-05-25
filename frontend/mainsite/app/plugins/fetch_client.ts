@@ -1,12 +1,10 @@
 export default defineNuxtPlugin(async nuxtApp => {
   const access = useCookie('access')
   const refresh = useCookie('refresh')
-
-  // console.log('access/refresh', access.value, refresh.value)
-
+  
   const client = $fetch.create({
     baseURL: useRuntimeConfig().public.prodDomain,
-    onRequest({ request, options, error }) {
+    onRequest({ options }) {
       console.log('Authorization', access ? `Token ${access.value}` : '')
       options.headers.set('Content-Type', 'application/json')
       if (access.value) {
@@ -29,9 +27,17 @@ export default defineNuxtPlugin(async nuxtApp => {
     }
   })
 
+  const goPurchase = $fetch.create({
+    baseURL: useRuntimeConfig().public.golangProdUrl,
+    onRequest({ options }) {
+      options.headers.set('Content-Type', 'application/json')
+    }
+  })
+
   return {
     provide: {
-      client
+      client,
+      goPurchase
     }
   }
 })

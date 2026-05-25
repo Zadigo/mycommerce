@@ -3,7 +3,8 @@ import type { KeysAsType, Nullable } from '~/types'
 export type DefaultPaymentProviders = 'Stripe' | 'Klarna'
 
 export interface PaymentIntentApiResponse {
-  intent: Nullable<string>
+  intent: Nullable<string> // Django
+  paymentIntentId: Nullable<string> // GoPurchase
   client: Nullable<string>
   message: string
   headers: Record<string, string>

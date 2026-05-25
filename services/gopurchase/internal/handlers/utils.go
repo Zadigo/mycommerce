@@ -31,8 +31,8 @@ var CustomRequestUpgrader = websocket.Upgrader{
 }
 
 // CORS middleware to handle cross-origin requests
-func Cors(next http.HandlerFunc) http.HandlerFunc {
-	return func(response http.ResponseWriter, request *http.Request) {
+func Cors(next http.Handler) http.Handler {
+	fn := func(response http.ResponseWriter, request *http.Request) {
 		response.Header().Set("Access-Control-Allow-Origin", "*")
 		response.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		response.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
@@ -42,8 +42,26 @@ func Cors(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		next(response, request)
+		origin := request.Header.Get("Origin")
+		if _, ok := allowedOrigins[origin]; !ok {
+			http.Error(response, "Forbidden", http.StatusForbidden)
+			return
+		}
+
+		next.ServeHTTP(response, request)
 	}
+	return http.HandlerFunc(fn)
+}
+
+func Authorization(next http.Handler) http.Handler {
+	fn := func(response http.ResponseWriter, request *http.Request) {
+		authHeader := request.Header.Get("Authorization")
+		if authHeader == "" {
+			// http.Error(response, "Unauthorized", http.StatusUnauthorized)
+			// return
+		}
+	}
+	return http.HandlerFunc(fn)
 }
 
 type DefaultErrorResponse struct {
@@ -53,14 +71,15 @@ type DefaultErrorResponse struct {
 
 // JsonResponse is a helper function to send JSON responses with a given status code.
 func JsonResponse[T any](w http.ResponseWriter, data T, statusCode int) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-
 	err := json.NewEncoder(w).Encode(data)
+
 	if err != nil {
 		// If encoding fails, send a generic error response
 		http.Error(w, "Failed to encode JSON response", http.StatusInternalServerError)
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
 }
 
 // SendRequest is a utility function to send an HTTP request with a JSON
