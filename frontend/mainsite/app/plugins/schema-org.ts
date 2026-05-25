@@ -1,5 +1,5 @@
 export default defineNuxtPlugin(async () => {
-  const { sameAs, get } = await useBusinessDetails()
+  const { sameAs, get } = useBusinessDetails()
 
   useSchemaOrg([
     defineOrganization({

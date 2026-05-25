@@ -59,7 +59,7 @@ import type { BaseCountries } from '~/types'
 const i18nCountry = useCookie<BaseCountries>('i18nCountry')
 
 const { writeableSession } = useSession()
-const { activeSocials, get, getSocial, getSocialIcon } = await useBusinessDetails()
+const { activeSocials, get, getSocial, getSocialIcon } = useBusinessDetails()
 
 const emit = defineEmits<{ 'show-whatsapp': [] }>()
 

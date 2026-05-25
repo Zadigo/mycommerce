@@ -75,7 +75,7 @@ const toggleShowSearchModal = useToggle(showSearchModal)
  * Business
  */
 
-const { get } = await useBusinessDetails()
+const { get } = useBusinessDetails()
 
 /**
  * Authentication

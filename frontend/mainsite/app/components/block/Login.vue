@@ -10,7 +10,7 @@
       </volt-button>
 
       <p class="font-light mt-1 mb-8 text-center">
-        {{ $t('Login: Privacy Policy') }} <NuxtLinkLocale  id="link-legal-login-modal" to="/confidentialite" class="text-blue-600 underline">{{ $t('politique de confidentialité') }}</NuxtLinkLocale >
+        {{ $t('Login: Privacy Policy') }} <nuxt-link-locale  id="link-legal-login-modal" to="/confidentialite" class="text-blue-600 underline">{{ $t('politique de confidentialité') }}</nuxt-link-locale >
       </p>
 
       <form id="form-login" @submit.prevent>
@@ -68,7 +68,6 @@ const authenticatedCart = useSessionStorage('authenticatedCart', false)
  * Login
  */
 
-// Google Login
 async function handleGoogle () {
   try {
     const auth = getAuth($firebaseApp)
@@ -97,7 +96,6 @@ async function handleGoogle () {
   }
 }
 
-// Email/Password Login
 const { login, usernameField, password } = useLogin('username')
 const { closeAllModals } = useModalsState()
 </script>

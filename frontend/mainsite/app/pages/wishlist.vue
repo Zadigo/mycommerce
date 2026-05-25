@@ -88,7 +88,7 @@ useHead({
   ]
 })
 
-const { get } = await useBusinessDetails()
+const { get } = useBusinessDetails()
 
 useSeoMeta({
   title: t('Liste de souhait'),
@@ -133,10 +133,8 @@ useSeoMeta({
 //   }
 // })))
 
-defineOgImage('Nuxt', {
-  url: '/images/group1/img1.jpeg',
-  width: 1200,
-  height: 630,
-  alt: t('Découvrez toutes notre collection de vêtements')
+defineOgImage('NuxtSeoTakumi', {
+  title: "Some title",
+  description: "Some description"
 })
 </script>

@@ -53,7 +53,7 @@ const { products, productsCount, toggleModal } = await useProductsComposable()
  * Schema
  */
 
-const { get } = await useBusinessDetails()
+const { get } = useBusinessDetails()
 
 useSeoMeta({
   title: useChangeCase(id as string, 'capitalCase'),
@@ -98,10 +98,8 @@ useSchemaOrg(products.value.map(x => defineProduct({
   }
 })))
 
-defineOgImage('Nuxt', {
-  url: '/images/group1/img1.jpeg',
-  width: 1200,
-  height: 630,
-  alt: t('Découvrez toutes notre collection de vêtements')
+defineOgImage('NuxtSeoTakumi', {
+  title: "Some title",
+  description: "Some description"
 })
 </script>

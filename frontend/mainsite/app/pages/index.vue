@@ -89,10 +89,8 @@ useSeoMeta({
   twitterCard: 'summary_large_image'
 })
 
-defineOgImage('Nuxt', {
-  url: '/images/group1/img1.jpeg',
-  width: 1200,
-  height: 630,
-  alt: title
+defineOgImage('NuxtSeoTakumi', {
+  title: "Some title",
+  description: "Some description"
 })
 </script>

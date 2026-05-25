@@ -8,10 +8,10 @@
     </div>
     
     <div class="mb-10 overflow-y-scroll">
-      <Transition name="opacity">
+      <transition name="opacity">
         <block-signup v-if="showSignup" @authenticate="debouncedAuthenticateCart" />
         <block-login v-else @show-signup="showSignup=true" @authenticate="debouncedAuthenticateCart" />
-      </Transition>
+      </transition>
     </div>
   </volt-drawer>
 </template>

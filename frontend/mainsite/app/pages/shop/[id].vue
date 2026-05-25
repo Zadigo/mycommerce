@@ -104,7 +104,7 @@ const [showCompositionModal, toggleCompositionModal] = useToggle<boolean>(false)
  */
 
 const route = useRoute()
-const { get } = await useBusinessDetails()
+const { get } = useBusinessDetails()
 
 const url = useRuntimeConfig().public.siteUrl
 
@@ -158,11 +158,9 @@ if (isDefined(product)) {
     })
   )
 
-  defineOgImage('Nuxt', {
-    url: product.value.node.mainImage.original,
-    width: 1200,
-    height: 630,
-    alt: name
+  defineOgImage('NuxtSeoTakumi', {
+    title: name,
+    description,
   })
 }
 </script>
