@@ -134,7 +134,7 @@ export const IMAGE_GROUPS: Record<number, string[]> = {
 export function useGenerateProducts(count = 10): Ref<Product> {
   const node = ref(productGraphqlFixture)
 
-  node.value.data.allProducts.edges = Array.from({ length: count }, (_, i) => {
+  node.value.data.allProducts.edges = Array.from({ length: count }, (_, _i) => {
     const randomGroup = faker.number.int({ min: 1, max: 7 })
     const imageGroup = IMAGE_GROUPS[randomGroup]
 

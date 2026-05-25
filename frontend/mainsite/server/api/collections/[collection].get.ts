@@ -61,7 +61,7 @@
 //   }
 // })
 
-import { useGenerateProducts } from '~~/layers/base/app/data/__fixtures__' 
+import { useGenerateProducts } from '~~/layers/base/app/utils/__fixtures__' 
 
 // export default defineCachedEventHandler(async (_event) => {
 //   return await generateProducts(5)

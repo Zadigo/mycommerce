@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { productFixture } from '~~/layers/base/app/data/__fixtures__'
+import { productFixture } from '~~/layers/base/app/utils/__fixtures__'
 
 mockNuxtImport('useCookie', () => {
   return (_name: string, _options?: object) => {

@@ -67,7 +67,7 @@ export default defineNuxtConfig({
   },
 
   nuxtAuthentication: {
-    domain: process.env.NUXT_PUBLIC_DJANGO_PROD_URL || 'http://127.0.0.1:8000',
+    domain: process.env.NUXT_PUBLIC_DJANGO_PROD_URL,
     accessEndpoint: '/auth/v1/token/',
     refreshEndpoint: '/auth/v1/token/refresh/',
     verifyEndpoint: '/auth/v1/token/verify/'

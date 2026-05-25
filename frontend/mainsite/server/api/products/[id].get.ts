@@ -1,4 +1,4 @@
-import { useGenerateProducts } from '~~/layers/base/app/data/__fixtures__/products'
+import { useGenerateProducts } from '~~/layers/base/app/utils/__fixtures__/products'
 
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')

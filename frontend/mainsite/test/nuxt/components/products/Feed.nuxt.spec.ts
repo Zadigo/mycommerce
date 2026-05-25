@@ -2,7 +2,7 @@ import { ProductsFeed, ProductsFeedHeader, ProductsIterator } from '#components'
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterAll, describe, expect, it, vi } from 'vitest'
 import { ref } from 'vue'
-import { productFixture } from '~~/layers/base/app/data/__fixtures__'
+import { productFixture } from '~~/layers/base/app/utils/__fixtures__'
 
 const { mockUseFetch, mockUseRoute } = vi.hoisted(() => ({
   mockUseFetch: vi.fn(),
