@@ -36,8 +36,7 @@ export const useSearchComposable = createGlobalState(() => {
                   }
                 }
               }
-            }
-          `,
+            }`,
             variables: {
               name: debouncedSearch.value
             }

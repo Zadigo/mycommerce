@@ -24,8 +24,8 @@ export function useImageComponentComposable(product: MaybeType<ProductNode>) {
     6: SixImages
   }
 
-  const _product = toValue(product)
-  const imagesComponent = computed((): Component => isDefined(_product) ? imageComponentMap[_product.node.productImages.length] || NoImages : NoImages)
+  const _product = toRef(product)
+  const imagesComponent = computed((): Component => isDefined(_product) ? imageComponentMap[_product.value.node.productImages.length] || NoImages : NoImages)
 
   return {
     /**
