@@ -1,5 +1,4 @@
 {
-    "tailwind-fold.autoFold": false,
     "vitest.rootConfig": "${workspaceFolder}/frontend/mainsite/vitest.config.ts",
     "[python]": {
        "editor.codeActionsOnSave": {

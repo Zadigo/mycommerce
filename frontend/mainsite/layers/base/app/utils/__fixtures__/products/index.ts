@@ -20,7 +20,7 @@ export const productFixture: ProductNode = {
     modifiedOn: faker.date.past().toISOString(),
     onSale: faker.datatype.boolean({ probability: 0.1 }),
     unitPrice: 100,
-    subCategory: 'some',
+    subCategory: 'Skirts subcategory',
     slug: faker.lorem.slug(),
     sku: faker.string.alphanumeric(8).toUpperCase(),
     salePrice: 80,

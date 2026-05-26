@@ -1,5 +1,5 @@
 import { updateDoc } from 'firebase/firestore'
-import type { Nullable, PaymentIntentApiResponse, ShipingInformation } from '~/types'
+import type { Nullable, Arrayable, PaymentIntentApiResponse, ShipingInformation, CartItem } from '~/types'
 
 /**
  * A composable used to manage the Stripe Payment Intent state globally.
@@ -16,7 +16,7 @@ export const usePaymentIntentComposable = createGlobalState(() => {
   // Requests a new payment intent and returns an
   // intent ID that will be used to confirm the payment
   // on the actual payment page
-  async function create(total = 0) {
+  async function create<T extends CartItem>(total = 0, items?: Arrayable<T>) {
     // We want to use one single payment intent
     // per session in order to have proper tracking
     // of the customer's payment attempts
@@ -28,7 +28,8 @@ export const usePaymentIntentComposable = createGlobalState(() => {
       method: 'POST',
       body: {
         sessionId: cartSessionId.value,
-        total
+        total,
+        items: toValue(items)
       },
       onRequestError({ error }) {
         console.log('Error creating payment intent:', error)
@@ -57,7 +58,7 @@ export const usePaymentIntentComposable = createGlobalState(() => {
     // paymentIntent.value = data.intent
   }
 
-  async function update(total: Nullable<number> = null, shipment: MaybeRef<Nullable<ShipingInformation>> = null) {
+  async function update<T extends CartItem>(total: Nullable<number> = null, shipment: MaybeRef<Nullable<ShipingInformation>> = null, items?: Arrayable<T>) {
     if (isDefined(docRef) && isDefined(cartSession)) {
       $client('orders/v1/intent/update', {
         method: 'POST',
@@ -66,12 +67,14 @@ export const usePaymentIntentComposable = createGlobalState(() => {
           session_id: docRef.id,
           shipment: toValue(shipment),
           total,
-          intent: cartSession.value.paymentIntent
+          intent: cartSession.value?.paymentIntent,
+          items: toValue(items)
         } as {
           session_id: string
           shipment: Nullable<ShipingInformation>
           total: Nullable<number>,
-          intent: string
+          intent: string,
+          items: Arrayable<T>
         },
         onRequestError({ error }) {
           customHandleError(error)
@@ -83,7 +86,7 @@ export const usePaymentIntentComposable = createGlobalState(() => {
   watchDebounced(paymentIntent, async (newValue) => {
     if (isDefined(newValue) && isDefined(docRef)) {
       try {
-        updateDoc(docRef, { paymentIntent: newValue })
+        void updateDoc(docRef, { paymentIntent: newValue })
       } catch (error) {
         console.error('Error updating payment intent in Firestore:', error)
       }

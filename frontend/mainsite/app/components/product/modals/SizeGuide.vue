@@ -31,7 +31,7 @@
       </div>
 
       <div class="col mt-4 mb-10">
-        <volt-button class="w-full" @click="() => { add(product, selectedSize) }">
+        <volt-button class="w-full" @click="() => { createItem(product, selectedSize) }">
           {{ $t('Ajouter au panier') }}
         </volt-button>
       </div>
@@ -90,5 +90,5 @@ const show = defineModel<boolean>('show', { type: Boolean, default: false })
  */
 
 const { selectedSize, selectSize } = useSizeSelection(props.product)
-const { add } = useCartComposable()
+const { createItem } = useCartComposable()
 </script>

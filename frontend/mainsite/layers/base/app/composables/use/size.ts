@@ -8,26 +8,25 @@ import type { BaseSizeSet, ProductNode } from '~/types'
 export const useSizeSelection = createGlobalState(<P extends ProductNode = ProductNode, S extends BaseSizeSet = BaseSizeSet>(product: P) => {
   if (import.meta.server) {
     return {
-      hasSelection: ref(false),
-      availableSizes: ref<S[]>([]),
-      selectedSize: ref<S>(),
-      history: ref<S[]>([]),
-      hasSizes: ref(false),
+      hasSelection: readonly(ref(false)),
+      availableSizes: readonly(ref<S[]>([])),
+      selectedSize: readonly(ref<S | undefined>(undefined)),
+      history: readonly(ref<S[]>([])),
       selectSize: () => {},
       reset: () => {},
       buttonState: (_size: S) => 'unavailable' as 'selected' | 'available' | 'unavailable',
     }
   }
   
-  const _product = toValue(product)
-  const availableSizes = computed(() => _product.node.sizeSet)
+  const _product = toRef(product)
+  const availableSizes = computed(() => _product.value.node.sizeSet)
 
   const selectedSize = ref<BaseSizeSet>()
   const hasSelection = computed(() => isDefined(selectedSize))
   const { history } = useRefHistory(selectedSize)
 
   function _selectSize(size: S) {
-    const canBeSelected = _product.node.hasSizes && size.availability
+    const canBeSelected = _product.value.node.hasSizes && size.availability
 
     if (canBeSelected) {
       selectedSize.value = size
@@ -38,11 +37,9 @@ export const useSizeSelection = createGlobalState(<P extends ProductNode = Produ
   
   const selectSize = useThrottleFn(_selectSize, 200)
 
-  function _reset() {
+  function reset() {
     selectedSize.value = undefined
   }
-
-  const reset = useThrottleFn(_reset, 200)
 
   // TODO: Helper to check if a size was previously selected by the user
   // function wasSelected(size: S): boolean {
@@ -54,7 +51,7 @@ export const useSizeSelection = createGlobalState(<P extends ProductNode = Produ
   function _buttonState(size: S): 'selected' | 'available' | 'unavailable' {
     if (isDefined(selectedSize) && selectedSize.value.name === size.name) {
       return 'selected'
-    } else if (_product.node.hasSizes && size.availability) {
+    } else if (_product.value.node.hasSizes && size.availability) {
       return 'available'
     } else {
       return 'unavailable'
@@ -78,7 +75,7 @@ export const useSizeSelection = createGlobalState(<P extends ProductNode = Produ
      * The currently selected size
      * @default 'Unique'
      */
-    selectedSize,
+    selectedSize: readonly(selectedSize),
     /**
      * The history of selected sizes
      * @default []
@@ -103,7 +100,7 @@ export const useSizeSelection = createGlobalState(<P extends ProductNode = Produ
 })
 
 /**
- * Composable to check if a specific size is selected for a product
+ * Helper composable to check if a specific size is selected for a product
  * @param size -  The size to check
  * @param product - The current product
  */

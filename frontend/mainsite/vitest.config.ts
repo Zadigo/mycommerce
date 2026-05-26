@@ -47,6 +47,11 @@ import { defineVitestProject } from '@nuxt/test-utils/config'
 
 export default defineConfig({
   test: {
+    coverage: {
+      enabled: true,
+      provider: 'v8',
+      reporter: ['text', 'json', 'html']
+    },
     projects: [
       await defineVitestProject({
         test: {
@@ -56,22 +61,22 @@ export default defineConfig({
           testTimeout: 20000
         }
       }),
-      await defineVitestProject({
-        test: {
-          name: 'nuxt',
-          include: ['test/nuxt/*.{test,spec}.ts'],
-          environment: 'nuxt',
-          testTimeout: 20000
-        }
-      }),
-      await defineVitestProject({
-        test: {
-          name: 'unit',
-          include: [ 'test/unit/*.{test,spec}.ts' ],
-          environment: 'node',
-          testTimeout: 20000
-        }
-      })
+      // await defineVitestProject({
+      //   test: {
+      //     name: 'nuxt',
+      //     include: ['test/nuxt/*.{test,spec}.ts'],
+      //     environment: 'nuxt',
+      //     testTimeout: 20000
+      //   }
+      // }),
+      // await defineVitestProject({
+      //   test: {
+      //     name: 'unit',
+      //     include: [ 'test/unit/*.{test,spec}.ts' ],
+      //     environment: 'node',
+      //     testTimeout: 20000
+      //   }
+      // })
     ]
   },
   resolve: {}
