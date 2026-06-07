@@ -14,40 +14,31 @@
 
 # Nuxt
 
-- [x] Check caching with Redis
-- [x] Change all the links to point to the localized version of the page when the user changes language
-- [x] Implement and test Firebase to Pinia
-- [x] Implement and test FireAuth for Google authentication
-- [x] Use Iconify the global icon library for the app / uninstall fontaweme [see](https://iconify.design/getting-started/)
-- [x] Add Redis connection in order to cache certain server requests
-- [x] Add caching features to certain requests in the server API
-- [x] Create a large session and localstorage file that encompasses all the elements we need into one unique json space. This avoids us from having to spread the data everywhere
+- [X] Check caching with Redis
+- [X] Change all the links to point to the localized version of the page when the user changes language
+- [X] Implement and test Firebase to Pinia
+- [X] Implement and test FireAuth for Google authentication
+- [X] Use Iconify the global icon library for the app / uninstall fontaweme [see](https://iconify.design/getting-started/)
+- [X] Add Redis connection in order to cache certain server requests
+- [X] Add caching features to certain requests in the server API
+- [X] Create a large session and localstorage file that encompasses all the elements we need into one unique json space. This avoids us from having to spread the data everywhere
 - [ ] When the user scrolls on the `/shop/collection/collectionName` page, place the page header to fixed
 - [ ] When adding a product to the cart, there is no products in the cart drawer which forces the user to refresh the page to see the items added
 - [ ] When adding a product the the cart, the last product added shows nothing
 - [ ] Remove the effects of dark mode on the website
 
-// Hydration errors: 
+- Error when visiting: http://localhost:3000/shop/30 / product is null / cannot click on add to cart
+- Also: http://localhost:3000/shop/21
+
+// Hydration errors:
 // https://www.lichter.io/articles/vue-hydration-error/
 // https://stackoverflow.com/questions/47862591/vuejs-error-the-client-side-rendered-virtual-dom-tree-is-not-matching-server-re/67978474#67978474
 // https://stackoverflow.com/questions/78552115/hydration-completed-but-contains-mismatches-using-veevalidate-and-pinia-in-nuxt
 
 # Ionic
 
-- [x] Implement and test Firebase to Pinia
-- [x] Implement and test FireAuth for Google authentication
-- [ ] Finalize the main design parts of the application (we don't really intend to make a full usable app but more of a base template)
-
-
-# Quasar
-
-- [ ] Finalize the application home page
-- [ ] Implement and test the ability to add/update a product
-- [ ] Implement and test the ability to upload multiple images to a product (in creation mode or on the images page)
-- [ ] Implement the ability to delete and image or images
-- [ ] Implement the ability to link multiple images to a specific given product
-
-# Overall
-
+- [X] Implement and test Firebase to Pinia
+- [X] Implement and test FireAuth for Google authentication
+- [ ] Finalize the main design parts of the application (we don't really intend to make a full usable app but more of a base template)Overall
 - [ ] Normalize and test the composables: utilities, use django utilities, use axios client
-- [x] Finalize and test the final website prototype
+- [X] Finalize and test the final website prototype

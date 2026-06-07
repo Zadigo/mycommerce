@@ -29,6 +29,11 @@
             "path": "services/addresses",
             "envManager": "ms-python.python:venv",
             "packageManager": "ms-python.python:pip"
+        },
+        {
+            "path": "services/mystore",
+            "envManager": "ms-python.python:venv",
+            "packageManager": "ms-python.python:pip"
         }
     ]
 }
