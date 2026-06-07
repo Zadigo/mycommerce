@@ -4,8 +4,10 @@
     "python.testing.autoTestDiscoverOnSaveEnabled": true,
     "python.testing.pytestArgs": [
         "-v",
+        "--headed",
         "--cov=mystore",
         "--cov-report=markdown",
+        "--cov-report=html",
         "-s",
         "-p",
         "tests"
