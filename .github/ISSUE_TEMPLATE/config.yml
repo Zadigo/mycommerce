@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📚 Lorelie Documentation
+    url: https://github.com/Zadigo/lorelie#readme
+    about: Check the documentation for usage of Lorelie
