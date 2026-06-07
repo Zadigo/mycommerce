@@ -11,3 +11,9 @@
 * [ ] Implement Django import export with celery: [link](https://github.com/auto-mat/django-import-export-celery) and/or [link](https://github.com/saritasa-nest/django-import-export-extensions)
 * [ ] Implement interface to download the products catalogue in csv for Facebook catalog: [link](https://faq.businesstech.fr/en/faq/228-how-to-import-my-products-into-a-facebook-catalog), [see](https://developers.facebook.com/docs/commerce-platform/catalog/fields/)
 * [ ] Implement user permissions classes for accounts and sensible information
+
+
+## Accounts
+
+* [ ] Continue adding tests for the serializers
+* [ ] Remove useless code and patterns

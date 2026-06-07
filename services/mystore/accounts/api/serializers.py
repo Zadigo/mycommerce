@@ -2,11 +2,10 @@ from typing import Any
 
 from django.contrib.auth import get_user_model, password_validation
 from django.utils.crypto import get_random_string
-from rest_framework import fields
+from rest_framework import fields, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
-
 from accounts import tasks
 from accounts.models import Address
 
@@ -65,7 +64,7 @@ class UserRegistrationSerializer(ModelSerializer):
             'password_confirmation'
         ]
 
-    def validate_username(self, value):
+    def validate_username(self, value: str):
         qs = get_user_model().objects.filter(username=value)
         if qs.exists():
             raise ValidationError(
@@ -75,7 +74,7 @@ class UserRegistrationSerializer(ModelSerializer):
             )
         return value
     
-    def validate_email(self, value):
+    def validate_email(self, value: str):
         qs = get_user_model().objects.filter(email=value)
         if qs.exists():
             raise ValidationError(
@@ -95,10 +94,12 @@ class UserRegistrationSerializer(ModelSerializer):
 
         if password != password_confirmation:
             raise ValidationError(
-                detail={'password': 'Passwords do not match'})
+                detail={'password': 'Passwords do not match'},
+                code=status.HTTP_400_BAD_REQUEST
+            )
 
         if password is None:
-            raise ValidationError(detail={'password': 'Password is not valid'})
+            raise ValidationError(detail={'password': 'Password is not valid'}, code=status.HTTP_400_BAD_REQUEST)
 
         password_validation.validate_password(password)
         return attrs

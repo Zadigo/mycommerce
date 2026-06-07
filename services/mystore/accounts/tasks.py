@@ -1,14 +1,13 @@
-from accounts.models import Address
-import stripe
 import requests
+import stripe
 from celery import shared_task
 from celery.utils.log import get_task_logger
-from django.contrib.auth import get_user_model
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-from accounts.models import Address
 from django.tasks import task
 
+from accounts.models import Address
 
 logger = get_task_logger(__name__)
 
@@ -77,7 +76,7 @@ def update_profile_workflow(email: str):
         }
 
     try:
-        result = stripe.Customer.modify(**params)
+        stripe.Customer.modify(**params)
     except stripe.error.StripeError as e:
         logger.error(
             "Stripe error during customer "
@@ -98,7 +97,8 @@ def signup_reviews_api(credentials_response: dict | bool, email: str, password: 
             data=credentials,
             headers=headers
         )
-    except:
+    except Exception as e:
+        logger.error(f"Error during signup reviews API call for {email}: {str(e)}")
         pass
     else:
         if response.ok:
@@ -168,5 +168,13 @@ def testing_django_task(email: str):
             }
         }
 
-    result = stripe.Customer.modify(**params)
+    try:
+        stripe.Customer.modify(**params)
+    except stripe.error.StripeError as e:
+        logger.error(
+            "Stripe error during customer "
+            f"modification for {user.email}: {str(e)}"
+        )
+        return {'error': str(e)}
+
     return {'email': str(user.email)}
