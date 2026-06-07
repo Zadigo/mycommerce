@@ -5,9 +5,9 @@
     "python.testing.pytestArgs": [
         "-v",
         "--headed",
-        "--cov=mystore",
-        "--cov-report=markdown",
-        "--cov-report=html",
+        "--cov=.",
+        "--cov-report=markdown:mystore-coverage.md",
+        "--cov-report=html:mystore-coverage",
         "-s",
         "-p",
         "tests"

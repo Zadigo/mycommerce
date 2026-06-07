@@ -170,3 +170,4 @@ pnpm-debug.log*
 project.ini
 
 cache/
+*-coverage*

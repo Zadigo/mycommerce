@@ -25,7 +25,7 @@ class AuthenticatedTestCase(APITestCase):
 
         self.assertEqual(response.status_code, 200, 'Authentication failed')
 
-        token = response.json().get('access')
+        token: str = response.json().get('access')
         self.assertIsNotNone(token, 'Token retrieval failed')
 
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {token}')

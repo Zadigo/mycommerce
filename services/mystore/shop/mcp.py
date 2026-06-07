@@ -1,25 +1,25 @@
 import base64
 import itertools
+import mimetypes
 from typing import Annotated, Optional
 
 import pydantic
-import mimetypes
 from django.core.cache import cache
 from django_mcp import mcp_app as mcp
+from mcp.types import ImageContent, TextContent
 from mcp_server import MCPToolset, ModelQueryToolset
-from shop.api.serializers import ProductSerializer, WishlistSerializer, ImageSerializer
-from shop.models import Image, Product, Video, Wishlist
-from mcp.types import TextContent, ImageContent
 
-from shop.choices import GenderChoices, AgeGroupChoices
 from mystore.choices import CategoryChoices
-from variants.choices import VariantMetrics
 from mystore.constants import SUB_CATEGORIES
+from shop.api.serializers import ImageSerializer, ProductSerializer, WishlistSerializer
+from shop.choices import AgeGroupChoices, GenderChoices
+from shop.models import Image, Product, Video, Wishlist
+from variants.choices import VariantMetrics
 from variants.models import Size
 
 
 class CreateProductModel(pydantic.BaseModel):
-    name: str = pydantic.Field(..., required=True)
+    name: str = pydantic.Field(..., json_schema_extra={})
     color: str
     sku: str
     age_group_category: AgeGroupChoices = AgeGroupChoices.ADULT
@@ -37,8 +37,8 @@ class CreateProductModel(pydantic.BaseModel):
 
 class UpdateProductModel(CreateProductModel):
     id: int = pydantic.Field(..., required=True, gt=0)
-    model_height: Optional[int] = pydantic.Field(160, required=False, gte=160)
-    model_size: Optional[int] = pydantic.Field(40, required=False, gte=40)
+    model_height: Optional[int] = pydantic.Field(160, json_schema_extra={'description': 'Model height in cm'}, required=False, gte=160)
+    model_size: Optional[int] = pydantic.Field(40, json_schema_extra={'description': 'Model size in EU sizing'}, required=False, gte=32)
     active: bool = False
 
 

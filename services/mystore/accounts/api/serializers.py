@@ -1,11 +1,14 @@
-from accounts import tasks
-from accounts.models import Address
+from typing import Any
+
 from django.contrib.auth import get_user_model, password_validation
 from django.utils.crypto import get_random_string
 from rest_framework import fields
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
+
+from accounts import tasks
+from accounts.models import Address
 
 
 class AddressSerializer(ModelSerializer):
@@ -55,7 +58,12 @@ class UserRegistrationSerializer(ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['username', 'email', 'password', 'password_confirmation']
+        fields = [
+            'username', 
+            'email', 
+            'password', 
+            'password_confirmation'
+        ]
 
     def validate_username(self, value):
         qs = get_user_model().objects.filter(username=value)
@@ -77,7 +85,7 @@ class UserRegistrationSerializer(ModelSerializer):
             )
         return value
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict[str, Any]):
         username = attrs.get('username')
         if username is None:
             attrs['username'] = f'user_{get_random_string(length=12)}'

@@ -3,7 +3,7 @@ from typing import List, Optional
 import pydantic
 from django.core.cache import cache
 from mcp_server import MCPToolset, ModelQueryToolset
-from pydantic import (FieldValidationInfo, field_validator)
+from pydantic import ValidationInfo, field_validator
 
 from variants.models import Size
 
@@ -51,7 +51,7 @@ class FacebookCatalog(pydantic.BaseModel):
 
     @field_validator('fb_product_category', 'color', 'gender', 'age_group', 'material', 'pattern')
     @classmethod
-    def global_validation(cls, value, info: FieldValidationInfo):
+    def global_validation(cls, value, info: ValidationInfo):
         if info.field_name == 'fb_product_category':
             if info.field_name is not None:
                 pass

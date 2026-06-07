@@ -7,6 +7,7 @@ from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt import views as jwt_views
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from accounts.api import serializers
 from accounts.models import Address
@@ -91,14 +92,16 @@ class Signup(generics.CreateAPIView):
     serializer_class = serializers.UserRegistrationSerializer
     permission_classes = [AllowAny]
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer: serializers.UserRegistrationSerializer):
         return serializer.save()
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         instance = self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
+        
         response_serializer = serializers.UserSerializer(instance=instance)
         return Response(response_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
