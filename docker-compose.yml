@@ -1,6 +1,6 @@
 services:
   mystore:
-    build: ./mystore
+    build: ./services/mystore
     container_name: app_mystore
     labels:
       - traefik.enable=true
@@ -20,7 +20,7 @@ services:
       - ecommerce
 
   mystore_celery:
-    build: ./mystore
+    build: ./services/mystore
     container_name: app_mystore_celery
     command: celery -A mystore.celery_app worker --loglevel=info --logfile=celery.log
     env_file:
@@ -29,7 +29,7 @@ services:
       - ./docker/environment/rabbitmq.env
       - ./docker/environment/redis.env
     volumes:
-      - ./mystore:/code
+      - ./services/mystore:/code
     depends_on:
       - rabbitmq
       - redis
@@ -37,7 +37,7 @@ services:
       - ecommerce
 
   mystore_celery_beat:
-    build: ./mystore
+    build: ./services/mystore
     container_name: app_mystore_celery_beat
     command: |
       celery -A mystore.celery_app beat --loglevel=info --logfile=celery_beat.log &&
@@ -53,7 +53,7 @@ services:
       - ecommerce
 
   mystore_flower:
-    build: ./mystore
+    build: ./services/mystore
     container_name: flower_mystore
     command: celery -A mystore.celery_app flower --loglevel=info --logfile=flower.log
     restart: always
@@ -100,7 +100,7 @@ services:
       - ecommerce
 
   mycart_celery:
-    build: ./mycart
+    build: ./services/mycart
     container_name: app_cart_celery
     command: celery -A mycart.celery_app worker --loglevel=info --logfile=celery.log
     env_file:
@@ -109,7 +109,7 @@ services:
       - ./docker/environment/rabbitmq.env
       - ./docker/environment/redis.env
     volumes:
-      - ./mycart:/code
+      - ./services/mycart:/code
     depends_on:
       - rabbitmq
       - redis
@@ -117,7 +117,7 @@ services:
       - ecommerce
 
   mycart_celery_beat:
-    build: ./mycart
+    build: ./services/mycart
     container_name: app_mycart_celery_beat
     command: |
       celery -A mycart.celery_app beat --loglevel=info --logfile=celery_beat.log &&
@@ -133,7 +133,7 @@ services:
       - ecommerce
 
   mycart_flower:
-    build: ./mycart
+    build: ./services/mycart
     container_name: flower_mycart
     command: celery -A mycart.celery_app flower --loglevel=info --logfile=flower.log
     restart: always
@@ -155,7 +155,7 @@ services:
     ports:
       - 5555:80
     volumes:
-      - ./mycart:/code
+      - ./services/mycart:/code
     networks:
       - ecommerce
 
