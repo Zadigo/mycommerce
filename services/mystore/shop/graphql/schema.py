@@ -5,11 +5,20 @@ import graphene
 from django.core.cache import cache
 from graphene import relay
 from graphql import GraphQLResolveInfo
+
+from mystore.custom_utilities.word_processor import FuzzyMatcher
+from shop.graphql.types import (
+    ImageType,
+    ProductConnection,
+    ProductNoveltyConnection,
+    ProductNoveltyType,
+    ProductType,
+    RecommendationsType,
+    VideoType,
+)
 from shop.models import Image, Novelty, Product
 from shop.utils import transform_to_snake_case
 
-from mystore.custom_utilities.word_processor import FuzzyMatcher
-from shop.graphql.types import ProductConnection, ImageType, ProductType, ProductNoveltyType, ProductNoveltyConnection, RecommendationsType, VideoType
 
 class ProductQuery(graphene.ObjectType):
     all_products = relay.ConnectionField(
@@ -134,7 +143,7 @@ class ProductQuery(graphene.ObjectType):
         return qs
 
     def resolve_recommendations(self, info: GraphQLResolveInfo, product_name: Optional[str]=None, product_category: Optional[str]=None, quantity: int=10, **kwargs):
-        cache_key = f'productsForRecommendations'
+        cache_key = 'productsForRecommendations'
         if product_name is not None:
             name = transform_to_snake_case(product_name)
             cache_key += f'_{name}'

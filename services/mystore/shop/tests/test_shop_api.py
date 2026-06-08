@@ -31,7 +31,7 @@ class TestShopApi(AuthenticatedTestCase):
                         self.assertEqual(
                             item['get_price'],
                             item['sale_price'],
-                            f'Prices do not match'
+                            'Prices do not match'
                         )
                     except AssertionError as e:
                         print(

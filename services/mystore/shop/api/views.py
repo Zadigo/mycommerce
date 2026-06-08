@@ -5,15 +5,15 @@ import pandas
 from django.core.cache import cache
 from django.db.models import Case, Q, When
 from django.shortcuts import get_object_or_404
-from shop.typings import TypeRestFrameworkRequest
 from rest_framework import generics
 from rest_framework.mixins import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from shop.api import CustomPagination
-from shop.api import serializers
+
+from shop.api import CustomPagination, serializers
 from shop.models import Novelty, Product, Sale
 from shop.processors import FuzzyMatcherMixin
+from shop.typings import TypeRestFrameworkRequest
 
 
 class ListProducts(generics.ListAPIView):
@@ -200,7 +200,7 @@ class ListRecommendations(generics.ListAPIView):
 
         try:
             quantity = int(quantity)
-        except:
+        except Exception:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
         if is_integer:

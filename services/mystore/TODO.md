@@ -12,8 +12,16 @@
 * [ ] Implement interface to download the products catalogue in csv for Facebook catalog: [link](https://faq.businesstech.fr/en/faq/228-how-to-import-my-products-into-a-facebook-catalog), [see](https://developers.facebook.com/docs/commerce-platform/catalog/fields/)
 * [ ] Implement user permissions classes for accounts and sensible information
 
-
 ## Accounts
 
 * [ ] Continue adding tests for the serializers
 * [ ] Remove useless code and patterns
+
+## Shop
+
+Test for shop.test_shop_graphql fails because the graphql endpoint cannot be found
+
+```text
+
+'Not Found' unexpectedly found in '\n<!doctype html>\n<html lang="en">\n<head>\n  <title>Not Found</title>\n</head>\n<body>\n  <h1>Not Found</h1><p>The requested resource was not found on this server.</p>\n</body>\n</html>\n' : b'\n<!doctype html>\n<html lang="en">\n<head>\n  <title>Not Found</title>\n</head>\n<body>\n  <h1>Not Found</h1><p>The requested resource was not found on this server.</p>\n</body>\n</html>\n'
+```
