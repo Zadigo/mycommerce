@@ -1,0 +1,257 @@
+{% load i18n static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+
+    <style> 
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+        :root {
+            --primary-color: #3B71CA;
+            --danger-color: #DC4C64;
+            --success-color: #14A44D;
+            --info-color: #54B4D3;
+            --dark-color: #332D2D;
+            --gray: #f8f9fa;
+            --light: #fbfbfb;
+            --white: #fff;
+            
+            --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            
+            --border-radius: 0.375rem;
+            --font-family: 'Poppins', 'Roboto', 'Arial', sans-serif;
+        }
+
+        * {
+            font-family: var(--font-family);
+        }
+
+        body {
+            margin: 0; 
+            padding: 0; 
+            font-family: Arial, 
+            sans-serif; 
+            background-color: var(--gray);
+        }
+
+        .container {
+            max-width: 600px; 
+            margin: 0 auto; 
+            background-color: #ffffff;
+            box-shadow: var(--shadow-sm);
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .header {
+            padding: 20px; 
+            text-align: center; 
+            background-color: var(--primary-color); 
+            color: var(--white);
+            border-top-left-radius: var(--border-radius);
+            border-top-right-radius: var(--border-radius);
+        }
+
+        h1 {
+            margin: 0; 
+            font-size: 24px;
+        }
+
+        a:not(.button) {
+            color: #007bff;
+            text-decoration: none
+        }
+
+        .card-body {
+            --card-body-padding: 1.5rem;
+
+            font-weight: 300;
+            padding: var(--card-body-padding) var(--card-body-padding);
+            text-align: center;
+        }
+        
+        .footer {
+            padding: 20px; 
+            text-align: center; 
+            background-color: var(--light); 
+            font-size: 12px; 
+            color: #777777;
+            border-bottom-left-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
+        }
+
+        .button {
+            --btn-padding-x: 1.5rem;
+            --btn-padding-y: 0.375rem;
+            --btn-font-size: 0.75rem;
+
+            --btn-bg: #3b71ca;
+            --btn-color: #fff;
+            --btn-box-shadow: 0 4px 9px -4px rgb(56.05, 107.35, 191.9);
+            --btn-hover-bg: rgb(56.05, 107.35, 191.9);
+            --btn-hover-color: #fff;
+
+            display: inline-block; 
+            padding: calc(var(--btn-padding-y) * 3) calc(var(--btn-padding-x) * 2); 
+            background-color: var(--btn-bg); 
+            color: var(--btn-color); 
+            text-decoration: none; 
+            border-radius: 4px; 
+            font-weight: 500;
+            font-size: calc(var(--btn-font-size) * 1.25);
+            box-shadow: var(--btn-box-shadow);
+            text-transform: uppercase;
+            vertical-align: bottom;
+            border: 0;
+        }
+
+        .button:hover {
+            background-color: var(--btn-hover-bg);
+        }
+
+        .mt-0 {
+            margin: 0;
+        }
+
+        .products {
+            width: 100%;
+            display: grid;
+            grid-template-rows: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 0.25rem;
+            grid-row-gap: 1rem;
+            /* height: auto;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem; */
+        }
+
+        .product {
+            text-align: left;
+        }
+
+        .product a {
+            display: block;
+            color: var(--dark-color);
+        }
+
+        .product p {
+            margin: 0;
+        }
+
+        .product img {
+            border-radius: var(--border-radius);
+        }
+        
+        .product img:hover {
+            transition: opacity 0.275s ease-in-out;
+            opacity: 0.90;
+        }
+
+        .product .product-title {
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .product .price {
+            font-weight: 600;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Format email: https://htmlemail.io/inline/ -->
+    <table class="container" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <!-- Header -->
+            <td class="header">
+                <h1 aria-label="Welcome to our services">Welcome to our services</h1>
+            </td>
+        </tr>
+
+        <!-- Content -->
+        <tr>
+            <td class="card-body">
+                {% block content %}{% endblock %}
+            </td>
+        </tr>
+
+        <tr>
+            <td class="card-body">
+                <h3>Cela peut t'intéressé</h3>
+                <div class="products">
+                    <div class="product">
+                        <a href="#">
+                            <img src="https://static.bershka.net/assets/public/07d8/f234/0ae94faa8bd9/fe6fe2346f8b/02427705321-p/02427705321-p.jpg?ts=1741103129018&w=800" width="200" alt="Product image">
+                            <p class="product-title">Product name</p>
+                            <p class="price">15€</p>
+                        </a>
+                    </div>
+    
+                    <div class="product">
+                        <a href="#">
+                            <img src="https://static.bershka.net/assets/public/07d8/f234/0ae94faa8bd9/fe6fe2346f8b/02427705321-p/02427705321-p.jpg?ts=1741103129018&w=800" width="200" alt="Product image">
+                            <p class="product-title">Product name</p>
+                            <p class="price">15€</p>
+                        </a>
+                    </div>
+
+                    <div class="product">
+                        <a href="#">
+                            <img src="https://static.bershka.net/assets/public/07d8/f234/0ae94faa8bd9/fe6fe2346f8b/02427705321-p/02427705321-p.jpg?ts=1741103129018&w=800" width="200" alt="Product image">
+                            <p class="product-title">Product name</p>
+                            <p class="price">15€</p>
+                        </a>
+                    </div>
+                    
+                    <div class="product">
+                        <a href="#">
+                            <img src="https://static.bershka.net/assets/public/07d8/f234/0ae94faa8bd9/fe6fe2346f8b/02427705321-p/02427705321-p.jpg?ts=1741103129018&w=800" width="200" alt="Product image">
+                            <p class="product-title">Product name</p>
+                            <p class="price">15€</p>
+                        </a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+        <!-- CTA -->
+        {% block cta %}
+            <tr>
+                <td class="card-body">
+                    <a class="button" href="https://example.com/get-started">
+                        Get Started
+                    </a>
+                </td>
+            </tr>
+        {% endblock %}
+
+        <!-- Footer -->
+        <tr>
+            <td class="footer">
+                <p class="mt-0">&copy; 2023 Your Company. All rights reserved.</p>
+                <p class="mt-0">
+                    <a href="#" aria-label="Unsubscribe">Unsubscribe</a> |
+                    <a href="#" aria-label="Privacy Policy">Privacy Policy</a>
+                </p>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

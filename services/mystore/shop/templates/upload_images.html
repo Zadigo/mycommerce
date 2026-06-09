@@ -1,0 +1,24 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Upload images{% endblock %}
+
+{% block content %}
+    <form action="{% url 'admin:admin_upload_images' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% for name, error in form.errors.items %}
+            {{ error }}    
+        {% endfor %}
+
+        {% for field in form %}
+            {{ field }} <br>
+        {% endfor %}
+        
+        <!-- <input type="text" name="file_name" title="file_name" id="file-name">
+        <input type="file" name="images" title="images" id="images" accept=".jpg,.jpeg,.png" multiple> -->
+
+        <button type="submit" formenctype="multipart/form-data">
+            Upload images
+        </button>
+    </form>
+{% endblock %}

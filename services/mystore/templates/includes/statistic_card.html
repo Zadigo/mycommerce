@@ -1,0 +1,14 @@
+{% load i18n %}
+
+<div class="col-sm-12 col-md-2">
+    <div class="card text-center shadow-sm bg-info text-light">
+        <div class="card-body">
+            <div class="fs-2 fw-bold mb-0">
+                {{ metric|floatformat|default:0 }}{% if currency %}€{% endif %}
+            </div>
+            <p class="fw-light fs-smaller">
+                {% trans metric_name %}
+            </p>
+        </div>
+    </div>
+</div>

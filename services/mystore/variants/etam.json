@@ -1,0 +1,1330 @@
+{
+  "action": "Cart-Get",
+  "queryString": "",
+  "locale": "fr_FR",
+  "hasBonusProduct": false,
+  "actionUrls": {
+    "removeProductLineItemUrl": "/on/demandware.store/Sites-ETAM_FR-Site/fr_FR/Cart-RemoveProductLineItem",
+    "updateQuantityUrl": "/on/demandware.store/Sites-ETAM_FR-Site/fr_FR/Cart-UpdateQuantity",
+    "selectShippingUrl": "/on/demandware.store/Sites-ETAM_FR-Site/fr_FR/Cart-SelectShippingMethod",
+    "submitCouponCodeUrl": "/on/demandware.store/Sites-ETAM_FR-Site/fr_FR/Cart-AddCoupon",
+    "removeCouponLineItem": "/on/demandware.store/Sites-ETAM_FR-Site/fr_FR/Cart-RemoveCouponLineItem"
+  },
+  "numOfShipments": 1,
+  "totals": {
+    "subTotal": "49,98 €",
+    "totalShippingCost": "4,90 €",
+    "totalShippingCostValue": "4,90 €",
+    "grandTotal": {
+      "value": 54.88,
+      "formatted": "54,88 €"
+    },
+    "totalTax": "9,15 €",
+    "orderLevelDiscountTotal": {
+      "value": 0,
+      "formatted": "0,00 €"
+    },
+    "orderLevelDiscountTotalWithoutCoupons": {
+      "value": 50,
+      "formatted": "50,00 €"
+    },
+    "shippingLevelDiscountTotal": {
+      "value": 0,
+      "formatted": "0,00 €"
+    },
+    "discounts": [],
+    "discountsHtml": "",
+    "productTotalWithoutPricebookDiscount": "99,98 €"
+  },
+  "shipments": [
+    {
+      "shippingMethods": [
+        {
+          "ID": "livadom-1",
+          "displayName": "Colissimo - Livraison standard",
+          "description": "Standard",
+          "estimatedArrivalTime": null,
+          "default": true,
+          "shippingCost": "4,90 €",
+          "selected": true,
+          "isRelais": false,
+          "isHome": true,
+          "isStore": false,
+          "isInpost": false,
+          "isManagedByKbrw": false,
+          "isCashOnDelivery": false,
+          "isTAH": false,
+          "estimatedDeliveryDate": {
+            "deliveryDate": "Livraison prévue entre le 26/03/22 et le 29/03/22",
+            "minDeliveryDate": "26/03/22",
+            "maxDeliveryDate": "29/03/22"
+          },
+          "shippingCostValue": 4.9,
+          "shopRunBackValues": {
+            "isLinkOrderReturnActive": true,
+            "orderReturnType": {},
+            "orderReturnLink": null,
+            "orderReturnNumberOfDay": 60,
+            "url": "https://returns.shoprunback.com/etam"
+          }
+        },
+        {
+          "ID": "livadom-1-1",
+          "displayName": "Colissimo - précommande collection IFM exclusivement",
+          "description": "Standard",
+          "estimatedArrivalTime": null,
+          "default": false,
+          "shippingCost": "4,90 €",
+          "selected": false,
+          "isRelais": false,
+          "isHome": true,
+          "isStore": false,
+          "isInpost": false,
+          "isManagedByKbrw": false,
+          "isCashOnDelivery": false,
+          "isTAH": false,
+          "estimatedDeliveryDate": {
+            "deliveryDate": "Livraison prévue entre le 26/03/22 et le 29/03/22",
+            "minDeliveryDate": "26/03/22",
+            "maxDeliveryDate": "29/03/22"
+          },
+          "shippingCostValue": 4.9,
+          "shopRunBackValues": {
+            "isLinkOrderReturnActive": true,
+            "orderReturnType": {},
+            "orderReturnLink": null,
+            "orderReturnNumberOfDay": 60,
+            "url": "https://returns.shoprunback.com/etam"
+          }
+        },
+        {
+          "ID": "relais_colis",
+          "displayName": "Relais Colis",
+          "description": "Standard - En point relais",
+          "estimatedArrivalTime": null,
+          "default": false,
+          "shippingCost": "2,90 €",
+          "selected": false,
+          "isRelais": true,
+          "isHome": false,
+          "isStore": false,
+          "isInpost": false,
+          "isManagedByKbrw": true,
+          "isCashOnDelivery": false,
+          "isTAH": false,
+          "estimatedDeliveryDate": {
+            "deliveryDate": "Livraison prévue entre le 26/03/22 et le 30/03/22",
+            "minDeliveryDate": "26/03/22",
+            "maxDeliveryDate": "30/03/22"
+          },
+          "shippingCostValue": 2.9,
+          "shopRunBackValues": {
+            "isLinkOrderReturnActive": true,
+            "orderReturnType": {},
+            "orderReturnLink": null,
+            "orderReturnNumberOfDay": 60,
+            "url": "https://returns.shoprunback.com/etam"
+          }
+        },
+        {
+          "ID": "livadom-3",
+          "displayName": "Coliposte International",
+          "description": "Livraison à domicile",
+          "estimatedArrivalTime": null,
+          "default": false,
+          "shippingCost": "9,00 €",
+          "selected": false,
+          "isRelais": false,
+          "isHome": true,
+          "isStore": false,
+          "isInpost": false,
+          "isManagedByKbrw": false,
+          "isCashOnDelivery": false,
+          "isTAH": false,
+          "estimatedDeliveryDate": {
+            "deliveryDate": "Livraison prévue entre le 29/03/22 et le 01/04/22",
+            "minDeliveryDate": "29/03/22",
+            "maxDeliveryDate": "01/04/22"
+          },
+          "shippingCostValue": 9,
+          "shopRunBackValues": {
+            "isLinkOrderReturnActive": false,
+            "orderReturnType": {},
+            "orderReturnLink": null,
+            "orderReturnNumberOfDay": 45,
+            "url": "https://returns.shoprunback.com/etam"
+          }
+        },
+        {
+          "ID": "livadom",
+          "displayName": "Coliposte DOMTOM",
+          "description": "Livraison à domicile",
+          "estimatedArrivalTime": null,
+          "default": false,
+          "shippingCost": "15,00 €",
+          "selected": false,
+          "isRelais": false,
+          "isHome": true,
+          "isStore": false,
+          "isInpost": false,
+          "isManagedByKbrw": false,
+          "isCashOnDelivery": false,
+          "isTAH": false,
+          "estimatedDeliveryDate": {
+            "deliveryDate": "Livraison prévue entre le 30/03/22 et le 01/04/22",
+            "minDeliveryDate": "30/03/22",
+            "maxDeliveryDate": "01/04/22"
+          },
+          "shippingCostValue": 15,
+          "shopRunBackValues": {
+            "isLinkOrderReturnActive": false,
+            "orderReturnType": {},
+            "orderReturnLink": null,
+            "orderReturnNumberOfDay": 45,
+            "url": "https://returns.shoprunback.com/etam"
+          }
+        },
+        {
+          "ID": "livadom-2",
+          "displayName": "Coliposte International",
+          "description": "Livraison à domicile",
+          "estimatedArrivalTime": null,
+          "default": false,
+          "shippingCost": "5,90 €",
+          "selected": false,
+          "isRelais": false,
+          "isHome": true,
+          "isStore": false,
+          "isInpost": false,
+          "isManagedByKbrw": false,
+          "isCashOnDelivery": false,
+          "isTAH": false,
+          "estimatedDeliveryDate": {
+            "deliveryDate": "Livraison prévue entre le 29/03/22 et le 01/04/22",
+            "minDeliveryDate": "29/03/22",
+            "maxDeliveryDate": "01/04/22"
+          },
+          "shippingCostValue": 5.9,
+          "shopRunBackValues": {
+            "isLinkOrderReturnActive": false,
+            "orderReturnType": {},
+            "orderReturnLink": null,
+            "orderReturnNumberOfDay": 45,
+            "url": "https://returns.shoprunback.com/etam"
+          }
+        },
+        {
+          "ID": "shop",
+          "displayName": "En magasin",
+          "description": "En boutique Etam",
+          "estimatedArrivalTime": null,
+          "default": false,
+          "shippingCost": "Offert",
+          "selected": false,
+          "isRelais": false,
+          "isHome": false,
+          "isStore": true,
+          "isInpost": false,
+          "isManagedByKbrw": true,
+          "isCashOnDelivery": false,
+          "isTAH": false,
+          "estimatedDeliveryDate": {
+            "deliveryDate": "Livraison prévue entre le 25/03/22 et le 29/03/22",
+            "minDeliveryDate": "25/03/22",
+            "maxDeliveryDate": "29/03/22"
+          },
+          "shippingCostValue": 0,
+          "shopRunBackValues": {
+            "isLinkOrderReturnActive": true,
+            "orderReturnType": {},
+            "orderReturnLink": null,
+            "orderReturnNumberOfDay": 60,
+            "url": "https://returns.shoprunback.com/etam"
+          }
+        },
+        {
+          "ID": "chronopost",
+          "displayName": "Chronopost - Livraison express",
+          "description": "Express",
+          "estimatedArrivalTime": null,
+          "default": false,
+          "shippingCost": "7,50 €",
+          "selected": false,
+          "isRelais": false,
+          "isHome": true,
+          "isStore": false,
+          "isInpost": false,
+          "isManagedByKbrw": true,
+          "isCashOnDelivery": false,
+          "isTAH": false,
+          "estimatedDeliveryDate": {
+            "deliveryDate": "Livraison prévue entre le 25/03/22 et le 28/03/22",
+            "minDeliveryDate": "25/03/22",
+            "maxDeliveryDate": "28/03/22"
+          },
+          "shippingCostValue": 7.5,
+          "shopRunBackValues": {
+            "isLinkOrderReturnActive": true,
+            "orderReturnType": {},
+            "orderReturnLink": null,
+            "orderReturnNumberOfDay": 60,
+            "url": "https://returns.shoprunback.com/etam"
+          }
+        }
+      ],
+      "selectedShippingMethod": "livadom-1"
+    }
+  ],
+  "approachingDiscounts": [],
+  "items": [
+    {
+      "uuid": "19f6eb4e344a1bbc9d65c9c336",
+      "masterURL": {},
+      "masterID": "652780480",
+      "id": "652780480307",
+      "productName": "Soutien-gorge bustier N°7 - Triangle armaturé",
+      "productType": "variant",
+      "brand": null,
+      "gamme": "PANAMA",
+      "color": "ECRU",
+      "size": {
+        "displayValue": "95D",
+        "value": "307"
+      },
+      "isVirtualGiftCard": false,
+      "price": {
+        "sales": {
+          "value": 19.99,
+          "currency": "EUR",
+          "formatted": "19,99 €",
+          "decimalPrice": "19.99"
+        },
+        "list": {
+          "value": 39.99,
+          "currency": "EUR",
+          "formatted": "39,99 €",
+          "decimalPrice": "39.99"
+        },
+        "discount": {
+          "value": 50.01250312578145,
+          "roundedValue": 50,
+          "symbol": "%",
+          "formatted": "-50%"
+        }
+      },
+      "renderedPrice": "\n\n\n\n\n  \n\n  <div class=\"pageDesigner__tuileSubContent -promo\">\n    \n    \n      <span class=\"pageDesigner__tuileProductPrice price\">\n        19,99 &euro;\n      </span>\n      <span class=\"pageDesigner__tuileProductPrice price -crossed\">\n        39,99 &euro;\n      </span>\n      \n        <span class=\"badge -promo\">-50%</span>\n      \n    \n  </div>\n",
+      "calloutMessage": null,
+      "images": {
+        "PhotoZ": [
+          {
+            "mediaFile": {},
+            "type": "b",
+            "url": "https://www.etam.com/dw/image/v2/AAWW_PRD/on/demandware.static/-/Sites-ELIN-master/default/dw07c37e43/652780480_b.jpg?sw=250&strip=false"
+          }
+        ]
+      },
+      "variationAttributes": [
+        {
+          "displayName": "Taille",
+          "displayValue": "95D",
+          "attributeId": "size",
+          "id": "size"
+        }
+      ],
+      "availability": {
+        "messages": [
+          "En stock"
+        ],
+        "inStockDate": null
+      },
+      "available": true,
+      "quantity": 1,
+      "isGift": false,
+      "renderedPromotions": "",
+      "UUID": "ca450863ef9cfb39c712724349",
+      "isOrderable": true,
+      "shipmentUUID": "fe76f966c8b2389b9d0461def1",
+      "isBonusProductLineItem": false,
+      "priceTotal": {
+        "nonAdjustedPrice": "39,99 €",
+        "discount": {
+          "value": 50.01250312578145,
+          "roundedValue": 50,
+          "symbol": "%",
+          "formatted": "-50%"
+        },
+        "price": "19,99 €",
+        "renderedPrice": "\n\n\n\n<div class=\"cartLine__itemPromoTotal hidden\">\n    <p class=\"cartLine__itemPromoTotalNumber badge -promo js-discount\">null</p>\n</div>\n<div class=\"price-standard price -crossed js-crossedPrice hidden \">\n    39,99 &euro;\n</div>\n<div class=\"price cartLine__itemPriceTotal item-total-null js-cartGrandTotal\">\n    19,99 &euro;\n</div>\n"
+      },
+      "quantityOptions": {
+        "minOrderQuantity": 1,
+        "maxOrderQuantity": 10
+      },
+      "options": [],
+      "bonusProductLineItemUUID": null,
+      "preOrderUUID": null,
+      "discountLineItems": [],
+      "isWishlist": {
+        "isInWishlist": false,
+        "productId": "652780480"
+      },
+      "preorderInfo": {
+        "type": "variant",
+        "isPreorder": false
+      },
+      "virtualGiftCardData": null,
+      "bonusProducts": null,
+      "unitPrice": {
+        "formatted": "19,99 €",
+        "value": 19.99
+      },
+      "basePrice": {
+        "formatted": "19,99 €",
+        "value": 19.99
+      },
+      "totalPrice": {
+        "formatted": "19,99 €",
+        "value": 19.99
+      },
+      "adjustedUnitPrice": {
+        "formatted": "19,99 €",
+        "value": 19.99
+      },
+      "nonAdjustedPrice": "39,99 €",
+      "discount": {
+        "value": 50,
+        "formatted": "-50%"
+      }
+    },
+    {
+      "uuid": "ec919972be5d8a96f7601b3d83",
+      "masterURL": {},
+      "masterID": "653079822",
+      "id": "653079822003",
+      "productName": "Déshabillé velours intérieur fausse fourrure",
+      "productType": "variant",
+      "brand": null,
+      "gamme": "PEARLINE",
+      "color": "BLEU",
+      "size": {
+        "displayValue": "S",
+        "value": "003"
+      },
+      "isVirtualGiftCard": false,
+      "price": {
+        "sales": {
+          "value": 29.99,
+          "currency": "EUR",
+          "formatted": "29,99 €",
+          "decimalPrice": "29.99"
+        },
+        "list": {
+          "value": 59.99,
+          "currency": "EUR",
+          "formatted": "59,99 €",
+          "decimalPrice": "59.99"
+        },
+        "discount": {
+          "value": 50.00833472245375,
+          "roundedValue": 50,
+          "symbol": "%",
+          "formatted": "-50%"
+        }
+      },
+      "renderedPrice": "\n\n\n\n\n  \n\n  <div class=\"pageDesigner__tuileSubContent -promo\">\n    \n    \n      <span class=\"pageDesigner__tuileProductPrice price\">\n        29,99 &euro;\n      </span>\n      <span class=\"pageDesigner__tuileProductPrice price -crossed\">\n        59,99 &euro;\n      </span>\n      \n        <span class=\"badge -promo\">-50%</span>\n      \n    \n  </div>\n",
+      "calloutMessage": null,
+      "images": {
+        "PhotoZ": [
+          {
+            "mediaFile": {},
+            "type": "x",
+            "url": "https://www.etam.com/dw/image/v2/AAWW_PRD/on/demandware.static/-/Sites-ELIN-master/default/dw06a55b25/653079822_x.jpg?sw=250&strip=false"
+          }
+        ]
+      },
+      "variationAttributes": [
+        {
+          "displayName": "Taille",
+          "displayValue": "S",
+          "attributeId": "size",
+          "id": "size"
+        }
+      ],
+      "availability": {
+        "messages": [
+          "En stock"
+        ],
+        "inStockDate": null
+      },
+      "available": true,
+      "quantity": 1,
+      "isGift": false,
+      "renderedPromotions": "",
+      "UUID": "dc6d56395ca04c6b6653792d39",
+      "isOrderable": true,
+      "shipmentUUID": "fe76f966c8b2389b9d0461def1",
+      "isBonusProductLineItem": false,
+      "priceTotal": {
+        "nonAdjustedPrice": "59,99 €",
+        "discount": {
+          "value": 50.00833472245375,
+          "roundedValue": 50,
+          "symbol": "%",
+          "formatted": "-50%"
+        },
+        "price": "29,99 €",
+        "renderedPrice": "\n\n\n\n<div class=\"cartLine__itemPromoTotal hidden\">\n    <p class=\"cartLine__itemPromoTotalNumber badge -promo js-discount\">null</p>\n</div>\n<div class=\"price-standard price -crossed js-crossedPrice hidden \">\n    59,99 &euro;\n</div>\n<div class=\"price cartLine__itemPriceTotal item-total-null js-cartGrandTotal\">\n    29,99 &euro;\n</div>\n"
+      },
+      "quantityOptions": {
+        "minOrderQuantity": 1,
+        "maxOrderQuantity": 10
+      },
+      "options": [],
+      "bonusProductLineItemUUID": null,
+      "preOrderUUID": null,
+      "discountLineItems": [],
+      "isWishlist": {
+        "isInWishlist": false,
+        "productId": "653079822"
+      },
+      "preorderInfo": {
+        "type": "variant",
+        "isPreorder": false
+      },
+      "virtualGiftCardData": null,
+      "bonusProducts": null,
+      "unitPrice": {
+        "formatted": "29,99 €",
+        "value": 29.99
+      },
+      "basePrice": {
+        "formatted": "29,99 €",
+        "value": 29.99
+      },
+      "totalPrice": {
+        "formatted": "29,99 €",
+        "value": 29.99
+      },
+      "adjustedUnitPrice": {
+        "formatted": "29,99 €",
+        "value": 29.99
+      },
+      "nonAdjustedPrice": "59,99 €",
+      "discount": {
+        "value": 50,
+        "formatted": "-50%"
+      }
+    }
+  ],
+  "numItems": 2,
+  "valid": {
+    "error": false,
+    "message": null
+  },
+  "resources": {
+    "numberOfItems": "<span>2</span> articles",
+    "minicartCountOfItems": "Cart 2 Items",
+    "emptyCartMsg": "Votre panier est vide"
+  },
+  "freeShipping": {
+    "enabled": {
+      "default": 70
+    },
+    "minAmount": {
+      "value": 70,
+      "displayValue": "70,00 €"
+    },
+    "available": false,
+    "reached": {
+      "value": 20.020000000000003,
+      "displayValue": "20,02 €"
+    }
+  },
+  "totalGrossPrice": "49,98 €",
+  "totalSubPrice": "49,98 €",
+  "isEnableTAH": false,
+  "isOnlyGiftCard": false,
+  "isTAHCustomerEnable": false,
+  "hasTAH": null,
+  "complementaryProducts": [
+    {
+      "uuid": "bcRkIiaaiptBQaaadlg2gqiRYu",
+      "masterURL": {},
+      "masterID": "100000000",
+      "id": "100000000001",
+      "productName": "Emballage cadeaux 1€ (Hors carte cadeau dématérialisée)",
+      "productType": "variant",
+      "brand": null,
+      "gamme": null,
+      "color": "",
+      "size": null,
+      "isVirtualGiftCard": false,
+      "images": {
+        "PhotoZ": [
+          {
+            "mediaFile": {},
+            "type": "x"
+          }
+        ]
+      },
+      "selectedQuantity": 1,
+      "minOrderQuantity": 1,
+      "maxOrderQuantity": 10,
+      "variationAttributes": [],
+      "attributes": [
+        {
+          "ID": "globale",
+          "name": "SFRA - Global-E Attributes",
+          "attributes": [
+            {
+              "label": "SFRA - Last Modified",
+              "value": [
+                "2022-03-24T08:37:37.454Z"
+              ]
+            }
+          ]
+        },
+        {
+          "ID": "SFRA - GLOBALE",
+          "name": "SFRA - Global-e Attributes",
+          "attributes": [
+            {
+              "label": "SFRA - Last Modified",
+              "value": [
+                "2022-03-24T08:37:37.454Z"
+              ]
+            }
+          ]
+        }
+      ],
+      "availability": {
+        "messages": [
+          "En stock"
+        ],
+        "inStockDate": null
+      },
+      "available": true,
+      "options": [],
+      "quantities": [
+        {
+          "value": "1",
+          "selected": true,
+          "url": "/variation?pid=100000000001&quantity=1"
+        },
+        {
+          "value": "2",
+          "selected": false,
+          "url": "/variation?pid=100000000001&quantity=2"
+        },
+        {
+          "value": "3",
+          "selected": false,
+          "url": "/variation?pid=100000000001&quantity=3"
+        },
+        {
+          "value": "4",
+          "selected": false,
+          "url": "/variation?pid=100000000001&quantity=4"
+        },
+        {
+          "value": "5",
+          "selected": false,
+          "url": "/variation?pid=100000000001&quantity=5"
+        },
+        {
+          "value": "6",
+          "selected": false,
+          "url": "/variation?pid=100000000001&quantity=6"
+        },
+        {
+          "value": "7",
+          "selected": false,
+          "url": "/variation?pid=100000000001&quantity=7"
+        },
+        {
+          "value": "8",
+          "selected": false,
+          "url": "/variation?pid=100000000001&quantity=8"
+        },
+        {
+          "value": "9",
+          "selected": false,
+          "url": "/variation?pid=100000000001&quantity=9"
+        },
+        {
+          "value": "10",
+          "selected": false,
+          "url": "/variation?pid=100000000001&quantity=10"
+        }
+      ],
+      "readyToOrder": true,
+      "bonusUnitPrice": "",
+      "longDescription": "Commande non-emballée dans la boîte cadeau. | Emballage en papier recyclé et recyclable. | Tous les bénéfices versés à Solidarité Femmes. | 1 emballage cadeau par commande",
+      "shortDescription": null,
+      "preorderInfo": {
+        "type": "variant",
+        "isPreorder": false
+      },
+      "basketUuidLineItem": null
+    },
+    {
+      "uuid": "dc6332f0ad7639639bb18ae5fd",
+      "masterURL": {},
+      "masterID": "650762090",
+      "id": "650762090001",
+      "productName": "Faire un don",
+      "productType": "variant",
+      "brand": null,
+      "gamme": null,
+      "color": "",
+      "size": {
+        "displayValue": "CHEQ",
+        "value": "001"
+      },
+      "isVirtualGiftCard": false,
+      "images": {
+        "PhotoZ": [
+          {
+            "mediaFile": {},
+            "type": "x"
+          }
+        ]
+      },
+      "selectedQuantity": 1,
+      "minOrderQuantity": 1,
+      "maxOrderQuantity": 10,
+      "variationAttributes": [
+        {
+          "attributeId": "size",
+          "displayName": "Taille",
+          "id": "size",
+          "swatchable": false,
+          "displayValue": "CHEQ",
+          "values": [
+            {
+              "id": "001",
+              "description": null,
+              "displayValue": "CHEQ",
+              "value": "001",
+              "selected": true,
+              "selectable": true,
+              "url": "https://www.etam.com/variation?pid=650762090&quantity=1"
+            }
+          ],
+          "resetUrl": "https://www.etam.com/variation?pid=650762090&quantity=1"
+        }
+      ],
+      "attributes": [
+        {
+          "ID": "globale",
+          "name": "SFRA - Global-E Attributes",
+          "attributes": [
+            {
+              "label": "SFRA - Last Modified",
+              "value": [
+                "2022-03-24T08:38:09.389Z"
+              ]
+            }
+          ]
+        },
+        {
+          "ID": "SFRA - GLOBALE",
+          "name": "SFRA - Global-e Attributes",
+          "attributes": [
+            {
+              "label": "SFRA - Last Modified",
+              "value": [
+                "2022-03-24T08:38:09.389Z"
+              ]
+            }
+          ]
+        }
+      ],
+      "availability": {
+        "messages": [
+          "En stock"
+        ],
+        "inStockDate": null
+      },
+      "available": true,
+      "options": [],
+      "quantities": [
+        {
+          "value": "1",
+          "selected": true,
+          "url": "/variation?pid=650762090001&quantity=1"
+        },
+        {
+          "value": "2",
+          "selected": false,
+          "url": "/variation?pid=650762090001&quantity=2"
+        },
+        {
+          "value": "3",
+          "selected": false,
+          "url": "/variation?pid=650762090001&quantity=3"
+        },
+        {
+          "value": "4",
+          "selected": false,
+          "url": "/variation?pid=650762090001&quantity=4"
+        },
+        {
+          "value": "5",
+          "selected": false,
+          "url": "/variation?pid=650762090001&quantity=5"
+        },
+        {
+          "value": "6",
+          "selected": false,
+          "url": "/variation?pid=650762090001&quantity=6"
+        },
+        {
+          "value": "7",
+          "selected": false,
+          "url": "/variation?pid=650762090001&quantity=7"
+        },
+        {
+          "value": "8",
+          "selected": false,
+          "url": "/variation?pid=650762090001&quantity=8"
+        },
+        {
+          "value": "9",
+          "selected": false,
+          "url": "/variation?pid=650762090001&quantity=9"
+        },
+        {
+          "value": "10",
+          "selected": false,
+          "url": "/variation?pid=650762090001&quantity=10"
+        }
+      ],
+      "readyToOrder": true,
+      "bonusUnitPrice": "",
+      "longDescription": "Ensemble, mobilisons-nous auprès de La Croix-Rouge pour soutenir les familles ukrainiennes.\r\nTous solidaires, merci pour votre engagement à nos côtés. #StrongerTogether",
+      "shortDescription": "0,5€",
+      "preorderInfo": {
+        "type": "variant",
+        "isPreorder": false
+      },
+      "basketUuidLineItem": null
+    }
+  ],
+  "dataLayerUpdate": null,
+  "dataLayerInfos": [
+    {
+      "uuid": "19f6eb4e344a1bbc9d65c9c336",
+      "masterURL": {},
+      "masterID": "652780480",
+      "id": "652780480307",
+      "productName": "Soutien-gorge bustier N°7 - Triangle armaturé",
+      "brand": null,
+      "gamme": "PANAMA",
+      "color": "ECRU",
+      "size": {
+        "displayValue": "95D",
+        "value": "307"
+      },
+      "isVirtualGiftCard": false,
+      "price": {
+        "sales": {
+          "value": 19.99,
+          "currency": "EUR",
+          "formatted": "19,99 €",
+          "decimalPrice": "19.99"
+        },
+        "list": {
+          "value": 39.99,
+          "currency": "EUR",
+          "formatted": "39,99 €",
+          "decimalPrice": "39.99"
+        },
+        "discount": {
+          "value": 50.01250312578145,
+          "roundedValue": 50,
+          "symbol": "%",
+          "formatted": "-50%"
+        }
+      },
+      "renderedPrice": "\n\n\n\n\n  \n\n  <div class=\"pageDesigner__tuileSubContent -promo\">\n    \n    \n      <span class=\"pageDesigner__tuileProductPrice price\">\n        19,99 &euro;\n      </span>\n      <span class=\"pageDesigner__tuileProductPrice price -crossed\">\n        39,99 &euro;\n      </span>\n      \n        <span class=\"badge -promo\">-50%</span>\n      \n    \n  </div>\n",
+      "calloutMessage": null,
+      "sizes": [
+        {
+          "id": "652780480105",
+          "displayValue": {
+            "displayValue": "85B",
+            "value": "105"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 188,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480106",
+          "displayValue": {
+            "displayValue": "90B",
+            "value": "106"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 765,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480107",
+          "displayValue": {
+            "displayValue": "95B",
+            "value": "107"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 504,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480205",
+          "displayValue": {
+            "displayValue": "85C",
+            "value": "205"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 573,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480206",
+          "displayValue": {
+            "displayValue": "90C",
+            "value": "206"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 797,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480207",
+          "displayValue": {
+            "displayValue": "95C",
+            "value": "207"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 665,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480208",
+          "displayValue": {
+            "displayValue": "100C",
+            "value": "208"
+          },
+          "available": true,
+          "inventoryFlag": true,
+          "allocation": 2,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480305",
+          "displayValue": {
+            "displayValue": "85D",
+            "value": "305"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 29,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480306",
+          "displayValue": {
+            "displayValue": "90D",
+            "value": "306"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 392,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480307",
+          "displayValue": {
+            "displayValue": "95D",
+            "value": "307"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 280,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480308",
+          "displayValue": {
+            "displayValue": "100D",
+            "value": "308"
+          },
+          "available": true,
+          "inventoryFlag": true,
+          "allocation": 1,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480309",
+          "displayValue": {
+            "displayValue": "105D",
+            "value": "309"
+          },
+          "available": true,
+          "inventoryFlag": true,
+          "allocation": 1,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480405",
+          "displayValue": {
+            "displayValue": "85E",
+            "value": "405"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 25,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480406",
+          "displayValue": {
+            "displayValue": "90E",
+            "value": "406"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 83,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480407",
+          "displayValue": {
+            "displayValue": "95E",
+            "value": "407"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 87,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480408",
+          "displayValue": {
+            "displayValue": "100E",
+            "value": "408"
+          },
+          "available": false,
+          "inventoryFlag": true,
+          "allocation": 0,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "652780480409",
+          "displayValue": {
+            "displayValue": "105E",
+            "value": "409"
+          },
+          "available": false,
+          "inventoryFlag": true,
+          "allocation": 0,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        }
+      ],
+      "sizeGuideContentAsset": "ETAM_SizeChart_ELIN",
+      "sapInfos": {
+        "segment": "DAY LINGERIE",
+        "tribu": "SG PERM DENTELLE - COL BASIQUE",
+        "activity": "ELIN",
+        "aspect": "LACE - GUIPURE",
+        "matpr": "LACE"
+      },
+      "productMarkerData": {
+        "pid": "652780480",
+        "marks": [
+          {
+            "id": "67b5",
+            "type": "x",
+            "pourcentageX": "65.9",
+            "pourcentageY": "86.1",
+            "productID": "652771780",
+            "orderable": true,
+            "online": true,
+            "productError": false,
+            "productName": "Hipster en dentelle porte-jarretell..."
+          }
+        ]
+      },
+      "productMarkerStyle": "instagram shopping",
+      "productMarkerRedirection": false,
+      "productMarkerLabel": "complete",
+      "eResaAvailable": true,
+      "preResaEnabled": false,
+      "description": {},
+      "marketingFlags": {
+        "left": null,
+        "right": null
+      },
+      "productTimerEnabled": false,
+      "callOutMessageInfos": null,
+      "pageTitle": null,
+      "pageDescription": null,
+      "pageKeywords": null,
+      "pageMetaTags": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ],
+      "preorderInfo": {
+        "type": "variant",
+        "isPreorder": false
+      },
+      "images": {
+        "PhotoZ": [
+          {
+            "mediaFile": {},
+            "type": "b",
+            "url": "https://www.etam.com/dw/image/v2/AAWW_PRD/on/demandware.static/-/Sites-ELIN-master/default/dw07c37e43/652780480_b.jpg?sw=250&strip=false"
+          }
+        ]
+      },
+      "qte": 1,
+      "pid": "652780480307",
+      "idProduct": "652780480"
+    },
+    {
+      "uuid": "ec919972be5d8a96f7601b3d83",
+      "masterURL": {},
+      "masterID": "653079822",
+      "id": "653079822003",
+      "productName": "Déshabillé velours intérieur fausse fourrure",
+      "brand": null,
+      "gamme": "PEARLINE",
+      "color": "BLEU",
+      "size": {
+        "displayValue": "S",
+        "value": "003"
+      },
+      "isVirtualGiftCard": false,
+      "price": {
+        "sales": {
+          "value": 29.99,
+          "currency": "EUR",
+          "formatted": "29,99 €",
+          "decimalPrice": "29.99"
+        },
+        "list": {
+          "value": 59.99,
+          "currency": "EUR",
+          "formatted": "59,99 €",
+          "decimalPrice": "59.99"
+        },
+        "discount": {
+          "value": 50.00833472245375,
+          "roundedValue": 50,
+          "symbol": "%",
+          "formatted": "-50%"
+        }
+      },
+      "renderedPrice": "\n\n\n\n\n  \n\n  <div class=\"pageDesigner__tuileSubContent -promo\">\n    \n    \n      <span class=\"pageDesigner__tuileProductPrice price\">\n        29,99 &euro;\n      </span>\n      <span class=\"pageDesigner__tuileProductPrice price -crossed\">\n        59,99 &euro;\n      </span>\n      \n        <span class=\"badge -promo\">-50%</span>\n      \n    \n  </div>\n",
+      "calloutMessage": null,
+      "sizes": [
+        {
+          "id": "653079822002",
+          "displayValue": {
+            "displayValue": "XS",
+            "value": "002"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 73,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "653079822003",
+          "displayValue": {
+            "displayValue": "S",
+            "value": "003"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 216,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "653079822004",
+          "displayValue": {
+            "displayValue": "M",
+            "value": "004"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 609,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "653079822005",
+          "displayValue": {
+            "displayValue": "L",
+            "value": "005"
+          },
+          "available": true,
+          "inventoryFlag": false,
+          "allocation": 71,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        },
+        {
+          "id": "653079822006",
+          "displayValue": {
+            "displayValue": "XL",
+            "value": "006"
+          },
+          "available": true,
+          "inventoryFlag": true,
+          "allocation": 6,
+          "preOrderRecord": {
+            "isPreorder": false
+          }
+        }
+      ],
+      "sizeGuideContentAsset": "ETAM_SizeChart_ELIN",
+      "sapInfos": {
+        "segment": "NIGHT LINGERIE",
+        "tribu": "HOMEWEAR",
+        "activity": "ELIN",
+        "aspect": "0151",
+        "matpr": "POLYESTER"
+      },
+      "productMarkerData": null,
+      "productMarkerStyle": "instagram shopping",
+      "productMarkerRedirection": false,
+      "productMarkerLabel": "complete",
+      "eResaAvailable": true,
+      "preResaEnabled": false,
+      "description": {},
+      "marketingFlags": {
+        "left": {
+          "mediaFile": {},
+          "image": {
+            "url": {},
+            "alt": null
+          },
+          "position": "topLeft",
+          "direction": {},
+          "calloutMsgStyle": {},
+          "calloutMsgPosition": {}
+        },
+        "right": null
+      },
+      "productTimerEnabled": false,
+      "callOutMessageInfos": null,
+      "pageTitle": null,
+      "pageDescription": null,
+      "pageKeywords": null,
+      "pageMetaTags": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ],
+      "preorderInfo": {
+        "type": "variant",
+        "isPreorder": false
+      },
+      "images": {
+        "PhotoZ": [
+          {
+            "mediaFile": {},
+            "type": "x",
+            "url": "https://www.etam.com/dw/image/v2/AAWW_PRD/on/demandware.static/-/Sites-ELIN-master/default/dw06a55b25/653079822_x.jpg?sw=250&strip=false"
+          }
+        ]
+      },
+      "qte": 1,
+      "pid": "653079822003",
+      "idProduct": "653079822"
+    }
+  ],
+  "potentialLoyaltyPoints": 50,
+  "currency": {
+    "code": "EUR",
+    "symbol": "€"
+  },
+  "pointsToBeBurnt": 0,
+  "burnInformation": {},
+  "stockStatus": {
+    "type": "instock",
+    "items": [
+      {
+        "isPreorder": false,
+        "ID": "652780480307"
+      },
+      {
+        "isPreorder": false,
+        "ID": "653079822003"
+      }
+    ]
+  }
+}
