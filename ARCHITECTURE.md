@@ -1,10 +1,12 @@
-# Fullstack
+# Fullstack E-commerce Application Architecture
 
-## Requirements & Assumptions
+## Requirements & Assumptions 🟠
 
 ### Clarifying Questions
 
-Questions that need to be answered to better understand the requirements and constraints of the system. Examples of clarifying questions for an E-commerce application:
+*Questions that need to be answered to better understand the requirements and constraints of the system*
+
+Examples of clarifying questions for an E-commerce application:
 
 - **Channels** Mobile ? Web ?
 - **Payment Methods** Credit Card ? PayPal ? Apple Pay ?
@@ -18,9 +20,11 @@ Questions that need to be answered to better understand the requirements and con
   * What types of products will be sold (e.g., physical goods, digital products, services) ? Do they have different variants (e.g., size, color) ?
 - **Reviews** Will the system allow customers to leave reviews and ratings for products ? If so, how will these reviews be moderated and displayed on the product pages ?
 
-### Functional Requirements
+### Functional Requirements 🟢
 
-Describes the specific features and functionalities that the system must provide. For example for an E-commerce application:
+*Describes the specific features and functionalities that the system must provide*
+
+For example for an E-commerce application:
 
 - **Admin** Dashboard for managing products, orders, and users.
 - **Search** Allows users to search for products based on various criteria such as name, category, price, etc.
@@ -28,7 +32,7 @@ Describes the specific features and functionalities that the system must provide
 - **Payment Processing** Integrates with payment gateways to securely process payments from customers. Prevent double payment and ensure secure transactions.
 - **Order Management** Allows users to view their order history and track the status of their orders.
 
-## Capacity Planning
+## Capacity Planning ⏰
 
 ### Database
 
@@ -58,7 +62,7 @@ On the S3 storage end, and image size in `webp` format is around 100KB. An e-com
 - **Images** 100KB x 100,000 products
 - **Estimate storage** 10GB of storage required for product images.
 
-## High Level Architecture
+## High Level Architecture 🏗️
 
 Describes the overall structure of the system, including the main components and how they interact with each other. This can be illustrated using diagrams such as component diagrams or architecture diagrams.
 
@@ -80,9 +84,9 @@ flowchart
     K --> P(Notifications)
 ```
 
-## System Workflow
+## System Workflow 🔄
 
-Explains the sequence of interactions between different components of the system, such as how a user request flows through the application, how data is processed, and how responses are generated. This can be illustrated using sequence diagrams or flowcharts.
+*Explains the sequence of interactions between different components of the system, such as how a user request flows through the application, how data is processed, and how responses are generated. This can be illustrated using sequence diagrams or flowcharts.*
 
 ```mermaid
 sequenceDiagram
@@ -125,38 +129,36 @@ sequenceDiagram
     Website->>User: Display confirmation
 ```
 
-## Api Design
+## Api Design 🛠️
 
-Describes the design of the APIs that will be used for communication between different components of the system, such as the frontend and backend. This includes the endpoints, request and response formats, authentication mechanisms, and any other relevant details about how the APIs will function.
+*Describes the design of the APIs that will be used for communication between different components of the system, such as the frontend and backend. This includes the endpoints, request and response formats, authentication mechanisms, and any other relevant details about how the APIs will function.*
 
-Example:
+> Determines also whether the system will be using RESTful APIs or GraphQL, and how the frontend will interact with these APIs to fetch and manipulate data.
+> If the system uses microservices architecture, the API design will also include details about how different microservices will communicate with each other, such as using RESTful APIs, gRPC, or message queues.
 
 | Endpoint        | Method | Description                            | Request Body                                      | Response Body                         |
 | --------------- | ------ | -------------------------------------- | ------------------------------------------------- | ------------------------------------- |
-| /products       | GET    | Retrieve a list of products            | None                                              | List of products with details         |
-| /products/{id}  | GET    | Retrieve details of a specific product | None                                              | Product details                       |
-| /cart           | POST   | Add a product to the shopping cart     | { productId: string, quantity: number }           | Updated shopping cart details         |
-| /checkout       | POST   | Process the checkout and payment       | { cartId: string, paymentInfo: object }           | Order confirmation and details        |
-| /orders         | GET    | Retrieve a list of user orders         | None                                              | List of user orders with details      |
-| /orders/{id}    | GET    | Retrieve details of a specific order   | None                                              | Order details                         |
-| /users/register | POST   | Register a new user                    | { name: string, email: string, password: string } | User registration confirmation        |
-| /users/login    | POST   | Authenticate a user                    | { email: string, password: string }               | Authentication token and user details |
+| /graphql        | POST   | Retrieve a list of products            | { query: string, variables: object }              | List of products with details         |
+| /graphql        | POST   | Retrieve details of a specific product | { query: string, variables: object }              | Product details                       |
+| /graphql        | POST   | Add a product to the shopping cart     | { query: string, variables: object }              | Updated shopping cart details         |
+| /graphql        | POST   | Process the checkout and payment       | { query: string, variables: object }              | Order confirmation and details        |
+| /graphql        | POST   | Retrieve a list of user orders         | { query: string, variables: object }              | List of user orders with details      |
+| /graphql        | POST   | Retrieve details of a specific order   | { query: string, variables: object }              | Order details                         |
+| /graphql        | POST   | Register a new user                    | { query: string, variables: object }              | User registration confirmation        |
+| /graphql        | POST   | Authenticate a user                    | { query: string, variables: object }              | Authentication token and user details |
 
-Determines also whete the system will be using RESTful APIs or GraphQL, and how the frontend will interact with these APIs to fetch and manipulate data.
-
-If the system uses microservices architecture, the API design will also include details about how different microservices will communicate with each other, such as using RESTful APIs, gRPC, or message queues.
 
 ## Data storage
 
-Describes how the system will store and manage data, including the choice of database (e.g., relational, NoSQL), data models, and how data will be accessed and manipulated by the application.
+*Describes how the system will store and manage data, including the choice of database (e.g., relational, NoSQL), data models, and how data will be accessed and manipulated by the application.*
 
 ### Amazon S3
 
-Explains the the manner in which the system will use Amazon S3 for storing and retrieving files, including the structure of the S3 buckets, access control policies, and how the application will interact with S3 for file uploads and downloads.
+*Explains the the manner in which the system will use Amazon S3 for storing and retrieving files, including the structure of the S3 buckets, access control policies, and how the application will interact with S3 for file uploads and downloads.*
 
 ### Database
 
-Explains the choice of database (e.g., relational, NoSQL) and how it will be used to store and manage data for the application. This includes the data models, relationships between entities, and how the application will perform CRUD (Create, Read, Update, Delete) operations on the database.
+*Explains the choice of database (e.g., relational, NoSQL) and how it will be used to store and manage data for the application. This includes the data models, relationships between entities, and how the application will perform CRUD (Create, Read, Update, Delete) operations on the database.*
 
 ```mermaid
 erDiagram
@@ -186,17 +188,17 @@ erDiagram
 
 ## Caching
 
-Describes the caching strategy for the application, including what data will be cached, how it will be cached (e.g., in-memory cache, distributed cache), and how the cache will be invalidated when data changes. For example, product data that is frequently accessed but infrequently updated can be cached to improve performance and reduce load on the database.
+*Describes the caching strategy for the application, including what data will be cached, how it will be cached (e.g., in-memory cache, distributed cache), and how the cache will be invalidated when data changes. For example, product data that is frequently accessed but infrequently updated can be cached to improve performance and reduce load on the database.*
 
 ## Scalability
 
-Describes how the system will be designed to handle increasing loads and scale as needed. This includes strategies for horizontal scaling (adding more servers) and vertical scaling (upgrading existing servers), as well as any load balancing techniques that will be used to distribute traffic across multiple servers.
+*Describes how the system will be designed to handle increasing loads and scale as needed. This includes strategies for horizontal scaling (adding more servers) and vertical scaling (upgrading existing servers), as well as any load balancing techniques that will be used to distribute traffic across multiple servers.*
 
 ---
 
 ## References ⏰
 
-List of services and components that will be part of the system, along with their respective technologies and descriptions. This can be presented in a tabular format for clarity.
+*List of services and components that will be part of the system, along with their respective technologies and descriptions. This can be presented in a tabular format for clarity.*
 
 | Service            | Language/Framework | Description                           |
 | ------------------ | ------------------ | ------------------------------------- |
@@ -214,7 +216,7 @@ List of services and components that will be part of the system, along with thei
 
 ## Technologies Used 🌳
 
-List of the main technologies used in the system, along with their purpose and version. This can help in understanding the technical stack of the application and how different components are implemented.
+*List of the main technologies used in the system, along with their purpose and version. This can help in understanding the technical stack of the application and how different components are implemented.*
 
 | Technology        | Purpose/Usage                | Version |
 | ----------------- | ---------------------------- | ------- |
