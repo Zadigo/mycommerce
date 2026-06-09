@@ -21,6 +21,39 @@ from shop.models import Image, Novelty, Product
 from shop.utils import transform_to_snake_case
 
 
+class ImageQuery(graphene.ObjectType):
+    all_images = graphene.List(
+        ImageType
+    )
+    search_images = graphene.List(
+        ImageType,
+        name=graphene.String(),
+        product_name=graphene.String(),
+        product_sku=graphene.String()
+    )
+
+    def resolve_all_images(self, info: GraphQLResolveInfo, **kwargs):
+        return Image.objects.all()
+    
+    def resolve_search_images(self, info: GraphQLResolveInfo, **kwargs: str):
+        name = kwargs.get('name')
+        product_name = kwargs.get('product_name')
+        product_sku = kwargs.get('product_sku')
+
+        f_params: dict[str, str] = {}
+
+        if name:
+            f_params['name__icontains'] = name
+
+        if product_name:
+            f_params['product__name__icontains'] = product_name
+
+        if product_sku:
+            f_params['product__sku__exact'] = product_sku
+
+        return Image.objects.filter(**f_params)
+
+
 class ProductQuery(graphene.ObjectType):
     all_products = relay.ConnectionField(
         ProductConnection

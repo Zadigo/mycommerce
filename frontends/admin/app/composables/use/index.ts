@@ -1,3 +1,5 @@
+import type { SearchedImages } from '~/types'
+
 export * from './products'
 export * from './images'
 
@@ -5,18 +7,34 @@ export * from './images'
  * Composable used execute a search on API endpoints
  * @param endpoint - The API endpoint to query
  */
-export async function useApiSearchEndpoint<T = Record<string, unknown> | Record<string, unknown>[]>(endpoint: string) {
-  const search = ref<string>()
+export async function useSearchImagesComposable() {
+  const search = ref<string>('')
 
-  const { data: searched, execute, status } = await useFetch(endpoint, {
-    method: 'GET',
+  const { data: searched, execute, status } = await useFetch<SearchedImages>('/graphql/', {
+    method: 'POST',
     baseURL: useRuntimeConfig().public.prodDomain,
     immediate: false,
-    query: { q: search.value }
+    // query: { q: search.value }
+    body: {
+      query: `
+      query SearchImages($name: String!) {
+        searchImages(name: $name) {
+          id
+          name
+          original
+          active
+          createdOn
+        }
+      }
+      `,
+      variables: {
+        name: search.value
+      }
+    }
   })
 
 
-  watchDebounced(search, async () => await execute(), { debounce: 2000 })
+  watchDebounced(search, async () => await execute(), { debounce: 2000, immediate: true })
 
   const isLoading = computed(() => status.value === 'pending')
 
