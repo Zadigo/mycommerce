@@ -1,5 +1,5 @@
 <template>
-  <aside id="sidebar" class="w-[--sidebar-width] h-screen border-r bg-gray-100 border-gray-200 z-20 p-10 fixed top-0 left-0 shadow-sm">
+  <aside id="sidebar" class="w-[--sidebar-width] h-screen border-r bg-gray-100 border-gray-200 dark:bg-slate-800 dark:border-slate-700 z-20 p-10 fixed top-0 left-0 shadow-sm">
     <div class="my-20">
       {{ route.meta }}
       <nuxt-navigation-menu orientation="vertical" :items="items" class="data-[orientation=vertical]:w-48" />

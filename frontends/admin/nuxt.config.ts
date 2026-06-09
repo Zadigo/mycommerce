@@ -24,9 +24,10 @@ export default defineNuxtConfig({
   },
 
   nuxtAuthentication: {
-    accessEndpoint: '/api/auth/v1/token/',
-    refreshEndpoint: '/api/auth/v1/token/refresh/',
-    verifyEndpoint: '/api/auth/v1/token/verify/' 
+    domain: 'http://127.0.0.1:8000',
+    accessEndpoint: '/auth/v1/token/',
+    refreshEndpoint: '/auth/v1/token/refresh/',
+    verifyEndpoint: '/auth/v1/token/verify/' 
   },
 
   runtimeConfig: {

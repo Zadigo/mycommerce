@@ -1,5 +1,5 @@
 <template>
-  <nav v-if="canShow" id="navbar" class="fixed top-0 left-0 w-full px-5 p-2 border-b border-gray-200 z-30 bg-gray-100">
+  <nav v-if="canShow" id="navbar" class="fixed top-0 left-0 w-full px-5 p-2 border-b border-gray-200 bg-gray-100 dark:bg-slate-900 dark:border-slate-800 z-30">
     <ul class="flex space-x-4 ms-auto text-sm">
       <li><router-link to="/">Home</router-link></li>
       <li><router-link to="/dashboard">Dashboard</router-link></li>

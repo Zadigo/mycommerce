@@ -12,7 +12,7 @@
 
     <div class="grid grid-cols-4 gap-2">
       <div v-for="image in images" :key="image.id" class="relative cursor-pointer">
-        <img :src="image.mid_size" class="rounded-lg">
+        <nuxt-img :src="image.original" class="rounded-lg" />
 
         <div class="absolute bottom-0 right-0 m-2">
           <nuxt-button color="primary" size="sm" :unelevated="true" @click="unlink(image)">
@@ -26,7 +26,7 @@
     <template v-if="currentProduct">
       <div v-if="images.length > 0" class="flex justify-start">
         <div v-for="image in images" :key="image.id" class="col-3">
-          <img :src="image.mid_size">
+          <nuxt-img :src="image.original" class="rounded-lg" />
           <nuxt-button color="primary" size="sm" :unelevated="true" @click="unlink(image)">
             <icon name="i-lucide-unlink" />
           </nuxt-button>
@@ -75,11 +75,12 @@
 </template>
 
 <script setup lang="ts">
-import type { Product, ProductImage } from '~/types'
+import type { Product, ProductImage, ProductNode } from '~/types'
 
-const showModal = ref(false)
-
-const { currentProduct = undefined } = defineProps<{ currentProduct?: Product }>()
+const showModal = ref<boolean>(false)
+const { currentProduct = undefined } = defineProps<{ 
+  currentProduct?: ProductNode
+}>()
 
 defineEmits<{
   'associate-images': [data: ProductImage[]]
@@ -88,12 +89,13 @@ defineEmits<{
 }>()
 
 
-const { images, upload, fileNames, files  } = await useImagesComposable()
+const { images  } = useImagesComposable()
+const { upload, fileNames, files  } = useImageUploadComposable()
 const { unlink } = useImageAssociation(images)
 
 onBeforeMount(() => {
   if (isDefined(currentProduct)) {
-    fileNames.value = currentProduct.name
+    fileNames.value = currentProduct.node.name
   }
 })
 </script>

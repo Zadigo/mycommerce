@@ -1,31 +1,9 @@
-import type { ProductImage } from '~/types'
-
-export interface FileElement {
-  name: string,
-  content: File | Blob | null
-}
-
-export interface RequestData {
-  files: FileElement[]
-}
-
-export interface ImageFilters {
-  column: string
-  operator: 'Equals' | 'Not equal'
-  value: string
-}
+import type { BaseImage, ProductImage } from "~/types";
 
 /**
  * Composable used to manage images
  */
-export async function useImagesComposable() {
-  const data = await $fetch<ProductImage[]>('/admin/v1/images', {
-    method: 'GET',
-    baseURL: useRuntimeConfig().public.prodDomain
-  })
-
-  const images = ref<ProductImage[]>(data)
-
+export function useImageUploadComposable() {
   /**
    * Uploads
    */
@@ -59,10 +37,10 @@ export async function useImagesComposable() {
    * Image selection
    */
 
-  const selectedImages = ref<ProductImage[]>([])
+  const selectedImages = ref<BaseImage[]>([])
   const numberOfSelectedImages = computed(() => selectedImages.value.length)
 
-  function select(state: boolean, image: ProductImage) {
+  function select(state: boolean, image: BaseImage) {
     console.log(state, image)
     if (state) {
       selectedImages.value.push(image)
@@ -108,69 +86,34 @@ export async function useImagesComposable() {
      * @default 0
      */
     numberOfSelectedImages,
+    /**
+     * Whether the button to associate the selected images 
+     * with a product should be enabled or not
+     */
     enableProductAssociationButton,
+    /**
+     * Whether there are selected images or not
+     */
     hasSelectedImages,
     /**
      * Shows the modal to upload new images
      */
     showModal,
+    /**
+     * Toggles the modal to upload new images
+     */
     columnDisplay,
-    images,
+    /**
+     * Selects or deselects an image
+     */
     select,
+    /**
+     * Toggles the modal to upload new images
+     */
     toggle,
+    /**
+     * Uploads the selected files
+     */
     upload
-  }
-}
-
-/**
- * Composable used to associate images with products
- * @param currentImages - The images to associate with the product
- */
-export function useImageAssociation(currentImages: Ref<ProductImage[]>) {
-  const images = toRef(currentImages)
-  const selectedImages = ref<ProductImage[]>([])
-
-  const productToAssociate = ref<number>()
-
-  async function associate() {
-    await $fetch('/images/associate', {
-      method: 'POST',
-      baseURL: useRuntimeConfig().public.prodDomain,
-      body: {
-        product: productToAssociate.value,
-        images: selectedImages.value
-      }
-    })
-  }
-
-  /**
- * Unlink the the selected image from the given
- * product
- */
-  async function unlink(image: ProductImage) {
-    const data = await $fetch<ProductImage[]>('admin/images/associate', {
-      method: 'PATCH',
-      baseURL: useRuntimeConfig().public.prodDomain,
-      body: {
-        product: productToAssociate.value,
-        image: image.id,
-        method: 'Dissociate'
-      }
-    })
-
-    if (data) {
-      // Do something
-    }
-  }
-
-  const [showModal, toggle] = useToggle()
-
-  return {
-    showModal,
-    productToAssociate,
-    selectedImages,
-    toggle,
-    unlink,
-    associate
   }
 }

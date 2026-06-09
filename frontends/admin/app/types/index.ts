@@ -1,40 +1,48 @@
-export interface ProductImage {
-  id: number
-  name: string
-  product_set: {
-    id: number
-    name: string
-    color: string
-    color_variant_name: string
-  }[]
-  original: string
-  thumbnail: string
-  mid_size: string
-  is_main_image: boolean
-}
+import type { BaseProduct, Product } from './graphql'
+
+export * from './graphql'
+
+// export interface ProductImage {
+//   id: number
+//   name: string
+//   product_set: {
+//     id: number
+//     name: string
+//     color: string
+//     color_variant_name: string
+//   }[]
+//   original: string
+//   thumbnail: string
+//   mid_size: string
+//   is_main_image: boolean
+// }
   
-export interface Product {
-  id: number
-  name: string
-  unit_price: string
-  get_main_image: ProductImage | null
-  images: ProductImage[]
-  active: false
-}
+// export interface Product {
+//   id: number
+//   name: string
+//   unit_price: string
+//   get_main_image: ProductImage | null
+//   images: ProductImage[]
+//   active: false
+// }
 
-export type NewProduct = Pick<Product, 'name' | 'unit_price' | 'active'> & {
-  color: string
-  category: string
-  sub_category: string
-  model_height: number | null
-  model_size: number | null
+// export type NewProduct = Pick<Product, 'name' | 'unit_price' | 'active'> & {
+//   color: string
+//   category: string
+//   sub_category: string
+//   model_height: number | null
+//   model_size: number | null
+//   sizes: string[]
+//   sale_value: number
+//   sale_price: number
+//   on_sale: boolean
+//   is_new: boolean
+// }
+
+export type NewProduct = Pick<BaseProduct, 'name' | 'color' | 'category' | 'subCategory' | 'unitPrice' | 'modelHeight' | 'modelSize' | 'saleValue' | 'salePrice' | 'onSale' | 'isNew'> & {
+  active: boolean
   sizes: string[]
-  sale_value: number
-  sale_price: number
-  on_sale: boolean
-  is_new: boolean
 }
-
 
 // export interface NewProduct {
 //   name: '',

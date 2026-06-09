@@ -1,15 +1,5 @@
-export {
-  useProducts,
-  useProductSearch,
-  useProductsUpload,
-  useApiProductSearch
-} from './products'
-
-
-export {
-  useImagesComposable,
-  useImageAssociation
-} from './images'
+export * from './products'
+export * from './images'
 
 /**
  * Composable used execute a search on API endpoints
