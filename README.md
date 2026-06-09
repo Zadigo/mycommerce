@@ -61,3 +61,6 @@ Some of the internal micro-services can be replaced by third-party services. Her
 - Accounting: [https://quickbooks.intuit.com/quickbooks-commerce/](Quickbooks)
 - Messaging: [https://www.omnisend.com/pricing/](Omnisend)
 
+## References
+
+- [Architecture document](docs/ARCHITECTURE.md)

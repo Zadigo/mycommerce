@@ -68,20 +68,23 @@ Describes the overall structure of the system, including the main components and
 
 ```mermaid
 flowchart
-    A[Nuxt] --> B[Backend]
+    A[Nuxt] --> B(Backend)
     A --> Q(Firebase)
     B --> C{Shop}
-    C --> E(Database)
-    C --> F[Cache]
-    B --> |Payment| G(Gateway)
-    G --> H[Stripe, Klarna, etc.] --> C
     B --> K{Orders}
-    K --> E
+    B --> N{Shipping}
+    K --> S(Database)
+
+    C --> F[Cache]
+    C --> E(Database) --> M(Amazon S3)
     C --> L(Inventory)
-    C --> M(Amazon S3)
-    K --> N{Shipping}
-    N --> O(Third-party logistics providers)
-    K --> P(Notifications)
+  
+    B --> |Payment| G{Gateway}
+  
+    G --> H[Stripe, Klarna, etc.]
+
+    N --> O(3rd party logistics providers)
+    N --> R(Database)
 ```
 
 ## System Workflow 🔄
@@ -109,17 +112,17 @@ sequenceDiagram
     User->>+Website: Enter payment information
     Website->>+Shop: Process payment
     Shop->>+Payment Gateway: Send payment details
-    
+  
     critical Payment processing
         Payment Gateway->>+Stripe/Klarna: Process payment
-        Stripe/Klarna-->>-Payment Gateway: Payment confirmation    
+        Stripe/Klarna-->>-Payment Gateway: Payment confirmation  
     option Payment successful
         Payment Gateway->>-Orders: Create Order
     option Shipping
         Orders->>+Shipping: Arrange shipping
         Shipping-->>-User: Shipping confirmation
     end
-    
+  
     par Order Workflow
         Stripe/Klarna-->>User: Payment processed
         Payment Gateway-->>Shop: Confirm payment
@@ -136,17 +139,18 @@ sequenceDiagram
 > Determines also whether the system will be using RESTful APIs or GraphQL, and how the frontend will interact with these APIs to fetch and manipulate data.
 > If the system uses microservices architecture, the API design will also include details about how different microservices will communicate with each other, such as using RESTful APIs, gRPC, or message queues.
 
-| Endpoint        | Method | Description                            | Request Body                                      | Response Body                         |
-| --------------- | ------ | -------------------------------------- | ------------------------------------------------- | ------------------------------------- |
-| /graphql        | POST   | Retrieve a list of products            | { query: string, variables: object }              | List of products with details         |
-| /graphql        | POST   | Retrieve details of a specific product | { query: string, variables: object }              | Product details                       |
-| /graphql        | POST   | Add a product to the shopping cart     | { query: string, variables: object }              | Updated shopping cart details         |
-| /graphql        | POST   | Process the checkout and payment       | { query: string, variables: object }              | Order confirmation and details        |
-| /graphql        | POST   | Retrieve a list of user orders         | { query: string, variables: object }              | List of user orders with details      |
-| /graphql        | POST   | Retrieve details of a specific order   | { query: string, variables: object }              | Order details                         |
-| /graphql        | POST   | Register a new user                    | { query: string, variables: object }              | User registration confirmation        |
-| /graphql        | POST   | Authenticate a user                    | { query: string, variables: object }              | Authentication token and user details |
-
+| Endpoint         | Method | Description                            | Request Body                                                          | Response Body                             |
+| ---------------- | ------ | -------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------- |
+| /graphql         | POST   | Retrieve a list of products            | { query: string, variables: object }                                  | List of products with details             |
+| /graphql         | POST   | Retrieve details of a specific product | { query: string, variables: object }                                  | Product details                           |
+| /graphql         | POST   | Add a product to the shopping cart     | { query: string, variables: object }                                  | Updated shopping cart details             |
+| /graphql         | POST   | Process the checkout and payment       | { query: string, variables: object }                                  | Order confirmation and details            |
+| /graphql         | POST   | Retrieve a list of user orders         | { query: string, variables: object }                                  | List of user orders with details          |
+| /graphql         | POST   | Retrieve details of a specific order   | { query: string, variables: object }                                  | Order details                             |
+| /v1/signup       | POST   | Register a new user                    | { username: string, password: string, password_confirmation: string } | User registration confirmation            |
+| /v1/auth/token   | POST   | Authenticate a user                    | { username: string, password: string }                                | Authentication token and user details     |
+| /v1/auth/refresh | POST   | Refresh authentication token           | { refresh_token: string }                                             | New authentication token and user details |
+| /v1/auth/verify  | POST   | Verify authentication token            | { token: string }                                                     | Verification result                       |
 
 ## Data storage
 
