@@ -31,7 +31,7 @@
             "packageManager": "ms-python.python:pip"
         },
         {
-            "path": "services/mystore",
+            "path": "services/shopapi",
             "envManager": "ms-python.python:venv",
             "packageManager": "ms-python.python:pip"
         }
