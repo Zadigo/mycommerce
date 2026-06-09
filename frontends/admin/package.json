@@ -10,7 +10,6 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@nuxt/content": "3.14.0",
     "@nuxt/eslint": "1.15.2",
     "@nuxt/image": "2.0.0",
     "@nuxt/scripts": "1.2.1",
