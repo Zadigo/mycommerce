@@ -1,6 +1,7 @@
 from django.db.models import BooleanField, Case, F, Manager, Q, When
 from django.db.models.functions.datetime import ExtractDay
 from django.utils import timezone
+
 from shop.choices import GenderChoices
 
 

@@ -9,9 +9,11 @@ from shopapi.tests.utils import AuthenticatedTestCase
 
 
 class TestListProducts(AuthenticatedTestCase):
-    def test_list_products(self):
-        products = ProductFactory.create_batch(size=10)
+    def setUp(self):
+        super().setUp()
+        ProductFactory.create_batch(size=10)
 
+    def test_list_products(self):       
         path = reverse('shop_api:products')
         response = self.client.get(path)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -39,7 +41,7 @@ class TestListProducts(AuthenticatedTestCase):
 
     def test_lists_products_as_search(self):
         path = reverse('shop_api:products')
-        data = {'q': 'Blazer Strapped'}
+        data = {'q': 'Minijupe en dentelle volants'}
         response = self.client.get(path, data=data)
 
         response_data = response.json()
@@ -67,7 +69,7 @@ class TestListProducts(AuthenticatedTestCase):
 
 class TestGetProduct(AuthenticatedTestCase):
     def test_get_product(self):
-        products = ProductFactory.create_batch(size=10)
+        ProductFactory.create_batch(size=10)
 
         product = Product.objects.first()
         path = reverse('shop_api:product', args=[product.id])
@@ -79,9 +81,11 @@ class TestGetProduct(AuthenticatedTestCase):
 
 
 class TestRecommendations(AuthenticatedTestCase):
-    def test_recommendations(self):
-        products = ProductFactory.create_batch(size=50)
+    def setUp(self):
+        super().setUp()
+        ProductFactory.create_batch(size=50)
 
+    def test_recommendations(self):
         path = reverse('shop_api:recommendations')
         query = urlencode({
             'quantity': 1,
@@ -110,5 +114,5 @@ class TestRecommendations(AuthenticatedTestCase):
 
         data = response.json()
         self.assertTrue(len(data) > 0)
-        # The closest result to "Short "Short En Jean"
-        self.assertEqual(data[0]['name'], 'Shorty En Dentelle')
+        # The closest result to "Minijupe en dentelle volants"
+        self.assertEqual(data[0]['name'], 'Minijupe en dentelle volants')
