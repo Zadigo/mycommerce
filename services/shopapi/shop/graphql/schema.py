@@ -5,8 +5,9 @@ import graphene
 from django.core.cache import cache
 from graphene import relay
 from graphql import GraphQLResolveInfo
-
+from shopapi.utils import create_redis_cache_key
 from shopapi.custom_utilities.word_processor import FuzzyMatcher
+from itertools import chain
 from shop.graphql.types import (
     ImageType,
     ProductConnection,
@@ -78,47 +79,52 @@ class ProductQuery(graphene.ObjectType):
             cache.set('allProducts', qs, 60*15)  # Cache for 15 minutes
         return qs
     
-    # def resolve_get_product(self, info: GraphQLResolveInfo, **kwargs):
-    #     return Product.objects.get(pk=kwargs.get('id'))
-
     def resolve_all_product_novelties(self, info: GraphQLResolveInfo, **kwargs):
         return Novelty.objects.all()
 
-    def resolve_search_products(self, info: GraphQLResolveInfo, **kwargs):
+    def resolve_search_products(self, info: GraphQLResolveInfo, **kwargs: str):
         name = kwargs.get('name')
         sku = kwargs.get('sku')
         color = kwargs.get('color')
         unit_price = kwargs.get('unit_price')
         sale_value = kwargs.get('sale_value')
+        min_price = kwargs.get('min_price')
+        max_price = kwargs.get('max_price')
         slug = kwargs.get('slug')
 
-        filter_args = {}
+        f_params: dict[str, str] = {}
 
         if name:
-            filter_args['name__icontains'] = name
+            f_params['name__icontains'] = name
 
         if sku:
-            filter_args['sku__exact'] = sku
+            f_params['sku__exact'] = sku
 
         if color:
-            filter_args['color__icontains'] = color
+            f_params['color__icontains'] = color
 
         if unit_price is not None:
-            filter_args['unit_price__exact'] = unit_price
+            f_params['unit_price__exact'] = unit_price
 
         if sale_value is not None:
-            filter_args['sale_value__exact'] = sale_value
+            f_params['sale_value__exact'] = sale_value
+
+        if min_price is not None:
+            f_params['unit_price__gte'] = min_price
+
+        if max_price is not None:
+            f_params['unit_price__lte'] = max_price
 
         if slug:
-            filter_args['slug__exact'] = slug
+            f_params['slug__exact'] = slug
 
-        cache_key = '_'.join(filter_args.keys())
-        qs = cache.get('searchProducts_' + cache_key)
+        f_values = list(chain(f_params.items()))
+        cache_key = create_redis_cache_key('searchProducts', *f_values)
+        qs = cache.get(cache_key)
 
         if qs is None:
-            qs = Product.objects.filter(**filter_args)
-            cache.set('searchProducts_' + cache_key,
-                      qs, 60*10)  # Cache for 10 minutes
+            qs = Product.objects.filter(**f_params)
+            cache.set(cache_key, qs, 60*10)  # Cache for 10 minutes
 
         return qs
 
@@ -126,7 +132,7 @@ class ProductQuery(graphene.ObjectType):
         return Image.objects.all()
 
     def resolve_products_by_category(self, info: GraphQLResolveInfo, category: str, min_price: Optional[int]=None, max_price: Optional[int]=None, **kwargs):
-        cache_key = f'productsByCategory_{category}'
+        cache_key = create_redis_cache_key('productsByCategory', category)
         qs = cache.get(cache_key)
 
         if qs is None:

@@ -1,12 +1,10 @@
-import os
 from urllib.parse import parse_qs, urlparse
 
-import stripe
-from django.conf import settings
 from rest_framework.pagination import LimitOffsetPagination
 from django.http.request import HttpRequest
 from django.db.models import QuerySet
 from rest_framework.serializers import Serializer
+from django.utils.text import slugify
 
 class CustomPagination(LimitOffsetPagination):
     default_limit = 34
@@ -87,9 +85,8 @@ class PaginationHelper:
         return data | kwargs
 
 
-# TODO: Remove
-def initialize_stripe():
-    if settings.DEBUG:
-        stripe.api_key = os.getenv('STRIPE_TEST_SECRET_KEY')
-    else:
-        stripe.api_key = os.getenv('STRIPE_PRODUCTION_SECRET_KEY')
+def create_redis_cache_key(*args: str):
+    """Creates a cache key for Redis by slugifying the provided arguments
+    and joining them with underscores. This ensures that the cache key is
+    URL-friendly and consistent."""
+    return '_'.join([slugify(arg) for arg in args])
