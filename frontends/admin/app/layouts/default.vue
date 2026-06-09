@@ -1,15 +1,15 @@
 <template>
   <section id="admin">
     <!-- Navbar -->
-    <base-navbar />
+    <lazy-base-navbar hydrate-on-idle />
 
     <!-- Sidebar -->
-    <base-sidebar />
+    <lazy-base-sidebar hydrate-on-idle />
 
     <!-- Content -->
-    <div class="has-[#sidebar]:ps-[var(--sidebar-width)] mt-[calc(37px+2rem)]">
+    <main class="has-[#sidebar]:ps-[--sidebar-width] mt-[calc(37px+2rem)]">
       <slot />
-    </div>
+    </main>
   </section>
 </template>
 
