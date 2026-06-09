@@ -94,23 +94,35 @@ sequenceDiagram
     Cache-->>Shop: Return cached product data
     Shop->>Website: Display products
     Website->>+User: View product details
+
     User->>+Website: Add product to cart
     Website->>+Shop: Update shopping cart
     Shop->>+Database: Update cart information
     Database-->>-Shop: Confirm cart update
     Shop->>Website: Update cart display
     Website->>+User: Proceed to checkout
+
     User->>+Website: Enter payment information
     Website->>+Shop: Process payment
     Shop->>+Payment Gateway: Send payment details
-    Payment Gateway->>+Stripe/Klarna: Process payment
-    Stripe/Klarna-->>Payment Gateway: Payment confirmation
-    Stripe/Klarna-->>User: Payment processed
-    Payment Gateway-->>-Shop: Confirm payment
-    Shop->>Website: Update order status
-    Website->>+User: Display order confirmation
-    Shop->>-Orders: New order
+    
+    critical Payment processing
+        Payment Gateway->>+Stripe/Klarna: Process payment
+        Stripe/Klarna-->>-Payment Gateway: Payment confirmation    
+    option Payment successful
+        Payment Gateway->>-Orders: Create Order
+    option Shipping
+        Orders->>+Shipping: Arrange shipping
+        Shipping-->>-User: Shipping confirmation
+    end
+    
+    par Order Workflow
+        Stripe/Klarna-->>User: Payment processed
+        Payment Gateway-->>Shop: Confirm payment
+        Orders-->>Website: Update order status
+    end
 
+    Website->>User: Display confirmation
 ```
 
 ## Api Design
