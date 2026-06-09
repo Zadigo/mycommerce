@@ -1,5 +1,0 @@
-[*]
-indent_size = 4
-
-[*.{ts,.vue}]
-indent_size = 2
