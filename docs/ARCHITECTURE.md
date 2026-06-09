@@ -139,18 +139,18 @@ sequenceDiagram
 > Determines also whether the system will be using RESTful APIs or GraphQL, and how the frontend will interact with these APIs to fetch and manipulate data.
 > If the system uses microservices architecture, the API design will also include details about how different microservices will communicate with each other, such as using RESTful APIs, gRPC, or message queues.
 
-| Endpoint         | Method | Description                            | Request Body                                                          | Response Body                             |
-| ---------------- | ------ | -------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------- |
-| /graphql         | POST   | Retrieve a list of products            | { query: string, variables: object }                                  | List of products with details             |
-| /graphql         | POST   | Retrieve details of a specific product | { query: string, variables: object }                                  | Product details                           |
-| /graphql         | POST   | Add a product to the shopping cart     | { query: string, variables: object }                                  | Updated shopping cart details             |
-| /graphql         | POST   | Process the checkout and payment       | { query: string, variables: object }                                  | Order confirmation and details            |
-| /graphql         | POST   | Retrieve a list of user orders         | { query: string, variables: object }                                  | List of user orders with details          |
-| /graphql         | POST   | Retrieve details of a specific order   | { query: string, variables: object }                                  | Order details                             |
-| /v1/signup       | POST   | Register a new user                    | { username: string, password: string, password_confirmation: string } | User registration confirmation            |
-| /v1/auth/token   | POST   | Authenticate a user                    | { username: string, password: string }                                | Authentication token and user details     |
-| /v1/auth/refresh | POST   | Refresh authentication token           | { refresh_token: string }                                             | New authentication token and user details |
-| /v1/auth/verify  | POST   | Verify authentication token            | { token: string }                                                     | Verification result                       |
+| Endpoint              | Method | Description                            | Request Body                                                          | Response Body                             |
+| --------------------- | ------ | -------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------- |
+| /graphql              | POST   | Retrieve a list of products            | { query: string, variables: object }                                  | List of products with details             |
+| /graphql              | POST   | Retrieve details of a specific product | { query: string, variables: object }                                  | Product details                           |
+| /graphql              | POST   | Add a product to the shopping cart     | { query: string, variables: object }                                  | Updated shopping cart details             |
+| /graphql              | POST   | Process the checkout and payment       | { query: string, variables: object }                                  | Order confirmation and details            |
+| /graphql              | POST   | Retrieve a list of user orders         | { query: string, variables: object }                                  | List of user orders with details          |
+| /graphql              | POST   | Retrieve details of a specific order   | { query: string, variables: object }                                  | Order details                             |
+| /api/v1/signup        | POST   | Register a new user                    | { username: string, password: string, password_confirmation: string } | User registration confirmation            |
+| /api/auth/v1/token/   | POST   | Authenticate a user                    | { username: string, password: string }                                | Authentication token and user details     |
+| /api/v1/auth/refresh  | POST   | Refresh authentication token           | { refresh_token: string }                                             | New authentication token and user details |
+| /api/v1/token/verify/ | POST   | Verify authentication token            | { token: string }                                                     | Verification result                       |
 
 ## Data storage
 

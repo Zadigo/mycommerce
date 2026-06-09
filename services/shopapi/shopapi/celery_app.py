@@ -3,10 +3,6 @@ import os
 from celery import Celery
 from celery.schedules import crontab
 
-# Windows: celery -A shopapi.celery_app worker -E --pool=solo
-# Windows - Beat: celery -A shopapi.celery_app beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-# Windows - Flower: celery -A shopapi.celery_app flower
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'shopapi.settings')
 
 

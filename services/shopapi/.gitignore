@@ -171,3 +171,7 @@ project.ini
 
 cache/
 *-coverage*
+
+.old*
+
+reports/

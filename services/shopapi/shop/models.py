@@ -10,12 +10,10 @@ from django.utils.timezone import now, timedelta
 from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
-from shop import managers
-from shop import validators
-from shop.choices import AgeGroupChoices, ColorChoices, GenderChoices
-from shop.utils import (calculate_sale, create_slug, generate_sku, image_path,
-                        video_path)
 
+from shop import managers, validators
+from shop.choices import AgeGroupChoices, ColorChoices, GenderChoices
+from shop.utils import calculate_sale, create_slug, generate_sku, image_path, video_path
 from shopapi.choices import CategoryChoices, SubCategoryChoices
 
 
@@ -489,23 +487,6 @@ class Women(Product):
         proxy = True
 
 
-# class ViewingHistory(models.Model):
-#     """Saves the the viewing history
-#     of the products that are saved in
-#     the database"""
-
-#     product = models.ForeignKey(
-#         Product,
-#         models.CASCADE
-#     )
-#     created_on = models.DateTimeField(
-#         auto_now=True
-#     )
-
-#     def __str__(self):
-#         return f'ViewingHistory: {self.product.name}'
-
-
 class AbstractUserList(models.Model):
     """Base abstract model for lists that were
     created or automatically created for the user"""
@@ -555,73 +536,6 @@ def create_product_slug(instance, **kwargs):
     if isinstance(color, Choices):
         color = color.label
     instance.slug = create_slug(instance.name, color)
-
-
-# @receiver(post_delete, sender=Image)
-# def delete_image(sender, instance, **kwargs):
-#     is_s3_backend = getattr(settings, 'USE_S3', False)
-#     if not is_s3_backend:
-#         if instance.original:
-#             path = pathlib.Path(instance.original.path)
-#             if path.is_file():
-#                 path.unlink()
-#     else:
-#         instance.url.delete(save=False)
-
-
-# @receiver(pre_save, sender=Image)
-# def delete_image_on_update(sender, instance, **kwargs):
-#     is_s3_backend = getattr(settings, 'USE_S3', False)
-#     if not is_s3_backend:
-#         if instance.pk:
-#             try:
-#                 old_image = Image.objects.get(pk=instance.pk)
-#             except:
-#                 return
-#             else:
-#                 new_image = instance.original
-#                 if old_image and old_image != new_image:
-#                     path = pathlib.Path(old_image.original.path)
-#                     if path.is_file():
-#                         path.unlink()
-#     else:
-#         instance.original.delete(save=False)
-
-
-# # OPTIONAL: Signal that can be used to clean up the
-# # picture assets when a product is deleted
-
-# @receiver(pre_delete, sender=Product)
-# def delete_images(sender, instance: Product, **kwargs):
-#     """Signal that delets all the images related to the
-#     given product when it is deleted from the database"""
-#     is_s3_backend = getattr(settings, 'USE_S3', False)
-#     images = instance.images.all()
-#     for image in images:
-#         if image.original:
-#             if not is_s3_backend:
-#                 path = pathlib.Path(image.original.path)
-#                 if path.is_file():
-#                     path.unlink()
-#             else:
-#                 image.original.delete(save=False)
-
-
-# @receiver(pre_save, sender=Product)
-# def validate_image_count(sender, instance: Product, **kwargs):
-#     """Signal that validates that a product has at least
-#     one image associated before being saved as active"""
-#     if instance.active:
-#         if instance.product_images.count() == 0:
-#             raise ValidationError(
-#                 {
-#                     'images': _(
-#                         "A product cannot be marked as active "
-#                         "if it does not have at least one image "
-#                         "associated"
-#                     )
-#                 }
-#             )
 
 
 @receiver(post_save, sender=Product)

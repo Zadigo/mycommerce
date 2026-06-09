@@ -17,13 +17,13 @@ class UrlQuery(OrderedDict):
     >>> UrlQuery(name='Firstname', value='Lastname')
     """
 
-    def __init__(self, *, remove_empty_query=False, **kwargs):
+    def __init__(self, *, remove_empty_query: bool=False, **kwargs):
         super().__init__()
 
         final_query = defaultdict(str)
         if remove_empty_query:
             for key, value in kwargs.items():
-                if value == '' or value == None:
+                if value == '' or value is None:
                     continue
 
                 if isinstance(value, bool):
@@ -243,7 +243,7 @@ class AuthenticationBaseRequest(BaseRequest):
         headers = await self.new_authentication_token_headers()
         try:
             response = requests.post(url, headers=headers)
-        except:
+        except Exception:
             pass
         else:
             if response.ok:

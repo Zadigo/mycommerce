@@ -67,6 +67,7 @@ dev = [
     "pytest-django>=4.12.0",
     "pytest-env>=1.6.0",
     "pytest-playwright>=0.7.2",
+    "pytest-reportlog>=1.0.0",
     "ruff>=0.15.16",
 ]
 
@@ -75,20 +76,19 @@ typeCheckingMode = "off"
 reportMissingImports = true
 reportUntypedBaseClass = true
 
+[tool.pytest]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "api: marks tests as api tests",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.pytest.ini_options]
+
 [tool.pytest_env]
 env_files = [".env", ".env.test"]
 
-[tool.pytest]
-# addopts = ["--import-mode=importlib"]
-
-[tool.pytest.ini_options]
-# addopts = "--cov=lorelie --cov-report html"
-
-# [tool.pytest_env]
-# env_files = [".env", ".env.test"]
-
-[tool.setuptools]
-# packages = [""]
 
 [tool.autopep8]
 max_line_length = 120
