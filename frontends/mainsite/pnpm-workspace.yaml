@@ -1,0 +1,8 @@
+allowBuilds:
+  '@firebase/util': true
+  '@parcel/watcher': true
+  esbuild: true
+  protobufjs: true
+  sharp: true
+  unrs-resolver: true
+  vue-demi: true
