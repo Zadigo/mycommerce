@@ -109,10 +109,13 @@ class TestRecommendations(AuthenticatedTestCase):
             'with_images': 0
         })
         response = self.client.get(path + f'?{query}')
-        self.assertEqual(response.status_code,
-                         status.HTTP_200_OK, response.content)
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK, response.content
+        )
 
         data = response.json()
         self.assertTrue(len(data) > 0)
+        
         # The closest result to "Minijupe en dentelle volants"
         self.assertEqual(data[0]['name'], 'Minijupe en dentelle volants')

@@ -28,7 +28,7 @@ class TestApiEndpoints(TestCase):
 
         self.assertIn('count', data)
         self.assertIn('results', data)
-        self.assertTrue(len(data['results']) >= 1)
+        self.assertTrue(len(data['results']) >= 1, data['results'])
 
         for item in data['results']:
             with self.subTest(item=item):
