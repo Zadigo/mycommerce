@@ -1,0 +1,8 @@
+[
+    "djangorestframework",
+    "django-cors-headers",
+    "django-environ",
+    "psycopg2-binary",
+    "django",
+    ""
+]

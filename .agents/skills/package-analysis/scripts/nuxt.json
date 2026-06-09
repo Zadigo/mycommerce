@@ -8,13 +8,19 @@
         "@faker-js/faker",
         "@playwright/test",
         "@vitest/coverage-v8",
-        "playwright-core",
         "@vue/test-utils",
+        "@nuxt/eslint",
+        "@nuxtjs/google-fonts",
+        "playwright-core",
         "vitest",
         "oxfmt",
         "oxlint",
         "oxlint-tsgolint",
-        "@nuxt/eslint"
+        "firebase",
+        "firebase-admin",
+        "firebase-functions",
+        "firebase-tools",
+        "vuefire"
     ],
     "optional": [
         "@vueuse/sound",
