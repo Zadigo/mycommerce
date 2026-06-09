@@ -43,3 +43,10 @@ Ask the user if they want to install the optional packages listed under the `opt
 ## Before Analyzing
 
 Ask the user to provide the path to the Django application if it is not in the root directory.
+
+### Workflow
+
+1. Checkout `django.json` and install any missing packages listed under the `dependencies` key in the environment using `uv add <package-name>`. Install all the packages listed under `dev_dependencies` using `uv add <package-name> -D` since they are required for development purposes.
+2. Activate the environment and run `uv check` to identify any outdated packages by comparing the current versions with the latest available versions in the PyPI registry.
+
+- **[Django expected packages](scripts/django.json)**
