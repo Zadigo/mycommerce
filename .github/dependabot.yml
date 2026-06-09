@@ -5,23 +5,8 @@
 
 version: 2
 updates:
-  - package-ecosystem: "pip"
-    directory: "/"
+  - package-ecosystem: "uv"
+    directory: "/services/mystore"
     schedule:
-      interval: "monthly"
-  - package-ecosystem: "pip"
-    directory: "/api_server"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "npm"
-    directory: "/frontend_store"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "npm"
-    directory: "/frontend_quasar"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "npm"
-    directory: "/shop-mobile"
-    schedule:
-      interval: "monthly"
+      interval: "yearly"
+      day: sunday

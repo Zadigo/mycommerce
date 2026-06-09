@@ -1,0 +1,22 @@
+[project]
+name = "addresses"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi[standard]>=0.136.1",
+    "httpx>=0.28.1",
+    "hypercorn>=0.18.0",
+    "pandas>=3.0.3",
+    "pydantic>=2.13.4",
+    "quart>=0.20.0",
+    "quart-cors>=0.8.0",
+    "redis>=7.4.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "pytest-aio>=2.1.7",
+]

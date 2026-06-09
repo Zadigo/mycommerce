@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgadmin-depl
+  template:
+    metadata:
+      labels:
+        app: pgadmin-depl
+    spec:
+      containers:
+      
+        - name: pgadmin
+          image: dpage/pgadmin4
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 80
+          env:
+            - name:  PGADMIN_DEFAULT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name:  pgadmin-secret
+                  key:  pg_admin_default_email
+            - name:  PGADMIN_DEFAULT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name:  pgadmin-secret
+                  key:  pg_admin_default_password
+            - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION
+              valueFrom:
+                configMapKeyRef:
+                  name: pgadmin-config
+                  key: pgadmin_config_enhanced_cookie_protection

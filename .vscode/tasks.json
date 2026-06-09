@@ -2,13 +2,51 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "type": "npm",
-            "script": "dev",
-            "path": "frontend_store",
-            "detail": "Starts the e-commerce app with NPM",
-            "label": "e-commerce: start",
+            "type": "shell",
+            "command": "cd mystore && uv run celery -A mystore.celery_app worker -E -l info",
+            "windows": {
+                "command": "cd mystore && uv run celery -A mystore.celery_app worker -E --loglevel=INFO --pool=solo"
+            },
+            "icon": {
+                "id": "database"
+            },
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^$",
+                    "file": 1,
+                    "message": 2
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^celery@.*starting",
+                    "endsPattern": "ready\\.$"
+                }
+            },
+            "detail": "Starts Celery",
+            "label": "Celery: start",
+            "isBackground": true
+        },
+        {
+            "type": "shell",
+            "label": "GoPurchase",
             "isBackground": true,
-            "problemMatcher": ["$eslint-stylish", "$vite"]
+            "detail": "Start Go-Purchase",
+            "command": "cd services/gopurchase && go run .",
+            "icon": {
+                "id": "play"
+            },
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^$",
+                    "file": 1,
+                    "message": 2
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^🟢 Server ready",
+                    "endsPattern": ".*requests..."
+                }
+            }
         }
     ]
 }

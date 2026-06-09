@@ -1,0 +1,39 @@
+{
+    "vitest.rootConfig": "${workspaceFolder}/frontends/mainsite/vitest.config.ts",
+    "[python]": {
+       "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit",
+        "source.unusedImports": "explicit"
+       }
+    },
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false,
+    "python.testing.autoTestDiscoverOnSaveEnabled": true,
+    "python-envs.defaultEnvManager": "ms-python.python:venv",
+    "python.analysis.autoSearchPaths": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.oxc": "never"
+    },
+    "python-envs.pythonProjects": [
+        {
+            "path": "services/mycart",
+            "envManager": "ms-python.python:venv",
+            "packageManager": "ms-python.python:pip"
+        },
+        {
+            "path": "services/mysubscribers",
+            "envManager": "ms-python.python:venv",
+            "packageManager": "ms-python.python:pip"
+        },
+        {
+            "path": "services/addresses",
+            "envManager": "ms-python.python:venv",
+            "packageManager": "ms-python.python:pip"
+        },
+        {
+            "path": "services/mystore",
+            "envManager": "ms-python.python:venv",
+            "packageManager": "ms-python.python:pip"
+        }
+    ]
+}
