@@ -1,5 +1,5 @@
 <template>
-  <div class="relative cursor-pointer has-[.selected]:opacity-50 transition-opacity duration-500" @click="selected = !selected">
+  <div class="relative cursor-pointer has-[.selected]:opacity-50 transition-opacity duration-500" @click="() => { select(image) }">
     <div class="absolute top-0 right-0">
       <nuxt-badge v-if="image.isMainImage" label="Main" />
     </div>
@@ -15,15 +15,15 @@
 </template>
 
 <script setup lang="ts">
-import type { SearchedImages } from '~/types'
+import type { BaseImage } from '~/types'
   
-const props = defineProps<{ image: SearchedImages['data']['searchImages'][number] }>()
-const emit = defineEmits<{ select: [state: boolean, image: SearchedImages['data']['searchImages'][number]] }>()
+const props = defineProps<{ image: BaseImage }>()
+const emit = defineEmits<{ select: [state: boolean, image: BaseImage] }>()
 
 /**
  * Selection
  */
 
-const selected = ref<boolean>(false)
-watch(selected, (newValue) => { emit('select', newValue, props.image) })
+const { isSelected, select } = provideImageAssociation()
+const selected = isSelected(props.image)
 </script>

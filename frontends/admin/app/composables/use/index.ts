@@ -10,11 +10,10 @@ export * from './images'
 export async function useSearchImagesComposable() {
   const search = ref<string>('')
 
-  const { data: searched, execute, status } = await useFetch<SearchedImages>('/graphql/', {
+  const { data: _searched, execute, status } = await useFetch<SearchedImages>('/graphql/', {
     method: 'POST',
     baseURL: useRuntimeConfig().public.prodDomain,
     immediate: false,
-    // query: { q: search.value }
     body: {
       query: `
       query SearchImages($name: String!) {
@@ -33,10 +32,10 @@ export async function useSearchImagesComposable() {
     }
   })
 
-
   watchDebounced(search, async () => await execute(), { debounce: 2000, immediate: true })
+  const searched = computed(() => _searched.value?.data.searchImages ?? [])
 
   const isLoading = computed(() => status.value === 'pending')
 
-  return { search, searched: searched, isLoading }
+  return { search, searched, isLoading }
 }

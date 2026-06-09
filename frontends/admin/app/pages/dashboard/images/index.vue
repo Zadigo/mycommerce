@@ -12,12 +12,12 @@
         <nuxt-card>
           <!-- <nuxt-button @click="() => { toggleUploadModal() }">
             Upload images
-          </nuxt-button>
+          </nuxt-button> -->
 
           <nuxt-button @click="() => { toggleImageAssociation() }">
             Associate images
-            <nuxt-badge :label="numberOfSelectedImages" variant="soft" />
-          </nuxt-button> -->
+            <nuxt-badge :label="selectionCount" variant="soft" />
+          </nuxt-button>
 
           <nuxt-button>
             <icon name="i-lucide-table" />
@@ -27,7 +27,7 @@
 
       <!-- Images -->
       <div class="grid grid-cols-2 gap-1 my-10 md:grid-cols-4">
-        <images-column v-for="image in searched?.data.searchImages" :key="image.id" :image="image" />
+        <images-column v-for="image in searched" :key="image.id" :image="image" />
       </div>
     </div>
 
@@ -83,5 +83,10 @@ import type { Product, ProductImage } from '~/types';
 const { search, searched } = await useSearchImagesComposable()
 // const { search: searchProducts, searched: searchedProducts } = await useApiSearchEndpoint<Product[]>('/admin/v1/products')
 // const { images, files, fileNames, select, showModal: uploadModal, toggle: toggleUploadModal, upload, numberOfSelectedImages } = await useImagesComposable()
-// const { productToAssociate, selectedImages, showModal: imageAssociationModal, associate, toggle: toggleImageAssociation } = useImageAssociation(images)
+
+/**
+ * Asscociation
+ */
+
+const { productToAssociate, selectedImages, showModal: imageAssociationModal, associate, toggle: toggleImageAssociation, selectionCount } = useImageAssociation(searched)
 </script>
