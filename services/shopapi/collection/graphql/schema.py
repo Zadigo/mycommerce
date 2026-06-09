@@ -4,7 +4,7 @@ from django.db import models
 from django.utils import timezone
 from graphene import Enum, relay
 from graphql import GraphQLResolveInfo
-
+from django.utils.text import slugify
 from collection.graphql.types import CollectionConnection, CollectionType
 from collection.models import Collection
 
@@ -62,19 +62,19 @@ class CollectionsQuery(graphene.ObjectType):
         sub_category = kwargs.get('sub_category', None)
         on_sale = kwargs.get('on_sale', None)
 
-        other_cache_keys: list[str] = [f'searchCollection_{name}']
+        other_cache_keys: list[str] = [f'searchCollection_{slugify(name)}']
         logic = models.Q(name__icontains=name)
 
         if product_name is not None:
-            other_cache_keys.append(product_name)
+            other_cache_keys.append(slugify(product_name))
             logic &= models.Q(products__name__icontains=product_name)
 
         if category is not None:
-            other_cache_keys.append(category)
+            other_cache_keys.append(slugify(category))
             logic &= models.Q(category__icontains=category)
 
         if sub_category is not None:
-            other_cache_keys.append(sub_category)
+            other_cache_keys.append(slugify(sub_category))
             logic &= models.Q(sub_category__icontains=sub_category)
 
         if on_sale is not None:
@@ -97,7 +97,7 @@ class CollectionsQuery(graphene.ObjectType):
         typology = kwargs.get('typology', [])
 
         if price_limit is not None:
-            other_cache_keys.append(price_limit.value)
+            other_cache_keys.append(slugify(price_limit.value))
             price_limit_map = {
                 'Up to 15': 15,
                 'Up to 20': 20,
@@ -118,7 +118,7 @@ class CollectionsQuery(graphene.ObjectType):
 
         if colors is not None:
             for color in colors:
-                other_cache_keys.append(color)
+                other_cache_keys.append(slugify(color))
                 qs = qs.filter(products__color__icontains=color)
 
         if sort_price is not None:
@@ -129,16 +129,11 @@ class CollectionsQuery(graphene.ObjectType):
                 case SortDirections.DESC:
                     qs = qs.order_by('-products__unit_price')
 
+
         match name:
-            case 'all':
-                other_cache_keys.append('all')
-                cache.set(get_cache_key(*other_cache_keys), qs, cache_duration)
-                return qs
             case 'sales':
                 qs = qs.filter(logic)
                 other_cache_keys.append('sales')
-                cache.set(get_cache_key(*other_cache_keys), qs, cache_duration)
-                return qs
             case 'novelties':
                 difference = (timezone.now() - timezone.timedelta(days=5))
                 qs = qs.filter(
@@ -146,9 +141,9 @@ class CollectionsQuery(graphene.ObjectType):
                     models.Q(created_on__gte=difference.date())
                 )
                 other_cache_keys.append('novelties')
-                cache.set(get_cache_key(*other_cache_keys), qs, cache_duration)
-                return qs
             case _:
                 qs = qs.filter(logic)
-                cache.set(cache_key, qs, cache_duration)
-                return qs
+
+        cache_key = get_cache_key(*other_cache_keys)
+        cache.set(cache_key, qs, cache_duration)
+        return qs
