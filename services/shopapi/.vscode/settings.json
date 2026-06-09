@@ -14,8 +14,8 @@
     ],
     "[python]": {
         "editor.codeActionsOnSave": {
-            "source.organizeImports": "always",
-            "source.fixAll.pylance": "always"
+            "source.fixAll.pylance": "always",
+            "source.organizeImports.ruff": "always"
         }
     }
 }

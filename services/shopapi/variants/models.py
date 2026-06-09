@@ -3,6 +3,7 @@ from django.db.models.constraints import UniqueConstraint
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
+
 from shop import validators
 from shop.models import Product
 from variants.choices import VariantMetrics
@@ -49,7 +50,12 @@ class Size(AbstractVariant):
     available sizes for a product. This model
     allows us to also track size availability
     or active state independently from from
-    the main product state"""
+    the main product state
+    
+    Attributes:
+        name (str): The name of the size to use
+        metric (str): The specific metric to use for the size value
+    """
 
     name = models.CharField(
         max_length=100,

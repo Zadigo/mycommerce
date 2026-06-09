@@ -9,11 +9,11 @@ from django_mcp import mcp_app as mcp
 from mcp.types import ImageContent, TextContent
 from mcp_server import MCPToolset, ModelQueryToolset
 
-from shopapi.choices import CategoryChoices
-from shopapi.constants import SUB_CATEGORIES
 from shop.api.serializers import ImageSerializer, ProductSerializer, WishlistSerializer
 from shop.choices import AgeGroupChoices, GenderChoices
 from shop.models import Image, Product, Video, Wishlist
+from shopapi.choices import CategoryChoices
+from shopapi.constants import SUB_CATEGORIES
 from variants.choices import VariantMetrics
 from variants.models import Size
 
@@ -152,6 +152,8 @@ class ProductTools(MCPToolset):
         default_size_names = validated_data.pop('default_size_names', None)
         default_size_metric = validated_data.pop('default_size_metric', None)
 
+        instance = Product.objects.create(**validated_data)
+
         if default_size_names is not None:
             if default_size_metric == VariantMetrics.CLOTHE.value:
                 default_sizes = ['xs', 's', 'm', 'xl']
@@ -159,10 +161,8 @@ class ProductTools(MCPToolset):
                     Size(name=size, metric='Clothe', product=instance)
                     for size in default_sizes
                 ]
-                instances = Size.objects.batch_create(objs)
-                instance.objects.add(instances)
+                Size.objects.bulk_create(objs)
 
-        instance = Product.objects.create(**validated_data)
         return ProductSerializer(instance=instance).data
 
     def update_product(self, data: UpdateProductModel) -> dict:
@@ -455,8 +455,7 @@ async def available_categories(namespace: str) -> TextContent:
     on the provided namespace for the products in the store.
 
     Args:
-        namespace (str): The namespace to determine whether to return categories or sub-categories.
-                        It can be either 'categories' or 'sub_categories'.
+        namespace (str): The namespace to determine whether to return categories or sub-categories. It can be either 'categories' or 'sub_categories'.
 
     Returns:
         TextContent: A TextContent object containing the list of available categories or sub-categories based on the provided namespace.
