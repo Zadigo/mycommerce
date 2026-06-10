@@ -1,0 +1,105 @@
+name: Frontends Admin
+
+# on:
+#   pull_request: 
+#     types: [opened, synchronize, reopened]
+#     branches:
+#       - develop
+#       - main
+#   merge_group:
+#     branches:
+#       - develop
+#       - main
+#       - stable/*
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Frontend Admin environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  NODE_VERSION: 24
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache-dependency-path: frontends/admin/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: |
+          npx nuxt prepare
+          pnpm run lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache-dependency-path: frontends/admin/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: |
+          npx nuxt prepare
+          pnpm run test
+    
+  build:
+    runs-on: ${{ matrix.os }}
+    if: (github.event_name == 'merge_group' && (github.base_ref == 'main' || startsWith(github.base_ref, 'stable/')))
+    needs: [lint, test]
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [24]
+    defaults:
+      run:
+        working-directory: frontends/admin
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache-dependency-path: frontends/admin/pnpm-lock.yaml
+      - name: Build
+        run: pnpm run build
+      - name: Generate version
+        id: version
+        run: |
+          VERSION=$(date +%Y%m%d)-${GITHUB_SHA::8}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Save build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ steps.version.outputs.version }}
+          path: |
+            dist/
+            package.json

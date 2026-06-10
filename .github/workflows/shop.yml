@@ -1,0 +1,57 @@
+name: Shop
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Frontend Admin environment"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+
+env:
+  PYTHON_VERSION: 3.14
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: [3.14]
+    defaults:
+      run:
+        working-directory: services/shop
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+          uv sync
+      - name: Run tests
+        run: pytest tests/
+      - name: Save build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-${{ matrix.python }}
+          retention-days: 1
+          path: |
+            services/shop/
+
+  checks:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - uses: actions/download-artifact@v4
+        with:
+          name: test-artifacts-${{ matrix.python }}
+          path: services/shop/
