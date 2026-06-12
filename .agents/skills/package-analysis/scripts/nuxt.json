@@ -1,0 +1,30 @@
+{
+    "required": [
+        "@vueuse/core",
+        "@vueuse/math",
+        "@vueuse/nuxt",
+        "@vueuse/components",
+        "@vueuse/integrations",
+        "@faker-js/faker",
+        "@playwright/test",
+        "@vitest/coverage-v8",
+        "@vue/test-utils",
+        "@nuxt/eslint",
+        "@nuxtjs/google-fonts",
+        "playwright-core",
+        "vitest",
+        "oxfmt",
+        "oxlint",
+        "oxlint-tsgolint",
+        "firebase",
+        "firebase-admin",
+        "firebase-functions",
+        "firebase-tools",
+        "vuefire"
+    ],
+    "optional": [
+        "@vueuse/sound",
+        "@vueuse/motion",
+        "pinia"
+    ]
+}

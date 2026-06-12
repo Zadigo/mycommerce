@@ -1,0 +1,14 @@
+{
+  "name": "@mycommerce/project",
+  "private": true,
+  "scripts": {
+    "install": "pnpm -r install",
+    "install:admin": "pnpm --filter admin install",
+    "install:mainsite": "pnpm --filter mainsite install",
+    "dev:admin": "pnpm --filter admin dev",
+    "dev:mainsite": "pnpm --filter mainsite dev",
+    "build:admin": "pnpm --filter admin build",
+    "build:mainsite": "pnpm --filter mainsite build",
+    "dev": "pnpm --parallel --filter './frontends/*' dev"
+  }
+}

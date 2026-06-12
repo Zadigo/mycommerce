@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: pgadmin-config
-  labels:
-    app: pgadmin-config
-data:
-  pgadmin_config_enhanced_cookie_protection: "true"

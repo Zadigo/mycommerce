@@ -49,12 +49,13 @@
             }
         },
         {
-            "name": "Django: Shop",
+            "name": "Django: ShopApi",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/mystore/manage.py",
+            "python": "${workspaceFolder}/services/shopapi/.venv/bin/python",
+            "program": "${workspaceFolder}/services/shopapi/manage.py",
             "args": ["runserver"],
-            "envFile": "${workspaceFolder}/mystore/.env",
+            "envFile": "${workspaceFolder}/services/shopapi/.env",
             // "preLaunchTask": "Celery: start",
             "django": true,
             "presentation": {
