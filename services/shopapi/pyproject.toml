@@ -58,6 +58,7 @@ dev = [
     "autopep8>=2.3.2",
     "coverage>=7.13.4",
     "django-browser-reload>=1.21.0",
+    "django-watchfiles>=1.4.0",
     "factory-boy>=3.3.3",
     "pytest>=9.0.3",
     "pytest-aio>=2.1.7",
@@ -68,6 +69,7 @@ dev = [
     "pytest-env>=1.6.0",
     "pytest-playwright>=0.7.2",
     "pytest-reportlog>=1.0.0",
+    "pytest-timeout>=2.4.0",
     "ruff>=0.15.16",
 ]
 
@@ -77,6 +79,7 @@ reportMissingImports = true
 reportUntypedBaseClass = true
 
 [tool.pytest]
+timeout=5000
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "api: marks tests as api tests",

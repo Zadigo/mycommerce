@@ -53,7 +53,7 @@
       </template>
     </nuxt-modal> -->
 
-    <!-- <nuxt-modal v-model:open="imageAssociationModal">
+    <nuxt-modal v-model:open="imageAssociationModal">
       <template #header>
         <h2>
           Select a product
@@ -61,7 +61,7 @@
       </template>
 
       <template #body>
-        <nuxt-input-menu v-model="productToAssociate" :items="searchedProducts" label-key="name" value-key="id" open-on-focus />
+        <nuxt-input-menu v-model="productSearch" :items="flattenedSearched" label-key="name" value-key="id" open-on-focus />
       </template>
 
       <template #footer>
@@ -70,10 +70,10 @@
         </nuxt-button>
 
         <nuxt-button @click="associate">
-          Associate ({{ selectedImages.length }}) images
+          Associate ({{ selectionCount }}) images
         </nuxt-button>
       </template>
-    </nuxt-modal> -->
+    </nuxt-modal>
   </nuxt-container>
 </template>
 
@@ -84,9 +84,12 @@ const { search, searched } = await useSearchImagesComposable()
 // const { search: searchProducts, searched: searchedProducts } = await useApiSearchEndpoint<Product[]>('/admin/v1/products')
 // const { images, files, fileNames, select, showModal: uploadModal, toggle: toggleUploadModal, upload, numberOfSelectedImages } = await useImagesComposable()
 
+
+const { flattenedSearched, search: productSearch } = useProductSearch()
+
 /**
- * Asscociation
+ * Association
  */
 
-const { productToAssociate, selectedImages, showModal: imageAssociationModal, associate, toggle: toggleImageAssociation, selectionCount } = useImageAssociation(searched)
+const { productToAssociate, showModal: imageAssociationModal, associate, toggle: toggleImageAssociation, selectionCount } = useImageAssociation(searched)
 </script>

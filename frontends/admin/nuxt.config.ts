@@ -30,6 +30,10 @@ export default defineNuxtConfig({
     verifyEndpoint: '/auth/v1/token/verify/' 
   },
 
+  test: {
+
+  },
+
   runtimeConfig: {
     public: {
       prodDomain: process.env.NUXT_PUBLIC_DJANGO_SHOP_PROD_DOMAIN || 'http://127.0.0.1:8000',

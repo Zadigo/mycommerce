@@ -1,10 +1,12 @@
 import type { TableColumn } from '@nuxt/ui'
 import { h } from 'vue'
-import type { Product, ProductNode, SearchedProducts } from '~/types'
+import type { BaseProduct, Product, ProductNode, SearchedProducts } from '~/types'
 import NuxtButton from '#components'
 import NuxtBadge  from '#components'
 
-type ProductForTable = Pick<Product, 'id' | 'name' | 'unit_price'>
+export * from './search'
+
+type ProductForTable = Pick<BaseProduct, 'id' | 'name' | 'unitPrice'>
 
 export function useProducts() {
   const isLoading = ref<boolean>(true)
@@ -103,44 +105,6 @@ export function useProducts() {
     isLoading,
     tableColumns,
     fetch
-  }
-}
-
-export function useProductSearch(products: Ref<ProductNode[]>) {
-  const search = ref<string>('')
-
-  const searched = computed(() => {
-    return products.value.filter((product) =>
-      product.node.name.toLowerCase().includes(search.value.toLowerCase())
-    )
-  })
-
-  return {
-    search,
-    searched
-  }
-}
-
-/**
- * Composable that runs search directly on the Django APi
- */
-export async function useApiProductSearch() {
-  const search = ref<string>()
-
-  const { data: searched, execute, status } = await useFetch<Product[]>('/products', {
-    baseURL: useRuntimeConfig().public.prodDomain,
-    immediate: false,
-    query: { q: search.value }
-  })
-
-  watchDebounced(search, async () => await execute(), { debounce: 1000 })
-
-  const isLoading = computed(() => status.value === 'pending')
-
-  return {
-    search,
-    searched,
-    isLoading
   }
 }
 

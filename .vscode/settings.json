@@ -1,5 +1,4 @@
 {
-    "vitest.rootConfig": "${workspaceFolder}/frontends/mainsite/vitest.config.ts",
     "[python]": {
        "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit",

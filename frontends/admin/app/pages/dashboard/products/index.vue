@@ -42,7 +42,7 @@
  * Products
  */
 const { products, tableColumns, convertForTable } = useProducts()
-const { search, searched } = useProductSearch(products)
+const { search, searched } = usePassiveProductSearch(products)
 const productsForTable = convertForTable(searched)
 const { upload, file, showModal, toggle } = useProductsUpload(products)
 

@@ -52,7 +52,6 @@ const [useImageAssociation, _provideImageAssociation] = createInjectionState((cu
   }
 
   const isSelected = reactify((image: BaseImage) => selectedImages.value.some(i => i.id === image.id))
-
   const [showModal, toggle] = useToggle()
 
   return {
