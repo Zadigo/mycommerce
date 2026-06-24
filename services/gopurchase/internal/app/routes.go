@@ -13,12 +13,12 @@ import (
 // NewApp initializes the application with the provided server
 // configuration and Redis client. It sets up the necessary routes
 // and returns an instance of the App.
-func (a *App) loadRoutes() {
+func (a *HttpApp) loadRoutes() {
 	router := chi.NewRouter()
 
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
-	router.Use(handlers.Cors)
+	router.Use(Cors)
 	router.Use(Authorization)
 	router.Use(middleware.AllowContentType("application/json"))
 	router.Use(middleware.Throttle(1000))
@@ -32,10 +32,10 @@ func (a *App) loadRoutes() {
 	a.router = router
 }
 
-func (a *App) loadPaymentRoutes(router chi.Router) {
+func (a *HttpApp) loadPaymentRoutes(router chi.Router) {
 	paymentApi := handlers.PaymentApi{
 		PaymentClient: &stripe.Client{},
-		ServerConfig:  a.serverConfig,
+		App:           a,
 		Ctx:           a.ctx,
 	}
 
@@ -49,10 +49,11 @@ func (a *App) loadPaymentRoutes(router chi.Router) {
 	router.Post("/update", paymentApi.UpdateIntent)
 }
 
-func (a *App) loadAuthRoutes(router chi.Router) {
+func (a *HttpApp) loadAuthRoutes(router chi.Router) {
 	authApi := handlers.AuthenticationApi{
-		ServerConfig: a.serverConfig,
-		Ctx:          a.ctx,
+		Ctx: a.ctx,
+		App: a,
 	}
+
 	router.Post("/token", authApi.Authenticate)
 }

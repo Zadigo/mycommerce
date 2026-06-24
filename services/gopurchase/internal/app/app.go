@@ -9,31 +9,32 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/Zadigo/gopurchase/internal/models"
 	"github.com/go-chi/chi"
 	"github.com/redis/go-redis/v9"
 )
 
-type App struct {
-	redisClient  *redis.Client
-	serverConfig *ServerConfig
-	router       *chi.Mux
-	ctx          context.Context
+// HttpApp is the main application struct that holds 
+// the necessary components for running the HTTP server.
+type HttpApp struct {
+	redisClient *redis.Client
+	serverApp   models.ServerAppInterface
+	router      *chi.Mux
+	ctx         context.Context
 }
 
-type AppInterface interface {
-	Start() error
-}
-
-func (a *App) Start() error {
+func (a *HttpApp) Start() error {
 	port, err := strconv.ParseUint(os.Getenv("PORT"), 10, 16)
 	if err != nil {
 		return fmt.Errorf("🔴 Invalid port: %w", err)
 	}
-	a.serverConfig.Port = strconv.FormatUint(port, 10)
 
-	log.Printf("⚡️ Starting server on port %s...", a.serverConfig.Port)
+	serverConfig := a.serverApp.GetConfig()
+	serverConfig.Port = strconv.FormatUint(port, 10)
+
+	log.Printf("⚡️ Starting server on port %s...", serverConfig.Port)
 	server := &http.Server{
-		Addr:    fmt.Sprintf(":%s", a.serverConfig.Port),
+		Addr:    fmt.Sprintf(":%s", serverConfig.Port),
 		Handler: a.router,
 	}
 
@@ -68,26 +69,22 @@ func (a *App) Start() error {
 
 		timeoutCtx, cancel := context.WithTimeout(a.ctx, 10*time.Second)
 		defer cancel()
-		
+
 		return server.Shutdown(timeoutCtx)
 	}
 }
 
-func NewApp(ctx context.Context, serverConfig *ServerConfig) AppInterface {
+func NewApp(serverApp models.ServerAppInterface) models.AppInterface {
 	redisAddress := os.Getenv("REDIS_ADDRESS")
 
 	if redisAddress == "" {
 		redisAddress = "localhost:6379"
 	}
 
-	app := &App{
-		ctx:          ctx,
-		serverConfig: serverConfig,
-		redisClient: redis.NewClient(&redis.Options{
-			Addr:     redisAddress,
-			Password: os.Getenv("REDIS_PASSWORD"),
-			DB:       0,
-		}),
+	app := &HttpApp{
+		ctx:         serverApp.GetContext(),
+		serverApp:   serverApp,
+		redisClient: serverApp.GetRedisClient(),
 	}
 	app.loadRoutes()
 	return app

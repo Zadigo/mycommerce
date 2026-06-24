@@ -69,7 +69,7 @@ type CreatePaymentIntentRequest struct {
 
 type PaymentApi struct {
 	PaymentClient *stripe.Client
-	ServerConfig  models.ServerConfigInterface
+	App           models.AppInterface
 	Ctx           context.Context
 }
 

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/Zadigo/gopurchase/internal/utils"
+	"github.com/Zadigo/gopurchase/internal/utils/requests"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,7 +17,7 @@ func TestSendRequest(t *testing.T) {
 	response := struct{}{}
 
 	t.Run("Should send request", func(t *testing.T) {
-		err := utils.SendRequest("http://localhost:8080/payment", "POST", reader, &response)
+		err := requests.SendRequest("http://localhost:8080/payment", "POST", reader, &response)
 		assert.NotNil(t, err)
 	})
 }

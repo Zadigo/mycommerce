@@ -11,8 +11,15 @@ The purchase micro-service is a Golang server that accepts purchase requests fro
 Here is the simplest technical implementation of how a payment process could take place:
 
 ```mermaid
-graph LR
-A[Shop - Nuxt4] -->B(Router - Golang) --> C(Other backends)
+flowchart
+
+N(Nuxt) --> D(Django)
+D <--> PG[(Database)]
+D --> G(Golang)
+G <--> R[(Redis)]
+G <--> ST(Stripe)
+G --> GC(Gocron)
+GC --> D
 ```
 
 Here is the detailed implementation of the payment process:
@@ -21,21 +28,50 @@ Here is the detailed implementation of the payment process:
 %% Example of sequence diagram
 sequenceDiagram
 
-Nuxt ->> Django: Start payment
-Django ->> Router: Request payment
-Router ->> Stock: Check stock
+autonumber
 
-alt Has stock
-Router ->> Payment: Try payment
+box Frontend
+actor U as Alice
+participant N@{type: "control"} as Nuxt
+end
+
+box Backend
+participant D@{type: "control"} as Shop
+participant G@{type: "control"} as Golang
+participant S@{type: "control"} as Stock
+end
+
+box External
+participant ST@{type: "boundary"} as Stripe
+participant SH@{type: "boundary"} as Transporter
+end
+
+U ->> N: Click payment button
+N ->> D: Start payment
+D ->> G: Request payment
+
+alt stock
+G ->> S: Check stock
+else
+G ->> ()N: Product does not exist
+end
+
+alt Payment
+G ->> ST: Try payment
+ST ->> G: Payment successful
+par shipment
+ST -->> ()U: Email confirmation
+G ->> SH: Create shipment
+SH -->> D: Shipment created
+D -->> ()U: Email confirmation
+end
 else Not found
-Router->>Nuxt: Product doest not exist
+ST -->> G: Payment failed
+G -->> ()N: Payment failed
 end
 
-alt Shipment
-Router->>Shipment: Run shipment backend
-else Payment failed
-Shipment->>Nuxt: Success
-end
+U ->> N: Check shipping info
+N <<->> D: Track shipment
 ```
 
 ## Resources
