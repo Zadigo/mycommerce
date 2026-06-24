@@ -35,6 +35,7 @@ func (t *TickerApp) Start() error {
 
 	go globalJob(t)
 	go stripeSchedulerJob(t)
+	go paymentIntentsJob(t)
 
 	go func() {
 		for {

@@ -71,8 +71,25 @@ func (p *PaymentRedis) UpdatePaymentIntent(intent *stripe.PaymentIntent) error {
 	return p.redisClient.HSet(p.ctx, p.formatKey(intent.ID), "response", b).Err()
 }
 
+// MarkPaymentIntentAsCaptured marks a payment intent as captured in Redis.
+// This is useful for tracking the status of payment intents and ensuring that
+// captured intents are not processed again.
 func (p *PaymentRedis) MarkPaymentIntentAsCaptured(intentID string) error {
 	return p.redisClient.HSet(p.ctx, p.formatKey(intentID), "captured", true).Err()
+}
+
+// GetAllKeys retrieves all keys for payment intents stored in Redis.
+// It returns a slice of strings containing the keys, or an error if there was an issue with Redis.
+func (p *PaymentRedis) GetAllKeys() ([]string, error) {
+	return p.redisClient.Keys(p.ctx, fmt.Sprintf("%s:*", p.storageKey)).Result()
+}
+
+func (p *PaymentRedis) IsCaptured(intentID string) (bool, error) {
+	result, err := p.redisClient.HGet(p.ctx, p.formatKey(intentID), "captured").Result()
+	if err != nil {
+		return false, err
+	}
+	return result == "true", nil
 }
 
 func NewPaymentRedis(redisClient *redis.Client) *PaymentRedis {

@@ -47,7 +47,7 @@ type CartItem struct {
 }
 
 type CartItems struct {
-	SessionId string     `json:"sessionId"`
+	SessionId string     `json:"session_id"`
 	Items     []CartItem `json:"items"`
 }
 

@@ -71,6 +71,10 @@ func (s *ServerApp) GetConfig() *models.ServerConfig {
 	return s.config
 }
 
+func (s *ServerApp) GetDebug() bool {
+	return s.Debug
+}
+
 func (s *ServerApp) Start() error {
 	absPath, err := filepath.Abs(s.rootDir)
 	if err != nil {
@@ -122,10 +126,6 @@ func (s *ServerApp) Start() error {
 	log.Printf("⚡️ Shutting down %s server...", os.Getenv("SERVICE_NAME"))
 
 	return nil
-}
-
-func (s *ServerApp) GetDebug() bool {
-	return s.Debug
 }
 
 func NewServerApp(ctx context.Context, rootDir string) models.ServerAppInterface {

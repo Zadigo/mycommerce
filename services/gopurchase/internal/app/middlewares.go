@@ -1,19 +1,13 @@
 package app
 
 import (
-	"context"
+	"log"
 	"net/http"
 	"strings"
 
-	"github.com/go-chi/chi/v5"
+	"github.com/Zadigo/gopurchase/internal/utils"
 	"github.com/gorilla/websocket"
 )
-
-var allowedOrigins = map[string]bool{
-	"http://localhost:3000": true,
-	"http://127.0.0.1:8000": true,
-	"PostmanRuntime/7.*":    true,
-}
 
 var CustomRequestUpgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -21,12 +15,12 @@ var CustomRequestUpgrader = websocket.Upgrader{
 	CheckOrigin: func(request *http.Request) bool {
 		origin := request.Header.Get("Origin")
 
-		_, ok := allowedOrigins[origin]
+		_, ok := utils.AllowedOrigins[origin]
 		if !ok {
 			return false
 		}
 
-		return allowedOrigins[origin]
+		return utils.AllowedOrigins[origin]
 	},
 }
 
@@ -44,7 +38,8 @@ func Cors(next http.Handler) http.Handler {
 
 		origin := r.Header.Get("Origin")
 
-		if _, ok := allowedOrigins[origin]; !ok {
+		if _, ok := utils.AllowedOrigins[origin]; !ok {
+			log.Printf("🟠 Origin not allowed: %s", origin)
 			http.Error(w, "Origin not allowed", http.StatusForbidden)
 			return
 		}
@@ -69,15 +64,15 @@ func Authorization(next http.Handler) http.Handler {
 
 // ServiceIdMiddleware is a middleware that retrieves the service ID
 // from the URL parameters and adds it to the request context.
-func ServiceIdMiddleware(next http.Handler) http.Handler {
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		serviceUuid := chi.URLParam(r, "serviceUuid")
-		var ctx context.Context
-		ctx = context.WithValue(r.Context(), "serviceUuid", serviceUuid)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	}
-	return http.HandlerFunc(fn)
-}
+// func ServiceIdMiddleware(next http.Handler) http.Handler {
+// 	fn := func(w http.ResponseWriter, r *http.Request) {
+// 		serviceUuid := chi.URLParam(r, "serviceUuid")
+// 		var ctx context.Context
+// 		ctx = context.WithValue(r.Context(), "serviceUuid", serviceUuid)
+// 		next.ServeHTTP(w, r.WithContext(ctx))
+// 	}
+// 	return http.HandlerFunc(fn)
+// }
 
 func JsonHeartbeat(endpoint string) func(http.Handler) http.Handler {
 	f := func(h http.Handler) http.Handler {

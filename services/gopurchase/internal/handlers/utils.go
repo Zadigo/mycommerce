@@ -4,14 +4,10 @@ import (
 	"net/http"
 
 	"github.com/Zadigo/gopurchase/internal/models"
+	"github.com/Zadigo/gopurchase/internal/utils"
 	"github.com/Zadigo/gopurchase/internal/utils/requests"
 	"github.com/gorilla/websocket"
 )
-
-var allowedOrigins = map[string]bool{
-	"http://localhost:3000": true,
-	"http://127.0.0.1:8000": true,
-}
 
 var CustomRequestUpgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -19,12 +15,12 @@ var CustomRequestUpgrader = websocket.Upgrader{
 	CheckOrigin: func(request *http.Request) bool {
 		origin := request.Header.Get("Origin")
 
-		_, ok := allowedOrigins[origin]
+		_, ok := utils.AllowedOrigins[origin]
 		if !ok {
 			return false
 		}
 
-		return allowedOrigins[origin]
+		return utils.AllowedOrigins[origin]
 	},
 }
 
