@@ -8,6 +8,8 @@ import (
 
 type AppInterface interface {
 	Start() error
+	GetRedisClient() *redis.Client
+	GetContext() context.Context
 }
 
 type ServerAppInterface interface {

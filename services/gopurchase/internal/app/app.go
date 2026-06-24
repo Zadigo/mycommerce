@@ -62,6 +62,14 @@ func (a *HttpApp) Start() error {
 	}
 }
 
+func (a *HttpApp) GetRedisClient() *redis.Client {
+	return a.redisClient
+}
+
+func (a *HttpApp) GetContext() context.Context {
+	return a.ctx
+}
+
 func NewApp(serverApp models.ServerAppInterface) models.AppInterface {
 	app := &HttpApp{
 		ctx:         serverApp.GetContext(),

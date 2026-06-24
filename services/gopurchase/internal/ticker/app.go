@@ -34,21 +34,36 @@ func (t *TickerApp) Start() error {
 	log.Printf("🔵 Starting %s ticker application...", os.Getenv("SERVICE_NAME"))
 
 	go globalJob(t)
-	// go stripeSchedulerJob(t)
+	go stripeSchedulerJob(t)
 
-	select {
-	case err := <-t.chErrors:
-		log.Printf("🔴 %s ticker error: %v", os.Getenv("SERVICE_NAME"), err)
-		return err
-	case <-t.ctx.Done():
-		log.Println("⚡️ Shutting down ticker...")
-
-		for _, scheduler := range t.schedulers {
-			scheduler.Stop()
+	go func() {
+		for {
+			select {
+			case err := <-t.chErrors:
+				log.Printf("🔴 %s ticker error: %v", os.Getenv("SERVICE_NAME"), err)
+			case <-t.ctx.Done():
+				return
+			}
 		}
+	}()
 
-		return nil
+	<-t.ctx.Done()
+
+	log.Println("⚡️ Shutting down ticker...")
+
+	for _, scheduler := range t.schedulers {
+		scheduler.Stop()
 	}
+
+	return nil
+}
+
+func (t *TickerApp) GetRedisClient() *redis.Client {
+	return t.redisClient
+}
+
+func (t *TickerApp) GetContext() context.Context {
+	return t.ctx
 }
 
 func NewTickerApp(serverApp models.ServerAppInterface) models.AppInterface {

@@ -1,4 +1,4 @@
-package tests
+package utils
 
 import (
 	"bytes"
@@ -11,6 +11,7 @@ import (
 
 	"github.com/Zadigo/gopurchase/internal/handlers"
 	"github.com/Zadigo/gopurchase/internal/models"
+	"github.com/redis/go-redis/v9"
 )
 
 func GetRootDir() string {
@@ -21,6 +22,36 @@ func GetRootDir() string {
 
 	rootDir := strings.TrimSuffix(path, "/tests")
 	return rootDir
+}
+
+func CreateCartItems() []models.CartItem {
+	return []models.CartItem{
+		{
+			Size: models.SizeItem{
+				Name:         "Small",
+				Metric:       "cm",
+				Active:       true,
+				Availability: true,
+				VariantPrice: 10,
+			},
+			Product: models.Product{
+				Id:   "prod_123",
+				Name: "Test Product",
+				MainImage: models.ProductImage{
+					Name:        "main_image.jpg",
+					Variant:     "main",
+					Thumbnail:   "https://example.com/thumbnail.jpg",
+					IsMainImage: true,
+					Original:    "https://example.com/original.jpg",
+				},
+				Price:     0,
+				SalePrice: 0,
+				UnitPrice: 10,
+			},
+			Total:    10,
+			Quantity: 1,
+		},
+	}
 }
 
 func CreatePaymentIntentRecorder(t *testing.T) *httptest.ResponseRecorder {
@@ -36,33 +67,7 @@ func CreatePaymentIntentRecorder(t *testing.T) *httptest.ResponseRecorder {
 		Total:     10,
 		CartItemsData: handlers.CartItemsData{
 			Items: models.CartItems{
-				Items: []models.CartItem{
-					{
-						Size: models.SizeItem{
-							Name:         "Small",
-							Metric:       "cm",
-							Active:       true,
-							Availability: true,
-							VariantPrice: 10,
-						},
-						Product: models.Product{
-							Id:   "prod_123",
-							Name: "Test Product",
-							MainImage: models.ProductImage{
-								Name:        "main_image.jpg",
-								Variant:     "main",
-								Thumbnail:   "https://example.com/thumbnail.jpg",
-								IsMainImage: true,
-								Original:    "https://example.com/original.jpg",
-							},
-							Price:     0,
-							SalePrice: 0,
-							UnitPrice: 10,
-						},
-						Total:    10,
-						Quantity: 1,
-					},
-				},
+				Items: CreateCartItems(),
 			},
 		},
 	}
@@ -131,4 +136,12 @@ func CapturePaymentIntentRecorder(t *testing.T) *httptest.ResponseRecorder {
 
 	handler.ServeHTTP(recorder, request)
 	return recorder
+}
+
+func CreateRedisClient() *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	})
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"os"
 	"os/signal"
 
@@ -19,9 +20,8 @@ func main() {
 	defer cancel()
 
 	server := server.NewServerApp(ctx, ".")
-	// err = server.Start()
-	// if err != nil {
-	// 	log.Panicf("❌ Could not start server: %v", err)
-	// }
-	server.Start()
+	err = server.Start()
+	if err != nil {
+		log.Panicf("❌ Could not start server: %v", err)
+	}
 }

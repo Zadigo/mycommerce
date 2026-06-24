@@ -53,10 +53,7 @@ func globalJob(app *TickerApp) {
 		}
 	})
 
-	if err != nil {
-		app.chErrors <- fmt.Errorf("⚠️ Could not schedule global job: %w", err)
-		return
-	}
+	app.chErrors <- fmt.Errorf("⚠️ Failed to start global scheduler job: %v", err)
 
 	scheduler.StartBlocking()
 }
@@ -69,10 +66,7 @@ func stripeSchedulerJob(app *TickerApp) {
 
 	})
 
-	if err != nil {
-		app.chErrors <- fmt.Errorf("⚠️ Could not schedule stripe job: %w", err)
-		return
-	}
+	app.chErrors <- fmt.Errorf("⚠️ Failed to start Stripe scheduler job: %w", err)
 
 	scheduler.StartBlocking()
 }
