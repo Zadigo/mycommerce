@@ -28,6 +28,7 @@ type ServerApp struct {
 
 	httpApp   models.AppInterface
 	tickerApp models.AppInterface
+	chErrors  chan error
 	Debug     bool
 }
 
@@ -55,7 +56,7 @@ func (s *ServerApp) GetRedisClient() *redis.Client {
 		Password: os.Getenv("REDIS_PASSWORD"),
 		DB:       0,
 	})
-	
+
 	log.Printf("🔵 Redis client initialized successfully...")
 	return s.redisClient
 }
@@ -106,23 +107,23 @@ func (s *ServerApp) Start() error {
 	}
 
 	go func() {
-		log.Printf("🔵 Starting %s standard game application...", os.Getenv("SERVICE_NAME"))
-		err := s.httpApp.Start()
-		if err != nil {
-			panic(err)
-		}
+		s.chErrors <- s.httpApp.Start()
 	}()
 
 	go func() {
-		log.Printf("🔵 Starting %s ticker application...", os.Getenv("SERVICE_NAME"))
-		err := s.tickerApp.Start()
-		if err != nil {
-			panic(err)
-		}
+		s.chErrors <- s.tickerApp.Start()
 	}()
 
 	log.Printf("🔵 %s server started successfully...", os.Getenv("SERVICE_NAME"))
-	return nil
+
+	select {
+	case err := <-s.chErrors:
+		log.Printf("❌ %s server error: %v", os.Getenv("SERVICE_NAME"), err)
+		return err
+	case <-s.ctx.Done():
+		log.Printf("⚡️ Shutting down %s server...", os.Getenv("SERVICE_NAME"))
+		return nil
+	}
 }
 
 func (s *ServerApp) GetDebug() bool {
@@ -136,6 +137,7 @@ func NewServerApp(ctx context.Context, rootDir string) models.ServerAppInterface
 		config:    &models.ServerConfig{},
 		httpApp:   nil,
 		tickerApp: nil,
+		chErrors:  make(chan error),
 		Debug:     os.Getenv("DEBUG") == "true",
 	}
 }

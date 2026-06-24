@@ -73,7 +73,9 @@ type PaymentApi struct {
 	Ctx           context.Context
 }
 
-func (p *PaymentApi) LoadStripeClient() error {
+// SetupStripeClient initializes the Stripe client with the API key 
+// from the environment variable.
+func (p *PaymentApi) SetupStripeClient() error {
 	key := os.Getenv("STRIPE_API_KEY")
 	if key == "" {
 		return fmt.Errorf("STRIPE_API_KEY environment variable is not set")

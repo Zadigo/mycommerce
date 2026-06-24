@@ -39,9 +39,9 @@ func (a *HttpApp) loadPaymentRoutes(router chi.Router) {
 		Ctx:           a.ctx,
 	}
 
-	err := paymentApi.LoadStripeClient()
+	err := paymentApi.SetupStripeClient()
 	if err != nil {
-		log.Fatalf("Failed to load payment client: %v", err)
+		log.Fatalf("Failed to setup Stripe client: %v", err)
 	}
 
 	router.Post("/intent", paymentApi.CreateIntent)

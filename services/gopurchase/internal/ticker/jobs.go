@@ -13,12 +13,22 @@ func globalJob(app *TickerApp) {
 	scheduler := gocron.NewScheduler(time.UTC)
 	app.schedulers["global"] = scheduler
 
-	_, err := scheduler.Every(2 * time.Minute).Do(func(j *gocron.Job) {
+	_, err := scheduler.Every(2 * time.Minute).Do(func() {
 		config := app.serverApp.GetConfig()
 
 		redisHandler := &TickerRedis{
 			redisClient: app.redisClient,
 			storageKey:  "gopurchase:ticker",
+		}
+
+		if config.YamlConfig == nil {
+			app.chErrors <- fmt.Errorf("⚠️ No YAML configuration file found")
+			return
+		}
+
+		if len(config.YamlConfig.Endpoints) == 0 {
+			app.chErrors <- fmt.Errorf("⚠️ No endpoints defined in the YAML configuration file")
+			return
 		}
 
 		for _, endpoint := range config.YamlConfig.Endpoints {
@@ -55,7 +65,7 @@ func stripeSchedulerJob(app *TickerApp) {
 	scheduler := gocron.NewScheduler(time.UTC)
 	app.schedulers["stripe"] = scheduler
 
-	_, err := scheduler.Every(2 * time.Minute).Do(func(j *gocron.Job) {
+	_, err := scheduler.Every(2 * time.Minute).Do(func() {
 
 	})
 

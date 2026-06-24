@@ -3,6 +3,7 @@ package ticker
 import (
 	"context"
 	"log"
+	"os"
 	"time"
 
 	"github.com/Zadigo/gopurchase/internal/models"
@@ -30,43 +31,14 @@ type TickerApp struct {
 }
 
 func (t *TickerApp) Start() error {
+	log.Printf("🔵 Starting %s ticker application...", os.Getenv("SERVICE_NAME"))
+
 	go globalJob(t)
-	go stripeSchedulerJob(t)
-
-	// go func() {
-	// 	_, _ = t.scheduler.Every(2 * time.Minute).Do(func(j *gocron.Job) {
-	// 		config := t.serverApp.GetConfig()
-
-	// 		redisHandler := &TickerRedis{
-	// 			redisClient: t.redisClient,
-	// 			storageKey:  "gopurchase:ticker",
-	// 		}
-
-	// 		for _, endpoint := range config.YamlConfig.Endpoints {
-	// 			err := requests.SendRequest(endpoint.Url, "GET", nil, map[string]string{})
-	// 			if err != nil {
-	// 				t.chErrors <- fmt.Errorf("⚠️ Could not perform request for endpoint %s: %w", endpoint.Name, err)
-
-	// 				redisHandler.CreateFailureResponse(TickerPayload{
-	// 					EndpointName: endpoint.Name,
-	// 					EndpointUrl:  endpoint.Url,
-	// 					State:        "failure",
-	// 					Date:         time.Now(),
-	// 				})
-	// 			} else {
-	// 				redisHandler.CreateSuccessResponse(TickerPayload{
-	// 					EndpointName: endpoint.Name,
-	// 					EndpointUrl:  endpoint.Url,
-	// 					State:        "success",
-	// 					Date:         time.Now(),
-	// 				})
-	// 			}
-	// 		}
-	// 	})
-	// }()
+	// go stripeSchedulerJob(t)
 
 	select {
 	case err := <-t.chErrors:
+		log.Printf("🔴 %s ticker error: %v", os.Getenv("SERVICE_NAME"), err)
 		return err
 	case <-t.ctx.Done():
 		log.Println("⚡️ Shutting down ticker...")
@@ -86,5 +58,6 @@ func NewTickerApp(serverApp models.ServerAppInterface) models.AppInterface {
 		redisClient: serverApp.GetRedisClient(),
 		debug:       serverApp.GetDebug(),
 		chErrors:    make(chan error, 100),
+		schedulers:  map[string]*gocron.Scheduler{},
 	}
 }

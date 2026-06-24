@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"log"
 	"os"
 	"os/signal"
 
@@ -12,31 +11,17 @@ import (
 
 func main() {
 	err := godotenv.Load(".env")
-	// if err != nil {
-	// 	log.Fatalf("❌ Error loading .env file: %v", err)
-	// }
-
-	// rootDir, err := os.Getwd()
-	// if err != nil {
-	// 	log.Fatalf("❌ Failed to get current working directory: %v", err)
-	// }
-
-	// ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
-	// defer cancel()
-
-	// app := app.NewApp(ctx, app.LoadConfig(rootDir))
-	// err = app.Start()
-
-	// if err != nil {
-	// 	log.Fatalf("❌ Could not start server: %v", err)
-	// }
+	if err != nil {
+		panic(err)
+	}
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
 	server := server.NewServerApp(ctx, ".")
-	err = server.Start()
-	if err != nil {
-		log.Fatalf("❌ Could not start server: %v", err)
-	}
+	// err = server.Start()
+	// if err != nil {
+	// 	log.Panicf("❌ Could not start server: %v", err)
+	// }
+	server.Start()
 }

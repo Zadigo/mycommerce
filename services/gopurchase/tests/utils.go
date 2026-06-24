@@ -25,7 +25,7 @@ func GetRootDir() string {
 
 func CreatePaymentIntentRecorder(t *testing.T) *httptest.ResponseRecorder {
 	apiHandlers := handlers.PaymentApi{}
-	apiHandlers.LoadStripeClient()
+	apiHandlers.SetupStripeClient()
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		apiHandlers.CreateIntent(w, r)
@@ -79,7 +79,7 @@ func CreatePaymentIntentRecorder(t *testing.T) *httptest.ResponseRecorder {
 
 func UpdatePaymentIntentRecorder(t *testing.T) *httptest.ResponseRecorder {
 	apiHandlers := handlers.PaymentApi{}
-	apiHandlers.LoadStripeClient()
+	apiHandlers.SetupStripeClient()
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		apiHandlers.UpdateIntent(w, r)
@@ -111,7 +111,7 @@ func UpdatePaymentIntentRecorder(t *testing.T) *httptest.ResponseRecorder {
 
 func CapturePaymentIntentRecorder(t *testing.T) *httptest.ResponseRecorder {
 	apiHandlers := handlers.PaymentApi{}
-	apiHandlers.LoadStripeClient()
+	apiHandlers.SetupStripeClient()
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		apiHandlers.CaptureIntent(w, r)
