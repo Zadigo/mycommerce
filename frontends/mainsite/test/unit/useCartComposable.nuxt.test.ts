@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { productFixture } from '~~/layers/base/app/utils/__fixtures__'
+import { productFixture } from '../../layers/base/app/utils/__fixtures__'
 
 mockNuxtImport('useCookie', () => {
   return (_name: string, _options?: object) => {
@@ -29,7 +29,7 @@ vi.mock('vuefire', () => {
 })
 
 import { useCookie } from '#app'
-import { useCartComposable } from '../../app/composables/use/cart/items'
+import { useCartComposable } from '../../layers/base/app/composables/use/cart'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { useDocument } from 'vuefire'
 
