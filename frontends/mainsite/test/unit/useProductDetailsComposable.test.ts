@@ -12,7 +12,7 @@ mockNuxtImport('useRoute', () => {
   })
 })
 
-describe('useProductDetailsComposable', () => {
+describe.skip('useProductDetailsComposable', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })

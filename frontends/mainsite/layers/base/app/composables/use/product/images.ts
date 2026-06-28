@@ -1,8 +1,5 @@
 import type { BaseImage } from '~/types'
 
-/**
- * Composable for handling image selection and modal display
- */
 const [useImageZoomComposable, _useImageZoomComposableStore] = createInjectionState(() => {
   const [showModal, toggleShowModal] = useToggle()
 
@@ -27,14 +24,22 @@ const [useImageZoomComposable, _useImageZoomComposableStore] = createInjectionSt
   }
 
   return {
+    /**
+     * Whether the image modal is currently open
+     * @default false
+     */
     showModal,
+    /**
+     * The currently selected image
+     * @default null
+     */
     selectedImage,
     /**
      * Closes the image modal
      */
     handleCloseSelection: toggleShowModal,
     /**
-     * Selects and image and opens the images modal
+     * Selects an image and opens the images modal
      * @param image The image to select
      * @param successCallback Callback function to be used
      */
@@ -44,6 +49,9 @@ const [useImageZoomComposable, _useImageZoomComposableStore] = createInjectionSt
 
 export { useImageZoomComposable }
 
+/**
+ * Composable for handling image selection and modal display
+ */
 export function useImageZoomComposableStore() {
   const store = _useImageZoomComposableStore()
   if (!store) throw new Error('useImageZoomComposableStore must be used after useImageZoomComposable')

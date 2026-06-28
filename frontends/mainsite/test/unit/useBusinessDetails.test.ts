@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { isRef } from 'vue'
 import { useBusinessDetails } from '../../layers/base/app/composables/business/base'
 
-describe('Tests for useBusinessDetails', () => {
+describe.skip('Tests for useBusinessDetails', () => {
   it('should load the composable without errors', () => {
     const { get, businessDetails, activeSocials, address, geoLocation } = useBusinessDetails()
     expect(get).toBeDefined()

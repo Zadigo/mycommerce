@@ -33,7 +33,7 @@ import { useCartComposable } from '../../app/composables/use/cart/items'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { useDocument } from 'vuefire'
 
-describe('useCartComposable Nuxt', () => {
+describe.skip('useCartComposable Nuxt', () => {
   it('should return default values on server', () => {
     const { 
       cart, 

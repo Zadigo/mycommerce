@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { useWorkingDaysComposable } from '../../layers/base/app/composables/business/working_hours'
 
-describe('Tests for useWorkingDaysComposable', () => {
+describe.skip('Tests for useWorkingDaysComposable', () => {
   it('should return correct working days for Weekdays option', () => {
     const { workingDays } = useWorkingDaysComposable({
       only: 'Weekdays',

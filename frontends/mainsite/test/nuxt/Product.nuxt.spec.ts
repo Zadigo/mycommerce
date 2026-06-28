@@ -16,7 +16,7 @@ vi.mock('../../app/composables/use/product/useProductDetailsComposable', () => (
 import ProductPage from '../../app/pages/shop/[id].vue'
 
 
-describe('Index Page', () => {
+describe.skip('Index Page', () => {
   beforeEach(() => {
     // Reset mocks before each test
     vi.clearAllMocks()

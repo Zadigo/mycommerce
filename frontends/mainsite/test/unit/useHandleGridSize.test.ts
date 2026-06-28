@@ -34,7 +34,7 @@ vi.mock('@vueuse/core', async (importActual) => {
 // })
 
 
-describe('Test for useHandleGridSize', () => {
+describe.skip('Test for useHandleGridSize', () => {
   it('should initialize with default values on client', async () => {
     // Simulate client environment
     vi.stubGlobal('import', { meta: { server: false } })

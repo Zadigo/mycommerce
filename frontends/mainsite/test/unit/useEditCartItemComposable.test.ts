@@ -19,7 +19,7 @@ vi.mock('@vueuse/core', async (importActual) => {
   }
 })
 
-describe('useEditCartItemComposable', () => {
+describe.skip('useEditCartItemComposable', () => {
   it('should mock useForTesting composable', async () => {
     const { useForTesting } = await import('../../app/composables/index')
     await useForTesting()

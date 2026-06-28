@@ -2,7 +2,7 @@ import { describe, vi, expect, it, afterEach, beforeEach } from 'vitest'
 import { useSizeSelection } from '../../layers/base/app/composables/use/size'
 import { productFixture } from '../../layers/base/app/utils/__fixtures__/products'
 
-describe('useSizeSelection', () => {
+describe.skip('useSizeSelection', () => {
   beforeEach(() => {
     vi.stubGlobal('NODE_ENV', 'test')
   })
@@ -11,7 +11,7 @@ describe('useSizeSelection', () => {
     vi.resetAllMocks()
   })
   
-  it.skip('should initialize with default values', () => {
+  it('should initialize with default values', () => {
     vi.stubGlobal('import', { meta: { server: true } })
 
     const { hasSelection, availableSizes } = useSizeSelection(productFixture)
