@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { renderSuspended } from '@nuxt/test-utils/runtime'
 import MentionsLegales from '../../app/pages/mentions-legales.vue'
 
-describe.skip('MentionsLegales Page', () => {
-  it('should render MentionsLegales page', async () => {
+describe('MentionsLegales Page', () => {
+  it('should render correctly', async () => {
     const { getByText } = await renderSuspended(MentionsLegales)
     const el = getByText('Conditions')
     expect(el).toBeDefined()

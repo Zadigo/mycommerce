@@ -1,5 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { flushPromises } from '@vue/test-utils'
+// import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { productFixture } from '~~/layers/base/app/utils/__fixtures__'
 
@@ -31,7 +31,7 @@ describe.skip('Index Page', () => {
       ]
     })
 
-    const { useProductDetailsComposable } = await import('../../app/composables/use/product')
+    const { useProductDetailsComposable } = await import('../../layers/base/app/composables/use')
 
     // useProductDetailsComposable.mockReturnValue({
     //   product: ref(productFixture),

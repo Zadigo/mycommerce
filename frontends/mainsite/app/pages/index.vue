@@ -89,8 +89,10 @@ useSeoMeta({
   twitterCard: 'summary_large_image'
 })
 
-defineOgImage('NuxtSeoTakumi', {
-  title: "Some title",
-  description: "Some description"
-})
+if (import.meta.env.MODE === 'production') {
+  defineOgImage('NuxtSeoTakumi', {
+    title: "Some title",
+    description: "Some description"
+  })
+}
 </script>
