@@ -8,7 +8,7 @@ import type { KeyToRefs, LikeActions, MaybeType, ProductNode } from '~/types'
  */
 export async function useLikeComposable(product: MaybeType<ProductNode>, successCallback?: (actionName: LikeActions) => void) {
   const { docRef, session } = useSession()
-    
+
   const _product = toValue(product)
   const productId = useToNumber(isDefined(_product) ? _product.node.id : '')
 
