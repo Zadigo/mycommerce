@@ -52,7 +52,7 @@
           </nuxt-link-locale >
         </li>
       </ul>
-      
+
       <button id="action-menu" class="relative ml-auto h-6 max-h-10 w-6 select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-inherit transition-all hover:bg-transparent focus:bg-transparent active:bg-transparent disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:hidden" type="button">
        <icon name="i-fa7-solid:bars" size="18" />
       </button>

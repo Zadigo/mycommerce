@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { renderSuspended, mountSuspended } from '@nuxt/test-utils/runtime'
+import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { productFixture } from '../../layers/base/app/utils/__fixtures__'
 import type { BaseProduct } from '../../app/types'
 
@@ -47,7 +47,7 @@ vi.mock('../../layers/base/app/composables/use/analytics', async (importOriginal
   }
 })
 
-describe.only('ProductCardBase', () => {
+describe('ProductCardBase', () => {
   const testcases: Testcase[] = [
     {
       title: 'should render correctly with all features enabled',
@@ -103,10 +103,11 @@ describe.only('ProductCardBase', () => {
     })
   })
 
-  it.skip('should handle undefined in the product prop gracefully', async () => {
+  it.todo('should handle undefined in the product prop gracefully', async () => {
     const wrapper = await mountSuspended(ProductCardBase, {
       props: {
         index: 1,
+        // @ts-ignore For testing
         product: undefined,
         showLikeButton: true,
         showCarousel: true,

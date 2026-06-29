@@ -42,7 +42,7 @@ const emit = defineEmits<{ 'has-navigated': [product: ProductNode] }>()
 const { $client } = useNuxtApp()
 const { customHandleError } = useErrorHandler()
 
-const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
+// const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
 
 const productsRow = ref<HTMLElement>()
 
@@ -71,11 +71,11 @@ try {
 
   provideLocal(productsSymbol, isDefined(data) ? data.value.data.recommendations.map(x => ({ node: x })) : [])
 } catch (e) {
-  const fixtureProducts = useGenerateProducts(quantity)
-  data.value = { data: { recommendations: fixtureProducts.value.data.allProducts.edges.map(x => x.node) } }
-  provideLocal(productsSymbol, isDefined(data) ? data.value.data.recommendations.map(x => ({ node: x })) : [])
-  console.log('Recommendations', data.value)
-  console.error(e)
+  // const fixtureProducts = useGenerateProducts(quantity)
+  // data.value = { data: { recommendations: fixtureProducts.value.data.allProducts.edges.map(x => x.node) } }
+  // provideLocal(productsSymbol, isDefined(data) ? data.value.data.recommendations.map(x => ({ node: x })) : [])
+  // console.log('Recommendations', data.value)
+  // console.error(e)
 }
 
 /**

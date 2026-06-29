@@ -1,15 +1,18 @@
 <template>
   <div ref="carouselEl" :id="createElementId('carousel-product', product.node.id)" class="relative">
+    <!-- Slide Left -->
     <button v-if="showCarousel && isHovered && isLargeScreen" type="button" class="absolute top-2/5 left-3 py-5 rounded-full z-10 w-15 h-50 place-content-center hover:opacity-60 flex" @click="() => { prev() }">
       <icon name="i-fa7-solid:caret-left" />
     </button>
-    
-    <!-- {{ state.original }} -->
+
+    Google {{ !isLoading && isReady }}
+
     <nuxt-link-locale :id="createElementId('link-product-carousel', product.node.id)" :to="`/shop/${product.node.id}`" @click="emit('has-navigated', index)">
       <nuxt-img v-if="!isLoading && isReady" :src="state.original" :alt="state.name" class="self-center aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-full" />
       <volt-skeleton v-else class="min-h-100 rounded-md" />
     </nuxt-link-locale>
 
+    <!-- Slide Right -->
     <button v-if="showCarousel && isHovered && isLargeScreen" type="button" class="absolute top-2/5 right-3 py-5 rounded-full z-10 w-15 h-50 place-content-center hover:opacity-60 flex" @click="() => { next() }">
       <icon name="i-fa7-solid:caret-right" />
     </button>
