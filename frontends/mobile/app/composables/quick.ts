@@ -1,6 +1,12 @@
 export function useSimpleComposable() {
-  const state = ref(0)
+  const state = ref<number>(0)
+
+  function increment() {
+    state.value++
+  }
+
   return {
-    state
+    state,
+    increment
   }
 }

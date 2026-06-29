@@ -9,7 +9,8 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
-    "test:watch": "vitest run --watch --coverage"
+    "test:watch": "vitest run --watch --coverage",
+    "test:browser": "vitest"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.114",
@@ -22,6 +23,7 @@
     "@nuxt/eslint": "^1.16.0",
     "@nuxt/test-utils": "^4.0.3",
     "@testing-library/vue": "^8.1.0",
+    "@vitest/browser-playwright": "^4.1.9",
     "@vitest/coverage-v8": "^4.1.8",
     "@vitest/ui": "4.1.8",
     "@vue/test-utils": "^2.4.11",
@@ -31,12 +33,14 @@
     "@vueuse/motion": "3.0.3",
     "@vueuse/nuxt": "^14.3.0",
     "eslint": "^10.6.0",
+    "happy-dom": "^20.10.6",
     "oxfmt": "^0.54.0",
     "oxlint": "^1.69.0",
     "oxlint-tsgolint": "^0.23.0",
     "playwright-core": "^1.60.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.8",
+    "vitest-browser-vue": "^2.1.0",
     "vue-tsc": "^3.3.5"
   },
   "packageManager": "pnpm@11.9.0"

@@ -1,4 +1,4 @@
-import type { Undefineable } from "~/types"
+import type { Undefineable } from '~/types'
 
 /**
  * Function used to check if the application is in a
@@ -20,8 +20,7 @@ export function scrollToTop() {
  * @param base The base of the id, usually the component name
  * @param parts The parts to be added to the id, usually the props of the component
  */
-export function createElementId(base: string, part: Undefineable<string | number>, parts: Array<Undefineable<string | number>> = [], join = '__') {
-  const _part = (part || '').toString().replace(' ', '-')
-  const _parts = parts.map(p => (p || '').toString().replace(' ', '-')).join(join)
-  return `${base}${join}${_part}`
+export function createElementId(base: string, ...parts: Array<Undefineable<string | number>>): string {
+  const _parts = parts.map(p => (p || '').toString().replace(' ', '-')).join('__')
+  return `${base}_${_parts}`
 }

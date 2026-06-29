@@ -33,8 +33,8 @@
         </p>
       </div>
       
-      <div class="flex align-center">
-        <button type="button" class="bg-white text-black rounded-full" @click="like">
+      <div id="other-actions" class="flex align-center">
+        <button type="button" :id="createElementId('action-like', product.node.slug)" class="bg-white text-black rounded-full" @click="like">
           <client-only>
             <template #default>
               <icon :name="icon" class="text-sm" />
