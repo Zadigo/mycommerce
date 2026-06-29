@@ -1,0 +1,41 @@
+{
+  "name": "mobile",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "typecheck": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.114",
+    "@iconify-json/simple-icons": "^1.2.87",
+    "@nuxt/ui": "^4.9.0",
+    "nuxt": "^4.4.8",
+    "tailwindcss": "^4.3.1"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.16.0",
+    "@nuxt/test-utils": "^4.0.3",
+    "@testing-library/vue": "^8.1.0",
+    "@vitest/coverage-v8": "^4.1.8",
+    "@vue/test-utils": "^2.4.11",
+    "@vueuse/core": "^14.3.0",
+    "@vueuse/integrations": "^14.3.0",
+    "@vueuse/math": "^14.3.0",
+    "@vueuse/motion": "3.0.3",
+    "@vueuse/nuxt": "^14.3.0",
+    "eslint": "^10.6.0",
+    "oxfmt": "^0.54.0",
+    "oxlint": "^1.69.0",
+    "oxlint-tsgolint": "^0.23.0",
+    "playwright-core": "^1.60.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8",
+    "vue-tsc": "^3.3.5"
+  },
+  "packageManager": "pnpm@11.9.0"
+}
