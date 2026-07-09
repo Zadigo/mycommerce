@@ -34,7 +34,7 @@ func (t *TickerApp) Start() error {
 	log.Printf("🔵 Starting %s ticker application...", os.Getenv("SERVICE_NAME"))
 
 	go globalJob(t)
-	go stripeSchedulerJob(t)
+	go stripeJob(t)
 	go paymentIntentsJob(t)
 
 	go func() {
@@ -54,7 +54,7 @@ func (t *TickerApp) Start() error {
 
 	<-t.ctx.Done()
 
-	log.Println("⚡️ Shutting down ticker...")
+	log.Println("⚡️ Shutting down TickerApp...")
 
 	for _, scheduler := range t.schedulers {
 		scheduler.Stop()

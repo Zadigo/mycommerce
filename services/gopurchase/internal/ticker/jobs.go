@@ -2,12 +2,9 @@ package ticker
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
-	"github.com/Zadigo/gopurchase/internal/handlers"
-	"github.com/Zadigo/gopurchase/internal/utils/requests"
 	"github.com/go-co-op/gocron"
 )
 
@@ -22,52 +19,53 @@ func globalJob(app *TickerApp) {
 	errorHandler := NewTickerErrors(localCtx)
 
 	_, err := scheduler.Every(2 * time.Minute).Do(func() {
-		config := app.serverApp.GetConfig()
+		log.Print("Global job")
 
-		redisHandler := &TickerRedis{
-			redisClient: app.redisClient,
-			storageKey:  "gopurchase:ticker",
-		}
+		// config := app.serverApp.GetConfig()
 
-		if config.YamlConfig == nil {
-			app.chErrors <- errorHandler.BasicError(fmt.Errorf("⚠️ No YAML configuration file found"))
-			return
-		}
+		// redisHandler := &TickerRedis{
+		// 	redisClient: app.redisClient,
+		// 	storageKey:  "gopurchase:ticker",
+		// }
 
-		if len(config.YamlConfig.Endpoints) == 0 {
-			app.chErrors <- errorHandler.NoEndpointsError()
-			return
-		}
+		// if config.YamlConfig == nil {
+		// 	app.chErrors <- errorHandler.BasicError(fmt.Errorf("⚠️ No YAML configuration file found"))
+		// 	return
+		// }
 
-		for _, endpoint := range config.YamlConfig.Endpoints {
-			err := requests.SendRequest(endpoint.Url, "GET", nil, map[string]string{})
-			if err != nil {
-				app.chErrors <- errorHandler.EndpointError(endpoint.Name, err)
+		// if len(config.YamlConfig.Endpoints) == 0 {
+		// 	app.chErrors <- errorHandler.NoEndpointsError()
+		// 	return
+		// }
 
-				redisHandler.CreateFailureResponse(TickerPayload{
-					EndpointName: endpoint.Name,
-					EndpointUrl:  endpoint.Url,
-					State:        "failure",
-					Date:         time.Now(),
-				})
-			} else {
-				redisHandler.CreateSuccessResponse(TickerPayload{
-					EndpointName: endpoint.Name,
-					EndpointUrl:  endpoint.Url,
-					State:        "success",
-					Date:         time.Now(),
-				})
-			}
-		}
+		// for _, endpoint := range config.YamlConfig.Endpoints {
+		// 	err := requests.SendRequest(endpoint.Url, "GET", nil, map[string]string{})
+		// 	if err != nil {
+		// 		app.chErrors <- errorHandler.EndpointError(endpoint.Name, err)
+
+		// 		redisHandler.CreateFailureResponse(TickerPayload{
+		// 			EndpointName: endpoint.Name,
+		// 			EndpointUrl:  endpoint.Url,
+		// 			State:        "failure",
+		// 			Date:         time.Now(),
+		// 		})
+		// 	} else {
+		// 		redisHandler.CreateSuccessResponse(TickerPayload{
+		// 			EndpointName: endpoint.Name,
+		// 			EndpointUrl:  endpoint.Url,
+		// 			State:        "success",
+		// 			Date:         time.Now(),
+		// 		})
+		// 	}
+		// }
 	})
 
 	scheduler.StartBlocking()
-
 	app.chErrors <- errorHandler.CreateSchedulerError("global", err)
 }
 
 // Start a goroutine to run the scheduler and perform periodic checks for Stripe
-func stripeSchedulerJob(app *TickerApp) {
+func stripeJob(app *TickerApp) {
 	localCtx, cancel := context.WithCancel(app.ctx)
 	defer cancel()
 
@@ -77,7 +75,7 @@ func stripeSchedulerJob(app *TickerApp) {
 	errorHandler := NewTickerErrors(localCtx)
 
 	_, err := scheduler.Every(2 * time.Minute).Do(func() {
-
+		log.Print("Stripe job")
 	})
 
 	scheduler.StartBlocking()
@@ -98,33 +96,35 @@ func paymentIntentsJob(app *TickerApp) {
 	errorHandler := NewTickerErrors(localCtx)
 
 	_, err := scheduler.Every(2 * time.Minute).Do(func() {
-		redisHandler := handlers.NewPaymentRedis(app.GetRedisClient())
-		keys, err := redisHandler.GetAllKeys()
-		if err != nil {
-			app.chErrors <- errorHandler.NoPaymentIntentKeysError(err)
-			return
-		}
+		log.Print("Payment job")
 
-		for _, key := range keys {
-			captured, err := redisHandler.IsCaptured(key)
-			if err != nil {
-				app.chErrors <- errorHandler.IntentCaptureVerificationError(key, err)
-				continue
-			}
-			if !captured {
-				continue
-			}
+		// redisHandler := handlers.NewPaymentRedis(app.GetRedisClient())
+		// keys, err := redisHandler.GetAllKeys()
+		// if err != nil {
+		// 	app.chErrors <- errorHandler.NoPaymentIntentKeysError(err)
+		// 	return
+		// }
 
-			// If the payment intent is captured, retrieve it and send it to the webhook endpoint
-			intent, err := redisHandler.GetPaymentIntent(key)
-			if err != nil {
-				app.chErrors <- errorHandler.IntentRetrievalError(key, err)
-				continue
-			}
+		// for _, key := range keys {
+		// 	captured, err := redisHandler.IsCaptured(key)
+		// 	if err != nil {
+		// 		app.chErrors <- errorHandler.IntentCaptureVerificationError(key, err)
+		// 		continue
+		// 	}
+		// 	if !captured {
+		// 		continue
+		// 	}
 
-			// Do something with the captured payment intent, e.g., send it to a webhook endpoint
-			log.Printf("Payment intent %s is captured. Sending details to webhook endpoint...", intent.ID)
-		}
+		// 	// If the payment intent is captured, retrieve it and send it to the webhook endpoint
+		// 	intent, err := redisHandler.GetPaymentIntent(key)
+		// 	if err != nil {
+		// 		app.chErrors <- errorHandler.IntentRetrievalError(key, err)
+		// 		continue
+		// 	}
+
+		// 	// Do something with the captured payment intent, e.g., send it to a webhook endpoint
+		// 	log.Printf("Payment intent %s is captured. Sending details to webhook endpoint...", intent.ID)
+		// }
 	})
 
 	scheduler.StartBlocking()
