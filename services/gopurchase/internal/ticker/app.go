@@ -40,8 +40,12 @@ func (t *TickerApp) Start() error {
 	go func() {
 		for {
 			select {
-			case err := <-t.chErrors:
-				log.Printf("🔴 %s ticker error: %v", os.Getenv("SERVICE_NAME"), err)
+			case err, ok := <-t.chErrors:
+				if ok {
+					log.Printf("🔴 %s ticker error: %v", os.Getenv("SERVICE_NAME"), err)
+					return
+				}
+				close(t.chErrors)
 			case <-t.ctx.Done():
 				return
 			}
@@ -68,8 +72,10 @@ func (t *TickerApp) GetContext() context.Context {
 }
 
 func NewTickerApp(serverApp models.ServerAppInterface) models.AppInterface {
+	ctx := serverApp.GetContext()
+
 	return &TickerApp{
-		ctx:         serverApp.GetContext(),
+		ctx:         ctx,
 		serverApp:   serverApp,
 		redisClient: serverApp.GetRedisClient(),
 		debug:       serverApp.GetDebug(),

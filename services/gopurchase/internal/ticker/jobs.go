@@ -1,6 +1,7 @@
 package ticker
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"time"
@@ -12,8 +13,13 @@ import (
 
 // Start a goroutine to run the scheduler and perform periodic checks
 func globalJob(app *TickerApp) {
+	localCtx, cancel := context.WithCancel(app.ctx)
+	defer cancel()
+
 	scheduler := gocron.NewScheduler(time.UTC)
 	app.schedulers["global"] = scheduler
+
+	errorHandler := NewTickerErrors(localCtx)
 
 	_, err := scheduler.Every(2 * time.Minute).Do(func() {
 		config := app.serverApp.GetConfig()
@@ -24,19 +30,19 @@ func globalJob(app *TickerApp) {
 		}
 
 		if config.YamlConfig == nil {
-			app.chErrors <- fmt.Errorf("⚠️ No YAML configuration file found")
+			app.chErrors <- errorHandler.BasicError(fmt.Errorf("⚠️ No YAML configuration file found"))
 			return
 		}
 
 		if len(config.YamlConfig.Endpoints) == 0 {
-			app.chErrors <- fmt.Errorf("⚠️ No endpoints defined in the YAML configuration file")
+			app.chErrors <- errorHandler.NoEndpointsError()
 			return
 		}
 
 		for _, endpoint := range config.YamlConfig.Endpoints {
 			err := requests.SendRequest(endpoint.Url, "GET", nil, map[string]string{})
 			if err != nil {
-				app.chErrors <- fmt.Errorf("⚠️ Could not perform request for endpoint %s: %w", endpoint.Name, err)
+				app.chErrors <- errorHandler.EndpointError(endpoint.Name, err)
 
 				redisHandler.CreateFailureResponse(TickerPayload{
 					EndpointName: endpoint.Name,
@@ -55,23 +61,27 @@ func globalJob(app *TickerApp) {
 		}
 	})
 
-	app.chErrors <- fmt.Errorf("⚠️ Failed to start global scheduler job: %v", err)
-
 	scheduler.StartBlocking()
+
+	app.chErrors <- errorHandler.CreateSchedulerError("global", err)
 }
 
 // Start a goroutine to run the scheduler and perform periodic checks for Stripe
 func stripeSchedulerJob(app *TickerApp) {
+	localCtx, cancel := context.WithCancel(app.ctx)
+	defer cancel()
+
 	scheduler := gocron.NewScheduler(time.UTC)
 	app.schedulers["stripe"] = scheduler
+
+	errorHandler := NewTickerErrors(localCtx)
 
 	_, err := scheduler.Every(2 * time.Minute).Do(func() {
 
 	})
 
-	app.chErrors <- fmt.Errorf("⚠️ Failed to start Stripe scheduler job: %w", err)
-
 	scheduler.StartBlocking()
+	app.chErrors <- errorHandler.CreateSchedulerError("stripe", err)
 }
 
 // Starts a gorouting that iterates through all the payment intents
@@ -79,21 +89,26 @@ func stripeSchedulerJob(app *TickerApp) {
 // the goroutine will perform certain tasks (e.g. like sending the details to
 // the webhook endpoint).
 func paymentIntentsJob(app *TickerApp) {
+	localCtx, cancel := context.WithCancel(app.ctx)
+	defer cancel()
+
 	scheduler := gocron.NewScheduler(time.UTC)
 	app.schedulers["stripe"] = scheduler
+
+	errorHandler := NewTickerErrors(localCtx)
 
 	_, err := scheduler.Every(2 * time.Minute).Do(func() {
 		redisHandler := handlers.NewPaymentRedis(app.GetRedisClient())
 		keys, err := redisHandler.GetAllKeys()
 		if err != nil {
-			app.chErrors <- fmt.Errorf("⚠️ Failed to retrieve payment intent keys: %w", err)
+			app.chErrors <- errorHandler.NoPaymentIntentKeysError(err)
 			return
 		}
 
 		for _, key := range keys {
 			captured, err := redisHandler.IsCaptured(key)
 			if err != nil {
-				app.chErrors <- fmt.Errorf("⚠️ Failed to check if payment intent %s is captured: %w", key, err)
+				app.chErrors <- errorHandler.IntentCaptureVerificationError(key, err)
 				continue
 			}
 			if !captured {
@@ -103,7 +118,7 @@ func paymentIntentsJob(app *TickerApp) {
 			// If the payment intent is captured, retrieve it and send it to the webhook endpoint
 			intent, err := redisHandler.GetPaymentIntent(key)
 			if err != nil {
-				app.chErrors <- fmt.Errorf("⚠️ Failed to retrieve payment intent %s: %w", key, err)
+				app.chErrors <- errorHandler.IntentRetrievalError(key, err)
 				continue
 			}
 
@@ -112,7 +127,6 @@ func paymentIntentsJob(app *TickerApp) {
 		}
 	})
 
-	app.chErrors <- fmt.Errorf("⚠️ Failed to start payment intents scheduler job: %w", err)
-
 	scheduler.StartBlocking()
+	app.chErrors <- errorHandler.CreateSchedulerError("payment_intents", err)
 }

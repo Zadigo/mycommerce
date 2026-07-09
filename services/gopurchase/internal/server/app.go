@@ -76,11 +76,7 @@ func (s *ServerApp) GetDebug() bool {
 }
 
 func (s *ServerApp) Start() error {
-	absPath, err := filepath.Abs(s.rootDir)
-	if err != nil {
-		log.Printf("❌ Failed to get absolute path: %v", err)
-		return nil
-	}
+	absPath := s.ctx.Value("rootDir").(string)
 
 	result := path.Ext(absPath)
 	if result != "" {
@@ -124,11 +120,12 @@ func (s *ServerApp) Start() error {
 	<-s.ctx.Done()
 
 	log.Printf("⚡️ Shutting down %s server...", os.Getenv("SERVICE_NAME"))
-
 	return nil
 }
 
-func NewServerApp(ctx context.Context, rootDir string) models.ServerAppInterface {
+func NewServerApp(ctx context.Context) models.ServerAppInterface {
+	rootDir := ctx.Value("rootDir").(string)
+
 	return &ServerApp{
 		ctx:          ctx,
 		rootDir:      rootDir,
