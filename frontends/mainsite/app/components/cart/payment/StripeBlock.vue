@@ -17,7 +17,7 @@
 import { useSessionStorage } from '@vueuse/core'
 import { StripeElement, StripeElements } from 'vue-stripe-js'
 
-import type { DefaultPaymentProviders, PaymentIntentApiResponse, StripeTokenResponse, Undefineable } from '~/types'
+import type { DefaultPaymentProviders, StripeTokenResponse } from '~/types'
 
 interface TokenData {
   session_id: string | null | undefined
@@ -94,13 +94,14 @@ const stripeKey = computed(() => {
   }
 })
 
-console.log(stripeKey)
+console.log("Stripe Key", stripeKey.value)
 
 /**
  * Payment
  */
 
 const { sessionId } = useSession()
+const { paymentIntent, reset } = usePaymentIntentComposable()
 
 // https://github.com/ectoflow/vue-stripe-js 
 async function handleStripe() {
@@ -114,7 +115,7 @@ async function handleStripe() {
   if (paymentIntent.value) {
     tokenData.value.session_id = sessionId.value
     tokenData.value.card = result.token.card.id
-    tokenData.value.intent = paymentIntent.value.intent
+    tokenData.value.intent = paymentIntent.value
     tokenData.value.token = result.token.id
     tokenData.value.client_ip = result.token.client_ip
     await handlePayment()
@@ -123,25 +124,41 @@ async function handleStripe() {
   }
 }
 
-const { $client } = useNuxtApp()
-const paymentIntent = useState<Undefineable<PaymentIntentApiResponse>>('paymentIntent')
+const { $goPurchase } = useNuxtApp()
 
 async function handlePayment () {
   try {
-    const response = await $client('/api/v1/orders/create', {
+    const response = await $goPurchase('/payments/capture', {
       method: 'POST',
-      baseURL: useRuntimeConfig().public.prodDomain,
-      body: tokenData.value
+      baseURL: useRuntimeConfig().public.golangPaymentRouter,
+      body: toValue(tokenData)
     })
 
     paymentResponse.value = response
     isLoading.value = false
-    paymentIntent.value = undefined
+
+    reset()
 
     emit('payment-complete', 'Stripe')
   } catch (e) {
     console.log(e)
     customHandleError(e)
   }
+  // try {
+  //   const response = await $client('/api/v1/orders/create', {
+  //     method: 'POST',
+  //     baseURL: useRuntimeConfig().public.prodDomain,
+  //     body: tokenData.value
+  //   })
+
+  //   paymentResponse.value = response
+  //   isLoading.value = false
+  //   paymentIntent.value = undefined
+
+  //   emit('payment-complete', 'Stripe')
+  // } catch (e) {
+  //   console.log(e)
+  //   customHandleError(e)
+  // }
 }
 </script>

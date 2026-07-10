@@ -22,6 +22,11 @@ func (e HttpErrors) BasicError(errs ...error) {
 }
 
 func (e HttpErrors) InvalidBodyError(err error) {
+	message := utils.DefaultErrorResponse{Detail: "Invalid request body", Message: err.Error()}
+	e.JsonWriter(message, http.StatusBadRequest)
+}
+
+func (e HttpErrors) InvalidSessionIdError(err error) {
 	message := utils.DefaultErrorResponse{Detail: "Session ID is required", Message: "Please provide a valid session ID"}
 	e.JsonWriter(message, http.StatusBadRequest)
 }

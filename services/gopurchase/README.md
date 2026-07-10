@@ -48,6 +48,54 @@ The purchase micro-service is a Golang server that accepts purchase requests fro
 }
 ```
 
+```JSON
+{
+    "session_id": "string",
+
+    "paymentIntentId": "string",
+    "customer_id": "string",
+
+    "first_name": "string",
+    "last_name": "string",
+    "address_line": "string",
+    "city": "string",
+    "country": "string",
+    "postal_code": "string",
+    "state": "string",
+    "email": "string",
+    "telephone": "string",
+    
+    "items": [
+        {
+            "size": "string",
+            "total": "number",
+            "quantity": "number",
+            "size": {
+                "name": "string",
+                "metric": "string",
+                "active": "boolean",
+                "availability": "boolean",
+                "variantPrice": "number"
+            }
+            "product": {
+                "id": "string",
+                "name": "string",
+                "mainImage": {
+                    "name": "string",
+                    "variant": "string",
+                    "thumbnail": "string",
+                    "original": "string",
+                    "createdOn": "string",
+                },
+                "price": "number",
+                "salePrice": "number",
+                "unitPrice": "number"
+            }
+        }
+    ]
+}
+```
+
 ## Process
 
 1. When the user adds product in their cart, a payment intent is created. This payment intent is used to track the user during the shopping process

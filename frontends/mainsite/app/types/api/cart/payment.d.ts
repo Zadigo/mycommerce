@@ -54,14 +54,6 @@ export interface EstimatedDeliveryDate {
 	maxDelivery_date: string
 }
 
-// interface ShopRunbackValues {
-// 	is_link_order_return_active: boolean
-// 	order_return_type: {}
-// 	order_return_link?: any
-// 	order_return_number_of_day: number
-// 	url: string
-// }
-
 type ShippingNames = 'Relais Colis'
   | 'Colipost Internet' 
   | 'Colipost DOMTOM'

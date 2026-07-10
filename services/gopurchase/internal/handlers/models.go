@@ -13,7 +13,7 @@ type PaymentIntentData struct {
 	PaymentIntentID string `json:"paymentIntentId"`
 	// Stripe customer ID. This is optional and can be used to link the payment intent
 	// to an existing customer in Stripe.
-	CustomerID string `json:"customerId,omitempty"`
+	CustomerID string `json:"customer_id,omitempty"`
 }
 
 type CartItemsData struct {
@@ -28,20 +28,26 @@ type CartItemsData struct {
 type UpdatePaymentIntentRequest struct {
 	PaymentIntentData
 	CartItemsData
-	Firstname   string `json:"firstname,omitempty"`
-	Lastname    string `json:"lastname,omitempty"`
-	AddressLine string `json:"addressLine,omitempty"`
+	Firstname   string `json:"first_name,omitempty"`
+	Lastname    string `json:"last_name,omitempty"`
+	AddressLine string `json:"address_line,omitempty"`
 	City        string `json:"city,omitempty"`
 	Country     string `json:"country,omitempty"`
-	PostalCode  string `json:"postalCode,omitempty"`
+	PostalCode  string `json:"postal_code,omitempty"`
 	State       string `json:"state,omitempty"`
 	Email       string `json:"email,omitempty"`
 	Telephone   string `json:"telephone,omitempty"`
 }
 
+// CapturePaymentIntentRequest represents the data required to 
+// capture a payment intent.
 type CapturePaymentIntentRequest struct {
 	PaymentIntentData
-	CartItemsData
+	SessionID string `json:"session_id"`
+	Card      string `json:"card"`
+	Intent    string `json:"intent"`
+	Token     string `json:"token"`
+	ClientIp  string `json:"client_ip"`
 }
 
 type ProcessPaymentIntentRequest struct {

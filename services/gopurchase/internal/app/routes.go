@@ -45,8 +45,8 @@ func (a *HttpApp) loadPaymentRoutes(router chi.Router) {
 	}
 
 	router.Post("/intent", paymentApi.CreateIntent)
-	router.Post("/capture", paymentApi.CaptureIntent)
 	router.Post("/update", paymentApi.UpdateIntent)
+	router.Post("/capture", paymentApi.CaptureIntent)
 }
 
 func (a *HttpApp) loadAuthRoutes(router chi.Router) {

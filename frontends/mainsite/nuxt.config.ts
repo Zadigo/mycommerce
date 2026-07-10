@@ -79,7 +79,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     // Stripe
-    stripeTestSecretKey: process.env.NUXT_STRIPE_TEST_SECRET_KEY,
+    stripeTestSecretKey: process.env.NUXT_PUBLIC_STRIPE_TEST_SECRET_KEY,
 
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
@@ -95,7 +95,7 @@ export default defineNuxtConfig({
       golangProdUrl: process.env.NUXT_PUBLIC_GOLANG_PROD_URL,
 
       // Stripe
-      stripeTestPublishableKey: process.env.NUXT_STRIPE_TEST_PUBLISHABLE_KEY,
+      stripeTestPublishableKey: process.env.NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
       stripeApiVersion: '2024-06-20',
       stripeLocale: 'fr',
 

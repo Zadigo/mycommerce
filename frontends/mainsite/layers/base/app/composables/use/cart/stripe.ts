@@ -6,24 +6,13 @@ import type { Nullable, Arrayable, PaymentIntentApiResponse, ShipingInformation,
  * @link https://docs.stripe.com/payments/payment-intents
  */
 export const usePaymentIntentComposable = createGlobalState(() => {
-  const { $client, $goPurchase } = useNuxtApp()
-  const { customHandleError } = useErrorHandler()
+  const { $goPurchase } = useNuxtApp()
   const { docRef, cartSessionId, cartSession } = useCartComposable()
 
   const apiResponse = ref<PaymentIntentApiResponse | null>(null)
   const paymentIntent = useCookie('payment_intent')
 
-  // Requests a new payment intent and returns an
-  // intent ID that will be used to confirm the payment
-  // on the actual payment page
   async function create<T extends CartItem>(total = 0, items?: Arrayable<T>) {
-    // We want to use one single payment intent
-    // per session in order to have proper tracking
-    // of the customer's payment attempts
-    // if (isDefined(paymentIntent)) {
-    //   return 
-    // }
-
     const data = await $goPurchase<PaymentIntentApiResponse>('/payments/intent', {
       method: 'POST',
       body: {
@@ -40,47 +29,33 @@ export const usePaymentIntentComposable = createGlobalState(() => {
 
     apiResponse.value = data
     paymentIntent.value = data.paymentIntentId
-
-
-    // const data = await $client<PaymentIntentApiResponse>('orders/v1/intent', {
-    //   method: 'POST',
-    //   baseURL: useRuntimeConfig().public.cartProdDomain,
-    //   body: {
-    //     session_id: cartSessionId.value,
-    //     total
-    //   },
-    //   onRequestError({ error }) {
-    //     customHandleError(error)
-    //   }
-    // })
-
-    // apiResponse.value = data
-    // paymentIntent.value = data.intent
   }
 
   async function update<T extends CartItem>(total: Nullable<number> = null, shipment: MaybeRef<Nullable<ShipingInformation>> = null, items?: Arrayable<T>) {
     if (isDefined(docRef) && isDefined(cartSession)) {
-      $client('orders/v1/intent/update', {
+      await $goPurchase<PaymentIntentApiResponse>('/payments/update', {
         method: 'POST',
-        baseURL: useRuntimeConfig().public.cartProdDomain,
         body: {
-          session_id: docRef.id,
+          paymentIntentId: paymentIntent.value,
+          session_id: cartSessionId.value,
           shipment: toValue(shipment),
-          total,
-          intent: cartSession.value?.paymentIntent,
-          items: toValue(items)
+          items: toValue(items),
+          total
         } as {
           session_id: string
           shipment: Nullable<ShipingInformation>
           total: Nullable<number>,
-          intent: string,
           items: Arrayable<T>
         },
         onRequestError({ error }) {
-          customHandleError(error)
+          console.log('Error creating payment intent:', error)
         }
       })
     }
+  }
+
+  async function reset() {
+    paymentIntent.value = null
   }
 
   watchDebounced(paymentIntent, async (newValue) => {
@@ -121,6 +96,12 @@ export const usePaymentIntentComposable = createGlobalState(() => {
      * intent and reusing it for each attempt, we can maintain a consistent record of the customer's
      * payment history and behavior.
      */
-    create
+    create,
+    /**
+     * This method is used to reset the payment intent state, 
+     * which can be useful in scenarios where the user decides to 
+     * abandon the checkout process or when the session expires.
+     */
+    reset
   }
 })
