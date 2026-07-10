@@ -85,9 +85,9 @@ export default defineNuxtConfig({
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
 
       // Django/Quart/Flask
-      prodDomain: process.env.NUXT_PUBLIC_DJANGO_PROD_URL,
+      prodDomain: process.env.NUXT_PUBLIC_DJANGO_SHOP_API,
       quartProdUrl: process.env.NUXT_PUBLIC_QUART_PROD_URL,
-      cartProdDomain: process.env.NUXT_PUBLIC_DJANGO_CART_PROD_URL,
+      cartProdDomain: process.env.NUXT_PUBLIC_DJANGO_CART_API,
       reviewsProdDomain: process.env.NUXT_PUBLIC_DJANGO_REVIEWS_PROD_URL,
       golangPaymentRouter: process.env.NUXT_PUBLIC_GOLANG_PAYMENT_ROUTER_URL,
 
