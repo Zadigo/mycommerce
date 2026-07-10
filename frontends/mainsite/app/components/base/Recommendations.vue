@@ -49,7 +49,7 @@ const productsRow = ref<HTMLElement>()
 const data = ref<Undefineable<ProductRecommendations>>()
 
 try {
-  data.value = await $client<ProductRecommendations>('/v1/graphql/', {
+  data.value = await $client<ProductRecommendations>('/graphql/', {
     method: 'post',
     body: {
       query: `

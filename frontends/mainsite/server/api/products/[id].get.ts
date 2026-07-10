@@ -2,7 +2,7 @@ import { useGenerateProducts } from '~~/layers/base/app/utils/__fixtures__/produ
 
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
-  const data = await $fetch('/v1/graphql/', {
+  const data = await $fetch('/graphql/', {
     method: 'POST',
     baseURL: useRuntimeConfig().public.prodDomain,
     body: {

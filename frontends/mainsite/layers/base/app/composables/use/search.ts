@@ -24,7 +24,7 @@ export const useSearchComposable = createGlobalState(() => {
 
     if (isDefined(debouncedSearch) && debouncedSearch.value !== "") {
       try {
-        const data = await $client<SearchedProducts>('/v1/graphql/', {
+        const data = await $client<SearchedProducts>('/graphql/', {
           method: 'POST',
           body: {
             query: `
