@@ -1,10 +1,11 @@
-from cart import tasks
-from cart.api import serializers
-from cart.models import Cart
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+
+from cart import tasks
+from cart.api import serializers
+from cart.models import Cart
 
 
 class CartMixin:
@@ -46,13 +47,6 @@ class CreateCartView(generics.CreateAPIView):
     serializer_class = serializers.ValidateCreateCart
     permission_classes = [AllowAny]
 
-    def perform_create(self, serializer: serializers.ValidateCreateCart):
-        instance: Cart = serializer.save()
-        tasks.calculate_total.apply_async(
-            args=[instance.id],
-            countdown=5
-        )
-
 
 class DeleteFromCart(CartMixin, generics.DestroyAPIView):
     """Delete a set of objects from the cart"""
@@ -71,8 +65,8 @@ class DeleteFromCart(CartMixin, generics.DestroyAPIView):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def perform_destroy(self, instance, serializer):
-        product_ids = serializer.validated_data['product_ids']
+    def perform_destroy(self, instance: Cart, serializer: serializers.DeleteFromCartSerializer):
+        product_ids: list[tuple[int, str]] = serializer.validated_data['product_ids']
 
         for item_id, size in product_ids:
             instance.items = [

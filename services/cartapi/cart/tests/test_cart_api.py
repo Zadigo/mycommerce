@@ -1,8 +1,10 @@
 from django.test import override_settings
-from cart.tests.utils import create_items
-from accounts.tests.mixins import AuthenticatedTestCase
 from django.urls import reverse
 from rest_framework import status
+
+from accounts.tests.mixins import AuthenticatedTestCase
+from cart.tests.utils import create_items
+
 
 @override_settings(PY_UTILITIES_JWT_ISSUER='ecommerce', PY_UTILITIES_JWT_SECRET='some_secret')
 class TestCartApi(AuthenticatedTestCase):
@@ -22,7 +24,7 @@ class TestCartApi(AuthenticatedTestCase):
                 self.assertIn('total', item)
                 self.assertIn('quantity', item)
 
-        print(response.json())
+        self.assertTrue(len(response.json()) > 0)
 
     # def test_list_cart_items_not_authenticated(self):
     #     self.client.credentials(HTTP_AUTHORIZATION='')
@@ -46,26 +48,26 @@ class TestCartApi(AuthenticatedTestCase):
     #     self.assertIn('total', data)
     #     self.assertIn('quantity', data)
 
-    # def test_create_cart_authenticated(self):
-    #     data = list(create_items(quantity=2))
-    #     response = self.client.post(
-    #         reverse('cart_api:create'),
-    #         data={
-    #             'session_id': 'postmanTest1234',
-    #             'items': data
-    #         },
-    #         content_type='application/json'
-    #     )
-    #     self.assertEqual(
-    #         response.status_code,
-    #         status.HTTP_201_CREATED,
-    #         response.json()
-    #     )
+    def test_create_cart_authenticated(self):
+        data = list(create_items(quantity=2))
+        response = self.client.post(
+            reverse('cart_api:create'),
+            data={
+                'session_id': 'postmanTest1234',
+                'items': data
+            },
+            content_type='application/json'
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED,
+            response.json()
+        )
 
-    #     data = response.json()
+        data = response.json()
 
-    #     self.assertIn('session_id', data)
-    #     self.assertIsInstance(data['session_id'], str)
+        self.assertIn('session_id', data)
+        self.assertIsInstance(data['session_id'], str)
 
     # def test_delete_item_in_cart(self):
     #     response = self.client.delete(

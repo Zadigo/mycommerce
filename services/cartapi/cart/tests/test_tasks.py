@@ -1,6 +1,5 @@
 from unittest.mock import AsyncMock, patch
 
-from cartapi.settings import MICROSERVICES
 from django.test import TestCase, override_settings
 from faker import Faker
 

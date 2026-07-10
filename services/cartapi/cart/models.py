@@ -20,6 +20,19 @@ class AbstractCart(models.Model):
       and user experience.
     * Ensures that users can add products to their cart while logged in or logged out, 
       with items being linked to their profile once they log in.
+
+-    Attributes:
+        session_id (str): Unique session identifier for anonymous users.
+        user (User): The authenticated user associated with the cart.
+        order_reference (str): Reference to the customer order.
+        items (dict): Details of the products added to the cart.
+        quantity (int): Total quantity of items in the cart.
+        total (float): Total price of all items in the cart.
+        payment_intent (str): Stripe payment intent ID.
+        is_stale (bool): Indicates if the cart is stale.
+        is_anonymous (bool): Indicates if the cart belongs to an anonymous user.
+        is_paid_for (bool): Indicates if the cart has been paid for.
+        created_on (datetime): Timestamp when the cart was created.
     """
     
     session_id = models.CharField(

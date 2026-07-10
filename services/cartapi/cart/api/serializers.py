@@ -1,9 +1,11 @@
 from typing import Any
 
+from rest_framework import fields
+from rest_framework.request import Request
+from rest_framework.serializers import Serializer
+
 from cart import tasks
 from cart.models import Cart
-from rest_framework import fields
-from rest_framework.serializers import Serializer
 
 
 class _SizeSerializer(Serializer):
@@ -71,7 +73,7 @@ class ValidateCreateCart(Serializer):
     items = CartItemSerializer(required=True, many=True)
 
     def create(self, validated_data: dict[str, Any]):
-        request = self._context['request']
+        request: Request = self._context['request']
         instance, created = Cart.objects.update_or_create(
             session_id=validated_data['session_id'],
             defaults={'items': validated_data['items']}
@@ -95,7 +97,6 @@ class ValidateCreateCart(Serializer):
             countdown=5
         )
         return instance
-
 
 
 class DeleteFromCartSerializer(Serializer):
