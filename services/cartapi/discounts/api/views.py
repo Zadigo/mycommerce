@@ -1,14 +1,19 @@
-from cart.models import Cart
-from discounts.models import Discount
-from discounts.utils import (calculate_discount, calculate_partial_discount,
-                             get_calculated_discount_response)
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import GenericAPIView
+from rest_framework.request import Request
 from rest_framework.response import Response
 
+from cart.models import Cart
+from discounts.models import Discount
+from discounts.utils import (
+    calculate_discount,
+    calculate_partial_discount,
+    get_calculated_discount_response,
+)
 
-class ApplyDiscountView(GenericAPIView):
-    def post(self, request, *args, **kwargs):
+
+class ApplyDiscountApi(GenericAPIView):
+    def post(self, request: Request, *args, **kwargs):
         session_id = request.data.get('cart_id')
         discount_code = request.data.get('discount_code')
 
@@ -31,6 +36,6 @@ class ApplyDiscountView(GenericAPIView):
                 undiscounted=undiscounted_total
             )
             return Response(data)
-        breakpoint()
+
         data = calculate_discount(cart.total, instance.percentage)
         return Response(get_calculated_discount_response(discounted_total=data))

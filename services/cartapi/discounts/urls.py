@@ -1,12 +1,13 @@
-from discounts.api import views
 from django.urls import re_path
+
+from discounts.api import views
 
 app_name = 'discounts'
 
 urlpatterns = [
     re_path(
         r'^apply$',
-        views.ApplyDiscountView.as_view(),
+        views.ApplyDiscountApi.as_view(),
         name='apply'
     )
 ]

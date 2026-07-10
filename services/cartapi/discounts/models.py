@@ -1,14 +1,25 @@
-from discounts.validators import validate_percentage
+from django.core.validators import int_list_validator
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
-from django.core.validators import int_list_validator
+
+from discounts.validators import validate_percentage
 
 
 class Discount(models.Model):
     """References discounts like coupons, promotional codes, etc.
     that could be applied to a product or a set of given products
-    when the customer is checking out."""
+    when the customer is checking out.
+    
+    Attributes:
+        reference (str): A unique reference for the discount.
+        name (str): The name of the discount.
+        products (list): A list of product IDs that the discount can be applied to.
+        percentage (int): The percentage of the discount.
+        start_date (date): The date when the discount becomes valid.
+        end_date (date): The date when the discount becomes invalid.
+        created_on (date): The date when the discount was created.
+    """
 
     reference = models.CharField(
         max_length=100,

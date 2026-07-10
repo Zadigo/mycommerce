@@ -1,7 +1,9 @@
 from typing import Any
 
-from cart.utils import calculate_items_total
 from django.utils.crypto import get_random_string
+
+from cart.models import Cart
+from cart.utils import calculate_items_total
 
 
 def create_reference() -> str:
@@ -50,36 +52,42 @@ def get_calculated_discount_response(valid_products: list[dict] = [], invalid_pr
     }
 
 
-def calculate_partial_discount(items: list[dict], percentage: int, ids: list[int]) -> tuple[list[dict], list[dict], float, float]:
+def calculate_partial_discount(items: list[dict | 'Cart'], percentage: int, ids: list[int]) -> tuple[list[dict], list[dict], float, float]:
     """Calculates a discount in the case where the discount is only applicable 
     to some of the items in the cart.
 
     Args:
-        items (list[dict]): A list of dictionaries representing the items in the cart.
+        items (list[dict | Cart]): A list of dictionaries or Cart instances representing the items in the cart.
         percentage (int): The percentage discount to apply to the applicable items.
         ids (list[int]): A list of product IDs that the discount is applicable to.
 
     Returns:
         tuple[list[dict], list[dict], float, float]: A tuple containing the invalid products, valid products, discounted total, and undiscounted total.
     """
+    _items: list[dict] = []
+
+    for item in items:
+        if isinstance(item, Cart):
+            _items.extend(item.items)
+        else:
+            _items.append(item)
+
     invalid_products: list[dict] = list(
         filter(
             lambda item: item['product']['id'] not in ids, 
-            items
+            _items
         )
     )
 
     valid_products: list[dict] = list(
         filter(
             lambda item: item['product']['id'] in ids,
-            items
+            _items
         )
     )
 
     discounted, _ = calculate_items_total(valid_products)
     undiscounted_total, _ = calculate_items_total(invalid_products)
-
-    breakpoint()
 
     discounted_total = calculate_discount(discounted, percentage)
     return invalid_products, valid_products, discounted_total, undiscounted_total

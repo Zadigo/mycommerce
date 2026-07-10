@@ -1,4 +1,5 @@
 import pydantic
+import factory
 from factory.django import DjangoModelFactory
 from faker import Faker
 
@@ -80,11 +81,11 @@ class ProductFactory(DjangoModelFactory):
     class Meta:
         model = Cart
 
-    session_id = faker.uuid4()
+    session_id = factory.Sequence(lambda n: f"session_{n}")
 
 
 def create_items(quantity: int):
-    instances = ProductFactory.create_batch(quantity)
+    instances: list[Cart] = ProductFactory.create_batch(quantity)
     for instance in instances:
         for _ in range(faker.pyint(min_value=1, max_value=10)):
             main_image = {
