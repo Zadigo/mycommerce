@@ -10,6 +10,44 @@ The purchase micro-service is a Golang server that accepts purchase requests fro
 | /update  | POST   | Updates a created payment intent    | {}                                              | {}                                         |
 | /capture | POST   | Captures the payment for the intent | {paymentIntentId: string}                       | {}                                         |
 
+### Payloads
+
+**/create**
+
+```JSON
+{
+    "sessionId": "string",
+    "items": [
+        {
+            "size": "string",
+            "total": "number",
+            "quantity": "number",
+            "size": {
+                "name": "string",
+                "metric": "string",
+                "active": "boolean",
+                "availability": "boolean",
+                "variantPrice": "number"
+            }
+            "product": {
+                "id": "string",
+                "name": "string",
+                "mainImage": {
+                    "name": "string",
+                    "variant": "string",
+                    "thumbnail": "string",
+                    "original": "string",
+                    "createdOn": "string",
+                },
+                "price": "number",
+                "salePrice": "number",
+                "unitPrice": "number"
+            }
+        }
+    ]
+}
+```
+
 ## Process
 
 1. When the user adds product in their cart, a payment intent is created. This payment intent is used to track the user during the shopping process

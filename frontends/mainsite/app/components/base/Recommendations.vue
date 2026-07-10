@@ -46,10 +46,8 @@ const { customHandleError } = useErrorHandler()
 
 const productsRow = ref<HTMLElement>()
 
-const data = ref<Undefineable<ProductRecommendations>>()
-
-try {
-  data.value = await $client<ProductRecommendations>('/graphql/', {
+const data = computedAsync(async () => {
+  return await $client<ProductRecommendations>('/graphql/', {
     method: 'post',
     body: {
       query: `
@@ -68,15 +66,7 @@ try {
       customHandleError(error)
     }
   })
-
-  provideLocal(productsSymbol, isDefined(data) ? data.value.data.recommendations.map(x => ({ node: x })) : [])
-} catch (e) {
-  // const fixtureProducts = useGenerateProducts(quantity)
-  // data.value = { data: { recommendations: fixtureProducts.value.data.allProducts.edges.map(x => x.node) } }
-  // provideLocal(productsSymbol, isDefined(data) ? data.value.data.recommendations.map(x => ({ node: x })) : [])
-  // console.log('Recommendations', data.value)
-  // console.error(e)
-}
+})
 
 /**
  * Analytics

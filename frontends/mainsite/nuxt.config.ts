@@ -237,7 +237,7 @@ export default defineNuxtConfig({
   },
 
   nuxtAuthentication: {
-    domain: process.env.NUXT_PUBLIC_DJANGO_PROD_URL,
+    domain: process.env.NUXT_PUBLIC_DJANGO_SHOP_API,
     accessEndpoint: '/auth/v1/token/',
     refreshEndpoint: '/auth/v1/token/refresh/',
     verifyEndpoint: '/auth/v1/token/verify/'
