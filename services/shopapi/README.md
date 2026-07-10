@@ -2,6 +2,40 @@
 
 This micro-service is responsible for managing functionalities for the shop which are mainly related to storing product details, categories, collections, and product images.
 
+## Database
+
+```mermaid
+erDiagram
+
+image {
+    string name
+}
+
+image ||--|o product : contains
+
+video {
+    string name
+}
+
+video ||--|o product : contains
+
+product {
+    string name
+}
+
+wishlist {
+    string products
+}
+
+wishlist ||--|{ product : contains
+
+stock {
+    string products
+}
+
+stock ||--|{ product : contains
+```
+
 ## Features ⭐
 
 - Product catalog management
@@ -13,11 +47,10 @@ This micro-service is responsible for managing functionalities for the shop whic
 ## Commands
 
 * Run Celery worker and beat with the following commands (Windows):
-    * Windows: celery -A shopapi.celery_app worker -E --pool=solo
-    * Windows - Beat: celery -A shopapi.celery_app beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-    * Windows - Flower: celery -A shopapi.celery_app flower
+  * Windows: celery -A shopapi.celery_app worker -E --pool=solo
+  * Windows - Beat: celery -A shopapi.celery_app beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+  * Windows - Flower: celery -A shopapi.celery_app flower
 * Run MCP inspector: `npx @modelcontextprotocol/inspector uv --directory /path/to/mycommerce/mystore/ run manage.py stdio_server`
-
 
 ## How it works ⚙️
 
@@ -47,4 +80,4 @@ The shop Django backend is responsible for managing the product catalog, includi
 
 ## References 📚
 
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Architecture documentation for the project 
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Architecture documentation for the project
