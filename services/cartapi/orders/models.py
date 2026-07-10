@@ -1,4 +1,3 @@
-from cartapi.choices import CityChoices, CountryChoices
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.signals import post_save, pre_save
@@ -8,14 +7,23 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.fields import CKEditor5Field
 
+from cartapi.choices import CityChoices, CountryChoices
+
 
 class Product(models.Model):
     """A model that stores very basic information on
     the product that was ordered by the user.
 
-    This is useful for when the product's price
-    changes. The price in the final order would
-    then stay the same as the initial price."""
+    This is useful for when the product's price changes. The price 
+    in the final order would then stay the same as the initial price.
+    
+    Attributes:
+        reference (int): The product's reference ID.
+        serialized_data (dict): Serialized product data.
+        unit_price (float): The price of the product at the time of order.
+        customer_order (ManyToManyField): A many-to-many relationship to the CustomerOrder model.
+        created_on (datetime): The date and time when the product was created.
+    """
 
     reference = models.IntegerField(
         help_text=_(
@@ -56,6 +64,25 @@ class Product(models.Model):
 
 
 class CustomerOrder(models.Model):
+    """A model that stores information on a customer order.
+    
+    Attributes:
+        reference (str): A unique reference for the order.
+        stripe_charge (str): The Stripe charge reference for the order.
+        user (ForeignKey): A foreign key to the user who placed the order.
+        address (str): The address for the order.
+        city (str): The city for the order.
+        zip_code (str): The zip code for the order.
+        country (str): The country for the order.
+        total (float): The total amount for the order.
+        notes (str): Additional notes for the order.
+        completed (bool): A flag indicating if the order is completed.
+        refund_requested (bool): A flag indicating if a refund has been requested.
+        stock_updated (bool): A flag indicating if the stock has been updated for the order.
+        return_delay (datetime): The date until which the customer can request a return.
+        max_return_delay (datetime): The maximum date until which the customer can request a return.
+        created_on (datetime): The date and time when the order was created.
+    """
     reference = models.CharField(
         max_length=100,
         blank=True,

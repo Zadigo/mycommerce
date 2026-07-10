@@ -29,6 +29,7 @@ class TestApplyDiscountApi(TestCase):
         )
         self.assertEqual(response.status_code, 404, response.content)
 
+    # TODO: Use static product data
     def test_apply_discount_code_exists(self):
         valid_ids = list(map(lambda item: item['product']['id'], self.cart.items))
 
