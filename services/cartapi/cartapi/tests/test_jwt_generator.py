@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from mycart.custom_utilities.tokens import JWTGenerator, decode_jwt_token
+from cartapi.custom_utilities.tokens import JWTGenerator, decode_jwt_token
 
 
 class TestJWTGenerator(TestCase):

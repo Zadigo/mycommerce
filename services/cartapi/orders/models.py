@@ -1,3 +1,4 @@
+from cartapi.choices import CityChoices, CountryChoices
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.signals import post_save, pre_save
@@ -6,8 +7,6 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.fields import CKEditor5Field
-
-from mycart.choices import CityChoices, CountryChoices
 
 
 class Product(models.Model):

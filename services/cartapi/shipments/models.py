@@ -1,7 +1,6 @@
+from cartapi.choices import ShipmentChoices
 from django.db import models
 from orders.models import CustomerOrder
-
-from mycart.choices import ShipmentChoices
 
 # class ShippingMethod(models.Model):
 #     name = models.CharField(

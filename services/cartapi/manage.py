@@ -6,7 +6,7 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mycart.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cartapi.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

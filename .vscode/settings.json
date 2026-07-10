@@ -15,7 +15,7 @@
     },
     "python-envs.pythonProjects": [
         {
-            "path": "services/mycart",
+            "path": "services/cartapi",
             "envManager": "ms-python.python:venv",
             "packageManager": "ms-python.python:pip"
         },

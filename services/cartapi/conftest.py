@@ -40,7 +40,7 @@ def pytest_configure(config):
                 'shipments'
             ],
             AUTH_USER_MODEL='auth.User',
-            ROOT_URLCONF='mycart.urls',
+            ROOT_URLCONF='cartapi.urls',
             DEFAULT_AUTO_FIELD='django.db.models.BigAutoField',
             REST_FRAMEWORK={
                 'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
@@ -54,7 +54,7 @@ def pytest_configure(config):
             },
             IMAGEKIT_CACHEFILE_NAMER='imagekit.cachefiles.namers.hash',
             GRAPHENE={
-                'SCHEMA': 'mycart.schema.schema'
+                'SCHEMA': 'cartapi.schema.schema'
             },
             STATIC_URL='/static/',
         )

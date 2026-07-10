@@ -1,9 +1,8 @@
 import os
 
 from celery import Celery
-from celery.schedules import crontab
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mycart.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cartapi.settings')
 
 
 def get_broker():
@@ -17,7 +16,7 @@ def get_backend():
 
 
 app = Celery(
-    'mycart',
+    'cartapi',
     broker=get_broker(),
     backend=get_backend(),
     logger='celery_app.log'

@@ -68,7 +68,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'mycart.urls'
+ROOT_URLCONF = 'cartapi.urls'
 
 TEMPLATES = [
     {
@@ -88,7 +88,7 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = 'mycart.asgi.application'
+ASGI_APPLICATION = 'cartapi.asgi.application'
 
 
 # Database
