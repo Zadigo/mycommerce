@@ -1,0 +1,147 @@
+from django.contrib.auth import get_user_model
+from django.db import models
+from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
+
+
+class AbstractCart(models.Model):
+    """The AbstractCart model represents a cart that holds 
+    products added by a user. This model supports both 
+    authenticated and anonymous users by using a unique session 
+    identifier (session_id).
+
+    When a user is authenticated, the cart items are linked to the user 
+    profile, allowing for a seamless shopping experience across sessions.
+
+    Purpose:
+
+    * Allows users to add and manage products they wish to purchase
+    * Supports both authenticated and anonymous users, enhancing flexibility 
+      and user experience.
+    * Ensures that users can add products to their cart while logged in or logged out, 
+      with items being linked to their profile once they log in.
+    """
+    
+    session_id = models.CharField(
+        max_length=400,
+        help_text=_(
+            "Unique session identifier "
+            "which is essentially used for identifying "
+            "an anonymous user's cart"
+        )
+    )
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        help_text=_('Identifies a logged in user'),
+        blank=True,
+        null=True
+    )
+    order_reference = models.CharField(
+        max_length=100,
+        help_text=_(
+            "A customer order reference which can be "
+            "used to link a cart item to an order"
+        ),
+        blank=True,
+        null=True
+    )
+    items = models.JSONField(
+        default=dict,
+        help_text=_(
+            "A JSON field that stores the details of the "
+            "products added to the cart, including product ID, "
+            "quantity, price, and any other relevant information"
+        )
+    )
+    quantity = models.PositiveBigIntegerField(
+        default=1,
+        help_text=_("The total quantity of items in the cart")
+    )
+    total = models.FloatField(
+        default=0.0,
+        help_text=_("The total price of all items in the cart")
+    )
+    # has_discount = models.BooleanField(
+    #     default=False
+    # )
+    payment_intent = models.CharField(
+        max_length=200,
+        help_text=_(
+            "Stripe payment intent ID "
+            "used to identify the payment "
+            "associated with this cart"
+        ),
+        blank=True,
+        null=True
+    )
+    is_stale = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Previous products from an authenticated user on which "
+            "no actions were performed"
+        )
+    )
+    is_anonymous = models.BooleanField(
+        default=False
+    )
+    is_paid_for = models.BooleanField(
+        default=False
+    )
+    created_on = models.DateTimeField(
+        auto_now=True
+    )
+
+    class Meta:
+        abstract = True
+        ordering = ['-created_on', '-pk']
+        indexes = [
+            models.Index(fields=['total', 'session_id']),
+            models.Index(
+                Q(is_stale=True) | Q(is_paid_for=True),
+                name='stale_or_paid_carts'
+            )
+        ]
+
+    def __str__(self):
+        return f'CartSession: {self.pk}'
+
+    # def discounted_prices(self):
+    #     """If the the current product is related to
+    #     a discount tag, return the list of all the
+    #     discounts available to this product"""
+    #     results = []
+    #     discounts = self.product.discount_set.all()
+    #     for discount in discounts:
+    #         results.append({
+    #             'name': discount.name,
+    #             'discounted_price': calculate_discount(
+    #                 self.product.name,
+    #                 discount.discount_percentage
+    #             )
+    #         })
+    #     return results
+
+
+class Cart(AbstractCart):
+    """The `Cart` model provides a robust framework 
+    for managing shopping carts in the application. 
+    By supporting both authenticated and anonymous users, 
+    it ensures a flexible and seamless shopping experience. 
+    The model tracks essential information such as product details, 
+    user associations, and session identifiers, making it an integral 
+    part of the shopping process. This structure enhances user convenience 
+    and ensures persistent shopping behavior, contributing to a 
+    positive user experience
+    """
+
+    class Meta(AbstractCart.Meta):
+        verbose_name = _('Cart')
+        verbose_name_plural = _('Carts')
+        indexes = [
+            models.Index(
+                condition=Q(is_paid_for=True),
+                fields=['is_paid_for'],
+                name='is_paid_for_carts'
+            )
+        ]

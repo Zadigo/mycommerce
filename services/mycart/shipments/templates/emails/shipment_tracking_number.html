@@ -1,0 +1,20 @@
+{% extends "base_email.html" %}
+
+{% block content %}
+<tr>
+    <td style="padding: 20px;">
+        <p style="font-size: 16px; color: #333333;">
+            Hello {{ user.first_name }},
+        </p>
+        <p style="font-size: 16px; color: #333333;">
+            Thank you for signing up with us! We're excited to have you on board.
+        </p>
+        <p style="font-size: 16px; color: #333333;">
+            If you have any questions, feel free to <a href="mailto:support@example.com" style="color: #007bff; text-decoration: none;">contact our support team</a>.
+        </p>
+        <p style="font-size: 16px; color: #333333;">
+            Best regards,<br>The Team
+        </p>
+    </td>
+</tr>
+{% endblock %}

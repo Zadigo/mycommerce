@@ -1,0 +1,31 @@
+[
+    {
+        "model": "accounts.UserProfile",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "stripe_id": "cus_ABC123XYZ",
+            "source_id": "src_ABC123XYZ",
+            "telephone": "1234567890",
+            "created_on": "2024-01-01"
+        }
+    },
+    {
+        "model": "accounts.Address",
+        "pk": 1,
+        "fields": {
+            "user_profile": 1,
+            "firstname": "Juliette",
+            "lastname": "Apple",
+            "address_line": "123 Main St",
+            "address_line_two": "Apt 4B",
+            "zip_code": "10001",
+            "country": "USA",
+            "city": "New York",
+            "telephone": "1234567890",
+            "gender": "Woman",
+            "is_active": true,
+            "created_on": "2024-01-01"
+        }
+    }
+]
