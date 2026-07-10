@@ -36,7 +36,7 @@ func (e HttpErrors) PaymentIntentCreationError(err error) {
 	e.JsonWriter(message, http.StatusBadRequest)
 }
 
-func (e HttpErrors) PaymentIntentMissingError(err error) {
+func (e HttpErrors) PaymentIntentMissingError() {
 	message := utils.DefaultErrorResponse{Detail: "Payment intent ID is required", Message: "Please provide a valid payment intent ID"}
 	e.JsonWriter(message, http.StatusBadRequest)
 }

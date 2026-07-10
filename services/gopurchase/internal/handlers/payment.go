@@ -123,25 +123,26 @@ func (p *PaymentApi) UpdateIntent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.PaymentIntentData.PaymentIntentID == "" {
-		errorHandler.PaymentIntentMissingError(err)
+		errorHandler.PaymentIntentMissingError()
 		return
 	}
 
 	params := &stripe.PaymentIntentUpdateParams{
-		ReceiptEmail: stripe.String(data.Email),
+		Amount:       stripe.Int64(int64(data.Total * 100)), // Convert to cents
+		ReceiptEmail: stripe.String(data.Shipment.Email),
 		AmountDetails: &stripe.PaymentIntentUpdateAmountDetailsParams{
 			LineItems: data.Items.UpdateLineItems(),
 		},
 		Shipping: &stripe.ShippingDetailsParams{
-			Name:  stripe.String(fmt.Sprintf("%s %s", data.Firstname, data.Lastname)),
-			Phone: stripe.String(data.Telephone),
+			Name:  stripe.String(fmt.Sprintf("%s %s", data.Shipment.Firstname, data.Shipment.Lastname)),
+			Phone: stripe.String(data.Shipment.Telephone),
 			Address: &stripe.AddressParams{
-				City:       stripe.String(data.City),
-				Country:    stripe.String(data.Country),
-				Line1:      stripe.String(data.AddressLine),
+				City:       stripe.String(data.Shipment.City),
+				Country:    stripe.String(data.Shipment.Country),
+				Line1:      stripe.String(data.Shipment.AddressLine),
 				Line2:      stripe.String(""),
-				PostalCode: stripe.String(data.PostalCode),
-				State:      stripe.String(data.State),
+				PostalCode: stripe.String(data.Shipment.PostalCode),
+				State:      stripe.String(data.Shipment.State),
 			},
 		},
 	}
@@ -182,7 +183,7 @@ func (p *PaymentApi) CaptureIntent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	intent, err := p.PaymentClient.V1PaymentIntents.Confirm(p.Ctx, data.PaymentIntentID, &stripe.PaymentIntentConfirmParams{
-		ReturnURL:     stripe.String("https://example.com/return_url"),
+		ReturnURL: stripe.String("https://example.com/return_url"),
 		// PaymentMethod: stripe.String("pm_card_mastercard"),
 		PaymentMethod: stripe.String(data.Card),
 	})

@@ -23,11 +23,7 @@ type CartItemsData struct {
 	Items models.CartItems `json:"items"`
 }
 
-// UpdatePaymentIntentData represents the data
-// required to update a payment intent.
-type UpdatePaymentIntentRequest struct {
-	PaymentIntentData
-	CartItemsData
+type ShipmentInfo struct {
 	Firstname   string `json:"first_name,omitempty"`
 	Lastname    string `json:"last_name,omitempty"`
 	AddressLine string `json:"address_line,omitempty"`
@@ -39,7 +35,16 @@ type UpdatePaymentIntentRequest struct {
 	Telephone   string `json:"telephone,omitempty"`
 }
 
-// CapturePaymentIntentRequest represents the data required to 
+// UpdatePaymentIntentData represents the data
+// required to update a payment intent.
+type UpdatePaymentIntentRequest struct {
+	PaymentIntentData
+	CartItemsData
+	Shipment ShipmentInfo `json:"shipment"`
+	Total    float64      `json:"total"`
+}
+
+// CapturePaymentIntentRequest represents the data required to
 // capture a payment intent.
 type CapturePaymentIntentRequest struct {
 	PaymentIntentData
