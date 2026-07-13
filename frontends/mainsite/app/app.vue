@@ -72,6 +72,7 @@ provide('documentVisible', useDocumentVisibility())
  * State: Modals
  */
 
+useState('stripeId', () => '')
 useState('showSearchModal', () => false)
 useState('showLanguageModal', () => false)
 useState('showWhatsAppModal', () => false)

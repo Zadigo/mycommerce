@@ -58,7 +58,7 @@ definePageMeta({
  * Cart
  */
 
-const { cart, cartSession, docRef } = useCartComposable()
+const { cart, cartSession } = useCartComposable()
 const { update } = usePaymentIntentComposable()
 
 /**

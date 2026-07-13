@@ -16,9 +16,7 @@
 <script setup lang="ts">
 import { useSessionStorage } from '@vueuse/core'
 import { StripeElement, StripeElements } from 'vue-stripe-js'
-import type { UserProfile } from '~/types'
-
-import type { DefaultPaymentProviders, StripeTokenResponse } from '~/types'
+import type { PaymentIntentApiResponse, DefaultPaymentProviders, StripeTokenResponse } from '~/types'
 
 interface TokenData {
   session_id: string | null | undefined
@@ -28,8 +26,6 @@ interface TokenData {
   client_ip: string | null
   customer_id: string | null
 }
-
-const { customHandleError } = useErrorHandler()
 
 const emit = defineEmits<{ 'payment-complete': [blockName: DefaultPaymentProviders] }>()
 
@@ -44,6 +40,8 @@ const paymentResponse = useSessionStorage('paymentResponse', null, {
   }
 })
 
+const stripeId = useState<string>('stripeId')
+
 /**
  * Cart
  */
@@ -55,7 +53,7 @@ const tokenData = ref<TokenData>({
   paymentIntentId: null,
   token: null,
   client_ip: null,
-  customer_id: "cus_Uf8gg2PbbgECR4"
+  customer_id: null
 })
 
 const isLoading = ref(false)
@@ -121,50 +119,24 @@ async function handleStripe() {
     tokenData.value.paymentIntentId = paymentIntent.value
     tokenData.value.token = result.token.id
     tokenData.value.client_ip = result.token.client_ip
+    tokenData.value.customer_id = stripeId.value
     await handlePayment()
   } else {
     console.error('No payment intent')
   }
 }
 
-const { $goPurchase } = useNuxtApp()
+async function handlePayment () {  
+  const response = await $fetch<PaymentIntentApiResponse>('/api/proxy/golang/capture', {
+    method: 'POST',
+    body: toValue(tokenData)
+  })
 
-const { getProfile } = useUser<UserProfile>()
-const profile = getProfile('/graphql/')
+  paymentResponse.value = response
+  isLoading.value = false
 
-async function handlePayment () {
-  try {
-    const response = await $goPurchase('/payments/capture', {
-      method: 'POST',
-      baseURL: useRuntimeConfig().public.golangPaymentRouter,
-      body: toValue(tokenData)
-    })
+  reset()
 
-    paymentResponse.value = response
-    isLoading.value = false
-
-    reset()
-
-    emit('payment-complete', 'Stripe')
-  } catch (e) {
-    console.log(e)
-    customHandleError(e)
-  }
-  // try {
-  //   const response = await $client('/api/v1/orders/create', {
-  //     method: 'POST',
-  //     baseURL: useRuntimeConfig().public.prodDomain,
-  //     body: tokenData.value
-  //   })
-
-  //   paymentResponse.value = response
-  //   isLoading.value = false
-  //   paymentIntent.value = undefined
-
-  //   emit('payment-complete', 'Stripe')
-  // } catch (e) {
-  //   console.log(e)
-  //   customHandleError(e)
-  // }
+  emit('payment-complete', 'Stripe')
 }
 </script>

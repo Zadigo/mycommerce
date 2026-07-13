@@ -6,49 +6,48 @@ import type { Nullable, Arrayable, PaymentIntentApiResponse, ShipingInformation,
  * @link https://docs.stripe.com/payments/payment-intents
  */
 export const usePaymentIntentComposable = createGlobalState(() => {
-  const { $goPurchase } = useNuxtApp()
   const { docRef, cartSessionId, cartSession } = useCartComposable()
 
   const apiResponse = ref<PaymentIntentApiResponse | null>(null)
+  // TODO: Get from firebase
   const paymentIntent = useCookie('payment_intent')
+  const stripeId = useState<string>('stripeId')
 
   async function create<T extends CartItem>(total = 0, items?: Arrayable<T>) {
-    const data = await $goPurchase<PaymentIntentApiResponse>('/payments/intent', {
-      method: 'POST',
-      body: {
-        sessionId: cartSessionId.value,
-        total,
-        items: toValue(items)
-      },
-      onRequestError({ error }) {
-        console.log('Error creating payment intent:', error)
+    const data = await $fetch<PaymentIntentApiResponse>('/api/proxy/golang/intent', { 
+      method: 'POST', 
+      body: { 
+        sessionId: cartSessionId.value,  
+        customerId: stripeId.value,
+        total, 
+        items
       }
     })
 
     console.log('Payment intent created:', data)
-
     apiResponse.value = data
-    paymentIntent.value = data.paymentIntentId
   }
 
   async function update<T extends CartItem>(total: Nullable<number> = null, shipment: MaybeRef<Nullable<ShipingInformation>> = null, items?: Arrayable<T>) {
     if (isDefined(docRef) && isDefined(cartSession)) {
-      await $goPurchase<PaymentIntentApiResponse>('/payments/update', {
-        method: 'POST',
+      void $fetch<PaymentIntentApiResponse>('/api/proxy/golang/intent', {
+        method: 'PATCH',
         body: {
           paymentIntentId: paymentIntent.value,
           session_id: cartSessionId.value,
           shipment: toValue(shipment),
           items: toValue(items),
+          customer_id: stripeId.value,
           total
         } as {
           session_id: string
           shipment: Nullable<ShipingInformation>
           total: Nullable<number>,
           items: Arrayable<T>
+          customer_id: string
         },
         onRequestError({ error }) {
-          console.log('Error creating payment intent:', error)
+          console.log('Error updating payment intent:', error)
         }
       })
     }
@@ -58,6 +57,7 @@ export const usePaymentIntentComposable = createGlobalState(() => {
     paymentIntent.value = null
   }
 
+  // TODO: Get/synchronize with firebase
   watchDebounced(paymentIntent, async (newValue) => {
     if (isDefined(newValue) && isDefined(docRef)) {
       try {
@@ -76,10 +76,12 @@ export const usePaymentIntentComposable = createGlobalState(() => {
      * The payment intent ID returned from the API, which will be used to 
      * confirm the payment on the actual payment page. This is stored in a cookie to 
      * persist across page reloads and sessions.
+     * @default null
      */
     paymentIntent: readonly(paymentIntent),
     /**
      * This is a helper method to check if a payment intent already exists for the current session.
+     * @default false
      */
     hasPaymentIntent,
     /**

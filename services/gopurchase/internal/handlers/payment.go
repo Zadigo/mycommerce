@@ -128,6 +128,9 @@ func (p *PaymentApi) UpdateIntent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	params := &stripe.PaymentIntentUpdateParams{
+		// Update the customer ID when the user creates an account
+		// and we have a valid customer ID to associate with the payment intent.
+		Customer:     stripe.String(data.CustomerID),
 		Amount:       stripe.Int64(int64(data.Total * 100)), // Convert to cents
 		ReceiptEmail: stripe.String(data.Shipment.Email),
 		AmountDetails: &stripe.PaymentIntentUpdateAmountDetailsParams{
@@ -147,12 +150,7 @@ func (p *PaymentApi) UpdateIntent(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	if data.CustomerID != "" {
-		params.Customer = stripe.String(data.CustomerID)
-	}
-
 	intent, err := p.PaymentClient.V1PaymentIntents.Update(p.Ctx, data.PaymentIntentID, params)
-
 	if err != nil {
 		errorHandler.PaymentIntentUpdateError(err)
 		return
@@ -184,6 +182,16 @@ func (p *PaymentApi) CaptureIntent(w http.ResponseWriter, r *http.Request) {
 
 	if data.PaymentIntentID == "" {
 		errorHandler.PaymentIntentMissingError()
+		return
+	}
+
+	// Attach the payment method to the customer
+	updateCustomerData := &stripe.CustomerUpdateParams{
+		Source: stripe.String(data.Token),
+	}
+	customer, err := p.PaymentClient.V1Customers.Update(p.Ctx, data.CustomerID, updateCustomerData)
+	if err != nil {
+		errorHandler.CustomerUpdateError(customer, err)
 		return
 	}
 

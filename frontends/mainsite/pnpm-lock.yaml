@@ -169,8 +169,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0(vue@3.5.39(typescript@5.9.3))
       nuxt-authentication:
-        specifier: 2.1.0
-        version: 2.1.0(change-case@5.4.4)(fuse.js@7.4.2)(magicast@0.5.3)(qrcode@1.5.4)(universal-cookie@8.1.2)(vue@3.5.39(typescript@5.9.3))
+        specifier: 2.2.0
+        version: 2.2.0(change-case@5.4.4)(fuse.js@7.4.2)(magicast@0.5.3)(qrcode@1.5.4)(universal-cookie@8.1.2)(vue@3.5.39(typescript@5.9.3))
       nuxt-ganalytics:
         specifier: ^2.4.2
         version: 2.4.2(e2e3921e215e0bb9b7dcbb3d06cb6f3a)
@@ -7837,8 +7837,8 @@ packages:
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
 
-  nuxt-authentication@2.1.0:
-    resolution: {integrity: sha512-Wy3l4a1Nvp1juaxUvI5+SKORZ+1Cao4e5A/aP0T8wwdQ8258ANmSSAprhmo3MxqPhldbDyEgzWT2aAuZlxXZig==}
+  nuxt-authentication@2.2.0:
+    resolution: {integrity: sha512-MzV9Jtw8Ezq4bNMSnCRRxDN5/QmWGrHXeF+751OOz+urDkVL/GJriD5GtFX1ZzK+eu3Tdpd8Qk3L2B+uQ0jdnQ==}
 
   nuxt-define@1.0.0:
     resolution: {integrity: sha512-CYZ2WjU+KCyCDVzjYUM4eEpMF0rkPmkpiFrybTqqQCRpUbPt2h3snswWIpFPXTi+osRCY6Og0W/XLAQgDL4FfQ==}
@@ -18597,7 +18597,7 @@ snapshots:
     dependencies:
       boolbase: 1.0.0
 
-  nuxt-authentication@2.1.0(change-case@5.4.4)(fuse.js@7.4.2)(magicast@0.5.3)(qrcode@1.5.4)(universal-cookie@8.1.2)(vue@3.5.39(typescript@5.9.3)):
+  nuxt-authentication@2.2.0(change-case@5.4.4)(fuse.js@7.4.2)(magicast@0.5.3)(qrcode@1.5.4)(universal-cookie@8.1.2)(vue@3.5.39(typescript@5.9.3)):
     dependencies:
       '@nuxt/kit': 4.4.8(magicast@0.5.3)
       '@vueuse/core': 14.3.0(vue@3.5.39(typescript@5.9.3))

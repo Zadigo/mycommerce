@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/Zadigo/gopurchase/internal/utils"
+	"github.com/stripe/stripe-go/v85"
 )
 
 type HttpErrors struct {
@@ -48,6 +49,11 @@ func (e HttpErrors) PaymentIntentUpdateError(err error) {
 
 func (e HttpErrors) PaymentIntentCaptureError(err error) {
 	message := utils.DefaultErrorResponse{Detail: "Failed to capture payment intent", Message: err.Error()}
+	e.JsonWriter(message, http.StatusBadRequest)
+}
+
+func (e HttpErrors) CustomerUpdateError(customer *stripe.Customer, err error) {
+	message := utils.DefaultErrorResponse{Detail: "Failed to update customer", Message: err.Error()}
 	e.JsonWriter(message, http.StatusBadRequest)
 }
 

@@ -75,7 +75,7 @@
     "happy-dom": "^20.10.6",
     "jsdom": "^29.1.1",
     "lucide-vue-next": "^1.0.0",
-    "nuxt-authentication": "2.1.0",
+    "nuxt-authentication": "2.2.0",
     "nuxt-ganalytics": "^2.4.2",
     "nuxt-vuefire": "1.1.2",
     "oxfmt": "^0.58.0",
