@@ -6,3 +6,5 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
   vue-demi: true
+minimumReleaseAgeExclude:
+  - nuxt-authentication@2.0.0 || 2.1.0

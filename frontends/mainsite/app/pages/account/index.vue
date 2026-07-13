@@ -107,8 +107,13 @@ const { t } = useI18n()
 const { $client } = useNuxtApp() 
 const { customHandleError } = useErrorHandler()
 
-const { getProfile, userId } = useUser()
-const profile = await getProfile(`/api/v1/accounts/${userId.value}`)
+const userId = ref(1)
+// const {  } = useUser()
+// const profile = await getProfile(`/api/v1/accounts/${userId.value}`)
+
+const profile = computedAsync(async () => {
+  return await $fetch<{ id: number, email: string }>(`/api/v1/accounts/${userId.value}`)
+})
 
 const emailPasswordRequestData = ref<EmailPasswordData>({
   email: '',

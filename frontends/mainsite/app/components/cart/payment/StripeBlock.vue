@@ -16,15 +16,17 @@
 <script setup lang="ts">
 import { useSessionStorage } from '@vueuse/core'
 import { StripeElement, StripeElements } from 'vue-stripe-js'
+import type { UserProfile } from '~/types'
 
 import type { DefaultPaymentProviders, StripeTokenResponse } from '~/types'
 
 interface TokenData {
   session_id: string | null | undefined
   card: string | null
-  intent: string | null
+  paymentIntentId: string | null
   token: string | null
   client_ip: string | null
+  customer_id: string | null
 }
 
 const { customHandleError } = useErrorHandler()
@@ -50,9 +52,10 @@ const { cartSession } = useCartComposable()
 const tokenData = ref<TokenData>({
   session_id: null,
   card: null,
-  intent: null,
+  paymentIntentId: null,
   token: null,
-  client_ip: null
+  client_ip: null,
+  customer_id: "cus_Uf8gg2PbbgECR4"
 })
 
 const isLoading = ref(false)
@@ -115,7 +118,7 @@ async function handleStripe() {
   if (paymentIntent.value) {
     tokenData.value.session_id = sessionId.value
     tokenData.value.card = result.token.card.id
-    tokenData.value.intent = paymentIntent.value
+    tokenData.value.paymentIntentId = paymentIntent.value
     tokenData.value.token = result.token.id
     tokenData.value.client_ip = result.token.client_ip
     await handlePayment()
@@ -125,6 +128,9 @@ async function handleStripe() {
 }
 
 const { $goPurchase } = useNuxtApp()
+
+const { getProfile } = useUser<UserProfile>()
+const profile = getProfile('/graphql/')
 
 async function handlePayment () {
   try {

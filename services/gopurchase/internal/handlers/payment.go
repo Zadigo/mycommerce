@@ -182,6 +182,11 @@ func (p *PaymentApi) CaptureIntent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if data.PaymentIntentID == "" {
+		errorHandler.PaymentIntentMissingError()
+		return
+	}
+
 	intent, err := p.PaymentClient.V1PaymentIntents.Confirm(p.Ctx, data.PaymentIntentID, &stripe.PaymentIntentConfirmParams{
 		ReturnURL: stripe.String("https://example.com/return_url"),
 		// PaymentMethod: stripe.String("pm_card_mastercard"),

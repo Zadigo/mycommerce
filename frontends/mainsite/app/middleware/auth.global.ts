@@ -6,9 +6,9 @@ import type { NavigationGuard } from 'vue-router'
 export default defineNuxtRouteMiddleware((to): ReturnType<NavigationGuard> => {
     if (import.meta.server) return
 
-    const { isAuthenticated, userId } = useUser()
+    const { isAuthenticated } = useUser()
 
-    console.log('Global auth middleware', isAuthenticated.value, userId.value, to.path)
+    console.log('Global auth middleware', isAuthenticated.value, to.path)
 
     // Redirect the user to the login page if they are not authenticated
     // and trying to access a protected route such as account or cart

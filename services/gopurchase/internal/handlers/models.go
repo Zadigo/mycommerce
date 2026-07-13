@@ -48,11 +48,10 @@ type UpdatePaymentIntentRequest struct {
 // capture a payment intent.
 type CapturePaymentIntentRequest struct {
 	PaymentIntentData
-	SessionID string `json:"session_id"`
 	Card      string `json:"card"`
-	Intent    string `json:"intent"`
-	Token     string `json:"token"`
+	SessionID string `json:"session_id"`
 	ClientIp  string `json:"client_ip"`
+	Token     string `json:"token"`
 }
 
 type ProcessPaymentIntentRequest struct {
