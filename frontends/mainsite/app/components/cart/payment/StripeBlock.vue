@@ -127,7 +127,7 @@ async function handleStripe() {
 }
 
 async function handlePayment () {  
-  const response = await $fetch<PaymentIntentApiResponse>('/api/proxy/golang/capture', {
+  const response = await $fetch<PaymentIntentApiResponse>('/api/payment/capture', {
     method: 'POST',
     body: toValue(tokenData)
   })

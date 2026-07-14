@@ -69,7 +69,7 @@ function _useProductsFilteringComposable() {
 /**
  * Composable to fetch products for a specific collection
  */
-const [ useProductsComposable, _useProductsStore ] =  createInjectionState(async () => {
+const [useProductsComposable, _useProductsStore] =  createInjectionState(async () => {
   const { id } = useRoute().params as { id: string}
   const { customHandleError } = useErrorHandler()
 
@@ -117,7 +117,7 @@ const [ useProductsComposable, _useProductsStore ] =  createInjectionState(async
 export { useProductsComposable }
 
 export function useProductsStore() {
-  const counterStore = _useProductsStore()
-  if (counterStore == null) throw new Error('Please call `useProductsStore` on the appropriate parent component')
-  return counterStore
+  const store = _useProductsStore()
+  if (!isDefined(store)) throw new Error('Please call `useProductsStore` on the appropriate parent component')
+  return store
 }

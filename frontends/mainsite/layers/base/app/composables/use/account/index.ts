@@ -8,7 +8,7 @@ export async function useUserProfile() {
   const { getUserId } = useUser()
   const userId = await getUserId()
 
-  const profile = computedAsync(async () => await $fetch<UserProfile>(`/api/account/${userId.id}`, { method: 'GET' }))
+  const profile = await $fetch<UserProfile>(`/api/account/${userId.id}`, { method: 'GET' })
   useState<string>('stripeId').value = profile.value.data.userProfile.stripeId
   return profile
 }

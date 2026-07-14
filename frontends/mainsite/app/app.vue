@@ -9,6 +9,9 @@
     </client-only>
     
     <!-- Main -->
+    <!-- <div v-if="writeableSession">
+      <input v-model="writeableSession.great" />
+    </div> -->
     <nuxt-page />
 
     <!-- Modals -->
@@ -33,13 +36,18 @@ useSetupSession()
  * Payment Intent
  */
 
+// const { writeableSession } = useWriteableDocument('fafaloo', 'whala', {great: 'sincere'})
+// console.log('Fire fire', writeableSession.value)
+// if (isDefined(writeableSession)) {
+//   writeableSession.value.great = '1345'
+// }
+
 const { cartSession, cart } = useCartComposable()
-const { create, update, hasPaymentIntent, paymentIntent } = usePaymentIntentComposable()
+const { create, update, hasPaymentIntent } = usePaymentIntentComposable()
 
 watch(cart, async () => {
   if (!hasPaymentIntent.value) {
     void create(cartSession?.value?.total)
-    
   } else {
     void update(cartSession?.value?.total)
   }

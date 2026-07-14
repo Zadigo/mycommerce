@@ -29,7 +29,7 @@ import type { BaseProductCollection, ProductCollection } from '~/types'
 const { t } = useI18n()
 const { customHandleError } = useErrorHandler()
 
-const { data: collections, status } = await useFetch<ProductCollection>('/api/collections', {
+const { data: collections } = await useFetch<ProductCollection>('/api/collections', {
   onResponseError({ error }) {
     customHandleError(error)
   }

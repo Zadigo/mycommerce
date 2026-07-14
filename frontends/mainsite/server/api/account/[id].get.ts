@@ -1,5 +1,5 @@
 import { getRouterParam } from 'h3'
-import { UserProfile } from '~/types/graphql/accounts'
+import type { UserProfile } from '~/types'
 import { createErrorTemplate } from '~/utils'
 
 export default defineEventHandler<UserProfile>(async (event) => {
@@ -11,13 +11,13 @@ export default defineEventHandler<UserProfile>(async (event) => {
       method: 'POST',
       body: {
         query: `
-          query($id: Int!) {
-            userProfile(id: $id) {
-              id
-              stripeId
-            }
+        query($id: Int!) {
+          userProfile(id: $id) {
+            id
+            stripeId
           }
-        `,
+        }
+      `,
         variables: {
           id: parseInt(userId || '0', 10)
         }

@@ -1,8 +1,11 @@
+import { toValue } from 'vue'
+import { Product } from '~/types/graphql'
 import { useGenerateProducts } from '~~/layers/base/app/utils/__fixtures__/products'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async(event): Promise<Product> => {
   const id = getRouterParam(event, 'id')
-  const data = await $fetch('/graphql/', {
+
+  const data = await $fetch<Product>('/graphql/', {
     method: 'POST',
     baseURL: useRuntimeConfig().public.prodDomain,
     body: {
@@ -23,5 +26,5 @@ export default defineEventHandler(async (event) => {
   console.log('$fetch', data)
 
   const result = await useGenerateProducts(1)
-  return result.value.data.allProducts.edges.at(0)
+  return toValue(result).data.allProducts.edges.at(0)
 })
