@@ -27,7 +27,7 @@ const recommendationsFixture: ProductRecommendations = {
   }
 }
 
-describe.only('BaseRecommendations', () => {
+describe('BaseRecommendations', () => {
   it('should render correctly', async () => {
     fetchMock.mockResolvedValueOnce(recommendationsFixture)
 

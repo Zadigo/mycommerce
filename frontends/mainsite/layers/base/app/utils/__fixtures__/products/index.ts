@@ -59,7 +59,7 @@ export const productFixture: ProductNode = {
       },
       {
         active: true,
-        availability: true,
+        availability: false,
         metric: 'Clothe',
         name: 'S',
         variantPrice: 80

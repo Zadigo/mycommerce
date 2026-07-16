@@ -1,8 +1,9 @@
 import { describe, vi, expect, it } from 'vitest'
 import { useHandleGridSize } from '../../layers/base/app/composables/use/grid'
+import { mountSuspended } from '@nuxt/test-utils/runtime'
 
 vi.mock('@vueuse/core', async (importActual) => {
-  const actual = await importActual<typeof import('@vueuse/core')>();
+  const actual = await importActual<typeof import('@vueuse/core')>()
   return {
     ...actual,
     useLocalStorage: (_key: string, initialValue: number) => {
@@ -11,30 +12,7 @@ vi.mock('@vueuse/core', async (importActual) => {
   }
 })
 
-// describe('useHandleGridSize', () => {
-//   it('should initialize with default values on server', async () => {
-//     // Simulate server environment
-//     vi.stubGlobal('import', { meta: { server: true } })
-
-//     const { useHandleGridSize } = await import('../../app/composables/use/grid')
-//     const {
-//       threeState,
-//       fourState,
-//       gridClass,
-//       currentGridSize,
-//       handleGridSize
-//     } = useHandleGridSize()
-    
-//     expect(threeState.value).toBe('ghost')
-//     expect(fourState.value).toBe('ghost')
-//     expect(gridClass.value).toBe('grid grid-cols-4 gap-2 px-1')
-//     expect(currentGridSize.value).toBe(3)
-//     expect(typeof handleGridSize).toBe('function')
-//   })
-// })
-
-
-describe.skip('Test for useHandleGridSize', () => {
+describe.only('Test for useHandleGridSize', () => {
   it('should initialize with default values on client', async () => {
     // Simulate client environment
     vi.stubGlobal('import', { meta: { server: false } })
@@ -57,5 +35,54 @@ describe.skip('Test for useHandleGridSize', () => {
       expect(currentGridSize.value).toBe(callbackValue)
     })
     handleGridSize(4, callback)
+  })
+
+  it('should return the correct grid class', async () => {
+    vi.stubGlobal('import', { meta: { server: false } })
+
+    let result: ReturnType<typeof useHandleGridSize>
+
+    const component = await mountSuspended(defineComponent({
+      template: `
+        <div :class="gridClass">
+          Grid class
+        </div>
+      `,
+      setup() {
+        result = useHandleGridSize()
+        result.handleGridSize(3)
+        return { gridClass: result.gridClass}
+      }
+    }))
+
+    const divEl = component.find('div')
+    expect(divEl.classes()).toContain('grid-cols-1')
+    expect(divEl.classes()).toContain('md:grid-cols-1')
+    expect(divEl.classes()).toContain('lg:grid-cols-3')
+  })
+
+  const testCases: { gridSize: number, expectedThreeState: string, expectedFourState: string }[] = [
+    {
+      gridSize: 3,
+      expectedThreeState: 'light',
+      expectedFourState: 'ghost'
+    },
+    {
+      gridSize: 4,
+      expectedThreeState: 'ghost',
+      expectedFourState: 'light'
+    }
+  ]
+
+  testCases.forEach(({ gridSize, expectedThreeState, expectedFourState }) => {
+    it(`should return correct states for grid size ${gridSize}`, async () => {
+      vi.stubGlobal('import', { meta: { server: false } })
+
+      const { threeState, fourState, handleGridSize } = useHandleGridSize()
+      handleGridSize(gridSize)
+
+      expect(threeState.value).toBe(expectedThreeState)
+      expect(fourState.value).toBe(expectedFourState)
+    })
   })
 })

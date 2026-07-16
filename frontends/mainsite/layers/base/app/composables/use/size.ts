@@ -1,8 +1,7 @@
 import type { BaseSizeSet, ProductNode } from '~/types'
 
 /**
- * Composable to handle size selection for products. It will emit an 
- * event when the size is updated and will also keep track of the history of selected sizes.
+ * Composable to handle size selection for products.
  * @param product - The current product to select size for
  */
 export const useSizeSelection = createGlobalState(<P extends ProductNode = ProductNode, S extends BaseSizeSet = BaseSizeSet>(product: P) => {
