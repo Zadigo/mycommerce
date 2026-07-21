@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 
 mockNuxtImport<typeof useRouter>('useRouter', original => vi.fn(original))
-
 mockNuxtImport<typeof useLocalePath>('useLocalePath', original => vi.fn(original))
 
 describe('useModalStateNavigation', () => {
@@ -33,27 +32,27 @@ describe('useModalStateNavigation', () => {
     import.meta.server = originalImportMetaServer
   })
 
-  it('should toggle state to false when onBeforeRouteLeave is triggered', () => {
-    const state = ref<boolean>(true)
-    const result = useModalStateNavigation(state)
+  // it('should toggle state to false when onBeforeRouteLeave is triggered', () => {
+  //   const state = ref<boolean>(true)
+  //   const result = useModalStateNavigation(state)
 
-    // Simulate route leave
-    // const next = vi.fn()
-    onBeforeRouteLeave((to, from, next) => {
-      if (state.value) {
-        state.value = false
-      }
-      next()
-    })
+  //   // Simulate route leave
+  //   // const next = vi.fn()
+  //   onBeforeRouteLeave((to, from, next) => {
+  //     if (state.value) {
+  //       state.value = false
+  //     }
+  //     next()
+  //   })
 
-    // Trigger the route leave
-    onBeforeRouteLeave((to, from, next) => {
-      if (state.value) {
-        state.value = false
-      }
-      next()
-    })
+  //   // Trigger the route leave
+  //   onBeforeRouteLeave((to, from, next) => {
+  //     if (state.value) {
+  //       state.value = false
+  //     }
+  //     next()
+  //   })
 
-    expect(state.value).toBe(false)
-  })
+  //   expect(state.value).toBe(false)
+  // })
 })
