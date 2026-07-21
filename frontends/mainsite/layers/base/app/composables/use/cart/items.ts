@@ -187,6 +187,7 @@ export const useCartComposable = createGlobalState((sizeSelected?: Ref<boolean>)
     }
   }
 
+  console.log('Wawa', useThrottleFn)
   const createItem = useThrottleFn(_createItem, 300)
 
   // Reduce item quantity

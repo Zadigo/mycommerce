@@ -1,14 +1,4 @@
-import { describe, it, vi } from 'vitest'
-
-vi.mock('../../app/composables/use/useForTesting', () => {
-  return {
-    useForTesting: vi.fn(() => {
-      return {
-        data: [{ id: 1, title: 'Test Todo' }]
-      }
-    })
-  }
-})
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('@vueuse/core', async (importActual) => {
   const actual = await importActual<typeof import('@vueuse/core')>()
@@ -19,9 +9,21 @@ vi.mock('@vueuse/core', async (importActual) => {
   }
 })
 
-describe.skip('useEditCartItemComposable', () => {
-  it('should mock useForTesting composable', async () => {
-    const { useForTesting } = await import('../../app/composables/index')
-    await useForTesting()
+vi.mock('firebase/firestore', () => ({
+  doc: vi.fn(),
+  updateDoc: vi.fn()
+}))
+
+describe('useEditCartItemComposable', () => {
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('should initialize with the default values', async () => {
+    const result = useEditCartItemComposable()
+
+    expect(result.editedCartItem.value).toBeUndefined()
+    expect(result.addQuantity).toBeInstanceOf(Function)
+    expect(result.decreaseQuantity).toBeInstanceOf(Function)
   })
 })

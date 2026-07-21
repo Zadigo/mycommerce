@@ -41,13 +41,13 @@ export async function useLikeComposable(product: MaybeType<ProductNode>, success
 /**
  * A simple composable to handle modal state when a
  * route navigation is attempted
- * @param state 
- * @param routePath 
+ * @param state - The state of the modal
+ * @param routePath - The path to navigate to
  */
 export function useModalStateNavigation(state: Ref<boolean>) {
   if (import.meta.server) {
     return {
-      routerLink: (_path: string) => {}
+      routerLink: (_path: string) => void 0
     }
   }
   
