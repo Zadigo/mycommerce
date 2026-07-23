@@ -57,7 +57,7 @@ describe('IteratorsTextBlock', () => {
           blocks: testcase.blocks
         }
       })
-      console.log(wrapper.html())
+      // console.log(wrapper.html())
       // expect(wrapper.html()).toMatchSnapshot()
       expect(wrapper.find('p').text()).toBe(testcase.blocks[0]?.text[0]?.content)
     })

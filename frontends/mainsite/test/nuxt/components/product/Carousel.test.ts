@@ -64,7 +64,7 @@ describe.todo('ProductCardCarousel', () => {
 
       expect(wrapper).toBeDefined()
 
-      console.log(wrapper.html())
+      // console.log(wrapper.html())
 
       // Link
       const linkEl = wrapper.find('[id^="link-product-carousel"]')

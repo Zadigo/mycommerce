@@ -82,6 +82,7 @@ const { get } = useBusinessDetails()
  */
 
 const { isAuthenticated } = useUser()
+console.log('isAuthenticated', isAuthenticated.value)
 
 /**
  * Cart

@@ -14,7 +14,7 @@ describe('Index Page', () => {
 
   it('should render correctly', async () => {
     const wrapper = await mountSuspended(Index)
-    console.log(wrapper.html())
+    // console.log(wrapper.html())
 
     // Title
     expect(wrapper.find('h1')).toBeDefined()

@@ -104,7 +104,7 @@ describe('useCartComposable', () => {
     const { createItem, cart  } = useCartComposable()
     await createItem(productFixture, productFixture.node.sizeSet[9])
 
-    console.log(cart.value)
+    // console.log(cart.value)
     expect(cart.value.length).toBe(1)
 
     vi.unstubAllGlobals()

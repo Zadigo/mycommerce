@@ -31,7 +31,7 @@ describe.skip('Index Page', () => {
       ]
     })
 
-    const { useProductDetailsComposable } = await import('../../../layers/base/app/composables/use/index.js')
+    // const { _useProductDetailsComposable } = await import('../../../layers/base/app/composables/use/index.js')
 
     // useProductDetailsComposable.mockReturnValue({
     //   product: ref(productFixture),
@@ -40,7 +40,7 @@ describe.skip('Index Page', () => {
     //   hasColorVariants: computed(() => false)
     // })
 
-    console.log('useProductDetailsComposable', useProductDetailsComposable())
+    // console.log('useProductDetailsComposable', useProductDetailsComposable())
 
     const el = await mountSuspended(ProductPage, {
       global: {

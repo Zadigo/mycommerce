@@ -41,7 +41,7 @@ describe('Recommendations component', () => {
       const titleEl = component.find('h2')
       expect(titleEl.exists()).toBe(true)
       expect(titleEl.text()).toBe(props.blockTitle)
-      console.log(component.html())
+      // console.log(component.html())
     })
   })
 })
