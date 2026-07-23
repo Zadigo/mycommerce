@@ -1,6 +1,6 @@
 <template>  
   <div class="bg-transparent absolute bottom-4/20 md:bottom-3/20 lg:bottom-2/20 left-0 p-5 w-full flex justify-center gap-2 z-30">
-    <volt-contrast-button v-for="size in product.node.sizeSet" :id="createElementId('button-size', `${size.name}-${product.node.id}`)" :key="size.name" size="small" class="min-w-2" @click="() => createItem(product, size, successCallback)">
+    <volt-contrast-button v-for="size in product.node.sizeSet" :id="createElementId('cta', 'content', 'button-size', `${size.name}-${product.node.id}`)" :key="size.name" size="small" class="min-w-2" @click="() => createItem(product, size, successCallback)">
       {{ size.name }}
     </volt-contrast-button>
   </div>

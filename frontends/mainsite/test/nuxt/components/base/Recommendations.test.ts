@@ -11,7 +11,7 @@ const mockFetch = vi.fn((url: NitroFetchRequest, _options: NitroFetchOptions<Nit
 
 vi.stubGlobal('$fetch', mockFetch)
 
-describe.only('Recommendations component', () => {
+describe('Recommendations component', () => {
   const testCases = [
     {
       title: 'should render correctly with default props',

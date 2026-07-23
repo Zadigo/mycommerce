@@ -1,12 +1,12 @@
 <template>
-  <volt-button :variant="buttonStyle === 'button' ? 'outlined' : 'text'" :id="createElementId('action-size', size.name)" :class="theme" size="small" @click="selectSize(size)">
+  <volt-button :variant="buttonStyle === 'button' ? 'outlined' : 'text'" :id="createElementId('cta', 'content', 'action-size', size.name)" :class="theme" size="small" @click="selectSize(size)">
     <icon v-if="!size.availability" name="i-lucide:clock-fading" class="text-warning-500 me-2" />
     {{ size.name }}
   </volt-button>
 </template>
 
 <script lang="ts" setup>
-import type { BaseSizeSet, Undefineable } from '~/types';
+import type { BaseSizeSet, Undefineable } from '~/types'
 
 const { size, selectedSize, selectable = true, customClass, buttonStyle = 'button' } = defineProps<{
   size: BaseSizeSet,
