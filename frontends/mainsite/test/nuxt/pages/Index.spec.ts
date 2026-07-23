@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeAll, afterAll, vi } from 'vitest'
-import Index from '../../app/pages/index.vue'
+import Index from '../../../app/pages/index.vue'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 
 

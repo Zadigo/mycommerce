@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import Index from '../../app/pages/index.vue'
+import Index from '../../../app/pages/index.vue'
 
 
 describe('Index Page', () => {

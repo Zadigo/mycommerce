@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
-import Index from '../../app/pages/cart/index.vue'
+import Index from '../../../app/pages/cart/index.vue'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import NavigationCardFooter from '../../app/components/cart/NavigationCardFooter.vue'
+import NavigationCardFooter from '../../../app/components/cart/NavigationCardFooter.vue'
 
 vi.mock('i18n', () => ({
   useI18n: () => ({

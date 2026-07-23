@@ -13,7 +13,7 @@ vi.mock('../../app/composables/use/product/useProductDetailsComposable', () => (
   })
 }))
 
-import ProductPage from '../../app/pages/shop/[id].vue'
+import ProductPage from '../../../app/pages/shop/[id].vue'
 
 
 describe.skip('Index Page', () => {
@@ -31,7 +31,7 @@ describe.skip('Index Page', () => {
       ]
     })
 
-    const { useProductDetailsComposable } = await import('../../layers/base/app/composables/use')
+    const { useProductDetailsComposable } = await import('../../../layers/base/app/composables/use/index.js')
 
     // useProductDetailsComposable.mockReturnValue({
     //   product: ref(productFixture),

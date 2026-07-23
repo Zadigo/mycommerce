@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { renderSuspended } from '@nuxt/test-utils/runtime'
-import MentionsLegales from '../../app/pages/mentions-legales.vue'
+import MentionsLegales from '../../../app/pages/mentions-legales.vue'
 
 describe('MentionsLegales Page', () => {
   it('should render correctly', async () => {
