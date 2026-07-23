@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { createElementId } from '../../../app/utils'
 
-describe.only('Create Element Id', () => {
+describe('Create Element Id', () => {
   it('should create a unique element id', () => {
     const result = createElementId('cta', 'content', 'test', 'part1', 'part2')
     expect(result).toBeTypeOf('string')

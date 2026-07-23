@@ -13,7 +13,7 @@
     <div class="grid grid-cols-1 xl:grid-cols-3 w-full gap-3 overflow-hidden">
       <client-only>
         <base-collection-card custom-name="All" view-name="all" image="/images/group2/img2.jpg" v-motion-slide-bottom />
-        <base-collection-card v-for="collectionItem in collections?.data.allCollections" :key="collectionItem.slug" :collection="collectionItem" image="/images/group2/img2.jpg" v-motion-slide-bottom @click="viewCollection(collectionItem)" />
+        <base-collection-card v-for="collectionItem in collections?.data.allCollections" :key="collectionItem.slug" :collection="collectionItem" :id="createElementId('link', 'body', collectionItem.name)" image="/images/group2/img2.jpg" v-motion-slide-bottom @click="viewCollection(collectionItem)" />
 
         <template #placeholder>
           <volt-skeleton v-for="i in 3" :key="i" height="500px" />
@@ -34,6 +34,8 @@ const { data: collections } = await useFetch<ProductCollection>('/api/collection
     customHandleError(error)
   }
 })
+
+console.log(useFetch)
 
 /**
  * Analytics
