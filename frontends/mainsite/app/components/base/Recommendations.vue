@@ -1,5 +1,5 @@
 <template>
-  <div class="recommendations">
+  <div id="recommendations">
     <h2 class="text-2xl font-bold text-center mb-5">
       {{ $t(blockTitle) }}
     </h2>
@@ -11,9 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useGenerateProducts } from '~~/layers/base/app/utils/__fixtures__';
-import { baseProductGraph } from '~~/layers/base/app/utils/constants/graphs'
-import type { ExtendedRouteParamsRawGeneric, ProductNode, ProductRecommendations, Undefineable } from '~/types'
+import type { ProductNode, ProductRecommendations } from '~/types'
 
 const {
   blockTitle = "Cela peut t'intéresser",
@@ -39,34 +37,43 @@ const {
 
 const emit = defineEmits<{ 'has-navigated': [product: ProductNode] }>()
 
-const { $client } = useNuxtApp()
-const { customHandleError } = useErrorHandler()
+// const { $client } = useNuxtApp()
+// const { customHandleError } = useErrorHandler()
 
 // const { id } = useRoute().params as ExtendedRouteParamsRawGeneric
 
 const productsRow = ref<HTMLElement>()
 
 const data = computedAsync(async () => {
-  return await $client<ProductRecommendations>('/graphql/', {
-    method: 'post',
-    body: {
-      query: `
-        query($name: String!, $quantity: Int!) {
-          recommendations(productName: $name, quantity: $quantity) {
-            ${baseProductGraph}
-          }
-        }
-      `,
-      variables: {
-        name: 'Trapèze',
-        quantity: quantity
-      }
-    },
-    onRequestError({ error }) {
-      customHandleError(error)
+  return await $fetch<ProductRecommendations>('/api/recommendations', {
+    method: 'GET',
+    params: {
+      productName: 'Trapèze',
+      quantity
     }
   })
+  // return await $client<ProductRecommendations>('/graphql/', {
+  //   method: 'post',
+  //   body: {
+  //     query: `
+  //       query($name: String!, $quantity: Int!) {
+  //         recommendations(productName: $name, quantity: $quantity) {
+  //           ${baseProductGraph}
+  //         }
+  //       }
+  //     `,
+  //     variables: {
+  //       name: 'Trapèze',
+  //       quantity: quantity
+  //     }
+  //   },
+  //   onRequestError({ error }) {
+  //     customHandleError(error)
+  //   }
+  // })
 })
+
+console.log(data.value)
 
 /**
  * Analytics

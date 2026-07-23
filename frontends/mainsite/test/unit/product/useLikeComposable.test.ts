@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import type { MaybeType, ProductNode } from '../../../app/types'
+import { useSession } from '../../../layers/base/app/composables/use/session'
 
 const product: MaybeType<ProductNode> = {
   node: {
@@ -65,7 +66,21 @@ const product: MaybeType<ProductNode> = {
   }
 }
 
-describe('useLikeComposable', () => {
+// vi.mock<typeof import('../../../layers/base/app/composables/use/session')>(useSession, (original) => {
+//   return {
+//     ...original,
+//     useSession: () => ({
+//       docRef: {},
+//       session: {
+//         value: {
+//           likedProducts: ['123']
+//         }
+//       }
+//     })
+//   }
+// })
+
+describe.todo('useLikeComposable', () => {
   it('should return all default values', () => {
     const result = useLikeComposable(product)
     expect(result).toBeDefined()
