@@ -1,21 +1,23 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import Navbar from '../../../app/components/base/Navbar.vue'
-import { mountSuspended, renderSuspended } from '@nuxt/test-utils/runtime'
+import { mountSuspended, renderSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
 
-vi.mock('nuxt-authentication', async (original) => {
-  const actual = await original<typeof import('nuxt-authentication')>()
+const { useNuxtAuthentication } = vi.hoisted(() => ({
+  useNuxtAuthentication: vi.fn(() => ({
+    user: ref<{ id: number; email: string } | null>({ id: 1, email: 'test@example.com' }),
+    isAuthenticated: ref(true),
+    login: vi.fn(),
+    logout: vi.fn(),
+  })),
+}))
 
-  return {
-    ...actual,
-    useUser: vi.fn(() => {
-      return {
-        isAuthenticated: true,
-      }
-    })
-  }
-})
+mockNuxtImport('useUser', () => useNuxtAuthentication)
 
-describe.only('Navbar', () => {
+describe('Navbar', () => {
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('should render correctly', async () => {
     const component = await mountSuspended(Navbar)
     expect(component.exists()).toBe(true)
@@ -41,6 +43,13 @@ describe.only('Navbar', () => {
   })
 
   it('should have login button if not authenticated', async () => {
+    useNuxtAuthentication.mockImplementationOnce(() => ({
+      user: ref(null),
+      isAuthenticated: ref(false),
+      login: vi.fn(),
+      logout: vi.fn(),
+    }))
+
     const component = await renderSuspended(Navbar)
     const loginButtonEl = await component.findByText('Se connecter')
     expect(loginButtonEl).toBeDefined()
@@ -48,7 +57,10 @@ describe.only('Navbar', () => {
 
   it('should have logout button if authenticated', async () => {  
     const component = await renderSuspended(Navbar)
-    const logoutButtonEl = await component.findByText('Compte')
+    const logoutButtonEl = await component.findByText('Se déconnecter')
+    const accountButtonEl = await component.findByText('Compte')
     expect(logoutButtonEl).toBeDefined()
+    expect(accountButtonEl).toBeDefined()
+    console.log(component.html())
   })
 })
