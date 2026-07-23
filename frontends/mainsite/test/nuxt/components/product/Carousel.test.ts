@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import ProductCardCarousel from '../../app/components/product/card/Carousel.vue'
-import type { BaseImage, ProductNode } from '../../app/types'
+import ProductCardCarousel from '../../../../app/components/product/card/Carousel.vue'
+import type { BaseImage, ProductNode } from '../../../../app/types/index.js'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { productFixture } from '../../layers/base/app/utils/__fixtures__'
+import { productFixture } from '../../../../layers/base/app/utils/__fixtures__/index.js'
 
 
 type Testcase = {

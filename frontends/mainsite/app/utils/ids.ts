@@ -9,6 +9,6 @@ export type LocationId = 'header' | 'footer' | 'sidebar' | 'content' | 'modal' |
  * @param parts The parts to be added to the id, usually the props of the component.
  */
 export function createElementId(base: ParentId, location: LocationId, ...parts: Array<string | number | undefined | null>): string {
-  const _parts = parts.map(p => (p || '').toString().replace(' ', '-')).join('__')
-  return `${base}-${location}_${_parts}`
+  const _parts = parts.filter(p => p !== undefined && p !== null).map(p => (p || '').toString().replace(/ /g, '-')).join('__')
+  return `${base}-${location}-${_parts}`
 }
