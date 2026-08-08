@@ -1,66 +1,80 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import Navbar from '../../../app/components/base/Navbar.vue'
-import { mountSuspended, renderSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
+import Navbar from '~/components/base/Navbar.vue'
+import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
 
-const { useNuxtAuthentication } = vi.hoisted(() => ({
-  useNuxtAuthentication: vi.fn(() => ({
-    user: ref<{ id: number; email: string } | null>({ id: 1, email: 'test@example.com' }),
-    isAuthenticated: ref(true),
-    login: vi.fn(),
-    logout: vi.fn(),
+const { useUser, useToggle } = vi.hoisted(() => ({
+  useUser: vi.fn(() => ({
+    isAuthenticated: ref(true)
   })),
+  useToggle: vi.fn()
 }))
 
-mockNuxtImport('useUser', () => useNuxtAuthentication)
+mockNuxtImport('useUser', () => useUser)
 
-describe('Navbar', () => {
+mockNuxtImport('useToggle', () => useToggle)
+
+describe('component > base > navbar', () => {
   afterEach(() => {
     vi.clearAllMocks()
   })
 
-  it('should render correctly', async () => {
-    const component = await mountSuspended(Navbar)
-    expect(component.exists()).toBe(true)
+  const notAuthenticatedLinks = ['/', '/cart', '#', '/account']
+
+  notAuthenticatedLinks.forEach((link) => {
+    it(`should have link to ${link}`, async () => {
+      const component = await mountSuspended(Navbar)
+      const linkEl = component.find(`a[href="${link}"]`)
+      expect(linkEl.exists()).toBe(true)
+    })
   })
 
-  it('should have all the required links', async () => {
+  it('should have search button and mobile menu button', async () => {
     const component = await mountSuspended(Navbar)
 
     const searchButtonEl = component.find('button#action-search')
     expect(searchButtonEl.exists()).toBe(true)
     expect(searchButtonEl.attributes('disabled')).toBeUndefined()
-    // expect(searchButtonEl.attributes('aria-label')).toBe('Search')
-
-    const expectedLinnks = ['/', '/cart', '#', '/account']
-
-    component.findAll('a').map((link) => link.attributes('href')).forEach((href) => {
-      expect(href).oneOf(expectedLinnks)
-    })
 
     const mobileMenuButtonEl = component.find('button#action-menu')
     expect(mobileMenuButtonEl.exists()).toBe(true)
     expect(mobileMenuButtonEl.attributes('disabled')).toBeUndefined()
   })
 
-  it('should have login button if not authenticated', async () => {
-    useNuxtAuthentication.mockImplementationOnce(() => ({
-      user: ref(null),
-      isAuthenticated: ref(false),
-      login: vi.fn(),
-      logout: vi.fn(),
-    }))
-
-    const component = await renderSuspended(Navbar)
-    const loginButtonEl = await component.findByText('Se connecter')
-    expect(loginButtonEl).toBeDefined()
+  it('should not have login button authenticated', async () => {
+    useUser.mockReturnValue({
+      isAuthenticated: ref(true)
+    })
+    
+    const component = await mountSuspended(Navbar)
+    expect(component.find('#action-navbar-signin').exists()).toBe(false)
   })
 
-  it('should have logout button if authenticated', async () => {  
-    const component = await renderSuspended(Navbar)
-    const logoutButtonEl = await component.findByText('Se déconnecter')
-    const accountButtonEl = await component.findByText('Compte')
+  it('should have logout button if authenticated', async () => { 
+    useUser.mockReturnValueOnce({
+      isAuthenticated: ref(true)
+    })
+
+    const component = await mountSuspended(Navbar)
+    const logoutButtonEl = component.find('Se déconnecter')
+    const accountButtonEl = component.find('Compte')
+
     expect(logoutButtonEl).toBeDefined()
     expect(accountButtonEl).toBeDefined()
-    // console.log(component.html())
+  })
+
+  it('should call toggleLoginDrawer when login button is clicked', async () => {
+    useUser.mockReturnValueOnce({
+      isAuthenticated: ref(false)
+    })
+
+    const toggleSpy = vi.fn()
+    useToggle.mockReturnValueOnce(toggleSpy)
+
+    const component = await mountSuspended(Navbar)
+    const loginButtonEl = component.find('#action-navbar-signin')
+
+    await loginButtonEl.trigger('click')
+
+    expect(toggleSpy).toHaveBeenCalled()
   })
 })

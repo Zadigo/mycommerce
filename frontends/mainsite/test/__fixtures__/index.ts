@@ -1,5 +1,17 @@
-import type { BaseProductCollection, ProductNode, ProductRecommendations } from '~/types'
+import type { BaseProductCollection, CartItem, ProductNode, ProductRecommendations } from '~/types'
 import { faker } from '@faker-js/faker'
+
+export function getMainImage(): ProductNode['node']['mainImage'] {
+  return {
+    id: faker.string.uuid(),
+    name: faker.system.fileName(),
+    original: faker.image.url(),
+    thumbnail: faker.image.url(),
+    isMainImage: true,
+    variant: faker.color.human(),
+    createdOn: faker.date.past().toISOString()
+  }
+}
 
 export function getColorVariant(): ProductNode['node']['colorVariants'][number] {
   return {
@@ -139,5 +151,27 @@ export function getCollection(): BaseProductCollection {
     subcategorySlug: 'subcategory-1',
     tags: ['tag1', 'tag2'],
     createdOn: '2023-01-01T00:00:00Z'
+  }
+}
+
+export function getCartItem(): CartItem {
+  return {
+    product: {
+      id: '1',
+      name: 'Product 1',
+      price: 10.99,
+      salePrice: 9.99,
+      unitPrice: 10.99,
+      mainImage: getMainImage()
+    },
+    size: {
+      name: 'M',
+      active: true,
+      availability: true,
+      metric: 'cm',
+      variantPrice: 10.99,
+    },
+    quantity: 1,
+    total: 10.99
   }
 }
