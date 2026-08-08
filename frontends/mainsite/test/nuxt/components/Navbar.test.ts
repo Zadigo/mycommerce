@@ -61,6 +61,6 @@ describe('Navbar', () => {
     const accountButtonEl = await component.findByText('Compte')
     expect(logoutButtonEl).toBeDefined()
     expect(accountButtonEl).toBeDefined()
-    console.log(component.html())
+    // console.log(component.html())
   })
 })

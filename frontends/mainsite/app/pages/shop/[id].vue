@@ -158,10 +158,12 @@ if (isDefined(product)) {
       }
     })
   )
-
-  defineOgImage('NuxtSeoTakumi', {
-    title: name,
-    description,
-  })
+  
+  if (import.meta.env.NODE_ENV === 'production') {
+    defineOgImage('NuxtSeoTakumi', {
+      title: name,
+      description,
+    })
+  }
 }
 </script>

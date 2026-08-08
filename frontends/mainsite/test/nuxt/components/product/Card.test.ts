@@ -3,7 +3,7 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import Card from '../../../../../mainsite/app/components/product/card/Base.vue'
 import Carousel from '../../../../../mainsite/app/components/product/card/Carousel.vue'
 import Cart from '../../../../../mainsite/app/components/product/card/Cart.vue'
-import { getProduct } from '../../../__mocks__'
+import { getProduct } from '../../../__fixtures__'
 
 vi.mock('../../../../layers/base/app/composables/use/product/utils', async (original) => {
   const actual = await original<typeof import('../../../../layers/base/app/composables/use/product/utils')>()

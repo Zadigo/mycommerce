@@ -2,7 +2,7 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, it, expect, vi } from 'vitest'
 import Recommendations from '~/components/base/Recommendations.vue'
 import type { NitroFetchRequest, NitroFetchOptions } from 'nitropack/types'
-import { getRecommendations } from '../../../__mocks__'
+import { getRecommendations } from '../../../__fixtures__'
 
 const mockFetch = vi.fn((url: NitroFetchRequest, _options: NitroFetchOptions<NitroFetchRequest>) => {
   if (url === '/api/recommendations') return Promise.resolve(getRecommendations())

@@ -9,6 +9,8 @@
       </header>
     </client-only>
 
+    {{ collections }}
+
     <!-- Collections -->
     <div class="grid grid-cols-1 xl:grid-cols-3 w-full gap-3 overflow-hidden">
       <client-only>
@@ -89,7 +91,7 @@ useSeoMeta({
   twitterCard: 'summary_large_image'
 })
 
-if (import.meta.env.MODE === 'production') {
+if (import.meta.env.NODE_ENV === 'production') {
   defineOgImage('NuxtSeoTakumi', {
     title: "Some title",
     description: "Some description"

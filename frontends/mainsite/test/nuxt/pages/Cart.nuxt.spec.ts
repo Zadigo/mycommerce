@@ -25,6 +25,6 @@ describe.todo('Cart Index Page', () => {
     const titleEl = wrapper.find('h2')
     expect(titleEl.exists()).toBe(true)
     
-    console.log(wrapper.html())
+    // console.log(wrapper.html())
   })
 })

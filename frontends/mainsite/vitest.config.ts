@@ -10,6 +10,9 @@ export default defineConfig({
       'test/__fixtures__',
       'test/__mocks__'
     ],
+    setupFiles: [
+      'test/setup.ts'
+    ],
     coverage: {
       enabled: true,
       provider: 'v8',
