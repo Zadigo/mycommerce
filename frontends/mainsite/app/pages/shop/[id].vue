@@ -64,6 +64,7 @@ const AsyncBaseRecommendationBlock = defineAsyncComponent({
  */
 
 const { product } = await useProductDetailsComposable()
+console.log('product', product.value, useProductDetailsComposable)
 
 /**
  * Analytics

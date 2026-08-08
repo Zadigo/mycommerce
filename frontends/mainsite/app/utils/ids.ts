@@ -1,6 +1,6 @@
-export type ParentId = 'link' | 'cta' | 'image' | 'product'
+export type ParentId = 'link' | 'cta' | 'image' | 'product' | (string & {})
 
-export type LocationId = 'header' | 'footer' | 'sidebar' | 'content' | 'modal' | 'navbar'
+export type LocationId = 'header' | 'footer' | 'sidebar' | 'content' | 'modal' | 'navbar' | (string & {})
 
 /**
  * Creates a unique element ID by combining a base string with additional parts.

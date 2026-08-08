@@ -1,62 +1,35 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-// import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { productFixture } from '~~/layers/base/app/utils/__fixtures__'
-
-// Mock useProductDetailsComposable before import
-vi.mock('../../app/composables/use/product/useProductDetailsComposable', () => ({
-  useProductDetailsComposable: vi.fn().mockReturnValue({
-    product: vi.fn().mockReturnValue(ref(productFixture)),
-    isLoading: vi.fn().mockReturnValue(ref(false)),
-    numberOfImages: vi.fn().mockReturnValue(ref(2)),
-    hasColorVariants: vi.fn().mockReturnValue(ref(false))
-  })
-}))
-
 import ProductPage from '../../../app/pages/shop/[id].vue'
 
+const mockedUseProductDetailsComposable = vi.fn().mockResolvedValue({
+  product: ref(productFixture),
+  isLoading: ref(false),
+  numberOfImages: ref(2),
+  hasColorVariants: ref(false)
+})
 
-describe.skip('Index Page', () => {
+vi.mock('../../layers/base/app/composables/use/product', () => mockedUseProductDetailsComposable)
+
+describe.only('Product Page', () => {
   beforeEach(() => {
-    // Reset mocks before each test
     vi.clearAllMocks()
   })
 
 
   it('should render successfully', async () => {
-    // Mock fetch or any other global functions if necessary
-    const mockFetch = vi.fn().mockResolvedValue({
-      recommendations: [
-        productFixture
-      ]
-    })
-
-    // const { _useProductDetailsComposable } = await import('../../../layers/base/app/composables/use/index.js')
-
-    // useProductDetailsComposable.mockReturnValue({
-    //   product: ref(productFixture),
-    //   isLoading: ref(false),
-    //   numberOfImages: computed(() => 2),
-    //   hasColorVariants: computed(() => false)
-    // })
-
-    // console.log('useProductDetailsComposable', useProductDetailsComposable())
-
-    const el = await mountSuspended(ProductPage, {
-      global: {
-        mocks: {
-          $fetch: mockFetch,
-          provideLocal: vi.fn()
-        }
-      },
+    const component = await mountSuspended(ProductPage, {
       stubs: {
         // Don't stub the async component - let it resolve
         'async-base-recommendation-block': false
       }
     })
+  
+    expect(component).toBeDefined()
     
-    // await flushPromises()
-
-    expect(el).toBeDefined()
+    const recommendationsEl = component.find('#recommendations')
+    expect(recommendationsEl.exists()).toBe(true)
+    // console.log(component.html())
   })
 })

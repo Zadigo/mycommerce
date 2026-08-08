@@ -1,17 +1,17 @@
 {
   "name": "@mycommerce/project",
-  "private": true,
   "scripts": {
+    "dev": "pnpm --parallel --filter './frontends/*' dev",
     "add:mobile": "pnpm --filter mobile add",
     "install:admin": "pnpm --filter admin install",
     "install:mainsite": "pnpm --filter mainsite install",
     "install:mobile": "pnpm --filter mobile install",
-    "dev": "pnpm --parallel --filter './frontends/*' dev",
     "dev:admin": "pnpm --filter admin dev",
     "dev:mainsite": "pnpm --filter mainsite dev",
     "dev:mobile": "pnpm --filter mobile dev",
     "build:admin": "pnpm --filter admin build",
     "build:mainsite": "pnpm --filter mainsite build",
-    "build:mobile": "pnpm --filter mobile build"
+    "build:mobile": "pnpm --filter mobile build",
+    "up:mainsite": "pnpm --filter mainsite up --latest"
   }
 }

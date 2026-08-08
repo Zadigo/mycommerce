@@ -29,7 +29,7 @@ mockNuxtImport('useFetch', original => vi.fn(original).mockImplementation(() => 
   })
 })))
 
-describe.only('Index Page', () => {
+describe('Index Page', () => {
   beforeAll(async () => {
     vi.stubEnv('MODE', 'test')
   })

@@ -264,5 +264,11 @@ export default defineNuxtConfig({
         password: process.env.NUXT_PUBLIC_REDIS_PASSWORD
       }
     }
+  },
+
+  imports: {
+    dirs: [
+      '~/constants'
+    ]
   }
 })
