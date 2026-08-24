@@ -27,7 +27,7 @@ class CollectionsQuery(graphene.ObjectType):
     )
     collection = graphene.Field(
         CollectionType,
-        id=graphene.Int(),
+        name=graphene.String(required=True),
     )
     search_collection = relay.ConnectionField(
         CollectionConnection,

@@ -1,12 +1,10 @@
 import graphene
-from graphql import GraphQLResolveInfo
-from collection.models import Collection
-from graphene_django import DjangoObjectType
-import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
+from graphql import GraphQLResolveInfo
+
+from collection.models import Collection
 from shop.graphql.types import ProductType
-from shop.models import Product
 
 
 class CollectionType(DjangoObjectType):
@@ -16,9 +14,17 @@ class CollectionType(DjangoObjectType):
     class Meta:
         model = Collection
         fields = [
-            'name', 'category', 'sub_category',
-            'description', 'illustration', 'number_of_items',
-            'tags', 'slug', 'subcategory_slug', 'created_on'
+            'name', 
+            'category', 
+            'sub_category',
+            'description',
+            'illustration',
+            'number_of_items',
+            'products',
+            'tags',
+            'slug',
+            'subcategory_slug',
+            'created_on'
         ]
 
     def resolve_products(self, info: GraphQLResolveInfo):
