@@ -1,7 +1,5 @@
 import json
 
-from django.test import override_settings
-from graphene_django.settings import graphene_settings
 from graphene_django.utils.testing import GraphQLTestCase
 
 from shop.models import Product

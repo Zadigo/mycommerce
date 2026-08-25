@@ -1,11 +1,18 @@
 from decimal import Decimal
-from shop.tests.utils import ProductFactory
+
 from django.test import TestCase
-from shop.utils import create_slug, generate_sku
+
 from shop.models import Product
-from shop.utils import (calculate_sale, create_slug, process_file_name,
-                        product_media_path, remove_special_characters,
-                        transform_to_snake_case)
+from shop.tests.utils import ProductFactory
+from shop.utils import (
+    calculate_sale,
+    create_slug,
+    generate_sku,
+    process_file_name,
+    product_media_path,
+    remove_special_characters,
+    transform_to_snake_case,
+)
 
 
 class TestUtilities(TestCase):

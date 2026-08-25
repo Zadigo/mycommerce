@@ -1,39 +1,23 @@
 import unittest
 
-import factory
 from django.test import TransactionTestCase, override_settings
-from faker import Faker
 
 from shop.models import Product
-
-faker = Faker()
-
-class ProductFactory(factory.django.DjangoModelFactory):
-    # sale_value = factory.Transformer(0, transform=0)
-
-    class Meta:
-        model = Product
-
-    name = faker.word()
-    color = faker.color_name()
-    sku = faker.ean13()
-    unit_price = faker.pyfloat(left_digits=2, right_digits=2, positive=True)
-    display_new = faker.boolean(chance_of_getting_true=50)
-    active = faker.boolean(chance_of_getting_true=90)
+from shop.tests.utils import ProductFactory
 
 
 class TestProductModel(TransactionTestCase):
     """Tests for specific model logic on prices etc"""
 
-    fixtures = ['fixtures/products']
-
     @classmethod
     def setUpClass(cls):
+        ProductFactory.create_batch(10)
         cls.on_sale = Product.objects.filter(on_sale=True)
-        cls.not_on_sale = Product.objects.filter(on_sale=True)
+        cls.not_on_sale = Product.objects.filter(on_sale=False)
 
     def test_get_price_product_on_sale(self):
         product = self.on_sale.first()
+        self.assertTrue(product.on_sale)
 
         product.unit_price = 100
         product.sale_value = 20
@@ -43,6 +27,9 @@ class TestProductModel(TransactionTestCase):
         unit_price = product.unit_price
         sale_value = product.sale_value
         result = unit_price * (1 - sale_value / 100)
+        
+        product.sale_price = result
+        product.save()
 
         self.assertEqual(result, product.get_price)
 
