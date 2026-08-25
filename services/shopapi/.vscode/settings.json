@@ -11,6 +11,9 @@
         "--cov-report=html:shopapi-coverage",
         "--report-log=reports/reports.json",
         "-s",
+        "--reuse-db",
+        "--durations=10",
+        "--durations-min=1.0",
     ],
     "[python]": {
         "editor.codeActionsOnSave": {

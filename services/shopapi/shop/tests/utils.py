@@ -7,23 +7,26 @@ from factory import LazyAttribute, LazyFunction
 
 from shop.models import Product
 
-dynamic_names = faker.providers.DynamicProvider('names', elements=[
-    'Mini-jupe à paillettes',
-    'Jupe midi rustique',
-    'Minijupe à volants',
-    'Jupe midi à entre-deux',
-    'Minijupe taille croisée',
-    'Minijupe en dentelle volants'
-])
-
 NAMES =  [
     'Mini-jupe à paillettes',
     'Jupe midi rustique',
     'Minijupe à volants',
     'Jupe midi à entre-deux',
     'Minijupe taille croisée',
-    'Minijupe en dentelle volants'
+    'Minijupe en dentelle volants',
+    'Jupe midi en satin',
+    'Short en jean taille haute',
+    'Short en jean taille basse',
+    'Short en jean déchiré',
+    'Short en jean à revers',
+    'Short en jean à poches',
+    'Short en jean à boutons',
+    'Short en jean à taille élastique',
+    'Short en jean à taille haute et poches'
 ]
+
+dynamic_names = faker.providers.DynamicProvider('names', elements=NAMES)
+
 
 faker = faker.Faker()
 

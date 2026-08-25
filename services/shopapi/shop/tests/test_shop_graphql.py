@@ -1,12 +1,16 @@
 import json
-from graphene_django.utils.testing import GraphQLTestCase
-from shop.tests.utils import ProductFactory
-from shop.models import Product
-from graphene_django.settings import graphene_settings
+
 from django.test import override_settings
+from graphene_django.settings import graphene_settings
+from graphene_django.utils.testing import GraphQLTestCase
+
+from shop.models import Product
+from shop.tests.utils import ProductFactory
 
 
 class TestGraphQl(GraphQLTestCase):
+    GRAPHQL_URL = '/graphql/'
+    
     def setUp(self):
         self.products: list[Product] = ProductFactory.create_batch(1)
         self.product = self.products[0]

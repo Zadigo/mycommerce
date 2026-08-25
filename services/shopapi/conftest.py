@@ -1,9 +1,13 @@
+import pathlib
+
 from django.conf import settings
 
+BASE_DIR = pathlib.Path(__file__).parent.absolute()
 
 def pytest_configure(config):
     if not settings.configured:
         settings.configure(
+            BASE_DIR=BASE_DIR,
             DEBUG=True,
             SECRET_KEY='aXDfw6xCDKIFRgz2yzpTgAqFBqVLgSeyOVGayj8KqcJAjG3O96dT7cQPMExxAteX',
             DATABASES={

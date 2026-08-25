@@ -79,6 +79,7 @@ reportMissingImports = true
 reportUntypedBaseClass = true
 
 [tool.pytest]
+testpaths = ["tests"]
 timeout=5000
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
@@ -99,3 +100,20 @@ max_line_length = 120
 in-place = true
 recursive = true
 aggressive = 3
+
+[tool.coverage.run]
+omit = [
+    "manage.py",
+    "*/migrations/*",
+    "*/__init__.py",
+    "*/typings.py"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == '__main__':",
+]
