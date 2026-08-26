@@ -10,14 +10,9 @@ urlpatterns = [
         name='cart_items'
     ),
     re_path(
-        r'^(?P<unique_id>[a-zA-Z0-9]+)/delete$',
-        views.DeleteFromCart.as_view(),
-        name='delete'
-    ),
-    re_path(
         r'^create$',
         views.CreateCartView.as_view(),
-        name='create'
+        name='create_update'
     ),
     re_path(
         r'^$',

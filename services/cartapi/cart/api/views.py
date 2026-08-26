@@ -1,9 +1,7 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, status
+from rest_framework import generics
 from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
 
-from cart import django_tasks
 from cart.api import serializers
 from cart.models import Cart
 
@@ -46,38 +44,3 @@ class CreateCartView(generics.CreateAPIView):
 
     serializer_class = serializers.ValidateCreateCart
     permission_classes = [AllowAny]
-
-
-class DeleteFromCart(CartMixin, generics.DestroyAPIView):
-    """Delete a set of objects from the cart"""
-
-    permission_classes = [AllowAny]
-    serializer_class = serializers.DeleteFromCartSerializer
-    lookup_url_kwarg = 'unique_id'
-    lookup_field = 'session_id'
-
-    def destroy(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        instance = self.get_object()
-        self.perform_destroy(instance, serializer)
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def perform_destroy(self, instance: Cart, serializer: serializers.DeleteFromCartSerializer):
-        product_ids: list[tuple[int, str]] = serializer.validated_data['product_ids']
-
-        for item_id, size in product_ids:
-            instance.items = [
-                item for item in instance.items
-                if not (item['product']['id'] == item_id and item.get('size') == size)
-            ]
-
-        instance.save()
-
-        django_tasks.calculate_total.schedule(
-            (instance.id,),
-            delay=5
-        )
-        return instance

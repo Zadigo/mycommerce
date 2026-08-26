@@ -80,7 +80,7 @@ class ProductFactory(DjangoModelFactory):
     class Meta:
         model = Cart
 
-    session_id = factory.Sequence(lambda n: f"session_{n}")
+    session_id = factory.Sequence(lambda n: f"session{n}")
 
 
 def create_items(quantity: int):

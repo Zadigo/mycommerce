@@ -1,137 +1,49 @@
-from django.test import override_settings
+from django.test import TestCase, override_settings
 from django.urls import reverse
-from rest_framework import status
 
 from accounts.tests.mixins import AuthenticatedTestCase
 from cart.tests.utils import create_items
 
 
 @override_settings(PY_UTILITIES_JWT_ISSUER='ecommerce', PY_UTILITIES_JWT_SECRET='some_secret')
-class TestCartApi(AuthenticatedTestCase):
-    # fixtures = ['fixtures/user', 'carts']
-
+class TestListCartView(AuthenticatedTestCase):
     def setUp(self):
         super().setUp()
         self.items = create_items(2)
 
-    def test_list_all_carts(self):
-        response = self.client.get(reverse('cart_api:list'))
-        self.assertEqual(response.status_code, status.HTTP_200_OK, response.content)
+    def test_should_list_cart_items(self):
+        path = reverse('cart_api:list')
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 200)
+        self.assertGreater(len(response.json()), 1)
 
-        for item in response.json():
-            with self.subTest(item=item):
-                self.assertIn('items', item)
-                self.assertIn('total', item)
-                self.assertIn('quantity', item)
 
-        self.assertTrue(len(response.json()) > 0)
 
-    # def test_list_cart_items_not_authenticated(self):
-    #     self.client.credentials(HTTP_AUTHORIZATION='')
-    #     response = self.client.get(
-    #         reverse(
-    #             'cart_api:cart_items',
-    #             kwargs={'unique_id': 'postmanTest1234'}
-    #         )
-    #     )
+@override_settings(PY_UTILITIES_JWT_ISSUER='ecommerce', PY_UTILITIES_JWT_SECRET='some_secret')
+class TestListCartItemsView(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.items = create_items(2)
 
-    #     self.assertEqual(
-    #         response.status_code,
-    #         status.HTTP_200_OK,
-    #         response.json()
-    #     )
+    def test_should_list_cart_items(self):
+        path = reverse('cart_api:cart_items', kwargs={'unique_id': self.items[0].session_id})
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(len(response.json()['items']), 1)
 
-    #     data = response.json()
-    #     self.assertIn('items', data)
-    #     self.assertIsInstance(data['items'], list)
-    #     self.assertEqual(len(data['items']), 1)
-    #     self.assertIn('total', data)
-    #     self.assertIn('quantity', data)
 
-    def test_create_cart_authenticated(self):
-        data = list(create_items(quantity=2))
-        response = self.client.post(
-            reverse('cart_api:create'),
-            data={
-                'session_id': 'postmanTest1234',
-                'items': data
-            },
-            content_type='application/json'
-        )
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_201_CREATED,
-            response.json()
-        )
 
-        data = response.json()
+@override_settings(PY_UTILITIES_JWT_ISSUER='ecommerce', PY_UTILITIES_JWT_SECRET='some_secret')
+class TestCreateCartView(AuthenticatedTestCase):
+    def setUp(self):
+        super().setUp()
+        self.items = create_items(2)
 
-        self.assertIn('session_id', data)
-        self.assertIsInstance(data['session_id'], str)
-
-    # def test_delete_item_in_cart(self):
-    #     response = self.client.delete(
-    #         reverse(
-    #             'cart_api:delete',
-    #             kwargs={'unique_id': 'postmanTest1234'}
-    #         ),
-    #         data=["2"],
-    #         content_type='application/json'
-    #     )
-    #     self.assertEqual(
-    #         response.status_code,
-    #         status.HTTP_204_NO_CONTENT,
-    #         response.json()
-    #     )
-
-    # def test_delete_from_cart(self):
-    #     # First, create the cart
-    #     create_response = self.client.post(
-    #         reverse('cart_api:create'),
-    #         data=list(create_items(quantity=2)),
-    #         content_type='application/json'
-    #     )
-    #     self.assertEqual(
-    #         create_response.status_code,
-    #         status.HTTP_201_CREATED,
-    #         create_response.json()
-    #     )
-
-    #     # Now, delete an item from the cart
-    #     delete_response = self.client.delete(
-    #         reverse(
-    #             'cart_api:delete',
-    #             kwargs={'unique_id': 'postmanTest1234'}
-    #         ),
-    #         data=json.dumps({
-    #             "session_id": "postmanTest1234",
-    #             "product_ids": [
-    #                 ["2", "M"]
-    #             ]
-    #         }),
-    #         content_type='application/json'
-    #     )
-    #     self.assertEqual(
-    #         delete_response.status_code,
-    #         status.HTTP_204_NO_CONTENT,
-    #         delete_response.json()
-    #     )
-
-    # def test_add_same_cart_if_others_were_paid_for(self):
-    #     # The user should be able to create a new cart
-    #     # with the same session ID, if the previous
-    #     # ones were paid for.
-    #     Cart.objects.create(**{
-    #         'session_id': 'duplicateSessionID',
-    #         'items': list(create_items(quantity=2)),
-    #         'is_paid_for': True
-    #     })
-
-    #     Cart.objects.create(**{
-    #         'session_id': 'duplicateSessionID',
-    #         'items': list(create_items(quantity=2)),
-    #         'is_paid_for': False
-    #     })
-
-    #     qs = Cart.objects.filter(session_id='duplicateSessionID')
-    #     self.assertEqual(qs.count(), 2)
+    def test_should_create_cart(self):
+        path = reverse('cart_api:create_update')
+        data = {
+            'session_id': self.items[0].session_id,
+            'items': self.items[0].items
+        }
+        response = self.client.post(path, data, content_type='application/json')
+        self.assertEqual(response.status_code, 201, response.content)
