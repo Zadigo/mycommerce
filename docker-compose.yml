@@ -1,70 +1,70 @@
 services:
-  mystore:
-    build: ./services/mystore
+  shopapi:
+    build: ./services/shopapi
     container_name: app_mystore
     labels:
       - traefik.enable=true
-      - traefik.http.routers.mystore.entrypoints=websecure
-      - traefik.http.routers.mystore.rule=Host(`store.mycommerce.fr`)
-      - traefik.http.routers.mystore.tls=true
-      - traefik.http.routers.mystore.tls.certresolver=production
-      - traefik.http.services.mystore-service.loadbalancer.server.port=8000
+      - traefik.http.routers.shopapi.entrypoints=websecure
+      - traefik.http.routers.shopapi.rule=Host(`store.mycommerce.fr`)
+      - traefik.http.routers.shopapi.tls=true
+      - traefik.http.routers.shopapi.tls.certresolver=production
+      - traefik.http.services.shopapi-service.loadbalancer.server.port=8000
     env_file:
       - ./docker/environment/django.env
       - ./docker/environment/global.env
       - ./docker/environment/redis.env
     volumes:
-      - ./mystore:/code
-      - ./mystore/media:/code/media:rw
+      - ./shopapi:/code
+      - ./shopapi/media:/code/media:rw
     networks:
       - ecommerce
 
-  mystore_celery:
-    build: ./services/mystore
-    container_name: app_mystore_celery
-    command: celery -A mystore.celery_app worker --loglevel=info --logfile=celery.log
+  shopapi_celery:
+    build: ./services/shopapi
+    container_name: app_shopapi_celery
+    command: celery -A shopapi.celery_app worker --loglevel=info --logfile=celery.log
     env_file:
       - ./docker/environment/django.env
       - ./docker/environment/global.env
       - ./docker/environment/rabbitmq.env
       - ./docker/environment/redis.env
     volumes:
-      - ./services/mystore:/code
+      - ./services/shopapi:/code
     depends_on:
       - rabbitmq
       - redis
     networks:
       - ecommerce
 
-  mystore_celery_beat:
-    build: ./services/mystore
-    container_name: app_mystore_celery_beat
+  shopapi_celery_beat:
+    build: ./services/shopapi
+    container_name: app_shopapi_celery_beat
     command: |
-      celery -A mystore.celery_app beat --loglevel=info --logfile=celery_beat.log &&
-      celery -A mystore.celery_app worker --loglevel=info
+      celery -A shopapi.celery_app beat --loglevel=info --logfile=celery_beat.log &&
+      celery -A shopapi.celery_app worker --loglevel=info
     env_file:
       - ./docker/environment/django.env
       - ./docker/environment/global.env
       - ./docker/environment/rabbitmq.env
       - ./docker/environment/redis.env
     volumes:
-      - ./mystore:/code
+      - ./shopapi:/code
     networks:
       - ecommerce
 
-  mystore_flower:
-    build: ./services/mystore
-    container_name: flower_mystore
-    command: celery -A mystore.celery_app flower --loglevel=info --logfile=flower.log
+  shopapi_flower:
+    build: ./services/shopapi
+    container_name: flower_shopapi
+    command: celery -A shopapi.celery_app flower --loglevel=info --logfile=flower.log
     restart: always
     labels:
       - traefik.enable=true
-      - traefik.http.routers.mystore_flower.entrypoints=websecure
-      - traefik.http.routers.mystore_flower.rule=PathPrefix(`/flower`)
-      - traefik.http.routers.mystore_flower.tls=true
-      - traefik.http.routers.mystore_flower.tls.certresolver=production
-      - traefik.http.services.mystore_flower-service.loadbalancer.server.port=80
-      - traefik.http.routers.mystore_flower.middlewares=https-redirect
+      - traefik.http.routers.shopapi_flower.entrypoints=websecure
+      - traefik.http.routers.shopapi_flower.rule=PathPrefix(`/flower`)
+      - traefik.http.routers.shopapi_flower.tls=true
+      - traefik.http.routers.shopapi_flower.tls.certresolver=production
+      - traefik.http.services.shopapi_flower-service.loadbalancer.server.port=80
+      - traefik.http.routers.shopapi_flower.middlewares=https-redirect
       - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
       - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
     env_file:
@@ -75,76 +75,106 @@ services:
     ports:
       - 5555:80
     volumes:
-      - ./mystore:/code
+      - ./shopapi:/code
     networks:
       - ecommerce
 
-  mycart:
-    build: ./services/mycart
+  shopapi_mcp:
+    build: ./services/shopapi
+    container_name: app_shopapi_mcp
+    command: python manage.py stdio_server
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.shopapi_mcp.entrypoints=websecure
+      - traefik.http.routers.shopapi_mcp.rule=PathPrefix(`/mcp`)
+      - traefik.http.routers/shopapi_mcp.tls=true
+      - traefik.http.routers/shopapi_mcp.tls.certresolver=production
+      - traefik.http.services.shopapi_mcp-service.loadbalancer.server.port=80
+      - traefik.http.routers/shopapi_mcp.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+    env_file:
+      - ./docker/environment/django.env
+      - ./docker/environment/rabbitmq.env
+      - ./docker/environment/flower.env
+      - ./docker/environment/redis.env
+    ports:
+      - 5555:80
+    volumes:
+      - ./shopapi:/code
+    depends_on:
+      - shopapi
+      - redis
+    networks:
+      - ecommerce
+
+  cartapi:
+    build: ./services/cartapi
     container_name: app_cart
     labels:
       - traefik.enable=true
-      - traefik.http.routers.cart.entrypoints=websecure
-      - traefik.http.routers.cart.rule=Host(`cart.mycommerce.fr`)
-      - traefik.http.routers.cart.tls=true
-      - traefik.http.routers.cart.tls.certresolver=production
-      - traefik.http.services.cart-service.loadbalancer.server.port=8000
+      - traefik.http.routers.cartapi.entrypoints=websecure
+      - traefik.http.routers.cartapi.rule=Host(`cart.mycommerce.fr`)
+      - traefik.http.routers.cartapi.tls=true
+      - traefik.http.routers.cartapi.tls.certresolver=production
+      - traefik.http.services.cartapi-service.loadbalancer.server.port=8000
     env_file:
       - ./docker/environment/django.env
       - ./docker/environment/global.env
       - ./docker/environment/redis.env
     volumes:
-      - ./mycart:/code
-      - ./mycart/media:/code/media:rw
+      - ./services/cartapi:/code
+      - ./services/cartapi/media:/code/media:rw
     networks:
       - ecommerce
 
-  mycart_celery:
-    build: ./services/mycart
+  cartapi_celery:
+    build: ./services/cartapi
     container_name: app_cart_celery
-    command: celery -A mycart.celery_app worker --loglevel=info --logfile=celery.log
+    command: celery -A cartapi.celery_app worker --loglevel=info --logfile=celery.log
     env_file:
       - ./docker/environment/django.env
       - ./docker/environment/global.env
       - ./docker/environment/rabbitmq.env
       - ./docker/environment/redis.env
     volumes:
-      - ./services/mycart:/code
+      - ./services/cartapi:/code
     depends_on:
       - rabbitmq
       - redis
     networks:
       - ecommerce
 
-  mycart_celery_beat:
-    build: ./services/mycart
-    container_name: app_mycart_celery_beat
+  cartapi_celery_beat:
+    build: ./services/cartapi
+    container_name: app_cartapi_celery_beat
     command: |
-      celery -A mycart.celery_app beat --loglevel=info --logfile=celery_beat.log &&
-      celery -A mycart.celery_app worker --loglevel=info
+      celery -A cartapi.celery_app beat --loglevel=info --logfile=celery_beat.log &&
+      celery -A cartapi.celery_app worker --loglevel=info
     env_file:
       - ./docker/environment/django.env
       - ./docker/environment/global.env
       - ./docker/environment/rabbitmq.env
       - ./docker/environment/redis.env
     volumes:
-      - ./mycart:/code
+      - ./services/cartapi:/code
     networks:
       - ecommerce
 
-  mycart_flower:
-    build: ./services/mycart
-    container_name: flower_mycart
-    command: celery -A mycart.celery_app flower --loglevel=info --logfile=flower.log
+  cartapi_flower:
+    build: ./services/cartapi
+    container_name: flower_cartapi
+    command: celery -A cartapi.celery_app flower --loglevel=info --logfile=flower.log
     restart: always
     labels:
       - traefik.enable=true
-      - traefik.http.routers.mycart_flower.entrypoints=websecure
-      - traefik.http.routers.mycart_flower.rule=PathPrefix(`/flower`)
-      - traefik.http.routers.mycart_flower.tls=true
-      - traefik.http.routers.mycart_flower.tls.certresolver=production
-      - traefik.http.services.mycart_flower-service.loadbalancer.server.port=80
-      - traefik.http.routers.mycart_flower.middlewares=https-redirect
+      - traefik.http.routers.cartapi_flower.entrypoints=websecure
+      - traefik.http.routers.cartapi_flower.rule=PathPrefix(`/flower`)
+      - traefik.http.routers/cartapi_flower.tls=true
+      - traefik.http.routers/cartapi_flower.tls.certresolver=production
+      - traefik.http.services/cartapi_flower-service.loadbalancer.server.port=80
+      - traefik.http.routers/cartapi_flower.middlewares=https-redirect
       - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
       - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
     env_file:
@@ -155,49 +185,97 @@ services:
     ports:
       - 5555:80
     volumes:
-      - ./services/mycart:/code
+      - ./services/cartapi:/code
     networks:
       - ecommerce
-
-  myreviews:
-    build: ./services/myreviews
-    container_name: app_reviews
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.reviews.entrypoints=websecure
-      - traefik.http.routers.reviews.rule=Host(`mycommerce.fr`)
-      - traefik.http.routers.reviews.tls=true
-      - traefik.http.routers.reviews.tls.certresolver=production
-      - traefik.http.services.reviews-service.loadbalancer.server.port=8000
+  
+  cartapi_huey:
+    build: ./services/cartapi
+    container_name: app_cartapi_huey
+    command: huey_consumer cartapi.huey_starter.huey_task -w 4
     env_file:
       - ./docker/environment/django.env
       - ./docker/environment/global.env
+      - ./docker/environment/rabbitmq.env
       - ./docker/environment/redis.env
     volumes:
-      - ./myreviews:/code
-      - ./myreviews/media:/code/media:rw
+      - ./services/cartapi:/code
+    depends_on:
+      - rabbitmq
+      - redis
     networks:
       - ecommerce
 
-  mysubscribers:
-    build: ./services/subscribers
-    container_name: app_subscribers
+  cartapi_mcp:
+    build: ./services/cartapi
+    container_name: app_cartapi_mcp
+    command: python manage.py stdio_server
+    restart: always
     labels:
       - traefik.enable=true
-      - traefik.http.routers.subscribers.entrypoints=websecure
-      - traefik.http.routers.subscribers.rule=Host(`subscribers.mycommerce.fr`)
-      - traefik.http.routers.subscribers.tls=true
-      - traefik.http.routers.subscribers.tls.certresolver=production
-      - traefik.http.services.subscribers-service.loadbalancer.server.port=8000
+      - traefik.http.routers.cartapi_mcp.entrypoints=websecure
+      - traefik.http.routers/cartapi_mcp.rule=Host(`cartapi.mycommerce.fr`) && PathPrefix(`/mcp`)
+      - traefik.http.routers/cartapi_mcp.tls=true
+      - traefik.http.routers/cartapi_mcp.tls.certresolver=production
+      - traefik.http.services/cartapi_mcp-service.loadbalancer.server.port=80
+      - traefik.http.routers/cartapi_mcp.middlewares=https-redirect
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
     env_file:
       - ./docker/environment/django.env
-      - ./docker/environment/global.env
+      - ./docker/environment/rabbitmq.env
+      - ./docker/environment/flower.env
       - ./docker/environment/redis.env
+    ports:
+      - 5555:80
     volumes:
-      - ./subscribers:/code
-      - ./subscribers/media:/code/media:rw
+      - ./services/cartapi:/code
+    depends_on:
+      - cartapi
+      - redis
     networks:
       - ecommerce
+
+
+  # myreviews:
+  #   build: ./services/myreviews
+  #   container_name: app_reviews
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.reviews.entrypoints=websecure
+  #     - traefik.http.routers.reviews.rule=Host(`mycommerce.fr`)
+  #     - traefik.http.routers.reviews.tls=true
+  #     - traefik.http.routers.reviews.tls.certresolver=production
+  #     - traefik.http.services.reviews-service.loadbalancer.server.port=8000
+  #   env_file:
+  #     - ./docker/environment/django.env
+  #     - ./docker/environment/global.env
+  #     - ./docker/environment/redis.env
+  #   volumes:
+  #     - ./services/myreviews:/code
+  #     - ./services/myreviews/media:/code/media:rw
+  #   networks:
+  #     - ecommerce
+
+  # mysubscribers:
+  #   build: ./services/subscribers
+  #   container_name: app_subscribers
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.subscribers.entrypoints=websecure
+  #     - traefik.http.routers.subscribers.rule=Host(`subscribers.mycommerce.fr`)
+  #     - traefik.http.routers.subscribers.tls=true
+  #     - traefik.http.routers.subscribers.tls.certresolver=production
+  #     - traefik.http.services.subscribers-service.loadbalancer.server.port=8000
+  #   env_file:
+  #     - ./docker/environment/django.env
+  #     - ./docker/environment/global.env
+  #     - ./docker/environment/redis.env
+  #   volumes:
+  #     - ./services/subscribers:/code
+  #     - ./services/subscribers/media:/code/media:rw
+  #   networks:
+  #     - ecommerce
 
   db:
     build: ./docker/database
@@ -277,7 +355,7 @@ services:
       - ./docker/environment/vite.env
     depends_on:
       - redis
-      - mystore
+      - shopapi
     ports:
       - 3001:3000
     networks:
@@ -298,7 +376,7 @@ services:
       - ./docker/environment/nuxt.env
     depends_on:
       - redis
-      - mystore
+      - shopapi
     environment:
       - NODE_ENV=production
       - NITRO_HOST=0.0.0.0
