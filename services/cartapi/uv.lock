@@ -195,6 +195,7 @@ dependencies = [
     { name = "graphene-django" },
     { name = "gunicorn" },
     { name = "httpx" },
+    { name = "huey" },
     { name = "markdown" },
     { name = "numpy" },
     { name = "pandas" },
@@ -253,6 +254,7 @@ requires-dist = [
     { name = "graphene-django", specifier = ">=3.2.3" },
     { name = "gunicorn", specifier = ">=25.1.0" },
     { name = "httpx", specifier = ">=0.28.1" },
+    { name = "huey", specifier = ">=3.3.4" },
     { name = "markdown", specifier = ">=3.10.2" },
     { name = "numpy", specifier = ">=2.4.2" },
     { name = "pandas", specifier = ">=3.0.1" },
@@ -1286,6 +1288,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/0f/4c/751061ffa58615a32c31b2d82e8482be8dd4a89154f003147acee90f2be9/httpx_sse-0.4.3.tar.gz", hash = "sha256:9b1ed0127459a66014aec3c56bebd93da3c1bc8bb6618c8082039a44889a755d", size = 15943, upload-time = "2025-10-10T21:48:22.271Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d2/fd/6668e5aec43ab844de6fc74927e155a3b37bf40d7c3790e49fc0406b6578/httpx_sse-0.4.3-py3-none-any.whl", hash = "sha256:0ac1c9fe3c0afad2e0ebb25a934a59f4c7823b60792691f779fad2c5568830fc", size = 8960, upload-time = "2025-10-10T21:48:21.158Z" },
+]
+
+[[package]]
+name = "huey"
+version = "3.3.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/01/67/adfd477458ad70b73ce8311bbe84b1befbf986d0134fff2a1a55669ecd50/huey-3.3.4.tar.gz", hash = "sha256:6de196c6ece2e38b5173f7510600091ab035c0e86b0958d0e5b38a82b9984666", size = 614249, upload-time = "2026-08-05T12:51:51.836Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/30/49/7b49afcb523431db7bcb7b83d9911c754ee8138c3b5939830507359655d6/huey-3.3.4-py3-none-any.whl", hash = "sha256:a6e2e9a8fbda15c2dfb8e33b23a5e6e228326ea8e0087c11027957ef7c210e96", size = 123919, upload-time = "2026-08-05T12:51:50.539Z" },
 ]
 
 [[package]]

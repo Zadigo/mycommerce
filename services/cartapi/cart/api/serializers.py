@@ -4,7 +4,7 @@ from rest_framework import fields
 from rest_framework.request import Request
 from rest_framework.serializers import Serializer
 
-from cart import tasks
+from cart import django_tasks
 from cart.models import Cart
 
 
@@ -83,19 +83,13 @@ class ValidateCreateCart(Serializer):
             instance.user = request.user
             instance.save()
 
-        tasks.calculate_total.apply_async(
-            args=[instance.id],
-            countdown=10
-        )
+        django_tasks.calculate_total(instance.id)
 
         return instance
 
     def update(self, instance, validated_data: dict[str, Any]):
         instance.items = validated_data['items']
-        tasks.calculate_total.apply_async(
-            args=[instance.id],
-            countdown=5
-        )
+        django_tasks.calculate_total.schedule((instance.id,), delay=5)
         return instance
 
 

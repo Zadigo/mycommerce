@@ -15,7 +15,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from cart.models import Cart
-from orders import tasks
+from orders import django_tasks
 from orders.api import serializers
 from orders.models import CustomerOrder
 from orders.payment import PaymentInterface
@@ -268,7 +268,7 @@ class CapturePaymentIntent(CartMixin, CreateAPIView):
             # which the customer bought them. This allows
             # us and the customer to keep track of the previous
             # prices of the given product
-            tasks.workflow_order_create_products.apply_async(
+            django_tasks.workflow_order_create_products.apply_async(
                 args=[cart.id],
                 countdown=30
             )
@@ -295,7 +295,7 @@ class CapturePaymentIntent(CartMixin, CreateAPIView):
 
             # 6. Send webhooks as required using N8N or
             # other automated interfaces
-            tasks.workflow_trigger_order_webhooks.apply_async(
+            django_tasks.workflow_trigger_order_webhooks.apply_async(
                 args=[
                     customer_order.reference,
                     cart.id
@@ -320,7 +320,7 @@ class CancelOrder(UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = super().get_object()
-        tasks.refund_request.apply_async((instance.reference,), countdown=60)
+        django_tasks.refund_request.apply_async((instance.reference,), countdown=60)
         return super().update(request, *args, **kwargs)
 
 

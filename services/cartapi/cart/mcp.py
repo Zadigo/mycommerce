@@ -1,13 +1,13 @@
+from itertools import chain
 from typing import Optional
 
 import pandas
+from django.core.cache import cache
+from mcp_server import MCPToolset, ModelQueryToolset
+
 from cart.api.serializers import CartSerializer
 from cart.models import Cart
 from discounts.models import Discount
-from django.core.cache import cache
-from itertools import chain
-
-from mcp_server import MCPToolset, ModelQueryToolset
 
 
 def get_queryset(force_refresh: bool = False) -> Cart:

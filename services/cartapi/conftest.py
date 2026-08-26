@@ -1,12 +1,19 @@
-from django.conf import settings
+import pathlib
 
+from django.conf import settings
+from faker import Faker
+
+BASE_DIR = pathlib.Path(__file__).parent.absolute()    
+
+FAKE = Faker()
 
 def pytest_configure(config):
     if not settings.configured:
         settings.configure(
+            BASE_DIR=BASE_DIR,
             DEBUG=True,
-            SECRET_KEY='aXDfw6xCDKIFRgz2yzpTgAqFBqVLgSeyOVGayj8KqcJAjG3O96dT7cQPMExxAteX',
-            PY_UTILITIES_JWT_SECRET='zpDaqupaQR7SxrEcsoFYOkZQIdJPEim4Sz30zC5oBFGOZwY92FYvVeqqO3Z5Pw6P',
+            SECRET_KEY=FAKE.uuid1(),
+            PY_UTILITIES_JWT_SECRET=FAKE.uuid1(),
             DATABASES={
                 'default': {
                     'ENGINE': 'django.db.backends.sqlite3',

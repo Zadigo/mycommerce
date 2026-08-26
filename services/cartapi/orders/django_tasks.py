@@ -1,19 +1,21 @@
+import logging
+
 import stripe
-from celery import shared_task
-from celery.utils.log import get_logger
 from django.conf import settings
 from django.template.loader import render_to_string
+from cartapi.huey_app import huey_task
+
 from orders.models import CustomerOrder, Product
 
-logger = get_logger('orders')
+logger = logging.getLogger('orders')
 
 
-@shared_task
+@huey_task.task(retries=3, retry_delay=10, priority=10, timeout=30)
 def workflow_create_order(charge, user_id, cart_amount):
     pass
 
 
-@shared_task
+@huey_task.task(retries=3, retry_delay=10, priority=10, timeout=30)
 def workflow_trigger_order_webhooks(order_id, cart_id):
     pass
     # # 6. Send webhooks as required using N8N or
@@ -34,7 +36,7 @@ def workflow_trigger_order_webhooks(order_id, cart_id):
     # return {'order_id': order_id}
 
 
-@shared_task
+@huey_task.task(retries=3, retry_delay=10, priority=10, timeout=30)
 def workflow_order_create_products(customer_order_reference, items: list[dict]):
     """Create product instances for a given order. The products
     are the items received as per serialized by the store"""
@@ -48,14 +50,14 @@ def workflow_order_create_products(customer_order_reference, items: list[dict]):
         )
 
 
-@shared_task
+@huey_task.task(retries=3, retry_delay=10, priority=10, timeout=30)
 def cancel_order(order_id):
     """Used when an order was paid for and user requests
     for the order to be cancelled within a 5 minutes timeframe"""
     return {}
 
 
-@shared_task
+@huey_task.task(retries=3, retry_delay=10, priority=90, timeout=30)
 def refund_request(order_id: str, reason: str = None):
     """Case where an order has been fully executed and the
     customer asks for refund"""

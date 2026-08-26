@@ -1,8 +1,9 @@
 import factory
-from accounts.tests.utils import FakeUser
 from faker import Faker
-from orders.models import CustomerOrder, Product
+
+from accounts.tests.utils import FakeUser
 from cart.tests.utils import SERIALIZED_CARTITEM
+from orders.models import CustomerOrder, Product
 
 faker = Faker()
 

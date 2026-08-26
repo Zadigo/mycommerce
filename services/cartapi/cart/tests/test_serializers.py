@@ -3,7 +3,6 @@ from unittest.mock import patch
 from django.test import TestCase
 from django.urls import reverse
 
-from cart import tasks
 from cart.api.serializers import CartItemSerializer, ValidateCreateCart
 from cart.models import Cart
 
@@ -42,7 +41,7 @@ class TestCartItemSerializer(TestCase):
         self.assertTrue(serializer.is_valid(), serializer.errors)
 
 
-@patch('cart.api.serializers.tasks.calculate_total')
+@patch('cart.api.serializers.django_tasks.calculate_total')
 class TestValidateCreateCart(TestCase):
     def setUp(self):
         template = {

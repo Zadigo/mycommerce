@@ -1,14 +1,15 @@
 import json
 from unittest.mock import Mock, PropertyMock, patch
 
-from cart.models import Cart
+from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework.response import Response
 
 from accounts.tests.mixins import AuthenticatedTestCase
+from cart.models import Cart
 from cart.tests.utils import SERIALIZED_CARTITEM
 from orders.payment import GolangPaymentRouter
-from django.test import RequestFactory
+
 
 @patch('orders.api.views.PaymentInterface')
 class TestPaymentInterface(AuthenticatedTestCase):

@@ -349,3 +349,27 @@ MICROSERVICES = {
         ]
     }
 }
+
+
+# Channels
+# https://channels.readthedocs.io/en/latest/topics/channel_layers.html
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'hosts': [
+            {
+                'host': REDIS_HOST,
+                'port': 6379,
+                'password': REDIS_PASSWORD,
+                'db': 0,
+                'socket_timeout': 15,
+                'socket_connect_timeout': 5,
+                'socket_keepalive': True,
+                'health_check_interval': 30,
+                'retry_on_timeout': True,
+                'retry_on_error': [ConnectionError, TimeoutError],
+            }
+        ]
+    }
+}

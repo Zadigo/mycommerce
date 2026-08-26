@@ -1,5 +1,5 @@
-import pydantic
 import factory
+import pydantic
 from factory.django import DjangoModelFactory
 from faker import Faker
 
@@ -65,7 +65,6 @@ SERIALIZED_CARTITEM = {
         }
     ]
 }
-
 
 
 class FakeProduct(pydantic.BaseModel):

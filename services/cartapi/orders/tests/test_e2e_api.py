@@ -1,13 +1,14 @@
-from accounts.tests.mixins import AuthenticatedTestCase
+from unittest.mock import patch
+
+from django.conf import settings
 from django.urls import reverse
+from rest_framework.response import Response
+
+from accounts.tests.mixins import AuthenticatedTestCase
+from cart.tests.utils import create_items
+from cart.utils import calculate_items_total
 from orders.models import CustomerOrder, Product
 from orders.tests.utils import CustomerOrderFaker, ProductFaker
-from cart.tests.utils import create_items
-from django.conf import settings
-from cart.utils import calculate_items_total
-from unittest.mock import patch
-from rest_framework.response import Response
-from django.contrib.auth import get_user_model
 
 
 class TestOrdersApi(AuthenticatedTestCase):
