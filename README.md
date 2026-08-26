@@ -63,6 +63,12 @@ The Nuxt application also comes with basic fixtures that can be used to test the
 > [!NOTE]
 > The Nuxt application is designed using the BFF (Backend for Frontend) pattern, which means that the frontend communicates with the backend through a dedicated API layer. This allows for better separation of concerns and easier maintenance of the codebase.
 
+## Production
+
+## Docker
+
+## Kubernetes
+
 ## Useful e-commerce tools 🛠️
 
 Some of the internal micro-services can be replaced by third-party services. Here are some useful tools that can be used to enhance your e-commerce website:

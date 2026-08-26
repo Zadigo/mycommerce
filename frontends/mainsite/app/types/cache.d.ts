@@ -3,18 +3,26 @@ import type { Profile } from './api/accounts'
 import type { Product } from './api/shop'
 import type { CartUpdateApiResponse } from './api/cart'
 
-
+/**
+ * @deprecated use #shared/types/products
+ */
 export type LanguageOptions = {
   choice: Languages
   selected: boolean
 }
 
+/**
+ * @deprecated use #shared/types/products
+ */
 export interface PopularImages {
   product_id: number
   image_url: string
   count: number
 }
 
+/**
+ * @deprecated use #shared/types/products
+ */
 export interface SessionCacheData {
   language: LanguageOptions
 
