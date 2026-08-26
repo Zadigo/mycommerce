@@ -1,8 +1,9 @@
 from unittest.mock import patch
 
 from django.test import TestCase
+from django.test.client import RequestFactory
 from django.urls import reverse
-
+from django.contrib.auth.models import AnonymousUser
 from cart.api.serializers import CartItemSerializer, ValidateCreateCart
 from cart.models import Cart
 
@@ -45,15 +46,22 @@ class TestCartItemSerializer(TestCase):
 class TestValidateCreateCart(TestCase):
     def setUp(self):
         template = {
-            'session_id': 'test_session_123',
+            'session_id': 'testsession123',
             'items': ITEMS
         }
 
-        request = self.client.post(
-            reverse('cart_api:create'),
+        # request = self.client.post(
+        #     reverse('cart_api:create_update'),
+        #     data=template, 
+        #     content_type='application/json'
+        # )
+        request = RequestFactory().post(
+            reverse('cart_api:create_update'),
             data=template, 
             content_type='application/json'
         )
+        request.user = AnonymousUser()  # Simulate an anonymous user
+
         self.template = template
         self.request = request
 
@@ -63,8 +71,8 @@ class TestValidateCreateCart(TestCase):
 
         self.assertTrue(serializer.is_valid(), serializer.errors)
         
-        saved_items = serializer.save()
-        self.assertEqual(len(saved_items), len(ITEMS))
+        instance = serializer.save()
+        self.assertEqual(len(instance.items), len(ITEMS))
 
     def test_update_cart_item_serializer(self, mcalculate_total):
         instance = Cart.objects.first()
@@ -73,5 +81,5 @@ class TestValidateCreateCart(TestCase):
 
         self.assertTrue(serializer.is_valid(), serializer.errors)
         
-        saved_items = serializer.save()
-        self.assertEqual(len(saved_items), len(ITEMS))
+        instance = serializer.save()
+        self.assertEqual(len(instance.items), len(ITEMS))
