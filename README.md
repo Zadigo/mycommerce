@@ -1,3 +1,5 @@
+ cli
+
 # My Commerce - E-commerce solution with Django & Nuxt 4 🛍️
 
 My Commerce is a comprehensive e-commerce solution created for online retail, built with Django and Nuxt 4.
@@ -29,8 +31,12 @@ and then integrate the fixtures by importing the CSV file.
 
 ### Websocket implementation 🛜
 
-The cart comes with an ASGI backend that supports WebSocket connections for real-time updates when a user adds or purchases an item in his cart.
+The [cart application](./services/cartapi/cartapi/settings.py) comes with an ASGI backend that supports WebSocket connections for real-time updates when a user adds or purchases an item in his cart.
 This is used both in the frontend (in the same way Shopify does) and in the admin interface for live updates.
+
+### MCP Server Implementation 🎹
+
+Each Django application comes with a dedicated MCP server. In other words, it is possible to interract with them using a dedicated LLM client like Claude. Read the dedicated readme of each app to see how to integrate the server into your local LLM client ([Cart Api](./services/cartapi/README.md), [Shop Api](./services/shopapi/README.md))
 
 ### Starting Celery 🎶
 
@@ -38,17 +44,24 @@ If you plan on using Celery, start the celery backend withing the Django project
 (on Windows `celery -A mystore.celery_app worker -E --pool=solo`). Ensure both Redis and RabbitMQ are running on your system otherwise
 you will not be able to execute the provided tasks correctly.
 
-### Configuring Nuxt 🎶
+## Starting Huey
 
-1. Enter the [frontend/mainsite](frontend/mainsite) directory and run `pnpm run dev`
+Some projects leverages Django Tasks instead of celery in ordr to delivery certain actions. You can start the Huey server with: `huey_consumer cartapi.huey_starter.huey_task -w 4`for example if you were to start it with the `services/cartapi`application.
+
+## Configuring Nuxt 🎶
+
+1. Enter the [frontends/mainsite](./frontends/mainsite/nuxt.config.ts) directory and run `pnpm run dev`or you can also run `pnpm run dev:mainsite` at the root the folder (with pnpm workspace)
 2. Ensure you have a Stripe account for working/testing the cart payment process in development mode
 3. You also need an active Google Account in order to create the relevant keys for Google Authentication
-4. Create a `.env` file in the `frontend` folder with all the relevant keys provided below.
+4. Create a `.env` file in the `frontend` folder with all the relevant keys provided in the respective `.env.example` file present in each project
 5. You also need to create a Google Analytics, Facebook Pixels and Microsoft Clarity account in order to use all the tracking possibilities offered within the template
 6. You might also want to create a Firebase account in order to use the Firebase features such as authentication, storage, and real-time database
 7. Finally, you can use the `nuxt.config.js` file to configure the template to your needs
 
-The Nuxt application also comes with basic fixtures that can be used to test the application out of the box. They are located in `~/data/__fixtures__/` and can be used to simulate server API calls.
+The Nuxt application also comes with basic fixtures that can be used to test the application out of the box. They are located in [/frontends/mainsite/test/__fixtures__](.//frontends/mainsite/test/__fixtures__/index.ts)  and can be used to simulate server API calls.
+
+> [!NOTE]
+> The Nuxt application is designed using the BFF (Backend for Frontend) pattern, which means that the frontend communicates with the backend through a dedicated API layer. This allows for better separation of concerns and easier maintenance of the codebase.
 
 ## Useful e-commerce tools 🛠️
 
