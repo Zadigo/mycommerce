@@ -1,13 +1,14 @@
 import stripe
-from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 
+from cartapi.huey_app import huey_task
+
 logger = get_task_logger(__name__)
 
 
-@shared_task
+@huey_task.task(retries=5, retry_delay=60)
 def update_stripe_customer(email: str):
     """Function used to sync the modifications of the
     user profile locally into Stripe when the user
@@ -55,8 +56,8 @@ def update_stripe_customer(email: str):
     return {'email': user.email}
 
 
-@shared_task
-def create_stripe_customer(email):
+@huey_task.task(retries=5, retry_delay=60)
+def create_stripe_customer(email: str):
     """Function that creates a Stripe customer
     when a new user registers"""
     try:

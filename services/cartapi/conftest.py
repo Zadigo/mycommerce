@@ -1,5 +1,6 @@
 import pathlib
 
+import pytest
 from django.conf import settings
 from faker import Faker
 
@@ -65,3 +66,34 @@ def pytest_configure(config):
             },
             STATIC_URL='/static/',
         )
+
+
+@pytest.fixture
+def new_user():
+    from django.contrib.auth import get_user_model
+
+    return get_user_model().objects.create_user(
+        username=FAKE.user_name(),
+        email='test@example.com',
+        first_name=FAKE.first_name(),
+        last_name=FAKE.last_name(),
+        password='password123'
+    )
+
+@pytest.fixture
+def new_address(new_user):
+    from accounts.models import Address
+
+    return Address.objects.create(
+        user_profile=new_user.userprofile,
+        firstname=new_user.first_name,
+        lastname=new_user.last_name,
+        address_line=FAKE.street_address(),
+        address_line_two=FAKE.secondary_address(),
+        zip_code=FAKE.postcode(),
+        country=FAKE.country_code(),
+        city=FAKE.city(),
+        telephone=FAKE.phone_number(),
+        gender=FAKE.random_element([1, 2]),
+        is_active=True
+    )
