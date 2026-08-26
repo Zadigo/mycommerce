@@ -5,6 +5,7 @@ import { createErrorTemplate } from '~~/shared/utils'
 export default defineEventHandler(async (event) => {
   const body = await readBody<{ id: string }>(event)
   const cookie = getCookie(event, CART_COOKIE_NAME)
+  
   if (!cookie) {
     return
   }

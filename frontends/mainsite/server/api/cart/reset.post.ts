@@ -4,8 +4,10 @@ import { createErrorTemplate } from '~~/shared/utils'
 
 export default defineEventHandler(async (event) => {
   const cookie = getCookie(event, CART_COOKIE_NAME)
+
   if (!cookie) {
-    return
+    const template = createErrorTemplate(new Error('Cart cookie not found'))
+    throw createError(template)
   }
 
   try {

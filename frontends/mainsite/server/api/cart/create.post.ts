@@ -5,7 +5,7 @@ import { createErrorTemplate } from '~~/shared/utils'
 
 export default defineEventHandler(async (event) => {
   const cookie = getCookie(event, CART_COOKIE_NAME)
-  console.log('Cookie value:', cookie) // Log the cookie value for debugging
+
   if (typeof cookie === 'string' && typeof cookie !== 'undefined') {
     return {
       sessionId: cookie
