@@ -54,17 +54,24 @@ Estimation for one user campaign:
 
 ```mermaid
 flowchart
-    A[Nuxt] --> B(Backend)
-    B --> C(EmailApi)
 
-    C --> D(Database)
-    C --> E(Cache)
+A[Nuxt] --> S(ShopApi)
+A --> C(CartApi)
 
-    B --> F(Companies)
-    F --> G(Database)
-    F --> H(Cache)
+A --> G(Go-Payment)
+S --> AW((AWS))
 
-    C --> I(Emailing server)
+G --> R[(Redis)]
+
+subgraph shop
+S --> P[(PostGres)]
+S --> R
+C --> P
+C --> R
+end
+
+
+G --> ST((Stripe))
 ```
 
 ## System Workflow 🔄
@@ -73,55 +80,48 @@ flowchart
 
 ```mermaid
 sequenceDiagram
-    actor User
-    participant Website
-    participant EmailApi
-    participant Database@{type: "database"}
-    participant Redis@{type: "database"}
-    participant Emailing server
-    participant Lead@{type: "boundary"}
 
-    rect rgb(167 213 255)
-    User->>+Website: New campaign
+autonumber
 
-    Website->>+EmailApi: Create campaign
-    EmailApi-->>Database: Store campaign details
-    EmailApi->>-User: Campaign created
-    end
+actor U as User
+participant W as Frontend
+participant F@{type: "database"} as Firebase
+participant DJ@{type: "entity"} as Django: Shop Api
+participant SH@{type: "entity"} as Shipment Endpoint
+participant D@{type: "database"} as Database
+participant R@{type: "database"} as Redis
+participant A@{type: "boundary"} as AWS
+participant G@{type: "entity"} as Go-Payment
+participant S@{type: "boundary"} as Stripe
 
-    User->>Website: Create leads
-    Website->>+EmailApi: Create leads
-    EmailApi-->>Database: Store lead details
-    EmailApi->>-User: Leads created
+U ->> W: Visit: /graphql
+D ->> W: Return collections
+U ->> W: Visit: /graphql
+D ->> W: Return product
+A ->> W: Return product images
+U ->> W: Click add to cart
+par save items
+W ->> F: Add to cart
+W ->> DJ: /v1/cart/add
+end
+DJ ->> ()D: Save to Postgres
+U ->> W: /cart
+U ->> W: /cart/shipment
+U ->> W: /cart/payment
+U ->> ()W: Do payment
+W ->> G: Initiate payment
+G ->> S: Run payment
+S -->> G: Payment info
 
-    User->>Website: Create sequence
-    Website->>+EmailApi: Create sequence
-    EmailApi-->>Database: Store sequence details
-    EmailApi->>-User: Sequence created
+par payment workflow
+S -->> U: Email user
+G -->> R: Save payment info
+G ->> DJ: Update Django
+G ->> SH: Update shipment endpoint
+G ->> W: Indicate success
+end
 
-    User->>Website: Activate campaign
-    Website->>EmailApi: Activate campaign
-    EmailApi-->>Database: Update campaign status
-    EmailApi-->>User: Campaign activated
-    EmailApi-->>+Emailing server: New Emailing Job
-    Emailing server->>EmailApi: Get campaign
-    EmailApi->>Emailing server: Campaign Details
-    Emailing server->>+Redis: Add job to queue
-    Redis->>-Emailing server: Process job
-    alt basic
-    	Emailing server->>Lead: Send email
-    else gmail
-   	Emailing server->>Gmail server: Process email
-	Gmail server->>Lead: Send email
-    else outlook
-	Emailing server->>Lead: Send email
-    end
-    Emailing server->>-Database: Update job status
-
-    User->>()Website: Check jobs
-    loop Every 1 minute
-    Website()<<-->>()Emailing server: Request jobs
-    end
+W ->> U: /success
 ```
 
 * Emailing service architecture: [services/goemailer/ARCHITECTURE.md](services/goemailer/ARCHITECTURE.md)
