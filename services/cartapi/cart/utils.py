@@ -1,7 +1,9 @@
 from typing import Union
 
 from django.forms import DecimalField
+
 from cart.models import Cart
+
 
 def calculate_vat(value: Union[DecimalField, float, int], vat: int = 20):
     """Calculates the price including VAT by taking the original price and adding the VAT percentage to it.
@@ -47,4 +49,8 @@ def calculate_items_total(items: list[dict]) -> tuple[float, int]:
 
         total += (price * quantity)
         total_quantity += quantity
+
+        if json_product['total'] == 0 and total > 0:
+            json_product['total'] = round(total, 2)
+
     return total, total_quantity

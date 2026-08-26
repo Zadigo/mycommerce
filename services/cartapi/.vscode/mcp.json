@@ -1,0 +1,12 @@
+{
+    "servers": {
+        "cart-mcp": {
+            "command": "/Volumes/Coding/Projects/Websites/mycommerce/services/cartapi/.venv/bin/python",
+            "args": [
+                "/Volumes/Coding/Projects/Websites/mycommerce/services/cartapi/manage.py",
+                "stdio_server"
+            ],
+            "envFile": "${workspaceFolder}/.env"
+        }
+    }
+}

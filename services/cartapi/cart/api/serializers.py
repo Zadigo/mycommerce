@@ -83,8 +83,7 @@ class ValidateCreateCart(Serializer):
             instance.user = request.user
             instance.save()
 
-        django_tasks.calculate_total(instance.id)
-
+        django_tasks.calculate_total.schedule((instance.id,), delay=5)
         return instance
 
     def update(self, instance, validated_data: dict[str, Any]):

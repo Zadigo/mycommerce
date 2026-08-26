@@ -3,7 +3,7 @@ from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from cart import tasks
+from cart import django_tasks
 from cart.api import serializers
 from cart.models import Cart
 
@@ -76,8 +76,8 @@ class DeleteFromCart(CartMixin, generics.DestroyAPIView):
 
         instance.save()
 
-        tasks.calculate_total.apply_async(
-            args=[instance.id],
-            countdown=5
+        django_tasks.calculate_total.schedule(
+            (instance.id,),
+            delay=5
         )
         return instance

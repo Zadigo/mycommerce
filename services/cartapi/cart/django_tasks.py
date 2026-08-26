@@ -6,7 +6,7 @@ from cartapi.huey_app import huey_task
 
 logger = logging.getLogger(__name__)
 
-@huey_task.task(retries=3, retry_delay=10, priority=10, timeout=30)
+@huey_task.task(retries=3, retry_delay=10, timeout=30)
 def calculate_total(cart_id: int):
     """Calculates the total price of items 
     present in a given cart
@@ -23,7 +23,6 @@ def calculate_total(cart_id: int):
         total, total_quantity = calculate_items_total(instance.items)
         instance.total = total
         instance.quantity = total_quantity
-
         instance.save()
 
         logger.warning(
