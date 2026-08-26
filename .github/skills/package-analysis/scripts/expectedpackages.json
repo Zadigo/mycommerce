@@ -1,0 +1,24 @@
+{
+    "required": [
+        "@vueuse/core",
+        "@vueuse/math",
+        "@vueuse/nuxt",
+        "@vueuse/components",
+        "@vueuse/integrations",
+        "@faker-js/faker",
+        "@playwright/test",
+        "@vitest/coverage-v8",
+        "playwright-core",
+        "@vue/test-utils",
+        "vitest",
+        "oxfmt",
+        "oxlint",
+        "oxlint-tsgolint",
+        "@nuxt/eslint"
+    ],
+    "optional": [
+        "@vueuse/sound",
+        "@vueuse/motion",
+        "pinia"
+    ]
+}
