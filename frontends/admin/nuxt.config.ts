@@ -1,4 +1,4 @@
-import tailwind from '@tailwindcss/vite'
+// import tailwind from '@tailwindcss/vite'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -12,9 +12,9 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@nuxt/test-utils',
     '@nuxt/ui',
-    '@nuxt/content',
     '@pinia/nuxt',
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
+    'nuxt-authentication'
   ],
 
   css: ['~/assets/css/main.css'],
@@ -23,10 +23,15 @@ export default defineNuxtConfig({
     prefix: 'Nuxt'
   },
 
-  vite: {
-    plugins: [
-      tailwind()
-    ]
+  nuxtAuthentication: {
+    domain: 'http://127.0.0.1:8000',
+    accessEndpoint: '/auth/v1/token/',
+    refreshEndpoint: '/auth/v1/token/refresh/',
+    verifyEndpoint: '/auth/v1/token/verify/' 
+  },
+
+  test: {
+
   },
 
   runtimeConfig: {

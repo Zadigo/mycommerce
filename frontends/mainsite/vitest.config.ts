@@ -1,56 +1,26 @@
-// import path from 'path'
-
-// import { defineConfig } from 'vitest/config'
-// import { defineVitestProject } from '@nuxt/test-utils/config'
-
-// export default defineConfig({
-//   test: {
-//     setupFiles: ['./tests/vitest.setup.ts'],
-//     projects: [
-//       await defineVitestProject({
-//         test: {
-//           name: 'unit',
-//           include: ['tests/unit/*.{test,spec}.ts'],
-//           environment: 'nuxt',
-//           testTimeout: 20000,
-//           globals: true
-
-//         }
-//       }),
-//       await defineVitestProject({
-//         test: {
-//           name: 'nuxt',
-//           include: ['tests/nuxt/**/*.{test,spec}.ts'],
-//           environment: 'nuxt',
-//           testTimeout: 20000,
-//           globals: true
-
-//         }
-//       })
-//     ]
-//   },
-//   resolve: {
-//     alias: {
-//       '~': path.resolve(__dirname, './app'),
-//       '@': path.resolve(__dirname, './app'),
-//       '#app': path.resolve(__dirname, './node_modules/nuxt/dist/app'),
-//       'firebase/firestore': path.resolve(__dirname, 'tests/__mocks__/firebase/firestore.ts'),
-//       'firebase/app': path.resolve(__dirname, 'tests/__mocks__/firebase/app.ts'),
-//       'firebase/database': path.resolve(__dirname, 'tests/__mocks__/firebase/database.ts')
-//     }
-//   }
-// })
-
-
 import { defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
 
 export default defineConfig({
   test: {
+    exclude: [
+      'node_modules',
+      '.nuxt',
+      'dist',
+      'test/__fixtures__',
+      'test/__mocks__'
+    ],
+    setupFiles: [
+      'test/setup.ts'
+    ],
     coverage: {
       enabled: true,
       provider: 'v8',
-      reporter: ['text', 'json', 'html']
+      reporter: [ 'text', 'json', 'html', 'clover' ],
+      exclude: [
+        'i18n/locales/**',
+        'app/assets/**',
+      ]
     },
     env: {
       NODE_ENV: 'test'
@@ -58,28 +28,36 @@ export default defineConfig({
     projects: [
       await defineVitestProject({
         test: {
-          name: 'unit',
-          include: ['test/{e2e,unit}/*.{test,spec}.ts'],
-          environment: 'node',
-          testTimeout: 20000
+          name: 'nuxt',
+          include: [ 'test/nuxt/**/*.{test,spec}.ts' ],
+          environment: 'nuxt',
+          testTimeout: 20000,
+          tags: [
+            {
+              name: 'unit',
+              description: 'Tests that are focused on a single unit of code, such as a function or component.',
+            },
+            {
+              name: 'isolation',
+              description: 'Tests that are isolated and do not depend on external services or state.'
+            }
+          ]
         }
       }),
-      // await defineVitestProject({
-      //   test: {
-      //     name: 'nuxt',
-      //     include: ['test/nuxt/*.{test,spec}.ts'],
-      //     environment: 'nuxt',
-      //     testTimeout: 20000
-      //   }
-      // }),
-      // await defineVitestProject({
-      //   test: {
-      //     name: 'unit',
-      //     include: [ 'test/unit/*.{test,spec}.ts' ],
-      //     environment: 'node',
-      //     testTimeout: 20000
-      //   }
-      // })
+      await defineVitestProject({
+        test: {
+          name: 'integration',
+          include: [ 'test/integration/**/*.{test,spec}.ts' ],
+          environment: 'node',
+          testTimeout: 20000,
+          tags: [
+            {
+              name: 'integration',
+              description: 'Tests that verify the interaction between multiple units of code or components.'
+            }
+          ]
+        }
+      })
     ]
   },
   resolve: {}

@@ -2,7 +2,6 @@
   <nuxt-container>
     <nuxt-card>
       <template #header>
-        {{ products[-1] }}
         <nuxt-input v-model="search" />
         <nuxt-button @click="() => { toggle() }">
           <icon name="i-lucide-file" />
@@ -12,7 +11,7 @@
         </nuxt-button>
       </template>
 
-      <nuxt-table :data="searched" :columns="tableColumns" loading-color="primary" loading-animation="carousel" class="flex-1" sticky />
+      <nuxt-table :data="productsForTable" :columns="tableColumns" loading-color="primary" loading-animation="carousel" class="flex-1" sticky />
     </nuxt-card>
 
     <!-- Modals -->
@@ -42,9 +41,9 @@
 /**
  * Products
  */
-const { products, tableColumns, fetch } = useProducts()
-const { search, searched } = useProductSearch(products)
+const { products, tableColumns, convertForTable } = useProducts()
+const { search, searched } = usePassiveProductSearch(products)
+const productsForTable = convertForTable(searched)
 const { upload, file, showModal, toggle } = useProductsUpload(products)
 
-onMounted(async () => await fetch())
 </script>

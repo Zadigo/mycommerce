@@ -1,78 +1,19 @@
 package handlers
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 
-	"github.com/Zadigo/gopurchase/internal/models"
+	"github.com/Zadigo/gopurchase/internal/utils"
 	"github.com/stripe/stripe-go/v85"
 )
 
-type PaymentIntentData struct {
-	// The ID of the payment intent in Stripe. This is required to
-	// update or capture the payment intent.
-	PaymentIntentID string `json:"paymentIntentId"`
-	// Stripe customer ID. This is optional and can be used to link the payment intent
-	// to an existing customer in Stripe.
-	CustomerID string `json:"customerId,omitempty"`
-}
-
-type CartItemsData struct {
-	// The items in the customer's cart. This is used to create line items in
-	// the payment intent and to provide detailed information about the purchase
-	// in the payment intent metadata.
-	Items models.CartItems `json:"items"`
-}
-
-// UpdatePaymentIntentData represents the data
-// required to update a payment intent.
-type UpdatePaymentIntentRequest struct {
-	PaymentIntentData
-	CartItemsData
-	Firstname   string `json:"firstname,omitempty"`
-	Lastname    string `json:"lastname,omitempty"`
-	AddressLine string `json:"addressLine,omitempty"`
-	City        string `json:"city,omitempty"`
-	Country     string `json:"country,omitempty"`
-	PostalCode  string `json:"postalCode,omitempty"`
-	State       string `json:"state,omitempty"`
-	Email       string `json:"email,omitempty"`
-	Telephone   string `json:"telephone,omitempty"`
-}
-
-type CapturePaymentIntentRequest struct {
-	PaymentIntentData
-	CartItemsData
-}
-
-type ProcessPaymentIntentRequest struct {
-	PaymentIntentData
-	CartItemsData
-}
-
-type CreatePaymentIntentRequest struct {
-	CartItemsData
-	// The session ID is used to link the payment intent to the session in
-	// the Django backend. This allows us to easily retrieve the payment intent
-	// when the user returns from the payment page and update the order
-	// status accordingly.
-	SessionId string `json:"sessionId"`
-	// The total amount to be charged to the customer. This should be calculated
-	// in the Django backend and passed to the Golang service to create the payment intent.
-	Total float64 `json:"total"`
-}
-
-type PaymentApi struct {
-	PaymentClient *stripe.Client
-	ServerConfig  models.ServerConfigInterface
-	Ctx           context.Context
-}
-
-func (p *PaymentApi) LoadStripeClient() error {
+// SetupStripeClient initializes the Stripe client with the API key
+// from the environment variable.
+func (p *PaymentApi) SetupStripeClient() error {
 	key := os.Getenv("STRIPE_API_KEY")
 	if key == "" {
 		return fmt.Errorf("STRIPE_API_KEY environment variable is not set")
@@ -103,11 +44,13 @@ func (p *PaymentApi) CreateIntent(w http.ResponseWriter, r *http.Request) {
 	// 	}
 	// }
 
+	errorHandler := NewHttpErrorHandler(w)
+
 	data := CreatePaymentIntentRequest{}
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		message := DefaultErrorResponse{Detail: "Invalid request payload", Message: err.Error()}
-		JsonResponse(w, message, http.StatusBadRequest)
+		message := utils.DefaultErrorResponse{Detail: "Invalid request payload", Message: err.Error()}
+		utils.JsonResponse(w, message, http.StatusBadRequest)
 		return
 	}
 
@@ -117,8 +60,7 @@ func (p *PaymentApi) CreateIntent(w http.ResponseWriter, r *http.Request) {
 	// relevant information that we might need to create the payment intent. We can then verify the
 	// JWT token using a secret key and extract the session ID from it to create the payment intent.
 	if data.SessionId == "" {
-		message := DefaultErrorResponse{Detail: "Session ID is required", Message: "Please provide a valid session ID"}
-		JsonResponse(w, message, http.StatusBadRequest)
+		errorHandler.InvalidSessionIdError(err)
 		return
 	}
 
@@ -126,6 +68,9 @@ func (p *PaymentApi) CreateIntent(w http.ResponseWriter, r *http.Request) {
 		// Customer:    stripe.String(customerID),
 		// ReturnURL:   stripe.String("https://example.com/return_url"),
 		// PaymentMethod: stripe.String("pm_card_visa"),
+		// Set a default amount of 0.50 EUR for creation. This will be overridden during
+		// the cusomter's checkout process when the total amount is calculated.
+		Amount:           stripe.Int64(0.50 * 100), // Convert to cents
 		Currency:         stripe.String(string(stripe.CurrencyEUR)),
 		Description:      stripe.String("Test Payment Intent"),
 		Metadata:         map[string]string{"sessionId": data.SessionId},
@@ -148,100 +93,129 @@ func (p *PaymentApi) CreateIntent(w http.ResponseWriter, r *http.Request) {
 	intent, err := p.PaymentClient.V1PaymentIntents.Create(p.Ctx, options)
 	if err != nil {
 		log.Printf("❌ Failed to create payment intent: %v", err)
-		message := DefaultErrorResponse{Detail: "Failed to create payment intent", Message: err.Error()}
-		JsonResponse(w, message, http.StatusInternalServerError)
+		errorHandler.PaymentIntentCreationError(err)
 		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{
+	// Store the payment intent in Redis
+	redisHandler := NewPaymentRedis(p.App.GetRedisClient())
+	err = redisHandler.SetPaymentIntent(intent)
+	if err != nil {
+		log.Printf("❌ Failed to store payment intent in Redis: %v", err)
+	}
+
+	responseData := map[string]string{
 		"paymentIntentId": intent.ID,
 		"message":         "Payment intent created successfully",
-	})
+	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	utils.JsonResponse(w, responseData, http.StatusOK)
 }
 
 func (p *PaymentApi) UpdateIntent(w http.ResponseWriter, r *http.Request) {
+	errorHandler := NewHttpErrorHandler(w)
+
 	data := UpdatePaymentIntentRequest{}
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		message := DefaultErrorResponse{Detail: "Invalid request payload", Message: err.Error()}
-		JsonResponse(w, message, http.StatusBadRequest)
+		errorHandler.InvalidBodyError(err)
 		return
 	}
 
 	if data.PaymentIntentData.PaymentIntentID == "" {
-		message := DefaultErrorResponse{Detail: "Payment intent ID is required", Message: "Please provide a valid payment intent ID"}
-		JsonResponse(w, message, http.StatusBadRequest)
+		errorHandler.PaymentIntentMissingError()
 		return
 	}
 
 	params := &stripe.PaymentIntentUpdateParams{
-		ReceiptEmail: stripe.String(data.Email),
+		// Update the customer ID when the user creates an account
+		// and we have a valid customer ID to associate with the payment intent.
+		Customer:     stripe.String(data.CustomerID),
+		Amount:       stripe.Int64(int64(data.Total * 100)), // Convert to cents
+		ReceiptEmail: stripe.String(data.Shipment.Email),
 		AmountDetails: &stripe.PaymentIntentUpdateAmountDetailsParams{
 			LineItems: data.Items.UpdateLineItems(),
 		},
 		Shipping: &stripe.ShippingDetailsParams{
-			Name:  stripe.String(fmt.Sprintf("%s %s", data.Firstname, data.Lastname)),
-			Phone: stripe.String(data.Telephone),
+			Name:  stripe.String(fmt.Sprintf("%s %s", data.Shipment.Firstname, data.Shipment.Lastname)),
+			Phone: stripe.String(data.Shipment.Telephone),
 			Address: &stripe.AddressParams{
-				City:       stripe.String(data.City),
-				Country:    stripe.String(data.Country),
-				Line1:      stripe.String(data.AddressLine),
+				City:       stripe.String(data.Shipment.City),
+				Country:    stripe.String(data.Shipment.Country),
+				Line1:      stripe.String(data.Shipment.AddressLine),
 				Line2:      stripe.String(""),
-				PostalCode: stripe.String(data.PostalCode),
-				State:      stripe.String(data.State),
+				PostalCode: stripe.String(data.Shipment.PostalCode),
+				State:      stripe.String(data.Shipment.State),
 			},
 		},
 	}
 
-	if data.CustomerID != "" {
-		params.Customer = stripe.String(data.CustomerID)
-	}
-
 	intent, err := p.PaymentClient.V1PaymentIntents.Update(p.Ctx, data.PaymentIntentID, params)
-
 	if err != nil {
-		message := DefaultErrorResponse{Detail: "Failed to update payment intent", Message: err.Error()}
-		JsonResponse(w, message, http.StatusInternalServerError)
+		errorHandler.PaymentIntentUpdateError(err)
 		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{
+	redisHandler := NewPaymentRedis(p.App.GetRedisClient())
+	err = redisHandler.UpdatePaymentIntent(intent)
+	if err != nil {
+		log.Printf("❌ Failed to update payment intent in Redis: %v", err)
+	}
+
+	responseData := map[string]string{
 		"paymentIntentId": intent.ID,
 		"message":         "Payment intent updated successfully",
-	})
+	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	utils.JsonResponse(w, responseData, http.StatusOK)
 }
 
 func (p *PaymentApi) CaptureIntent(w http.ResponseWriter, r *http.Request) {
-	data := UpdatePaymentIntentRequest{}
+	errorHandler := NewHttpErrorHandler(w)
+
+	data := CapturePaymentIntentRequest{}
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		message := DefaultErrorResponse{Detail: "Invalid request payload", Message: err.Error()}
-		JsonResponse(w, message, http.StatusBadRequest)
+		errorHandler.InvalidBodyError(err)
+		return
+	}
+
+	if data.PaymentIntentID == "" {
+		errorHandler.PaymentIntentMissingError()
+		return
+	}
+
+	// Attach the payment method to the customer
+	updateCustomerData := &stripe.CustomerUpdateParams{
+		Source: stripe.String(data.Token),
+	}
+	customer, err := p.PaymentClient.V1Customers.Update(p.Ctx, data.CustomerID, updateCustomerData)
+	if err != nil {
+		errorHandler.CustomerUpdateError(customer, err)
 		return
 	}
 
 	intent, err := p.PaymentClient.V1PaymentIntents.Confirm(p.Ctx, data.PaymentIntentID, &stripe.PaymentIntentConfirmParams{
-		ReturnURL:     stripe.String("https://example.com/return_url"),
-		PaymentMethod: stripe.String("pm_card_mastercard"),
+		ReturnURL: stripe.String("https://example.com/return_url"),
+		// PaymentMethod: stripe.String("pm_card_mastercard"),
+		PaymentMethod: stripe.String(data.Card),
 	})
 
 	if err != nil {
-		message := DefaultErrorResponse{Detail: "Failed to capture payment intent", Message: err.Error()}
-		JsonResponse(w, message, http.StatusInternalServerError)
+		errorHandler.PaymentIntentCaptureError(err)
 		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{
+	redisHandler := NewPaymentRedis(p.App.GetRedisClient())
+	err = redisHandler.UpdatePaymentIntent(intent)
+	if err != nil {
+		log.Printf("❌ Failed to update payment intent in Redis: %v", err)
+	}
+
+	responseData := map[string]string{
 		"paymentIntentId": intent.ID,
 		"message":         "Payment intent captured successfully",
-	})
+	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	utils.JsonResponse(w, responseData, http.StatusOK)
 }

@@ -1,7 +1,0 @@
-bases:
-  - ../../mystore
-
-namespace: dev
-
-resources:
-  - configmap.yaml

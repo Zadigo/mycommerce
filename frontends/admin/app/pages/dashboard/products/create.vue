@@ -6,10 +6,14 @@
 
     <template #default>
       <div class="space-y-2">
+        <!-- Information -->
         <product-info v-model="newProduct" :for-creation="true" />
-        <product-category v-model="newProduct" />
 
-        <product-images @associate-images="handleNewImages" />
+        <!-- Category -->
+        <lazy-product-category v-model="newProduct" hydrate-on-idle />
+
+        <!-- Images -->
+        <lazy-product-images @associate-images="handleNewImages" hydrate-on-idle />
         
         <!-- <suspense>
           <template #default>
@@ -32,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import type {  NewProduct, Product, ProductImage } from '~/types'
+import type {  NewProduct, ProductImage, ProductNode } from '~/types'
 
 const router = useRouter()
 
@@ -41,15 +45,15 @@ const newProduct = ref<NewProduct>({
   name: '',
   color: '',
   category: 'Not attributed',
-  sub_category: 'Not attributed',
-  unit_price: '0',
-  model_height: null,
-  model_size: null,
+  subCategory: 'Not attributed',
+  unitPrice: 0,
+  modelHeight: null,
+  modelSize: null,
   sizes: [],
-  sale_value: 0,
-  sale_price: 0,
-  on_sale: false,
-  is_new: false,
+  saleValue: 0,
+  salePrice: 0,
+  onSale: false,
+  isNew: false,
   active: false
 })
 
@@ -57,13 +61,13 @@ const newProduct = ref<NewProduct>({
  * Create a new product
  */
 async function create() {
-  const data = await $fetch<Product>('/admin/v1/products/create', {
+  const data = await $fetch<ProductNode>('/admin/v1/products/create', {
     method: 'POST',
     body: newProduct.value
   })
 
   if (data) {
-    router.push('/dashboard/products/' + data.id)
+    router.push('/dashboard/products/' + data.node.id)
   }
 }
 

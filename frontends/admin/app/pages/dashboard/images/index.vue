@@ -10,13 +10,13 @@
         </nuxt-card>
 
         <nuxt-card>
-          <nuxt-button @click="() => { toggleUploadModal() }">
+          <!-- <nuxt-button @click="() => { toggleUploadModal() }">
             Upload images
-          </nuxt-button>
+          </nuxt-button> -->
 
           <nuxt-button @click="() => { toggleImageAssociation() }">
             Associate images
-            <nuxt-badge :label="numberOfSelectedImages" variant="soft" />
+            <nuxt-badge :label="selectionCount" variant="soft" />
           </nuxt-button>
 
           <nuxt-button>
@@ -27,12 +27,12 @@
 
       <!-- Images -->
       <div class="grid grid-cols-2 gap-1 my-10 md:grid-cols-4">
-        <images-column v-for="image in images" :key="image.id" :image="image" @select="select" />
+        <images-column v-for="image in searched" :key="image.id" :image="image" />
       </div>
     </div>
 
     <!-- Modals -->
-    <nuxt-modal v-model:open="uploadModal">
+    <!-- <nuxt-modal v-model:open="uploadModal">
       <template #header>
         <h2>Upload images</h2>
       </template>
@@ -47,12 +47,11 @@
           Cancel
         </nuxt-button>
 
-        <!-- :loading="isUploading" -->
         <nuxt-button :loading="false" loading-icon="i-lucide-loader" @click="upload">
           Upload
         </nuxt-button>
       </template>
-    </nuxt-modal>
+    </nuxt-modal> -->
 
     <nuxt-modal v-model:open="imageAssociationModal">
       <template #header>
@@ -62,7 +61,7 @@
       </template>
 
       <template #body>
-        <nuxt-input-menu v-model="productToAssociate" :items="searchedProducts" label-key="name" value-key="id" open-on-focus />
+        <nuxt-input-menu v-model="productSearch" :items="flattenedSearched" label-key="name" value-key="id" open-on-focus />
       </template>
 
       <template #footer>
@@ -71,7 +70,7 @@
         </nuxt-button>
 
         <nuxt-button @click="associate">
-          Associate ({{ selectedImages.length }}) images
+          Associate ({{ selectionCount }}) images
         </nuxt-button>
       </template>
     </nuxt-modal>
@@ -81,8 +80,16 @@
 <script setup lang="ts">
 import type { Product, ProductImage } from '~/types';
 
-const { search, searched } = await useApiSearchEndpoint<ProductImage[]>('/admin/v1/images')
-const { search: searchProducts, searched: searchedProducts } = await useApiSearchEndpoint<Product[]>('/admin/v1/products')
-const { images, files, fileNames, select, showModal: uploadModal, toggle: toggleUploadModal, upload, numberOfSelectedImages } = await useImagesComposable()
-const { productToAssociate, selectedImages, showModal: imageAssociationModal, associate, toggle: toggleImageAssociation } = useImageAssociation(images)
+const { search, searched } = await useSearchImagesComposable()
+// const { search: searchProducts, searched: searchedProducts } = await useApiSearchEndpoint<Product[]>('/admin/v1/products')
+// const { images, files, fileNames, select, showModal: uploadModal, toggle: toggleUploadModal, upload, numberOfSelectedImages } = await useImagesComposable()
+
+
+const { flattenedSearched, search: productSearch } = useProductSearch()
+
+/**
+ * Association
+ */
+
+const { productToAssociate, showModal: imageAssociationModal, associate, toggle: toggleImageAssociation, selectionCount } = useImageAssociation(searched)
 </script>

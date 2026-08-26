@@ -8,8 +8,8 @@ import (
 )
 
 type AuthenticationApi struct {
-	ServerConfig models.ServerConfigInterface
-	Ctx          context.Context
+	Ctx context.Context
+	App models.AppInterface
 }
 
 func (a *AuthenticationApi) Authenticate(w http.ResponseWriter, r *http.Request) {}

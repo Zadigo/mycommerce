@@ -91,3 +91,4 @@ __snapshots__/
 
 *~
 Thumbs.db
+.pytest_cache

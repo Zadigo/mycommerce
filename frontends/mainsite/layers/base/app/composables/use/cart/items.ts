@@ -15,6 +15,7 @@ export const useCartComposable = createGlobalState((sizeSelected?: Ref<boolean>)
   const isInitialized = ref(false)
   const isSyncing = ref(false)
   const syncError = ref<string | null>(null)
+  
   const freeDeliveryTarget = reactify((total: number = 0, threshold: number = 50.00) => {
     return total >= threshold ? 0 : threshold - total
   })
@@ -186,6 +187,7 @@ export const useCartComposable = createGlobalState((sizeSelected?: Ref<boolean>)
     }
   }
 
+  console.log('Wawa', useThrottleFn)
   const createItem = useThrottleFn(_createItem, 300)
 
   // Reduce item quantity
@@ -286,7 +288,6 @@ export const useCartComposable = createGlobalState((sizeSelected?: Ref<boolean>)
      * Calculates the remaining amount needed to reach free delivery threshold
      * @param total - Current cart total
      * @param threshold - Free delivery threshold
-     * @return Amount remaining to reach free delivery
      */
     freeDeliveryTarget,
     /**

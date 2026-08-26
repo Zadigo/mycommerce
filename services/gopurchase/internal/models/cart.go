@@ -27,8 +27,10 @@ type ProductImage struct {
 
 type Product struct {
 	// Sku       string       `json:"sku"`
-	Id        string       `json:"id"`
-	Name      string       `json:"name"`
+	Id string `json:"id"`
+	// The name of the product. This is used to display the product in the cart and checkout pages.
+	Name string `json:"name"`
+	// The main image of the product. This is used to display the product in the cart and checkout pages.
 	MainImage ProductImage `json:"mainImage"`
 	// Selected SalePrice or UnitPrice based on whether
 	// the product is on sale or not
@@ -47,7 +49,7 @@ type CartItem struct {
 }
 
 type CartItems struct {
-	SessionId string     `json:"sessionId"`
+	SessionId string     `json:"session_id"`
 	Items     []CartItem `json:"items"`
 }
 

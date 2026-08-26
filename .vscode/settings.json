@@ -1,5 +1,4 @@
 {
-    "vitest.rootConfig": "${workspaceFolder}/frontends/mainsite/vitest.config.ts",
     "[python]": {
        "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit",
@@ -16,7 +15,7 @@
     },
     "python-envs.pythonProjects": [
         {
-            "path": "services/mycart",
+            "path": "services/cartapi",
             "envManager": "ms-python.python:venv",
             "packageManager": "ms-python.python:pip"
         },
@@ -31,7 +30,7 @@
             "packageManager": "ms-python.python:pip"
         },
         {
-            "path": "services/mystore",
+            "path": "services/shopapi",
             "envManager": "ms-python.python:venv",
             "packageManager": "ms-python.python:pip"
         }

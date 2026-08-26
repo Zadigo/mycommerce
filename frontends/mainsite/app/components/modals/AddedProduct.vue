@@ -3,7 +3,7 @@
     <div class="px-5 overflow-y-scroll">
       <div v-if="cart" class="my-5">
         <div class="flex justify-start mb-5 fs-5 items-center gap-2">
-          <Icon name="circle-check" class="text-green-500" />
+          <icon name="circle-check" class="text-green-500" />
           <span>{{ $t('Ajouté au panier') }}</span>
         </div>
 
@@ -40,7 +40,7 @@
         <base-recommendations :quantity="20" :columns="2" :load-cache="true" :show-carousel="false" :show-like-button="false" :show-cart="false" :show-prices="false" list-name="Recommendations Modal Added Product" />
       </div>
 
-      <ModalsSkeletonLoader v-else />
+      <modals-skeleton-loader v-else />
     </div>
   </volt-drawer>
 </template>
@@ -64,7 +64,7 @@ const toggleLoginDrawer = useToggle(showLoginDrawer)
 
 const showAddedProductDrawer = useState<boolean>('showAddedProductDrawer')
 const toggleShowAddedProductDrawer = useToggle(showAddedProductDrawer)
-
+console.log('showAddedProductDrawer', showAddedProductDrawer.value)
 const showcartDrawer = useState<boolean>('showCartDrawer')
 const toggleShowcartDrawer = useToggle(showcartDrawer)
 

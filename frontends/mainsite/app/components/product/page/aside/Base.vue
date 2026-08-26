@@ -25,7 +25,10 @@
 <script setup lang="ts">
 import type { ProductNode, Undefineable } from '~/types'
 
-const props = defineProps<{ product: Undefineable<ProductNode>}>()
+const props = defineProps<{
+  product: Undefineable<ProductNode>
+}>()
+
 const emit = defineEmits<{ 
   'size-guide': [], 
   'delivery-guide': [], 

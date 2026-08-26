@@ -1,22 +1,25 @@
 <template>
-  <div ref="carouselEl" :id="`carousel-product__${product.node.id}`" class="relative">
+  <div ref="carouselEl" :id="createElementId('product', 'content', 'carousel', product.node.id)" class="relative">
+    <!-- Slide Left -->
     <button v-if="showCarousel && isHovered && isLargeScreen" type="button" class="absolute top-2/5 left-3 py-5 rounded-full z-10 w-15 h-50 place-content-center hover:opacity-60 flex" @click="() => { prev() }">
       <icon name="i-fa7-solid:caret-left" />
     </button>
-    
-    <!-- {{ state.original }} -->
-    <nuxt-link-locale id="link-product-carousel" :to="`/shop/${product.node.id}`" @click="emit('has-navigated', index)">
+
+    Google {{ !isLoading && isReady }}
+
+    <nuxt-link-locale :id="createElementId('link', 'content', 'product-carousel', product.node.id)" :to="`/shop/${product.node.id}`" @click="emit('has-navigated', index)">
       <nuxt-img v-if="!isLoading && isReady" :src="state.original" :alt="state.name" class="self-center aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-full" />
       <volt-skeleton v-else class="min-h-100 rounded-md" />
     </nuxt-link-locale>
 
+    <!-- Slide Right -->
     <button v-if="showCarousel && isHovered && isLargeScreen" type="button" class="absolute top-2/5 right-3 py-5 rounded-full z-10 w-15 h-50 place-content-center hover:opacity-60 flex" @click="() => { next() }">
       <icon name="i-fa7-solid:caret-right" />
     </button>
 
     <!-- Indicators -->
     <div class="flex absolute bottom-20 left-1/2 transform -translate-x-1/2 gap-2 z-20">
-      <div v-for="idx in product.node.productImages.length" :class="{ 'bg-primary-200/80': cycleIndex === (idx - 1) }" class="w-3 h-3 bg-primary-50/20 backdrop-blur-md rounded-full transition-all ease-in-out duration-300" />
+      <div v-for="idx in product.node.productImages.length" :id="createElementId('link', 'content', 'product-indicator', product.node.id, idx)" :class="{ 'bg-primary-200/80': cycleIndex === (idx - 1) }" class="w-3 h-3 bg-primary-50/20 backdrop-blur-md rounded-full transition-all ease-in-out duration-300" />
     </div>
   </div>
 </template>

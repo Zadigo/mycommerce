@@ -7,27 +7,30 @@ import (
 	"os/signal"
 
 	"github.com/Zadigo/gopurchase/internal/server"
+	"github.com/Zadigo/gopurchase/internal/utils"
 	"github.com/joho/godotenv"
 )
 
 func main() {
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatalf("❌ Error loading .env file: %v", err)
-	}
-
-	rootDir, err := os.Getwd()
-	if err != nil {
-		log.Fatalf("❌ Failed to get current working directory: %v", err)
+		panic(err)
 	}
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
-	app := server.NewApp(ctx, server.LoadConfig(rootDir))
-	err = app.Start()
-
+	absPath, err := utils.GetAbsolutePath(".")
 	if err != nil {
-		log.Fatalf("❌ Could not start server: %v", err)
+		log.Panicf("❌ Could not get absolute path: %v", err)
+	}
+
+	ctx = context.WithValue(ctx, "rootDir", absPath)
+	ctx = context.WithValue(ctx, "debug", os.Getenv("DEBUG") == "true")
+
+	server := server.NewServerApp(ctx)
+	err = server.Start()
+	if err != nil {
+		log.Panicf("❌ Could not start server: %v", err)
 	}
 }

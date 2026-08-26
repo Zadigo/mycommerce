@@ -8,9 +8,6 @@ export const useSearchComposable = createGlobalState(() => {
   const { history, last } = useDebouncedRefHistory(debouncedSearch, { debounce: 5000 })
   const { docRef, session } = useSession()
 
-  const { $client } = useNuxtApp()
-  const { customHandleError } = useErrorHandler()
-
   const _cache = ref<SearchedProducts>()
 
   const params = useUrlSearchParams('history') as { q?: string }
@@ -23,33 +20,41 @@ export const useSearchComposable = createGlobalState(() => {
      */
 
     if (isDefined(debouncedSearch) && debouncedSearch.value !== "") {
-      try {
-        const data = await $client<SearchedProducts>('/v1/graphql/', {
-          method: 'POST',
-          body: {
-            query: `
-            query($name: String!) {
-              searchProducts(name: $name, first: 20) {
-                edges {
-                  node {
-                    ${baseProductGraph}
-                  }
-                }
-              }
-            }`,
-            variables: {
-              name: debouncedSearch.value
-            }
-          },
-          onRequestError({ error }) {
-            customHandleError(error)
-          }
-        })
+      _cache.value = await $fetch<SearchedProducts>('/api/products/search', {
+        method: 'GET',
+        params: {
+          name: debouncedSearch.value,
+          offset: 20
+        }
+      })
 
-        _cache.value = data
-      } catch (error) {
-        customHandleError(error)
-      }
+      // try {
+      //   const data = await $client<SearchedProducts>('/graphql/', {
+      //     method: 'POST',
+      //     body: {
+      //       query: `
+      //       query($name: String!) {
+      //         searchProducts(name: $name, first: 20) {
+      //           edges {
+      //             node {
+      //               ${baseProductGraph}
+      //             }
+      //           }
+      //         }
+      //       }`,
+      //       variables: {
+      //         name: debouncedSearch.value
+      //       }
+      //     },
+      //     onRequestError({ error }) {
+      //       customHandleError(error)
+      //     }
+      //   })
+
+      //   _cache.value = data
+      // } catch (error) {
+      //   customHandleError(error)
+      // }
     } else {
       _cache.value = undefined
     }
@@ -63,6 +68,9 @@ export const useSearchComposable = createGlobalState(() => {
     /**
      * Save search
      */
+
+    const { customHandleError } = useErrorHandler()
+
 
     try {
       if (isDefined(session) && isDefined(docRef)) {

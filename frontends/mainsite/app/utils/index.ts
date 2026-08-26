@@ -1,4 +1,5 @@
-import type { Undefineable } from "~/types"
+export * from './errors'
+export * from './ids'
 
 /**
  * Function used to check if the application is in a
@@ -16,12 +17,9 @@ export function scrollToTop() {
 }
 
 /**
- * 
- * @param base The base of the id, usually the component name
- * @param parts The parts to be added to the id, usually the props of the component
+ * Function used to check if an object can be saved
+ * @param obj The object to be checked
  */
-export function createElementId(base: string, part: Undefineable<string | number>, parts: Array<Undefineable<string | number>> = [], join = '__') {
-  const _part = (part || '').toString().replace(' ', '-')
-  const _parts = parts.map(p => (p || '').toString().replace(' ', '-')).join(join)
-  return `${base}${join}${_part}`
+export function objectCanBeSaved(obj: MaybeRef<Record<string, unknown>>): boolean {
+  return Object.entries(toValue(obj)).map(([_, value]) => value !== '').every((val) => val === true)
 }

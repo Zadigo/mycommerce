@@ -79,15 +79,15 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     // Stripe
-    stripeTestSecretKey: process.env.NUXT_STRIPE_TEST_SECRET_KEY,
+    stripeTestSecretKey: process.env.NUXT_PUBLIC_STRIPE_TEST_SECRET_KEY,
 
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
 
       // Django/Quart/Flask
-      prodDomain: process.env.NUXT_PUBLIC_DJANGO_PROD_URL,
+      prodDomain: process.env.NUXT_PUBLIC_DJANGO_SHOP_API,
       quartProdUrl: process.env.NUXT_PUBLIC_QUART_PROD_URL,
-      cartProdDomain: process.env.NUXT_PUBLIC_DJANGO_CART_PROD_URL,
+      cartProdDomain: process.env.NUXT_PUBLIC_DJANGO_CART_API,
       reviewsProdDomain: process.env.NUXT_PUBLIC_DJANGO_REVIEWS_PROD_URL,
       golangPaymentRouter: process.env.NUXT_PUBLIC_GOLANG_PAYMENT_ROUTER_URL,
 
@@ -95,7 +95,7 @@ export default defineNuxtConfig({
       golangProdUrl: process.env.NUXT_PUBLIC_GOLANG_PROD_URL,
 
       // Stripe
-      stripeTestPublishableKey: process.env.NUXT_STRIPE_TEST_PUBLISHABLE_KEY,
+      stripeTestPublishableKey: process.env.NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
       stripeApiVersion: '2024-06-20',
       stripeLocale: 'fr',
 
@@ -237,7 +237,7 @@ export default defineNuxtConfig({
   },
 
   nuxtAuthentication: {
-    domain: process.env.NUXT_PUBLIC_DJANGO_PROD_URL,
+    domain: process.env.NUXT_PUBLIC_DJANGO_SHOP_API,
     accessEndpoint: '/auth/v1/token/',
     refreshEndpoint: '/auth/v1/token/refresh/',
     verifyEndpoint: '/auth/v1/token/verify/'
@@ -264,5 +264,11 @@ export default defineNuxtConfig({
         password: process.env.NUXT_PUBLIC_REDIS_PASSWORD
       }
     }
+  },
+
+  imports: {
+    dirs: [
+      '~/constants'
+    ]
   }
 })

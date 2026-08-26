@@ -20,13 +20,9 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue'
 import type { GuideText } from '~/types'
 
-defineProps({
-  blocks: {
-    type: Object as PropType<GuideText[]>,
-    required: true
-  }
-})
+defineProps<{
+  blocks: GuideText[]
+}>()
 </script>

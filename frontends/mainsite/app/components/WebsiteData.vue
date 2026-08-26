@@ -15,6 +15,7 @@
 
           <p><span class="font-bold">Payment Intent:</span> {{ paymentIntent }}</p>
           <p><span class="font-bold">Has Payment Intent:</span> {{ hasPaymentIntent }}</p>
+          <p><span class="font-bold">Stripe ID:</span> {{ stripeId }}</p>
 
           <volt-button @click="() => { void create(cartSession?.total) }">
             Test payment intent
@@ -68,4 +69,6 @@ const showCartDrawer = useState<boolean>('showCartDrawer')
  */
 
 const { create, hasPaymentIntent, paymentIntent } = usePaymentIntentComposable()
+
+const stripeId = useState<string>('stripeId')
 </script>

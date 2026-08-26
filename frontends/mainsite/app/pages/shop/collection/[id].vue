@@ -98,8 +98,10 @@ useSchemaOrg(products.value.map(x => defineProduct({
   }
 })))
 
-defineOgImage('NuxtSeoTakumi', {
-  title: "Some title",
-  description: "Some description"
-})
+if (import.meta.env.NODE_ENV == 'production') {
+  defineOgImage('NuxtSeoTakumi', {
+    title: "Some title",
+    description: "Some description"
+  })
+}
 </script>

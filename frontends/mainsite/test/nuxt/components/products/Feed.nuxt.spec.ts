@@ -64,7 +64,7 @@ describe.skip('Products Feed Component', () => {
 
     const paginationBlock = component.find('#product-pagination')
     // const button = paginationBlock.find('button')
-    console.log(component.html())
-    console.log(paginationBlock)
+    // console.log(component.html())
+    // console.log(paginationBlock)
   })
 }, 10000)

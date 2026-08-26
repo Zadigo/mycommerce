@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { guideText } from '~~/layers/base/app/data'
+import { guideText } from '~~/layers/base/app/utils/guide'
 
 // const { t } = useI18n()
 

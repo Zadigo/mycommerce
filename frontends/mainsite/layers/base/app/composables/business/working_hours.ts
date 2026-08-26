@@ -36,7 +36,7 @@ export type WorkingDaysOptions = {
  * If 'Weekends' is selected, it will return Saturday and Sunday as working days.
  * If 'Custom' is selected, it will return the custom days provided in the options.
  */
-class WorkingDays {
+export class WorkingDays {
   private options: WorkingDaysOptions
   private days: Days[]
   private workingDays: Days[]

@@ -1,66 +1,25 @@
 # My Commerce - E-commerce solution with Django & Nuxt 4 🛍️
 
-My Commerce is a comprehensive e-commerce solution created for online retail, built with Django and Nuxt 4. 
-It offers a robust backend for managing products, orders, and customers, along with a dynamic frontend for an 
+My Commerce is a comprehensive e-commerce solution created for online retail, built with Django and Nuxt 4.
+It offers a robust backend for managing products, orders, and customers, along with a dynamic frontend for an
 engaging shopping experience.
 
-## Micro-services 🛒
+## Technical Architecture 🏗
 
-| Service               | Language/Framework | Description                              |
-|-----------------------|--------------------|------------------------------------------|
-| Cart                  | Django             | Manages shopping cart functionalities    |
-| Reviews               | Django             | Handles product reviews and ratings      |
-| Store                 | Django             | Manages product catalog and inventory    |
-| Frontend              | Nuxt 4             | Renders the desktop user interface       |
-| Frontend Admin        | Nuxt 4             | User-friendly admin interface            |
-| Frontend Mobile       | Nuxt 4 + Ionic     | Mobile-friendly interface                |
-| GoPurchase            | Golang             | Managing Stripe payments                 |
-| GoAuthentication      | Golang             | User authentication and authorization    |
-| MyCart                | Django             | Cart management                          |
-| MyReviews             | Django             | Reviews management                       |
-| MySubscribers         | Django             | Newsletters etc. management              |
-
-The project was built with scalability in mind, allowing for easy addition of new micro-services as needed. For instance, the cart
-management system can be swapped out for a third-party solution if desired.
-
-## Technologies Used 🌳
-
-| Technology            | Purpose/Usage                  | Version   |
-|-----------------------|-------------------------------|------------|
-| Django                | Web framework                 | ✅ 6.X     |
-| Django REST Framework | API development               | ✅ 3.X     |
-| PostgreSQL            | Database                      | ✅ 13.X    |
-| Redis                 | Caching, message broker       | ✅ 6.X     |
-| RabbitMQ              | Message broker                | ✅ 3.8.X   |
-| Celery                | Task queue/background jobs    | ✅ 5.X     |
-| Docker                | Containerization              | ✅ 20.X    |
-| Nuxt 4                | Frontend framework            | ✅ 4.X     |
-| Ionic                 | Mobile application framework  | ✅ 7.X     |
-| Stripe                | Payment processing            | ✅ -       |
-| Klarna                | Payment processing            | ✅ -       |
-| Firebase              | Authentication, database      | ✅ -       |
-| AWS S3                | Static and media storage      | ✅ -       |
-| Cloudfront            | CDN for static files          | ✅ -       |
-| Google Analytics      | Traffic analysis              | ✅ -       |
-| Facebook Pixels       | Traffic analysis              | ✅ -       |
-| Microsoft Clarity     | Traffic analysis              | ✅ -       |
-| Celery Beat           | Periodic tasks scheduling     | ✅ 2.2.X   |
-| Daphne                | ASGI server                   | ✅ 3.X     |
-| Graphene-Django       | GraphQL API                   | ✅ 3.X     |
-| MCP cli               | Micro-service communication   | ✅ 0.3.X   |
+Refer to the [technical architecture document](docs/ARCHITECTURE.md) for a detailed overview of the system's design, including the micro-services, technologies used, and how they interact with each other.
 
 ## Configuring your project 🏠
 
-Before starting, ensure you have a valid [Stripe](https://stripe.com/en-fr), [Klarna](https://www.klarna.com/) 
-and [Firebase](https://firebase.google.com/) accounts. You also will need to have valid secret and client keys 
+Before starting, ensure you have a valid [Stripe](https://stripe.com/en-fr), [Klarna](https://www.klarna.com/)
+and [Firebase](https://firebase.google.com/) accounts. You also will need to have valid secret and client keys
 create on [Google Cloud Console](https://console.cloud.google.com/).
 
 The secret keys need to be available either as `.env` files at the root of each project or using global system environment variables.
 
-Finally, if you plan on using [Celery](https://docs.celeryq.dev/en/stable/) ensure you have 
+Finally, if you plan on using [Celery](https://docs.celeryq.dev/en/stable/) ensure you have
 both [Redis](https://redis.io/) and [RabbitMQ](https://www.rabbitmq.com/) on your system.
 
-You will also need a valid AWS account with [S3](https://aws.amazon.com/s3/) access and finally a 
+You will also need a valid AWS account with [S3](https://aws.amazon.com/s3/) access and finally a
 valid [Cloudfront](https://aws.amazon.com/cloudfront/) distribution to serve your static files.
 
 The project comes with a simple fixture of 85 products in `initialize/products.csv` in order to launch the website quickly.
@@ -75,10 +34,9 @@ This is used both in the frontend (in the same way Shopify does) and in the admi
 
 ### Starting Celery 🎶
 
-If you plan on using Celery, start the celery backend withing the Django project by typing `celery -A mystore.celery_app worker -E` 
-(on Windows `celery -A mystore.celery_app worker -E --pool=solo`). Ensure both Redis and RabbitMQ are running on your system otherwise 
+If you plan on using Celery, start the celery backend withing the Django project by typing `celery -A mystore.celery_app worker -E`
+(on Windows `celery -A mystore.celery_app worker -E --pool=solo`). Ensure both Redis and RabbitMQ are running on your system otherwise
 you will not be able to execute the provided tasks correctly.
-
 
 ### Configuring Nuxt 🎶
 
@@ -101,3 +59,6 @@ Some of the internal micro-services can be replaced by third-party services. Her
 - Accounting: [https://quickbooks.intuit.com/quickbooks-commerce/](Quickbooks)
 - Messaging: [https://www.omnisend.com/pricing/](Omnisend)
 
+## References
+
+- [Architecture document](docs/ARCHITECTURE.md)

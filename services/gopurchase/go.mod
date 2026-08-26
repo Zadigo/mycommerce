@@ -7,6 +7,7 @@ require (
 	github.com/go-co-op/gocron v1.37.0
 	github.com/gorilla/websocket v1.5.3
 	github.com/joho/godotenv v1.5.1
+	github.com/rabbitmq/amqp091-go v1.12.0
 	github.com/redis/go-redis/v9 v9.19.0
 	github.com/stretchr/testify v1.11.1
 	github.com/stripe/stripe-go/v85 v85.1.0

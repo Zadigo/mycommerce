@@ -13,18 +13,6 @@
           </volt-secondary-button>
         </li>
 
-        <!-- OLD - Method -->
-        <!-- <li class="flex items-center p-1 text-sm gap-x-2 text-primary-600">
-          <nuxt-link-locale v-if="isAuthenticated" id="link-cart-navbar" to="/cart">
-            <icon name="i-fa7-solid:shopping-bag" size="18" />
-            {{ $t("Panier") }}
-          </nuxt-link-locale>
-          <a v-else id="action-cart-navbar" href="#" class="flex items-center gap-2" @click.prevent="() => { toggleShowCartDrawer() }">
-            <icon name="i-fa7-solid:shopping-bag" size="18" />
-            {{ $t("Panier") }}
-          </a>
-        </li> -->
-
         <li class="flex items-center p-1 text-sm gap-x-2 text-primary-600">
           <nuxt-link-locale id="link-cart-navbar" to="/cart">
             <icon name="i-fa7-solid:shopping-bag" size="18" />
@@ -33,13 +21,13 @@
         </li>
 
         <li v-if="!isAuthenticated" class="flex items-center p-1 text-sm gap-x-2 text-primary-600">
-          <a id="action-signin" href="#" class="flex items-center gap-2" @click.prevent="() => { toggleLoginDrawer() }">
+          <a :id="createElementId('action', 'navbar', 'signin')" href="#" class="flex items-center gap-2" @click.prevent="() => { toggleLoginDrawer() }">
             <icon name="i-fa7-solid:sign-in-alt" size="18" />
             {{ $t('Se connecter') }}
           </a>
         </li>
         <li v-else class="flex items-center p-1 text-sm gap-x-2 text-primary-600">
-          <a id="action-signout" href="#" class="flex items-center gap-2" @click.prevent="async () => { await useLogout() }">
+          <a :id="createElementId('action', 'navbar', 'signout')" href="#" class="flex items-center gap-2" @click.prevent="async () => { await useLogout() }">
             <icon name="i-fa7-solid:sign-out-alt" size="18" />
             {{ $t('Se déconnecter') }}
           </a>
@@ -52,7 +40,7 @@
           </nuxt-link-locale >
         </li>
       </ul>
-      
+
       <button id="action-menu" class="relative ml-auto h-6 max-h-10 w-6 select-none rounded-lg text-center align-middle text-xs font-medium uppercase text-inherit transition-all hover:bg-transparent focus:bg-transparent active:bg-transparent disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:hidden" type="button">
        <icon name="i-fa7-solid:bars" size="18" />
       </button>

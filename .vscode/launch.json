@@ -29,7 +29,7 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/services/goauthentication",
+            "program": "${workspaceFolder}/services/goauthentication/main.go",
             "presentation": {
                 "hidden": false,
                 "group": "Golang",
@@ -41,7 +41,8 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/services/gopurchase",
+            "program": "${workspaceFolder}/services/gopurchase/main.go",
+            "envFile": "${workspaceFolder}/services/gopurchase/.env",
             "presentation": {
                 "hidden": false,
                 "group": "Golang",
@@ -49,12 +50,13 @@
             }
         },
         {
-            "name": "Django: Shop",
+            "name": "Django: ShopApi",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/mystore/manage.py",
+            "python": "${workspaceFolder}/services/shopapi/.venv/bin/python",
+            "program": "${workspaceFolder}/services/shopapi/manage.py",
             "args": ["runserver"],
-            "envFile": "${workspaceFolder}/mystore/.env",
+            "envFile": "${workspaceFolder}/services/shopapi/.env",
             // "preLaunchTask": "Celery: start",
             "django": true,
             "presentation": {

@@ -64,6 +64,7 @@ const AsyncBaseRecommendationBlock = defineAsyncComponent({
  */
 
 const { product } = await useProductDetailsComposable()
+console.log('product', product.value, useProductDetailsComposable)
 
 /**
  * Analytics
@@ -157,10 +158,12 @@ if (isDefined(product)) {
       }
     })
   )
-
-  defineOgImage('NuxtSeoTakumi', {
-    title: name,
-    description,
-  })
+  
+  if (import.meta.env.NODE_ENV === 'production') {
+    defineOgImage('NuxtSeoTakumi', {
+      title: name,
+      description,
+    })
+  }
 }
 </script>
