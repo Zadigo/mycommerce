@@ -1,5 +1,6 @@
-from cartapi.choices import ShipmentChoices
 from django.db import models
+
+from cartapi.choices import ShipmentChoices
 from orders.models import CustomerOrder
 
 # class ShippingMethod(models.Model):
