@@ -20,11 +20,6 @@
             "packageManager": "ms-python.python:pip"
         },
         {
-            "path": "services/mysubscribers",
-            "envManager": "ms-python.python:venv",
-            "packageManager": "ms-python.python:pip"
-        },
-        {
             "path": "services/addresses",
             "envManager": "ms-python.python:venv",
             "packageManager": "ms-python.python:pip"
