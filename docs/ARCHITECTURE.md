@@ -1,4 +1,4 @@
-# Fullstack Emailing Platform Architecture
+# Fullstack Ecommerce Platform Architecture
 
 ## Requirements & Assumptions 🟠
 
@@ -8,25 +8,26 @@
 
 - **Channels** Email ? SMS ? Push Notifications ?
 - **User Authentication** Email/Password ? Social Login ?
-- **Email Templates** Predefined ? Customizable ?
-- **Email Scheduling** Immediate ? Scheduled ? Recurring ?
-- **Email Personalization** Dynamic content based on user data ?
-- **Email Tracking** Open rates ? Click-through rates ? Bounce rates ?
-- **Spam protection** How to prevent the system from being used for spamming ? Rate limiting ? Email verification ? Prevent a same lead from receiving multiple emails in a short period of time ?
-- **Sequences** How are the sequences managed for sending emails?
+- **Payment Methods** Credit Card ? Klarna ? Stripe ? Other ?
+- **Shipping Methods** Standard ? Express ? International ?
+- **Inventory Management** How is inventory tracked and updated? Local with Django Api or external inventory service?
+- **Order Management** How are orders processed and tracked? Local with Django Api or external order management service?
+- **Cart Management** How are shopping carts managed? Firebase? Firebase + Django Postgres? Django Postgres?
+- **Product Management** Internal with Django (Shop Api) or external product management service?
+- **Reviews and Ratings** Stored locally with Django Postgres or external review service?
 
 ### Functional Requirements 🟢
 
 *Describes the specific features and functionalities that the system must provide*
 
-- **Admin** Dashboard for managing email campaigns, templates, and users.
-- **Email Campaigns** Allows users to create, schedule, and manage email campaigns.
-- **Email Sequences** Allows users to create multiple sequences of emails based on their marketing strategy (e.g. sequence one: cold reach, sequence two: follow up, sequence three: closing) and to send them on based on specific days differential (e.g. sequence 1 (day 1), sequence 2 (day 3), sequence 3 (day 7) etc
-- **Email Templates** Provides predefined templates and allows customization for different campaigns.
-- **Email Scheduling** Supports immediate, scheduled, and recurring email sending.
-- **Email Personalization** Enables dynamic content based on user data.
-- **Email Tracking** Tracks open rates, click-through rates, and bounce rates.
-- **Spam Protection** Implements measures to prevent spamming, such as rate limiting and email verification.
+- **Admin** Dashboard for managing products, orders, inventory, and users.
+- **Products** Allow users to browse, search, and view product details.
+- **Cart** Allow users to add, remove, and update items in their shopping cart.
+- **Orders** Allow users to place orders and view order history.
+- **Payments** Support multiple payment methods for completing purchases.
+- **Shipping** Provide options for different shipping methods and track shipping status.
+- **Reviews and Ratings** Allow users to submit and view reviews and ratings for products.
+- **Wishlist** Allow users to add, remove, and view items in their wishlist.
 
 ## Capacity Planning ⏰
 
@@ -34,19 +35,29 @@
 
 *Estimates the expected load on the system, such as the number of users, transactions, or requests per second. This helps in designing a system that can handle the anticipated traffic and scale as needed*
 
-Estimation for one user campaign:
+Estimation for a 100 products scenario:
 
-- **Leads** 100 leads per campaign
-- **Emails** 3 emails per lead (cold reach, follow up, closing) [or 3 sequences]
-- **Total emails** 300 emails per campaign
-- **Campaigns** 2 campaigns per month
-- **Total emails per month** 600 emails per month (2 x 300)
-- **Total emails per year** 7 200 emails per year (300 x 12)
-- **Database queries per second** Assuming each email requires 2 database queries (one for retrieving lead information and one for updating email status), the system would need to handle approximately 0.08 queries per second (7 200 emails per year / 31 536 000 seconds in a year).
+- **Products** 100 products in the catalog
+- **Users** 1000 users in the system
+- **Reviews** 200 reviews per month
+- **Wishlist Items** 300 wishlist items per month
+- **Pages visited** 2 pages per visitor per session. 2000 pages per month (1000 users * 2 pages).
+- **RPR (Repeat Purchase Rate)** 25% over a 12 month period. Repeat buyers: 250 (25% of 1000 users). One time purchases: 750 (1000 - 250).
+- **Total orders** 500 (250 repeat buyers + 750 one time purchases * 1 order each).
+- **Database Queries** Assuming each user session requires 6 database queries [home page collections + collection details + product details + add to cart + view cart + checkout], the system would need to handle approximately 0.00095 queries per second (500 orders per month / 31 536 000 seconds in a year).
 
 ### Storage
 
 *Estimates the storage requirements for the system, such as the amount of data that needs to be stored and the growth rate over time. This helps in designing a system that can handle the anticipated storage needs and scale as required.*
+
+Estimation for a 100 products scenario:
+
+- **Product Images** Assuming each product has 5 images of 500KB each, total storage for product images: 100 products * 5 images * 500KB = 250MB.
+- **User Data** Assuming each user has 1MB of data, total storage for user data: 1000 users * 1MB = 1GB.
+- **Reviews** Assuming each review is 1KB, total storage for reviews: 200 reviews per month * 12 months * 1KB = 2.4MB per year.
+- **Wishlist Items** Assuming each wishlist item is 1KB, total storage for wishlist items: 300 wishlist items per month * 12 months * 1KB = 3.6MB per year.
+- **Orders** Assuming each order is 10KB, total storage for orders: 500 orders per month * 12 months * 10KB = 60MB per year.
+- **Database Storage** Total estimated storage: 250MB (product images) + 1GB (user data) + 2.4MB (reviews) + 3.6MB (wishlist items) + 60MB (orders) ≈ 1.315GB per year.
 
 ## High Level Architecture 🏗️
 
@@ -150,6 +161,11 @@ W ->> U: /success
 
 *Describes how the system will store and manage data, including the choice of database (e.g., relational, NoSQL), data models, and how data will be accessed and manipulated by the application.*
 
+**Cart Storage**: The elements and details of the shopping cart are saved in Firebase Realtime Database, allowing for real-time synchronization of cart data across multiple devices and sessions.
+**Product Storage**: Product details and metadata are stored in a relational database (PostgreSQL), while product images and other media files are stored in Amazon S3 for efficient retrieval and scalability.
+**Session Storage**: User session data is stored in Firebase Realtime Database.
+**Order Storage**: Order details and history are stored in a relational database (PostgreSQL) to ensure data integrity and support complex queries related to order management and in Redis for caching frequently accessed order data.
+
 ### Amazon S3
 
 *Explains the the manner in which the system will use Amazon S3 for storing and retrieving files, including the structure of the S3 buckets, access control policies, and how the application will interact with S3 for file uploads and downloads.*
@@ -197,12 +213,9 @@ Caching will be almost exlusively done with Redis as an in-memory data store.
 ```mermaid
     flowchart LR
         A[User Requests] --> B(Load Balancer)
-        B --> C[EmailApi]
-        B --> D[EmailApi]
-        B --> E[EmailApi]
-        E --> G[Emiling Server]
-        E --> H[Emiling Server]
-        E --> I[Emiling Server]
+        B --> C[ShopApi]
+        B --> D[ShopApi]
+        B --> E[ShopApi]
 ```
 
 ---
@@ -211,13 +224,12 @@ Caching will be almost exlusively done with Redis as an in-memory data store.
 
 *List of services and components that will be part of the system, along with their respective technologies and descriptions. This can be presented in a tabular format for clarity.*
 
-| Service      | Language/Framework | Description                                                          |
-| ------------ | ------------------ | -------------------------------------------------------------------- |
-| EmailsApi    | Django             | Manages campaign/sequence creation and update                        |
-| CompaniesApi | Django             | Manages information on leads                                         |
-| GoSearcher   | Django             | Standalone server that queries official APIs for company information |
-| Frontend     | Nuxt 4             | Renders the desktop user interface                                   |
-| Subscribers  | Django             | Newsletters etc. management                                          |
+| Service   | Language/Framework | Description                                    |
+| --------- | ------------------ | ---------------------------------------------- |
+| ShopApi   | Django             | Manages product catalog and related operations |
+| CartApi   | Django             | Manages shopping cart operations               |
+| GoPayment | Django             | Handles payment processing                     |
+| Frontend  | Nuxt 4             | Renders the desktop user interface             |
 
 ## Technologies Used 🌳
 
