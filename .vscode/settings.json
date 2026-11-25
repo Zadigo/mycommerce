@@ -29,5 +29,10 @@
             "envManager": "ms-python.python:venv",
             "packageManager": "ms-python.python:pip"
         }
-    ]
+    ],
+    "yaml.schemas": {
+        "./services/gopurchase/config.schema.json": [
+            "config.yaml"
+        ]
+    }
 }

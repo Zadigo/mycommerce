@@ -36,7 +36,6 @@ func (a *HttpApp) loadPaymentRoutes(router chi.Router) {
 	paymentApi := handlers.PaymentApi{
 		PaymentClient: &stripe.Client{},
 		App:           a,
-		Ctx:           a.ctx,
 	}
 
 	err := paymentApi.SetupStripeClient()
@@ -51,7 +50,6 @@ func (a *HttpApp) loadPaymentRoutes(router chi.Router) {
 
 func (a *HttpApp) loadAuthRoutes(router chi.Router) {
 	authApi := handlers.AuthenticationApi{
-		Ctx: a.ctx,
 		App: a,
 	}
 

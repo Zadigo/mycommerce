@@ -9,14 +9,9 @@ import (
 )
 
 // Start a goroutine to run the scheduler and perform periodic checks
-func globalJob(app *TickerApp) {
-	localCtx, cancel := context.WithCancel(app.ctx)
-	defer cancel()
-
+func globalJob(ctx context.Context, app *TickerApp) error {
 	scheduler := gocron.NewScheduler(time.UTC)
 	app.schedulers["global"] = scheduler
-
-	errorHandler := NewTickerErrors(localCtx)
 
 	_, err := scheduler.Every(2 * time.Minute).Do(func() {
 		log.Print("Global job")
@@ -60,40 +55,38 @@ func globalJob(app *TickerApp) {
 		// }
 	})
 
+	if err != nil {
+		return err
+	}
+
 	scheduler.StartBlocking()
-	app.chErrors <- errorHandler.CreateSchedulerError("global", err)
+	return nil
 }
 
 // Start a goroutine to run the scheduler and perform periodic checks for Stripe
-func stripeJob(app *TickerApp) {
-	localCtx, cancel := context.WithCancel(app.ctx)
-	defer cancel()
-
+func stripeJob(ctx context.Context, app *TickerApp) error {
 	scheduler := gocron.NewScheduler(time.UTC)
 	app.schedulers["stripe"] = scheduler
-
-	errorHandler := NewTickerErrors(localCtx)
 
 	_, err := scheduler.Every(2 * time.Minute).Do(func() {
 		log.Print("Stripe job")
 	})
 
+	if err != nil {
+		return err
+	}
+
 	scheduler.StartBlocking()
-	app.chErrors <- errorHandler.CreateSchedulerError("stripe", err)
+	return nil
 }
 
 // Starts a gorouting that iterates through all the payment intents
 // stored in Redis in order to check for status. If they are captured,
 // the goroutine will perform certain tasks (e.g. like sending the details to
 // the webhook endpoint).
-func paymentIntentsJob(app *TickerApp) {
-	localCtx, cancel := context.WithCancel(app.ctx)
-	defer cancel()
-
+func paymentIntentsJob(ctx context.Context, app *TickerApp) error {
 	scheduler := gocron.NewScheduler(time.UTC)
 	app.schedulers["stripe"] = scheduler
-
-	errorHandler := NewTickerErrors(localCtx)
 
 	_, err := scheduler.Every(2 * time.Minute).Do(func() {
 		log.Print("Payment job")
@@ -127,6 +120,10 @@ func paymentIntentsJob(app *TickerApp) {
 		// }
 	})
 
+	if err != nil {
+		return err
+	}
+
 	scheduler.StartBlocking()
-	app.chErrors <- errorHandler.CreateSchedulerError("payment_intents", err)
+	return nil
 }

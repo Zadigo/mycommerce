@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package gopurchase.v1;
+
+service PurchaseService {
+
+}
+
+message PurchaseRequest {
+    
+}
+
+message PurchaseResponse {
+    
+}

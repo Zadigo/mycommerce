@@ -1,0 +1,44 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "config.yaml",
+    "title": "config.yaml",
+    "description": "Configuration for the configuration file",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "redis": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                }
+            }
+        },
+        "endpoints": {
+            "type": "array",
+            "items": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string",
+                        "pattern": "^https?://.*"
+                    },
+                    "interval": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "default": "every_minute",
+                        "enum": ["every_minute", "fifteen_seconds", "thirthy_seconds"]
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "default": true
+                    }
+                }
+            }
+        }
+    }
+}

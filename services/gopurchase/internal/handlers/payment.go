@@ -98,7 +98,7 @@ func (p *PaymentApi) CreateIntent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Store the payment intent in Redis
-	redisHandler := NewPaymentRedis(p.App.GetRedisClient())
+	redisHandler := NewPaymentRedis(p.App.GetServer().GetOptions().Redis)
 	err = redisHandler.SetPaymentIntent(intent)
 	if err != nil {
 		log.Printf("❌ Failed to store payment intent in Redis: %v", err)

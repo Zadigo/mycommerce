@@ -1,6 +1,6 @@
 module github.com/Zadigo/gopurchase
 
-go 1.25.5
+go 1.26.0
 
 require (
 	github.com/go-chi/chi v1.5.5
@@ -21,4 +21,5 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
+	golang.org/x/sync v0.25.0 // indirect
 )
